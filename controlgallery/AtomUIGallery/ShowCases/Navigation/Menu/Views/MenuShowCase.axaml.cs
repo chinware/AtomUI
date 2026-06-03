@@ -1,9 +1,14 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
+using AtomUI.Theme.Language;
+using Avalonia;
 using Avalonia.Input;
+using AtomUIGallery.Localization;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -32,10 +37,7 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
                 };
                 viewModel.DefaultSelectedPath = new TreeNodePath("/3/SubGroup1/Option1");
 
-                InitInlineNavMenuNodes(viewModel);
-                InitMenuTreeNodes(viewModel);
-                InitContextMenuItems(viewModel);
-                InitMenuFlyoutMenuItems(viewModel);
+                RefreshMenuSources(viewModel);
 
                 this.OneWayBind(ViewModel, vm => vm.MenuItems, v => v.BasicItemsSourceMenu.ItemsSource)
                     .DisposeWith(disposables);
@@ -45,6 +47,15 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
                     .DisposeWith(disposables);
                 this.OneWayBind(ViewModel, vm => vm.ItemsSourceDemoNavMenuNodes, v => v.ItemsSourceDemoNavMenu.ItemsSource)
                     .DisposeWith(disposables);
+
+                var themeManager = Application.Current?.GetThemeManager();
+                if (themeManager != null)
+                {
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshMenuSources(viewModel);
+                    themeManager.LanguageVariantChanged += handler;
+                    Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
+                        .DisposeWith(disposables);
+                }
 
                 Disposable.Create(() =>
                 {
@@ -63,42 +74,55 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
         });
     }
 
+    private void RefreshMenuSources(MenuViewModel viewModel)
+    {
+        InitInlineNavMenuNodes(viewModel);
+        InitMenuTreeNodes(viewModel);
+        InitContextMenuItems(viewModel);
+        InitMenuFlyoutMenuItems(viewModel);
+    }
+
+    private static string Lang(MenuShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+    }
+
     private void InitContextMenuItems(MenuViewModel viewModel)
     {
         viewModel.ContextMenuItems = new List<IMenuItemData>
         {
             new MenuItemData
             {
-                Header       = "Cut",
+                Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderCut, "Cut"),
                 Icon         = new ScissorOutlined(),
                 InputGesture = KeyGesture.Parse("Ctrl+X"),
             },
             new MenuItemData
             {
-                Header       = "Copy",
+                Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderCopy, "Copy"),
                 Icon         = new CopyOutlined(),
                 InputGesture = KeyGesture.Parse("Ctrl+C"),
             },
             new MenuItemData
             {
-                Header       = "Delete",
+                Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderDelete, "Delete"),
                 Icon         = new DeleteOutlined(),
                 InputGesture = KeyGesture.Parse("Ctrl+D"),
             },
             new MenuItemData
             {
-                Header = "Paste",
+                Header = Lang(MenuShowCaseLangResourceKind.P2HeaderPaste, "Paste"),
                 Children =
                 [
                     new MenuItemData
                     {
-                        Header       = "Paste",
+                        Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderPaste, "Paste"),
                         Icon         = new FileDoneOutlined(),
                         InputGesture = KeyGesture.Parse("Ctrl+P")
                     },
                     new MenuItemData
                     {
-                        Header       = "Paste from History",
+                        Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderPasteFromHistory, "Paste from History"),
                         InputGesture = KeyGesture.Parse("Ctrl+Shift+V")
                     }
                 ]
@@ -112,47 +136,47 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
         {
             new MenuItemData
             {
-                Header = "File",
+                Header = Lang(MenuShowCaseLangResourceKind.P2HeaderFile, "File"),
                 Children =
                 [
                     new MenuItemData
                     {
-                        Header       = "New Text File",
+                        Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderNewTextFile, "New Text File"),
                         InputGesture = KeyGesture.Parse("Ctrl+N")
                     },
                     new MenuItemData
                     {
-                        Header       = "New File",
+                        Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderNewFile, "New File"),
                         InputGesture = KeyGesture.Parse("Ctrl+Alt+N")
                     },
                     new MenuItemData
                     {
-                        Header       = "New Window",
+                        Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderNewWindow, "New Window"),
                         InputGesture = KeyGesture.Parse("Ctrl+Shift+N")
                     }
                 ]
             },
             new MenuItemData
             {
-                Header = "Edit",
+                Header = Lang(MenuShowCaseLangResourceKind.P2HeaderEdit, "Edit"),
                 Children =
                 [
                     new MenuItemData
                     {
-                        Header       = "Undo",
+                        Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderUndo, "Undo"),
                         InputGesture = KeyGesture.Parse("Ctrl+Shift+Z")
                     },
                     new MenuSeparatorData(),
                     new MenuItemData
                     {
-                        Header       = "Cut",
+                        Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderCut, "Cut"),
                         InputGesture = KeyGesture.Parse("Ctrl+X")
                     }
                 ]
             },
             new MenuItemData
             {
-                Header    = "Disabled Item",
+                Header    = Lang(MenuShowCaseLangResourceKind.P2HeaderDisabledItem, "Disabled Item"),
                 IsEnabled = false
             }
         };
@@ -170,7 +194,7 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
     {
         defaultSelected = new NavMenuNode
         {
-            Header  = "Option 4",
+            Header  = Lang(MenuShowCaseLangResourceKind.P2HeaderOptionN4, "Option 4"),
             ItemKey = "Option4",
             Icon    = new TwitterOutlined()
         };
@@ -178,50 +202,50 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
         {
             new NavMenuNode
             {
-                Header  = "Navigation One",
+                Header  = Lang(MenuShowCaseLangResourceKind.P2HeaderNavigationOne, "Navigation One"),
                 Icon    = new MailOutlined(),
                 ItemKey = "1"
             },
             new NavMenuNode
             {
-                Header  = "Navigation Two",
+                Header  = Lang(MenuShowCaseLangResourceKind.P2HeaderNavigationTwo, "Navigation Two"),
                 Icon    = new AppstoreOutlined(),
                 ItemKey = "2"
             },
             new NavMenuNode
             {
-                Header  = "Navigation Three - Submenu",
+                Header  = Lang(MenuShowCaseLangResourceKind.P2HeaderNavigationThreeSubmenu, "Navigation Three - Submenu"),
                 Icon    = new SettingOutlined(),
                 ItemKey = "3",
                 Children =
                 [
                     new NavMenuNode
                     {
-                        Header  = "Item 1",
+                        Header  = Lang(MenuShowCaseLangResourceKind.P2HeaderItemN1, "Item 1"),
                         ItemKey = "SubGroup1",
                         Children =
                         [
                             new NavMenuNode
                             {
-                                Header  = "Option 1",
+                                Header  = Lang(MenuShowCaseLangResourceKind.P2HeaderOptionN1, "Option 1"),
                                 ItemKey = "Option1"
                             },
                             new NavMenuNode
                             {
-                                Header  = "Option 2",
+                                Header  = Lang(MenuShowCaseLangResourceKind.P2HeaderOptionN2, "Option 2"),
                                 ItemKey = "Option2"
                             }
                         ]
                     },
                     new NavMenuNode
                     {
-                        Header  = "Item 2",
+                        Header  = Lang(MenuShowCaseLangResourceKind.P2HeaderItemN2, "Item 2"),
                         ItemKey = "SubGroup2",
                         Children =
                         [
                             new NavMenuNode
                             {
-                                Header  = "Option 3",
+                                Header  = Lang(MenuShowCaseLangResourceKind.P2HeaderOptionN3, "Option 3"),
                                 ItemKey = "Option3"
                             },
                             defaultSelected
@@ -231,7 +255,7 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
             },
             new NavMenuNode
             {
-                Header  = "Navigation Four",
+                Header  = Lang(MenuShowCaseLangResourceKind.P2HeaderNavigationFour, "Navigation Four"),
                 ItemKey = "4"
             }
         };
@@ -243,37 +267,37 @@ public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
         {
             new MenuItemData
             {
-                Header       = "Cut",
+                Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderCut, "Cut"),
                 InputGesture = KeyGesture.Parse("Ctrl+X"),
                 Icon         = new ScissorOutlined(),
             },
             new MenuItemData
             {
-                Header       = "Copy",
+                Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderCopy, "Copy"),
                 InputGesture = KeyGesture.Parse("Ctrl+C"),
                 Icon         = new CopyOutlined(),
             },
             new MenuItemData
             {
-                Header       = "Delete",
+                Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderDelete, "Delete"),
                 InputGesture = KeyGesture.Parse("Ctrl+D"),
                 Icon         = new DeleteOutlined(),
             },
             new MenuItemData
             {
-                Header = "Paste",
+                Header = Lang(MenuShowCaseLangResourceKind.P2HeaderPaste, "Paste"),
                 Children =
                 [
                     new MenuItemData
                     {
-                        Header       = "Paste",
+                        Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderPaste, "Paste"),
                         InputGesture = KeyGesture.Parse("Ctrl+P"),
                         Icon         = new FileDoneOutlined(),
                     },
                     new MenuSeparatorData(),
                     new MenuItemData
                     {
-                        Header       = "Paste from History",
+                        Header       = Lang(MenuShowCaseLangResourceKind.P2HeaderPasteFromHistory, "Paste from History"),
                         InputGesture = KeyGesture.Parse("Ctrl+Shift+V"),
                     }
                 ]

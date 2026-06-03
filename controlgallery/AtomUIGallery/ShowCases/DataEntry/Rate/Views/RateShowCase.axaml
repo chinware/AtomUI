@@ -40,11 +40,11 @@
             <StackPanel Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Rate DefaultValue="3" IsAllowClear="True" />
-                    <TextBlock>IsAllowClear: true</TextBlock>
+                    <TextBlock Text="{gallery:RateShowCaseLangResource P2TextIsallowclearTrue}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Rate DefaultValue="3" IsAllowClear="False" />
-                    <TextBlock>IsAllowClear: false</TextBlock>
+                    <TextBlock Text="{gallery:RateShowCaseLangResource P2TextIsallowclearFalse}" />
                 </StackPanel>
             </StackPanel>
         </gallery:ShowCaseItem>

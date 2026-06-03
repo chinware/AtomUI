@@ -14,6 +14,8 @@ internal class en_US : LanguageProvider
     public const string HeaderStyleDescription = "GroupBox Header supports customizing some properties of color and font.";
     public const string HeaderIconTitle = "Header Icon";
     public const string HeaderIconDescription = "GroupBox Header supports specifying Icon.";
+    public const string P2HeaderTitleTitleInfo = "Title Info";
+    public const string P2TextContentOfGroupBox = "Content of group box";
 
     protected override Type GetResourceKindType() => typeof(GroupBoxShowCaseLangResourceKind);
 }

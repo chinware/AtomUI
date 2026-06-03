@@ -20,6 +20,7 @@ internal class en_US : LanguageProvider
     public const string PrefixSuffixDescription = "Add a prefix or suffix icons inside input.";
     public const string StatusTitle = "Status";
     public const string StatusDescription = "Add status to Input with status, which could be error or warning.";
+    public const string P2Text床前明月光 = "床前明月光";
 
     protected override Type GetResourceKindType() => typeof(ButtonSpinnerShowCaseLangResourceKind);
 }

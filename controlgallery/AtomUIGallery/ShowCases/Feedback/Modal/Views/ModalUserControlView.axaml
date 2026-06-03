@@ -1,15 +1,16 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Modal.ModalUserControlView"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Modal"
              x:DataType="viewModels:ModalUserControlViewModel">
     <StackPanel Orientation="Vertical" Spacing="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <TextBlock>Name</TextBlock>
+            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextName}" />
             <TextBlock Text="{Binding Name}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Spacing="5">
-            <TextBlock>Age</TextBlock>
+            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextAge}" />
             <TextBlock Text="{Binding Age}"/>
         </StackPanel>
     </StackPanel>

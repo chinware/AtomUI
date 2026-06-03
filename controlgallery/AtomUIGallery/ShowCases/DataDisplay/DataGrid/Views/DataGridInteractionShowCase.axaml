@@ -11,23 +11,23 @@
                               IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:RadioButton x:Name="ExtendedSelection" IsChecked="True">Extended</atom:RadioButton>
-                    <atom:RadioButton x:Name="SingleSelection">Single</atom:RadioButton>
+                    <atom:RadioButton x:Name="ExtendedSelection" IsChecked="True" Content="{gallery:DataGridShowCaseLangResource P2ContentExtended}" />
+                    <atom:RadioButton x:Name="SingleSelection" Content="{gallery:DataGridShowCaseLangResource P2ContentSingle}" />
                 </StackPanel>
                 <atom:DataGrid x:Name="SelectionDataGrid" SelectionMode="Extended" SelectTriggerType="Cell"
                                        x:DataType="vm:DataGridBaseInfo">
                     <atom:DataGrid.Columns>
                         <atom:DataGridSelectionColumn />
-                        <atom:DataGridTemplateColumn Header="Name">
+                        <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}">
                             <atom:DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="vm:DataGridBaseInfo">
                                     <atom:HyperLinkTextBlock Text="{Binding Name}" />
                                 </DataTemplate>
                             </atom:DataGridTemplateColumn.CellTemplate>
                         </atom:DataGridTemplateColumn>
-                        <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}" />
-                        <atom:DataGridTextColumn Header="Address" Binding="{Binding Address}" />
-                        <atom:DataGridTemplateColumn Header="Tags">
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}" Binding="{Binding Address}" />
+                        <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderTags}">
                             <atom:DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="vm:DataGridBaseInfo">
                                     <ItemsControl ItemsSource="{Binding Tags}">
@@ -45,13 +45,13 @@
                                 </DataTemplate>
                             </atom:DataGridTemplateColumn.CellTemplate>
                         </atom:DataGridTemplateColumn>
-                        <atom:DataGridTemplateColumn Header="Action">
+                        <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAction}">
                             <atom:DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Spacing="15">
-                                        <atom:HyperLinkTextBlock Text="Invite" />
-                                        <atom:HyperLinkTextBlock Text="Modify" />
-                                        <atom:HyperLinkTextBlock Text="Delete" />
+                                        <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextInvite}" />
+                                        <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextModify}" />
+                                        <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextDelete}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </atom:DataGridTemplateColumn.CellTemplate>
@@ -67,17 +67,17 @@
             <atom:DataGrid x:Name="DragResizeColumn" IsHideOnSinglePage="True" CanUserResizeColumns="True"
                                        x:DataType="vm:DataGridBaseInfo">
                 <atom:DataGrid.Columns>
-                    <atom:DataGridTemplateColumn Header="Name" CanUserResize="True">
+                    <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}" CanUserResize="True">
                         <atom:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="vm:DataGridBaseInfo">
                                 <atom:HyperLinkTextBlock Text="{Binding Name}" />
                             </DataTemplate>
                         </atom:DataGridTemplateColumn.CellTemplate>
                     </atom:DataGridTemplateColumn>
-                    <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}" CanUserResize="True"
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}" CanUserResize="True"
                                              CanUserSort="True" />
-                    <atom:DataGridTextColumn Header="Address" Binding="{Binding Address}" />
-                    <atom:DataGridTemplateColumn Header="Tags">
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}" Binding="{Binding Address}" />
+                    <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderTags}">
                         <atom:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="vm:DataGridBaseInfo">
                                 <ItemsControl ItemsSource="{Binding Tags}">
@@ -95,13 +95,13 @@
                             </DataTemplate>
                         </atom:DataGridTemplateColumn.CellTemplate>
                     </atom:DataGridTemplateColumn>
-                    <atom:DataGridTemplateColumn Header="Action">
+                    <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAction}">
                         <atom:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Spacing="15">
-                                    <atom:HyperLinkTextBlock Text="Invite" />
-                                    <atom:HyperLinkTextBlock Text="Modify" />
-                                    <atom:HyperLinkTextBlock Text="Delete" />
+                                    <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextInvite}" />
+                                    <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextModify}" />
+                                    <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextDelete}" />
                                 </StackPanel>
                             </DataTemplate>
                         </atom:DataGridTemplateColumn.CellTemplate>
@@ -117,10 +117,10 @@
                 <atom:DataGrid x:Name="LargeSizeDataGrid" SizeType="Large"
                                        x:DataType="vm:DataGridBaseInfo">
                     <atom:DataGrid.Columns>
-                        <atom:DataGridTextColumn Header="Name"
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}"
                                                  Binding="{Binding Name}" />
-                        <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}" />
-                        <atom:DataGridTextColumn Header="Address"
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}"
                                                  Binding="{Binding Address}" />
                     </atom:DataGrid.Columns>
                 </atom:DataGrid>
@@ -128,10 +128,10 @@
                 <atom:DataGrid x:Name="MiddleSizeDataGrid" SizeType="Middle"
                                        x:DataType="vm:DataGridBaseInfo">
                     <atom:DataGrid.Columns>
-                        <atom:DataGridTextColumn Header="Name"
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}"
                                                  Binding="{Binding Name}" />
-                        <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}" />
-                        <atom:DataGridTextColumn Header="Address"
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}"
                                                  Binding="{Binding Address}" />
                     </atom:DataGrid.Columns>
                 </atom:DataGrid>
@@ -139,10 +139,10 @@
                 <atom:DataGrid x:Name="SmallSizeDataGrid" SizeType="Small"
                                        x:DataType="vm:DataGridBaseInfo">
                     <atom:DataGrid.Columns>
-                        <atom:DataGridTextColumn Header="Name"
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}"
                                                  Binding="{Binding Name}" />
-                        <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}" />
-                        <atom:DataGridTextColumn Header="Address"
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}"
                                                  Binding="{Binding Address}" />
                     </atom:DataGrid.Columns>
                 </atom:DataGrid>
@@ -155,23 +155,19 @@
             <atom:DataGrid x:Name="CustomHeaderAndFooterDataGrid"
                            GridLinesVisibility="All"
                            IsFrameBorderVisible="True"
+                           Title="{gallery:DataGridShowCaseLangResource P2TitleHeader}"
+                           Footer="{gallery:DataGridShowCaseLangResource P2TitleFooter}"
                            x:DataType="vm:DataGridBaseInfo">
-                <atom:DataGrid.Title>
-                    Header
-                </atom:DataGrid.Title>
-                <atom:DataGrid.Footer>
-                    Footer
-                </atom:DataGrid.Footer>
                 <atom:DataGrid.Columns>
-                    <atom:DataGridTemplateColumn Header="Name">
+                    <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}">
                         <atom:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate x:DataType="vm:DataGridBaseInfo">
                                 <atom:HyperLinkTextBlock Text="{Binding Name}" />
                             </DataTemplate>
                         </atom:DataGridTemplateColumn.CellTemplate>
                     </atom:DataGridTemplateColumn>
-                    <atom:DataGridTextColumn Header="Cash Assets" Binding="{Binding Money}" />
-                    <atom:DataGridTextColumn Header="Address" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderCashAssets}" Binding="{Binding Money}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}" Binding="{Binding Address}" />
                 </atom:DataGrid.Columns>
             </atom:DataGrid>
         </gallery:ShowCaseItem>

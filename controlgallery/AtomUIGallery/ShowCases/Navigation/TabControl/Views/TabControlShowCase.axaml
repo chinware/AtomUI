@@ -8,16 +8,16 @@
              xmlns:vm="using:AtomUIGallery.ShowCases.TabControl"
              x:DataType="vm:TabControlViewModel">
     <atom:TabControl SizeType="Large">
-        <atom:TabItem Header="TabControl">
+        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabcontrol}">
             <gallery:ShowCasePanel>
                 <gallery:ShowCaseItem
                     Title="{gallery:TabControlShowCaseLangResource TabControlBasicTitle}"
                     Description="{gallery:TabControlShowCaseLangResource TabControlBasicDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl Name="TestControl">
-                            <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                         </atom:TabControl>
                     </StackPanel>
                 </gallery:ShowCaseItem>
@@ -43,15 +43,15 @@
                     Description="{gallery:TabControlShowCaseLangResource TabControlDisabledDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabControl HeaderStartEdgePadding="">
-                            <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2" IsEnabled="False">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" IsEnabled="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                         </atom:CardTabControl>
 
                         <atom:TabControl>
-                            <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2" IsEnabled="False">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" IsEnabled="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                         </atom:TabControl>
                     </StackPanel>
                 </gallery:ShowCaseItem>
@@ -61,15 +61,15 @@
                     Description="{gallery:TabControlShowCaseLangResource TabControlCenteredDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl TabAlignmentCenter="True">
-                            <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                         </atom:TabControl>
 
                         <atom:CardTabControl TabAlignmentCenter="True">
-                            <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                         </atom:CardTabControl>
 
                     </StackPanel>
@@ -80,9 +80,9 @@
                     Description="{gallery:TabControlShowCaseLangResource TabControlIconDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl>
-                            <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Content of Tab Pane 3</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                         </atom:TabControl>
 
                     </StackPanel>
@@ -93,49 +93,49 @@
                     Description="{gallery:TabControlShowCaseLangResource TabControlSlideDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl>
-                            <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
-                            <atom:TabItem Header="Tab 4">Content of Tab Pane 4</atom:TabItem>
-                            <atom:TabItem Header="Tab 5">Content of Tab Pane 5</atom:TabItem>
-                            <atom:TabItem Header="Tab 6">Content of Tab Pane 6</atom:TabItem>
-                            <atom:TabItem Header="Tab 7">Content of Tab Pane 7</atom:TabItem>
-                            <atom:TabItem Header="Tab 8">Content of Tab Pane 8</atom:TabItem>
-                            <atom:TabItem Header="Tab 9">Content of Tab Pane 9</atom:TabItem>
-                            <atom:TabItem Header="Tab 10">Content of Tab Pane 10</atom:TabItem>
-                            <atom:TabItem Header="Tab 11">Content of Tab Pane 11</atom:TabItem>
-                            <atom:TabItem Header="Tab 12">Content of Tab Pane 12</atom:TabItem>
-                            <atom:TabItem Header="Tab 13">Content of Tab Pane 13</atom:TabItem>
-                            <atom:TabItem Header="Tab 14">Content of Tab Pane 14</atom:TabItem>
-                            <atom:TabItem Header="Tab 15">Content of Tab Pane 15</atom:TabItem>
-                            <atom:TabItem Header="Tab 16">Content of Tab Pane 16</atom:TabItem>
-                            <atom:TabItem Header="Tab 17">Content of Tab Pane 17</atom:TabItem>
-                            <atom:TabItem Header="Tab 18">Content of Tab Pane 18</atom:TabItem>
-                            <atom:TabItem Header="Tab 19">Content of Tab Pane 19</atom:TabItem>
-                            <atom:TabItem Header="Tab 20">Content of Tab Pane 20</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN9}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN9}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN10}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN10}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN11}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN11}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN12}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN12}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN13}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN13}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN14}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN14}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN15}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN15}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN16}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN16}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN17}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN17}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN18}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN18}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN19}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN19}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN20}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN20}" />
                         </atom:TabControl>
 
                         <atom:CardTabControl>
-                            <atom:TabItem Header="Tab 1">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
-                            <atom:TabItem Header="Tab 4">Content of Tab Pane 4</atom:TabItem>
-                            <atom:TabItem Header="Tab 5">Content of Tab Pane 5</atom:TabItem>
-                            <atom:TabItem Header="Tab 6">Content of Tab Pane 6</atom:TabItem>
-                            <atom:TabItem Header="Tab 7">Content of Tab Pane 7</atom:TabItem>
-                            <atom:TabItem Header="Tab 8">Content of Tab Pane 8</atom:TabItem>
-                            <atom:TabItem Header="Tab 9">Content of Tab Pane 9</atom:TabItem>
-                            <atom:TabItem Header="Tab 10">Content of Tab Pane 10</atom:TabItem>
-                            <atom:TabItem Header="Tab 11">Content of Tab Pane 11</atom:TabItem>
-                            <atom:TabItem Header="Tab 12">Content of Tab Pane 12</atom:TabItem>
-                            <atom:TabItem Header="Tab 13">Content of Tab Pane 13</atom:TabItem>
-                            <atom:TabItem Header="Tab 14">Content of Tab Pane 14</atom:TabItem>
-                            <atom:TabItem Header="Tab 15">Content of Tab Pane 15</atom:TabItem>
-                            <atom:TabItem Header="Tab 16">Content of Tab Pane 16</atom:TabItem>
-                            <atom:TabItem Header="Tab 17">Content of Tab Pane 17</atom:TabItem>
-                            <atom:TabItem Header="Tab 18">Content of Tab Pane 18</atom:TabItem>
-                            <atom:TabItem Header="Tab 19">Content of Tab Pane 19</atom:TabItem>
-                            <atom:TabItem Header="Tab 20">Content of Tab Pane 20</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN9}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN9}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN10}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN10}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN11}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN11}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN12}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN12}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN13}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN13}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN14}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN14}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN15}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN15}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN16}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN16}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN17}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN17}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN18}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN18}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN19}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN19}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN20}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN20}" />
                         </atom:CardTabControl>
                     </StackPanel>
                 </gallery:ShowCaseItem>
@@ -146,9 +146,9 @@
                     <StackPanel Orientation="Vertical" Spacing="20">
 
                         <atom:CardTabControl>
-                            <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Content of Tab Pane 3</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                         </atom:CardTabControl>
 
                     </StackPanel>
@@ -160,32 +160,20 @@
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabControl IsTabClosable="True"
                                              IsTabAutoHideCloseButton="True">
-                            <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">
-                                Content of Tab Pane 1
-                            </atom:TabItem>
-                            <atom:TabItem Header="Tab 2"
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}"
                                           Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}"
-                                          IsClosable="False">
-                                Content of Tab Pane 2
-                            </atom:TabItem>
-                            <atom:TabItem Header="Tab 3" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">
-                                Content of Tab Pane 3
-                            </atom:TabItem>
+                                          IsClosable="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                         </atom:CardTabControl>
 
                         <atom:TabControl IsTabClosable="True"
                                          IsTabAutoHideCloseButton="True">
-                            <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">
-                                Content of Tab Pane 1
-                            </atom:TabItem>
-                            <atom:TabItem Header="Tab 2"
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}"
                                           Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}"
-                                          IsClosable="False">
-                                Content of Tab Pane 2
-                            </atom:TabItem>
-                            <atom:TabItem Header="Tab 3" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">
-                                Content of Tab Pane 3
-                            </atom:TabItem>
+                                          IsClosable="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                         </atom:TabControl>
                     </StackPanel>
                 </gallery:ShowCaseItem>
@@ -195,26 +183,26 @@
                     Description="{gallery:TabControlShowCaseLangResource TabControlPositionDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                            <atom:TextBlock VerticalAlignment="Center">Tab position:</atom:TextBlock>
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
                             <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionTabControlOptionGroup">
-                                <atom:OptionButton IsChecked="True">Top</atom:OptionButton>
-                                <atom:OptionButton>Bottom</atom:OptionButton>
-                                <atom:OptionButton>Left</atom:OptionButton>
-                                <atom:OptionButton>Right</atom:OptionButton>
+                                <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentRight}" />
                             </atom:OptionButtonGroup>
                         </StackPanel>
 
                         <atom:TabControl Name="PositionTabControl"
                                          DockPanel.Dock="{Binding PositionTabControlPlacement}"
                                          TabStripPlacement="{Binding PositionTabControlPlacement}">
-                            <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
-                            <atom:TabItem Header="Tab 4" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Content of Tab Pane 4</atom:TabItem>
-                            <atom:TabItem Header="Tab 5">Content of Tab Pane 5</atom:TabItem>
-                            <atom:TabItem Header="Tab 6">Content of Tab Pane 6</atom:TabItem>
-                            <atom:TabItem Header="Tab 7">Content of Tab Pane 7</atom:TabItem>
-                            <atom:TabItem Header="Tab 8">Content of Tab Pane 8</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
                         </atom:TabControl>
 
                     </StackPanel>
@@ -226,12 +214,12 @@
                     Margin="0, 0, 10, 0">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                            <atom:TextBlock VerticalAlignment="Center">Tab position:</atom:TextBlock>
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
                             <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionCardTabControlOptionGroup">
-                                <atom:OptionButton IsChecked="True">Top</atom:OptionButton>
-                                <atom:OptionButton>Bottom</atom:OptionButton>
-                                <atom:OptionButton>Left</atom:OptionButton>
-                                <atom:OptionButton>Right</atom:OptionButton>
+                                <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentRight}" />
                             </atom:OptionButtonGroup>
                         </StackPanel>
 
@@ -239,18 +227,18 @@
                                              DockPanel.Dock="{Binding PositionCardTabControlPlacement}"
                                              TabStripPlacement="{Binding PositionCardTabControlPlacement}"
                                              IsShowAddTabButton="True">
-                            <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
-                            <atom:TabItem Header="Tab 4" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Content of Tab Pane 4</atom:TabItem>
-                            <atom:TabItem Header="Tab 5">Content of Tab Pane 5</atom:TabItem>
-                            <atom:TabItem Header="Tab 6">Content of Tab Pane 6</atom:TabItem>
-                            <atom:TabItem Header="Tab 7">Content of Tab Pane 7</atom:TabItem>
-                            <atom:TabItem Header="Tab 8">Content of Tab Pane 8</atom:TabItem>
-                            <atom:TabItem Header="Tab 9">Content of Tab Pane 9</atom:TabItem>
-                            <atom:TabItem Header="Tab 10">Content of Tab Pane 10</atom:TabItem>
-                            <atom:TabItem Header="Tab 11">Content of Tab Pane 11</atom:TabItem>
-                            <atom:TabItem Header="Tab 12">Content of Tab Pane 12</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN9}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN9}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN10}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN10}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN11}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN11}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN12}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN12}" />
                         </atom:CardTabControl>
 
                     </StackPanel>
@@ -261,26 +249,26 @@
                     Description="{gallery:TabControlShowCaseLangResource TabControlSizeDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                            <atom:TextBlock VerticalAlignment="Center">Tab position:</atom:TextBlock>
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
                             <atom:OptionButtonGroup ButtonStyle="Outline" Name="SizeTypeTabControlOptionGroup">
-                                <atom:OptionButton>Small</atom:OptionButton>
-                                <atom:OptionButton IsChecked="True">Middle</atom:OptionButton>
-                                <atom:OptionButton>Large</atom:OptionButton>
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentSmall}" />
+                                <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentMiddle}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLarge}" />
                             </atom:OptionButtonGroup>
                         </StackPanel>
 
                         <atom:TabControl SizeType="{Binding SizeTypeTabControl}">
-                            <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
-                            <atom:TabItem Header="Tab 4" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Content of Tab Pane 4</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
                         </atom:TabControl>
 
                         <atom:CardTabControl SizeType="{Binding SizeTypeTabControl}">
-                            <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
-                            <atom:TabItem Header="Tab 4" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Content of Tab Pane 4</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
                         </atom:CardTabControl>
 
                     </StackPanel>
@@ -290,10 +278,10 @@
                     Title="{gallery:TabControlShowCaseLangResource TabControlAddCloseTitle}"
                     Description="{gallery:TabControlShowCaseLangResource TabControlAddCloseDescription}" Margin="0, 0, 30, 0">
                     <atom:CardTabControl IsShowAddTabButton="True" Name="AddTabDemoTabControl">
-                        <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Content of Tab Pane 1</atom:TabItem>
-                        <atom:TabItem Header="Tab 2" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Content of Tab Pane 2</atom:TabItem>
-                        <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
-                        <atom:TabItem Header="Tab 4" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Content of Tab Pane 4</atom:TabItem>
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
                     </atom:CardTabControl>
                 </gallery:ShowCaseItem>
 
@@ -304,15 +292,15 @@
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabControl TabStripPlacement="Top">
                             <atom:TabControl.HeaderStartExtraContent>
-                                <atom:Button>Start extra action</atom:Button>
+                                <atom:Button Content="{gallery:TabControlShowCaseLangResource P2ContentStartExtraAction}" />
                             </atom:TabControl.HeaderStartExtraContent>
                             <atom:TabControl.HeaderEndExtraContent>
-                                <atom:Button>End extra action</atom:Button>
+                                <atom:Button Content="{gallery:TabControlShowCaseLangResource P2ContentEndExtraAction}" />
                             </atom:TabControl.HeaderEndExtraContent>
-                            <atom:TabItem Header="Tab 1" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Content of Tab Pane 1</atom:TabItem>
-                            <atom:TabItem Header="Tab 2" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Content of Tab Pane 2</atom:TabItem>
-                            <atom:TabItem Header="Tab 3">Content of Tab Pane 3</atom:TabItem>
-                            <atom:TabItem Header="Tab 4" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Content of Tab Pane 4</atom:TabItem>
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
                         </atom:TabControl>
                     </StackPanel>
                 </gallery:ShowCaseItem>
@@ -320,16 +308,16 @@
             </gallery:ShowCasePanel>
 
         </atom:TabItem>
-        <atom:TabItem Header="TabStrip">
+        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabstrip}">
             <gallery:ShowCasePanel>
                 <gallery:ShowCaseItem
                     Title="{gallery:TabControlShowCaseLangResource TabStripBasicTitle}"
                     Description="{gallery:TabControlShowCaseLangResource TabStripBasicDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabStrip>
-                            <atom:TabStripItem IsClosable="True">Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem IsClosable="True">Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem IsClosable="True">Tab 3</atom:TabStripItem>
+                            <atom:TabStripItem IsClosable="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem IsClosable="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem IsClosable="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
                         </atom:TabStrip>
                     </StackPanel>
                 </gallery:ShowCaseItem>
@@ -353,15 +341,15 @@
                     Description="{gallery:TabControlShowCaseLangResource TabStripDisabledDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabStrip>
-                            <atom:TabStripItem>Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem IsEnabled="False" IsClosable="True">Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem IsEnabled="False" IsClosable="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
                         </atom:CardTabStrip>
 
                         <atom:TabStrip>
-                            <atom:TabStripItem>Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem IsEnabled="False">Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem IsEnabled="False" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
                         </atom:TabStrip>
                     </StackPanel>
                 </gallery:ShowCaseItem>
@@ -371,15 +359,15 @@
                     Description="{gallery:TabControlShowCaseLangResource TabStripCenteredDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabStrip TabAlignmentCenter="True">
-                            <atom:TabStripItem>Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
                         </atom:TabStrip>
 
                         <atom:CardTabStrip TabAlignmentCenter="True">
-                            <atom:TabStripItem>Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 3</atom:TabStripItem>
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
                         </atom:CardTabStrip>
 
                     </StackPanel>
@@ -390,9 +378,9 @@
                     Description="{gallery:TabControlShowCaseLangResource TabStripIconDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabStrip>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem>
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
                         </atom:TabStrip>
                     </StackPanel>
                 </gallery:ShowCaseItem>
@@ -402,29 +390,29 @@
                     Description="{gallery:TabControlShowCaseLangResource TabStripSlideDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:TabStrip>
-                            <atom:TabStripItem>Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 3</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 4</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 5</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 6</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 7</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 8</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 9</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 10</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 11</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 12</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 13</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 14</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 15</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 16</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 17</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 18</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 19</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 20</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 21</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 22</atom:TabStripItem>
-                            <atom:TabStripItem>Tab 23</atom:TabStripItem>
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN4}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN5}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN6}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN7}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN8}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN9}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN10}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN11}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN12}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN13}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN14}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN15}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN16}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN17}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN18}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN19}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN20}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN21}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN22}" />
+                            <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN23}" />
                         </atom:TabStrip>
                     </StackPanel>
                 </gallery:ShowCaseItem>
@@ -434,10 +422,10 @@
                     Description="{gallery:TabControlShowCaseLangResource TabStripCardTypeDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabStrip>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN4}" />
                         </atom:CardTabStrip>
 
                     </StackPanel>
@@ -449,16 +437,16 @@
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabStrip IsTabClosable="True"
                                            IsTabAutoHideCloseButton="True">
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" IsClosable="False">Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Tab 2</atom:TabStripItem>
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" IsClosable="False" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
                         </atom:CardTabStrip>
 
                         <atom:TabStrip IsTabClosable="True"
                                        IsTabAutoHideCloseButton="True">
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" IsClosable="False">Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Tab 2</atom:TabStripItem>
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" IsClosable="False" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
                         </atom:TabStrip>
                     </StackPanel>
                 </gallery:ShowCaseItem>
@@ -468,12 +456,12 @@
                     Description="{gallery:TabControlShowCaseLangResource TabStripPositionDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                            <atom:TextBlock VerticalAlignment="Center">Tab position:</atom:TextBlock>
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
                             <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionTabStripOptionGroup">
-                                <atom:OptionButton IsChecked="True">Top</atom:OptionButton>
-                                <atom:OptionButton>Bottom</atom:OptionButton>
-                                <atom:OptionButton>Left</atom:OptionButton>
-                                <atom:OptionButton>Right</atom:OptionButton>
+                                <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentRight}" />
                             </atom:OptionButtonGroup>
                         </StackPanel>
 
@@ -481,24 +469,24 @@
                             <atom:TabStrip Name="PositionTabStrip"
                                            DockPanel.Dock="{Binding PositionTabStripPlacement}"
                                            TabStripPlacement="{Binding PositionTabStripPlacement}">
-                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
-                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 3</atom:TabStripItem>
-                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 5</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 6</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 7</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 8</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 9</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 10</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 11</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 12</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 13</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 14</atom:TabStripItem>
+                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
+                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN4}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN5}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN6}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN7}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN8}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN9}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN10}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN11}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN12}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN13}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN14}" />
                             </atom:TabStrip>
                             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                     Background="{atom:SharedTokenResource ColorBgElevated}">
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Tab Content</TextBlock>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabContent}" />
                             </Border>
                         </DockPanel>
 
@@ -511,12 +499,12 @@
                     Margin="0, 0, 10, 0">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                            <TextBlock VerticalAlignment="Center">Tab position:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
                             <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionCardTabStripOptionGroup">
-                                <atom:OptionButton IsChecked="True">Top</atom:OptionButton>
-                                <atom:OptionButton>Bottom</atom:OptionButton>
-                                <atom:OptionButton>Left</atom:OptionButton>
-                                <atom:OptionButton>Right</atom:OptionButton>
+                                <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentRight}" />
                             </atom:OptionButtonGroup>
                         </StackPanel>
 
@@ -525,14 +513,14 @@
                                                DockPanel.Dock="{Binding PositionCardTabStripPlacement}"
                                                TabStripPlacement="{Binding PositionCardTabStripPlacement}"
                                                IsShowAddTabButton="True">
-                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
-                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
-                                <atom:TabStripItem>Tab 3</atom:TabStripItem>
-                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
+                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                                <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
+                                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN4}" />
                             </atom:CardTabStrip>
                             <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                                     Background="{atom:SharedTokenResource ColorBgElevated}">
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Tab Content</TextBlock>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabContent}" />
                             </Border>
                         </DockPanel>
 
@@ -544,26 +532,26 @@
                     Description="{gallery:TabControlShowCaseLangResource TabStripSizeDescription}">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                            <TextBlock VerticalAlignment="Center">Tab position:</TextBlock>
+                            <TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
                             <atom:OptionButtonGroup ButtonStyle="Outline" Name="SizeTypeTabStripOptionGroup">
-                                <atom:OptionButton>Small</atom:OptionButton>
-                                <atom:OptionButton IsChecked="True">Middle</atom:OptionButton>
-                                <atom:OptionButton>Large</atom:OptionButton>
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentSmall}" />
+                                <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentMiddle}" />
+                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLarge}" />
                             </atom:OptionButtonGroup>
                         </StackPanel>
 
                         <atom:TabStrip SizeType="{Binding SizeTypeTabStrip}">
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN4}" />
                         </atom:TabStrip>
 
                         <atom:CardTabStrip SizeType="{Binding SizeTypeTabStrip}">
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN4}" />
                         </atom:CardTabStrip>
 
                     </StackPanel>
@@ -574,10 +562,10 @@
                     Description="{gallery:TabControlShowCaseLangResource TabStripAddCloseDescription}" Margin="0, 0, 30, 0">
                     <StackPanel Orientation="Vertical" Spacing="20">
                         <atom:CardTabStrip IsShowAddTabButton="True" Name="AddTabDemoStrip">
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}">Tab 1</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}">Tab 2</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}">Tab 3</atom:TabStripItem>
-                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True">Tab 4</atom:TabStripItem>
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN3}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTabN4}" />
                         </atom:CardTabStrip>
                     </StackPanel>
                 </gallery:ShowCaseItem>

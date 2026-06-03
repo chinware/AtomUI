@@ -12,11 +12,11 @@
             Description="{gallery:SegmentedShowCaseLangResource BasicDescription}">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                 <atom:Segmented Margin="20">
-                    <atom:SegmentedItem>Daily</atom:SegmentedItem>
-                    <atom:SegmentedItem>Weekly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Monthly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Quarterly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Yearly</atom:SegmentedItem>
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentWeekly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentMonthly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
                 </atom:Segmented>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -28,7 +28,7 @@
                 <atom:Segmented IsExpanding="True" Margin="20">
                     <atom:SegmentedItem>123</atom:SegmentedItem>
                     <atom:SegmentedItem>456</atom:SegmentedItem>
-                    <atom:SegmentedItem>longtext-longtext-longtext-longtext</atom:SegmentedItem>
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentLongtextLongtextLongtextLongtext}" />
                 </atom:Segmented>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -38,16 +38,16 @@
             Description="{gallery:SegmentedShowCaseLangResource DisabledDescription}">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Spacing="10">
                 <atom:Segmented Margin="20">
-                    <atom:SegmentedItem IsEnabled="False">Map</atom:SegmentedItem>
-                    <atom:SegmentedItem IsEnabled="False">Transit</atom:SegmentedItem>
-                    <atom:SegmentedItem IsEnabled="False">Satellite</atom:SegmentedItem>
+                    <atom:SegmentedItem IsEnabled="False" Content="{gallery:SegmentedShowCaseLangResource P2ContentMap}" />
+                    <atom:SegmentedItem IsEnabled="False" Content="{gallery:SegmentedShowCaseLangResource P2ContentTransit}" />
+                    <atom:SegmentedItem IsEnabled="False" Content="{gallery:SegmentedShowCaseLangResource P2ContentSatellite}" />
                 </atom:Segmented>
                 <atom:Segmented>
-                    <atom:SegmentedItem>Daily</atom:SegmentedItem>
-                    <atom:SegmentedItem IsEnabled="False">Weekly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Monthly</atom:SegmentedItem>
-                    <atom:SegmentedItem IsEnabled="False">Quarterly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Yearly</atom:SegmentedItem>
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
+                    <atom:SegmentedItem IsEnabled="False" Content="{gallery:SegmentedShowCaseLangResource P2ContentWeekly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentMonthly}" />
+                    <atom:SegmentedItem IsEnabled="False" Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
                 </atom:Segmented>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -57,27 +57,27 @@
             Description="{gallery:SegmentedShowCaseLangResource ThreeSizesDescription}">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                 <atom:Segmented SizeType="Large" Margin="20">
-                    <atom:SegmentedItem>Daily</atom:SegmentedItem>
-                    <atom:SegmentedItem>Weekly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Monthly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Quarterly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Yearly</atom:SegmentedItem>
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentWeekly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentMonthly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
                 </atom:Segmented>
 
                 <atom:Segmented Margin="20">
-                    <atom:SegmentedItem>Daily</atom:SegmentedItem>
-                    <atom:SegmentedItem>Weekly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Monthly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Quarterly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Yearly</atom:SegmentedItem>
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentWeekly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentMonthly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
                 </atom:Segmented>
 
                 <atom:Segmented SizeType="Small" Margin="20">
-                    <atom:SegmentedItem>Daily</atom:SegmentedItem>
-                    <atom:SegmentedItem>Weekly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Monthly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Quarterly</atom:SegmentedItem>
-                    <atom:SegmentedItem>Yearly</atom:SegmentedItem>
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentWeekly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentMonthly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
                 </atom:Segmented>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -98,30 +98,24 @@
             Description="{gallery:SegmentedShowCaseLangResource WithIconDescription}">
             <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                 <atom:Segmented Margin="20">
-                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}">
-                        List
-                    </atom:SegmentedItem>
-                    <atom:SegmentedItem Content="Kanban" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}" />
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" Content="{gallery:SegmentedShowCaseLangResource P2ContentList}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentKanban}" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}" />
                 </atom:Segmented>
 
                 <atom:Segmented Margin="20">
-                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}">
-                        Ava 牛逼
-                    </atom:SegmentedItem>
-                    <atom:SegmentedItem Content="群主牛逼" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" IsEnabled="False"/>
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" Content="{gallery:SegmentedShowCaseLangResource P2ContentAva}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentAtomUI}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" IsEnabled="False"/>
 
-                    <atom:SegmentedItem Content="微软牛逼"
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentAtomUI}"
                                         Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" />
 
                 </atom:Segmented>
 
                 <atom:Segmented SizeType="Large" Margin="20">
-                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}">
-                        Ava 牛逼
-                    </atom:SegmentedItem>
-                    <atom:SegmentedItem Content="群主牛逼" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" />
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" Content="{gallery:SegmentedShowCaseLangResource P2ContentAva}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentAtomUI}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" />
 
-                    <atom:SegmentedItem Content="微软牛逼"
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentAtomUI}"
                                         Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" />
 
                 </atom:Segmented>

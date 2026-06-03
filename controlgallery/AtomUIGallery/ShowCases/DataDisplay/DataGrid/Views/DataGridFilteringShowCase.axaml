@@ -12,17 +12,17 @@
             <atom:DataGrid x:Name="FilterAndSortGrid" CanUserFilterColumns="True"
                                        x:DataType="vm:DataGridBaseInfo">
                 <atom:DataGrid.Columns>
-                    <atom:DataGridTemplateColumn Header="Name"
+                    <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}"
                                                  CanUserSort="True"
                                                  SupportedSortDirections="Descending"
                                                  SortMemberPath="Name"
                                                  FilterMemberPath="Name">
                         <atom:DataGridTemplateColumn.Filters>
-                            <atom:DataGridFilterItem Text="Joe" Value="Joe" />
-                            <atom:DataGridFilterItem Text="Jim" Value="Jim" />
-                            <atom:DataGridFilterItem Text="Submenu" Value="Submenu">
-                                <atom:DataGridFilterItem Text="Green" Value="Green" />
-                                <atom:DataGridFilterItem Text="Black" Value="Black" />
+                            <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextJoe}" Value="Joe" />
+                            <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextJim}" Value="Jim" />
+                            <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextSubmenu}" Value="Submenu">
+                                <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextGreen}" Value="Green" />
+                                <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextBlack}" Value="Black" />
                             </atom:DataGridFilterItem>
                         </atom:DataGridTemplateColumn.Filters>
                         <atom:DataGridTemplateColumn.CellTemplate>
@@ -31,19 +31,19 @@
                             </DataTemplate>
                         </atom:DataGridTemplateColumn.CellTemplate>
                     </atom:DataGridTemplateColumn>
-                    <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}"
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}"
                                              SupportedSortDirections="All"
                                              CanUserSort="True">
                     </atom:DataGridTextColumn>
-                    <atom:DataGridTextColumn Header="Address"
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}"
                                              Binding="{Binding Address}"
 
                                              CanUserSort="True"
                                              IsMultipleFilterEnabled="True"
                                              SupportedSortDirections="Ascending">
                         <atom:DataGridTextColumn.Filters>
-                            <atom:DataGridFilterItem Text="London" Value="London" />
-                            <atom:DataGridFilterItem Text="New York" Value="New York" />
+                            <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextLondon}" Value="London" />
+                            <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextNewYork}" Value="New York" />
                         </atom:DataGridTextColumn.Filters>
                     </atom:DataGridTextColumn>
                 </atom:DataGrid.Columns>
@@ -56,18 +56,18 @@
             <atom:DataGrid x:Name="FilterInTreeGrid" CanUserFilterColumns="True"
                                        x:DataType="vm:DataGridBaseInfo">
                 <atom:DataGrid.Columns>
-                    <atom:DataGridTemplateColumn Header="Name"
+                    <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}"
                                                  CanUserSort="True"
                                                  SupportedSortDirections="Descending"
                                                  SortMemberPath="Name"
                                                  FilterMode="Tree"
                                                  FilterMemberPath="Name">
                         <atom:DataGridTemplateColumn.Filters>
-                            <atom:DataGridFilterItem Text="Joe" Value="Joe" />
-                            <atom:DataGridFilterItem Text="Jim" Value="Jim" />
-                            <atom:DataGridFilterItem Text="Submenu" Value="Submenu">
-                                <atom:DataGridFilterItem Text="Green" Value="Green" />
-                                <atom:DataGridFilterItem Text="Black" Value="Black" />
+                            <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextJoe}" Value="Joe" />
+                            <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextJim}" Value="Jim" />
+                            <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextSubmenu}" Value="Submenu">
+                                <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextGreen}" Value="Green" />
+                                <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextBlack}" Value="Black" />
                             </atom:DataGridFilterItem>
                         </atom:DataGridTemplateColumn.Filters>
                         <atom:DataGridTemplateColumn.CellTemplate>
@@ -76,19 +76,19 @@
                             </DataTemplate>
                         </atom:DataGridTemplateColumn.CellTemplate>
                     </atom:DataGridTemplateColumn>
-                    <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}"
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}"
 
                                              CanUserSort="True">
                     </atom:DataGridTextColumn>
-                    <atom:DataGridTextColumn Header="Address"
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}"
                                              Binding="{Binding Address}"
 
                                              CanUserSort="True"
                                              IsMultipleFilterEnabled="True"
                                              SupportedSortDirections="Ascending">
                         <atom:DataGridTextColumn.Filters>
-                            <atom:DataGridFilterItem Text="London" Value="London" />
-                            <atom:DataGridFilterItem Text="New York" Value="New York" />
+                            <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextLondon}" Value="London" />
+                            <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextNewYork}" Value="New York" />
                         </atom:DataGridTextColumn.Filters>
                     </atom:DataGridTextColumn>
                 </atom:DataGrid.Columns>
@@ -101,19 +101,19 @@
             <atom:DataGrid x:Name="MultiSorterDataGrid" CanUserFilterColumns="True"
                                        x:DataType="vm:MultiSorterDataType">
                 <atom:DataGrid.Columns>
-                    <atom:DataGridTextColumn Header="Name"
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}"
                                              Binding="{Binding Name}"
 
                                              CanUserSort="True" />
-                    <atom:DataGridTextColumn Header="Chinese Score"
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderChineseScore}"
                                              Binding="{Binding Chinese}"
 
                                              CanUserSort="True" />
-                    <atom:DataGridTextColumn Header="Math Score"
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderMathScore}"
                                              Binding="{Binding Math}"
 
                                              CanUserSort="True" />
-                    <atom:DataGridTextColumn Header="English Score"
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderEnglishScore}"
                                              Binding="{Binding English}"
 
                                              CanUserSort="True" />
@@ -126,38 +126,38 @@
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
-                    <atom:Button ButtonType="Default" x:Name="SortAgeBtn">Sort age</atom:Button>
-                    <atom:Button ButtonType="Default" x:Name="ClearFiltersBtn">Clear filters</atom:Button>
-                    <atom:Button ButtonType="Default" x:Name="ClearFiltersAndSortersBtn">Clear filters and sorters</atom:Button>
+                    <atom:Button ButtonType="Default" x:Name="SortAgeBtn" Content="{gallery:DataGridShowCaseLangResource P2ContentSortAge}" />
+                    <atom:Button ButtonType="Default" x:Name="ClearFiltersBtn" Content="{gallery:DataGridShowCaseLangResource P2ContentClearFilters}" />
+                    <atom:Button ButtonType="Default" x:Name="ClearFiltersAndSortersBtn" Content="{gallery:DataGridShowCaseLangResource P2ContentClearFiltersAndSorters}" />
                 </StackPanel>
                 <atom:DataGrid x:Name="ResetFilterAndSortGrid" CanUserFilterColumns="True"
                                        x:DataType="vm:DataGridBaseInfo">
                     <atom:DataGrid.Columns>
-                        <atom:DataGridTextColumn Header="Name"
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}"
                                                  Binding="{Binding Name}"
                                                  CanUserSort="True"
                                                  IsMultipleFilterEnabled="True">
                             <atom:DataGridTextColumn.Filters>
-                                <atom:DataGridFilterItem Text="Joe" Value="Joe" />
-                                <atom:DataGridFilterItem Text="Jim" Value="Jim" />
-                                <atom:DataGridFilterItem Text="Submenu" Value="Submenu">
-                                    <atom:DataGridFilterItem Text="Green" Value="Green" />
-                                    <atom:DataGridFilterItem Text="Black" Value="Black" />
+                                <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextJoe}" Value="Joe" />
+                                <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextJim}" Value="Jim" />
+                                <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextSubmenu}" Value="Submenu">
+                                    <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextGreen}" Value="Green" />
+                                    <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextBlack}" Value="Black" />
                                 </atom:DataGridFilterItem>
                             </atom:DataGridTextColumn.Filters>
                         </atom:DataGridTextColumn>
-                        <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}"
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}"
 
                                                  CanUserSort="True">
                         </atom:DataGridTextColumn>
-                        <atom:DataGridTextColumn Header="Address"
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}"
                                                  Binding="{Binding Address}"
 
                                                  CanUserSort="True"
                                                  IsMultipleFilterEnabled="True">
                             <atom:DataGridTextColumn.Filters>
-                                <atom:DataGridFilterItem Text="London" Value="London" />
-                                <atom:DataGridFilterItem Text="New York" Value="New York" />
+                                <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextLondon}" Value="London" />
+                                <atom:DataGridFilterItem Text="{gallery:DataGridShowCaseLangResource P2TextNewYork}" Value="New York" />
                             </atom:DataGridTextColumn.Filters>
                         </atom:DataGridTextColumn>
                     </atom:DataGrid.Columns>

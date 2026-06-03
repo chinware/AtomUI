@@ -8,7 +8,7 @@ namespace AtomUI.Theme.Language
     {
         internal static IList<LanguageProvider> GetLanguageProviders()
         {
-            List<LanguageProvider> languageProviders = new List<LanguageProvider>(144);
+            List<LanguageProvider> languageProviders = new List<LanguageProvider>(146);
             languageProviders.Add(new AtomUIGallery.ShowCases.AboutUs.en_US());
             languageProviders.Add(new AtomUIGallery.ShowCases.AboutUs.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.Alert.en_US());
@@ -67,6 +67,8 @@ namespace AtomUI.Theme.Language
             languageProviders.Add(new AtomUIGallery.ShowCases.Grid.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.GroupBox.en_US());
             languageProviders.Add(new AtomUIGallery.ShowCases.GroupBox.zh_CN());
+            languageProviders.Add(new AtomUIGallery.ShowCases.Icon.en_US());
+            languageProviders.Add(new AtomUIGallery.ShowCases.Icon.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.ImagePreviewer.en_US());
             languageProviders.Add(new AtomUIGallery.ShowCases.ImagePreviewer.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.InfoFlyout.en_US());
@@ -75,8 +77,6 @@ namespace AtomUI.Theme.Language
             languageProviders.Add(new AtomUIGallery.ShowCases.LineEdit.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.List.en_US());
             languageProviders.Add(new AtomUIGallery.ShowCases.List.zh_CN());
-            languageProviders.Add(new AtomUIGallery.ShowCases.Localization.ShowCaseScenarioLang.en_US());
-            languageProviders.Add(new AtomUIGallery.ShowCases.Localization.ShowCaseScenarioLang.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.Mentions.en_US());
             languageProviders.Add(new AtomUIGallery.ShowCases.Mentions.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.Menu.en_US());
@@ -91,6 +91,8 @@ namespace AtomUI.Theme.Language
             languageProviders.Add(new AtomUIGallery.ShowCases.NumberUpDown.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.Pagination.en_US());
             languageProviders.Add(new AtomUIGallery.ShowCases.Pagination.zh_CN());
+            languageProviders.Add(new AtomUIGallery.ShowCases.Palette.en_US());
+            languageProviders.Add(new AtomUIGallery.ShowCases.Palette.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.PopupConfirm.en_US());
             languageProviders.Add(new AtomUIGallery.ShowCases.PopupConfirm.zh_CN());
             languageProviders.Add(new AtomUIGallery.ShowCases.ProgressBar.en_US());

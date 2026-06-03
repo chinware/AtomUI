@@ -13,9 +13,7 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:TextBlock
                     HorizontalAlignment="Left"
-                    atom:ToolTip.Tip="prompt text">
-                    Tooltip will show on mouse enter.
-                </atom:TextBlock>
+                    atom:ToolTip.Tip="{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}" Text="{gallery:TooltipShowCaseLangResource P2TextTooltipWillShowOnMouseEnter}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -44,55 +42,55 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <atom:Button Grid.Row="1" Grid.Column="0" Content="LT">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="1" Grid.Column="0" Content="{gallery:TooltipShowCaseLangResource P2ContentLT}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>LeftEdgeAlignedTop</atom:ToolTip.Placement>
                 </atom:Button>
-                <atom:Button Grid.Row="2" Grid.Column="0" Content="Left">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="2" Grid.Column="0" Content="{gallery:TooltipShowCaseLangResource P2ContentLeft}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>Left</atom:ToolTip.Placement>
                 </atom:Button>
-                <atom:Button Grid.Row="3" Grid.Column="0" Content="LB">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="3" Grid.Column="0" Content="{gallery:TooltipShowCaseLangResource P2ContentLB}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>LeftEdgeAlignedBottom</atom:ToolTip.Placement>
                 </atom:Button>
 
-                <atom:Button Grid.Row="0" Grid.Column="1" Content="TL">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="0" Grid.Column="1" Content="{gallery:TooltipShowCaseLangResource P2ContentTL}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>TopEdgeAlignedLeft</atom:ToolTip.Placement>
                 </atom:Button>
-                <atom:Button Grid.Row="0" Grid.Column="2" Content="Top">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="0" Grid.Column="2" Content="{gallery:TooltipShowCaseLangResource P2ContentTop}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                 </atom:Button>
-                <atom:Button Grid.Row="0" Grid.Column="3" Content="TR">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="0" Grid.Column="3" Content="{gallery:TooltipShowCaseLangResource P2ContentTR}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>TopEdgeAlignedRight</atom:ToolTip.Placement>
                 </atom:Button>
 
-                <atom:Button Grid.Row="1" Grid.Column="4" Content="RT">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="1" Grid.Column="4" Content="{gallery:TooltipShowCaseLangResource P2ContentRT}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>RightEdgeAlignedTop</atom:ToolTip.Placement>
                 </atom:Button>
-                <atom:Button Grid.Row="2" Grid.Column="4" Content="Right">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="2" Grid.Column="4" Content="{gallery:TooltipShowCaseLangResource P2ContentRight}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>Right</atom:ToolTip.Placement>
                 </atom:Button>
-                <atom:Button Grid.Row="3" Grid.Column="4" Content="RB">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="3" Grid.Column="4" Content="{gallery:TooltipShowCaseLangResource P2ContentRB}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>RightEdgeAlignedBottom</atom:ToolTip.Placement>
                 </atom:Button>
 
-                <atom:Button Grid.Row="4" Grid.Column="1" Content="BL">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="4" Grid.Column="1" Content="{gallery:TooltipShowCaseLangResource P2ContentBL}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>BottomEdgeAlignedLeft</atom:ToolTip.Placement>
                 </atom:Button>
-                <atom:Button Grid.Row="4" Grid.Column="2" Content="Bottom">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="4" Grid.Column="2" Content="{gallery:TooltipShowCaseLangResource P2ContentBottom}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>Bottom</atom:ToolTip.Placement>
                 </atom:Button>
-                <atom:Button Grid.Row="4" Grid.Column="3" Content="BR">
-                    <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                <atom:Button Grid.Row="4" Grid.Column="3" Content="{gallery:TooltipShowCaseLangResource P2ContentBR}">
+                    <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                     <atom:ToolTip.Placement>BottomEdgeAlignedRight</atom:ToolTip.Placement>
                 </atom:Button>
 
@@ -104,9 +102,9 @@
             Description="{gallery:TooltipShowCaseLangResource ArrowDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Segmented x:Name="ArrowSegmented">
-                    <atom:SegmentedItem>Show</atom:SegmentedItem>
-                    <atom:SegmentedItem>Hide</atom:SegmentedItem>
-                    <atom:SegmentedItem>Center</atom:SegmentedItem>
+                    <atom:SegmentedItem Content="{gallery:TooltipShowCaseLangResource P2ContentShow}" />
+                    <atom:SegmentedItem Content="{gallery:TooltipShowCaseLangResource P2ContentHide}" />
+                    <atom:SegmentedItem Content="{gallery:TooltipShowCaseLangResource P2ContentCenter}" />
                 </atom:Segmented>
                 <Grid>
                     <Grid.Styles>
@@ -130,83 +128,83 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
-                    <atom:Button Grid.Row="1" Grid.Column="0" Content="LT"
+                    <atom:Button Grid.Row="1" Grid.Column="0" Content="{gallery:TooltipShowCaseLangResource P2ContentLT}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>LeftEdgeAlignedTop</atom:ToolTip.Placement>
                     </atom:Button>
-                    <atom:Button Grid.Row="2" Grid.Column="0" Content="Left"
+                    <atom:Button Grid.Row="2" Grid.Column="0" Content="{gallery:TooltipShowCaseLangResource P2ContentLeft}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Left</atom:ToolTip.Placement>
                     </atom:Button>
-                    <atom:Button Grid.Row="3" Grid.Column="0" Content="LB"
+                    <atom:Button Grid.Row="3" Grid.Column="0" Content="{gallery:TooltipShowCaseLangResource P2ContentLB}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>LeftEdgeAlignedBottom</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Grid.Row="0" Grid.Column="1" Content="TL"
+                    <atom:Button Grid.Row="0" Grid.Column="1" Content="{gallery:TooltipShowCaseLangResource P2ContentTL}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>TopEdgeAlignedLeft</atom:ToolTip.Placement>
                     </atom:Button>
-                    <atom:Button Grid.Row="0" Grid.Column="2" Content="Top"
+                    <atom:Button Grid.Row="0" Grid.Column="2" Content="{gallery:TooltipShowCaseLangResource P2ContentTop}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
-                    <atom:Button Grid.Row="0" Grid.Column="3" Content="TR"
+                    <atom:Button Grid.Row="0" Grid.Column="3" Content="{gallery:TooltipShowCaseLangResource P2ContentTR}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>TopEdgeAlignedRight</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Grid.Row="1" Grid.Column="4" Content="RT"
+                    <atom:Button Grid.Row="1" Grid.Column="4" Content="{gallery:TooltipShowCaseLangResource P2ContentRT}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>RightEdgeAlignedTop</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Grid.Row="2" Grid.Column="4" Content="Right"
+                    <atom:Button Grid.Row="2" Grid.Column="4" Content="{gallery:TooltipShowCaseLangResource P2ContentRight}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Right</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Grid.Row="3" Grid.Column="4" Content="RB"
+                    <atom:Button Grid.Row="3" Grid.Column="4" Content="{gallery:TooltipShowCaseLangResource P2ContentRB}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>RightEdgeAlignedBottom</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Grid.Row="4" Grid.Column="1" Content="BL"
+                    <atom:Button Grid.Row="4" Grid.Column="1" Content="{gallery:TooltipShowCaseLangResource P2ContentBL}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>BottomEdgeAlignedLeft</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Grid.Row="4" Grid.Column="2" Content="Bottom"
+                    <atom:Button Grid.Row="4" Grid.Column="2" Content="{gallery:TooltipShowCaseLangResource P2ContentBottom}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Bottom</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Grid.Row="4" Grid.Column="3" Content="BR"
+                    <atom:Button Grid.Row="4" Grid.Column="3" Content="{gallery:TooltipShowCaseLangResource P2ContentBR}"
                                  atom:ToolTip.IsArrowVisible="{Binding ShowArrow}"
                                  atom:ToolTip.IsPointAtCenter="{Binding IsPointAtCenter}">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>BottomEdgeAlignedRight</atom:ToolTip.Placement>
                     </atom:Button>
 
@@ -223,97 +221,97 @@
                 </Style>
             </gallery:ShowCaseItem.Styles>
             <StackPanel Orientation="Vertical">
-                <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Presets</TextBlock>
+                <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10" Text="{gallery:TooltipShowCaseLangResource P2TextPresets}" />
                 <WrapPanel HorizontalAlignment="Left">
-                    <atom:Button Content="Blue" atom:ToolTip.PresetColor="Blue">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentBlue}" atom:ToolTip.PresetColor="Blue">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
-                    <atom:Button Content="Red" atom:ToolTip.PresetColor="Red">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
-                        <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
-                    </atom:Button>
-
-                    <atom:Button Content="Volcano" atom:ToolTip.PresetColor="Volcano">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentRed}" atom:ToolTip.PresetColor="Red">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Content="Orange" atom:ToolTip.PresetColor="Orange">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentVolcano}" atom:ToolTip.PresetColor="Volcano">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Content="Gold" atom:ToolTip.PresetColor="Gold">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentOrange}" atom:ToolTip.PresetColor="Orange">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Content="Yellow" atom:ToolTip.PresetColor="Yellow">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentGold}" atom:ToolTip.PresetColor="Gold">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Content="Lime" atom:ToolTip.PresetColor="Lime">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentYellow}" atom:ToolTip.PresetColor="Yellow">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Content="Green" atom:ToolTip.PresetColor="Green">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentLime}" atom:ToolTip.PresetColor="Lime">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Content="Cyan" atom:ToolTip.PresetColor="Cyan">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentGreen}" atom:ToolTip.PresetColor="Green">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Content="GeekBlue" atom:ToolTip.PresetColor="GeekBlue">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentCyan}" atom:ToolTip.PresetColor="Cyan">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Content="Purple" atom:ToolTip.PresetColor="Purple">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentGeekBlue}" atom:ToolTip.PresetColor="GeekBlue">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Content="Pink" atom:ToolTip.PresetColor="Pink">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentPurple}" atom:ToolTip.PresetColor="Purple">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Content="Magenta" atom:ToolTip.PresetColor="Magenta">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentPink}" atom:ToolTip.PresetColor="Pink">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
-                    <atom:Button Content="Grey" atom:ToolTip.PresetColor="Grey">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentMagenta}" atom:ToolTip.PresetColor="Magenta">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
+                        <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
+                    </atom:Button>
+
+                    <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentGrey}" atom:ToolTip.PresetColor="Grey">
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
                 </WrapPanel>
 
-                <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10">Custom</TextBlock>
+                <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10" Text="{gallery:TooltipShowCaseLangResource P2TextCustom}" />
                 <WrapPanel HorizontalAlignment="Left">
                     <atom:Button Content="#f50" atom:ToolTip.Color="#f50">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
                     <atom:Button Content="#2db7f5" atom:ToolTip.Color="#2db7f5">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
                     <atom:Button Content="#87d068" atom:ToolTip.Color="#87d068">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
 
                     <atom:Button Content="#108ee9" atom:ToolTip.Color="#108ee9">
-                        <atom:ToolTip.Tip>prompt text</atom:ToolTip.Tip>
+                        <atom:ToolTip.Tip>{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}</atom:ToolTip.Tip>
                         <atom:ToolTip.Placement>Top</atom:ToolTip.Placement>
                     </atom:Button>
                 </WrapPanel>

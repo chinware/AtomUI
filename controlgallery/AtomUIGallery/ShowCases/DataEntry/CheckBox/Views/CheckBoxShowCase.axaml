@@ -15,7 +15,7 @@
             Title="{gallery:CheckBoxShowCaseLangResource BasicTitle}"
             Description="{gallery:CheckBoxShowCaseLangResource BasicDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10">
-                <atom:CheckBox>Checkbox</atom:CheckBox>
+                <atom:CheckBox Content="{gallery:CheckBoxShowCaseLangResource P2ContentCheckbox}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -23,9 +23,9 @@
             Title="{gallery:CheckBoxShowCaseLangResource DisabledTitle}"
             Description="{gallery:CheckBoxShowCaseLangResource DisabledDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
-                <atom:CheckBox IsChecked="False" IsEnabled="False">UnChecked</atom:CheckBox>
-                <atom:CheckBox IsChecked="{x:Null}" IsEnabled="False">Indeterminate</atom:CheckBox>
-                <atom:CheckBox IsChecked="True" IsEnabled="False">Checked</atom:CheckBox>
+                <atom:CheckBox IsChecked="False" IsEnabled="False" Content="{gallery:CheckBoxShowCaseLangResource P2ContentUnchecked}" />
+                <atom:CheckBox IsChecked="{x:Null}" IsEnabled="False" Content="{gallery:CheckBoxShowCaseLangResource P2ContentIndeterminate}" />
+                <atom:CheckBox IsChecked="True" IsEnabled="False" Content="{gallery:CheckBoxShowCaseLangResource P2ContentChecked}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -53,19 +53,19 @@
             Description="{gallery:CheckBoxShowCaseLangResource CheckboxGroupDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                 <atom:CheckBoxGroup>
-                    <atom:CheckBox IsChecked="True">Apple</atom:CheckBox>
-                    <atom:CheckBox IsChecked="True">Pear</atom:CheckBox>
-                    <atom:CheckBox IsChecked="True">Orange</atom:CheckBox>
+                    <atom:CheckBox IsChecked="True" Content="{gallery:CheckBoxShowCaseLangResource P2ContentApple}" />
+                    <atom:CheckBox IsChecked="True" Content="{gallery:CheckBoxShowCaseLangResource P2ContentPear}" />
+                    <atom:CheckBox IsChecked="True" Content="{gallery:CheckBoxShowCaseLangResource P2ContentOrange}" />
                 </atom:CheckBoxGroup>
                 <atom:CheckBoxGroup>
-                    <atom:CheckBox>Apple</atom:CheckBox>
-                    <atom:CheckBox IsChecked="True">Pear</atom:CheckBox>
-                    <atom:CheckBox>Orange</atom:CheckBox>
+                    <atom:CheckBox Content="{gallery:CheckBoxShowCaseLangResource P2ContentApple}" />
+                    <atom:CheckBox IsChecked="True" Content="{gallery:CheckBoxShowCaseLangResource P2ContentPear}" />
+                    <atom:CheckBox Content="{gallery:CheckBoxShowCaseLangResource P2ContentOrange}" />
                 </atom:CheckBoxGroup>
                 <atom:CheckBoxGroup>
-                    <atom:CheckBox IsChecked="True" IsEnabled="False">Apple</atom:CheckBox>
-                    <atom:CheckBox IsEnabled="False">Pear</atom:CheckBox>
-                    <atom:CheckBox IsEnabled="False">Orange</atom:CheckBox>
+                    <atom:CheckBox IsChecked="True" IsEnabled="False" Content="{gallery:CheckBoxShowCaseLangResource P2ContentApple}" />
+                    <atom:CheckBox IsEnabled="False" Content="{gallery:CheckBoxShowCaseLangResource P2ContentPear}" />
+                    <atom:CheckBox IsEnabled="False" Content="{gallery:CheckBoxShowCaseLangResource P2ContentOrange}" />
                 </atom:CheckBoxGroup>
                 <atom:CheckBoxGroup Name="BasicCheckBoxGroup"/>
             </StackPanel>
@@ -77,23 +77,15 @@
             <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="10">
                 <StackPanel>
                     <atom:CheckBox Name="CheckAllCheckbox"
-                                   IsChecked="{Binding CheckedAllStatus}">
-                        Check all
-                    </atom:CheckBox>
+                                   IsChecked="{Binding CheckedAllStatus}" Content="{gallery:CheckBoxShowCaseLangResource P2ContentCheckAll}" />
                 </StackPanel>
                 <WrapPanel Margin="0, 20, 0, 0">
                     <atom:CheckBox Name="AppleCheckBox"
-                                   IsChecked="{Binding AppleCheckedStatus}">
-                        Apple
-                    </atom:CheckBox>
+                                   IsChecked="{Binding AppleCheckedStatus}" Content="{gallery:CheckBoxShowCaseLangResource P2ContentApple}" />
                     <atom:CheckBox Name="PearCheckBox"
-                                   IsChecked="{Binding PearCheckedStatus}">
-                        Pear
-                    </atom:CheckBox>
+                                   IsChecked="{Binding PearCheckedStatus}" Content="{gallery:CheckBoxShowCaseLangResource P2ContentPear}" />
                     <atom:CheckBox Name="OrangeCheckBox"
-                                   IsChecked="{Binding OrangeCheckedStatus}">
-                        Orange
-                    </atom:CheckBox>
+                                   IsChecked="{Binding OrangeCheckedStatus}" Content="{gallery:CheckBoxShowCaseLangResource P2ContentOrange}" />
                 </WrapPanel>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -102,11 +94,11 @@
             Title="{gallery:CheckBoxShowCaseLangResource UseWithGridTitle}"
             Description="{gallery:CheckBoxShowCaseLangResource UseWithGridDescription}">
             <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto,Auto" Margin="10">
-                <atom:CheckBox Grid.Row="0" Grid.Column="0">A</atom:CheckBox>
-                <atom:CheckBox Grid.Row="0" Grid.Column="1">B</atom:CheckBox>
-                <atom:CheckBox Grid.Row="0" Grid.Column="2">C</atom:CheckBox>
-                <atom:CheckBox Grid.Row="1" Grid.Column="0">D</atom:CheckBox>
-                <atom:CheckBox Grid.Row="1" Grid.Column="1">D</atom:CheckBox>
+                <atom:CheckBox Grid.Row="0" Grid.Column="0" Content="{gallery:CheckBoxShowCaseLangResource P2ContentA}" />
+                <atom:CheckBox Grid.Row="0" Grid.Column="1" Content="{gallery:CheckBoxShowCaseLangResource P2ContentB}" />
+                <atom:CheckBox Grid.Row="0" Grid.Column="2" Content="{gallery:CheckBoxShowCaseLangResource P2ContentC}" />
+                <atom:CheckBox Grid.Row="1" Grid.Column="0" Content="{gallery:CheckBoxShowCaseLangResource P2ContentD}" />
+                <atom:CheckBox Grid.Row="1" Grid.Column="1" Content="{gallery:CheckBoxShowCaseLangResource P2ContentD}" />
             </Grid>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

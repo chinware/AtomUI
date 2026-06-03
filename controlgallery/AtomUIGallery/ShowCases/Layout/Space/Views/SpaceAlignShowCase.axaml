@@ -28,30 +28,30 @@
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Border Classes="align-box">
                     <atom:Space ItemsAlignment="Start" Orientation="Horizontal">
-                        <atom:TextBlock>center</atom:TextBlock>
-                        <atom:Button ButtonType="Primary">Primary</atom:Button>
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCenter}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentPrimary}" />
                         <Border Classes="align-block-item">
-                            <atom:TextBlock VerticalAlignment="Center">Block</atom:TextBlock>
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SpaceShowCaseLangResource P2TextBlock}" />
                         </Border>
                     </atom:Space>
                 </Border>
         
                 <Border Classes="align-box">
                     <atom:Space ItemsAlignment="Center" Orientation="Horizontal">
-                        <atom:TextBlock>center</atom:TextBlock>
-                        <atom:Button ButtonType="Primary">Primary</atom:Button>
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCenter}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentPrimary}" />
                         <Border Classes="align-block-item">
-                            <atom:TextBlock VerticalAlignment="Center">Block</atom:TextBlock>
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SpaceShowCaseLangResource P2TextBlock}" />
                         </Border>
                     </atom:Space>
                 </Border>
         
                 <Border Classes="align-box">
                     <atom:Space ItemsAlignment="End" Orientation="Horizontal">
-                        <atom:TextBlock>center</atom:TextBlock>
-                        <atom:Button ButtonType="Primary">Primary</atom:Button>
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCenter}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentPrimary}" />
                         <Border Classes="align-block-item">
-                            <atom:TextBlock VerticalAlignment="Center">Block</atom:TextBlock>
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SpaceShowCaseLangResource P2TextBlock}" />
                         </Border>
                     </atom:Space>
                 </Border>
@@ -62,21 +62,21 @@
                               Description="{gallery:SpaceShowCaseLangResource WrapDescription}"
                               IsOccupyEntireRow="True">
             <atom:Space Orientation="Horizontal" ItemSpacing="8" LineSpacing="16">
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
-                <atom:Button>Button</atom:Button>
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
             </atom:Space>
         </gallery:ShowCaseItem>
         
@@ -89,9 +89,9 @@
                         <atom:Separator Orientation="Vertical"/>
                     </Template>
                 </atom:Space.SplitTemplate>
-                <atom:HyperLinkTextBlock>Link</atom:HyperLinkTextBlock>
-                <atom:HyperLinkTextBlock>Link</atom:HyperLinkTextBlock>
-                <atom:HyperLinkTextBlock>Link</atom:HyperLinkTextBlock>
+                <atom:HyperLinkTextBlock Text="{gallery:SpaceShowCaseLangResource P2ContentLink}" />
+                <atom:HyperLinkTextBlock Text="{gallery:SpaceShowCaseLangResource P2ContentLink}" />
+                <atom:HyperLinkTextBlock Text="{gallery:SpaceShowCaseLangResource P2ContentLink}" />
             </atom:Space>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

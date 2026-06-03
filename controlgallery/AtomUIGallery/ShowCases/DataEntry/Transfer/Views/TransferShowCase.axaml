@@ -11,8 +11,8 @@
             IsOccupyEntireRow="True"
             Description="{gallery:TransferShowCaseLangResource BasicDescription}">
             <atom:ListTransfer Name="BasicListTransfer"
-                               SourceTitle="Source"
-                               TargetTitle="Target"/>
+                               SourceTitle="{gallery:TransferShowCaseLangResource P2SourceTitle}"
+                               TargetTitle="{gallery:TransferShowCaseLangResource P2TargetTitle}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
@@ -21,13 +21,13 @@
             Description="{gallery:TransferShowCaseLangResource OneWayDescription}">
             <StackPanel Spacing="20">
                 <atom:ListTransfer Name="OneWayTransferList"
-                                   SourceTitle="Source"
-                                   TargetTitle="Target"
+                                   SourceTitle="{gallery:TransferShowCaseLangResource P2SourceTitle}"
+                                   TargetTitle="{gallery:TransferShowCaseLangResource P2TargetTitle}"
                                    IsOneWay="True"
                                    IsEnabled="{Binding OneWayTransferEnabled}" />
                 <atom:ToggleSwitch IsChecked="{Binding OneWayTransferEnabled, Mode=TwoWay}"
-                                   OnContent="disable"
-                                   OffContent="enable" />
+                                   OnContent="{gallery:TransferShowCaseLangResource P2OnContentDisable}"
+                                   OffContent="{gallery:TransferShowCaseLangResource P2OffContentEnable}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -38,7 +38,7 @@
             <StackPanel Spacing="20">
                 <atom:ListTransfer Name="SearchTransferList"
                                    IsFilterEnabled="True"
-                                   FilterPlaceholderText="Search here"
+                                   FilterPlaceholderText="{gallery:TransferShowCaseLangResource P2FilterPlaceholderTextSearchHere}"
                                    FilterValueSelector="{Binding TransferFilterValueSelector}" />
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -47,21 +47,21 @@
             Title="{gallery:TransferShowCaseLangResource AdvancedTitle}"
             IsOccupyEntireRow="True"
             Description="{gallery:TransferShowCaseLangResource AdvancedDescription}">
-            <atom:ListTransfer ToTargetButtonText="to right"
-                               ToSourceButtonText="to left"
+            <atom:ListTransfer ToTargetButtonText="{gallery:TransferShowCaseLangResource P2ToTargetButtonTextToRight}"
+                               ToSourceButtonText="{gallery:TransferShowCaseLangResource P2ToSourceButtonTextToLeft}"
                                ListWidth="300"
                                Name="AdvanceTransfer">
                 <atom:ListTransfer.SourceViewFooter>
-                    <atom:Button SizeType="Small" Click="ReloadAdvancedTransferItems">Left button reload</atom:Button>
+                    <atom:Button SizeType="Small" Click="ReloadAdvancedTransferItems" Content="{gallery:TransferShowCaseLangResource P2ContentLeftButtonReload}" />
                 </atom:ListTransfer.SourceViewFooter>
                 <atom:ListTransfer.TargetViewFooter>
-                    <atom:Button SizeType="Small" Click="ReloadAdvancedTransferItems">Right button reload</atom:Button>
+                    <atom:Button SizeType="Small" Click="ReloadAdvancedTransferItems" Content="{gallery:TransferShowCaseLangResource P2ContentRightButtonReload}" />
                 </atom:ListTransfer.TargetViewFooter>
                 <atom:ListTransfer.ItemTemplate>
                     <DataTemplate x:DataType="viewModels:SearchCaseItemData">
                         <TextBlock TextTrimming="CharacterEllipsis">
                             <Run Text="{Binding Content}" />
-                            <Run Text="-" />
+                            <Run Text="{gallery:TransferShowCaseLangResource P2TextText}" />
                             <Run Text="{Binding Description}" />
                         </TextBlock>
                     </DataTemplate>
@@ -79,55 +79,10 @@
                                    PageSize="10"
                                    ListHeight="370" />
                 <atom:ToggleSwitch IsChecked="{Binding PaginationIsOneWay, Mode=TwoWay}"
-                                   OnContent="ony way"
-                                   OffContent="ony way" />
+                                   OnContent="{gallery:TransferShowCaseLangResource P2OnContentOnyWay}"
+                                   OffContent="{gallery:TransferShowCaseLangResource P2OffContentOnyWay}" />
             </StackPanel>
         </gallery:ShowCaseItem>
-
-        <!-- <gallery:ShowCaseItem -->
-        <!--     Title="Table Transfer" -->
-        <!--     IsOccupyEntireRow="True" -->
-        <!--     Description="Customize the render list with a Table component."> -->
-        <!--     <StackPanel Spacing="20"> -->
-        <!--         <atom:Transfer IsStretchView="True" ItemsSource="{Binding GridDataTransformItems}" -->
-        <!--                        PageSize="10" -->
-        <!--                        ListHeight="400"> -->
-        <!--             <atom:Transfer.SourcePanel> -->
-        <!--                 <atom:TransferDataGridView> -->
-        <!--                     <atom:TransferDataGridView.Columns> -->
-        <!-- -->
-        <!--                         <atom:DataGridTextColumn Header="Name" Binding="{Binding Title}" /> -->
-        <!--                         <atom:DataGridTemplateColumn Header="Tag"> -->
-        <!--                             <atom:DataGridTemplateColumn.CellTemplate> -->
-        <!--                                 <DataTemplate> -->
-        <!--                                     <atom:Tag TagText="{Binding Tag}" TagColor="cyan" /> -->
-        <!--                                 </DataTemplate> -->
-        <!--                             </atom:DataGridTemplateColumn.CellTemplate> -->
-        <!--                         </atom:DataGridTemplateColumn> -->
-        <!--                         <atom:DataGridTextColumn Header="Description" Binding="{Binding Description}" /> -->
-        <!--                     </atom:TransferDataGridView.Columns> -->
-        <!--                 </atom:TransferDataGridView> -->
-        <!--             </atom:Transfer.SourcePanel> -->
-        <!--             <atom:Transfer.TargetPanel> -->
-        <!--                 <atom:TransferDataGridView> -->
-        <!--                     <atom:TransferDataGridView.Columns> -->
-        <!-- -->
-        <!--                         <atom:DataGridTextColumn Header="Name" Binding="{Binding Title}" /> -->
-        <!--                         <atom:DataGridTemplateColumn Header="Tag"> -->
-        <!--                             <atom:DataGridTemplateColumn.CellTemplate> -->
-        <!--                                 <DataTemplate> -->
-        <!--                                     <atom:Tag TagText="{Binding Tag}" TagColor="cyan" /> -->
-        <!--                                 </DataTemplate> -->
-        <!--                             </atom:DataGridTemplateColumn.CellTemplate> -->
-        <!--                         </atom:DataGridTemplateColumn> -->
-        <!--                         <atom:DataGridTextColumn Header="Description" Binding="{Binding Description}" /> -->
-        <!--                     </atom:TransferDataGridView.Columns> -->
-        <!--                 </atom:TransferDataGridView> -->
-        <!--             </atom:Transfer.TargetPanel> -->
-        <!--         </atom:Transfer> -->
-        <!-- -->
-        <!--     </StackPanel> -->
-        <!-- </gallery:ShowCaseItem> -->
 
         <gallery:ShowCaseItem
             Title="{gallery:TransferShowCaseLangResource TreeTransferTitle}"
@@ -142,8 +97,8 @@
                     </atom:TreeTransfer.SourceView>
                 </atom:TreeTransfer>
                 <atom:ToggleSwitch IsChecked="{Binding TreeTransferIsOneWay, Mode=TwoWay}"
-                                   OnContent="ony way"
-                                   OffContent="ony way" />
+                                   OnContent="{gallery:TransferShowCaseLangResource P2OnContentOnyWay}"
+                                   OffContent="{gallery:TransferShowCaseLangResource P2OffContentOnyWay}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 

@@ -1,7 +1,13 @@
 ﻿using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
+using AtomUI;
+using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
+using AtomUIGallery.Localization;
+using Avalonia;
 using Avalonia.Interactivity;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
@@ -20,9 +26,8 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
             {
                 InitBasicTreeViewData(viewModel);
                 viewModel.TreeViewNodeHoverMode = TreeItemHoverMode.Default;
-                InitBasicTreeNodes(viewModel);
+                RefreshLocalizedTreeNodes(viewModel);
                 InitCustomizeCollapseExpandTreeDefaultExpandedPaths(viewModel);
-                InitAsyncLoadTreeNodes(viewModel);
                 InitFilterTreeNodes(viewModel);
                 viewModel.AsyncLoadTreeNodeLoader = new TreeItemDataLoader();
 
@@ -50,6 +55,15 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
                 this.OneWayBind(ViewModel, vm => vm.FilterTreeNodes, v => v.SearchTreeViewByItemsSource.ItemsSource)
                     .DisposeWith(disposables);
 
+                var themeManager = Application.Current?.GetThemeManager();
+                if (themeManager != null)
+                {
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedTreeNodes(viewModel);
+                    themeManager.LanguageVariantChanged += handler;
+                    Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
+                              .DisposeWith(disposables);
+                }
+
                 Disposable.Create(() =>
                 {
                     viewModel.BasicTreeViewDefaultExpandedPaths = null;
@@ -63,6 +77,17 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
             }
         });
         InitializeComponent();
+    }
+
+    private void RefreshLocalizedTreeNodes(TreeViewViewModel viewModel)
+    {
+        InitBasicTreeNodes(viewModel);
+        InitAsyncLoadTreeNodes(viewModel);
+    }
+
+    private static string Lang(TreeViewShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return TreeViewShowCaseLanguage.Get(resourceKind, fallback);
     }
 
     private void InitBasicTreeViewData(TreeViewViewModel viewModel)
@@ -105,52 +130,52 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
         viewModel.BasicTreeNodes = [
             new TreeItemNode()
             {
-                Header  = "parent 1",
+                Header  = Lang(TreeViewShowCaseLangResourceKind.P2HeaderParentN1, "parent 1"),
                 ItemKey = "0-0",
                 Children = [
                     new TreeItemNode()
                     {
-                        Header  = "parent 1-0",
+                        Header  = Lang(TreeViewShowCaseLangResourceKind.P2HeaderParentN1N0, "parent 1-0"),
                         ItemKey = "0-0-0",
                         Children = [
                             new TreeItemNode()
                             {
-                                Header    = "leaf 1",
+                                Header    = Lang(TreeViewShowCaseLangResourceKind.P2HeaderLeafN1, "leaf 1"),
                                 ItemKey   = "0-0-0-0",
                                 IsEnabled = false
                             },
                             new TreeItemNode()
                             {
-                                Header  = "leaf 2",
+                                Header  = Lang(TreeViewShowCaseLangResourceKind.P2HeaderLeafN2, "leaf 2"),
                                 ItemKey = "0-0-0-1"
                             }
                         ]
                     },
                     new TreeItemNode()
                     {
-                        Header  = "parent 1-1",
+                        Header  = Lang(TreeViewShowCaseLangResourceKind.P2HeaderParentN1N1, "parent 1-1"),
                         ItemKey = "0-0-1",
                         Children = [
                             new TreeItemNode()
                             {
-                                Header  = "sss",
+                                Header  = Lang(TreeViewShowCaseLangResourceKind.P2HeaderSss, "sss"),
                                 ItemKey = "0-0-1-0",
                                 Children = [
                                     new TreeItemNode()
                                     {
-                                        Header  = "ccc",
+                                        Header  = Lang(TreeViewShowCaseLangResourceKind.P2HeaderCcc, "ccc"),
                                         ItemKey = "0-0-1-0-0"
                                     }
                                 ]
                             },
                             new TreeItemNode()
                             {
-                                Header  = "xxx",
+                                Header  = Lang(TreeViewShowCaseLangResourceKind.P2HeaderXxx, "xxx"),
                                 ItemKey = "0-0-1-1",
                                 Children = [
                                     new TreeItemNode()
                                     {
-                                        Header  = "aaaa",
+                                        Header  = Lang(TreeViewShowCaseLangResourceKind.P2HeaderAaaa, "aaaa"),
                                         ItemKey = "0-0-1-1-0"
                                     }
                                 ]
@@ -175,17 +200,17 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
         [
             new TreeItemNode()
             {
-                Header  = "Expand to load",
+                Header  = Lang(TreeViewShowCaseLangResourceKind.P2HeaderExpandToLoad, "Expand to load"),
                 ItemKey = "0",
             },
             new TreeItemNode()
             {
-                Header  = "Expand to load",
+                Header  = Lang(TreeViewShowCaseLangResourceKind.P2HeaderExpandToLoad, "Expand to load"),
                 ItemKey = "1",
             },
             new TreeItemNode()
             {
-                Header  = "Tree Node",
+                Header  = Lang(TreeViewShowCaseLangResourceKind.P2HeaderTreeNode, "Tree Node"),
                 ItemKey = "2",
                 IsLeaf  = true
             }
@@ -351,10 +376,14 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
             return;
         }
 
-        var header = _contextMenuTargetItem.Header?.ToString() ?? "node";
+        var header = _contextMenuTargetItem.Header?.ToString() ??
+                     Lang(TreeViewShowCaseLangResourceKind.P2HeaderNodeFallback, "node");
         var newItem = new TreeViewItem
         {
-            Header = $"{header} / new ({_contextMenuTargetItem.Items.Count + 1})"
+            Header = string.Format(
+                Lang(TreeViewShowCaseLangResourceKind.P2HeaderNewNodeFormat, "{0} / new ({1})"),
+                header,
+                _contextMenuTargetItem.Items.Count + 1)
         };
         _contextMenuTargetItem.Items.Add(newItem);
         _contextMenuTargetItem.IsExpanded = true;
@@ -367,8 +396,11 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
             return;
         }
 
-        var header = _contextMenuTargetItem.Header?.ToString() ?? "node";
-        _contextMenuTargetItem.Header = $"{header} (renamed)";
+        var header = _contextMenuTargetItem.Header?.ToString() ??
+                     Lang(TreeViewShowCaseLangResourceKind.P2HeaderNodeFallback, "node");
+        _contextMenuTargetItem.Header = string.Format(
+            Lang(TreeViewShowCaseLangResourceKind.P2HeaderRenamedFormat, "{0} (renamed)"),
+            header);
     }
 
     private void HandleContextMenuDeleteClick(object? sender, RoutedEventArgs e)
@@ -390,3 +422,10 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
     }
 }
 
+internal static class TreeViewShowCaseLanguage
+{
+    public static string Get(TreeViewShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+    }
+}

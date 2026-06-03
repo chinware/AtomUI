@@ -34,6 +34,44 @@ internal class zh_CN : LanguageProvider
     public const string LabelPlacementDescription = "将 labelPlacement 设置为 vertical。";
     public const string InlineStepsTitle = "内联步骤";
     public const string InlineStepsDescription = "内联类型步骤，适合在列表内容场景中展示对象的流程和当前状态。";
+    public const string P2DescriptionThisIsADescription = "这是一段描述。";
+    public const string P2HeaderFinished = "已完成";
+    public const string P2HeaderInProgress = "进行中";
+    public const string P2HeaderWaiting = "等待中";
+    public const string P2HeaderLogin = "登录";
+    public const string P2HeaderVerification = "验证";
+    public const string P2HeaderPay = "支付";
+    public const string P2HeaderDone = "完成";
+    public const string P2HeaderFirst = "第一项";
+    public const string P2HeaderSecond = "第二项";
+    public const string P2HeaderThird = "第三项";
+    public const string P2HeaderStepN1 = "步骤 1";
+    public const string P2HeaderStepN2 = "步骤 2";
+    public const string P2HeaderStepN3 = "步骤 3";
+    public const string P2HeaderStepN4 = "步骤 4";
+    public const string P2HeaderFinishN1 = "完成 1";
+    public const string P2HeaderFinishN2 = "完成 2";
+    public const string P2HeaderCurrentProcess = "当前进行中";
+    public const string P2HeaderWait = "等待";
+    public const string P2SubHeaderLeftTime = "剩余 00:00:08";
+    public const string P2SubHeaderWaitingForLongTime = "等待较长时间";
+    public const string P2TextAntDesignTitleN1 = "Ant Design 标题 1";
+    public const string P2TextAntDesignADesignLanguageForBackgroundApplications = "Ant Design 是由 Ant UED 团队提炼的后台应用设计语言";
+    public const string P2TextAntDesignTitleN2 = "Ant Design 标题 2";
+    public const string P2TextAntDesignTitleN3 = "Ant Design 标题 3";
+    public const string P2TextAntDesignTitleN4 = "Ant Design 标题 4";
+
+    public const string P2ContentFirstContent = "第一步内容";
+
+    public const string P2ContentSecondContent = "第二步内容";
+
+    public const string P2ContentLastContent = "最后一步内容";
+
+    public const string P2ContentNext = "下一步";
+
+    public const string P2ContentPrevious = "上一步";
+
+    public const string P2ContentDone = "完成";
 
     protected override Type GetResourceKindType() => typeof(StepsShowCaseLangResourceKind);
 }

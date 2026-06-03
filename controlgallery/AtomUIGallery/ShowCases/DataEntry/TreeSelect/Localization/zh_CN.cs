@@ -28,6 +28,50 @@ internal class zh_CN : LanguageProvider
     public const string PrefixAndSuffixDescription = "自定义 prefix 和 suffixIcon。";
     public const string MaxCountTitle = "最大数量";
     public const string MaxCountDescription = "可以设置 maxCount 属性控制最多可选项数量。超过限制后，选项会变为禁用状态。";
+    public const string P2PlaceholderTextPleaseSelect = "请选择";
+    public const string P2TextPlacement = "弹出位置：";
+    public const string P2ContentTopleft = "左上";
+    public const string P2ContentTopright = "右上";
+    public const string P2ContentBottomleft = "左下";
+    public const string P2ContentBottomright = "右下";
+
+    public const string P2OnContentShowIcon = "显示图标";
+
+    public const string P2OffContentShowIcon = "显示图标";
+
+    public const string P2OnContentTreeLine = "树线";
+
+    public const string P2OffContentTreeLine = "树线";
+
+    public const string P2OnContentShowLeafIcon = "显示叶子图标";
+
+    public const string P2OffContentShowLeafIcon = "显示叶子图标";
+    public const string P2AddOnPrefix = "前缀";
+    public const string P2HeaderParent1 = "父节点 1";
+    public const string P2HeaderParent10 = "父节点 1-0";
+    public const string P2HeaderParent11 = "父节点 1-1";
+    public const string P2HeaderLeaf1 = "叶子 1";
+    public const string P2HeaderLeaf2 = "叶子 2";
+    public const string P2HeaderLeaf3 = "叶子 3";
+    public const string P2HeaderLeaf4 = "叶子 4";
+    public const string P2HeaderLeaf5 = "叶子 5";
+    public const string P2HeaderLeaf6 = "叶子 6";
+    public const string P2HeaderLeaf11 = "叶子 11";
+    public const string P2HeaderMyLeaf = "我的叶子";
+    public const string P2HeaderYourLeaf = "你的叶子";
+    public const string P2HeaderSss = "节点 SSS";
+    public const string P2HeaderNode1 = "节点 1";
+    public const string P2HeaderNode2 = "节点 2";
+    public const string P2HeaderChildNode = "子节点";
+    public const string P2HeaderChildNode1 = "子节点 1";
+    public const string P2HeaderChildNode2 = "子节点 2";
+    public const string P2HeaderChildNode3 = "子节点 3";
+    public const string P2HeaderChildNode4 = "子节点 4";
+    public const string P2HeaderChildNode5 = "子节点 5";
+    public const string P2HeaderChildNode6 = "子节点 6";
+    public const string P2HeaderChildNode7 = "子节点 7";
+    public const string P2HeaderExpandToLoad = "展开加载";
+    public const string P2HeaderTreeNode = "树节点";
 
     protected override Type GetResourceKindType() => typeof(TreeSelectShowCaseLangResourceKind);
 }

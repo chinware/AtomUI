@@ -1,6 +1,9 @@
+using System.Globalization;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
+using AtomUIGallery.Localization;
 using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Form;
@@ -77,6 +80,20 @@ public partial class FormShowCase : ReactiveUserControl<FormViewModel>
     }
 }
 
+internal static class FormShowCaseLanguage
+{
+    public static string Get(FormShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+    }
+
+    public static string Format(FormShowCaseLangResourceKind resourceKind, string fallback, params object?[] args)
+    {
+        var format = Get(resourceKind, fallback);
+        return string.Format(CultureInfo.CurrentCulture, format, args);
+    }
+}
+
 public class NoteFormItem : FormItem
 {
     protected override void NotifyFormItemChanged(IFormItem formItem)
@@ -87,7 +104,9 @@ public class NoteFormItem : FormItem
             {
                 if (formItem.GetItemValue() is ISelectOption selectOption)
                 {
-                    SetItemValue($"Hi, {selectOption.Content}!");
+                    SetItemValue(FormShowCaseLanguage.Format(FormShowCaseLangResourceKind.P3GenderNoteFormat,
+                        "Hi, {0}!",
+                        selectOption.Content));
                 }
             }
         }

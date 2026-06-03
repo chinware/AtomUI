@@ -24,6 +24,22 @@ internal class zh_CN : LanguageProvider
     public const string VariantsDescription = "无边框风格组件。";
     public const string PlacementTitle = "弹出位置";
     public const string PlacementDescription = "可以通过 placement 手动指定弹出层位置。";
+    public const string P2PlaceholderTextSelectDate = "选择日期";
+    public const string P2SecondaryPlaceholderTextEndDate = "结束日期";
+    public const string P2PlaceholderTextSelectTime = "选择时间";
+    public const string P2PlaceholderTextStartDate = "开始日期";
+    public const string P2PlaceholderTextOutline = "描边风格";
+    public const string P2PlaceholderTextFilled = "填充风格";
+    public const string P2PlaceholderTextBorderless = "无边框";
+    public const string P2TextExpandDirection = "选择器尺寸：";
+    public const string P2ContentLarge = "大号";
+    public const string P2ContentDefault = "默认";
+    public const string P2ContentSmall = "小号";
+    public const string P2TextPlacement = "弹出位置：";
+    public const string P2ContentTopleft = "左上";
+    public const string P2ContentTopright = "右上";
+    public const string P2ContentBottomleft = "左下";
+    public const string P2ContentBottomright = "右下";
 
     protected override Type GetResourceKindType() => typeof(DatePickerShowCaseLangResourceKind);
 }

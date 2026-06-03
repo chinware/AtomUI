@@ -35,58 +35,58 @@
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="24">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextCol}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="12">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-12</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN12}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="12">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-12</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN12}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="8">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-8</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN8}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="8">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-8</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN8}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="8">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-8</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN8}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
@@ -95,118 +95,118 @@
 
         <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource GutterTitle}" Description="{gallery:GridShowCaseLangResource GutterDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
-                <TextBlock Classes="grid-section-title">Horizontal</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextHorizontal}" />
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
 
-                <TextBlock Classes="grid-section-title">Responsive</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextResponsive}" />
                 <atom:Row Gutter="16,16">
                     <atom:Col Xs="24" Sm="12" Md="16" Lg="6" Xl="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Xs="24" Sm="12" Md="16" Lg="6" Xl="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Xs="24" Sm="12" Md="16" Lg="6" Xl="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Xs="24" Sm="12" Md="16" Lg="6" Xl="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
 
-                <TextBlock Classes="grid-section-title">Vertical</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextVertical}" />
                 <atom:Row Gutter="16,24" IsWrapped="True">
                     <atom:Col Span="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
 
-                <TextBlock Classes="grid-section-title">Gutter (string)</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextGutterString}" />
                 <atom:Row Gutter="16">
                     <atom:Col Span="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
@@ -218,33 +218,33 @@
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="8">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-8</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN8}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="8" Offset="8">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-8 col-offset-8</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN8ColOffsetN8}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="6" Offset="6">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6 col-offset-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6ColOffsetN6}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="12" Offset="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-12 col-offset-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN12ColOffsetN6}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="6" Offset="18">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6 col-offset-18</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6ColOffsetN18}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
@@ -256,12 +256,12 @@
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="18" Push="6">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-18 col-push-6</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN18ColPushN6}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6" Pull="18">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-6 col-pull-18</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6ColPullN18}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
@@ -270,157 +270,157 @@
 
         <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource JustifyTitle}" Description="{gallery:GridShowCaseLangResource JustifyDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
-                <TextBlock Classes="grid-section-title">sub-element align left</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextSubElementAlignLeft}" />
                 <Border Classes="grid-row-surface">
                     <atom:Row Gutter="16,16" Justify="start">
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                     </atom:Row>
                 </Border>
 
-                <TextBlock Classes="grid-section-title">sub-element align center</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextSubElementAlignCenter}" />
                 <Border Classes="grid-row-surface">
                     <atom:Row Gutter="16,16" Justify="center">
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                     </atom:Row>
                 </Border>
 
-                <TextBlock Classes="grid-section-title">sub-element align end</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextSubElementAlignEnd}" />
                 <Border Classes="grid-row-surface">
                     <atom:Row Gutter="16,16" Justify="end">
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                     </atom:Row>
                 </Border>
 
-                <TextBlock Classes="grid-section-title">sub-element   align between</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextSubElementAlignBetween}" />
                 <Border Classes="grid-row-surface">
                     <atom:Row Gutter="16,16" Justify="SpaceBetween">
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                     </atom:Row>
                 </Border>
 
-                <TextBlock Classes="grid-section-title">sub-element align around</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextSubElementAlignAround}" />
                 <Border Classes="grid-row-surface">
                     <atom:Row Gutter="16,16" Justify="SpaceAround">
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                     </atom:Row>
                 </Border>
 
-                <TextBlock Classes="grid-section-title">sub-element align evenly</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextSubElementAlignEvenly}" />
                 <Border Classes="grid-row-surface">
                     <atom:Row Gutter="16,16" Justify="SpaceEvenly">
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                     </atom:Row>
@@ -430,79 +430,79 @@
 
         <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource AlignTitle}" Description="{gallery:GridShowCaseLangResource AlignDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
-                <TextBlock Classes="grid-section-title">Align Top</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextAlignTop}" />
                 <Border Classes="grid-row-surface">
                     <atom:Row Gutter="16,16" Justify="center" Align="top">
                         <atom:Col Span="4">
                             <Border Classes="grid-cell" Height="72">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt" Height="48">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell" Height="64">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt" Height="56">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                     </atom:Row>
                 </Border>
 
-                <TextBlock Classes="grid-section-title">Align Middle</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextAlignMiddle}" />
                 <Border Classes="grid-row-surface">
                     <atom:Row Gutter="16,16" Justify="center" Align="middle">
                         <atom:Col Span="4">
                             <Border Classes="grid-cell" Height="72">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt" Height="48">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell" Height="64">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt" Height="56">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                     </atom:Row>
                 </Border>
 
-                <TextBlock Classes="grid-section-title">Align Bottom</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextAlignBottom}" />
                 <Border Classes="grid-row-surface">
                     <atom:Row Gutter="16,16" Justify="center" Align="bottom">
                         <atom:Col Span="4">
                             <Border Classes="grid-cell" Height="72">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt" Height="48">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell" Height="64">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                         <atom:Col Span="4">
                             <Border Classes="grid-cell alt" Height="56">
-                                <TextBlock Classes="grid-cell-text">col-4</TextBlock>
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4}" />
                             </Border>
                         </atom:Col>
                     </atom:Row>
@@ -512,50 +512,50 @@
 
         <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource OrderTitle}" Description="{gallery:GridShowCaseLangResource OrderDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
-                <TextBlock Classes="grid-section-title">Normal</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextNormal}" />
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="6" Order="1">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">4 col-order-1</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN4ColOrderN1}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6" Order="2">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">3 col-order-2</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN3ColOrderN2}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6" Order="3">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">2 col-order-3</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN2ColOrderN3}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6" Order="4">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">1 col-order-4</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN1ColOrderN4}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
 
-                <TextBlock Classes="grid-section-title">Responsive</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextResponsive}" />
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="6" Order="1" Sm="{atom:ColInfo Order=2}">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">3 col-order-responsive</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN3ColOrderResponsive}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6" Order="2" Sm="{atom:ColInfo Order=1}">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">4 col-order-responsive</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN4ColOrderResponsive}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6" Order="3" Sm="{atom:ColInfo Order=4}">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">2 col-order-responsive</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN2ColOrderResponsive}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="6" Order="4" Sm="{atom:ColInfo Order=3}">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">1 col-order-responsive</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextN1ColOrderResponsive}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
@@ -574,7 +574,7 @@
                     <atom:ColInfo x:Key="LgCol3" Span="6" Order="3" />
                     <atom:ColInfo x:Key="LgCol4" Span="6" Order="4" />
                 </StackPanel.Resources>
-                <TextBlock Classes="grid-section-title">Base + Md/Lg overrides</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextBaseMdLgOverrides}" />
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="24">
                         <atom:Col.Md>
@@ -584,7 +584,7 @@
                             <atom:ColInfo Span="6" Order="1" />
                         </atom:Col.Lg>
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-1 with ColInfo</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN1WithColinfo}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="24">
@@ -595,7 +595,7 @@
                             <atom:ColInfo Span="6" Order="2" />
                         </atom:Col.Lg>
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-2 with ColInfo</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN2WithColinfo}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="24">
@@ -606,7 +606,7 @@
                             <atom:ColInfo Span="6" Order="3" />
                         </atom:Col.Lg>
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">col-3 with ColInfo</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN3WithColinfo}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="24">
@@ -617,30 +617,30 @@
                             <atom:ColInfo Span="6" Order="4" />
                         </atom:Col.Lg>
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">col-4 with ColInfo</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN4WithColinfo}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>
-                <TextBlock Classes="grid-section-title">Shared resources</TextBlock>
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextSharedResources}" />
                 <atom:Row Gutter="16,16">
                     <atom:Col Span="24" Md="{StaticResource MdCol1}" Lg="{StaticResource LgCol1}">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">res-col-1</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextResColN1}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="24" Md="{StaticResource MdCol2}" Lg="{StaticResource LgCol2}">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">res-col-2</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextResColN2}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="24" Md="{StaticResource MdCol3}" Lg="{StaticResource LgCol3}">
                         <Border Classes="grid-cell">
-                            <TextBlock Classes="grid-cell-text">res-col-3</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextResColN3}" />
                         </Border>
                     </atom:Col>
                     <atom:Col Span="24" Md="{StaticResource MdCol4}" Lg="{StaticResource LgCol4}">
                         <Border Classes="grid-cell alt">
-                            <TextBlock Classes="grid-cell-text">res-col-4</TextBlock>
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextResColN4}" />
                         </Border>
                     </atom:Col>
                 </atom:Row>

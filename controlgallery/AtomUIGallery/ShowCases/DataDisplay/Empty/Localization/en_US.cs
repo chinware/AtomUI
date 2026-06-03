@@ -14,6 +14,8 @@ internal class en_US : LanguageProvider
     public const string CustomizeDescription = "Customize image source, image size, description and extra content.";
     public const string NoDescriptionTitle = "No description";
     public const string NoDescriptionDescription = "Simplest Usage with no description.";
+    public const string P2DescriptionCustomizeDescription = "Customize Description";
+    public const string P2ContentCreateNow = "Create Now";
 
     protected override Type GetResourceKindType() => typeof(EmptyShowCaseLangResourceKind);
 }

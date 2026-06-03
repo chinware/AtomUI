@@ -18,10 +18,10 @@
             Title="{gallery:MentionsShowCaseLangResource VariantsTitle}"
             Description="{gallery:MentionsShowCaseLangResource VariantsDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Outlined" PlaceholderText="Outlined"/>
-                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Filled" PlaceholderText="Filled"/>
-                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Borderless" PlaceholderText="Borderless"/>
-                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Underlined" PlaceholderText="Underlined"/>
+                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Outlined" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextOutlined}"/>
+                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Filled" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextFilled}"/>
+                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Borderless" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextBorderless}"/>
+                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Underlined" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextUnderlined}"/>
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -37,7 +37,7 @@
             <atom:Mentions HorizontalAlignment="Stretch"
                            TriggerPrefix="{Binding MentionTriggers}"
                            CandidateTriggered="HandleCandidateTriggered"
-                           PlaceholderText="input @ to mention people, # to mention tag"/>
+                           PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextInputToMentionPeopleToMentionTag}"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
@@ -47,10 +47,10 @@
                 <atom:Mentions Name="DisabledMentions"
                                HorizontalAlignment="Stretch"
                                IsEnabled="False"
-                               PlaceholderText="this is disabled Mentions"/>
+                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextThisIsDisabledMentions}"/>
                 <atom:Mentions Name="ReadonlyMentions"
                                HorizontalAlignment="Stretch"
-                               PlaceholderText="this is readOnly Mentions"
+                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextThisIsReadonlyMentions}"
                                IsReadOnly="True"/>
             </StackPanel>
         </gallery:ShowCaseItem>

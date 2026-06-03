@@ -20,6 +20,33 @@ internal class zh_CN : LanguageProvider
     public const string TreeTransferDescription = "使用 Tree 组件自定义渲染列表。";
     public const string StatusTitle = "状态";
     public const string StatusDescription = "通过 status 为 Transfer 添加状态，可设置为错误或警告。";
+    public const string P2SourceTitle = "源列表";
+    public const string P2TargetTitle = "目标列表";
+    public const string P2TextText = "-";
+    public const string P2HeaderName = "姓名";
+    public const string P2HeaderTag = "标签";
+    public const string P2HeaderDescription = "描述";
+    public const string P2ContentLeftButtonReload = "重新加载左侧";
+    public const string P2ContentRightButtonReload = "重新加载右侧";
+
+    public const string P2OnContentDisable = "禁用";
+
+    public const string P2OffContentEnable = "启用";
+
+    public const string P2FilterPlaceholderTextSearchHere = "在此搜索";
+
+    public const string P2ToSourceButtonTextToLeft = "移到左侧";
+
+    public const string P2ToTargetButtonTextToRight = "移到右侧";
+
+    public const string P2OnContentOnyWay = "单向";
+
+    public const string P2OffContentOnyWay = "单向";
+    public const string P2ItemContentFormat = "内容{0}";
+    public const string P2ItemDescriptionFormat = "内容{0}的描述";
+    public const string P2TagCat = "猫";
+    public const string P2TagDog = "狗";
+    public const string P2TagBird = "鸟";
 
     protected override Type GetResourceKindType() => typeof(TransferShowCaseLangResourceKind);
 }

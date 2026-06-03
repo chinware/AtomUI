@@ -22,6 +22,11 @@ internal class zh_CN : LanguageProvider
     public const string PrefixSuffixDescription = "在输入框内部添加前缀或后缀图标。";
     public const string StatusTitle = "状态";
     public const string StatusDescription = "通过 status 为输入框添加错误或警告状态。";
+    public const string P2PlaceholderTextPleaseSelect = "请选择";
+    public const string P2Content床前明月光 = "床前明月光";
+    public const string P2Content疑是地上霜 = "疑是地上霜";
+    public const string P2Content举头望明月 = "举头望明月";
+    public const string P2Content低头思故乡 = "低头思故乡";
 
     protected override Type GetResourceKindType() => typeof(ComboBoxShowCaseLangResourceKind);
 }

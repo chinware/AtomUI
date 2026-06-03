@@ -14,9 +14,8 @@
                                    Width="200"
                                    Text="{TemplateBinding Value, Mode=TwoWay}"/>
                     <atom:Button SizeType="{TemplateBinding SizeType}"
-                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
-                        Get captcha
-                    </atom:Button>
+                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                 Content="{gallery:FormShowCaseLangResource P3GetCaptchaButtonText}"/>
                 </StackPanel>
             </ControlTemplate>
         </Setter>

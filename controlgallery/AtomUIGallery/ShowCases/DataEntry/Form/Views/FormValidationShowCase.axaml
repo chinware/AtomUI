@@ -19,14 +19,14 @@
                        Name="NoBlockRuleForm"
                        Submitted="HandleNoBlockFormSubmitted"
                        Validated="HandleNoBlockFormValidated">
-                <atom:FormItem LabelText="Url"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextUrl}"
                                FieldName="url"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please enter URL!" />
-                            <atom:FormUrlValidator Message="URL is not a valid url!" WarningOnly="True" />
-                            <atom:FormStringLengthValidator Message="URL must be at least 6 characters!"
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseEnterURL}" />
+                            <atom:FormUrlValidator Message="{gallery:FormShowCaseLangResource P2MessageURLIsNotAValidUrl}" WarningOnly="True" />
+                            <atom:FormStringLengthValidator Message="{gallery:FormShowCaseLangResource P2MessageURLMustBeAtLeastN6Characters}"
                                                             MinimumLength="6"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
@@ -36,7 +36,7 @@
                 <atom:FormActionsItem>
                    <StackPanel Orientation="Horizontal" Spacing="10">
                        <atom:SubmitButton />
-                       <atom:Button ButtonType="Default" Click="HandleFillClicked">Fill</atom:Button>
+                       <atom:Button ButtonType="Default" Click="HandleFillClicked" Content="{gallery:FormShowCaseLangResource P2ContentFill}" />
                    </StackPanel>
                 </atom:FormActionsItem>
             </atom:Form>
@@ -51,42 +51,42 @@
                        MinWidth="600"
                        HorizontalAlignment="Left"
                        IsValidateFeedbackEnabled="True">
-                <atom:FormItem LabelText="Field A"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldA}"
                                FieldName="fieldA"
                                ValidateTrigger="OnBlur">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringLengthValidator Message="Field A must be up to 3 characters!"
+                            <atom:FormStringLengthValidator Message="{gallery:FormShowCaseLangResource P2MessageFieldAMustBeUpToN3Characters}"
                                                             MaximumLength="3"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit PlaceholderText="Validate required onBlur"/>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextValidateRequiredOnblur}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="FieldB"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldB}"
                                FieldName="fieldB"
                                ValidateDebounce="00:00:01">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringLengthValidator Message="Field A must be up to 3 characters!"
+                            <atom:FormStringLengthValidator Message="{gallery:FormShowCaseLangResource P2MessageFieldAMustBeUpToN3Characters}"
                                                             MaximumLength="3"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit PlaceholderText="Validate required debounce after 1s"/>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextValidateRequiredDebounceAfterN1s}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="FieldC"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldC}"
                                FieldName="fieldC"
                                ValidateStrategy="StopWhenFirstFailed">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringLengthValidator Message="Field A must be up to 6 characters!"
+                            <atom:FormStringLengthValidator Message="{gallery:FormShowCaseLangResource P2MessageFieldAMustBeUpToN6Characters}"
                                                             MaximumLength="6"/>
-                            <atom:FormStringLengthValidator Message="Continue input to exceed 6 chars!"
+                            <atom:FormStringLengthValidator Message="{gallery:FormShowCaseLangResource P2MessageContinueInputToExceedN6Chars}"
                                                             MaximumLength="3"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit PlaceholderText="Validate one by one"/>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextValidateOneByOne}"/>
                 </atom:FormItem>
             </atom:Form>
         </gallery:ShowCaseItem>
@@ -100,23 +100,23 @@
                        MinWidth="600"
                        HorizontalAlignment="Left"
                        FormLayout="Vertical">
-                <atom:FormItem LabelText="Name"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextName}"
                                FieldName="name"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please enter Name!"/>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseEnterName}"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit />
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Age"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextAge}"
                                FieldName="age"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please enter Age!"/>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseEnterAge}"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit />
@@ -139,62 +139,62 @@
                        WrapperColInfo="16*"
                        MinWidth="600"
                        HorizontalAlignment="Left">
-                <atom:FormItem LabelText="DatePicker"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDatePicker}"
                                FieldName="datePicker"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormNotNullValidator Message="Please select time!" />
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectTime}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:DatePicker PlaceholderText="Select date!"/>
+                    <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectDate2}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="DatePicker[showTime]"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDatePickerShowTime}"
                                FieldName="datePickerShowTime"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormNotNullValidator Message="Please select time!" />
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectTime}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:DatePicker PlaceholderText="Select date!" IsShowTime="True"/>
+                    <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectDate2}" IsShowTime="True"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="RangePicker"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRangePicker}"
                                FieldName="rangePicker"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormNotNullValidator Message="Please select time!" />
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectTime}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:RangeDatePicker PlaceholderText="Start date"
-                                          SecondaryPlaceholderText="End date"/>
+                    <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                          SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="RangePicker[showTime]"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRangePickerShowTime}"
                                FieldName="rangePickerShowTime"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormNotNullValidator Message="Please select time!" />
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectTime}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:RangeDatePicker PlaceholderText="Start date"
-                                          SecondaryPlaceholderText="End date"
+                    <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                          SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"
                                           IsShowTime="True"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="TimePicker"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTimePicker}"
                                FieldName="timePicker"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormNotNullValidator Message="Please select time!" />
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectTime}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:TimePicker PlaceholderText="Start time"/>
+                    <atom:TimePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartTime}"/>
                 </atom:FormItem>
         
                 <atom:FormActionsItem>
@@ -212,40 +212,40 @@
                        WrapperColInfo="16*"
                        MinWidth="600"
                        HorizontalAlignment="Left">
-                <atom:FormItem LabelText="Fail"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFail}"
                                FieldName="fail"
-                               Help="Should be combination of numbers and alphabets">
+                               Help="{gallery:FormShowCaseLangResource P2HelpShouldBeCombinationOfNumbersAndAlphabets}">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
                             <atom:FormAssertValidator AssertResult="False" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit PlaceholderText="unavailable choice"/>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextUnavailableChoice}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Warning"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
                                FieldName="warning">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
                             <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit PlaceholderText="warning" InnerLeftContent="{antdicons:AntDesignIconProvider SmileOutlined}"/>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextWarning}" InnerLeftContent="{antdicons:AntDesignIconProvider SmileOutlined}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Validating"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextValidating}"
                                FieldName="validating"
-                               Help="The information is being validated"
+                               Help="{gallery:FormShowCaseLangResource P2HelpTheInformationIsBeingValidated}"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
                             <atom:FormAssertValidator AssertResult="True" Delay="00:01:00"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit PlaceholderText="I'm the content is being validated"/>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMTheContentIsBeingValidated}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Success"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSuccess}"
                                FieldName="success"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -253,10 +253,10 @@
                             <atom:FormAssertValidator AssertResult="True"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit PlaceholderText="I'm the content"/>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMTheContent}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Warning"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
                                FieldName="warning"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -264,22 +264,22 @@
                             <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit PlaceholderText="I'm the content"/>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMTheContent}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Fail"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFail}"
                                FieldName="fail"
                                IsValidateFeedbackEnabled="True"
-                               Help="Should be combination of numbers and alphabets">
+                               Help="{gallery:FormShowCaseLangResource P2HelpShouldBeCombinationOfNumbersAndAlphabets}">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
                             <atom:FormAssertValidator AssertResult="False"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit PlaceholderText="unavailable choice"/>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextUnavailableChoice}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Success"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSuccess}"
                                FieldName="success"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -287,10 +287,10 @@
                             <atom:FormAssertValidator AssertResult="False"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:DatePicker PlaceholderText="Select date" HorizontalAlignment="Stretch"/>
+                    <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectDate}" HorizontalAlignment="Stretch"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Warning"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
                                FieldName="warning"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -298,22 +298,22 @@
                             <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:TimePicker PlaceholderText="Select time" HorizontalAlignment="Stretch"/>
+                    <atom:TimePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectTime}" HorizontalAlignment="Stretch"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Fail"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFail}"
                                FieldName="fail"
                                IsValidateFeedbackEnabled="True"
-                               Help="Should be combination of numbers and alphabets">
+                               Help="{gallery:FormShowCaseLangResource P2HelpShouldBeCombinationOfNumbersAndAlphabets}">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
                             <atom:FormAssertValidator AssertResult="False"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit PlaceholderText="unavailable choice"/>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextUnavailableChoice}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Success"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSuccess}"
                                FieldName="success"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -321,10 +321,10 @@
                             <atom:FormAssertValidator AssertResult="True"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:DatePicker PlaceholderText="Select date" HorizontalAlignment="Stretch"/>
+                    <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectDate}" HorizontalAlignment="Stretch"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Warning"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
                                FieldName="Warning"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -332,10 +332,10 @@
                             <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:TimePicker PlaceholderText="Select time" HorizontalAlignment="Stretch"/>
+                    <atom:TimePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectTime}" HorizontalAlignment="Stretch"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Error"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextError}"
                                FieldName="error"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -343,12 +343,12 @@
                             <atom:FormAssertValidator AssertResult="False"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:RangeDatePicker PlaceholderText="Start date"
-                                          SecondaryPlaceholderText="End date"
+                    <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                          SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"
                                           HorizontalAlignment="Stretch"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Error"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextError}"
                                FieldName="error"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -356,44 +356,44 @@
                             <atom:FormAssertValidator AssertResult="False"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:Select IsAllowClear="True" PlaceholderText="I'm Select" DefaultValues="1" HorizontalAlignment="Stretch">
-                        <atom:SelectOption Header="Option 1" Content="1"/>
-                        <atom:SelectOption Header="Option 2" Content="2"/>
-                        <atom:SelectOption Header="Option 3" Content="3"/>
+                    <atom:Select IsAllowClear="True" PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMSelect}" DefaultValues="1" HorizontalAlignment="Stretch">
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderOptionN1}" Content="1"/>
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderOptionN2}" Content="2"/>
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderOptionN3}" Content="3"/>
                     </atom:Select>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Validating"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextValidating}"
                                FieldName="validating"
                                IsValidateFeedbackEnabled="True"
-                               Help="Something breaks the rule.">
+                               Help="{gallery:FormShowCaseLangResource P2HelpSomethingBreaksTheRule}">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
                             <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:Cascader IsAllowClear="True" PlaceholderText="I'm Select" HorizontalAlignment="Stretch"
+                    <atom:Cascader IsAllowClear="True" PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMSelect}" HorizontalAlignment="Stretch"
                                    IsPopupMatchSelectWidth="False">
-                        <atom:CascaderOption Header="xx" Value="xx"/>
+                        <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderXx}" Value="xx"/>
                     </atom:Cascader>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Warning"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
                                FieldName="warning"
                                IsValidateFeedbackEnabled="True"
-                               Help="Need to be checked.">
+                               Help="{gallery:FormShowCaseLangResource P2HelpNeedToBeChecked}">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
                             <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:TreeSelect IsAllowClear="True" PlaceholderText="I'm TreeSelect" HorizontalAlignment="Stretch"
+                    <atom:TreeSelect IsAllowClear="True" PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMTreeselect}" HorizontalAlignment="Stretch"
                                    IsPopupMatchSelectWidth="False">
-                        <atom:TreeItemNode Header="xx" Value="xx"/>
+                        <atom:TreeItemNode Header="{gallery:FormShowCaseLangResource P2HeaderXx}" Value="xx"/>
                     </atom:TreeSelect>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Success"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSuccess}"
                                FieldName="success"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -404,7 +404,7 @@
                     <atom:NumericUpDown IsAllowClear="True" HorizontalAlignment="Stretch"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Success"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSuccess}"
                                FieldName="success"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -412,10 +412,10 @@
                             <atom:FormAssertValidator AssertResult="True"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit IsAllowClear="True" PlaceholderText="with allowClear"/>
+                    <atom:LineEdit IsAllowClear="True" PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextWithAllowclear}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Warning"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
                                FieldName="warning"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -426,10 +426,10 @@
                     <atom:LineEdit RevealPassword="False"
                                    PasswordChar="•"
                                    IsEnableRevealButton="True"
-                                   PlaceholderText="with input password"/>
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextWithInputPassword}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Error"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextError}"
                                FieldName="error"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -441,10 +441,10 @@
                                    PasswordChar="•"
                                    IsAllowClear="True"
                                    IsEnableRevealButton="True"
-                                   PlaceholderText="with input password and allowClear"/>
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextWithInputPasswordAndAllowclear}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Fail"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFail}"
                                FieldName="fail"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
@@ -455,9 +455,9 @@
                     <atom:Mentions/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Fail"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFail}"
                                FieldName="fail"
-                               Help="Should have something"
+                               Help="{gallery:FormShowCaseLangResource P2HelpShouldHaveSomething}"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>

@@ -9,12 +9,12 @@
     <gallery:ShowCasePanel>
         <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource BasicTitle}" Description="{gallery:StatisticShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True">
             <UniformGrid Columns="2" Rows="2">
-                <atom:Statistic Header="Active Users" Value="112893" />
+                <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderActiveUsers}" Value="112893" />
                 <StackPanel Orientation="Vertical" Spacing="16">
-                    <atom:Statistic Header="Account Balance (CNY)" Value="112893" Precision="2" />
-                    <atom:Button ButtonType="Primary">Recharge</atom:Button>
+                    <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderAccountBalanceCny}" Value="112893" Precision="2" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:StatisticShowCaseLangResource P2ContentRecharge}" />
                 </StackPanel>
-                <atom:Statistic Header="Active Users" Value="112893" IsLoading="True" />
+                <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderActiveUsers}" Value="112893" IsLoading="True" />
             </UniformGrid>
         </gallery:ShowCaseItem>
 
@@ -22,8 +22,8 @@
                               Description="{gallery:StatisticShowCaseLangResource UnitDescription}"
                               IsOccupyEntireRow="True">
             <UniformGrid Columns="2" Rows="1">
-                <atom:Statistic Header="Feedback" Value="1128" ValuePrefixAddOn="{antdicons:AntDesignIconProvider LikeOutlined}" />
-                <atom:Statistic Header="Unmerged" Value="93" ValueSuffixAddOn="/ 100" />
+                <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderFeedback}" Value="1128" ValuePrefixAddOn="{antdicons:AntDesignIconProvider LikeOutlined}" />
+                <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderUnmerged}" Value="93" ValueSuffixAddOn="/ 100" />
             </UniformGrid>
         </gallery:ShowCaseItem>
 
@@ -33,7 +33,7 @@
             <Border Background="#F0F2F5" Padding="20, 30">
                 <UniformGrid Columns="2" Rows="1" ColumnSpacing="20">
                     <atom:Card SizeType="Large">
-                        <atom:Statistic Header="Active"
+                        <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderActive}"
                                         Value="11.28"
                                         Precision="2"
                                         ValuePrefixAddOn="{antdicons:AntDesignIconProvider ArrowUpOutlined}"
@@ -41,7 +41,7 @@
                                         ContentForeground="#3f8600" />
                     </atom:Card>
                     <atom:Card SizeType="Large">
-                        <atom:Statistic Header="Idle"
+                        <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderIdle}"
                                         Value="9.3"
                                         Precision="2"
                                         ValuePrefixAddOn="{antdicons:AntDesignIconProvider ArrowDownOutlined}"
@@ -54,12 +54,12 @@
 
         <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource AnimatedNumberTitle}" Description="{gallery:StatisticShowCaseLangResource AnimatedNumberDescription}" IsOccupyEntireRow="True">
             <UniformGrid Columns="2" Rows="2">
-                <atom:Statistic Header="Active Users" Value="112893">
+                <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderActiveUsers}" Value="112893">
                     <atom:Statistic.Content>
                         <atom:StatisticCountUp EndValue="{Binding Values}" Precision="2" />
                     </atom:Statistic.Content>
                 </atom:Statistic>
-                <atom:Statistic Header="Account Balance (CNY)" Value="112893">
+                <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderAccountBalanceCny}" Value="112893">
                     <atom:Statistic.Content>
                         <atom:StatisticCountUp EndValue="{Binding Values}" Precision="2" />
                     </atom:Statistic.Content>
@@ -70,11 +70,11 @@
         <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource TimerTitle}" Description="{gallery:StatisticShowCaseLangResource TimerDescription}" IsOccupyEntireRow="True">
             <UniformGrid Columns="2" Rows="3" RowSpacing="10">
                 <atom:TimerStatistic Value="{Binding Deadline}" />
-                <atom:TimerStatistic Header="Million Seconds" Value="{Binding Deadline}" Format="hh\:mm\:ss\.fff" />
-                <atom:TimerStatistic Header="Countdown" Value="{Binding TenSecondsLater}" />
-                <atom:TimerStatistic Header="Countup" Value="{Binding Before}" />
-                <atom:TimerStatistic Header="Day Level (Countdown)" Value="{Binding Deadline}" Format="d\ \天\ h\ \时\ m\ \分\ s\ \秒" />
-                <atom:TimerStatistic Header="Day Level (Countup)" Value="{Binding Before}" Format="d\ \天\ h\ \时\ m\ \分\ s\ \秒" />
+                <atom:TimerStatistic Header="{gallery:StatisticShowCaseLangResource P2HeaderMillionSeconds}" Value="{Binding Deadline}" Format="hh\:mm\:ss\.fff" />
+                <atom:TimerStatistic Header="{gallery:StatisticShowCaseLangResource P2HeaderCountdown}" Value="{Binding TenSecondsLater}" />
+                <atom:TimerStatistic Header="{gallery:StatisticShowCaseLangResource P2HeaderCountup}" Value="{Binding Before}" />
+                <atom:TimerStatistic Header="{gallery:StatisticShowCaseLangResource P2HeaderDayLevelCountdown}" Value="{Binding Deadline}" Format="{gallery:StatisticShowCaseLangResource P2DayLevelFormat}" />
+                <atom:TimerStatistic Header="{gallery:StatisticShowCaseLangResource P2HeaderDayLevelCountup}" Value="{Binding Before}" Format="{gallery:StatisticShowCaseLangResource P2DayLevelFormat}" />
             </UniformGrid>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

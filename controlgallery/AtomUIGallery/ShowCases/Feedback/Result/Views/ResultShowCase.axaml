@@ -12,12 +12,12 @@
             Description="{gallery:ResultShowCaseLangResource SuccessDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="Success"
-                         Header="Successfully Purchased Cloud Server ECS!"
-                         SubHeader="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait.">
+                         Header="{gallery:ResultShowCaseLangResource P2HeaderSuccessfullyPurchasedCloudServerEcs}"
+                         SubHeader="{gallery:ResultShowCaseLangResource P2SubHeaderOrderNumberCloudServerConfiguration}">
                 <atom:Result.Extra>
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <atom:Button ButtonType="Primary">Go Console</atom:Button>
-                        <atom:Button>Buy Again</atom:Button>
+                        <atom:Button ButtonType="Primary" Content="{gallery:ResultShowCaseLangResource P2ContentGoConsole}" />
+                        <atom:Button Content="{gallery:ResultShowCaseLangResource P2ContentBuyAgain}" />
                     </StackPanel>
                 </atom:Result.Extra>
             </atom:Result>
@@ -28,9 +28,9 @@
             Description="{gallery:ResultShowCaseLangResource InfoDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="Info"
-                         Header="Your operation has been executed.">
+                         Header="{gallery:ResultShowCaseLangResource P2HeaderYourOperationHasBeenExecuted}">
                 <atom:Result.Extra>
-                    <atom:Button ButtonType="Primary">Go Console</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:ResultShowCaseLangResource P2ContentGoConsole}" />
                 </atom:Result.Extra>
             </atom:Result>
         </gallery:ShowCaseItem>
@@ -40,9 +40,9 @@
             Description="{gallery:ResultShowCaseLangResource WarningDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="Warning"
-                         Header="There are some problems with your operation.">
+                         Header="{gallery:ResultShowCaseLangResource P2HeaderThereAreSomeProblemsWithYourOperation}">
                 <atom:Result.Extra>
-                    <atom:Button ButtonType="Primary">Go Console</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:ResultShowCaseLangResource P2ContentGoConsole}" />
                 </atom:Result.Extra>
             </atom:Result>
         </gallery:ShowCaseItem>
@@ -53,9 +53,9 @@
             IsOccupyEntireRow="True">
             <atom:Result Status="ErrorCode403"
                          Header="403"
-                         SubHeader="Sorry, you are not authorized to access this page.">
+                         SubHeader="{gallery:ResultShowCaseLangResource P2SubHeaderForbidden}">
                 <atom:Result.Extra>
-                    <atom:Button ButtonType="Primary">Back Home</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:ResultShowCaseLangResource P2ContentBackHome}" />
                 </atom:Result.Extra>
             </atom:Result>
         </gallery:ShowCaseItem>
@@ -66,9 +66,9 @@
             IsOccupyEntireRow="True">
             <atom:Result Status="ErrorCode404"
                          Header="404"
-                         SubHeader="Sorry, the page you visited does not exist.">
+                         SubHeader="{gallery:ResultShowCaseLangResource P2SubHeaderNotFound}">
                 <atom:Result.Extra>
-                    <atom:Button ButtonType="Primary">Back Home</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:ResultShowCaseLangResource P2ContentBackHome}" />
                 </atom:Result.Extra>
             </atom:Result>
         </gallery:ShowCaseItem>
@@ -79,9 +79,9 @@
             IsOccupyEntireRow="True">
             <atom:Result Status="ErrorCode500"
                          Header="500"
-                         SubHeader="Sorry, something went wrong.">
+                         SubHeader="{gallery:ResultShowCaseLangResource P2SubHeaderServerError}">
                 <atom:Result.Extra>
-                    <atom:Button ButtonType="Primary">Back Home</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:ResultShowCaseLangResource P2ContentBackHome}" />
                 </atom:Result.Extra>
             </atom:Result>
         </gallery:ShowCaseItem>
@@ -91,29 +91,27 @@
             Description="{gallery:ResultShowCaseLangResource ErrorDescription}"
             IsOccupyEntireRow="True">
             <atom:Result Status="Error"
-                         Header="Submission Failed"
-                         SubHeader="Please check and modify the following information before resubmitting.">
+                         Header="{gallery:ResultShowCaseLangResource P2HeaderSubmissionFailed}"
+                         SubHeader="{gallery:ResultShowCaseLangResource P2SubHeaderSubmissionFailed}">
                 <atom:Result.Extra>
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <atom:Button ButtonType="Primary">Go Console</atom:Button>
-                        <atom:Button>Buy Again</atom:Button>
+                        <atom:Button ButtonType="Primary" Content="{gallery:ResultShowCaseLangResource P2ContentGoConsole}" />
+                        <atom:Button Content="{gallery:ResultShowCaseLangResource P2ContentBuyAgain}" />
                     </StackPanel>
                 </atom:Result.Extra>
                 <StackPanel Spacing="8">
-                    <TextBlock FontWeight="Bold" FontSize="16">
-                        The content you submitted has the following error:
-                    </TextBlock>
+                    <TextBlock FontWeight="Bold" FontSize="16" Text="{gallery:ResultShowCaseLangResource P2TextTheContentYouSubmittedHasTheFollowingError}" />
 
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <antdicons:CloseCircleOutlined Foreground="{atom:SharedTokenResource ColorError}"/>
-                        <TextBlock>Your account has been frozen. </TextBlock>
-                        <TextBlock Foreground="{atom:SharedTokenResource ColorPrimary}">Thaw immediately ></TextBlock>
+                        <TextBlock Text="{gallery:ResultShowCaseLangResource P2TextYourAccountHasBeenFrozen}" />
+                        <TextBlock Foreground="{atom:SharedTokenResource ColorPrimary}" Text="{gallery:ResultShowCaseLangResource P2TextThawImmediately}" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <antdicons:CloseCircleOutlined Foreground="{atom:SharedTokenResource ColorError}"/>
-                        <TextBlock>Your account is not yet eligible to apply. </TextBlock>
-                        <TextBlock Foreground="{atom:SharedTokenResource ColorPrimary}">Apply Unlock ></TextBlock>
+                        <TextBlock Text="{gallery:ResultShowCaseLangResource P2TextYourAccountIsNotYetEligibleToApply}" />
+                        <TextBlock Foreground="{atom:SharedTokenResource ColorPrimary}" Text="{gallery:ResultShowCaseLangResource P2TextApplyUnlock}" />
                     </StackPanel>
                 </StackPanel>
             </atom:Result>
@@ -125,9 +123,9 @@
             IsOccupyEntireRow="True">
             <atom:Result Status="Info"
                          Icon="{antdicons:AntDesignIconProvider SmileOutlined}"
-                         Header="Great, we have done all the operations!">
+                         Header="{gallery:ResultShowCaseLangResource P2HeaderGreatWeHaveDoneAllTheOperations}">
                 <atom:Result.Extra>
-                    <atom:Button ButtonType="Primary">Next</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:ResultShowCaseLangResource P2ContentNext}" />
                 </atom:Result.Extra>
             </atom:Result>
         </gallery:ShowCaseItem>

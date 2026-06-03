@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reactive;
 using AtomUI.Controls;
 using Avalonia.Controls;
+using AtomUIGallery.Localization;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.CheckBox;
@@ -116,11 +118,9 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
     {
         HostScreen = screen;
 
-        CheckStatusBtnText              = "UnCheck";
-        EnableStatusBtnText             = "Disable";
         ControlledCheckBoxCheckedStatus = true;
         ControlledCheckBoxEnabledStatus = true;
-        SetupControlledCheckBoxText();
+        RefreshLocalizedTexts();
 
         AppleCheckedStatus  = false;
         PearCheckedStatus   = true;
@@ -157,22 +157,29 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
         SetupControlledCheckBoxText();
     }
 
+    public void RefreshLocalizedTexts()
+    {
+        SetupCheckBtnText();
+        SetupEnabledBtnText();
+        SetupControlledCheckBoxText();
+    }
+
     private void SetupCheckBtnText()
     {
         if (ControlledCheckBoxCheckedStatus.HasValue)
         {
             if (ControlledCheckBoxCheckedStatus.Value)
             {
-                CheckStatusBtnText = "UnCheck";
+                CheckStatusBtnText = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentUncheck, "UnCheck");
             }
             else
             {
-                CheckStatusBtnText = "Check";
+                CheckStatusBtnText = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentCheck, "Check");
             }
         }
         else
         {
-            CheckStatusBtnText = "Check";
+            CheckStatusBtnText = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentCheck, "Check");
         }
     }
 
@@ -180,29 +187,32 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
     {
         if (ControlledCheckBoxEnabledStatus)
         {
-            EnableStatusBtnText = "Disable";
+            EnableStatusBtnText = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentDisable, "Disable");
         }
         else
         {
-            EnableStatusBtnText = "Enable";
+            EnableStatusBtnText = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentEnable, "Enable");
         }
     }
 
     private void SetupControlledCheckBoxText()
     {
-        var checkedText = "UnChecked";
+        var checkedText = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentUnchecked, "UnChecked");
         if (ControlledCheckBoxCheckedStatus.HasValue && ControlledCheckBoxCheckedStatus.Value)
         {
-            checkedText = "Checked";
+            checkedText = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentChecked, "Checked");
         }
 
-        var enabledText = "Disabled";
+        var enabledText = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentDisabled, "Disabled");
         if (ControlledCheckBoxEnabledStatus)
         {
-            enabledText = "Enabled";
+            enabledText = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentEnabled, "Enabled");
         }
 
-        ControlledCheckBoxText = $"{checkedText}-{enabledText}";
+        ControlledCheckBoxText = string.Format(CultureInfo.CurrentCulture,
+            CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ControlledStatusFormat, "{0}-{1}"),
+            checkedText,
+            enabledText);
     }
 
     private void HandleCheckedAllStatus()

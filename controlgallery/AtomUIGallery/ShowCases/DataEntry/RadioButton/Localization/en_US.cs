@@ -26,6 +26,29 @@ internal class en_US : LanguageProvider
     public const string SolidOptionButtonDescription = "Solid option button style.";
     public const string SizeTypeTitle = "Size type";
     public const string SizeTypeDescription = "There are three sizes available: large, medium, and small. It can coordinate with input box.";
+    public const string P2TitleSizetype = "SizeType";
+    public const string P2ContentRadio = "Radio";
+    public const string P2ContentRadio1 = "Radio1";
+    public const string P2ContentRadio2 = "Radio2";
+    public const string P2ContentToggleDisabled = "toggle disabled";
+    public const string P2TextLinechart = "LineChart";
+    public const string P2TextDotchart = "DotChart";
+    public const string P2TextBarchart = "BarChart";
+    public const string P2TextPiechart = "PieChart";
+    public const string P2ContentOptionA = "Option A";
+    public const string P2ContentOptionB = "Option B";
+    public const string P2ContentOptionC = "Option C";
+    public const string P2ContentOptionD = "Option D";
+    public const string P2ContentApple = "Apple";
+    public const string P2ContentPear = "Pear";
+    public const string P2ContentOrange = "Orange";
+    public const string P2ContentMacos = "macOS";
+    public const string P2ContentLinux = "Linux";
+    public const string P2ContentWindows = "Windows";
+    public const string P2ContentHangzhou = "Hangzhou";
+    public const string P2ContentShanghai = "Shanghai";
+    public const string P2ContentBeijing = "Beijing";
+    public const string P2ContentChengdu = "Chengdu";
 
     protected override Type GetResourceKindType() => typeof(RadioButtonShowCaseLangResourceKind);
 }

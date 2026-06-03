@@ -32,6 +32,18 @@ internal class zh_CN : LanguageProvider
     public const string PrefixAndSuffixDescription = "在输入框内部添加前缀或后缀图标。";
     public const string StatusTitle = "状态";
     public const string StatusDescription = "通过 status 为 Input 添加状态，可设置为错误或警告。";
+    public const string P2PlaceholderTextInputWeight = "输入重量";
+    public const string P2PlaceholderTextKeyboardDisabled = "键盘已禁用";
+    public const string P2PlaceholderTextFocusAndScrollWheel = "聚焦后滚动鼠标滚轮";
+    public const string P2PlaceholderTextInputWithClearIcon = "带清除图标的输入框";
+    public const string P2PlaceholderTextEnterYourValue = "输入数值";
+    public const string P2PlaceholderTextError = "错误";
+    public const string P2PlaceholderTextWarning = "警告";
+    public const string P2PlaceholderTextErrorWithPrefix = "带前缀的错误";
+    public const string P2PlaceholderTextWarningWithPrefix = "带前缀的警告";
+    public const string P2TextRawValuePrefix = "原始值：";
+
+    public const string P2ContentKeyboardEnabled = "启用键盘";
 
     protected override Type GetResourceKindType() => typeof(NumberUpDownShowCaseLangResourceKind);
 }

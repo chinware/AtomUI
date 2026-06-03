@@ -21,8 +21,8 @@
                                  StyleVariant="{TemplateBinding StyleVariant}"
                                  DefaultValues="RMB"
                                  Name="UnitInput">
-                        <atom:SelectOption Header="RMB" Content="RMB"/>
-                        <atom:SelectOption Header="Dollar" Content="Dollar"/>
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P3CurrencyRmbHeader}" Content="RMB"/>
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P3CurrencyDollarHeader}" Content="Dollar"/>
                     </atom:Select>
                 </StackPanel>
             </ControlTemplate>

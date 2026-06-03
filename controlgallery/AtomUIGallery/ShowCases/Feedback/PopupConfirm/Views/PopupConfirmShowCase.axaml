@@ -9,14 +9,14 @@
             Title="{gallery:PopupConfirmShowCaseLangResource BasicUsageTitle}"
             Description="{gallery:PopupConfirmShowCaseLangResource BasicUsageDescription}">
             <atom:PopupConfirm
-                Title="Delete the task"
-                ConfirmContent="Are you sure to delete this task?"
+                Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
                 ShouldUseOverlayPopup="False"
-                OkText="Ok"
-                CancelText="Cancel"
+                OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}"
                 Placement="Top"
                 IsArrowVisible="True">
-                <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
+                <atom:Button ButtonType="Default" IsDanger="True" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentDelete}" />
             </atom:PopupConfirm>
         </gallery:ShowCaseItem>
 
@@ -25,9 +25,9 @@
             Description="{gallery:PopupConfirmShowCaseLangResource LocaleTextDescription}">
             <atom:PopupConfirm
                 ShouldUseOverlayPopup="False"
-                Title="Delete the task"
-                ConfirmContent="Are you sure to delete this task?">
-                <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
+                Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}">
+                <atom:Button ButtonType="Default" IsDanger="True" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentDelete}" />
             </atom:PopupConfirm>
         </gallery:ShowCaseItem>
 
@@ -58,110 +58,110 @@
 
                 <atom:PopupConfirm
                     Grid.Row="1" Grid.Column="0" Trigger="Click" Placement="LeftEdgeAlignedTop"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">LT</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentLt}" />
                 </atom:PopupConfirm>
 
                 <atom:PopupConfirm
                     Grid.Row="2" Grid.Column="0" Trigger="Click" Placement="Left"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">Left</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentLeft}" />
                 </atom:PopupConfirm>
 
                 <atom:PopupConfirm
                     Grid.Row="3" Grid.Column="0" Trigger="Click" Placement="LeftEdgeAlignedBottom"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">LB</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentLb}" />
                 </atom:PopupConfirm>
 
                 <atom:PopupConfirm
                     Grid.Row="0" Grid.Column="1" Trigger="Click" Placement="TopEdgeAlignedLeft"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">TL</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentTl}" />
                 </atom:PopupConfirm>
 
                 <atom:PopupConfirm
                     Grid.Row="0" Grid.Column="2" Trigger="Click" Placement="Top"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">Top</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentTop}" />
                 </atom:PopupConfirm>
 
                 <atom:PopupConfirm
                     Grid.Row="0" Grid.Column="3" Trigger="Click" Placement="TopEdgeAlignedRight"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">TR</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentTr}" />
                 </atom:PopupConfirm>
 
                 <atom:PopupConfirm
                     Grid.Row="1" Grid.Column="4" Trigger="Click" Placement="RightEdgeAlignedTop"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">RT</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentRt}" />
                 </atom:PopupConfirm>
 
                 <atom:PopupConfirm
                     Grid.Row="2" Grid.Column="4" Trigger="Click" Placement="Right"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">Right</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentRight}" />
                 </atom:PopupConfirm>
 
                 <atom:PopupConfirm
                     Grid.Row="3" Grid.Column="4" Trigger="Click" Placement="RightEdgeAlignedBottom"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">RB</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentRb}" />
                 </atom:PopupConfirm>
 
                 <atom:PopupConfirm
                     Grid.Row="4" Grid.Column="1" Trigger="Click" Placement="BottomEdgeAlignedLeft"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">BL</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentBl}" />
                 </atom:PopupConfirm>
 
                 <atom:PopupConfirm
                     Grid.Row="4" Grid.Column="2" Trigger="Click" Placement="Bottom"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">Bottom</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentBottom}" />
                 </atom:PopupConfirm>
 
                 <atom:PopupConfirm
                     Grid.Row="4" Grid.Column="3" Trigger="Click" Placement="BottomEdgeAlignedRight"
-                    Title="Delete the task"
-                    ConfirmContent="Are you sure to delete this task?"
-                    OkText="Ok"
-                    CancelText="Cancel">
-                    <atom:Button ButtonType="Default">BR</atom:Button>
+                    Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                    ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                    OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                    CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                    <atom:Button ButtonType="Default" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentBr}" />
                 </atom:PopupConfirm>
 
             </Grid>
@@ -171,13 +171,13 @@
             Title="{gallery:PopupConfirmShowCaseLangResource CustomizeIconTitle}"
             Description="{gallery:PopupConfirmShowCaseLangResource CustomizeIconDescription}">
             <atom:PopupConfirm
-                Title="Delete the task"
-                ConfirmContent="Are you sure to delete this task?"
+                Title="{gallery:PopupConfirmShowCaseLangResource P2TitleDeleteTheTask}"
+                ConfirmContent="{gallery:PopupConfirmShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
                 Icon="{antdicons:AntDesignIconProvider Kind=QuestionCircleOutlined}"
                 ConfirmStatus="Error"
-                OkText="Ok"
-                CancelText="Cancel">
-                <atom:Button ButtonType="Default" IsDanger="True">Delete</atom:Button>
+                OkText="{gallery:PopupConfirmShowCaseLangResource P2OkTextOk}"
+                CancelText="{gallery:PopupConfirmShowCaseLangResource P2CancelTextCancel}">
+                <atom:Button ButtonType="Default" IsDanger="True" Content="{gallery:PopupConfirmShowCaseLangResource P2ContentDelete}" />
             </atom:PopupConfirm>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

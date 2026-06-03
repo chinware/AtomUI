@@ -24,6 +24,12 @@ internal class zh_CN : LanguageProvider
     public const string StatusDescription = "通过 status 为 TimePicker 添加状态，可设置为错误或警告。";
     public const string TimeRangePickerTitle = "时间范围选择器";
     public const string TimeRangePickerDescription = "使用 RangeTimePicker 进行时间范围选择。";
+    public const string P2PlaceholderTextSelectTime = "选择时间";
+    public const string P2PlaceholderTextOutline = "描边风格";
+    public const string P2PlaceholderTextFilled = "填充风格";
+    public const string P2PlaceholderTextBorderless = "无边框";
+    public const string P2PlaceholderTextStartTime = "开始时间";
+    public const string P2SecondaryPlaceholderTextEndTime = "结束时间";
 
     protected override Type GetResourceKindType() => typeof(TimePickerShowCaseLangResourceKind);
 }

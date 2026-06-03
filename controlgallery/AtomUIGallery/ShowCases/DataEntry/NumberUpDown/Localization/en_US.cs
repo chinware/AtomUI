@@ -32,6 +32,18 @@ internal class en_US : LanguageProvider
     public const string PrefixAndSuffixDescription = "Add a prefix or suffix icons inside input.";
     public const string StatusTitle = "Status";
     public const string StatusDescription = "Add status to Input with status, which could be error or warning.";
+    public const string P2PlaceholderTextInputWeight = "Input weight";
+    public const string P2PlaceholderTextKeyboardDisabled = "Keyboard disabled";
+    public const string P2PlaceholderTextFocusAndScrollWheel = "Focus and scroll wheel";
+    public const string P2PlaceholderTextInputWithClearIcon = "input with clear icon";
+    public const string P2PlaceholderTextEnterYourValue = "Enter your value";
+    public const string P2PlaceholderTextError = "Error";
+    public const string P2PlaceholderTextWarning = "Warning";
+    public const string P2PlaceholderTextErrorWithPrefix = "Error with prefix";
+    public const string P2PlaceholderTextWarningWithPrefix = "Warning with prefix";
+    public const string P2TextRawValuePrefix = "Raw: ";
+
+    public const string P2ContentKeyboardEnabled = "Keyboard enabled";
 
     protected override Type GetResourceKindType() => typeof(NumberUpDownShowCaseLangResourceKind);
 }

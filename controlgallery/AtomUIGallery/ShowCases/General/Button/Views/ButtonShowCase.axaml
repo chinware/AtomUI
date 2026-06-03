@@ -16,11 +16,11 @@
             Title="{gallery:ButtonShowCaseLangResource TypeTitle}"
             Description="{gallery:ButtonShowCaseLangResource TypeDescription}">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <atom:Button ButtonType="Primary">Primary Button</atom:Button>
-                <atom:Button>Default Button</atom:Button>
-                <atom:Button ButtonType="Dashed">Dashed</atom:Button>
-                <atom:Button ButtonType="Text">Text Button</atom:Button>
-                <atom:Button ButtonType="Link">Link Button</atom:Button>
+                <atom:Button ButtonType="Primary" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimaryButton}" />
+                <atom:Button Content="{gallery:ButtonShowCaseLangResource P2ContentDefaultButton}" />
+                <atom:Button ButtonType="Dashed" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+                <atom:Button ButtonType="Text" Content="{gallery:ButtonShowCaseLangResource P2ContentTextButton}" />
+                <atom:Button ButtonType="Link" Content="{gallery:ButtonShowCaseLangResource P2ContentLinkButton}" />
             </WrapPanel>
         </gallery:ShowCaseItem>
 
@@ -29,23 +29,23 @@
             Description="{gallery:ButtonShowCaseLangResource ButtonShapeDescription}">
             <StackPanel Orientation="Vertical">
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0, 0, 0, 20">
-                    <atom:Button ButtonType="Primary">Primary</atom:Button>
-                    <atom:Button>Default</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
+                    <atom:Button Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
 
-                    <atom:Button ButtonType="Text">Text</atom:Button>
-                    <atom:Button ButtonType="Link">Link</atom:Button>
+                    <atom:Button ButtonType="Text" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
+                    <atom:Button ButtonType="Link" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
                 </WrapPanel>
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0, 0, 0, 20">
-                    <atom:Button ButtonType="Primary" Shape="Round">Primary</atom:Button>
-                    <atom:Button Shape="Round">Default</atom:Button>
-                    <atom:Button ButtonType="Text" Shape="Round">Text</atom:Button>
-                    <atom:Button ButtonType="Link" Shape="Round">Link</atom:Button>
+                    <atom:Button ButtonType="Primary" Shape="Round" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
+                    <atom:Button Shape="Round" Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
+                    <atom:Button ButtonType="Text" Shape="Round" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
+                    <atom:Button ButtonType="Link" Shape="Round" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
                 </WrapPanel>
                 <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal" Margin="0, 0, 0, 20">
-                    <atom:Button ButtonType="Primary" Shape="Circle">AA</atom:Button>
-                    <atom:Button Shape="Circle">AA</atom:Button>
-                    <atom:Button ButtonType="Text" Shape="Circle">AA</atom:Button>
-                    <atom:Button ButtonType="Link" Shape="Circle">AA</atom:Button>
+                    <atom:Button ButtonType="Primary" Shape="Circle" Content="{gallery:ButtonShowCaseLangResource P2ContentAa}" />
+                    <atom:Button Shape="Circle" Content="{gallery:ButtonShowCaseLangResource P2ContentAa}" />
+                    <atom:Button ButtonType="Text" Shape="Circle" Content="{gallery:ButtonShowCaseLangResource P2ContentAa}" />
+                    <atom:Button ButtonType="Link" Shape="Circle" Content="{gallery:ButtonShowCaseLangResource P2ContentAa}" />
                 </StackPanel>
             </StackPanel>
 
@@ -56,21 +56,21 @@
             Description="{gallery:ButtonShowCaseLangResource SizeDescription}">
             <DockPanel Margin="0, 0, 0, 0">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
-                    <atom:TextBlock VerticalAlignment="Center">Expand direction:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:ButtonShowCaseLangResource P2TextExpandDirection}" />
                     <atom:OptionButtonGroup ButtonStyle="Outline"
                                             OptionCheckedChanged="HandleButtonSizeTypeOptionCheckedChanged">
-                        <atom:OptionButton IsChecked="True">Large</atom:OptionButton>
-                        <atom:OptionButton>Default</atom:OptionButton>
-                        <atom:OptionButton>Small</atom:OptionButton>
+                        <atom:OptionButton IsChecked="True" Content="{gallery:ButtonShowCaseLangResource P2ContentLarge}" />
+                        <atom:OptionButton Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
+                        <atom:OptionButton Content="{gallery:ButtonShowCaseLangResource P2ContentSmall}" />
                     </atom:OptionButtonGroup>
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Margin="0, 20, 0, 0" Spacing="10">
                     <WrapPanel>
-                        <atom:Button ButtonType="Primary" SizeType="{Binding ButtonSizeType}">Primary</atom:Button>
-                        <atom:Button ButtonType="Dashed" SizeType="{Binding ButtonSizeType}">Dashed</atom:Button>
-                        <atom:Button ButtonType="Default" SizeType="{Binding ButtonSizeType}">Default</atom:Button>
-                        <atom:Button ButtonType="Link" SizeType="{Binding ButtonSizeType}">Link</atom:Button>
+                        <atom:Button ButtonType="Primary" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
+                        <atom:Button ButtonType="Dashed" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+                        <atom:Button ButtonType="Default" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
+                        <atom:Button ButtonType="Link" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
                     </WrapPanel>
                     <WrapPanel>
                         <atom:Button ButtonType="Primary" Shape="Default"
@@ -87,14 +87,10 @@
                                      SizeType="{Binding ButtonSizeType}" />
                         <atom:Button ButtonType="Primary" Shape="Round"
                                      Icon="{antdicons:AntDesignIconProvider Kind=DownloadOutlined}"
-                                     SizeType="{Binding ButtonSizeType}">
-                            Download
-                        </atom:Button>
+                                     SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentDownload}" />
                         <atom:Button ButtonType="Primary" Shape="Default"
                                      Icon="{antdicons:AntDesignIconProvider Kind=DownloadOutlined}"
-                                     SizeType="{Binding ButtonSizeType}">
-                            Download
-                        </atom:Button>
+                                     SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentDownload}" />
                     </WrapPanel>
                 </StackPanel>
             </DockPanel>
@@ -108,62 +104,42 @@
                     <atom:Button ButtonType="Primary" Shape="Circle"
                                  Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
                     <atom:Button ButtonType="Primary" Shape="Round"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Search
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
 
                     <atom:Button ButtonType="Default" Shape="Circle"
                                  Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
                     <atom:Button ButtonType="Default" Shape="Round"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Search
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
 
                     <atom:Button ButtonType="Text" Shape="Default"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Search
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
 
                     <atom:Button ButtonType="Link" Shape="Default"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Search
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
 
                     <atom:Button ButtonType="Dashed" Shape="Circle"
                                  Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
                     <atom:Button ButtonType="Link" Shape="Default"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Search
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
 
                 </WrapPanel>
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                     <atom:Button ButtonType="Primary" IsDanger="True"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Search
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
 
                     <atom:Button ButtonType="Default" Shape="Round" IsDanger="True"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Search
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
 
                     <atom:Button ButtonType="Text" Shape="Default" IsDanger="True"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Search
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
 
                     <atom:Button ButtonType="Link" Shape="Default" IsDanger="True"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Search
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
 
                     <atom:Button ButtonType="Dashed" Shape="Circle" IsDanger="True"
                                  Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" />
                     <atom:Button ButtonType="Dashed" Shape="Default" IsDanger="True"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Search
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
                 </WrapPanel>
             </StackPanel>
 
@@ -177,18 +153,16 @@
                              Click="HandleLoadingBtnClick"
                              Icon="{antdicons:AntDesignIconProvider Kind=PoweroffOutlined}" />
                 <WrapPanel>
-                    <atom:Button ButtonType="Primary" IsLoading="True">Loading</atom:Button>
-                    <atom:Button ButtonType="Primary" SizeType="Small" IsLoading="True">Loading</atom:Button>
+                    <atom:Button ButtonType="Primary" IsLoading="True" Content="{gallery:ButtonShowCaseLangResource P2ContentLoading}" />
+                    <atom:Button ButtonType="Primary" SizeType="Small" IsLoading="True" Content="{gallery:ButtonShowCaseLangResource P2ContentLoading}" />
                     <atom:Button ButtonType="Primary" IsLoading="True"
                                  Icon="{antdicons:AntDesignIconProvider Kind=PoweroffOutlined}" />
                 </WrapPanel>
                 <WrapPanel>
-                    <atom:Button ButtonType="Primary" Click="HandleLoadingBtnClick">Click me!</atom:Button>
+                    <atom:Button ButtonType="Primary" Click="HandleLoadingBtnClick" Content="{gallery:ButtonShowCaseLangResource P2ContentClickMe}" />
                     <atom:Button ButtonType="Primary"
                                  Click="HandleLoadingBtnClick"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=PoweroffOutlined}">
-                        Click me!
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=PoweroffOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentClickMe}" />
                     <atom:Button ButtonType="Primary"
                                  Click="HandleLoadingBtnClick"
                                  Icon="{antdicons:AntDesignIconProvider Kind=PoweroffOutlined}" />
@@ -201,21 +175,11 @@
             Title="{gallery:ButtonShowCaseLangResource BlockButtonTitle}"
             Description="{gallery:ButtonShowCaseLangResource BlockButtonDescription}">
             <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
-                <atom:Button ButtonType="Primary" HorizontalAlignment="Stretch">
-                    Primary
-                </atom:Button>
-                <atom:Button ButtonType="Default" HorizontalAlignment="Stretch">
-                    Default
-                </atom:Button>
-                <atom:Button ButtonType="Dashed" HorizontalAlignment="Stretch">
-                    Dashed
-                </atom:Button>
-                <atom:Button ButtonType="Text" HorizontalAlignment="Stretch">
-                    Text
-                </atom:Button>
-                <atom:Button ButtonType="Link" HorizontalAlignment="Stretch">
-                    Link
-                </atom:Button>
+                <atom:Button ButtonType="Primary" HorizontalAlignment="Stretch" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
+                <atom:Button ButtonType="Default" HorizontalAlignment="Stretch" Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
+                <atom:Button ButtonType="Dashed" HorizontalAlignment="Stretch" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+                <atom:Button ButtonType="Text" HorizontalAlignment="Stretch" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
+                <atom:Button ButtonType="Link" HorizontalAlignment="Stretch" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -223,21 +187,11 @@
             Title="{gallery:ButtonShowCaseLangResource DangerButtonsTitle}"
             Description="{gallery:ButtonShowCaseLangResource DangerButtonsDescription}">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                <atom:Button ButtonType="Primary" IsDanger="True">
-                    Primary
-                </atom:Button>
-                <atom:Button ButtonType="Default" IsDanger="True">
-                    Default
-                </atom:Button>
-                <atom:Button ButtonType="Dashed" IsDanger="True">
-                    Dashed
-                </atom:Button>
-                <atom:Button ButtonType="Text" IsDanger="True">
-                    Text
-                </atom:Button>
-                <atom:Button ButtonType="Link" IsDanger="True">
-                    Link
-                </atom:Button>
+                <atom:Button ButtonType="Primary" IsDanger="True" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
+                <atom:Button ButtonType="Default" IsDanger="True" Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
+                <atom:Button ButtonType="Dashed" IsDanger="True" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+                <atom:Button ButtonType="Text" IsDanger="True" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
+                <atom:Button ButtonType="Link" IsDanger="True" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
             </WrapPanel>
         </gallery:ShowCaseItem>
 
@@ -249,46 +203,24 @@
                     Padding="10">
                 <StackPanel Orientation="Vertical">
                     <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                        <atom:Button ButtonType="Primary" IsGhost="True">
-                            Primary
-                        </atom:Button>
-                        <atom:Button ButtonType="Default" IsGhost="True">
-                            Default
-                        </atom:Button>
-                        <atom:Button ButtonType="Dashed" IsGhost="True">
-                            Dashed
-                        </atom:Button>
-                        <atom:Button ButtonType="Text" IsGhost="True">
-                            Text
-                        </atom:Button>
-                        <atom:Button ButtonType="Link" IsGhost="True">
-                            Link
-                        </atom:Button>
-                        <atom:Button ButtonType="Primary" IsDanger="True" IsGhost="True">
-                            Danger
-                        </atom:Button>
+                        <atom:Button ButtonType="Primary" IsGhost="True" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
+                        <atom:Button ButtonType="Default" IsGhost="True" Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
+                        <atom:Button ButtonType="Dashed" IsGhost="True" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+                        <atom:Button ButtonType="Text" IsGhost="True" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
+                        <atom:Button ButtonType="Link" IsGhost="True" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
+                        <atom:Button ButtonType="Primary" IsDanger="True" IsGhost="True" Content="{gallery:ButtonShowCaseLangResource P2ContentDanger}" />
                     </WrapPanel>
                     <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                         <atom:Button ButtonType="Primary" IsGhost="True"
-                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                            Primary
-                        </atom:Button>
+                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
                         <atom:Button ButtonType="Default" IsGhost="True"
-                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                            Default
-                        </atom:Button>
+                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
                         <atom:Button ButtonType="Text" IsGhost="True"
-                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                            Text
-                        </atom:Button>
+                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
                         <atom:Button ButtonType="Link" IsGhost="True"
-                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                            Link
-                        </atom:Button>
+                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
                         <atom:Button ButtonType="Primary" IsDanger="True" IsGhost="True"
-                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                            Danger
-                        </atom:Button>
+                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDanger}" />
                     </WrapPanel>
                 </StackPanel>
             </Border>
@@ -299,100 +231,60 @@
             Description="{gallery:ButtonShowCaseLangResource DisabledDescription}">
             <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Primary" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Primary
-                    </atom:Button>
+                    <atom:Button ButtonType="Primary" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
                     <atom:Button ButtonType="Primary" IsEnabled="False"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Primary(disabled)
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimaryDisabled}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Default" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Default
-                    </atom:Button>
-                    <atom:Button ButtonType="Default" IsEnabled="False" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Default(disabled)
-                    </atom:Button>
+                    <atom:Button ButtonType="Default" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
+                    <atom:Button ButtonType="Default" IsEnabled="False" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDefaultDisabled}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Dashed" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Dashed
-                    </atom:Button>
+                    <atom:Button ButtonType="Dashed" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
                     <atom:Button ButtonType="Dashed" IsEnabled="False"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Dashed(disabled)
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDashedDisabled}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Text" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Text
-                    </atom:Button>
+                    <atom:Button ButtonType="Text" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
                     <atom:Button ButtonType="Text" IsEnabled="False"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Text(disabled)
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentTextDisabled}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
-                    <atom:Button ButtonType="Link" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Link
-                    </atom:Button>
+                    <atom:Button ButtonType="Link" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
                     <atom:Button ButtonType="Link" IsEnabled="False"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Link(disabled)
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentLinkDisabled}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal">
                     <atom:Button ButtonType="Primary" IsDanger="True"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Danger Primary
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDangerPrimary}" />
                     <atom:Button ButtonType="Primary" IsDanger="True" IsEnabled="False"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Danger Primary(disabled)
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDangerPrimaryDisabled}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <atom:Button ButtonType="Default" IsDanger="True"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Danger Default
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDangerDefault}" />
                     <atom:Button ButtonType="Default" IsDanger="True" IsEnabled="False"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Danger Default(disabled)
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDangerDefaultDisabled}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <atom:Button ButtonType="Text" IsDanger="True"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Danger Text
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDangerText}" />
                     <atom:Button ButtonType="Text" IsDanger="True" IsEnabled="False"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Danger Text(disabled)
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDangerTextDisabled}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal">
                     <atom:Button ButtonType="Link" IsDanger="True"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Danger Link
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDangerLink}" />
                     <atom:Button ButtonType="Link" IsDanger="True" IsEnabled="False"
-                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                        Danger Link(disabled)
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentDangerLinkDisabled}" />
                 </StackPanel>
 
                 <Border Background="rgb(190, 200, 200)">
                     <StackPanel Orientation="Horizontal">
-                        <atom:Button IsGhost="True" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                            Ghost
-                        </atom:Button>
+                        <atom:Button IsGhost="True" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentGhost}" />
                         <atom:Button IsGhost="True" IsEnabled="False"
-                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}">
-                            Ghost(disabled)
-                        </atom:Button>
+                                     Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentGhostDisabled}" />
                     </StackPanel>
                 </Border>
 

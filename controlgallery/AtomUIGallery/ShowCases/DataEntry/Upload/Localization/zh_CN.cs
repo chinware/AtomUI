@@ -26,6 +26,18 @@ internal class zh_CN : LanguageProvider
     public const string UploadDirectoryDescription = "可以选择并上传整个目录。";
     public const string UploadPngOnlyTitle = "仅上传 PNG 文件";
     public const string UploadPngOnlyDescription = "beforeUpload 返回 false 或拒绝 promise 时只会阻止上传行为，被阻止的文件仍会显示在文件列表中。本示例通过返回 UPLOAD.LIST_IGNORE 将被阻止的文件排除在列表外。";
+    public const string P2ContentClickToUpload = "点击上传";
+    public const string P2TextUpload = "上传";
+    public const string P2ContentUploadMaxN1 = "上传（最多：1）";
+    public const string P2ContentUploadMaxN3 = "上传（最多：3）";
+    public const string P2ContentUploadDirectory = "上传目录";
+    public const string P2ContentUploadPngOnly = "仅上传 PNG";
+    public const string P2ErrorServer500 = "服务器错误 500";
+    public const string P2ErrorUpload = "上传失败！";
+    public const string P2CancelJpgPngOnly = "只能上传 JPG/PNG 文件！";
+    public const string P2CancelImageSize = "图片必须小于 2MB！";
+    public const string P2CancelPngOnly = "只能上传 PNG 文件！";
+    public const string P2UploadSuccessFormat = "{0} 上传成功！";
 
     protected override Type GetResourceKindType() => typeof(UploadShowCaseLangResourceKind);
 }

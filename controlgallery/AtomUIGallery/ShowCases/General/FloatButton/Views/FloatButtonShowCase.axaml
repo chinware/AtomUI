@@ -61,8 +61,8 @@
                 <Border Background="White">
                     <Panel Height="500">
                         <atom:FloatButtonHost FloatOffsetX="80"
-                                              Tooltip="Since 5.25.0+" TooltipColor="blue" />
-                        <atom:FloatButtonHost Tooltip="Documents" />
+                                              Tooltip="{gallery:FloatButtonShowCaseLangResource P2TooltipSinceN5N25N0}" TooltipColor="blue" />
+                        <atom:FloatButtonHost Tooltip="{gallery:FloatButtonShowCaseLangResource P2TooltipDocuments}" />
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
@@ -77,13 +77,13 @@
                         <atom:FloatButtonHost Shape="Square"
                                               Icon="{antdicons:AntDesignIconProvider FileTextOutlined}" Margin="0"
                                               FloatOffsetX="145"
-                                              Description="HELP INFO" />
+                                              Description="{gallery:FloatButtonShowCaseLangResource P2DescriptionHelpInfo}" />
                         <atom:FloatButtonHost Shape="Square"
                                               FloatOffsetX="80"
-                                              Description="HELP INFO" />
+                                              Description="{gallery:FloatButtonShowCaseLangResource P2DescriptionHelpInfo}" />
                         <atom:FloatButtonHost Shape="Square"
                                               Icon="{antdicons:AntDesignIconProvider FileTextOutlined}"
-                                              Description="HELP INFO" />
+                                              Description="{gallery:FloatButtonShowCaseLangResource P2DescriptionHelpInfo}" />
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
@@ -262,14 +262,14 @@
                 <Border Background="White">
                     <Panel Height="1000">
                         <StackPanel>
-                            <TextBlock>Scroll to bottom</TextBlock>
-                            <TextBlock>Scroll to bottom</TextBlock>
-                            <TextBlock>Scroll to bottom</TextBlock>
-                            <TextBlock>Scroll to bottom</TextBlock>
-                            <TextBlock>Scroll to bottom</TextBlock>
-                            <TextBlock>Scroll to bottom</TextBlock>
-                            <TextBlock>Scroll to bottom</TextBlock>
-                            <TextBlock>Scroll to bottom</TextBlock>
+                            <TextBlock Text="{gallery:FloatButtonShowCaseLangResource P2TextScrollToBottom}" />
+                            <TextBlock Text="{gallery:FloatButtonShowCaseLangResource P2TextScrollToBottom}" />
+                            <TextBlock Text="{gallery:FloatButtonShowCaseLangResource P2TextScrollToBottom}" />
+                            <TextBlock Text="{gallery:FloatButtonShowCaseLangResource P2TextScrollToBottom}" />
+                            <TextBlock Text="{gallery:FloatButtonShowCaseLangResource P2TextScrollToBottom}" />
+                            <TextBlock Text="{gallery:FloatButtonShowCaseLangResource P2TextScrollToBottom}" />
+                            <TextBlock Text="{gallery:FloatButtonShowCaseLangResource P2TextScrollToBottom}" />
+                            <TextBlock Text="{gallery:FloatButtonShowCaseLangResource P2TextScrollToBottom}" />
                         </StackPanel>
                         <atom:BackTopFloatButtonHost ButtonType="Default" />
                     </Panel>

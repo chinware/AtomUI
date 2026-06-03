@@ -16,6 +16,16 @@ internal class zh_CN : LanguageProvider
     public const string CustomIconDescription = "自定义浮出按钮图标。";
     public const string FlyoutTriggerTypeTitle = "浮出触发类型";
     public const string FlyoutTriggerTypeDescription = "支持两种触发类型。";
+    public const string P2HeaderCut = "剪切";
+    public const string P2HeaderCopy = "复制";
+    public const string P2HeaderDelete = "删除";
+    public const string P2ContentHoverMe = "悬停我";
+    public const string P2ContentLarge = "大号";
+    public const string P2ContentMiddle = "中号";
+    public const string P2ContentSmall = "小号";
+    public const string P2ContentDefault = "默认";
+    public const string P2ContentPrimary = "主要";
+    public const string P2ContentClickMe = "点我";
 
     protected override Type GetResourceKindType() => typeof(SplitButtonShowCaseLangResourceKind);
 }

@@ -40,6 +40,8 @@ internal class en_US : LanguageProvider
     public const string VerticalStepsDescription = "Ordinary step progress bar, supports position specification of additional areas";
     public const string ToggleDisabledStatusTitle = "toggle disabled status";
     public const string ToggleDisabledStatusDescription = "The progress bar is in the disabled state and uses the disabled style.";
+    public const string P2ContentSub = "Sub";
+    public const string P2ContentAdd = "Add";
 
     protected override Type GetResourceKindType() => typeof(ProgressBarShowCaseLangResourceKind);
 }

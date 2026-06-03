@@ -10,18 +10,18 @@
         <gallery:ShowCaseItem Description="{gallery:SpaceShowCaseLangResource BasicDescription}"
                               Title="{gallery:SpaceShowCaseLangResource BasicTitle}" IsOccupyEntireRow="True">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:TextBlock VerticalAlignment="Center">Space:</atom:TextBlock>
+                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SpaceShowCaseLangResource P2TextSpace}" />
                 <atom:Space>
-                    <atom:Button ButtonType="Primary">Button</atom:Button>
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}">Click to Upload</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:SpaceShowCaseLangResource P2ContentClickToUpload}" />
                     <atom:PopupConfirm
-                        Title="Delete the task"
-                        ConfirmContent="Are you sure to delete this task?"
-                        OkText="Ok"
-                        CancelText="Cancel"
+                        Title="{gallery:SpaceShowCaseLangResource P2TitleDeleteTheTask}"
+                        ConfirmContent="{gallery:SpaceShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                        OkText="{gallery:SpaceShowCaseLangResource P2OkTextOk}"
+                        CancelText="{gallery:SpaceShowCaseLangResource P2CancelTextCancel}"
                         Placement="Top"
                         IsArrowVisible="True">
-                        <atom:Button ButtonType="Default" IsDanger="True">Confirm</atom:Button>
+                        <atom:Button ButtonType="Default" IsDanger="True" Content="{gallery:SpaceShowCaseLangResource P2ContentConfirm}" />
                     </atom:PopupConfirm>
                 </atom:Space>
             </StackPanel>
@@ -30,24 +30,24 @@
         <gallery:ShowCaseItem Description="{gallery:SpaceShowCaseLangResource VerticalSpaceDescription}"
                               Title="{gallery:SpaceShowCaseLangResource VerticalSpaceTitle}" IsOccupyEntireRow="True">
             <atom:Space Orientation="Vertical" HorizontalAlignment="Stretch" Height="300">
-                <atom:Card Header="Card" SizeType="Middle" HorizontalAlignment="Stretch">
+                <atom:Card Header="{gallery:SpaceShowCaseLangResource P2HeaderCard}" SizeType="Middle" HorizontalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" Spacing="10">
-                        <atom:TextBlock>Card content</atom:TextBlock>
-                        <atom:TextBlock>Card content</atom:TextBlock>
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
                     </StackPanel>
                 </atom:Card>
         
-                <atom:Card Header="Card" SizeType="Middle" HorizontalAlignment="Stretch">
+                <atom:Card Header="{gallery:SpaceShowCaseLangResource P2HeaderCard}" SizeType="Middle" HorizontalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" Spacing="10">
-                        <atom:TextBlock>Card content</atom:TextBlock>
-                        <atom:TextBlock>Card content</atom:TextBlock>
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
                     </StackPanel>
                 </atom:Card>
         
-                <atom:Card Header="Card" SizeType="Middle" HorizontalAlignment="Stretch">
+                <atom:Card Header="{gallery:SpaceShowCaseLangResource P2HeaderCard}" SizeType="Middle" HorizontalAlignment="Stretch">
                     <StackPanel Orientation="Vertical" Spacing="10">
-                        <atom:TextBlock>Card content</atom:TextBlock>
-                        <atom:TextBlock>Card content</atom:TextBlock>
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
                     </StackPanel>
                 </atom:Card>
             </atom:Space>

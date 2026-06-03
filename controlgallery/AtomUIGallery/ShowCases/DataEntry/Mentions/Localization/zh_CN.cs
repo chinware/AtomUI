@@ -24,6 +24,13 @@ internal class zh_CN : LanguageProvider
     public const string AutoSizeDescription = "高度自动调整。";
     public const string WithClearIconTitle = "带清除图标";
     public const string WithClearIconDescription = "自定义清除按钮。";
+    public const string P2PlaceholderTextOutlined = "线框风格";
+    public const string P2PlaceholderTextFilled = "填充风格";
+    public const string P2PlaceholderTextBorderless = "无边框";
+    public const string P2PlaceholderTextUnderlined = "下划线";
+    public const string P2PlaceholderTextInputToMentionPeopleToMentionTag = "输入 @ 提及成员，输入 # 提及标签";
+    public const string P2PlaceholderTextThisIsDisabledMentions = "这是禁用状态的 Mentions";
+    public const string P2PlaceholderTextThisIsReadonlyMentions = "这是只读状态的 Mentions";
 
     protected override Type GetResourceKindType() => typeof(MentionsShowCaseLangResourceKind);
 }

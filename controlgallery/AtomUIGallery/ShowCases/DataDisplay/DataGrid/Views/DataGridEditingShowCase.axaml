@@ -11,16 +11,16 @@
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:Button ButtonType="Primary" Click="HandleToggleEmptyGridItemsSource">Toggle Data</atom:Button>
-                    <atom:Button ButtonType="Primary" Click="HandleToggleLoadingState">Toggle Loading</atom:Button>
+                    <atom:Button ButtonType="Primary" Click="HandleToggleEmptyGridItemsSource" Content="{gallery:DataGridShowCaseLangResource P2ContentToggleData}" />
+                    <atom:Button ButtonType="Primary" Click="HandleToggleLoadingState" Content="{gallery:DataGridShowCaseLangResource P2ContentToggleLoading}" />
                 </StackPanel>
                 <atom:DataGrid x:Name="CustomEmptyDataGrid"
                                CanUserReorderRows="True"
                                x:DataType="vm:DataGridBaseInfo">
                     <atom:DataGrid.Columns>
-                        <atom:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                        <atom:DataGridTextColumn Header="Age" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Address" Binding="{Binding Name}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}" Binding="{Binding Name}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}" Binding="{Binding Name}" />
                     </atom:DataGrid.Columns>
                 </atom:DataGrid>
             </StackPanel>
@@ -30,22 +30,22 @@
                               Description="{gallery:DataGridShowCaseLangResource EditableCellsDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10">
-                <atom:Button ButtonType="Primary" Click="HandleAddARowToCellsEditableGrid">Add a row</atom:Button>
+                <atom:Button ButtonType="Primary" Click="HandleAddARowToCellsEditableGrid" Content="{gallery:DataGridShowCaseLangResource P2ContentAddARow}" />
                 <atom:DataGrid x:Name="EditableCellsDataGrid"
                                        x:DataType="vm:DataGridBaseInfo">
                     <atom:DataGrid.Columns>
-                        <atom:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                        <atom:DataGridNumericColumn Header="Age" Binding="{Binding Age}" FormatString="0" />
-                        <atom:DataGridTextColumn Header="Address" Binding="{Binding Address}" />
-                        <atom:DataGridTemplateColumn Header="Action">
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}" Binding="{Binding Name}" />
+                        <atom:DataGridNumericColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}" FormatString="0" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}" Binding="{Binding Address}" />
+                        <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAction}">
                             <atom:DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Spacing="15">
                                         <atom:PopupConfirm
-                                            Title="Sure to delete?"
+                                            Title="{gallery:DataGridShowCaseLangResource P2TitleSureToDelete}"
                                             Confirmed="HandleRemoveRowCellsEditableGrid"
                                             DataContext="{Binding Index, RelativeSource={RelativeSource AncestorType=atom:DataGridRow}}">
-                                            <atom:HyperLinkTextBlock Text="Delete" />
+                                            <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextDelete}" />
                                         </atom:PopupConfirm>
                                     </StackPanel>
                                 </DataTemplate>

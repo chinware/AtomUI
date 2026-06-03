@@ -9,77 +9,46 @@
     <gallery:ShowCasePanel>
     <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource BasicUsageDescription}" Title="{gallery:TimelineShowCaseLangResource BasicUsageTitle}">
         <atom:Timeline>
-            <atom:TimelineItem>
-                2024-01-01 AtomUI Officially Initiated
-            </atom:TimelineItem>
-            <atom:TimelineItem IndicatorColor="green">
-                2024-08-12 After more than 7 months of development, AtomUI is officially open-source.
-                Welcome everyone to follow us.
-            </atom:TimelineItem>
-            <atom:TimelineItem IndicatorColor="red">
-                2024-10-01 Release of the 0.0.1 Preview Version
-            </atom:TimelineItem>
+            <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
+            <atom:TimelineItem IndicatorColor="green" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N08N12AfterMoreThanN7Months}" />
+            <atom:TimelineItem IndicatorColor="red" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N10N01ReleaseOfTheN0N0}" />
         </atom:Timeline>
     </gallery:ShowCaseItem>
 
     <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource ColorDescription}" Title="{gallery:TimelineShowCaseLangResource ColorTitle}">
         <atom:Timeline>
-            <atom:TimelineItem IndicatorColor="green">
-                2024-01-01 AtomUI Officially Initiated
-            </atom:TimelineItem>
-            <atom:TimelineItem IndicatorColor="blue">
-                2024-01-01 AtomUI Officially Initiated
-            </atom:TimelineItem>
-            <atom:TimelineItem IndicatorColor="Red">
-                2024-01-01 AtomUI Officially Initiated
-            </atom:TimelineItem>
-            <atom:TimelineItem IndicatorColor="gray">
-                2024-01-01 AtomUI Officially Initiated
-            </atom:TimelineItem>
-            <atom:TimelineItem IndicatorColor="#00CCFF">
-                2024-01-01 AtomUI Officially Initiated
-            </atom:TimelineItem>
+            <atom:TimelineItem IndicatorColor="green" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
+            <atom:TimelineItem IndicatorColor="blue" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
+            <atom:TimelineItem IndicatorColor="Red" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
+            <atom:TimelineItem IndicatorColor="gray" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
+            <atom:TimelineItem IndicatorColor="#00CCFF" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
         </atom:Timeline>
     </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource LastNodeAndReversingDescription}" Title="{gallery:TimelineShowCaseLangResource LastNodeAndReversingTitle}">
             <StackPanel>
                 <atom:Timeline
-                    Pending="Recording..."
+                    Pending="{gallery:TimelineShowCaseLangResource P2ContentRecording}"
                     IsReverse="False"
                     x:Name="ReverseTimeline">
-                    <atom:TimelineItem Label="2024-01-01">
-                        2024-01-01 AtomUI Officially Initiated. 1
-                    </atom:TimelineItem>
-                    <atom:TimelineItem Label="2024-08-12">
-                        2024-01-01 AtomUI Officially Initiated. 2
-                    </atom:TimelineItem>
-                    <atom:TimelineItem Label="2024-10-01">
-                        2024-01-01 AtomUI Officially Initiated. 3
-                    </atom:TimelineItem>
+                    <atom:TimelineItem Label="2024-01-01" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiatedN1}" />
+                    <atom:TimelineItem Label="2024-08-12" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiatedN2}" />
+                    <atom:TimelineItem Label="2024-10-01" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiatedN3}" />
                 </atom:Timeline>
                 <DockPanel>
-                    <atom:Button ButtonType="Primary" x:Name="ReverseButton">Toggle Reverse</atom:Button>
+                    <atom:Button ButtonType="Primary" x:Name="ReverseButton" Content="{gallery:TimelineShowCaseLangResource P2ContentToggleReverse}" />
                 </DockPanel>
             </StackPanel>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource AlternateDescription}" Title="{gallery:TimelineShowCaseLangResource AlternateTitle}">
             <atom:Timeline Mode="Alternate">
-                <atom:TimelineItem Label="2024-01-01">
-                    2024-01-01 AtomUI Officially Initiated
-                </atom:TimelineItem>
-                <atom:TimelineItem>
-                    2024-01-01 AtomUI Officially Initiated
-                </atom:TimelineItem>
-                <atom:TimelineItem>
-                    2024-01-01 AtomUI Officially Initiated
-                </atom:TimelineItem>
+                <atom:TimelineItem Label="2024-01-01" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
+                <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
+                <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
                 <atom:TimelineItem IndicatorIcon="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
                                    IndicatorColor ="Red"
-                                   Label="2024-01-01">
-                    2024-01-01 AtomUI Officially Initiated
-                </atom:TimelineItem>
+                                   Label="2024-01-01" Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
             </atom:Timeline>
         </gallery:ShowCaseItem>
 
@@ -91,41 +60,25 @@
                             <Setter Property="Margin" Value="5" />
                         </Style>
                     </WrapPanel.Styles>
-                    <atom:RadioButton IsChecked="True" x:Name="ModeLeft">Left</atom:RadioButton>
-                    <atom:RadioButton x:Name="ModeRight">Right</atom:RadioButton>
-                    <atom:RadioButton x:Name="ModeAlternate">Alternate</atom:RadioButton>
+                    <atom:RadioButton IsChecked="True" x:Name="ModeLeft" Content="{gallery:TimelineShowCaseLangResource P2ContentLeft}" />
+                    <atom:RadioButton x:Name="ModeRight" Content="{gallery:TimelineShowCaseLangResource P2ContentRight}" />
+                    <atom:RadioButton x:Name="ModeAlternate" Content="{gallery:TimelineShowCaseLangResource P2ContentAlternate}" />
                 </WrapPanel>
                 <atom:Timeline Mode="Left" x:Name="LabelTimeline">
-                    <atom:TimelineItem Label="2024-01-01">
-                        AtomUI Officially Initiated
-                    </atom:TimelineItem>
-                    <atom:TimelineItem Label="2015-09-01 09:12:11">
-                        Create a services site
-                    </atom:TimelineItem>
-                    <atom:TimelineItem>
-                        Qinware website online
-                    </atom:TimelineItem>
-                    <atom:TimelineItem Label="2029-09-01">
-                        Network problems being solved
-                    </atom:TimelineItem>
+                    <atom:TimelineItem Label="2024-01-01" Content="{gallery:TimelineShowCaseLangResource P2ContentAtomuiOfficiallyInitiated}" />
+                    <atom:TimelineItem Label="2015-09-01 09:12:11" Content="{gallery:TimelineShowCaseLangResource P2ContentCreateAServicesSite}" />
+                    <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentQinwareWebsiteOnline}" />
+                    <atom:TimelineItem Label="2029-09-01" Content="{gallery:TimelineShowCaseLangResource P2ContentNetworkProblemsBeingSolved}" />
                 </atom:Timeline>
             </StackPanel>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Description="{gallery:TimelineShowCaseLangResource RightAlternateDescription}" Title="{gallery:TimelineShowCaseLangResource RightAlternateTitle}">
             <atom:Timeline Mode="Right">
-                <atom:TimelineItem>
-                    2024-01-01 AtomUI Officially Initiated
-                </atom:TimelineItem>
-                <atom:TimelineItem>
-                    2024-01-01 AtomUI Officially Initiated
-                </atom:TimelineItem>
-                <atom:TimelineItem>
-                    2024-01-01 AtomUI Officially Initiated
-                </atom:TimelineItem>
-                <atom:TimelineItem>
-                    2024-01-01 AtomUI Officially Initiated
-                </atom:TimelineItem>
+                <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
+                <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
+                <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
+                <atom:TimelineItem Content="{gallery:TimelineShowCaseLangResource P2ContentN2024N01N01AtomuiOfficiallyInitiated}" />
             </atom:Timeline>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

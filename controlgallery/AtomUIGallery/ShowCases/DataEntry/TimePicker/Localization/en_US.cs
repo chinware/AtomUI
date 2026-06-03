@@ -24,6 +24,12 @@ internal class en_US : LanguageProvider
     public const string StatusDescription = "Add status to TimePicker with status, which could be error or warning.";
     public const string TimeRangePickerTitle = "Time Range Picker";
     public const string TimeRangePickerDescription = "Use time range picker with RangeTimePicker.";
+    public const string P2PlaceholderTextSelectTime = "Select time";
+    public const string P2PlaceholderTextOutline = "Outline";
+    public const string P2PlaceholderTextFilled = "Filled";
+    public const string P2PlaceholderTextBorderless = "Borderless";
+    public const string P2PlaceholderTextStartTime = "Start time";
+    public const string P2SecondaryPlaceholderTextEndTime = "End time";
 
     protected override Type GetResourceKindType() => typeof(TimePickerShowCaseLangResourceKind);
 }

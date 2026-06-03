@@ -34,6 +34,44 @@ internal class en_US : LanguageProvider
     public const string LabelPlacementDescription = "Set labelPlacement to vertical.";
     public const string InlineStepsTitle = "Inline Steps";
     public const string InlineStepsDescription = "Inline type steps, suitable for displaying the process and current state of the object in the list content scene.";
+    public const string P2DescriptionThisIsADescription = "This is a description.";
+    public const string P2HeaderFinished = "Finished";
+    public const string P2HeaderInProgress = "In Progress";
+    public const string P2HeaderWaiting = "Waiting";
+    public const string P2HeaderLogin = "Login";
+    public const string P2HeaderVerification = "Verification";
+    public const string P2HeaderPay = "Pay";
+    public const string P2HeaderDone = "Done";
+    public const string P2HeaderFirst = "First";
+    public const string P2HeaderSecond = "Second";
+    public const string P2HeaderThird = "Third";
+    public const string P2HeaderStepN1 = "Step 1";
+    public const string P2HeaderStepN2 = "Step 2";
+    public const string P2HeaderStepN3 = "Step 3";
+    public const string P2HeaderStepN4 = "Step 4";
+    public const string P2HeaderFinishN1 = "finish 1";
+    public const string P2HeaderFinishN2 = "finish 2";
+    public const string P2HeaderCurrentProcess = "current process";
+    public const string P2HeaderWait = "wait";
+    public const string P2SubHeaderLeftTime = "Left 00:00:08";
+    public const string P2SubHeaderWaitingForLongTime = "waiting for longlong time";
+    public const string P2TextAntDesignTitleN1 = "Ant Design Title 1";
+    public const string P2TextAntDesignADesignLanguageForBackgroundApplications = "Ant Design, a design language for background applications, is refined by Ant UED Team";
+    public const string P2TextAntDesignTitleN2 = "Ant Design Title 2";
+    public const string P2TextAntDesignTitleN3 = "Ant Design Title 3";
+    public const string P2TextAntDesignTitleN4 = "Ant Design Title 4";
+
+    public const string P2ContentFirstContent = "First-content";
+
+    public const string P2ContentSecondContent = "Second-content";
+
+    public const string P2ContentLastContent = "Last-content";
+
+    public const string P2ContentNext = "Next";
+
+    public const string P2ContentPrevious = "Previous";
+
+    public const string P2ContentDone = "Done";
 
     protected override Type GetResourceKindType() => typeof(StepsShowCaseLangResourceKind);
 }

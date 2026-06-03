@@ -38,6 +38,42 @@ internal class en_US : LanguageProvider
     public const string CharacterCountingDescription = "Show character counting.";
     public const string TextAreaStatusTitle = "Status";
     public const string TextAreaStatusDescription = "Add status to TextArea with status, which could be error or warning.";
+    public const string P2PlaceholderTextBasicUsage = "Basic usage";
+    public const string P2PlaceholderTextLarge = "Large";
+    public const string P2PlaceholderTextMiddle = "Middle";
+    public const string P2PlaceholderTextSmall = "Small";
+    public const string P2TitleNormal = "Normal";
+    public const string P2PlaceholderTextOutlined = "Outlined";
+    public const string P2PlaceholderTextFilled = "Filled";
+    public const string P2PlaceholderTextBorderless = "Borderless";
+    public const string P2PlaceholderTextUnderlined = "Underlined";
+    public const string P2TitleLeftaddonAndRightaddon = "LeftAddOn and RightAddOn";
+    public const string P2TextMysite = "mysite";
+    public const string P2PlaceholderTextInputWithClearIcon = "input with clear icon";
+    public const string P2PlaceholderTextTextareaWithClearIcon = "textarea with clear icon";
+    public const string P2PlaceholderTextInputPassword = "input password";
+    public const string P2PlaceholderTextEnterYourUsername = "Enter your username";
+    public const string P2PlaceholderTextError = "Error";
+    public const string P2PlaceholderTextWarning = "Warning";
+    public const string P2PlaceholderTextErrorWithPrefix = "Error with prefix";
+    public const string P2PlaceholderTextWarningWithPrefix = "Warning with prefix";
+    public const string P2TitleSearch = "Search";
+    public const string P2PlaceholderTextInputSearchText = "input search text";
+    public const string P2TitleFilled = "Filled";
+    public const string P2TitleBorderless = "Borderless";
+    public const string P2TitleUnderlined = "Underlined";
+    public const string P2PlaceholderTextInputSearchLoadingDefault = "input search loading default";
+    public const string P2PlaceholderTextInputSearchLoadingWithEnterbutton = "input search loading with enterButton";
+    public const string P2PlaceholderTextMaxlengthIsN6 = "maxLength is 6";
+    public const string P2PlaceholderTextDisabled = "disabled";
+    public const string P2PlaceholderTextAutosizeHeightBasedOnContentLines = "Autosize height based on content lines";
+    public const string P2PlaceholderTextAutosizeHeightWithMinimumAndMaximumNumberOf = "Autosize height with minimum and maximum number of lines";
+    public const string P2PlaceholderTextCanResize = "can resize";
+    public const string P2PlaceholderTextDisableResize = "disable resize";
+
+    public const string P2SearchButtonTextSearch = "Search";
+
+    public const string P2SearchButtonTextText = "Search now";
 
     protected override Type GetResourceKindType() => typeof(LineEditShowCaseLangResourceKind);
 }

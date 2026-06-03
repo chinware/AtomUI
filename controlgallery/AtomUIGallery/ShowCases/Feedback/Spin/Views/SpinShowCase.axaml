@@ -46,25 +46,25 @@
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Spin IsSpinning="True" SizeType="Small"
                                IsTipVisible="True"
-                               Tip="Loading...">
+                               Tip="{gallery:SpinShowCaseLangResource P2TipLoading}">
                         <Border Width="100" Height="100" Background="#0D000000" />
                     </atom:Spin>
                     <atom:Spin IsSpinning="True" SizeType="Middle"
                                IsTipVisible="True"
-                               Tip="Loading...">
+                               Tip="{gallery:SpinShowCaseLangResource P2TipLoading}">
                         <Border Width="100" Height="100" Background="#0D000000" />
                     </atom:Spin>
                     <atom:Spin IsSpinning="True" SizeType="Large"
                                IsTipVisible="True"
-                               Tip="Loading...">
+                               Tip="{gallery:SpinShowCaseLangResource P2TipLoading}">
                         <Border Width="100" Height="100" Background="#0D000000" />
                     </atom:Spin>
                 </StackPanel>
                 <atom:Spin IsSpinning="True"
                            IsTipVisible="True"
-                           Tip="Loading...">
-                    <atom:Alert Message="Alert message title"
-                                Description="Further details about the context of this alert."
+                           Tip="{gallery:SpinShowCaseLangResource P2TipLoading}">
+                    <atom:Alert Message="{gallery:SpinShowCaseLangResource P2MessageAlertMessageTitle}"
+                                Description="{gallery:SpinShowCaseLangResource P2DescriptionFurtherDetailsAboutTheContextOfThisAlert}"
                                 Type="Info" />
                 </atom:Spin>
             </StackPanel>
@@ -78,23 +78,23 @@
                 <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
                            IsTipVisible="True"
                            HorizontalAlignment="Stretch"
-                           Tip="Loading...">
-                    <atom:Alert Message="Alert message title"
-                                Description="Further details about the context of this alert."
+                           Tip="{gallery:SpinShowCaseLangResource P2TipLoading}">
+                    <atom:Alert Message="{gallery:SpinShowCaseLangResource P2MessageAlertMessageTitle}"
+                                Description="{gallery:SpinShowCaseLangResource P2DescriptionFurtherDetailsAboutTheContextOfThisAlert}"
                                 Type="Info" />
                 </atom:Spin>
 
                 <atom:Spin IsSpinning="{Binding IsLoadingSwitchChecked}"
                            IsTipVisible="True"
-                           Tip="Loading..."
+                           Tip="{gallery:SpinShowCaseLangResource P2TipLoading}"
                            HorizontalAlignment="Stretch"
                            IsMaskBlurEnabled="True">
-                    <atom:Alert Message="Alert message title"
-                                Description="Further details about the context of this alert."
+                    <atom:Alert Message="{gallery:SpinShowCaseLangResource P2MessageAlertMessageTitle}"
+                                Description="{gallery:SpinShowCaseLangResource P2DescriptionFurtherDetailsAboutTheContextOfThisAlert}"
                                 Type="Info" />
                 </atom:Spin>
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:TextBlock>Loading state：</atom:TextBlock>
+                    <atom:TextBlock Text="{gallery:SpinShowCaseLangResource P2TextLoadingState}" />
                     <atom:ToggleSwitch IsChecked="{Binding IsLoadingSwitchChecked}" />
                 </StackPanel>
             </StackPanel>

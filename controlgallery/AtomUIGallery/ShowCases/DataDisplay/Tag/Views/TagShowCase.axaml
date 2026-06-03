@@ -16,13 +16,11 @@
             Title="{gallery:TagShowCaseLangResource BasicTitle}"
             Description="{gallery:TagShowCaseLangResource BasicDescription}">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                <atom:Tag>Tag 1</atom:Tag>
-                <atom:Tag>Link</atom:Tag>
-                <atom:Tag IsClosable="true">Prevent Default</atom:Tag>
+                <atom:Tag Text="{gallery:TagShowCaseLangResource P2ContentTagN1}" />
+                <atom:Tag Text="{gallery:TagShowCaseLangResource P2ContentLink}" />
+                <atom:Tag IsClosable="true" Text="{gallery:TagShowCaseLangResource P2ContentPreventDefault}" />
                 <atom:Tag IsClosable="True"
-                          CloseIcon="{antdicons:AntDesignIconProvider Kind=CloseCircleOutlined}">
-                    Tag 2
-                </atom:Tag>
+                          CloseIcon="{antdicons:AntDesignIconProvider Kind=CloseCircleOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentTagN2}" />
             </WrapPanel>
         </gallery:ShowCaseItem>
 
@@ -30,22 +28,22 @@
             Title="{gallery:TagShowCaseLangResource ColorfulTagTitle}"
             Description="{gallery:TagShowCaseLangResource ColorfulTagDescription}">
             <StackPanel Orientation="Vertical">
-                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Presets</atom:TextBlock>
+                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10" Text="{gallery:TagShowCaseLangResource P2TextPresets}" />
                 <WrapPanel HorizontalAlignment="Left">
-                    <atom:Tag TagColor="magenta">magenta</atom:Tag>
-                    <atom:Tag TagColor="red">red</atom:Tag>
-                    <atom:Tag TagColor="volcano">volcano</atom:Tag>
-                    <atom:Tag TagColor="orange">orange</atom:Tag>
-                    <atom:Tag TagColor="gold">gold</atom:Tag>
-                    <atom:Tag TagColor="lime">lime</atom:Tag>
-                    <atom:Tag TagColor="green">green</atom:Tag>
-                    <atom:Tag TagColor="cyan">cyan</atom:Tag>
-                    <atom:Tag TagColor="blue">blue</atom:Tag>
-                    <atom:Tag TagColor="geekblue">geekblue</atom:Tag>
-                    <atom:Tag TagColor="purple">purple</atom:Tag>
+                    <atom:Tag TagColor="magenta" Text="{gallery:TagShowCaseLangResource P2ContentMagenta}" />
+                    <atom:Tag TagColor="red" Text="{gallery:TagShowCaseLangResource P2ContentRed}" />
+                    <atom:Tag TagColor="volcano" Text="{gallery:TagShowCaseLangResource P2ContentVolcano}" />
+                    <atom:Tag TagColor="orange" Text="{gallery:TagShowCaseLangResource P2ContentOrange}" />
+                    <atom:Tag TagColor="gold" Text="{gallery:TagShowCaseLangResource P2ContentGold}" />
+                    <atom:Tag TagColor="lime" Text="{gallery:TagShowCaseLangResource P2ContentLime}" />
+                    <atom:Tag TagColor="green" Text="{gallery:TagShowCaseLangResource P2ContentGreen}" />
+                    <atom:Tag TagColor="cyan" Text="{gallery:TagShowCaseLangResource P2ContentCyan}" />
+                    <atom:Tag TagColor="blue" Text="{gallery:TagShowCaseLangResource P2ContentBlue}" />
+                    <atom:Tag TagColor="geekblue" Text="{gallery:TagShowCaseLangResource P2ContentGeekblue}" />
+                    <atom:Tag TagColor="purple" Text="{gallery:TagShowCaseLangResource P2ContentPurple}" />
                 </WrapPanel>
 
-                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10">Custom</atom:TextBlock>
+                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10" Text="{gallery:TagShowCaseLangResource P2TextCustom}" />
                 <WrapPanel HorizontalAlignment="Left">
                     <atom:Tag TagColor="#f50">#f50</atom:Tag>
                     <atom:Tag TagColor="#2db7f5" IsClosable="True">#2db7f5</atom:Tag>
@@ -60,41 +58,29 @@
             Title="{gallery:TagShowCaseLangResource StatusTagTitle}"
             Description="{gallery:TagShowCaseLangResource StatusTagDescription}">
             <StackPanel Orientation="Vertical">
-                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10">Without icon</atom:TextBlock>
+                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10" Text="{gallery:TagShowCaseLangResource P2TextWithoutIcon}" />
                 <WrapPanel HorizontalAlignment="Left">
-                    <atom:Tag TagColor="success">success</atom:Tag>
-                    <atom:Tag TagColor="info">processing</atom:Tag>
-                    <atom:Tag TagColor="error">error</atom:Tag>
-                    <atom:Tag TagColor="warning">warning</atom:Tag>
-                    <atom:Tag TagColor="default">default</atom:Tag>
+                    <atom:Tag TagColor="success" Text="{gallery:TagShowCaseLangResource P2ContentSuccess}" />
+                    <atom:Tag TagColor="info" Text="{gallery:TagShowCaseLangResource P2ContentProcessing}" />
+                    <atom:Tag TagColor="error" Text="{gallery:TagShowCaseLangResource P2ContentError}" />
+                    <atom:Tag TagColor="warning" Text="{gallery:TagShowCaseLangResource P2ContentWarning}" />
+                    <atom:Tag TagColor="default" Text="{gallery:TagShowCaseLangResource P2ContentDefault}" />
                 </WrapPanel>
 
-                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10">Custom</atom:TextBlock>
+                <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 10" Text="{gallery:TagShowCaseLangResource P2TextCustom}" />
                 <WrapPanel HorizontalAlignment="Left">
                     <atom:Tag TagColor="success"
-                              Icon="{antdicons:AntDesignIconProvider Kind=CheckCircleOutlined}">
-                        success
-                    </atom:Tag>
+                              Icon="{antdicons:AntDesignIconProvider Kind=CheckCircleOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentSuccess}" />
                     <atom:Tag TagColor="info"
-                              Icon="{antdicons:AntDesignIconProvider Kind=SyncOutlined}">
-                        processing
-                    </atom:Tag>
+                              Icon="{antdicons:AntDesignIconProvider Kind=SyncOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentProcessing}" />
                     <atom:Tag TagColor="error"
-                              Icon="{antdicons:AntDesignIconProvider Kind=CloseCircleOutlined}">
-                        error
-                    </atom:Tag>
+                              Icon="{antdicons:AntDesignIconProvider Kind=CloseCircleOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentError}" />
                     <atom:Tag TagColor="warning"
-                              Icon="{antdicons:AntDesignIconProvider Kind=ExclamationCircleOutlined}">
-                        warning
-                    </atom:Tag>
+                              Icon="{antdicons:AntDesignIconProvider Kind=ExclamationCircleOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentWarning}" />
                     <atom:Tag TagColor="default"
-                              Icon="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                        default
-                    </atom:Tag>
+                              Icon="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentDefault}" />
                     <atom:Tag TagColor="default"
-                              Icon="{antdicons:AntDesignIconProvider Kind=MinusCircleOutlined}">
-                        default
-                    </atom:Tag>
+                              Icon="{antdicons:AntDesignIconProvider Kind=MinusCircleOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentDefault}" />
                 </WrapPanel>
             </StackPanel>
 
@@ -105,27 +91,17 @@
             Description="{gallery:TagShowCaseLangResource IconDescription}">
             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                 <atom:Tag TagColor="#55acee"
-                          Icon="{antdicons:AntDesignIconProvider Kind=TwitterOutlined}">
-                    Twitter
-                </atom:Tag>
+                          Icon="{antdicons:AntDesignIconProvider Kind=TwitterOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentTwitter}" />
                 <atom:Tag TagColor="#cd201f"
-                          Icon="{antdicons:AntDesignIconProvider Kind=YoutubeOutlined}">
-                    Youtube
-                </atom:Tag>
+                          Icon="{antdicons:AntDesignIconProvider Kind=YoutubeOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentYoutube}" />
                 <atom:Tag TagColor="#3b5999"
-                          Icon="{antdicons:AntDesignIconProvider Kind=FacebookOutlined}">
-                    Facebook
-                </atom:Tag>
+                          Icon="{antdicons:AntDesignIconProvider Kind=FacebookOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentFacebook}" />
                 <atom:Tag TagColor="#55acee"
-                          Icon="{antdicons:AntDesignIconProvider Kind=LinkedinOutlined}">
-                    Linkedin
-                </atom:Tag>
-                <atom:Tag TagColor="#55acee">
+                          Icon="{antdicons:AntDesignIconProvider Kind=LinkedinOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentLinkedin}" />
+                <atom:Tag Text="{gallery:TagShowCaseLangResource P2TextMaterialIcon}" TagColor="#55acee">
                     <atom:Tag.Icon>
                         <PathIcon Data="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/>
-                    </atom:Tag.Icon>
-                    Material icon
-                </atom:Tag>
+                    </atom:Tag.Icon></atom:Tag>
             </WrapPanel>
         </gallery:ShowCaseItem>
 
@@ -134,30 +110,30 @@
             Description="{gallery:TagShowCaseLangResource BorderlessDescription}">
             <StackPanel Orientation="Vertical">
                 <WrapPanel HorizontalAlignment="Left">
-                    <atom:Tag IsBordered="False">Tag1</atom:Tag>
-                    <atom:Tag IsBordered="False">Tag2</atom:Tag>
-                    <atom:Tag IsBordered="False" IsClosable="True">Tag3</atom:Tag>
-                    <atom:Tag IsBordered="False" IsClosable="True">Tag4</atom:Tag>
+                    <atom:Tag IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentTag1}" />
+                    <atom:Tag IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentTag2}" />
+                    <atom:Tag IsBordered="False" IsClosable="True" Text="{gallery:TagShowCaseLangResource P2ContentTag3}" />
+                    <atom:Tag IsBordered="False" IsClosable="True" Text="{gallery:TagShowCaseLangResource P2ContentTag4}" />
                 </WrapPanel>
 
                 <atom:Separator FontWeight="Bold" FontSize="14" Margin="0, 20, 0, 20" />
                 <WrapPanel HorizontalAlignment="Left">
-                    <atom:Tag TagColor="magenta" IsBordered="False">magenta</atom:Tag>
-                    <atom:Tag TagColor="red" IsBordered="False">red</atom:Tag>
-                    <atom:Tag TagColor="volcano" IsBordered="False">volcano</atom:Tag>
-                    <atom:Tag TagColor="orange" IsBordered="False">orange</atom:Tag>
-                    <atom:Tag TagColor="gold" IsBordered="False">gold</atom:Tag>
-                    <atom:Tag TagColor="lime" IsBordered="False">lime</atom:Tag>
-                    <atom:Tag TagColor="green" IsBordered="False">green</atom:Tag>
-                    <atom:Tag TagColor="cyan" IsBordered="False">cyan</atom:Tag>
-                    <atom:Tag TagColor="blue" IsBordered="False">blue</atom:Tag>
-                    <atom:Tag TagColor="geekblue" IsBordered="False">geekblue</atom:Tag>
-                    <atom:Tag TagColor="purple" IsBordered="False">purple</atom:Tag>
+                    <atom:Tag TagColor="magenta" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentMagenta}" />
+                    <atom:Tag TagColor="red" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentRed}" />
+                    <atom:Tag TagColor="volcano" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentVolcano}" />
+                    <atom:Tag TagColor="orange" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentOrange}" />
+                    <atom:Tag TagColor="gold" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentGold}" />
+                    <atom:Tag TagColor="lime" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentLime}" />
+                    <atom:Tag TagColor="green" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentGreen}" />
+                    <atom:Tag TagColor="cyan" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentCyan}" />
+                    <atom:Tag TagColor="blue" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentBlue}" />
+                    <atom:Tag TagColor="geekblue" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentGeekblue}" />
+                    <atom:Tag TagColor="purple" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentPurple}" />
 
-                    <atom:Tag TagColor="success" IsBordered="False">success</atom:Tag>
-                    <atom:Tag TagColor="info" IsBordered="False">processing</atom:Tag>
-                    <atom:Tag TagColor="error" IsBordered="False">error</atom:Tag>
-                    <atom:Tag TagColor="warning" IsBordered="False">warning</atom:Tag>
+                    <atom:Tag TagColor="success" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentSuccess}" />
+                    <atom:Tag TagColor="info" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentProcessing}" />
+                    <atom:Tag TagColor="error" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentError}" />
+                    <atom:Tag TagColor="warning" IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentWarning}" />
                 </WrapPanel>
             </StackPanel>
 

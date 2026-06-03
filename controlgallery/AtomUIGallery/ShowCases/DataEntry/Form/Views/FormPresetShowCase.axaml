@@ -6,6 +6,14 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Form"
              x:DataType="viewModels:FormViewModel">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://AtomUIGallery/ShowCases/DataEntry/Form/ShowCaseControls/FormThemes.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <gallery:ShowCasePanel>
 
         <gallery:ShowCaseItem
@@ -17,30 +25,30 @@
                        MinWidth="600"
                        HorizontalAlignment="Left"
                        FormLayout="Inline">
-                <atom:FormItem LabelText="Username"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextUsername}"
                                FieldName="username">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input your username!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourUsername}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit InnerLeftContent="{antdicons:AntDesignIconProvider UserOutlined}"
-                                   PlaceholderText="Username"
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextUsername}"
                                    Width="200"/>
                 </atom:FormItem>
-                <atom:FormItem LabelText="Password"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPassword}"
                                FieldName="password">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input your password!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourPassword}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit InnerLeftContent="{antdicons:AntDesignIconProvider LockOutlined}"
-                                   PlaceholderText="Password"
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPassword}"
                                    Width="200"/>
                 </atom:FormItem>
                 <atom:FormActionsItem>
-                    <atom:SubmitButton IsWatchValidateResult="True" Content="Log in"/>
+                    <atom:SubmitButton IsWatchValidateResult="True" Content="{gallery:FormShowCaseLangResource P2ContentLogIn}"/>
                 </atom:FormActionsItem>
             </atom:Form>
         </gallery:ShowCaseItem>
@@ -57,33 +65,33 @@
                 <atom:FormItem FieldName="username">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input your username!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourUsername}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit InnerLeftContent="{antdicons:AntDesignIconProvider UserOutlined}"
-                                   PlaceholderText="Username"/>
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextUsername}"/>
                 </atom:FormItem>
                 <atom:FormItem FieldName="password">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input your password!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourPassword}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit InnerLeftContent="{antdicons:AntDesignIconProvider LockOutlined}"
-                                   PlaceholderText="Password"/>
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPassword}"/>
                 </atom:FormItem>
                 <atom:FormItem FieldName="remember">
-                    <atom:CheckBox IsChecked="True">Remember me</atom:CheckBox>
+                    <atom:CheckBox IsChecked="True" Content="{gallery:FormShowCaseLangResource P2ContentRememberMe}" />
                     <atom:FormItem.Extra>
-                        <atom:HyperLinkButton>Forgot password</atom:HyperLinkButton>
+                        <atom:HyperLinkButton Content="{gallery:FormShowCaseLangResource P2ContentForgotPassword}" />
                     </atom:FormItem.Extra>
                 </atom:FormItem>
                 <atom:FormActionsItem>
                     <StackPanel>
-                        <atom:SubmitButton Content="Log in" HorizontalAlignment="Stretch"/>
+                        <atom:SubmitButton Content="{gallery:FormShowCaseLangResource P2ContentLogIn}" HorizontalAlignment="Stretch"/>
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                            <TextBlock>Or</TextBlock>
-                            <atom:HyperLinkTextBlock>Register now!</atom:HyperLinkTextBlock>
+                            <TextBlock Text="{gallery:FormShowCaseLangResource P2TextOr}" />
+                            <atom:HyperLinkTextBlock Text="{gallery:FormShowCaseLangResource P2ContentRegisterNow}" />
                         </StackPanel>
                     </StackPanel>
                 </atom:FormActionsItem>
@@ -98,141 +106,141 @@
                        WrapperColInfo="16*"
                        MinWidth="600"
                        HorizontalAlignment="Left">
-                <atom:FormItem LabelText="Email"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextEmail}"
                                FieldName="email"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input your E-mail!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourEMail}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit />
                 </atom:FormItem>
-                <atom:FormItem LabelText="Password"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPassword}"
                                FieldName="password"
                                IsRequired="True"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input your password!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourPassword}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit RevealPassword="False"
                                    PasswordChar="•"
                                    IsEnableRevealButton="True" />
                 </atom:FormItem>
-                <atom:FormItem LabelText="Confirm Password"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextConfirmPassword}"
                                FieldName="confirm"
                                IsRequired="True"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please confirm your password!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseConfirmYourPassword}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit RevealPassword="False"
                                    PasswordChar="•"
                                    IsEnableRevealButton="True" />
                 </atom:FormItem>
-                <atom:FormItem LabelText="Nickname"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextNickname}"
                                FieldName="nickname"
                                IsRequired="True"
-                               Tooltip="What do you want others to call you?">
+                               Tooltip="{gallery:FormShowCaseLangResource P2TooltipWhatDoYouWantOthersToCallYou}">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input your nickname!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourNickname}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit />
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Habitual Residence"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextHabitualResidence}"
                                FieldName="residence"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormNotNullValidator Message="Please select your habitual residence!" />
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectYourHabitualResidence}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:Cascader HorizontalAlignment="Stretch" IsAllowClear="True">
-                        <atom:CascaderOption Header="Zhejiang" Value="zhejiang">
-                            <atom:CascaderOption Header="Hangzhou" Value="hangzhou">
-                                <atom:CascaderOption Header="West Lake" Value="xihu" />
+                        <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderZhejiang}" Value="zhejiang">
+                            <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderHangzhou}" Value="hangzhou">
+                                <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderWestLake}" Value="xihu" />
                             </atom:CascaderOption>
                         </atom:CascaderOption>
-                        <atom:CascaderOption Header="Jiangsu" Value="jiangsu">
-                            <atom:CascaderOption Header="Nanjing" Value="nanjing">
-                                <atom:CascaderOption Header="Zhong Hua Men" Value="zhonghuamen" />
+                        <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderJiangsu}" Value="jiangsu">
+                            <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderNanjing}" Value="nanjing">
+                                <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderZhongHuaMen}" Value="zhonghuamen" />
                             </atom:CascaderOption>
                         </atom:CascaderOption>
                     </atom:Cascader>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Phone Number"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPhoneNumber}"
                                FieldName="phone"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input your phone number!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourPhoneNumber}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <gallery:PhoneNumber/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Donation"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDonation}"
                                FieldName="donation"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormNotNullValidator Message="Please input donation amount!" />
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputDonationAmount}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <gallery:Donation/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Website"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWebsite}"
                                FieldName="website"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input website!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputWebsite}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:LineEdit PlaceholderText="website"/>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextWebsite}"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Intro"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextIntro}"
                                FieldName="intro"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input Intro!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputIntro}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:TextArea IsShowCount="True" MaxLength="100"/>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Gender"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextGender}"
                                FieldName="gender"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormNotNullValidator Message="Please select gender!" />
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectGender}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:Select DefaultValues="male" HorizontalAlignment="Stretch">
-                        <atom:SelectOption Header="Male" Content="male"/>
-                        <atom:SelectOption Header="Female" Content="female"/>
-                        <atom:SelectOption Header="Other" Content="other"/>
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderMale2}" Content="male"/>
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderFemale2}" Content="female"/>
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderOther2}" Content="other"/>
                     </atom:Select>
                 </atom:FormItem>
         
-                <atom:FormItem LabelText="Captcha"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCaptcha}"
                                FieldName="captcha"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input the captcha you got!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputTheCaptchaYouGot}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <gallery:Captcha/>
@@ -242,15 +250,13 @@
                                IsRequired="True">
                     <atom:CheckBox IsChecked="True">
                        <StackPanel Orientation="Horizontal" Spacing="5">
-                           <TextBlock>
-                               I have read the
-                           </TextBlock>
-                           <atom:HyperLinkTextBlock>agreement</atom:HyperLinkTextBlock>
+                           <TextBlock Text="{gallery:FormShowCaseLangResource P2TextIHaveReadThe}" />
+                           <atom:HyperLinkTextBlock Text="{gallery:FormShowCaseLangResource P2ContentAgreement}" />
                        </StackPanel>
                     </atom:CheckBox>
                 </atom:FormItem>
                 <atom:FormActionsItem>
-                    <atom:SubmitButton Content="Register"/>
+                    <atom:SubmitButton Content="{gallery:FormShowCaseLangResource P2ContentRegister}"/>
                 </atom:FormActionsItem>
             </atom:Form>
         </gallery:ShowCaseItem>

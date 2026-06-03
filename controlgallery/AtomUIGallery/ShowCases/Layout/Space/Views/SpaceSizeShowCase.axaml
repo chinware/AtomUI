@@ -15,21 +15,13 @@
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Small}"
                                       IsCheckedChanged="HandleSizeTypeChanged"
-                                      IsChecked="True">
-                        Small
-                    </atom:RadioButton>
+                                      IsChecked="True" Content="{gallery:SpaceShowCaseLangResource P2ContentSmall}" />
                     <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Middle}"
-                                      IsCheckedChanged="HandleSizeTypeChanged">
-                        Middle
-                    </atom:RadioButton>
+                                      IsCheckedChanged="HandleSizeTypeChanged" Content="{gallery:SpaceShowCaseLangResource P2ContentMiddle}" />
                     <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Large}"
-                                      IsCheckedChanged="HandleSizeTypeChanged">
-                        Large
-                    </atom:RadioButton>
+                                      IsCheckedChanged="HandleSizeTypeChanged" Content="{gallery:SpaceShowCaseLangResource P2ContentLarge}" />
                     <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Custom}"
-                                      IsCheckedChanged="HandleSizeTypeChanged">
-                        Custom
-                    </atom:RadioButton>
+                                      IsCheckedChanged="HandleSizeTypeChanged" Content="{gallery:SpaceShowCaseLangResource P2ContentCustom}" />
                 </StackPanel>
                 <atom:Slider Name="CustomSizeSlider"
                              Minimum="0" Maximum="100"
@@ -38,10 +30,10 @@
                 <atom:Space Orientation="Horizontal" SizeType="{Binding SizeType}"
                             LineSpacing="{Binding #CustomSizeSlider.Value, Priority=Template}"
                             ItemSpacing="{Binding #CustomSizeSlider.Value, Priority=Template}">
-                    <atom:Button ButtonType="Primary">Primary</atom:Button>
-                    <atom:Button>Default</atom:Button>
-                    <atom:Button ButtonType="Dashed">Dashed</atom:Button>
-                    <atom:Button ButtonType="Link">Link</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentPrimary}" />
+                    <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentDefault}" />
+                    <atom:Button ButtonType="Dashed" Content="{gallery:SpaceShowCaseLangResource P2ContentDashed}" />
+                    <atom:Button ButtonType="Link" Content="{gallery:SpaceShowCaseLangResource P2ContentLink}" />
                 </atom:Space>
             </StackPanel>
         </gallery:ShowCaseItem>

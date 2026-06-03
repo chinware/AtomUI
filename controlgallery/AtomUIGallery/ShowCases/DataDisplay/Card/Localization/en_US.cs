@@ -26,6 +26,28 @@ internal class en_US : LanguageProvider
     public const string WithTabsDescription = "More content can be hosted..";
     public const string MoreContentConfigurationTitle = "Support more content configuration";
     public const string MoreContentConfigurationDescription = "A Card that supports cover, avatar, title and description.";
+    public const string P2HeaderLargeSizeCard = "Large size card";
+    public const string P2HeaderDefaultSizeCard = "Default size card";
+    public const string P2HeaderSmallSizeCard = "Small size card";
+    public const string P2HeaderCardTitle = "Card title";
+    public const string P2HeaderEuropeStreetBeat = "Europe Street beat";
+    public const string P2HeaderCardTitle2 = "Card Title";
+    public const string P2HeaderTab1 = "Tab1";
+    public const string P2HeaderTab2 = "Tab2";
+    public const string P2HeaderArticle = "article";
+    public const string P2HeaderApp = "app";
+    public const string P2HeaderProject = "project";
+    public const string P2ContentMore = "More";
+    public const string P2TextCardContent = "Card content";
+    public const string P2TextThisIsTheDescription = "This is the description";
+    public const string P2ContentContent = "Content";
+    public const string P2ContentContent1 = "content1";
+    public const string P2ContentContent2 = "content2";
+    public const string P2ContentArticleContent = "article content";
+    public const string P2ContentAppContent = "app content";
+    public const string P2ContentProjectContent = "project content";
+
+    public const string P2ContentThisIsTheDescription = "This is the description";
 
     protected override Type GetResourceKindType() => typeof(CardShowCaseLangResourceKind);
 }

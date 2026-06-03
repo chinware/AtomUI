@@ -17,10 +17,10 @@
             Description="{gallery:CustomizeThemeShowCaseLangResource CustomizeDesignTokenDescription}">
             <StackPanel Orientation="Vertical">
                 <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                    <atom:Button ButtonType="Primary">Primary Button</atom:Button>
-                    <atom:Button>Default Button</atom:Button>
-                    <atom:Button ButtonType="Text">Text Button</atom:Button>
-                    <atom:Button ButtonType="Link">Link Button</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentPrimaryButton}" />
+                    <atom:Button Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentDefaultButton}" />
+                    <atom:Button ButtonType="Text" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentTextButton}" />
+                    <atom:Button ButtonType="Link" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentLinkButton}" />
                 </WrapPanel>
                 <atom:ThemeConfigProvider>
                     <atom:ThemeConfigProvider.Algorithms>
@@ -34,10 +34,10 @@
                         <atom:TokenSetter Key="ColorBgContainer" Value="#f6ffed" />
                     </atom:ThemeConfigProvider.SharedTokenSetters>
                     <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                        <atom:Button ButtonType="Primary">Primary Button</atom:Button>
-                        <atom:Button>Default Button</atom:Button>
-                        <atom:Button ButtonType="Text">Text Button</atom:Button>
-                        <atom:Button ButtonType="Link">Link Button</atom:Button>
+                        <atom:Button ButtonType="Primary" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentPrimaryButton}" />
+                        <atom:Button Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentDefaultButton}" />
+                        <atom:Button ButtonType="Text" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentTextButton}" />
+                        <atom:Button ButtonType="Link" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentLinkButton}" />
                     </WrapPanel>
                 </atom:ThemeConfigProvider>
                 <atom:ThemeConfigProvider>
@@ -49,10 +49,10 @@
                         <atom:TokenSetter Key="BorderRadius" Value="0" />
                     </atom:ThemeConfigProvider.SharedTokenSetters>
                     <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                        <atom:Button ButtonType="Primary">Primary Button</atom:Button>
-                        <atom:Button>Default Button</atom:Button>
-                        <atom:Button ButtonType="Text">Text Button</atom:Button>
-                        <atom:Button ButtonType="Link">Link Button</atom:Button>
+                        <atom:Button ButtonType="Primary" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentPrimaryButton}" />
+                        <atom:Button Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentDefaultButton}" />
+                        <atom:Button ButtonType="Text" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentTextButton}" />
+                        <atom:Button ButtonType="Link" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentLinkButton}" />
                     </WrapPanel>
                 </atom:ThemeConfigProvider>
                 <atom:ThemeConfigProvider>
@@ -64,19 +64,19 @@
                     </atom:ThemeConfigProvider.SharedTokenSetters>
                     <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical" Margin="5, 10, 0, 0">
                         <WrapPanel Margin="0, 0, 0, 5">
-                            <atom:CheckBox IsChecked="True">Apple</atom:CheckBox>
-                            <atom:CheckBox IsChecked="True">Pear</atom:CheckBox>
-                            <atom:CheckBox IsChecked="True">Orange</atom:CheckBox>
+                            <atom:CheckBox IsChecked="True" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentApple}" />
+                            <atom:CheckBox IsChecked="True" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentPear}" />
+                            <atom:CheckBox IsChecked="True" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentOrange}" />
                         </WrapPanel>
                         <WrapPanel Margin="0, 0, 0, 5">
-                            <atom:CheckBox>Apple</atom:CheckBox>
-                            <atom:CheckBox IsChecked="True">Pear</atom:CheckBox>
-                            <atom:CheckBox>Orange</atom:CheckBox>
+                            <atom:CheckBox Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentApple}" />
+                            <atom:CheckBox IsChecked="True" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentPear}" />
+                            <atom:CheckBox Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentOrange}" />
                         </WrapPanel>
                         <WrapPanel Margin="0, 0, 0, 5">
-                            <atom:CheckBox IsChecked="True" IsEnabled="False">Apple</atom:CheckBox>
-                            <atom:CheckBox IsEnabled="False">Pear</atom:CheckBox>
-                            <atom:CheckBox IsEnabled="False">Orange</atom:CheckBox>
+                            <atom:CheckBox IsChecked="True" IsEnabled="False" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentApple}" />
+                            <atom:CheckBox IsEnabled="False" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentPear}" />
+                            <atom:CheckBox IsEnabled="False" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentOrange}" />
                         </WrapPanel>
                     </StackPanel>
                 </atom:ThemeConfigProvider>
@@ -91,8 +91,8 @@
                 </atom:ThemeConfigProvider.Algorithms>
                 <Border Background="#2b2d30" Padding="20">
                     <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:LineEdit PlaceholderText="Please input" Width="200" />
-                        <atom:Button ButtonType="Primary">Submit</atom:Button>
+                        <atom:LineEdit PlaceholderText="{gallery:CustomizeThemeShowCaseLangResource P2PlaceholderTextPleaseInput}" Width="200" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}" />
                     </StackPanel>
                 </Border>
             </atom:ThemeConfigProvider>
@@ -114,9 +114,9 @@
                             </atom:ControlTokenInfoSetter>
                         </atom:ThemeConfigProvider.ControlTokenInfoSetters>
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                            <atom:TextBlock VerticalAlignment="Center" Width="120">Enable algorithm:</atom:TextBlock>
-                            <atom:LineEdit PlaceholderText="Please input" Width="200" VerticalAlignment="Center" />
-                            <atom:Button ButtonType="Primary" VerticalAlignment="Center">Submit</atom:Button>
+                            <atom:TextBlock VerticalAlignment="Center" Width="120" Text="{gallery:CustomizeThemeShowCaseLangResource P2TextEnableAlgorithm}" />
+                            <atom:LineEdit PlaceholderText="{gallery:CustomizeThemeShowCaseLangResource P2PlaceholderTextPleaseInput}" Width="200" VerticalAlignment="Center" />
+                            <atom:Button ButtonType="Primary" VerticalAlignment="Center" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}" />
                         </StackPanel>
                     </atom:ThemeConfigProvider>
                     <atom:Separator />
@@ -130,9 +130,9 @@
                             </atom:ControlTokenInfoSetter>
                         </atom:ThemeConfigProvider.ControlTokenInfoSetters>
                         <StackPanel Orientation="Horizontal" Spacing="5">
-                            <atom:TextBlock VerticalAlignment="Center" Width="120">Disable algorithm:</atom:TextBlock>
-                            <atom:LineEdit PlaceholderText="Please input" Width="200" VerticalAlignment="Center" />
-                            <atom:Button ButtonType="Primary" VerticalAlignment="Center">Submit</atom:Button>
+                            <atom:TextBlock VerticalAlignment="Center" Width="120" Text="{gallery:CustomizeThemeShowCaseLangResource P2TextDisableAlgorithm}" />
+                            <atom:LineEdit PlaceholderText="{gallery:CustomizeThemeShowCaseLangResource P2PlaceholderTextPleaseInput}" Width="200" VerticalAlignment="Center" />
+                            <atom:Button ButtonType="Primary" VerticalAlignment="Center" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}" />
                         </StackPanel>
                     </atom:ThemeConfigProvider>
                 </StackPanel>
@@ -148,12 +148,12 @@
                 </atom:ThemeConfigProvider.SharedTokenSetters>
                 <Border Padding="20">
                     <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:Button ButtonType="Primary" VerticalAlignment="Center">Theme 1</atom:Button>
+                        <atom:Button ButtonType="Primary" VerticalAlignment="Center" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentThemeN1}" />
                         <atom:ThemeConfigProvider>
                             <atom:ThemeConfigProvider.SharedTokenSetters>
                                 <atom:TokenSetter Key="ColorPrimary" Value="#00b96b" />
                             </atom:ThemeConfigProvider.SharedTokenSetters>
-                            <atom:Button ButtonType="Primary" VerticalAlignment="Center">Theme 2</atom:Button>
+                            <atom:Button ButtonType="Primary" VerticalAlignment="Center" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentThemeN2}" />
                         </atom:ThemeConfigProvider>
                     </StackPanel>
                 </Border>

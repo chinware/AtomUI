@@ -2,6 +2,10 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
+using AtomUI.Data;
+using AtomUI.Theme.Language;
+using Avalonia;
+using AtomUIGallery.Localization;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -17,7 +21,7 @@ public partial class CheckBoxShowCase : ReactiveUserControl<CheckBoxViewModel>
         {
             if (DataContext is CheckBoxViewModel viewModel)
             {
-                ConfigureCheckBoxOptions(viewModel);
+                RefreshLocalizedContent(viewModel);
                 
                 this.OneWayBind(viewModel, vm => vm.CheckBoxOptions, v => v.BasicCheckBoxGroup.ItemsSource)
                     .DisposeWith(disposables);
@@ -37,6 +41,15 @@ public partial class CheckBoxShowCase : ReactiveUserControl<CheckBoxViewModel>
                     .DisposeWith(disposables);
                 this.BindCommand(viewModel, vm => vm.CheckedItemStatusCommand3, v => v.OrangeCheckBox)
                     .DisposeWith(disposables);
+
+                var themeManager = Application.Current?.GetThemeManager();
+                if (themeManager != null)
+                {
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedContent(viewModel);
+                    themeManager.LanguageVariantChanged += handler;
+                    Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
+                        .DisposeWith(disposables);
+                }
                 
                 Disposable.Create(() =>
                 {
@@ -47,20 +60,49 @@ public partial class CheckBoxShowCase : ReactiveUserControl<CheckBoxViewModel>
         });
         InitializeComponent();
     }
+
+    private void RefreshLocalizedContent(CheckBoxViewModel viewModel)
+    {
+        viewModel.RefreshLocalizedTexts();
+        ConfigureCheckBoxOptions(viewModel);
+    }
     
     private void ConfigureCheckBoxOptions(CheckBoxViewModel viewModel)
     {
-        var apple = new CheckBoxOption() { Content = "Apple" };
-        var pear = new CheckBoxOption() { Content = "Pear" };
+        var apple = new CheckBoxOption()
+        {
+            Content = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentApple, "Apple")
+        };
+        var pear = new CheckBoxOption()
+        {
+            Content = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentPear, "Pear")
+        };
         viewModel.CheckBoxOptions = new List<CheckBoxOption>
         {
             apple,
             pear,
-            new () { Content = "Orange", IsEnabled = false},
+            new ()
+            {
+                Content   = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentOrange, "Orange"),
+                IsEnabled = false
+            },
         };
         viewModel.DefaultCheckBoxOptions = new List<CheckBoxOption>
         {
             pear,
         };
+    }
+}
+
+internal static class CheckBoxShowCaseLanguage
+{
+    public static string Get(CheckBoxShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        if (Application.Current is null)
+        {
+            return fallback;
+        }
+
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
     }
 }

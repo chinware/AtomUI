@@ -11,36 +11,36 @@
                               Description="{gallery:CardShowCaseLangResource BasicDescription}"
                               IsOccupyEntireRow="True">
             <WrapPanel ItemSpacing="20" LineSpacing="20">
-                <atom:Card Header="Large size card" SizeType="Large" Width="300">
+                <atom:Card Header="{gallery:CardShowCaseLangResource P2HeaderLargeSizeCard}" SizeType="Large" Width="300">
                     <atom:Card.Extra>
-                        <atom:HyperLinkButton>More</atom:HyperLinkButton>
+                        <atom:HyperLinkButton Content="{gallery:CardShowCaseLangResource P2ContentMore}" />
                     </atom:Card.Extra>
                     <StackPanel Orientation="Vertical" Spacing="3">
-                        <atom:TextBlock>Card content</atom:TextBlock>
-                        <atom:TextBlock>Card content</atom:TextBlock>
-                        <atom:TextBlock>Card content</atom:TextBlock>
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
                     </StackPanel>
                 </atom:Card>
 
-                <atom:Card Header="Default size card" SizeType="Middle" Width="300">
+                <atom:Card Header="{gallery:CardShowCaseLangResource P2HeaderDefaultSizeCard}" SizeType="Middle" Width="300">
                     <atom:Card.Extra>
-                        <atom:HyperLinkButton>More</atom:HyperLinkButton>
+                        <atom:HyperLinkButton Content="{gallery:CardShowCaseLangResource P2ContentMore}" />
                     </atom:Card.Extra>
                     <StackPanel Orientation="Vertical" Spacing="3">
-                        <atom:TextBlock>Card content</atom:TextBlock>
-                        <atom:TextBlock>Card content</atom:TextBlock>
-                        <atom:TextBlock>Card content</atom:TextBlock>
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
                     </StackPanel>
                 </atom:Card>
 
-                <atom:Card Header="Small size card" SizeType="Small" Width="300">
+                <atom:Card Header="{gallery:CardShowCaseLangResource P2HeaderSmallSizeCard}" SizeType="Small" Width="300">
                     <atom:Card.Extra>
-                        <atom:HyperLinkButton>More</atom:HyperLinkButton>
+                        <atom:HyperLinkButton Content="{gallery:CardShowCaseLangResource P2ContentMore}" />
                     </atom:Card.Extra>
                     <StackPanel Orientation="Vertical" Spacing="3">
-                        <atom:TextBlock>Card content</atom:TextBlock>
-                        <atom:TextBlock>Card content</atom:TextBlock>
-                        <atom:TextBlock>Card content</atom:TextBlock>
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
                     </StackPanel>
                 </atom:Card>
             </WrapPanel>
@@ -51,14 +51,14 @@
                               Description="{gallery:CardShowCaseLangResource NoBorderDescription}"
                               IsOccupyEntireRow="True">
             <Border Padding="20" Background="{Binding BorderlessFrameBg}">
-                <atom:Card Header="Card title" Width="300" StyleVariant="Borderless" HorizontalAlignment="Left">
+                <atom:Card Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}" Width="300" StyleVariant="Borderless" HorizontalAlignment="Left">
                     <atom:Card.Extra>
-                        <atom:HyperLinkButton>More</atom:HyperLinkButton>
+                        <atom:HyperLinkButton Content="{gallery:CardShowCaseLangResource P2ContentMore}" />
                     </atom:Card.Extra>
                     <StackPanel Orientation="Vertical" Spacing="3">
-                        <atom:TextBlock>Card content</atom:TextBlock>
-                        <atom:TextBlock>Card content</atom:TextBlock>
-                        <atom:TextBlock>Card content</atom:TextBlock>
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
                     </StackPanel>
                 </atom:Card>
             </Border>
@@ -69,9 +69,9 @@
                               IsOccupyEntireRow="True">
             <atom:Card Width="300" HorizontalAlignment="Left">
                 <StackPanel Orientation="Vertical" Spacing="3">
-                    <atom:TextBlock>Card content</atom:TextBlock>
-                    <atom:TextBlock>Card content</atom:TextBlock>
-                    <atom:TextBlock>Card content</atom:TextBlock>
+                    <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                    <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                    <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
                 </StackPanel>
             </atom:Card>
         </gallery:ShowCaseItem>
@@ -83,7 +83,7 @@
                 <atom:Card.Cover>
                     <Image Source="/Assets/CardShowCase/Cover1.png" />
                 </atom:Card.Cover>
-                <atom:CardMetaContent Header="Europe Street beat"
+                <atom:CardMetaContent Header="{gallery:CardShowCaseLangResource P2HeaderEuropeStreetBeat}"
                                       Content="www.instagram.com" />
             </atom:Card>
         </gallery:ShowCaseItem>
@@ -93,28 +93,28 @@
                               IsOccupyEntireRow="True">
             <Border Padding="20" Background="{Binding BorderlessFrameBg}">
                 <Grid RowDefinitions="*" ColumnDefinitions="*, *, *" ColumnSpacing="20">
-                    <atom:Card Header="Card title" StyleVariant="Borderless" Grid.Row="0" Grid.Column="0"
+                    <atom:Card Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}" StyleVariant="Borderless" Grid.Row="0" Grid.Column="0"
                                HorizontalAlignment="Stretch">
                         <StackPanel Orientation="Vertical" Spacing="3">
-                            <atom:TextBlock>Card content</atom:TextBlock>
-                            <atom:TextBlock>Card content</atom:TextBlock>
-                            <atom:TextBlock>Card content</atom:TextBlock>
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
                         </StackPanel>
                     </atom:Card>
-                    <atom:Card Header="Card title" StyleVariant="Borderless" Grid.Row="0" Grid.Column="1"
+                    <atom:Card Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}" StyleVariant="Borderless" Grid.Row="0" Grid.Column="1"
                                HorizontalAlignment="Stretch">
                         <StackPanel Orientation="Vertical" Spacing="3">
-                            <atom:TextBlock>Card content</atom:TextBlock>
-                            <atom:TextBlock>Card content</atom:TextBlock>
-                            <atom:TextBlock>Card content</atom:TextBlock>
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
                         </StackPanel>
                     </atom:Card>
-                    <atom:Card Header="Card title" StyleVariant="Borderless" Grid.Row="0" Grid.Column="2"
+                    <atom:Card Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}" StyleVariant="Borderless" Grid.Row="0" Grid.Column="2"
                                HorizontalAlignment="Stretch">
                         <StackPanel Orientation="Vertical" Spacing="3">
-                            <atom:TextBlock>Card content</atom:TextBlock>
-                            <atom:TextBlock>Card content</atom:TextBlock>
-                            <atom:TextBlock>Card content</atom:TextBlock>
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
                         </StackPanel>
                     </atom:Card>
                 </Grid>
@@ -127,13 +127,13 @@
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:ToggleSwitch IsChecked="{Binding IsLoading, Mode=TwoWay}" />
                 <atom:Card MinWidth="300" IsLoading="{Binding IsLoading}" HorizontalAlignment="Left">
-                    <atom:CardMetaContent Header="Card title">
+                    <atom:CardMetaContent Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}">
                         <atom:CardMetaContent.Avatar>
                             <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg" />
                         </atom:CardMetaContent.Avatar>
                         <StackPanel Orientation="Vertical" Spacing="3">
-                            <atom:TextBlock>This is the description</atom:TextBlock>
-                            <atom:TextBlock>This is the description</atom:TextBlock>
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextThisIsTheDescription}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextThisIsTheDescription}" />
                         </StackPanel>
                     </atom:CardMetaContent>
                     <atom:Card.Actions>
@@ -144,13 +144,13 @@
                 </atom:Card>
 
                 <atom:Card MinWidth="300" IsLoading="{Binding IsLoading}" HorizontalAlignment="Left">
-                    <atom:CardMetaContent Header="Card title">
+                    <atom:CardMetaContent Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}">
                         <atom:CardMetaContent.Avatar>
                             <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar2.svg" />
                         </atom:CardMetaContent.Avatar>
                         <StackPanel Orientation="Vertical" Spacing="3">
-                            <atom:TextBlock>This is the description</atom:TextBlock>
-                            <atom:TextBlock>This is the description</atom:TextBlock>
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextThisIsTheDescription}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextThisIsTheDescription}" />
                         </StackPanel>
                     </atom:CardMetaContent>
                     <atom:Card.Actions>
@@ -165,16 +165,16 @@
         <gallery:ShowCaseItem Title="{gallery:CardShowCaseLangResource GridCardTitle}"
                               Description="{gallery:CardShowCaseLangResource GridCardDescription}"
                               IsOccupyEntireRow="True">
-            <atom:Card HorizontalAlignment="Stretch" Header="Card Title" SizeType="Large">
+            <atom:Card HorizontalAlignment="Stretch" Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle2}" SizeType="Large">
                 <atom:CardGridContent ColumnDefinitions="*, *, *, *"
                                       RowDefinitions="Auto, Auto">
-                    <atom:CardGridItem Row="0" Column="0">Content</atom:CardGridItem>
-                    <atom:CardGridItem Row="0" Column="1" IsHoverable="False">Content</atom:CardGridItem>
-                    <atom:CardGridItem Row="0" Column="2">Content</atom:CardGridItem>
-                    <atom:CardGridItem Row="0" Column="3">Content</atom:CardGridItem>
-                    <atom:CardGridItem Row="1" Column="0">Content</atom:CardGridItem>
-                    <atom:CardGridItem Row="1" Column="1">Content</atom:CardGridItem>
-                    <atom:CardGridItem Row="1" Column="2">Content</atom:CardGridItem>
+                    <atom:CardGridItem Row="0" Column="0" Content="{gallery:CardShowCaseLangResource P2ContentContent}" />
+                    <atom:CardGridItem Row="0" Column="1" IsHoverable="False" Content="{gallery:CardShowCaseLangResource P2ContentContent}" />
+                    <atom:CardGridItem Row="0" Column="2" Content="{gallery:CardShowCaseLangResource P2ContentContent}" />
+                    <atom:CardGridItem Row="0" Column="3" Content="{gallery:CardShowCaseLangResource P2ContentContent}" />
+                    <atom:CardGridItem Row="1" Column="0" Content="{gallery:CardShowCaseLangResource P2ContentContent}" />
+                    <atom:CardGridItem Row="1" Column="1" Content="{gallery:CardShowCaseLangResource P2ContentContent}" />
+                    <atom:CardGridItem Row="1" Column="2" Content="{gallery:CardShowCaseLangResource P2ContentContent}" />
                 </atom:CardGridContent>
             </atom:Card>
         </gallery:ShowCaseItem>
@@ -182,27 +182,27 @@
         <gallery:ShowCaseItem Title="{gallery:CardShowCaseLangResource InnerCardTitle}"
                               Description="{gallery:CardShowCaseLangResource InnerCardDescription}"
                               IsOccupyEntireRow="True">
-            <atom:Card Header="Card title" HorizontalAlignment="Stretch" SizeType="Large">
+            <atom:Card Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}" HorizontalAlignment="Stretch" SizeType="Large">
                 <StackPanel Orientation="Vertical" Spacing="20">
-                    <atom:Card Header="Card title" HorizontalAlignment="Stretch" IsInnerMode="True">
+                    <atom:Card Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}" HorizontalAlignment="Stretch" IsInnerMode="True">
                         <atom:Card.Extra>
-                            <atom:HyperLinkButton>More</atom:HyperLinkButton>
+                            <atom:HyperLinkButton Content="{gallery:CardShowCaseLangResource P2ContentMore}" />
                         </atom:Card.Extra>
                         <StackPanel Orientation="Vertical" Spacing="3">
-                            <atom:TextBlock>Card content</atom:TextBlock>
-                            <atom:TextBlock>Card content</atom:TextBlock>
-                            <atom:TextBlock>Card content</atom:TextBlock>
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
                         </StackPanel>
                     </atom:Card>
 
-                    <atom:Card Header="Card title" HorizontalAlignment="Stretch" IsInnerMode="True">
+                    <atom:Card Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}" HorizontalAlignment="Stretch" IsInnerMode="True">
                         <atom:Card.Extra>
-                            <atom:HyperLinkButton>More</atom:HyperLinkButton>
+                            <atom:HyperLinkButton Content="{gallery:CardShowCaseLangResource P2ContentMore}" />
                         </atom:Card.Extra>
                         <StackPanel Orientation="Vertical" Spacing="3">
-                            <atom:TextBlock>Card content</atom:TextBlock>
-                            <atom:TextBlock>Card content</atom:TextBlock>
-                            <atom:TextBlock>Card content</atom:TextBlock>
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
+                            <atom:TextBlock Text="{gallery:CardShowCaseLangResource P2TextCardContent}" />
                         </StackPanel>
                     </atom:Card>
                 </StackPanel>
@@ -213,24 +213,24 @@
                               Description="{gallery:CardShowCaseLangResource WithTabsDescription}"
                               IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:Card Header="Card title" HorizontalAlignment="Stretch" SizeType="Large">
+                <atom:Card Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}" HorizontalAlignment="Stretch" SizeType="Large">
                     <atom:Card.Extra>
-                        <atom:HyperLinkButton>More</atom:HyperLinkButton>
+                        <atom:HyperLinkButton Content="{gallery:CardShowCaseLangResource P2ContentMore}" />
                     </atom:Card.Extra>
                     <atom:CardTabsContent>
-                        <atom:TabItem Header="Tab1">content1</atom:TabItem>
-                        <atom:TabItem Header="Tab2">content2</atom:TabItem>
+                        <atom:TabItem Header="{gallery:CardShowCaseLangResource P2HeaderTab1}" Content="{gallery:CardShowCaseLangResource P2ContentContent1}" />
+                        <atom:TabItem Header="{gallery:CardShowCaseLangResource P2HeaderTab2}" Content="{gallery:CardShowCaseLangResource P2ContentContent2}" />
                     </atom:CardTabsContent>
                 </atom:Card>
 
                 <atom:Card HorizontalAlignment="Stretch">
                     <atom:CardTabsContent>
                         <atom:CardTabsContent.TabBarExtraContent>
-                            <atom:HyperLinkButton>More</atom:HyperLinkButton>
+                            <atom:HyperLinkButton Content="{gallery:CardShowCaseLangResource P2ContentMore}" />
                         </atom:CardTabsContent.TabBarExtraContent>
-                        <atom:TabItem Header="article">article content</atom:TabItem>
-                        <atom:TabItem Header="app">app content</atom:TabItem>
-                        <atom:TabItem Header="project">project content</atom:TabItem>
+                        <atom:TabItem Header="{gallery:CardShowCaseLangResource P2HeaderArticle}" Content="{gallery:CardShowCaseLangResource P2ContentArticleContent}" />
+                        <atom:TabItem Header="{gallery:CardShowCaseLangResource P2HeaderApp}" Content="{gallery:CardShowCaseLangResource P2ContentAppContent}" />
+                        <atom:TabItem Header="{gallery:CardShowCaseLangResource P2HeaderProject}" Content="{gallery:CardShowCaseLangResource P2ContentProjectContent}" />
                     </atom:CardTabsContent>
                 </atom:Card>
             </StackPanel>
@@ -244,8 +244,8 @@
                     <Image Source="/Assets/CardShowCase/Cover2.png" />
                 </atom:Card.Cover>
 
-                <atom:CardMetaContent Header="Card title"
-                                      Content="This is the description">
+                <atom:CardMetaContent Header="{gallery:CardShowCaseLangResource P2HeaderCardTitle}"
+                                      Content="{gallery:CardShowCaseLangResource P2ContentThisIsTheDescription}">
                     <atom:CardMetaContent.Avatar>
                         <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg" />
                     </atom:CardMetaContent.Avatar>

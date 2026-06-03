@@ -26,6 +26,27 @@ internal class en_US : LanguageProvider
     public const string CollapsibleDescription = "Specify the trigger area of collapsible by collapsible.";
     public const string CustomPaddingTitle = "Custom Header And Content Padding";
     public const string CustomPaddingDescription = "Please set custom header margins and content spacing.";
+    public const string P2HeaderThisIsPanelHeaderN1 = "This is panel header 1";
+    public const string P2TitleDefaultSize = "Default Size";
+    public const string P2HeaderThisIsDefaultSizePanelHeader = "This is default size panel header";
+    public const string P2TitleSmallSize = "Small Size";
+    public const string P2HeaderThisIsSmallSizePanelHeader = "This is small size panel header";
+    public const string P2TitleLargeSize = "Large Size";
+    public const string P2HeaderThisIsLargeSizePanelHeader = "This is large size panel header";
+    public const string P2HeaderThisIsPanelHeader = "This is panel header";
+    public const string P2HeaderThisIsNestedPanelHeader = "This is nested panel header";
+    public const string P2HeaderThisPanelCanOnlyBeCollapsedByClicking = "This panel can only be collapsed by clicking text";
+    public const string P2HeaderThisPanelCanOnlyBeCollapsedByClicking2 = "This panel can only be collapsed by clicking icon";
+    public const string P2HeaderThisPanelCanTBeCollapsed = "This panel can't be collapsed";
+    public const string P2TextADogIsATypeOfDomesticatedAnimal = "A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.";
+    public const string P2TextExpandDirection = "Expand direction:";
+    public const string P2ContentDown = "Down";
+    public const string P2ContentUp = "Up";
+    public const string P2ContentLeft = "Left";
+    public const string P2ContentRight = "Right";
+    public const string P2TextExpandIconPosition = "Expand Icon Position:";
+    public const string P2ContentStart = "Start";
+    public const string P2ContentEnd = "End";
 
     protected override Type GetResourceKindType() => typeof(ExpanderShowCaseLangResourceKind);
 }

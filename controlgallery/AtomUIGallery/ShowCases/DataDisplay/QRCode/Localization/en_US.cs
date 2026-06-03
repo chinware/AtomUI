@@ -22,6 +22,13 @@ internal class en_US : LanguageProvider
     public const string ErrorLevelDescription = "Set errorLevel to adjust different error correction levels.";
     public const string AdvancedUsageTitle = "Advanced usage";
     public const string AdvancedUsageDescription = "Example with a popover card.";
+    public const string P2TextLoading = "Loading...";
+    public const string P2Text二维码过期 = "二维码过期";
+    public const string P2Content点击刷新 = "点击刷新";
+    public const string P2Text已扫描 = "已扫描";
+    public const string P2ContentSmaller = "Smaller";
+    public const string P2ContentLarger = "Larger";
+    public const string P2ContentHoverMe = "Hover me";
 
     protected override Type GetResourceKindType() => typeof(QRCodeShowCaseLangResourceKind);
 }

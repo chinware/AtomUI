@@ -68,8 +68,8 @@
                 <atom:ProgressBar Value="{Binding ProgressValue}" Minimum="0" Maximum="100" IsProgressInfoVisible="False"/>
                 <atom:CircleProgress Value="{Binding ProgressValue}" Minimum="0" Maximum="100" />
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:Button SizeType="Small" Command="{Binding SubProgressValue}">Sub</atom:Button>
-                    <atom:Button SizeType="Small" Command="{Binding AddProgressValue}">Add</atom:Button>
+                    <atom:Button SizeType="Small" Command="{Binding SubProgressValue}" Content="{gallery:ProgressBarShowCaseLangResource P2ContentSub}" />
+                    <atom:Button SizeType="Small" Command="{Binding AddProgressValue}" Content="{gallery:ProgressBarShowCaseLangResource P2ContentAdd}" />
                 </StackPanel>
             </StackPanel>
         </gallery:ShowCaseItem>

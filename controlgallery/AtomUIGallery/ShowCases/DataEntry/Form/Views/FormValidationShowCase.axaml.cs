@@ -3,6 +3,7 @@ using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using AtomUIGallery.Localization;
 using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Form;
@@ -34,7 +35,8 @@ public partial class FormValidationShowCase : ReactiveUserControl<FormViewModel>
     {
         GetMessageManager()?.Show(new AtomUIMessage(
             type: MessageType.Success,
-            content: "Submit success!"
+            content: FormShowCaseLanguage.Get(FormShowCaseLangResourceKind.P3SubmitSuccessMessage,
+                "Submit success!")
         ));
     }
 
@@ -44,7 +46,8 @@ public partial class FormValidationShowCase : ReactiveUserControl<FormViewModel>
         {
             GetMessageManager()?.Show(new AtomUIMessage(
                 type: MessageType.Error,
-                content: "Submit failed!"
+                content: FormShowCaseLanguage.Get(FormShowCaseLangResourceKind.P3SubmitFailedMessage,
+                    "Submit failed!")
             ));
         }
     }

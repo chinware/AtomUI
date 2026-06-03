@@ -10,10 +10,8 @@
         <gallery:ShowCaseItem
             Title="{gallery:ExpanderShowCaseLangResource ExpanderTitle}"
             Description="{gallery:ExpanderShowCaseLangResource ExpanderDescription}">
-            <atom:Expander Header="This is panel header 1">
-                <atom:TextBlock TextWrapping="Wrap">
-                    A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                </atom:TextBlock>
+            <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
             </atom:Expander>
         </gallery:ShowCaseItem>
 
@@ -21,23 +19,17 @@
             Title="{gallery:ExpanderShowCaseLangResource SizeTitle}"
             Description="{gallery:ExpanderShowCaseLangResource SizeDescription}">
             <StackPanel Orientation="Vertical" Spacing="20" Margin="0, 0, 10, 0">
-                <atom:Separator Title="Default Size" TitlePosition="Left" FontWeight="Bold" />
-                <atom:Expander SizeType="Middle" Header="This is default size panel header">
-                    <atom:TextBlock TextWrapping="Wrap">
-                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                    </atom:TextBlock>
+                <atom:Separator Title="{gallery:ExpanderShowCaseLangResource P2TitleDefaultSize}" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Expander SizeType="Middle" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsDefaultSizePanelHeader}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                 </atom:Expander>
-                <atom:Separator Title="Small Size" TitlePosition="Left" FontWeight="Bold" />
-                <atom:Expander SizeType="Small" Header="This is small size panel header">
-                    <atom:TextBlock TextWrapping="Wrap">
-                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                    </atom:TextBlock>
+                <atom:Separator Title="{gallery:ExpanderShowCaseLangResource P2TitleSmallSize}" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Expander SizeType="Small" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsSmallSizePanelHeader}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                 </atom:Expander>
-                <atom:Separator Title="Large Size" TitlePosition="Left" FontWeight="Bold" />
-                <atom:Expander SizeType="Large" Header="This is large size panel header">
-                    <atom:TextBlock TextWrapping="Wrap">
-                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                    </atom:TextBlock>
+                <atom:Separator Title="{gallery:ExpanderShowCaseLangResource P2TitleLargeSize}" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Expander SizeType="Large" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsLargeSizePanelHeader}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                 </atom:Expander>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -47,21 +39,19 @@
             Description="{gallery:ExpanderShowCaseLangResource ExpandingDirectionDescription}">
             <DockPanel Margin="0, 0, 0, 0" Height="300">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
-                    <atom:TextBlock VerticalAlignment="Center">Expand direction:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:ExpanderShowCaseLangResource P2TextExpandDirection}" />
                     <atom:OptionButtonGroup ButtonStyle="Outline" Name="ExpandDirectionOptionGroup">
-                        <atom:OptionButton IsChecked="True">Down</atom:OptionButton>
-                        <atom:OptionButton>Up</atom:OptionButton>
-                        <atom:OptionButton>Left</atom:OptionButton>
-                        <atom:OptionButton>Right</atom:OptionButton>
+                        <atom:OptionButton IsChecked="True" Content="{gallery:ExpanderShowCaseLangResource P2ContentDown}" />
+                        <atom:OptionButton Content="{gallery:ExpanderShowCaseLangResource P2ContentUp}" />
+                        <atom:OptionButton Content="{gallery:ExpanderShowCaseLangResource P2ContentLeft}" />
+                        <atom:OptionButton Content="{gallery:ExpanderShowCaseLangResource P2ContentRight}" />
                     </atom:OptionButtonGroup>
                 </StackPanel>
 
                 <Panel Margin="0, 20, 0, 0">
-                    <atom:Expander Header="This is panel header" ExpandDirection="{Binding ExpandDirection}"
+                    <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeader}" ExpandDirection="{Binding ExpandDirection}"
                                    Name="DirectionDemoExpander">
-                        <atom:TextBlock TextWrapping="Wrap">
-                            A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                        </atom:TextBlock>
+                        <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                     </atom:Expander>
                 </Panel>
             </DockPanel>
@@ -70,11 +60,9 @@
         <gallery:ShowCaseItem
             Title="{gallery:ExpanderShowCaseLangResource NestedPanelTitle}"
             Description="{gallery:ExpanderShowCaseLangResource NestedPanelDescription}">
-            <atom:Expander Header="This is panel header 1">
-                <atom:Expander Header="This is nested panel header">
-                    <atom:TextBlock TextWrapping="Wrap">
-                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                    </atom:TextBlock>
+            <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
+                <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsNestedPanelHeader}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                 </atom:Expander>
             </atom:Expander>
         </gallery:ShowCaseItem>
@@ -82,20 +70,16 @@
         <gallery:ShowCaseItem
             Title="{gallery:ExpanderShowCaseLangResource BorderlessTitle}"
             Description="{gallery:ExpanderShowCaseLangResource BorderlessDescription}">
-            <atom:Expander IsBorderless="True" Header="This is panel header 1">
-                <atom:TextBlock TextWrapping="Wrap">
-                    A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                </atom:TextBlock>
+            <atom:Expander IsBorderless="True" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
             </atom:Expander>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:ExpanderShowCaseLangResource NoArrowTitle}"
             Description="{gallery:ExpanderShowCaseLangResource NoArrowDescription}">
-            <atom:Expander Header="This is panel header 1" IsShowExpandIcon="False">
-                <atom:TextBlock TextWrapping="Wrap">
-                    A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                </atom:TextBlock>
+            <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}" IsShowExpandIcon="False">
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
             </atom:Expander>
         </gallery:ShowCaseItem>
 
@@ -103,19 +87,17 @@
             Title="{gallery:ExpanderShowCaseLangResource ExpandIconLocationTitle}"
             Description="{gallery:ExpanderShowCaseLangResource ExpandIconLocationDescription}">
             <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:Expander Header="This is panel header 1"
+                <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}"
                                AddOnContent="{antdicons:AntDesignIconProvider Kind=SettingOutlined}"
                                ExpandIconPosition="{Binding ToggleIconPosition}">
-                    <atom:TextBlock TextWrapping="Wrap">
-                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                    </atom:TextBlock>
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                 </atom:Expander>
 
                 <StackPanel Orientation="Horizontal" Spacing="5">
-                    <atom:TextBlock VerticalAlignment="Center">Expand Icon Position:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:ExpanderShowCaseLangResource P2TextExpandIconPosition}" />
                     <atom:OptionButtonGroup ButtonStyle="Outline" Name="ExpandButtonPosGroup">
-                        <atom:OptionButton IsChecked="True">Start</atom:OptionButton>
-                        <atom:OptionButton>End</atom:OptionButton>
+                        <atom:OptionButton IsChecked="True" Content="{gallery:ExpanderShowCaseLangResource P2ContentStart}" />
+                        <atom:OptionButton Content="{gallery:ExpanderShowCaseLangResource P2ContentEnd}" />
                     </atom:OptionButtonGroup>
                 </StackPanel>
             </StackPanel>
@@ -125,10 +107,8 @@
         <gallery:ShowCaseItem
             Title="{gallery:ExpanderShowCaseLangResource GhostCollapseTitle}"
             Description="{gallery:ExpanderShowCaseLangResource GhostCollapseDescription}">
-            <atom:Expander IsGhostStyle="True" Header="This is panel header 1">
-                <atom:TextBlock TextWrapping="Wrap">
-                    A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                </atom:TextBlock>
+            <atom:Expander IsGhostStyle="True" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
             </atom:Expander>
         </gallery:ShowCaseItem>
 
@@ -136,27 +116,19 @@
             Title="{gallery:ExpanderShowCaseLangResource CollapsibleTitle}"
             Description="{gallery:ExpanderShowCaseLangResource CollapsibleDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Expander Header="This panel can only be collapsed by clicking text">
-                    <atom:TextBlock TextWrapping="Wrap">
-                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                    </atom:TextBlock>
+                <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisPanelCanOnlyBeCollapsedByClicking}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                 </atom:Expander>
-                <atom:Expander TriggerType="Icon" Header="This panel can only be collapsed by clicking icon">
-                    <atom:TextBlock TextWrapping="Wrap">
-                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                    </atom:TextBlock>
+                <atom:Expander TriggerType="Icon" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisPanelCanOnlyBeCollapsedByClicking2}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                 </atom:Expander>
 
-                <atom:Expander IsEnabled="False" Header="This panel can't be collapsed">
-                    <atom:TextBlock TextWrapping="Wrap">
-                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                    </atom:TextBlock>
+                <atom:Expander IsEnabled="False" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisPanelCanTBeCollapsed}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                 </atom:Expander>
 
-                <atom:Expander IsEnabled="False" Header="This panel can't be collapsed" IsExpanded="True">
-                    <atom:TextBlock TextWrapping="Wrap">
-                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                    </atom:TextBlock>
+                <atom:Expander IsEnabled="False" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisPanelCanTBeCollapsed}" IsExpanded="True">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                 </atom:Expander>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -165,16 +137,12 @@
             Title="{gallery:ExpanderShowCaseLangResource CustomPaddingTitle}"
             Description="{gallery:ExpanderShowCaseLangResource CustomPaddingDescription}">
             <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:Expander Header="This is panel header 1" HeaderPadding="5" ContentPadding="5">
-                    <atom:TextBlock TextWrapping="Wrap">
-                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                    </atom:TextBlock>
+                <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}" HeaderPadding="5" ContentPadding="5">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                 </atom:Expander>
 
-                <atom:Expander Header="This is panel header 1" IsGhostStyle="True" HeaderPadding="5" ContentPadding="5">
-                    <atom:TextBlock TextWrapping="Wrap">
-                        A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.
-                    </atom:TextBlock>
+                <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}" IsGhostStyle="True" HeaderPadding="5" ContentPadding="5">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                 </atom:Expander>
             </StackPanel>
         </gallery:ShowCaseItem>

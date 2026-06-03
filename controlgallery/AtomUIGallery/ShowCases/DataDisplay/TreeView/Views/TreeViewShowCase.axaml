@@ -11,17 +11,17 @@
             Title="{gallery:TreeViewShowCaseLangResource BasicTitle}"
             Description="{gallery:TreeViewShowCaseLangResource BasicDescription}">
             <atom:TreeView Name="BasicTree" ToggleType="CheckBox">
-                <atom:TreeViewItem Header="parent 1" ItemKey="0-0">
-                    <atom:TreeViewItem Header="parent 1-0" ItemKey="0-0-0">
-                        <atom:TreeViewItem Header="leaf" ItemKey="0-0-0-0" IsEnabled="False" />
-                        <atom:TreeViewItem Header="leaf" ItemKey="0-0-0-1" />
+                <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1}" ItemKey="0-0">
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N0}" ItemKey="0-0-0">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeaf}" ItemKey="0-0-0-0" IsEnabled="False" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeaf}" ItemKey="0-0-0-1" />
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="parent 1-1" ItemKey="0-0-1">
-                        <atom:TreeViewItem Header="sss" ItemKey="0-0-1-0">
-                            <atom:TreeViewItem Header="ccc" ItemKey="0-0-1-0-0" />
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N1}" ItemKey="0-0-1">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderSss}" ItemKey="0-0-1-0">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderCcc}" ItemKey="0-0-1-0-0" />
                         </atom:TreeViewItem>
-                        <atom:TreeViewItem Header="xxx" ItemKey="0-0-1-1">
-                            <atom:TreeViewItem Header="aaaa" ItemKey="0-0-1-1-0" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderXxx}" ItemKey="0-0-1-1">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderAaaa}" ItemKey="0-0-1-1-0" />
                         </atom:TreeViewItem>
                     </atom:TreeViewItem>
                 </atom:TreeViewItem>
@@ -44,9 +44,9 @@
             Title="{gallery:TreeViewShowCaseLangResource BlockNodeTitle}"
             Description="{gallery:TreeViewShowCaseLangResource BlockNodeDescription}">
             <atom:TreeView ToggleType="CheckBox" IsDefaultExpandAll="True" NodeHoverMode="Block">
-                <atom:TreeViewItem Header="parent">
-                    <atom:TreeViewItem Header="child 1" IsEnabled="False" />
-                    <atom:TreeViewItem Header="child 2" IsIndicatorEnabled="False" />
+                <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParent}">
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderChildN1}" IsEnabled="False" />
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderChildN2}" IsIndicatorEnabled="False" />
                 </atom:TreeViewItem>
             </atom:TreeView>
         </gallery:ShowCaseItem>
@@ -56,37 +56,31 @@
             Description="{gallery:TreeViewShowCaseLangResource TreeWithLineDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <TextBlock VerticalAlignment="Center">showLine:</TextBlock>
+                    <TextBlock VerticalAlignment="Center" Text="{gallery:TreeViewShowCaseLangResource P2TextShowline}" />
                     <atom:ToggleSwitch VerticalAlignment="Center"
                                        IsChecked="{Binding ShowLineSwitchChecked,Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <TextBlock VerticalAlignment="Center">showIcon:</TextBlock>
+                    <TextBlock VerticalAlignment="Center" Text="{gallery:TreeViewShowCaseLangResource P2TextShowicon}" />
                     <atom:ToggleSwitch VerticalAlignment="Center"
                                        IsChecked="{Binding ShowIconSwitchChecked,Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <TextBlock VerticalAlignment="Center">ShowLeafIcon:</TextBlock>
+                    <TextBlock VerticalAlignment="Center" Text="{gallery:TreeViewShowCaseLangResource P2TextShowleaficon}" />
                     <atom:ToggleSwitch VerticalAlignment="Center"
                                        IsChecked="{Binding ShowLeafIconSwitchChecked,Mode=TwoWay}" />
                 </StackPanel>
 
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <TextBlock VerticalAlignment="Center">Node hover mode:</TextBlock>
+                    <TextBlock VerticalAlignment="Center" Text="{gallery:TreeViewShowCaseLangResource P2TextNodeHoverMode}" />
                     <atom:RadioButton IsChecked="True" IsCheckedChanged="HandleHoverModeChanged"
-                                      Tag="{x:Static atom:TreeItemHoverMode.Default}">
-                        Default
-                    </atom:RadioButton>
+                                      Tag="{x:Static atom:TreeItemHoverMode.Default}" Content="{gallery:TreeViewShowCaseLangResource P2ContentDefault}" />
                     <atom:RadioButton IsCheckedChanged="HandleHoverModeChanged"
-                                      Tag="{x:Static atom:TreeItemHoverMode.Block}">
-                        Block
-                    </atom:RadioButton>
+                                      Tag="{x:Static atom:TreeItemHoverMode.Block}" Content="{gallery:TreeViewShowCaseLangResource P2ContentBlock}" />
                     <atom:RadioButton IsCheckedChanged="HandleHoverModeChanged"
-                                      Tag="{x:Static atom:TreeItemHoverMode.WholeLine}">
-                        WholeLine
-                    </atom:RadioButton>
+                                      Tag="{x:Static atom:TreeItemHoverMode.WholeLine}" Content="{gallery:TreeViewShowCaseLangResource P2ContentWholeline}" />
                 </StackPanel>
 
                 <atom:TreeView IsShowLine="{Binding ShowLineSwitchChecked}"
@@ -94,33 +88,33 @@
                                IsShowLeafIcon="{Binding ShowLeafIconSwitchChecked}"
                                NodeHoverMode="{Binding TreeViewNodeHoverMode}"
                                IsSwitcherRotation="{Binding ShowLineSwitchChecked, Converter={x:Static BoolConverters.Not}}">
-                    <atom:TreeViewItem Header="parent 1" Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}"
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1}" Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}"
                                        IsExpanded="True">
-                        <atom:TreeViewItem Header="parent 1-0"
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N0}"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}"
                                            IsExpanded="True">
-                            <atom:TreeViewItem Header="leaf 1"
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN1}"
                                                Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}" />
-                            <atom:TreeViewItem Header="leaf 2"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}" />
-                        </atom:TreeViewItem>
-                        <atom:TreeViewItem Header="parent 1-1">
-                            <atom:TreeViewItem Header="leaf"
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN2}"
                                                Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}" />
                         </atom:TreeViewItem>
-                        <atom:TreeViewItem Header="parent 1-2">
-                            <atom:TreeViewItem Header="leaf 1"
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N1}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeaf}"
                                                Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}" />
-                            <atom:TreeViewItem Header="leaf 2"
+                        </atom:TreeViewItem>
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N2}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN1}"
+                                               Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN2}"
                                                Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}" />
                         </atom:TreeViewItem>
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="parent 2">
-                        <atom:TreeViewItem Header="parent 2-0"
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN2}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN2N0}"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}">
-                            <atom:TreeViewItem Header="leaf 1"
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN1}"
                                                Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}" />
-                            <atom:TreeViewItem Header="leaf 2"
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN2}"
                                                Icon="{antdicons:AntDesignIconProvider Kind=CarryOutOutlined}" />
                         </atom:TreeViewItem>
                     </atom:TreeViewItem>
@@ -132,33 +126,33 @@
             Title="{gallery:TreeViewShowCaseLangResource DraggableTitle}"
             Description="{gallery:TreeViewShowCaseLangResource DraggableDescription}">
             <atom:TreeView IsDraggable="True" NodeHoverMode="Block">
-                <atom:TreeViewItem Header="0-0">
-                    <atom:TreeViewItem Header="0-0-0">
-                        <atom:TreeViewItem Header="0-0-0-0" />
-                        <atom:TreeViewItem Header="0-0-0-1" />
-                        <atom:TreeViewItem Header="0-0-0-2" />
+                <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0}">
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0N0}" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0N1}" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0N2}" />
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="0-0-1">
-                        <atom:TreeViewItem Header="0-0-1-0" />
-                        <atom:TreeViewItem Header="0-0-1-1" />
-                        <atom:TreeViewItem Header="0-0-1-2" />
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1N0}" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1N1}" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1N2}" />
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="0-0-2" />
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N2}" />
                 </atom:TreeViewItem>
-                <atom:TreeViewItem Header="0-1">
-                    <atom:TreeViewItem Header="0-1-0">
-                        <atom:TreeViewItem Header="0-1-0-0" />
-                        <atom:TreeViewItem Header="0-1-0-1" />
-                        <atom:TreeViewItem Header="0-1-0-2" />
+                <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1}">
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0N0}" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0N1}" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0N2}" />
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="0-1-1">
-                        <atom:TreeViewItem Header="0-1-1-0" />
-                        <atom:TreeViewItem Header="0-1-1-1" />
-                        <atom:TreeViewItem Header="0-1-1-2" />
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1N0}" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1N1}" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1N2}" />
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="0-1-2" />
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N2}" />
                 </atom:TreeViewItem>
-                <atom:TreeViewItem Header="0-2" />
+                <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N2}" />
             </atom:TreeView>
         </gallery:ShowCaseItem>
 
@@ -173,18 +167,18 @@
                         <antdicons:RightOutlined />
                     </atom:IconTemplate>
                 </atom:TreeView.SwitcherRotationIcon>
-                <atom:TreeViewItem Header="parent 1" ItemKey="0-0">
-                    <atom:TreeViewItem Header="parent 1-0" ItemKey="0-0-0">
-                        <atom:TreeViewItem Header="leaf" ItemKey="0-0-0-0" />
-                        <atom:TreeViewItem Header="leaf" ItemKey="0-0-0-1" />
-                        <atom:TreeViewItem Header="leaf" ItemKey="0-0-0-2" />
+                <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1}" ItemKey="0-0">
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N0}" ItemKey="0-0-0">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeaf}" ItemKey="0-0-0-0" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeaf}" ItemKey="0-0-0-1" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeaf}" ItemKey="0-0-0-2" />
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="parent 1-1" ItemKey="0-0-1">
-                        <atom:TreeViewItem Header="leaf" ItemKey="0-0-1-0" />
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N1}" ItemKey="0-0-1">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeaf}" ItemKey="0-0-1-0" />
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="parent 1-2" ItemKey="0-0-2">
-                        <atom:TreeViewItem Header="leaf" ItemKey="0-0-2-0" />
-                        <atom:TreeViewItem Header="leaf" ItemKey="0-0-2-1" />
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N2}" ItemKey="0-0-2">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeaf}" ItemKey="0-0-2-0" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeaf}" ItemKey="0-0-2-1" />
                     </atom:TreeViewItem>
                 </atom:TreeViewItem>
             </atom:TreeView>
@@ -206,7 +200,7 @@
             Title="{gallery:TreeViewShowCaseLangResource SearchableByTemplateTitle}"
             Description="{gallery:TreeViewShowCaseLangResource SearchableByTemplateDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:SearchEdit PlaceholderText="Search"
+                <atom:SearchEdit PlaceholderText="{gallery:TreeViewShowCaseLangResource P2PlaceholderTextSearch}"
                                  SearchButtonClick="HandleFilterItemsSourceTreeClicked" />
                 <atom:TreeView Name="SearchTreeViewByItemsSource">
                     <atom:TreeView.ItemTemplate>
@@ -222,36 +216,36 @@
             Title="{gallery:TreeViewShowCaseLangResource SearchableTitle}"
             Description="{gallery:TreeViewShowCaseLangResource SearchableDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:SearchEdit PlaceholderText="Search"
+                <atom:SearchEdit PlaceholderText="{gallery:TreeViewShowCaseLangResource P2PlaceholderTextSearch}"
                                  SearchButtonClick="HandleFilterTreeClicked" />
                 <atom:TreeView Name="SearchTreeView">
-                    <atom:TreeViewItem Header="0-0">
-                        <atom:TreeViewItem Header="0-0-0">
-                            <atom:TreeViewItem Header="0-0-0-0" />
-                            <atom:TreeViewItem Header="0-0-0-1" />
-                            <atom:TreeViewItem Header="0-0-0-2" />
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0N0}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0N1}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0N2}" />
                         </atom:TreeViewItem>
-                        <atom:TreeViewItem Header="0-0-1">
-                            <atom:TreeViewItem Header="0-0-1-0" />
-                            <atom:TreeViewItem Header="0-0-1-1" />
-                            <atom:TreeViewItem Header="0-0-1-2" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1N0}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1N1}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1N2}" />
                         </atom:TreeViewItem>
-                        <atom:TreeViewItem Header="0-0-2" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N2}" />
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="0-1">
-                        <atom:TreeViewItem Header="0-1-0">
-                            <atom:TreeViewItem Header="0-1-0-0" />
-                            <atom:TreeViewItem Header="0-1-0-1" />
-                            <atom:TreeViewItem Header="0-1-0-2" />
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0N0}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0N1}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0N2}" />
                         </atom:TreeViewItem>
-                        <atom:TreeViewItem Header="0-1-1">
-                            <atom:TreeViewItem Header="0-1-1-0" />
-                            <atom:TreeViewItem Header="0-1-1-1" />
-                            <atom:TreeViewItem Header="0-1-1-2" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1N0}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1N1}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1N2}" />
                         </atom:TreeViewItem>
-                        <atom:TreeViewItem Header="0-0-2" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N2}" />
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="0-2">
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N2}">
                     </atom:TreeViewItem>
                 </atom:TreeView>
             </StackPanel>
@@ -262,7 +256,7 @@
             Description="{gallery:TreeViewShowCaseLangResource ContextMenuDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <TextBlock VerticalAlignment="Center">IsSelectOnRightClick:</TextBlock>
+                    <TextBlock VerticalAlignment="Center" Text="{gallery:TreeViewShowCaseLangResource P2TextIsselectonrightclick}" />
                     <atom:ToggleSwitch Name="ContextMenuSelectOnRightClickSwitch" IsChecked="True" VerticalAlignment="Center"/>
                 </StackPanel>
                 <atom:TreeView Name="ContextMenuTree"
@@ -272,37 +266,37 @@
                                ItemContextMenuRequest="HandleContextMenuTreeItemContextMenuRequest">
                 <atom:TreeView.Resources>
                     <atom:MenuFlyout x:Key="TreeItemContextMenu" Placement="Pointer">
-                        <atom:MenuItem Header="New Node" Click="HandleContextMenuNewNodeClick">
+                        <atom:MenuItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderNewNode}" Click="HandleContextMenuNewNodeClick">
                             <atom:MenuItem.Icon>
                                 <antdicons:PlusOutlined />
                             </atom:MenuItem.Icon>
                         </atom:MenuItem>
-                        <atom:MenuItem Header="Rename" Click="HandleContextMenuRenameClick">
+                        <atom:MenuItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderRename}" Click="HandleContextMenuRenameClick">
                             <atom:MenuItem.Icon>
                                 <antdicons:EditOutlined />
                             </atom:MenuItem.Icon>
                         </atom:MenuItem>
                         <atom:MenuSeparator />
-                        <atom:MenuItem Header="Delete" Click="HandleContextMenuDeleteClick">
+                        <atom:MenuItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderDelete}" Click="HandleContextMenuDeleteClick">
                             <atom:MenuItem.Icon>
                                 <antdicons:DeleteOutlined />
                             </atom:MenuItem.Icon>
                         </atom:MenuItem>
                     </atom:MenuFlyout>
                 </atom:TreeView.Resources>
-                <atom:TreeViewItem Header="parent 1">
-                    <atom:TreeViewItem Header="parent 1-0">
-                        <atom:TreeViewItem Header="leaf 1" />
-                        <atom:TreeViewItem Header="leaf 2" />
+                <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1}">
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N0}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN1}" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN2}" />
                     </atom:TreeViewItem>
-                    <atom:TreeViewItem Header="parent 1-1">
-                        <atom:TreeViewItem Header="leaf" />
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N1}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeaf}" />
                     </atom:TreeViewItem>
                 </atom:TreeViewItem>
-                <atom:TreeViewItem Header="parent 2">
-                    <atom:TreeViewItem Header="parent 2-0">
-                        <atom:TreeViewItem Header="leaf 1" />
-                        <atom:TreeViewItem Header="leaf 2" />
+                <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN2}">
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN2N0}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN1}" />
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN2}" />
                     </atom:TreeViewItem>
                 </atom:TreeViewItem>
             </atom:TreeView>

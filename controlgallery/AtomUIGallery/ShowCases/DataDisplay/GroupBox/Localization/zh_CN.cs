@@ -14,6 +14,8 @@ internal class zh_CN : LanguageProvider
     public const string HeaderStyleDescription = "GroupBox 标题支持自定义颜色和字体等属性。";
     public const string HeaderIconTitle = "标题图标";
     public const string HeaderIconDescription = "GroupBox 标题支持指定图标。";
+    public const string P2HeaderTitleTitleInfo = "标题信息";
+    public const string P2TextContentOfGroupBox = "分组框内容";
 
     protected override Type GetResourceKindType() => typeof(GroupBoxShowCaseLangResourceKind);
 }

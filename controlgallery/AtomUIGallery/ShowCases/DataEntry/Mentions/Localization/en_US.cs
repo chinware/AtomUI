@@ -24,6 +24,13 @@ internal class en_US : LanguageProvider
     public const string AutoSizeDescription = "Height autoSize.";
     public const string WithClearIconTitle = "With clear icon";
     public const string WithClearIconDescription = "Customize clear button.";
+    public const string P2PlaceholderTextOutlined = "Outlined";
+    public const string P2PlaceholderTextFilled = "Filled";
+    public const string P2PlaceholderTextBorderless = "Borderless";
+    public const string P2PlaceholderTextUnderlined = "Underlined";
+    public const string P2PlaceholderTextInputToMentionPeopleToMentionTag = "input @ to mention people, # to mention tag";
+    public const string P2PlaceholderTextThisIsDisabledMentions = "this is disabled Mentions";
+    public const string P2PlaceholderTextThisIsReadonlyMentions = "this is readOnly Mentions";
 
     protected override Type GetResourceKindType() => typeof(MentionsShowCaseLangResourceKind);
 }

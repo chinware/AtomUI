@@ -38,10 +38,10 @@
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Avatar Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
-                    <atom:Avatar>U</atom:Avatar>
-                    <atom:Avatar Size="40">USER</atom:Avatar>
+                    <atom:Avatar Text="{gallery:AvatarShowCaseLangResource P2ContentU}" />
+                    <atom:Avatar Size="40" Text="{gallery:AvatarShowCaseLangResource P2ContentUser}" />
                     <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/AntDesign.svg" />
-                    <atom:Avatar Background="#fde3cf" Foreground="#f56a00">U</atom:Avatar>
+                    <atom:Avatar Background="#fde3cf" Foreground="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentU}" />
                     <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                 </StackPanel>
             </StackPanel>
@@ -57,15 +57,11 @@
                 <atom:Button Name="ChangeUserButton"
                              ButtonType="Default"
                              SizeType="Small"
-                             VerticalAlignment="Center">
-                    ChangeUser
-                </atom:Button>
+                             VerticalAlignment="Center" Content="{gallery:AvatarShowCaseLangResource P2ContentChangeuser}" />
                 <atom:Button Name="ChangeGapButton"
                              ButtonType="Default"
                              SizeType="Small"
-                             VerticalAlignment="Center">
-                    ChangeGap
-                </atom:Button>
+                             VerticalAlignment="Center" Content="{gallery:AvatarShowCaseLangResource P2ContentChangegap}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -74,7 +70,7 @@
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:AvatarGroup>
                     <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg"/>
-                    <atom:Avatar Background="#f56a00">K</atom:Avatar>
+                    <atom:Avatar Background="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentK}" />
                     <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                     <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
                 </atom:AvatarGroup>
@@ -83,7 +79,7 @@
                                   FoldInfoAvatarForeground="#f56a00"
                                   FoldInfoAvatarBackground="#fde3cf">
                     <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar2.svg"/>
-                    <atom:Avatar Background="#f56a00">K</atom:Avatar>
+                    <atom:Avatar Background="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentK}" />
                     <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                     <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
                 </atom:AvatarGroup>
@@ -93,7 +89,7 @@
                                   FoldInfoAvatarBackground="#fde3cf"
                                   SizeType="Large">
                     <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar3.svg"/>
-                    <atom:Avatar Background="#f56a00">K</atom:Avatar>
+                    <atom:Avatar Background="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentK}" />
                     <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                     <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
                 </atom:AvatarGroup>
@@ -104,14 +100,14 @@
                                   SizeType="Large"
                                   FoldAvatarFlyoutTriggerType="Click">
                     <atom:Avatar BitmapSrc="/Assets/AvatarShowCase/PeopleAvatar4.png"/>
-                    <atom:Avatar Background="#f56a00">K</atom:Avatar>
+                    <atom:Avatar Background="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentK}" />
                     <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                     <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
                 </atom:AvatarGroup>
                 <atom:Separator/>
                 <atom:AvatarGroup Shape="Square">
-                    <atom:Avatar Background="#fde3cf">A</atom:Avatar>
-                    <atom:Avatar Background="#f56a00">K</atom:Avatar>
+                    <atom:Avatar Background="#fde3cf" Text="{gallery:AvatarShowCaseLangResource P2ContentA}" />
+                    <atom:Avatar Background="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentK}" />
                     <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                     <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
                 </atom:AvatarGroup>

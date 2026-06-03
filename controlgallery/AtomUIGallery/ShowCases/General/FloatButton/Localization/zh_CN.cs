@@ -28,6 +28,10 @@ internal class zh_CN : LanguageProvider
     public const string BadgeDescription = "带 Badge 的 FloatButton。";
     public const string BackTopTitle = "回到顶部";
     public const string BackTopDescription = "BackTop 可以方便地回到页面顶部。";
+    public const string P2TooltipSinceN5N25N0 = "自 5.25.0 起";
+    public const string P2TooltipDocuments = "文档";
+    public const string P2DescriptionHelpInfo = "帮助信息";
+    public const string P2TextScrollToBottom = "滚动到底部";
 
     protected override Type GetResourceKindType() => typeof(FloatButtonShowCaseLangResourceKind);
 }

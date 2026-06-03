@@ -14,6 +14,23 @@ internal class en_US : LanguageProvider
     public const string PlacementDescription = "There are 12 placement options available.";
     public const string CustomizeIconTitle = "Customize icon";
     public const string CustomizeIconDescription = "Set icon props to customize the icon.";
+    public const string P2ConfirmContentAreYouSureToDeleteThisTask = "Are you sure to delete this task?";
+    public const string P2OkTextOk = "Ok";
+    public const string P2CancelTextCancel = "Cancel";
+    public const string P2TitleDeleteTheTask = "Delete the task";
+    public const string P2ContentDelete = "Delete";
+    public const string P2ContentLt = "LT";
+    public const string P2ContentLeft = "Left";
+    public const string P2ContentLb = "LB";
+    public const string P2ContentTl = "TL";
+    public const string P2ContentTop = "Top";
+    public const string P2ContentTr = "TR";
+    public const string P2ContentRt = "RT";
+    public const string P2ContentRight = "Right";
+    public const string P2ContentRb = "RB";
+    public const string P2ContentBl = "BL";
+    public const string P2ContentBottom = "Bottom";
+    public const string P2ContentBr = "BR";
 
     protected override Type GetResourceKindType() => typeof(PopupConfirmShowCaseLangResourceKind);
 }

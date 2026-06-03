@@ -4,13 +4,13 @@
              xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <atom:TabControl>
-        <atom:TabItem Header="Outlined">
+        <atom:TabItem Header="{gallery:IconShowCaseLangResource P2HeaderOutlined}">
             <gallery:IconGallery IconThemeType="Outlined" />
         </atom:TabItem>
-        <atom:TabItem Header="Filled">
+        <atom:TabItem Header="{gallery:IconShowCaseLangResource P2HeaderFilled}">
             <gallery:IconGallery IconThemeType="Filled" />
         </atom:TabItem>
-        <atom:TabItem Header="Two Tone">
+        <atom:TabItem Header="{gallery:IconShowCaseLangResource P2HeaderTwoTone}">
             <gallery:IconGallery IconThemeType="TwoTone" />
         </atom:TabItem>
     </atom:TabControl>

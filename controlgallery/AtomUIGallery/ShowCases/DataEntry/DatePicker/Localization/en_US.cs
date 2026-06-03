@@ -24,6 +24,22 @@ internal class en_US : LanguageProvider
     public const string VariantsDescription = "Bordered-less style component.";
     public const string PlacementTitle = "Placement";
     public const string PlacementDescription = "You can manually specify the position of the popup via placement.";
+    public const string P2PlaceholderTextSelectDate = "Select date";
+    public const string P2SecondaryPlaceholderTextEndDate = "End date";
+    public const string P2PlaceholderTextSelectTime = "Select time";
+    public const string P2PlaceholderTextStartDate = "Start date";
+    public const string P2PlaceholderTextOutline = "Outline";
+    public const string P2PlaceholderTextFilled = "Filled";
+    public const string P2PlaceholderTextBorderless = "Borderless";
+    public const string P2TextExpandDirection = "Picker size:";
+    public const string P2ContentLarge = "Large";
+    public const string P2ContentDefault = "Default";
+    public const string P2ContentSmall = "Small";
+    public const string P2TextPlacement = "Placement:";
+    public const string P2ContentTopleft = "TopLeft";
+    public const string P2ContentTopright = "TopRight";
+    public const string P2ContentBottomleft = "BottomLeft";
+    public const string P2ContentBottomright = "BottomRight";
 
     protected override Type GetResourceKindType() => typeof(DatePickerShowCaseLangResourceKind);
 }

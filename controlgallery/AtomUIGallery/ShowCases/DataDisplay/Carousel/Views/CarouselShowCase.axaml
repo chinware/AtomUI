@@ -33,12 +33,12 @@
             Margin="0, 0, 5, 0">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="5">
-                    <atom:TextBlock VerticalAlignment="Center">Pagination Position:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:CarouselShowCaseLangResource P2TextPaginationPosition}" />
                     <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionOptionGroup">
-                        <atom:OptionButton>Top</atom:OptionButton>
-                        <atom:OptionButton IsChecked="True">Bottom</atom:OptionButton>
-                        <atom:OptionButton>Left</atom:OptionButton>
-                        <atom:OptionButton>Right</atom:OptionButton>
+                        <atom:OptionButton Content="{gallery:CarouselShowCaseLangResource P2ContentTop}" />
+                        <atom:OptionButton IsChecked="True" Content="{gallery:CarouselShowCaseLangResource P2ContentBottom}" />
+                        <atom:OptionButton Content="{gallery:CarouselShowCaseLangResource P2ContentLeft}" />
+                        <atom:OptionButton Content="{gallery:CarouselShowCaseLangResource P2ContentRight}" />
                     </atom:OptionButtonGroup>
                 </StackPanel>
 

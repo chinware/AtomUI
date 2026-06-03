@@ -12,26 +12,26 @@
             <StackPanel Spacing="20">
                 <StackPanel Spacing="10">
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <atom:TextBlock Width="180" VerticalAlignment="Center">PaginationVisibility:</atom:TextBlock>
-                        <atom:CheckBox Name="ShowTopPaginationCheckBox">Top Pagination</atom:CheckBox>
-                        <atom:CheckBox Name="ShowBottomPaginationCheckBox" IsChecked="True">Bottom Pagination</atom:CheckBox>
+                        <atom:TextBlock Width="180" VerticalAlignment="Center" Text="{gallery:DataGridShowCaseLangResource P2TextPaginationvisibility}" />
+                        <atom:CheckBox Name="ShowTopPaginationCheckBox" Content="{gallery:DataGridShowCaseLangResource P2ContentTopPagination}" />
+                        <atom:CheckBox Name="ShowBottomPaginationCheckBox" IsChecked="True" Content="{gallery:DataGridShowCaseLangResource P2ContentBottomPagination}" />
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <atom:TextBlock Width="180" VerticalAlignment="Center">Top Pagination Align:</atom:TextBlock>
+                        <atom:TextBlock Width="180" VerticalAlignment="Center" Text="{gallery:DataGridShowCaseLangResource P2TextTopPaginationAlign}" />
                         <atom:OptionButtonGroup ButtonStyle="Solid" Name="TopPaginationOptionGroup">
-                            <atom:OptionButton>Start</atom:OptionButton>
-                            <atom:OptionButton>Center</atom:OptionButton>
-                            <atom:OptionButton IsChecked="True">End</atom:OptionButton>
+                            <atom:OptionButton Content="{gallery:DataGridShowCaseLangResource P2ContentStart}" />
+                            <atom:OptionButton Content="{gallery:DataGridShowCaseLangResource P2ContentCenter}" />
+                            <atom:OptionButton IsChecked="True" Content="{gallery:DataGridShowCaseLangResource P2ContentEnd}" />
                         </atom:OptionButtonGroup>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <atom:TextBlock Width="180" VerticalAlignment="Center">Bottom Pagination Align:</atom:TextBlock>
+                        <atom:TextBlock Width="180" VerticalAlignment="Center" Text="{gallery:DataGridShowCaseLangResource P2TextBottomPaginationAlign}" />
                         <atom:OptionButtonGroup ButtonStyle="Solid" Name="BottomPaginationOptionGroup">
-                            <atom:OptionButton>Start</atom:OptionButton>
-                            <atom:OptionButton>Center</atom:OptionButton>
-                            <atom:OptionButton IsChecked="True">End</atom:OptionButton>
+                            <atom:OptionButton Content="{gallery:DataGridShowCaseLangResource P2ContentStart}" />
+                            <atom:OptionButton Content="{gallery:DataGridShowCaseLangResource P2ContentCenter}" />
+                            <atom:OptionButton IsChecked="True" Content="{gallery:DataGridShowCaseLangResource P2ContentEnd}" />
                         </atom:OptionButtonGroup>
                     </StackPanel>
 
@@ -40,16 +40,16 @@
                                PageSize="10"
                                x:DataType="vm:DataGridBaseInfo">
                     <atom:DataGrid.Columns>
-                        <atom:DataGridTemplateColumn Header="Name">
+                        <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}">
                             <atom:DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="vm:DataGridBaseInfo">
                                     <atom:HyperLinkTextBlock Text="{Binding Name}" />
                                 </DataTemplate>
                             </atom:DataGridTemplateColumn.CellTemplate>
                         </atom:DataGridTemplateColumn>
-                        <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}" />
-                        <atom:DataGridTextColumn Header="Address" Binding="{Binding Address}" />
-                        <atom:DataGridTemplateColumn Header="Tags">
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}" Binding="{Binding Address}" />
+                        <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderTags}">
                             <atom:DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate x:DataType="vm:DataGridBaseInfo">
                                     <ItemsControl ItemsSource="{Binding Tags}">
@@ -67,13 +67,13 @@
                                 </DataTemplate>
                             </atom:DataGridTemplateColumn.CellTemplate>
                         </atom:DataGridTemplateColumn>
-                        <atom:DataGridTemplateColumn Header="Action">
+                        <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAction}">
                             <atom:DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Spacing="15">
-                                        <atom:HyperLinkTextBlock Text="Invite" />
-                                        <atom:HyperLinkTextBlock Text="Modify" />
-                                        <atom:HyperLinkTextBlock Text="Delete" />
+                                        <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextInvite}" />
+                                        <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextModify}" />
+                                        <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextDelete}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </atom:DataGridTemplateColumn.CellTemplate>

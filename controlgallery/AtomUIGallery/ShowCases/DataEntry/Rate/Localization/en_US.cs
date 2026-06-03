@@ -18,6 +18,13 @@ internal class en_US : LanguageProvider
     public const string ClearStarDescription = "Support set allow to clear star when click again.";
     public const string OtherCharacterTitle = "Other Character";
     public const string OtherCharacterDescription = "Replace the default star to other character like alphabet, digit, iconfont or even Chinese word.";
+    public const string P2TextIsallowclearTrue = "IsAllowClear: true";
+    public const string P2TextIsallowclearFalse = "IsAllowClear: false";
+    public const string P2TooltipTerrible = "terrible";
+    public const string P2TooltipBad = "bad";
+    public const string P2TooltipNormal = "normal";
+    public const string P2TooltipGood = "good";
+    public const string P2TooltipWonderful = "wonderful";
 
     protected override Type GetResourceKindType() => typeof(RateShowCaseLangResourceKind);
 }

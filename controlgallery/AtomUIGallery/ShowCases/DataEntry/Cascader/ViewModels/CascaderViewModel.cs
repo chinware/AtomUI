@@ -182,12 +182,12 @@ public class CascaderItemDataLoader : ICascaderItemDataLoader
         [
             new CascaderOption()
             {
-                Header = $"{targetCascaderItem.Value} Dynamic 1",
+                Header = CascaderShowCaseLanguage.FormatDynamicOption(targetCascaderItem, 1),
                 IsLeaf = true
             },
             new CascaderOption()
             {
-                Header = $"{targetCascaderItem.Value} Dynamic 2",
+                Header = CascaderShowCaseLanguage.FormatDynamicOption(targetCascaderItem, 2),
                 IsLeaf = true
             }
         ]);

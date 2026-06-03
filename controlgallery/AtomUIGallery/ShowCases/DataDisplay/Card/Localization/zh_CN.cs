@@ -26,6 +26,28 @@ internal class zh_CN : LanguageProvider
     public const string WithTabsDescription = "可以承载更多内容。";
     public const string MoreContentConfigurationTitle = "支持更多内容配置";
     public const string MoreContentConfigurationDescription = "支持封面、头像、标题和描述的卡片。";
+    public const string P2HeaderLargeSizeCard = "大尺寸卡片";
+    public const string P2HeaderDefaultSizeCard = "默认尺寸卡片";
+    public const string P2HeaderSmallSizeCard = "小尺寸卡片";
+    public const string P2HeaderCardTitle = "卡片标题";
+    public const string P2HeaderEuropeStreetBeat = "欧洲街拍";
+    public const string P2HeaderCardTitle2 = "卡片标题";
+    public const string P2HeaderTab1 = "标签页 1";
+    public const string P2HeaderTab2 = "标签页 2";
+    public const string P2HeaderArticle = "文章";
+    public const string P2HeaderApp = "应用";
+    public const string P2HeaderProject = "项目";
+    public const string P2ContentMore = "更多";
+    public const string P2TextCardContent = "卡片内容";
+    public const string P2TextThisIsTheDescription = "这是描述内容";
+    public const string P2ContentContent = "内容";
+    public const string P2ContentContent1 = "内容 1";
+    public const string P2ContentContent2 = "内容 2";
+    public const string P2ContentArticleContent = "文章内容";
+    public const string P2ContentAppContent = "应用内容";
+    public const string P2ContentProjectContent = "项目内容";
+
+    public const string P2ContentThisIsTheDescription = "这是描述内容";
 
     protected override Type GetResourceKindType() => typeof(CardShowCaseLangResourceKind);
 }

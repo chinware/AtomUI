@@ -59,38 +59,38 @@
 
                 <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="20">
                     <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:TextBlock VerticalAlignment="Center">Active:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextActive}" />
                         <atom:ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding IsSkeletonActive, Mode=TwoWay}"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:TextBlock VerticalAlignment="Center">Button and Input Block:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextButtonAndInputBlock}" />
                         <atom:ToggleSwitch IsChecked="{Binding IsSkeletonBlock, Mode=TwoWay}" VerticalAlignment="Center"/>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:TextBlock VerticalAlignment="Center">Size:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextSize}" />
                         <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleSizeTypeChanged">
-                            <atom:OptionButton IsChecked="True">Default</atom:OptionButton>
-                            <atom:OptionButton>Large</atom:OptionButton>
-                            <atom:OptionButton>Small</atom:OptionButton>
+                            <atom:OptionButton IsChecked="True" Content="{gallery:SkeletonShowCaseLangResource P2ContentDefault}" />
+                            <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentLarge}" />
+                            <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentSmall}" />
                         </atom:OptionButtonGroup>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:TextBlock VerticalAlignment="Center">Button Shape:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextButtonShape}" />
                         <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleButtonShapeChanged">
-                            <atom:OptionButton IsChecked="True">Square</atom:OptionButton>
-                            <atom:OptionButton>Round</atom:OptionButton>
-                            <atom:OptionButton>Circle</atom:OptionButton>
+                            <atom:OptionButton IsChecked="True" Content="{gallery:SkeletonShowCaseLangResource P2ContentSquare}" />
+                            <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentRound}" />
+                            <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentCircle}" />
                         </atom:OptionButtonGroup>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:TextBlock VerticalAlignment="Center">Avatar Shape:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextAvatarShape}" />
                         <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleButtonAvatarChanged">
-                            <atom:OptionButton>Square</atom:OptionButton>
-                            <atom:OptionButton IsChecked="True">Circle</atom:OptionButton>
+                            <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentSquare}" />
+                            <atom:OptionButton IsChecked="True" Content="{gallery:SkeletonShowCaseLangResource P2ContentCircle}" />
                         </atom:OptionButtonGroup>
                     </StackPanel>
                 </WrapPanel>
@@ -104,12 +104,12 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Skeleton IsLoading="{Binding SkeletonLoading}">
                     <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:TextBlock FontWeight="Bold">Ant Design, a design language</atom:TextBlock>
-                        <atom:TextBlock TextWrapping="Wrap">We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.</atom:TextBlock>
+                        <atom:TextBlock FontWeight="Bold" Text="{gallery:SkeletonShowCaseLangResource P2TextAntDesignADesignLanguage}" />
+                        <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SkeletonShowCaseLangResource P2TextWeSupplyASeriesOfDesignPrinciplesPractical}" />
                     </StackPanel>
                 </atom:Skeleton>
                 <atom:Button IsEnabled="{Binding SkeletonLoading, Converter={x:Static BoolConverters.Not}}"
-                             Click="HandleLoadingButtonClicked">Show Skeleton</atom:Button>
+                             Click="HandleLoadingButtonClicked" Content="{gallery:SkeletonShowCaseLangResource P2ContentShowSkeleton}" />
             </StackPanel>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

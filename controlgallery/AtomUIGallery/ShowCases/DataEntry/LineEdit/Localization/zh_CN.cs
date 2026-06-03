@@ -38,6 +38,42 @@ internal class zh_CN : LanguageProvider
     public const string CharacterCountingDescription = "显示字数统计。";
     public const string TextAreaStatusTitle = "状态";
     public const string TextAreaStatusDescription = "通过 status 为 TextArea 添加状态，可设置为错误或警告。";
+    public const string P2PlaceholderTextBasicUsage = "基础用法";
+    public const string P2PlaceholderTextLarge = "大号";
+    public const string P2PlaceholderTextMiddle = "中号";
+    public const string P2PlaceholderTextSmall = "小号";
+    public const string P2TitleNormal = "普通";
+    public const string P2PlaceholderTextOutlined = "线框风格";
+    public const string P2PlaceholderTextFilled = "填充风格";
+    public const string P2PlaceholderTextBorderless = "无边框";
+    public const string P2PlaceholderTextUnderlined = "下划线";
+    public const string P2TitleLeftaddonAndRightaddon = "左侧附加和右侧附加";
+    public const string P2TextMysite = "我的站点";
+    public const string P2PlaceholderTextInputWithClearIcon = "带清除图标的输入框";
+    public const string P2PlaceholderTextTextareaWithClearIcon = "带清除图标的文本域";
+    public const string P2PlaceholderTextInputPassword = "输入密码";
+    public const string P2PlaceholderTextEnterYourUsername = "输入用户名";
+    public const string P2PlaceholderTextError = "错误";
+    public const string P2PlaceholderTextWarning = "警告";
+    public const string P2PlaceholderTextErrorWithPrefix = "带前缀的错误";
+    public const string P2PlaceholderTextWarningWithPrefix = "带前缀的警告";
+    public const string P2TitleSearch = "搜索";
+    public const string P2PlaceholderTextInputSearchText = "输入搜索文本";
+    public const string P2TitleFilled = "填充风格";
+    public const string P2TitleBorderless = "无边框";
+    public const string P2TitleUnderlined = "下划线";
+    public const string P2PlaceholderTextInputSearchLoadingDefault = "默认搜索加载";
+    public const string P2PlaceholderTextInputSearchLoadingWithEnterbutton = "带搜索按钮的搜索加载";
+    public const string P2PlaceholderTextMaxlengthIsN6 = "最大长度为 6";
+    public const string P2PlaceholderTextDisabled = "禁用";
+    public const string P2PlaceholderTextAutosizeHeightBasedOnContentLines = "根据内容行数自动调整高度";
+    public const string P2PlaceholderTextAutosizeHeightWithMinimumAndMaximumNumberOf = "按最小和最大行数自动调整高度";
+    public const string P2PlaceholderTextCanResize = "可调整大小";
+    public const string P2PlaceholderTextDisableResize = "禁止调整大小";
+
+    public const string P2SearchButtonTextSearch = "搜索";
+
+    public const string P2SearchButtonTextText = "搜索一下";
 
     protected override Type GetResourceKindType() => typeof(LineEditShowCaseLangResourceKind);
 }

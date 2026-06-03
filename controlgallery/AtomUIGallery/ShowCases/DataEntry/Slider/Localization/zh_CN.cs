@@ -14,6 +14,9 @@ internal class zh_CN : LanguageProvider
     public const string VerticalDescription = "垂直滑块。";
     public const string GraduatedSliderTitle = "带刻度的滑块";
     public const string GraduatedSliderDescription = "使用 marks 属性标记带刻度滑块，使用 value 或 defaultValue 指定滑块位置。当 included 为 false 时，不同滑块相互独立；当 step 为 null 时，用户只能将滑块拖到刻度上。";
+    public const string P2TextEnabled = "Enabled:";
+    public const string P2TextIncludedTrue = "included=true";
+    public const string P2TextIncludedFalse = "included=false";
 
     protected override Type GetResourceKindType() => typeof(SliderShowCaseLangResourceKind);
 }

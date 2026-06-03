@@ -22,9 +22,7 @@
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                 <atom:ToggleSwitch x:Name="ToggleDisabledSwitch" />
                 <atom:Button ButtonType="Primary"
-                             Command="{Binding $parent[showCase:ToggleSwitchShowCase].ToggleSwitchCommand}">
-                    toggle disabled
-                </atom:Button>
+                             Command="{Binding $parent[showCase:ToggleSwitchShowCase].ToggleSwitchCommand}" Content="{gallery:ToggleSwitchShowCaseLangResource P2ContentToggleDisabled}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -33,12 +31,12 @@
             Description="{gallery:ToggleSwitchShowCaseLangResource TextAndIconDescription}">
             <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                 <atom:ToggleSwitch
-                    OnContent="On"
-                    OffContent="Off"
+                    OnContent="{gallery:ToggleSwitchShowCaseLangResource P2OnContentOn}"
+                    OffContent="{gallery:ToggleSwitchShowCaseLangResource P2OffContentOff}"
                     IsChecked="True" />
                 <atom:ToggleSwitch
-                    OnContent="开"
-                    OffContent="关" />
+                    OnContent="{gallery:ToggleSwitchShowCaseLangResource P2OnContentText}"
+                    OffContent="{gallery:ToggleSwitchShowCaseLangResource P2OffContentText}" />
                 <atom:ToggleSwitch
                     OnContent="{antdicons:AntDesignIconProvider Kind=TwitterOutlined}"
                     OffContent="{antdicons:AntDesignIconProvider Kind=WechatOutlined}"/>
@@ -73,9 +71,7 @@
                 <atom:ToggleSwitch IsLoading="True" IsChecked="true" x:Name="ToggleSwitchDefault" />
                 <atom:ToggleSwitch SizeType="Small" IsLoading="True" x:Name="ToggleSwitchSmall" />
                 <atom:Button ButtonType="Primary"
-                             Command="{Binding $parent[showCase:ToggleSwitchShowCase].ToggleLoadingStatus}">
-                    toggle loading
-                </atom:Button>
+                             Command="{Binding $parent[showCase:ToggleSwitchShowCase].ToggleLoadingStatus}" Content="{gallery:ToggleSwitchShowCaseLangResource P2ContentToggleLoading}" />
             </StackPanel>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

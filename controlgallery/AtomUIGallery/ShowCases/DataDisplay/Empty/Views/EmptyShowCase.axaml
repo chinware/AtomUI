@@ -30,8 +30,8 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Empty ImagePath="avares://AtomUIGallery/Assets/EmptyShowCase/empty.svg"
                                      SizeType="Large"
-                                     Description="Customize Description" />
-                <atom:Button HorizontalAlignment="Center" ButtonType="Primary">Create Now</atom:Button>
+                                     Description="{gallery:EmptyShowCaseLangResource P2DescriptionCustomizeDescription}" />
+                <atom:Button HorizontalAlignment="Center" ButtonType="Primary" Content="{gallery:EmptyShowCaseLangResource P2ContentCreateNow}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 

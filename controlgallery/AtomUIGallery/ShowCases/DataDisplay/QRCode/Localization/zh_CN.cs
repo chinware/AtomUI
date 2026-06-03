@@ -22,6 +22,13 @@ internal class zh_CN : LanguageProvider
     public const string ErrorLevelDescription = "通过设置 errorLevel 调整不同的容错等级。";
     public const string AdvancedUsageTitle = "高级用法";
     public const string AdvancedUsageDescription = "带气泡卡片的例子。";
+    public const string P2TextLoading = "Loading...";
+    public const string P2Text二维码过期 = "二维码过期";
+    public const string P2Content点击刷新 = "点击刷新";
+    public const string P2Text已扫描 = "已扫描";
+    public const string P2ContentSmaller = "Smaller";
+    public const string P2ContentLarger = "Larger";
+    public const string P2ContentHoverMe = "Hover me";
 
     protected override Type GetResourceKindType() => typeof(QRCodeShowCaseLangResourceKind);
 }

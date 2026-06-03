@@ -13,68 +13,68 @@
             Description="{gallery:FormShowCaseLangResource FormLayoutDescription}"
             IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="5">
-                <atom:CheckBox IsChecked="{Binding IsFormDisabled, Mode=TwoWay}">Form disabled</atom:CheckBox>
+                <atom:CheckBox IsChecked="{Binding IsFormDisabled, Mode=TwoWay}" Content="{gallery:FormShowCaseLangResource P2ContentFormDisabled}" />
                 <atom:Form LabelColInfo="8*"
                            WrapperColInfo="16*"
                            MinWidth="600"
                            HorizontalAlignment="Left"
                            IsEnabled="{Binding IsFormDisabled, Converter={x:Static BoolConverters.Not}}">
-                    <atom:FormItem LabelText="Checkbox" FieldName="checkbox">
-                        <atom:CheckBox>Checkbox</atom:CheckBox>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCheckbox}" FieldName="checkbox">
+                        <atom:CheckBox Content="{gallery:FormShowCaseLangResource P2ContentCheckbox}" />
                     </atom:FormItem>
-                    <atom:FormItem LabelText="Radio" FieldName="radio">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRadio}" FieldName="radio">
                         <atom:RadioButtonGroup>
-                            <atom:RadioButton>Apple</atom:RadioButton>
-                            <atom:RadioButton>Pear</atom:RadioButton>
+                            <atom:RadioButton Content="{gallery:FormShowCaseLangResource P2ContentApple}" />
+                            <atom:RadioButton Content="{gallery:FormShowCaseLangResource P2ContentPear}" />
                         </atom:RadioButtonGroup>
                     </atom:FormItem>
-                    <atom:FormItem LabelText="Input" FieldName="input">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInput}" FieldName="input">
                         <atom:LineEdit/>
                     </atom:FormItem>
-                    <atom:FormItem LabelText="Select" FieldName="select">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelect}" FieldName="select">
                         <atom:Select HorizontalAlignment="Stretch">
-                            <atom:SelectOption Header="Demo" Content="demo"/>
+                            <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderDemo}" Content="demo"/>
                         </atom:Select>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="TreeSelect" FieldName="treeSelect">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTreeSelect}" FieldName="treeSelect">
                         <atom:TreeSelect HorizontalAlignment="Stretch">
-                            <atom:TreeItemNode Header="Light" Value="light">
-                                <atom:TreeItemNode Header="Bamboo" Value="bamboo"/>
+                            <atom:TreeItemNode Header="{gallery:FormShowCaseLangResource P2HeaderLight}" Value="light">
+                                <atom:TreeItemNode Header="{gallery:FormShowCaseLangResource P2HeaderBamboo}" Value="bamboo"/>
                             </atom:TreeItemNode>
                         </atom:TreeSelect>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Cascader" FieldName="cascader">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCascader}" FieldName="cascader">
                         <atom:Cascader HorizontalAlignment="Stretch">
-                            <atom:CascaderOption Header="Zhejiang" Value="zhejiang">
-                                <atom:CascaderOption Header="Hangzhou" Value="hangzhou"/>
+                            <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderZhejiang}" Value="zhejiang">
+                                <atom:CascaderOption Header="{gallery:FormShowCaseLangResource P2HeaderHangzhou}" Value="hangzhou"/>
                             </atom:CascaderOption>
                         </atom:Cascader>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="DatePicker" FieldName="datePicker">
-                        <atom:DatePicker PlaceholderText="Select date"/>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDatePicker}" FieldName="datePicker">
+                        <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectDate}"/>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="RangePicker" FieldName="rangePicker">
-                        <atom:RangeDatePicker PlaceholderText="Start date"
-                                              SecondaryPlaceholderText="End date"/>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRangePicker}" FieldName="rangePicker">
+                        <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                              SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"/>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="InputNumber" FieldName="inputNumber">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInputNumber}" FieldName="inputNumber">
                         <atom:NumericUpDown Width="80"/>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="TextArea" FieldName="textArea">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTextArea}" FieldName="textArea">
                         <atom:TextArea Lines="4"/>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Switch" FieldName="switch">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSwitch}" FieldName="switch">
                         <atom:ToggleSwitch/>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Upload" FieldName="upload">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextUpload}" FieldName="upload">
                         <atom:Upload Name="AvatarDemoPictureCardUpload" ListType="PictureCard">
                             <StackPanel Orientation="Vertical">
                                 <Panel>
@@ -84,41 +84,41 @@
                                                                StrokeBrush="{Binding Foreground ,RelativeSource={RelativeSource AncestorType=atom:Upload}}"
                                                                LoadingAnimation="Spin"/>
                                 </Panel>
-                                <TextBlock Margin="0, 8, 0, 0">Upload</TextBlock>
+                                <TextBlock Margin="0, 8, 0, 0" Text="{gallery:FormShowCaseLangResource P2TextUpload}" />
                             </StackPanel>
                         </atom:Upload>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Button" FieldName="button">
-                        <atom:Button>Button</atom:Button>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextButton}" FieldName="button">
+                        <atom:Button Content="{gallery:FormShowCaseLangResource P2ContentButton}" />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Slider" FieldName="slider">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSlider}" FieldName="slider">
                         <atom:Slider/>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="ColorPicker" FieldName="colorPicker">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextColorPicker}" FieldName="colorPicker">
                         <atom:ColorPicker/>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Rate" FieldName="rate">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRate}" FieldName="rate">
                         <atom:Rate/>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Mentions" FieldName="mentions">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextMentions}" FieldName="mentions">
                         <atom:Mentions DefaultValue="@afc163"/>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Tree" FieldName="tree">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTree}" FieldName="tree">
                         <atom:TreeView>
-                            <atom:TreeViewItem Header="Parent 1" ItemKey="0-0">
-                                <atom:TreeViewItem Header="Child 1-1" ItemKey="0-0-0">
-                                    <atom:TreeViewItem Header="Grandchild 1-1-1" ItemKey="0-0-0-0"/>
+                            <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderParentN1}" ItemKey="0-0">
+                                <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderChildN1N1}" ItemKey="0-0-0">
+                                    <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderGrandchildN1N1N1}" ItemKey="0-0-0-0"/>
                                 </atom:TreeViewItem>
-                                <atom:TreeViewItem Header="Child 1-2" ItemKey="0-0-1"/>
+                                <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderChildN1N2}" ItemKey="0-0-1"/>
                             </atom:TreeViewItem>
-                            <atom:TreeViewItem Header="Parent 2" ItemKey="0-1">
-                                <atom:TreeViewItem Header="Child 2-1" ItemKey="0-1-0"/>
+                            <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderParentN2}" ItemKey="0-1">
+                                <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderChildN2N1}" ItemKey="0-1-0"/>
                             </atom:TreeViewItem>
                         </atom:TreeView>
                     </atom:FormItem>
@@ -132,12 +132,12 @@
             IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:TextBlock VerticalAlignment="Center">Form variant:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FormShowCaseLangResource P2TextFormVariant}" />
                     <atom:Segmented SelectionChanged="HandleFormStyleVariantChanged">
-                        <atom:SegmentedItem IsSelected="True" Tag="{x:Static atom:InputControlStyleVariant.Outlined}">outlined</atom:SegmentedItem>
-                        <atom:SegmentedItem Tag="{x:Static atom:InputControlStyleVariant.Filled}">filled</atom:SegmentedItem>
-                        <atom:SegmentedItem Tag="{x:Static atom:InputControlStyleVariant.Borderless}">borderless</atom:SegmentedItem>
-                        <atom:SegmentedItem Tag="{x:Static atom:InputControlStyleVariant.Underlined}">underlined</atom:SegmentedItem>
+                        <atom:SegmentedItem IsSelected="True" Tag="{x:Static atom:InputControlStyleVariant.Outlined}" Content="{gallery:FormShowCaseLangResource P2ContentOutlined}" />
+                        <atom:SegmentedItem Tag="{x:Static atom:InputControlStyleVariant.Filled}" Content="{gallery:FormShowCaseLangResource P2ContentFilled}" />
+                        <atom:SegmentedItem Tag="{x:Static atom:InputControlStyleVariant.Borderless}" Content="{gallery:FormShowCaseLangResource P2ContentBorderless}" />
+                        <atom:SegmentedItem Tag="{x:Static atom:InputControlStyleVariant.Underlined}" Content="{gallery:FormShowCaseLangResource P2ContentUnderlined}" />
                     </atom:Segmented>
                 </StackPanel>
         
@@ -146,102 +146,102 @@
                            MinWidth="600"
                            HorizontalAlignment="Left"
                            StyleVariant="{Binding FormStyleVariant}">
-                    <atom:FormItem LabelText="Input"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInput}"
                                    FieldName="input"
                                    IsRequired="True">
                         <atom:FormItem.Validators>
                             <atom:FormValidatorProvider>
-                                <atom:FormStringNotEmptyValidator Message="Please input!" />
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
                             </atom:FormValidatorProvider>
                         </atom:FormItem.Validators>
                         <atom:LineEdit />
                     </atom:FormItem>
-                    <atom:FormItem LabelText="InputNumber"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInputNumber}"
                                    FieldName="inputNumber"
                                    IsRequired="True">
                         <atom:FormItem.Validators>
                             <atom:FormValidatorProvider>
-                                <atom:FormStringNotEmptyValidator Message="Please input!" />
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
                             </atom:FormValidatorProvider>
                         </atom:FormItem.Validators>
                         <atom:NumericUpDown Width="200" />
                     </atom:FormItem>
-                    <atom:FormItem LabelText="TextArea"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTextArea}"
                                    FieldName="textArea"
                                    IsRequired="True">
                         <atom:FormItem.Validators>
                             <atom:FormValidatorProvider>
-                                <atom:FormStringNotEmptyValidator Message="Please input!" />
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
                             </atom:FormValidatorProvider>
                         </atom:FormItem.Validators>
                         <atom:TextArea Lines="4" />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Mentions"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextMentions}"
                                    FieldName="mentions"
                                    IsRequired="True">
                         <atom:FormItem.Validators>
                             <atom:FormValidatorProvider>
-                                <atom:FormStringNotEmptyValidator Message="Please input!" />
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
                             </atom:FormValidatorProvider>
                         </atom:FormItem.Validators>
                         <atom:Mentions />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Select"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelect}"
                                    FieldName="select"
                                    IsRequired="True">
                         <atom:FormItem.Validators>
                             <atom:FormValidatorProvider>
-                                <atom:FormStringNotEmptyValidator Message="Please input!" />
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
                             </atom:FormValidatorProvider>
                         </atom:FormItem.Validators>
                         <atom:Select HorizontalAlignment="Stretch" />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Cascader"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCascader}"
                                    FieldName="cascader"
                                    IsRequired="True">
                         <atom:FormItem.Validators>
                             <atom:FormValidatorProvider>
-                                <atom:FormStringNotEmptyValidator Message="Please input!" />
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
                             </atom:FormValidatorProvider>
                         </atom:FormItem.Validators>
                         <atom:Cascader HorizontalAlignment="Stretch" />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="TreeSelect"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTreeSelect}"
                                    FieldName="treeSelect"
                                    IsRequired="True">
                         <atom:FormItem.Validators>
                             <atom:FormValidatorProvider>
-                                <atom:FormStringNotEmptyValidator Message="Please input!" />
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
                             </atom:FormValidatorProvider>
                         </atom:FormItem.Validators>
                         <atom:TreeSelect HorizontalAlignment="Stretch" />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="DatePicker"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDatePicker}"
                                    FieldName="datePicker"
                                    IsRequired="True">
                         <atom:FormItem.Validators>
                             <atom:FormValidatorProvider>
-                                <atom:FormStringNotEmptyValidator Message="Please input!" />
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
                             </atom:FormValidatorProvider>
                         </atom:FormItem.Validators>
-                        <atom:DatePicker PlaceholderText="Please select" />
+                        <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="RangePicker"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRangePicker}"
                                    FieldName="rangePicker"
                                    IsRequired="True">
                         <atom:FormItem.Validators>
                             <atom:FormValidatorProvider>
-                                <atom:FormStringNotEmptyValidator Message="Please input!" />
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
                             </atom:FormValidatorProvider>
                         </atom:FormItem.Validators>
-                        <atom:RangeDatePicker PlaceholderText="Start date"
-                                              SecondaryPlaceholderText="End date" />
+                        <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                              SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
                     </atom:FormItem>
         
                     <atom:FormActionsItem>
@@ -257,12 +257,12 @@
             IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:TextBlock VerticalAlignment="Center">Required Mark :</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FormShowCaseLangResource P2TextRequiredMark}" />
                     <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleFormRequiredMarkChanged">
-                        <atom:OptionButton IsChecked="True" Tag="{x:Static atom:FormRequiredMark.Default}">Default</atom:OptionButton>
-                        <atom:OptionButton Tag="{x:Static atom:FormRequiredMark.Optional}">Optional</atom:OptionButton>
-                        <atom:OptionButton Tag="{x:Static atom:FormRequiredMark.Hidden}">Hidden</atom:OptionButton>
-                        <atom:OptionButton Tag="{x:Static atom:FormRequiredMark.Customize}">Customize</atom:OptionButton>
+                        <atom:OptionButton IsChecked="True" Tag="{x:Static atom:FormRequiredMark.Default}" Content="{gallery:FormShowCaseLangResource P2ContentDefault}" />
+                        <atom:OptionButton Tag="{x:Static atom:FormRequiredMark.Optional}" Content="{gallery:FormShowCaseLangResource P2ContentOptional}" />
+                        <atom:OptionButton Tag="{x:Static atom:FormRequiredMark.Hidden}" Content="{gallery:FormShowCaseLangResource P2ContentHidden}" />
+                        <atom:OptionButton Tag="{x:Static atom:FormRequiredMark.Customize}" Content="{gallery:FormShowCaseLangResource P2ContentCustomize}" />
                     </atom:OptionButtonGroup>
                 </StackPanel>
         
@@ -273,17 +273,17 @@
                            FormLayout="Horizontal"
                            RequiredMark="{Binding FormRequiredMark}">
                     <atom:Form.CustomRequireMark>
-                        <atom:Tag TagColor="Error">required</atom:Tag>
+                        <atom:Tag TagColor="Error" Text="{gallery:FormShowCaseLangResource P2ContentRequired}" />
                     </atom:Form.CustomRequireMark>
                     <atom:Form.CustomOptionalMark>
-                        <atom:Tag TagColor="Warning">optional</atom:Tag>
+                        <atom:Tag TagColor="Warning" Text="{gallery:FormShowCaseLangResource P2ContentOptional2}" />
                     </atom:Form.CustomOptionalMark>
-                    <atom:FormItem IsRequired="True" LabelText="Field A" FieldName="FieldA" Tooltip="This is a required field">
-                        <atom:LineEdit PlaceholderText="input placeholder"/>
+                    <atom:FormItem IsRequired="True" LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldA}" FieldName="FieldA" Tooltip="{gallery:FormShowCaseLangResource P2TooltipThisIsARequiredField}">
+                        <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextInputPlaceholder}"/>
                     </atom:FormItem>
-                    <atom:FormItem LabelText="Field B" FieldName="Field B" Tooltip="Tooltip with customize icon"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldB}" FieldName="Field B" Tooltip="{gallery:FormShowCaseLangResource P2TooltipTooltipWithCustomizeIcon}"
                                    TooltipIcon="{antdicons:AntDesignIconProvider InfoCircleOutlined}">
-                        <atom:LineEdit PlaceholderText="input placeholder"/>
+                        <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextInputPlaceholder}"/>
                     </atom:FormItem>
                     <atom:FormActionsItem>
                         <atom:SubmitButton/>
@@ -299,11 +299,11 @@
             IsOccupyEntireRow="True">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:TextBlock VerticalAlignment="Center">Required Mark :</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FormShowCaseLangResource P2TextRequiredMark}" />
                     <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleFormSizeTypeChanged">
-                        <atom:OptionButton Tag="{x:Static atom:SizeType.Small}">Small</atom:OptionButton>
-                        <atom:OptionButton Tag="{x:Static atom:SizeType.Middle}" IsChecked="True">Middle</atom:OptionButton>
-                        <atom:OptionButton Tag="{x:Static atom:SizeType.Large}">Large</atom:OptionButton>
+                        <atom:OptionButton Tag="{x:Static atom:SizeType.Small}" Content="{gallery:FormShowCaseLangResource P2ContentSmall}" />
+                        <atom:OptionButton Tag="{x:Static atom:SizeType.Middle}" IsChecked="True" Content="{gallery:FormShowCaseLangResource P2ContentMiddle}" />
+                        <atom:OptionButton Tag="{x:Static atom:SizeType.Large}" Content="{gallery:FormShowCaseLangResource P2ContentLarge}" />
                     </atom:OptionButtonGroup>
                 </StackPanel>
         
@@ -312,51 +312,51 @@
                            MinWidth="600"
                            HorizontalAlignment="Left"
                            SizeType="{Binding FormSizeType}">
-                    <atom:FormItem LabelText="Input"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInput}"
                                    FieldName="input">
                         <atom:LineEdit />
                     </atom:FormItem>
-                    <atom:FormItem LabelText="InputNumber"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInputNumber}"
                                    FieldName="inputNumber">
                         <atom:NumericUpDown Width="200" />
                     </atom:FormItem>
-                    <atom:FormItem LabelText="Switch"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSwitch}"
                                    FieldName="switch">
                         <atom:ToggleSwitch />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Mentions"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextMentions}"
                                    FieldName="mentions">
                         <atom:Mentions />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Select"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelect}"
                                    FieldName="select">
                         <atom:Select HorizontalAlignment="Stretch" Mode="Multiple">
-                            <atom:SelectOption Header="BBB"/>
-                            <atom:SelectOption Header="AAA"/>
+                            <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderBbb}"/>
+                            <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderAaa}"/>
                         </atom:Select>
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="Cascader"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCascader}"
                                    FieldName="cascader">
                         <atom:Cascader HorizontalAlignment="Stretch" />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="TreeSelect"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTreeSelect}"
                                    FieldName="treeSelect">
                         <atom:TreeSelect HorizontalAlignment="Stretch" />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="DatePicker"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDatePicker}"
                                    FieldName="datePicker">
-                        <atom:DatePicker PlaceholderText="Please select" />
+                        <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
                     </atom:FormItem>
         
-                    <atom:FormItem LabelText="RangePicker"
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRangePicker}"
                                    FieldName="rangePicker">
-                        <atom:RangeDatePicker PlaceholderText="Start date"
-                                              SecondaryPlaceholderText="End date" />
+                        <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                              SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
                     </atom:FormItem>
         
                     <atom:FormActionsItem>

@@ -40,7 +40,7 @@
                     <atom:QRCode.LoadingContent>
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
                             <atom:Spin IsSpinning="True" HorizontalAlignment="Center" />
-                            <atom:TextBlock>Loading...</atom:TextBlock>
+                            <atom:TextBlock Text="{gallery:QRCodeShowCaseLangResource P2TextLoading}" />
                         </StackPanel>
                     </atom:QRCode.LoadingContent>
                 </atom:QRCode>
@@ -50,12 +50,10 @@
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                                         VerticalAlignment="Center" Spacing="5">
                                 <antdicons:CloseCircleFilled FillBrush="Red" Width="16" Height="16" />
-                                <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">二维码过期</atom:TextBlock>
+                                <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:QRCodeShowCaseLangResource P2Text二维码过期}" />
                             </StackPanel>
                             <atom:Button HorizontalAlignment="Center"
-                                         Icon="{antdicons:AntDesignIconProvider Kind=ReloadOutlined}" ButtonType="Link">
-                                点击刷新
-                            </atom:Button>
+                                         Icon="{antdicons:AntDesignIconProvider Kind=ReloadOutlined}" ButtonType="Link" Content="{gallery:QRCodeShowCaseLangResource P2Content点击刷新}" />
                         </StackPanel>
                     </atom:QRCode.ExpiredContent>
                 </atom:QRCode>
@@ -65,7 +63,7 @@
                                     VerticalAlignment="Center"
                                     Spacing="5">
                             <antdicons:CheckCircleFilled FillBrush="Green" Width="16" Height="16" />
-                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">已扫描</atom:TextBlock>
+                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:QRCodeShowCaseLangResource P2Text已扫描}" />
                         </StackPanel>
                     </atom:QRCode.ScannedContent>
                 </atom:QRCode>
@@ -76,13 +74,9 @@
             <StackPanel Orientation="Vertical">
                 <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,16">
                     <atom:Button Name="SmallerBtn" 
-                                 Icon="{antdicons:AntDesignIconProvider Kind=MinusOutlined}">
-                        Smaller
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=MinusOutlined}" Content="{gallery:QRCodeShowCaseLangResource P2ContentSmaller}" />
                     <atom:Button Name="LargerBtn" 
-                                 Icon="{antdicons:AntDesignIconProvider Kind=PlusOutlined}">
-                        Larger
-                    </atom:Button>
+                                 Icon="{antdicons:AntDesignIconProvider Kind=PlusOutlined}" Content="{gallery:QRCodeShowCaseLangResource P2ContentLarger}" />
                 </StackPanel>
                 <atom:QRCode Value="https://atomui.net" Icon="avares://AtomUIGallery/Assets/ATOMUI-LOGO.png"
                              Size="{Binding Size}" IconSize="{Binding IconSize}" />
@@ -114,7 +108,7 @@
                         <atom:QRCode Value="https://atomui.net" IsBordered="False" />
                     </atom:Flyout>
                 </atom:FlyoutHost.Flyout>
-                <atom:Button ButtonType="Primary">Hover me</atom:Button>
+                <atom:Button ButtonType="Primary" Content="{gallery:QRCodeShowCaseLangResource P2ContentHoverMe}" />
             </atom:FlyoutHost>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

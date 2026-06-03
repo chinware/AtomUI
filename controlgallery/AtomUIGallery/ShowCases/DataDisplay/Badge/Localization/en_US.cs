@@ -26,6 +26,40 @@ internal class en_US : LanguageProvider
     public const string RibbonDescription = "Use ribbon badge.";
     public const string ColorfulBadgeTitle = "Colorful Badge";
     public const string ColorfulBadgeDescription = "We preset a series of colorful Badge styles for use in different situations. You can also set it to a hex color string for custom color.";
+    public const string P2TextSuccess = "Success";
+    public const string P2TextError = "Error";
+    public const string P2TextDefault = "Default";
+    public const string P2TextProcessing = "Processing";
+    public const string P2TextWarning = "Warning";
+    public const string P2TextPolishExperience = "Polish every detail for an excellent UI SDK experience";
+    public const string P2TextJiachenPlan = "Jiachen Plan takes off";
+    public const string P2TextAvaloniaExcellent = "Avalonia is excellent";
+    public const string P2TextHippies = "Hippies";
+    public const string P2TitlePresets = "Presets";
+    public const string P2TextPink = "Pink";
+    public const string P2TextRed = "Red";
+    public const string P2TextYellow = "Yellow";
+    public const string P2TextOrange = "Orange";
+    public const string P2TextCyan = "Cyan";
+    public const string P2TextGreen = "Green";
+    public const string P2TextBlue = "Blue";
+    public const string P2TextPurple = "Purple";
+    public const string P2TextGeekblue = "GeekBlue";
+    public const string P2TextMagenta = "Magenta";
+    public const string P2TextVolcano = "Volcano";
+    public const string P2TextGold = "Gold";
+    public const string P2TextLime = "Lime";
+    public const string P2TitleCustom = "Custom";
+    public const string P2TextRgbN45N183N245 = "rgb(45, 183, 245)";
+    public const string P2TextHslN102N53N61 = "hsl(102, 53%, 61%)";
+    public const string P2TextRgbN15N141N230 = "rgb(15, 141, 230)";
+    public const string P2ContentAdd = "Add";
+    public const string P2ContentSub = "Sub";
+    public const string P2ContentRandom = "Random";
+    public const string P2TextPushesOpenTheWindow = "Pushes open the window";
+    public const string P2TextAndRaisesTheSpyglass = "and raises the spyglass.";
+
+    public const string P2ContentLinkSomething = "Link something";
 
     protected override Type GetResourceKindType() => typeof(BadgeShowCaseLangResourceKind);
 }

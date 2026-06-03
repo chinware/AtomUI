@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls;
+using AtomUIGallery.Localization;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.TreeView;
@@ -122,12 +123,14 @@ public class TreeItemDataLoader : ITreeItemNodeLoader
                 new TreeItemNode()
                 {
                     ItemKey = $"{targetTreeItemData.ItemKey}-0",
-                    Header  = "Child Node"
+                    Header  = TreeViewShowCaseLanguage.Get(TreeViewShowCaseLangResourceKind.P2HeaderChildNode,
+                        "Child Node")
                 },
                 new TreeItemNode()
                 {
                     ItemKey = $"{targetTreeItemData.ItemKey}-1",
-                    Header  = "Child Node"
+                    Header  = TreeViewShowCaseLanguage.Get(TreeViewShowCaseLangResourceKind.P2HeaderChildNode,
+                        "Child Node")
                 }
             ]);
         }

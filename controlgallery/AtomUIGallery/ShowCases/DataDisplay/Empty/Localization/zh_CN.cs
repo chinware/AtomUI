@@ -14,6 +14,8 @@ internal class zh_CN : LanguageProvider
     public const string CustomizeDescription = "自定义图片来源、图片尺寸、描述和额外内容。";
     public const string NoDescriptionTitle = "无描述";
     public const string NoDescriptionDescription = "不带描述的最简单用法。";
+    public const string P2DescriptionCustomizeDescription = "Customize Description";
+    public const string P2ContentCreateNow = "Create Now";
 
     protected override Type GetResourceKindType() => typeof(EmptyShowCaseLangResourceKind);
 }

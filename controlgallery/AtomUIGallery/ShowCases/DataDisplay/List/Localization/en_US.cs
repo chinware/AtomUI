@@ -28,6 +28,46 @@ internal class en_US : LanguageProvider
     public const string SearchableDescription = "Searchable List.";
     public const string PaginationListTitle = "Pagination list";
     public const string PaginationListDescription = "Pagination list.";
+    public const string P2PlaceholderTextSearch = "Search";
+    public const string P2FilterValue = "a";
+    public const string P2TextSelectionMode = "Selection Mode:";
+    public const string P2ContentSingle = "Single";
+    public const string P2ContentMultiple = "Multiple";
+    public const string P2ContentToggle = "Toggle";
+    public const string P2ColorBlue = "Blue";
+    public const string P2ColorGreen = "Green";
+    public const string P2ColorRed = "Red";
+    public const string P2ColorYellow = "Yellow";
+    public const string P2ColorOrange = "Orange";
+    public const string P2ColorPurple = "Purple";
+    public const string P2ColorPink = "Pink";
+    public const string P2ColorBrown = "Brown";
+    public const string P2ColorWhite = "White";
+    public const string P2ColorBlack = "Black";
+    public const string P2ColorGray = "Gray";
+    public const string P2ColorTurquoise = "Turquoise";
+    public const string P2ColorViolet = "Violet";
+    public const string P2ColorMagenta = "Magenta";
+    public const string P2ColorMaroon = "Maroon";
+    public const string P2ColorNavy = "Navy";
+    public const string P2ColorBeige = "Beige";
+    public const string P2ColorCyan = "Cyan";
+    public const string P2ColorLavender = "Lavender";
+    public const string P2ColorOlive = "Olive";
+    public const string P2GroupBasicColors = "Basic Colors";
+    public const string P2GroupNeutralColors = "Neutral Colors";
+    public const string P2GroupSpecificShades = "Specific Shades";
+    public const string P2ContentRacingCarSpraysBurningFuelIntoCrowd = "Racing car sprays burning fuel into crowd.";
+    public const string P2ContentJapanesePrincessToWedCommoner = "Japanese princess to wed commoner.";
+    public const string P2ContentAustralianWalksN100kmAfterOutbackCrash = "Australian walks 100km after outback crash.";
+    public const string P2ContentManChargedOverMissingWeddingGirl = "Man charged over missing wedding girl.";
+    public const string P2ContentLosAngelesBattlesHugeWildfires = "Los Angeles battles huge wildfires.";
+    public const string P2ContentDynamicItem = "Dynamic item";
+    public const string P2ContentPaginationItemFormat = "Content {0}";
+
+    public const string P2ContentAddItem = "Add Item";
+
+    public const string P2ContentRemoveItem = "Remove Item";
 
     protected override Type GetResourceKindType() => typeof(ListShowCaseLangResourceKind);
 }

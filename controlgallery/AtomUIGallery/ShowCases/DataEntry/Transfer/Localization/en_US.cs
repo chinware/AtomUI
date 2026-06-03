@@ -20,6 +20,33 @@ internal class en_US : LanguageProvider
     public const string TreeTransferDescription = "Customize the render list with a Tree component.";
     public const string StatusTitle = "Status";
     public const string StatusDescription = "Add status to Transfer with status, which could be error or warning.";
+    public const string P2SourceTitle = "Source";
+    public const string P2TargetTitle = "Target";
+    public const string P2TextText = "-";
+    public const string P2HeaderName = "Name";
+    public const string P2HeaderTag = "Tag";
+    public const string P2HeaderDescription = "Description";
+    public const string P2ContentLeftButtonReload = "Left button reload";
+    public const string P2ContentRightButtonReload = "Right button reload";
+
+    public const string P2OnContentDisable = "Disable";
+
+    public const string P2OffContentEnable = "Enable";
+
+    public const string P2FilterPlaceholderTextSearchHere = "Search here";
+
+    public const string P2ToSourceButtonTextToLeft = "To left";
+
+    public const string P2ToTargetButtonTextToRight = "To right";
+
+    public const string P2OnContentOnyWay = "One way";
+
+    public const string P2OffContentOnyWay = "One way";
+    public const string P2ItemContentFormat = "content{0}";
+    public const string P2ItemDescriptionFormat = "description of content{0}";
+    public const string P2TagCat = "cat";
+    public const string P2TagDog = "dog";
+    public const string P2TagBird = "bird";
 
     protected override Type GetResourceKindType() => typeof(TransferShowCaseLangResourceKind);
 }

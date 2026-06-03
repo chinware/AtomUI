@@ -9,15 +9,15 @@
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource BasicTitle}"
             Description="{gallery:DatePickerShowCaseLangResource BasicDescription}">
-            <atom:DatePicker PlaceholderText="Select date"/>
+            <atom:DatePicker PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}"/>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource RangePickerTitle}"
             Description="{gallery:DatePickerShowCaseLangResource RangePickerDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <!-- <atom:RangeDatePicker IsShowTime="true" PlaceholderText="Select date" SecondaryPlaceholderText="End date"/> -->
-                <atom:RangeDatePicker IsShowTime="False" PlaceholderText="Select date" SecondaryPlaceholderText="End date" />
+                <!-- <atom:RangeDatePicker IsShowTime="true" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"/> -->
+                <atom:RangeDatePicker IsShowTime="False" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -25,8 +25,8 @@
             Title="{gallery:DatePickerShowCaseLangResource NeedConfirmTitle}"
             Description="{gallery:DatePickerShowCaseLangResource NeedConfirmDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:DatePicker IsNeedConfirm="True" PlaceholderText="Select date" />
-                <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="False" PlaceholderText="Select date" SecondaryPlaceholderText="End date" />
+                <atom:DatePicker IsNeedConfirm="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" />
+                <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="False" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -34,8 +34,8 @@
             Title="{gallery:DatePickerShowCaseLangResource ChooseTimeTitle}"
             Description="{gallery:DatePickerShowCaseLangResource ChooseTimeDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:DatePicker IsNeedConfirm="True" IsShowTime="True" PlaceholderText="Select date" />
-                <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="True" PlaceholderText="Select date" SecondaryPlaceholderText="End date" />
+                <atom:DatePicker IsNeedConfirm="True" IsShowTime="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" />
+                <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -43,30 +43,30 @@
             Title="{gallery:DatePickerShowCaseLangResource DisabledTitle}"
             Description="{gallery:DatePickerShowCaseLangResource DisabledDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:DatePicker IsNeedConfirm="True" PlaceholderText="Select date" SelectedDateTime="2024-01-20"
+                <atom:DatePicker IsNeedConfirm="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SelectedDateTime="2024-01-20"
                                  IsEnabled="False" />
-                <atom:DatePicker IsNeedConfirm="True" PlaceholderText="Select date" IsShowTime="True"
+                <atom:DatePicker IsNeedConfirm="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" IsShowTime="True"
                                  SelectedDateTime="2024-01-20 12:22:23 AM" IsEnabled="False" />
                 <atom:RangeDatePicker IsNeedConfirm="True"
-                                      PlaceholderText="Select date"
-                                      SecondaryPlaceholderText="End date"
+                                      PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}"
+                                      SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"
                                       RangeStartDefaultDate="2024-01-20"
                                       RangeEndDefaultDate="2024-03-20"
                                       IsEnabled="False" />
                 <atom:RangeDatePicker IsNeedConfirm="True"
-                                      PlaceholderText="Select date"
-                                      SecondaryPlaceholderText="End date"
+                                      PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}"
+                                      SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"
                                       IsShowTime="True"
                                       RangeStartDefaultDate="2024-01-20 12:22:23 AM"
                                       RangeEndDefaultDate="2024-02-20 07:22:23 AM"
                                       IsEnabled="False" />
                 <atom:RangeDatePicker IsNeedConfirm="True"
-                                      PlaceholderText="Select date"
-                                      SecondaryPlaceholderText="End date"
+                                      PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}"
+                                      SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"
                                       IsShowTime="True"
                                       RangeStartDefaultDate="2024-01-20 12:22:23 AM"
                                       RangeEndDefaultDate="2024-02-20 07:22:23 AM" />
-                <atom:DatePicker IsNeedConfirm="True" PlaceholderText="Select date" SelectedDateTime="2024-01-20" />
+                <atom:DatePicker IsNeedConfirm="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SelectedDateTime="2024-01-20" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -76,20 +76,20 @@
 
             <DockPanel Margin="0, 0, 0, 0">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
-                    <atom:TextBlock VerticalAlignment="Center">Expand direction:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:DatePickerShowCaseLangResource P2TextExpandDirection}" />
                     <atom:OptionButtonGroup ButtonStyle="Outline" Name="PickerSizeTypeOptionGroup">
-                        <atom:OptionButton>Large</atom:OptionButton>
-                        <atom:OptionButton IsChecked="True">Default</atom:OptionButton>
-                        <atom:OptionButton>Small</atom:OptionButton>
+                        <atom:OptionButton Content="{gallery:DatePickerShowCaseLangResource P2ContentLarge}" />
+                        <atom:OptionButton IsChecked="True" Content="{gallery:DatePickerShowCaseLangResource P2ContentDefault}" />
+                        <atom:OptionButton Content="{gallery:DatePickerShowCaseLangResource P2ContentSmall}" />
                     </atom:OptionButtonGroup>
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Margin="0, 20, 0, 0" Spacing="10">
-                    <atom:DatePicker IsNeedConfirm="True" PlaceholderText="Select date" SelectedDateTime="2024-01-20"
+                    <atom:DatePicker IsNeedConfirm="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SelectedDateTime="2024-01-20"
                                      SizeType="{Binding PickerSizeType}" />
                     <atom:RangeDatePicker IsNeedConfirm="True"
-                                          PlaceholderText="Select date"
-                                          SecondaryPlaceholderText="End date"
+                                          PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}"
+                                          SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"
                                           IsShowTime="True"
                                           RangeStartDefaultDate="2024-01-20 12:22:23 AM"
                                           RangeEndDefaultDate="2024-02-20 07:22:23 AM"
@@ -104,31 +104,31 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:DatePicker Status="Default"
-                                     PlaceholderText="Select time" />
+                                     PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectTime}" />
                     <atom:RangeDatePicker StyleVariant="Outlined"
                                           Status="Default"
-                                          PlaceholderText="Start date"
-                                          SecondaryPlaceholderText="End date"
+                                          PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextStartDate}"
+                                          SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"
                                           IsNeedConfirm="True"
                                           ClockIdentifier="HourClock24" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:DatePicker Status="Warning"
-                                     PlaceholderText="Select time" />
+                                     PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectTime}" />
                     <atom:RangeDatePicker StyleVariant="Outlined"
                                           Status="Warning"
-                                          PlaceholderText="Start date"
-                                          SecondaryPlaceholderText="End date"
+                                          PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextStartDate}"
+                                          SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"
                                           IsNeedConfirm="True"
                                           ClockIdentifier="HourClock24" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:DatePicker Status="Error"
-                                     PlaceholderText="Select time" />
+                                     PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectTime}" />
                     <atom:RangeDatePicker StyleVariant="Outlined"
                                           Status="Error"
-                                          PlaceholderText="Start date"
-                                          SecondaryPlaceholderText="End date"
+                                          PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextStartDate}"
+                                          SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"
                                           IsNeedConfirm="True"
                                           ClockIdentifier="HourClock24" />
                 </StackPanel>
@@ -141,41 +141,41 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:DatePicker StyleVariant="Outlined"
-                                     PlaceholderText="Outline" />
+                                     PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextOutline}" />
                     <atom:RangeDatePicker StyleVariant="Outlined"
-                                          SecondaryPlaceholderText="End date"
+                                          SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextOutline}"
                                           IsNeedConfirm="True"
                                           ClockIdentifier="HourClock24"
-                                          PlaceholderText="Outline" />
+                                          PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextOutline}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:DatePicker StyleVariant="Filled"
-                                     PlaceholderText="Filled" />
+                                     PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextFilled}" />
                     <atom:RangeDatePicker StyleVariant="Filled"
-                                          SecondaryPlaceholderText="End date"
+                                          SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextFilled}"
                                           IsNeedConfirm="True"
                                           ClockIdentifier="HourClock24"
-                                          PlaceholderText="Filled" />
+                                          PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextFilled}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:DatePicker StyleVariant="Filled"
                                      Status="Error"
-                                     PlaceholderText="Filled" />
+                                     PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextFilled}" />
                     <atom:RangeDatePicker StyleVariant="Filled"
                                           Status="Error"
-                                          SecondaryPlaceholderText="End date"
+                                          SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextFilled}"
                                           IsNeedConfirm="True"
                                           ClockIdentifier="HourClock24"
-                                          PlaceholderText="Filled" />
+                                          PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextFilled}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:DatePicker StyleVariant="Borderless"
-                                     PlaceholderText="Borderless" />
+                                     PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextBorderless}" />
                     <atom:RangeDatePicker StyleVariant="Borderless"
-                                          SecondaryPlaceholderText="End date"
+                                          SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextBorderless}"
                                           IsNeedConfirm="True"
                                           ClockIdentifier="HourClock24"
-                                          PlaceholderText="Borderless" />
+                                          PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextBorderless}" />
                 </StackPanel>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -186,19 +186,19 @@
 
             <DockPanel Margin="0, 0, 0, 0">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
-                    <atom:TextBlock VerticalAlignment="Center">Placement:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:DatePickerShowCaseLangResource P2TextPlacement}" />
                     <atom:OptionButtonGroup ButtonStyle="Outline" Name="PickerPlacementOptionGroup">
-                        <atom:OptionButton>TopLeft</atom:OptionButton>
-                        <atom:OptionButton>TopRight</atom:OptionButton>
-                        <atom:OptionButton IsChecked="true">BottomLeft</atom:OptionButton>
-                        <atom:OptionButton>BottomRight</atom:OptionButton>
+                        <atom:OptionButton Content="{gallery:DatePickerShowCaseLangResource P2ContentTopleft}" />
+                        <atom:OptionButton Content="{gallery:DatePickerShowCaseLangResource P2ContentTopright}" />
+                        <atom:OptionButton IsChecked="true" Content="{gallery:DatePickerShowCaseLangResource P2ContentBottomleft}" />
+                        <atom:OptionButton Content="{gallery:DatePickerShowCaseLangResource P2ContentBottomright}" />
                     </atom:OptionButtonGroup>
                 </StackPanel>
 
                 <StackPanel Orientation="Vertical" Margin="0, 20, 0, 0" Spacing="10">
-                    <atom:DatePicker IsNeedConfirm="True" PlaceholderText="Select date" SelectedDateTime="2024-01-20"
+                    <atom:DatePicker IsNeedConfirm="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SelectedDateTime="2024-01-20"
                                      PickerPlacement="{Binding PickerPlacement}" />
-                    <atom:RangeDatePicker IsNeedConfirm="True" PlaceholderText="Select date" IsShowTime="True"
+                    <atom:RangeDatePicker IsNeedConfirm="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" IsShowTime="True"
                                           RangeStartDefaultDate="2024-01-20 12:22:23 AM"
                                           RangeEndDefaultDate="2024-02-20 07:22:23 AM"
                                           PickerPlacement="{Binding PickerPlacement}" />

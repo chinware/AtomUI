@@ -1,10 +1,15 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
+using Avalonia;
 using Avalonia.Interactivity;
+using AtomUIGallery.Localization;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -20,11 +25,7 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
         {
             if (DataContext is TransferViewModel viewModel)
             {
-                InitBasicTransferItems(viewModel);
-                InitOneWayTransferItems(viewModel);
-                InitSearchTransferItems(viewModel);
-                InitPaginationTransferItems(viewModel);
-                InitDataGridTransferItems(viewModel);
+                RefreshLocalizedTransferItems(viewModel);
                 viewModel.TransferFilterValueSelector = record =>
                 {
                     if (record is ListItemData listItemData)
@@ -33,8 +34,6 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
                     }
                     return record?.ToString();
                 };
-                InitAdvanceTransferItems(viewModel);
-                InitTreeViewTransferItems(viewModel);
 
                 this.OneWayBind(viewModel, vm => vm.BasicTransferItems, v => v.BasicListTransfer.ItemsSource)
                     .DisposeWith(disposables);
@@ -50,6 +49,15 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
                     .DisposeWith(disposables);
                 this.OneWayBind(viewModel, vm => vm.TransferTreeNodes, v => v.TreeTransfer.ItemsSource)
                     .DisposeWith(disposables);
+
+                var themeManager = Application.Current?.GetThemeManager();
+                if (themeManager != null)
+                {
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedTransferItems(viewModel);
+                    themeManager.LanguageVariantChanged += handler;
+                    Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
+                              .DisposeWith(disposables);
+                }
 
                 Disposable.Create(() =>
                 {
@@ -69,6 +77,17 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
         InitializeComponent();
     }
 
+    private void RefreshLocalizedTransferItems(TransferViewModel viewModel)
+    {
+        InitBasicTransferItems(viewModel);
+        InitOneWayTransferItems(viewModel);
+        InitSearchTransferItems(viewModel);
+        InitPaginationTransferItems(viewModel);
+        InitDataGridTransferItems(viewModel);
+        InitAdvanceTransferItems(viewModel);
+        InitTreeViewTransferItems(viewModel);
+    }
+
     private void InitBasicTransferItems(TransferViewModel vm)
     {
         var items = new List<IListItemData>();
@@ -77,7 +96,10 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
             items.Add(new ListItemData()
             {
                 ItemKey = $"{i}",
-                Content = $"content{i + 1}"
+                Content = TransferShowCaseLanguage.Format(
+                    TransferShowCaseLangResourceKind.P2ItemContentFormat,
+                    "content{0}",
+                    i + 1)
             });
         }
 
@@ -92,7 +114,10 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
             items.Add(new ListItemData()
             {
                 ItemKey = $"{i}",
-                Content = $"content{i + 1}",
+                Content = TransferShowCaseLanguage.Format(
+                    TransferShowCaseLangResourceKind.P2ItemContentFormat,
+                    "content{0}",
+                    i + 1),
                 IsEnabled = !(i % 3 < 1)
             });
         }
@@ -108,8 +133,14 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
             items.Add(new SearchCaseItemData()
             {
                 ItemKey   = $"{i}",
-                Content   = $"content{i + 1}",
-                Description = $"description of content{i + 1}"
+                Content   = TransferShowCaseLanguage.Format(
+                    TransferShowCaseLangResourceKind.P2ItemContentFormat,
+                    "content{0}",
+                    i + 1),
+                Description = TransferShowCaseLanguage.Format(
+                    TransferShowCaseLangResourceKind.P2ItemDescriptionFormat,
+                    "description of content{0}",
+                    i + 1)
             });
         }
 
@@ -125,8 +156,14 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
             var item = new SearchCaseItemData()
             {
                 ItemKey     = $"{i}",
-                Content     = $"content{i + 1}",
-                Description = $"description of content{i + 1}"
+                Content     = TransferShowCaseLanguage.Format(
+                    TransferShowCaseLangResourceKind.P2ItemContentFormat,
+                    "content{0}",
+                    i + 1),
+                Description = TransferShowCaseLanguage.Format(
+                    TransferShowCaseLangResourceKind.P2ItemDescriptionFormat,
+                    "description of content{0}",
+                    i + 1)
             };
             items.Add(item);
             if (i % 2 == 0)
@@ -155,8 +192,14 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
             var item = new SearchCaseItemData()
             {
                 ItemKey     = $"{i}",
-                Content     = $"content{i + 1}",
-                Description = $"description of content{i + 1}"
+                Content     = TransferShowCaseLanguage.Format(
+                    TransferShowCaseLangResourceKind.P2ItemContentFormat,
+                    "content{0}",
+                    i + 1),
+                Description = TransferShowCaseLanguage.Format(
+                    TransferShowCaseLangResourceKind.P2ItemDescriptionFormat,
+                    "description of content{0}",
+                    i + 1)
             };
             items.Add(item);
             if (i % 2 == 0)
@@ -171,14 +214,25 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
     private void InitDataGridTransferItems(TransferViewModel vm)
     {
         var          items = new List<DataGridTransferData>();
-        List<string> tags  = ["cat", "dog", "bird"];
+        List<string> tags =
+        [
+            TransferShowCaseLanguage.Get(TransferShowCaseLangResourceKind.P2TagCat, "cat"),
+            TransferShowCaseLanguage.Get(TransferShowCaseLangResourceKind.P2TagDog, "dog"),
+            TransferShowCaseLanguage.Get(TransferShowCaseLangResourceKind.P2TagBird, "bird")
+        ];
         for (var i = 0; i < 20; i++)
         {
             items.Add(new DataGridTransferData()
             {
                 ItemKey     = $"{i}",
-                Title       = $"content{i + 1}",
-                Description = $"description of content{i + 1}",
+                Title       = TransferShowCaseLanguage.Format(
+                    TransferShowCaseLangResourceKind.P2ItemContentFormat,
+                    "content{0}",
+                    i + 1),
+                Description = TransferShowCaseLanguage.Format(
+                    TransferShowCaseLangResourceKind.P2ItemDescriptionFormat,
+                    "description of content{0}",
+                    i + 1),
                 Tag         = tags[i % 3]
             });
         }
@@ -228,4 +282,17 @@ public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
         ];
     }
 
+}
+
+internal static class TransferShowCaseLanguage
+{
+    public static string Get(TransferShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+    }
+
+    public static string Format(TransferShowCaseLangResourceKind resourceKind, string fallback, params object?[] args)
+    {
+        return string.Format(CultureInfo.CurrentCulture, Get(resourceKind, fallback), args);
+    }
 }

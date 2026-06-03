@@ -14,6 +14,12 @@ internal class en_US : LanguageProvider
     public const string AutoSetFontSizeDescription = "For letter type Avatar, when the letters are too long to display, the font size can be automatically adjusted according to the width of the Avatar. You can also use gap to set the unit distance between left and right sides.";
     public const string AvatarGroupTitle = "Avatar.Group";
     public const string AvatarGroupDescription = "Avatar group display.";
+    public const string P2ContentU = "U";
+    public const string P2ContentUser = "USER";
+    public const string P2ContentChangeuser = "Change user";
+    public const string P2ContentChangegap = "Change gap";
+    public const string P2ContentK = "K";
+    public const string P2ContentA = "A";
 
     protected override Type GetResourceKindType() => typeof(AvatarShowCaseLangResourceKind);
 }

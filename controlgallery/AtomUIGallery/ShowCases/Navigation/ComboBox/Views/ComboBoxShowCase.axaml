@@ -11,47 +11,47 @@
         <gallery:ShowCaseItem
             Title="{gallery:ComboBoxShowCaseLangResource BasicTitle}"
             Description="{gallery:ComboBoxShowCaseLangResource BasicDescription}">
-            <atom:ComboBox PlaceholderText="Please select" Width="300">
-                <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
-                <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
-                <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
-                <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
-                <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
-                <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
-                <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
-                <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
-                <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
-                <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
             </atom:ComboBox>
         </gallery:ShowCaseItem>
 
@@ -59,7 +59,7 @@
             Title="{gallery:ComboBoxShowCaseLangResource ItemsSourceTitle}"
             Description="{gallery:ComboBoxShowCaseLangResource ItemsSourceDescription}">
             <atom:ComboBox Name="TplComboBox"
-                           PlaceholderText="Please select" Width="300"
+                           PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                            ItemsSource="{Binding ComboBoxItems}">
                 <atom:ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -72,11 +72,11 @@
         <gallery:ShowCaseItem
             Title="{gallery:ComboBoxShowCaseLangResource DisabledTitle}"
             Description="{gallery:ComboBoxShowCaseLangResource DisabledDescription}">
-            <atom:ComboBox PlaceholderText="Please select" Width="300" IsEnabled="False">
-                <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300" IsEnabled="False">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
             </atom:ComboBox>
         </gallery:ShowCaseItem>
 
@@ -84,23 +84,23 @@
             Title="{gallery:ComboBoxShowCaseLangResource ThreeSizesTitle}"
             Description="{gallery:ComboBoxShowCaseLangResource ThreeSizesDescription}">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <atom:ComboBox SizeType="Large" PlaceholderText="Please select">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                <atom:ComboBox SizeType="Large" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}">
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
-                <atom:ComboBox SizeType="Middle" PlaceholderText="Please select">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                <atom:ComboBox SizeType="Middle" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}">
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
-                <atom:ComboBox SizeType="Small" PlaceholderText="Please select">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                <atom:ComboBox SizeType="Small" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}">
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -109,25 +109,25 @@
             Title="{gallery:ComboBoxShowCaseLangResource VariantsTitle}"
             Description="{gallery:ComboBoxShowCaseLangResource VariantsDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ComboBox StyleVariant="Outlined" PlaceholderText="Please select" Width="300">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                <atom:ComboBox StyleVariant="Outlined" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox StyleVariant="Filled" PlaceholderText="Please select" Width="300">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                <atom:ComboBox StyleVariant="Filled" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox StyleVariant="Borderless" PlaceholderText="Please select" Width="300">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                <atom:ComboBox StyleVariant="Borderless" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -136,30 +136,30 @@
             Title="{gallery:ComboBoxShowCaseLangResource PrePostTabTitle}"
             Description="{gallery:ComboBoxShowCaseLangResource PrePostTabDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                LeftAddOn="http://"
                                RightAddOn=".com">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                RightAddOn="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                LeftAddOn="http://"
                                ContentRightAddOn=".com">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
             </StackPanel>
@@ -170,31 +170,31 @@
             Title="{gallery:ComboBoxShowCaseLangResource PrefixSuffixTitle}"
             Description="{gallery:ComboBoxShowCaseLangResource PrefixSuffixDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
                                ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, FillBrush=#8C8C8C}">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                ContentLeftAddOn="￥"
                                ContentRightAddOn="RMB">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                ContentLeftAddOn="￥"
                                ContentRightAddOn="RMB" IsEnabled="False">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
             </StackPanel>
@@ -204,78 +204,78 @@
             Title="{gallery:ComboBoxShowCaseLangResource StatusTitle}"
             Description="{gallery:ComboBoxShowCaseLangResource StatusDescription}">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                Status="Error">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                Status="Warning">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                Status="Error"
                                ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                Status="Warning"
                                ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                Status="Error"
                                StyleVariant="Filled"
                                ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                Status="Warning"
                                StyleVariant="Filled"
                                ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                Status="Error"
                                StyleVariant="Borderless"
                                ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="Please select" Width="300"
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
                                Status="Warning"
                                StyleVariant="Borderless"
                                ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem>床前明月光</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>疑是地上霜</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>举头望明月</atom:ComboBoxItem>
-                    <atom:ComboBoxItem>低头思故乡</atom:ComboBoxItem>
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content床前明月光}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content疑是地上霜}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content举头望明月}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2Content低头思故乡}" />
                 </atom:ComboBox>
 
             </StackPanel>

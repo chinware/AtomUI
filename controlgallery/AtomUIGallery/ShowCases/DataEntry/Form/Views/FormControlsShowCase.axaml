@@ -6,6 +6,14 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Form"
              x:DataType="viewModels:FormViewModel">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://AtomUIGallery/ShowCases/DataEntry/Form/ShowCaseControls/FormThemes.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <gallery:ShowCasePanel>
 
         <gallery:ShowCaseItem
@@ -17,12 +25,12 @@
                        MinWidth="600"
                        HorizontalAlignment="Left"
                        FormLayout="Inline">
-                <atom:FormItem LabelText="Price"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPrice}"
                                FieldName="price"
                                Width="350">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <gallery:PriceValidator Message="Price must be greater than zero!" />
+                            <gallery:PriceValidator Message="{gallery:FormShowCaseLangResource P2MessagePriceMustBeGreaterThanZero}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <gallery:PriceInput />
@@ -41,49 +49,49 @@
                        WrapperColInfo="16*"
                        MinWidth="600"
                        HorizontalAlignment="Left">
-                <atom:FormItem LabelText="Plain Text"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPlainText}"
                                FieldName="plainText">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
                             <atom:FormAssertValidator AssertResult="False" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:TextBlock Text="China"/>
+                    <atom:TextBlock Text="{gallery:FormShowCaseLangResource P2TextChina}"/>
                 </atom:FormItem>
                 
-                <atom:FormItem LabelText="Select"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelect}"
                                FieldName="select"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormNotNullValidator Message="Please select your country!" />
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectYourCountry}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:Select PlaceholderText="Please select a country" HorizontalAlignment="Stretch">
-                        <atom:SelectOption Header="China" Content="china"/>
-                        <atom:SelectOption Header="U.S.A" Content="usa"/>
+                    <atom:Select PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPleaseSelectACountry}" HorizontalAlignment="Stretch">
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderChina}" Content="china"/>
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderUSA}" Content="usa"/>
                     </atom:Select>
                 </atom:FormItem>
                 
-                <atom:FormItem LabelText="Select[multiple]"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelectMultiple}"
                                FieldName="select-multiple"
                                IsValidateFeedbackEnabled="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormNotNullValidator Message="Please select your favourite colors!" />
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectYourFavouriteColors}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
-                    <atom:Select PlaceholderText="Please select favourite colors" 
+                    <atom:Select PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPleaseSelectFavouriteColors}"
                                  HorizontalAlignment="Stretch"
                                  Mode="Multiple"
                                  IsAllowClear="True">
-                        <atom:SelectOption Header="Red" Content="red"/>
-                        <atom:SelectOption Header="Green" Content="green"/>
-                        <atom:SelectOption Header="Blue" Content="blue"/>
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderRed}" Content="red"/>
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderGreen}" Content="green"/>
+                        <atom:SelectOption Header="{gallery:FormShowCaseLangResource P2HeaderBlue}" Content="blue"/>
                     </atom:Select>
                 </atom:FormItem>
                 
-                <atom:FormItem LabelText="InputNumber" FieldName="inputNumber">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInputNumber}" FieldName="inputNumber">
                    <atom:FormItemDecorator>
                        <atom:NumericUpDown Minimum="1" Maximum="10" Width="120"/>
                        <atom:FormItemDecorator.Extra>
@@ -92,63 +100,63 @@
                    </atom:FormItemDecorator>
                 </atom:FormItem>
                 
-                <atom:FormItem LabelText="Switch" FieldName="switch">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSwitch}" FieldName="switch">
                     <atom:ToggleSwitch/>
                 </atom:FormItem>
                 
-                <atom:FormItem LabelText="Slider" FieldName="slider">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSlider}" FieldName="slider">
                     <atom:Slider Name="FormSliderItem" Minimum="0" Maximum="100"/>
                 </atom:FormItem>
                 
-                <atom:FormItem LabelText="radio-group" FieldName="radioGroup">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRadioGroup}" FieldName="radioGroup">
                     <atom:RadioButtonGroup>
-                        <atom:RadioButton Tag="a">item 1</atom:RadioButton>
-                        <atom:RadioButton Tag="b">item 2</atom:RadioButton>
-                        <atom:RadioButton Tag="c">item 3</atom:RadioButton>
+                        <atom:RadioButton Tag="a" Content="{gallery:FormShowCaseLangResource P2ContentItemN1}" />
+                        <atom:RadioButton Tag="b" Content="{gallery:FormShowCaseLangResource P2ContentItemN2}" />
+                        <atom:RadioButton Tag="c" Content="{gallery:FormShowCaseLangResource P2ContentItemN3}" />
                     </atom:RadioButtonGroup>
                 </atom:FormItem>
                 
-                <atom:FormItem LabelText="option-button-group" FieldName="optionButtonGroup">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextOptionButtonGroup}" FieldName="optionButtonGroup">
                     <atom:OptionButtonGroup>
-                        <atom:OptionButton Tag="a">item 1</atom:OptionButton>
-                        <atom:OptionButton Tag="b">item 2</atom:OptionButton>
-                        <atom:OptionButton Tag="c">item 3</atom:OptionButton>
+                        <atom:OptionButton Tag="a" Content="{gallery:FormShowCaseLangResource P2ContentItemN1}" />
+                        <atom:OptionButton Tag="b" Content="{gallery:FormShowCaseLangResource P2ContentItemN2}" />
+                        <atom:OptionButton Tag="c" Content="{gallery:FormShowCaseLangResource P2ContentItemN3}" />
                     </atom:OptionButtonGroup>
                 </atom:FormItem>
                 
-                <atom:FormItem LabelText="Checkbox.Group" FieldName="checkboxGroup">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCheckboxGroup}" FieldName="checkboxGroup">
                     <atom:CheckBoxGroup Width="150" HorizontalAlignment="Left">
-                        <atom:CheckBox Tag="a">A</atom:CheckBox>
-                        <atom:CheckBox Tag="b" IsChecked="True" IsEnabled="False">B</atom:CheckBox>
-                        <atom:CheckBox Tag="c">C</atom:CheckBox>
-                        <atom:CheckBox Tag="d">D</atom:CheckBox>
-                        <atom:CheckBox Tag="e">E</atom:CheckBox>
-                        <atom:CheckBox Tag="f">F</atom:CheckBox>
+                        <atom:CheckBox Tag="a" Content="{gallery:FormShowCaseLangResource P2ContentA}" />
+                        <atom:CheckBox Tag="b" IsChecked="True" IsEnabled="False" Content="{gallery:FormShowCaseLangResource P2ContentB}" />
+                        <atom:CheckBox Tag="c" Content="{gallery:FormShowCaseLangResource P2ContentC}" />
+                        <atom:CheckBox Tag="d" Content="{gallery:FormShowCaseLangResource P2ContentD}" />
+                        <atom:CheckBox Tag="e" Content="{gallery:FormShowCaseLangResource P2ContentE}" />
+                        <atom:CheckBox Tag="f" Content="{gallery:FormShowCaseLangResource P2ContentF}" />
                     </atom:CheckBoxGroup>
                 </atom:FormItem>
                 
-                <atom:FormItem LabelText="Rate" FieldName="rate">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRate}" FieldName="rate">
                     <atom:Rate/>
                 </atom:FormItem>
 
-                <atom:FormItem LabelText="Upload" FieldName="upload"
-                               Help="longgggggggggggggggggggggggggggggggggg">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextUpload}" FieldName="upload"
+                               Help="{gallery:FormShowCaseLangResource P2HelpLongUpload}">
                     <atom:Upload>
-                        <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}">Click to Upload</atom:Button>
+                        <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:FormShowCaseLangResource P2ContentClickToUpload}" />
                     </atom:Upload>
                 </atom:FormItem>
-                <atom:FormItem LabelText="Dragger" FieldName="dragger"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDragger}" FieldName="dragger"
                                Margin="0, 10, 0, 0">
                     <atom:Upload Name="DragAndDropUpload">
                         <atom:UploadDefaultDropArea/>
                     </atom:Upload>
                 </atom:FormItem>
                 
-                <atom:FormItem LabelText="ColorPicker" FieldName="colorPicker"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextColorPicker}" FieldName="colorPicker"
                                IsRequired="True">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormNotNullValidator Message="color is required!"/>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessageColorIsRequired}"/>
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:ColorPicker/>

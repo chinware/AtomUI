@@ -16,6 +16,16 @@ internal class en_US : LanguageProvider
     public const string CustomIconDescription = "Custom flyout button icon.";
     public const string FlyoutTriggerTypeTitle = "Flyout trigger type";
     public const string FlyoutTriggerTypeDescription = "Support two trigger types.";
+    public const string P2HeaderCut = "Cut";
+    public const string P2HeaderCopy = "Copy";
+    public const string P2HeaderDelete = "Delete";
+    public const string P2ContentHoverMe = "Hover me";
+    public const string P2ContentLarge = "Large";
+    public const string P2ContentMiddle = "Middle";
+    public const string P2ContentSmall = "Small";
+    public const string P2ContentDefault = "Default";
+    public const string P2ContentPrimary = "Primary";
+    public const string P2ContentClickMe = "Click Me";
 
     protected override Type GetResourceKindType() => typeof(SplitButtonShowCaseLangResourceKind);
 }

@@ -1,8 +1,13 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
+using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
+using AtomUIGallery.Localization;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using ReactiveUI;
@@ -22,34 +27,17 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
         {
             if (DataContext is ListViewModel viewModel)
             {
-                viewModel.ListItemsWidthDisabled = [
-                    new ListItemData()
-                    {
-                        Content = "Blue"
-                    },
-                    new ListItemData()
-                    {
-                        Content = "Green"
-                    },
-                    new ListItemData()
-                    {
-                        Content = "Red"
-                    },
-                    new ListItemData()
-                    {
-                        Content   = "Yellow",
-                        IsEnabled = false
-                    }
-                ];
-                InitBasicListItems(viewModel);
-                InitSelectionListItems(viewModel);
-                InitializeGroupItems(viewModel);
-                InitializeFilteredGroupItems(viewModel);
-                InitializeOrderedGroupItems(viewModel);
-                InitializeEmptyDemoItems(viewModel);
-                InitializeBasicListBoxItems(viewModel);
-                InitializePaginationListBoxItems(viewModel);
+                RefreshLocalizedListItems(viewModel);
                 viewModel.SelectionMode = SelectionMode.Single;
+
+                var themeManager = Application.Current?.GetThemeManager();
+                if (themeManager != null)
+                {
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedListItems(viewModel);
+                    themeManager.LanguageVariantChanged += handler;
+                    Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
+                              .DisposeWith(disposables);
+                }
 
                 Disposable.Create(() =>
                 {
@@ -60,6 +48,7 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
                     viewModel.EmptyDemoItems         = null;
                     viewModel.FilteredGroupListItems = null;
                     viewModel.OrderedGroupListItems  = null;
+                    viewModel.BasicListBoxItems      = null;
                     viewModel.PaginationListItems    = null;
                 }).DisposeWith(disposables);
             }
@@ -80,24 +69,43 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
         }
     }
 
+    private void RefreshLocalizedListItems(ListViewModel viewModel)
+    {
+        var emptyDemoItemCount = viewModel.EmptyDemoItems?.Count ?? 0;
+        InitBasicListItems(viewModel);
+        InitSelectionListItems(viewModel);
+        InitializeGroupItems(viewModel);
+        InitializeDisabledItems(viewModel);
+        InitializeFilteredGroupItems(viewModel);
+        InitializeOrderedGroupItems(viewModel);
+        InitializeEmptyDemoItems(viewModel, emptyDemoItemCount);
+        InitializeBasicListBoxItems(viewModel);
+        InitializePaginationListBoxItems(viewModel);
+    }
+
+    private static string Lang(ListShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return ListShowCaseLanguage.Get(resourceKind, fallback);
+    }
+
     private List<IListItemData> BuildBasicListItems()
     {
         return [
             new ListItemData()
             {
-                Content = "Blue"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorBlue, "Blue")
             },
             new ListItemData()
             {
-                Content = "Green"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorGreen, "Green")
             },
             new ListItemData()
             {
-                Content = "Red"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorRed, "Red")
             },
             new ListItemData()
             {
-                Content = "Yellow"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorYellow, "Yellow")
             }
         ];
     }
@@ -112,110 +120,138 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
         viewModel.SelectionListItems = BuildBasicListItems();
     }
 
+    private void InitializeDisabledItems(ListViewModel viewModel)
+    {
+        viewModel.ListItemsWidthDisabled = [
+            new ListItemData()
+            {
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorBlue, "Blue")
+            },
+            new ListItemData()
+            {
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorGreen, "Green")
+            },
+            new ListItemData()
+            {
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorRed, "Red")
+            },
+            new ListItemData()
+            {
+                Content   = Lang(ListShowCaseLangResourceKind.P2ColorYellow, "Yellow"),
+                IsEnabled = false
+            }
+        ];
+    }
+
     private List<IListItemData> BuildGroupItems()
     {
+        var basicColors   = Lang(ListShowCaseLangResourceKind.P2GroupBasicColors, "Basic Colors");
+        var neutralColors = Lang(ListShowCaseLangResourceKind.P2GroupNeutralColors, "Neutral Colors");
+        var specificShades = Lang(ListShowCaseLangResourceKind.P2GroupSpecificShades,
+            "Specific Shades");
+
         return [
             new ListItemData()
             {
-                Content = "Red",
-                Group   = "Basic Colors"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorRed, "Red"),
+                Group   = basicColors
             },
             new ListItemData()
             {
-                Content = "Orange",
-                Group   = "Basic Colors"
-            },
-
-            new ListItemData()
-            {
-                Content = "Green",
-                Group   = "Basic Colors"
-            },
-            new ListItemData()
-            {
-                Content = "Blue",
-                Group   = "Basic Colors"
-            },
-            new ListItemData()
-            {
-                Content = "Purple",
-                Group   = "Basic Colors"
-            },
-            new ListItemData()
-            {
-                Content = "Pink",
-                Group   = "Basic Colors"
-            },
-            new ListItemData()
-            {
-                Content = "Yellow",
-                Group   = "Basic Colors"
-            },
-            new ListItemData()
-            {
-                Content = "Brown",
-                Group   = "Neutral Colors"
-            },
-            new ListItemData()
-            {
-                Content = "White",
-                Group   = "Neutral Colors"
-            },
-            new ListItemData()
-            {
-                Content = "Black",
-                Group   = "Neutral Colors"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorOrange, "Orange"),
+                Group   = basicColors
             },
 
             new ListItemData()
             {
-                Content = "Gray",
-                Group   = "Neutral Colors"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorGreen, "Green"),
+                Group   = basicColors
             },
             new ListItemData()
             {
-                Content = "Turquoise",
-                Group   = "Specific Shades"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorBlue, "Blue"),
+                Group   = basicColors
             },
             new ListItemData()
             {
-                Content = "Violet",
-                Group   = "Specific Shades"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorPurple, "Purple"),
+                Group   = basicColors
             },
             new ListItemData()
             {
-                Content = "Magenta",
-                Group   = "Specific Shades"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorPink, "Pink"),
+                Group   = basicColors
             },
             new ListItemData()
             {
-                Content = "Maroon",
-                Group   = "Specific Shades"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorYellow, "Yellow"),
+                Group   = basicColors
             },
             new ListItemData()
             {
-                Content = "Navy",
-                Group   = "Specific Shades"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorBrown, "Brown"),
+                Group   = neutralColors
             },
             new ListItemData()
             {
-                Content = "Beige",
-                Group   = "Specific Shades"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorWhite, "White"),
+                Group   = neutralColors
             },
             new ListItemData()
             {
-                Content = "Cyan",
-                Group   = "Specific Shades"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorBlack, "Black"),
+                Group   = neutralColors
+            },
+
+            new ListItemData()
+            {
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorGray, "Gray"),
+                Group   = neutralColors
             },
             new ListItemData()
             {
-                Content = "Lavender",
-                Group   = "Specific Shades"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorTurquoise, "Turquoise"),
+                Group   = specificShades
             },
             new ListItemData()
             {
-                Content = "Olive",
-                Group   = "Specific Shades"
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorViolet, "Violet"),
+                Group   = specificShades
+            },
+            new ListItemData()
+            {
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorMagenta, "Magenta"),
+                Group   = specificShades
+            },
+            new ListItemData()
+            {
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorMaroon, "Maroon"),
+                Group   = specificShades
+            },
+            new ListItemData()
+            {
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorNavy, "Navy"),
+                Group   = specificShades
+            },
+            new ListItemData()
+            {
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorBeige, "Beige"),
+                Group   = specificShades
+            },
+            new ListItemData()
+            {
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorCyan, "Cyan"),
+                Group   = specificShades
+            },
+            new ListItemData()
+            {
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorLavender, "Lavender"),
+                Group   = specificShades
+            },
+            new ListItemData()
+            {
+                Content = Lang(ListShowCaseLangResourceKind.P2ColorOlive, "Olive"),
+                Group   = specificShades
             },
         ];
     }
@@ -235,9 +271,15 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
         viewModel.OrderedGroupListItems = BuildGroupItems();
     }
 
-    private void InitializeEmptyDemoItems(ListViewModel viewModel)
+    private void InitializeEmptyDemoItems(ListViewModel viewModel, int itemCount)
     {
-        viewModel.EmptyDemoItems = [];
+        var items = new List<IListItemData>(itemCount);
+        for (var i = 0; i < itemCount; i++)
+        {
+            items.Add(CreateDynamicItem());
+        }
+
+        viewModel.EmptyDemoItems = items;
     }
 
     private void InitializeBasicListBoxItems(ListViewModel viewModel)
@@ -245,23 +287,33 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
         viewModel.BasicListBoxItems = [
             new ListItemData()
             {
-                Content = "Racing car sprays burning fuel into crowd."
+                Content = Lang(
+                    ListShowCaseLangResourceKind.P2ContentRacingCarSpraysBurningFuelIntoCrowd,
+                    "Racing car sprays burning fuel into crowd.")
             },
             new ListItemData()
             {
-                Content = "Japanese princess to wed commoner."
+                Content = Lang(
+                    ListShowCaseLangResourceKind.P2ContentJapanesePrincessToWedCommoner,
+                    "Japanese princess to wed commoner.")
             },
             new ListItemData()
             {
-                Content = "Australian walks 100km after outback crash."
+                Content = Lang(
+                    ListShowCaseLangResourceKind.P2ContentAustralianWalksN100kmAfterOutbackCrash,
+                    "Australian walks 100km after outback crash.")
             },
             new ListItemData()
             {
-                Content = "Man charged over missing wedding girl."
+                Content = Lang(
+                    ListShowCaseLangResourceKind.P2ContentManChargedOverMissingWeddingGirl,
+                    "Man charged over missing wedding girl.")
             },
             new ListItemData()
             {
-                Content = "Los Angeles battles huge wildfires."
+                Content = Lang(
+                    ListShowCaseLangResourceKind.P2ContentLosAngelesBattlesHugeWildfires,
+                    "Los Angeles battles huge wildfires.")
             },
         ];
     }
@@ -277,12 +329,17 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
             ? new List<IListItemData>(viewModel.EmptyDemoItems)
             : new List<IListItemData>();
 
-        items.Add(new ListItemData()
-        {
-            Content = $"Dynamic item "
-        });
+        items.Add(CreateDynamicItem());
 
         viewModel.EmptyDemoItems = items;
+    }
+
+    private static ListItemData CreateDynamicItem()
+    {
+        return new ListItemData()
+        {
+            Content = Lang(ListShowCaseLangResourceKind.P2ContentDynamicItem, "Dynamic item")
+        };
     }
 
     private void HandleRemoveEmptyItemClicked(object? sender, RoutedEventArgs e)
@@ -319,10 +376,25 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
             list.Add(new ListItemData()
             {
                 ItemKey = $"{i}",
-                Content = $"Content {i}"
+                Content = string.Format(
+                    Lang(ListShowCaseLangResourceKind.P2ContentPaginationItemFormat, "Content {0}"),
+                    i)
             });
         }
 
         viewModel.PaginationListItems = list;
+    }
+}
+
+internal static class ListShowCaseLanguage
+{
+    public static string Get(ListShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        if (Application.Current is null)
+        {
+            return fallback;
+        }
+
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
     }
 }

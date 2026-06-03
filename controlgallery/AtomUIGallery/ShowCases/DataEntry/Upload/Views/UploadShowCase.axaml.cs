@@ -1,13 +1,17 @@
 using System;
+using System.Globalization;
 using System.IO;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using System.Threading;
 using System.Threading.Tasks;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
+using AtomUIGallery.Localization;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -26,34 +30,7 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
         {
             if (DataContext is UploadViewModel vm)
             {
-                vm.DefaultTaskList = [
-                    new UploadTaskInfo()
-                    {
-                        TaskId      = Guid.NewGuid(),
-                        FileName    = "xxx.png",
-                        IsImageFile = true,
-                        Status      = FileUploadStatus.Uploading,
-                        Progress    = 33
-                    },
-                    new UploadTaskInfo()
-                    {
-                        TaskId      = Guid.NewGuid(),
-                        FileName    = "yyy.png",
-                        IsImageFile = true,
-                        Status      = FileUploadStatus.Success,
-                        Progress    = 100
-                    },
-                    new UploadTaskInfo()
-                    {
-                        TaskId       = Guid.NewGuid(),
-                        FileName     = "zzz.png",
-                        IsImageFile  = true,
-                        Status       = FileUploadStatus.Failed,
-                        ErrorMessage = "Server Error 500"
-                    },
-                ];
-                InitPictureWallTaskList(vm);
-                InitPictureListTaskList(vm);
+                RefreshLocalizedTaskLists(vm);
 
                 this.OneWayBind(vm, m => m.DefaultTaskList, v => v.DefaultFileList.DefaultTaskList).DisposeWith(disposables);
                 this.OneWayBind(vm, m => m.PicturesWallDefaultTaskList, v => v.PicturesWallUpload.DefaultTaskList).DisposeWith(disposables);
@@ -113,6 +90,15 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
                 PngOnlyUpload.UploadTaskAboutToScheduling += HandlePngUploadAboutToScheduling;
                 PngOnlyUpload.UploadTaskFailed            += HandleUploadFailed;
                 PngOnlyUpload.UploadTaskCompleted         += HandleUploadCompleted;
+
+                var themeManager = Application.Current?.GetThemeManager();
+                if (themeManager != null)
+                {
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedTaskLists(vm);
+                    themeManager.LanguageVariantChanged += handler;
+                    Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
+                              .DisposeWith(disposables);
+                }
 
                 Disposable.Create(() =>
                 {
@@ -201,6 +187,46 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
         _messageManager = null;
     }
 
+    private void RefreshLocalizedTaskLists(UploadViewModel vm)
+    {
+        InitDefaultTaskList(vm);
+        InitPictureWallTaskList(vm);
+        InitPictureListTaskList(vm);
+    }
+
+    private void InitDefaultTaskList(UploadViewModel vm)
+    {
+        vm.DefaultTaskList =
+        [
+            new UploadTaskInfo()
+            {
+                TaskId      = Guid.NewGuid(),
+                FileName    = "xxx.png",
+                IsImageFile = true,
+                Status      = FileUploadStatus.Uploading,
+                Progress    = 33
+            },
+            new UploadTaskInfo()
+            {
+                TaskId      = Guid.NewGuid(),
+                FileName    = "yyy.png",
+                IsImageFile = true,
+                Status      = FileUploadStatus.Success,
+                Progress    = 100
+            },
+            new UploadTaskInfo()
+            {
+                TaskId       = Guid.NewGuid(),
+                FileName     = "zzz.png",
+                IsImageFile  = true,
+                Status       = FileUploadStatus.Failed,
+                ErrorMessage = UploadShowCaseLanguage.Get(
+                    UploadShowCaseLangResourceKind.P2ErrorServer500,
+                    "Server Error 500")
+            },
+        ];
+    }
+
     private void HandleAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)
     {
         var fileInfo          = e.UploadFileInfo;
@@ -214,14 +240,18 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
         if (!isAllowedFileType)
         {
             e.Result       = UploadPredicateResult.CancelWithInTaskList;
-            e.CancelReason = "You can only upload JPG/PNG file!";
+            e.CancelReason = UploadShowCaseLanguage.Get(
+                UploadShowCaseLangResourceKind.P2CancelJpgPngOnly,
+                "You can only upload JPG/PNG file!");
             return;
         }
         var isLt2M = (double)fileInfo.Size / 1024 / 1024 < 2;
         if (!isLt2M)
         {
             e.Result       = UploadPredicateResult.CancelWithInTaskList;
-            e.CancelReason = "Image must smaller than 2MB!";
+            e.CancelReason = UploadShowCaseLanguage.Get(
+                UploadShowCaseLangResourceKind.P2CancelImageSize,
+                "Image must be smaller than 2MB!");
         }
     }
 
@@ -232,7 +262,9 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
         if (ext != ".png")
         {
             e.Result       = UploadPredicateResult.Cancel;
-            e.CancelReason = "You can only upload PNG file!";
+            e.CancelReason = UploadShowCaseLanguage.Get(
+                UploadShowCaseLangResourceKind.P2CancelPngOnly,
+                "You can only upload PNG file!");
         }
     }
 
@@ -249,7 +281,10 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
     {
         GetMessageManager()?.Show(new AtomUIMessage(
             type: MessageType.Success,
-            content:$"{e.UploadFileInfo.Name} upload successfully!"
+            content: UploadShowCaseLanguage.Format(
+                UploadShowCaseLangResourceKind.P2UploadSuccessFormat,
+                "{0} uploaded successfully!",
+                e.UploadFileInfo.Name)
         ));
     }
 
@@ -322,7 +357,9 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
                 FileName     = "image.png",
                 IsImageFile  = true,
                 Status       = FileUploadStatus.Failed,
-                ErrorMessage = "Upload error!"
+                ErrorMessage = UploadShowCaseLanguage.Get(
+                    UploadShowCaseLangResourceKind.P2ErrorUpload,
+                    "Upload error!")
             },
         ];
     }
@@ -353,9 +390,24 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
                 FileName     = "zzz.png",
                 IsImageFile  = true,
                 Status       = FileUploadStatus.Failed,
-                ErrorMessage = "Upload error!"
+                ErrorMessage = UploadShowCaseLanguage.Get(
+                    UploadShowCaseLangResourceKind.P2ErrorUpload,
+                    "Upload error!")
             },
         ];
+    }
+}
+
+internal static class UploadShowCaseLanguage
+{
+    public static string Get(UploadShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+    }
+
+    public static string Format(UploadShowCaseLangResourceKind resourceKind, string fallback, params object?[] args)
+    {
+        return string.Format(CultureInfo.CurrentCulture, Get(resourceKind, fallback), args);
     }
 }
 

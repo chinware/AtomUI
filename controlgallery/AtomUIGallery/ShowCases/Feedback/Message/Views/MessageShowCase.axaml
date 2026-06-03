@@ -7,43 +7,29 @@
         <gallery:ShowCaseItem
             Title="{gallery:MessageShowCaseLangResource BasicTitle}"
             Description="{gallery:MessageShowCaseLangResource BasicDescription}">
-            <atom:Button ButtonType="Primary" Click="ShowSimpleMessage">
-                Display normal message
-            </atom:Button>
+            <atom:Button ButtonType="Primary" Click="ShowSimpleMessage" Content="{gallery:MessageShowCaseLangResource P2ContentDisplayNormalMessage}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:MessageShowCaseLangResource OtherTypesTitle}"
             Description="{gallery:MessageShowCaseLangResource OtherTypesDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:Button ButtonType="Default" Click="ShowSuccessMessage">
-                    Success
-                </atom:Button>
-                <atom:Button ButtonType="Default" Click="ShowInfoMessage">
-                    Info
-                </atom:Button>
-                <atom:Button ButtonType="Default" Click="ShowWarningMessage">
-                    Warning
-                </atom:Button>
-                <atom:Button ButtonType="Default" Click="ShowErrorMessage">
-                    Error
-                </atom:Button>
+                <atom:Button ButtonType="Default" Click="ShowSuccessMessage" Content="{gallery:MessageShowCaseLangResource P2ContentSuccess}" />
+                <atom:Button ButtonType="Default" Click="ShowInfoMessage" Content="{gallery:MessageShowCaseLangResource P2ContentInfo}" />
+                <atom:Button ButtonType="Default" Click="ShowWarningMessage" Content="{gallery:MessageShowCaseLangResource P2ContentWarning}" />
+                <atom:Button ButtonType="Default" Click="ShowErrorMessage" Content="{gallery:MessageShowCaseLangResource P2ContentError}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="{gallery:MessageShowCaseLangResource LoadingIndicatorTitle}"
                               Description="{gallery:MessageShowCaseLangResource LoadingIndicatorDescription}">
-            <atom:Button ButtonType="Default" Click="ShowLoadingMessage">
-                Display a loading indicator
-            </atom:Button>
+            <atom:Button ButtonType="Default" Click="ShowLoadingMessage" Content="{gallery:MessageShowCaseLangResource P2ContentDisplayALoadingIndicator}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:MessageShowCaseLangResource CallbackTitle}"
             Description="{gallery:MessageShowCaseLangResource CallbackDescription}">
-            <atom:Button ButtonType="Default" Click="ShowSequentialMessage">
-                Display a loading indicator
-            </atom:Button>
+            <atom:Button ButtonType="Default" Click="ShowSequentialMessage" Content="{gallery:MessageShowCaseLangResource P2ContentDisplayALoadingIndicator}" />
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>
 </UserControl>

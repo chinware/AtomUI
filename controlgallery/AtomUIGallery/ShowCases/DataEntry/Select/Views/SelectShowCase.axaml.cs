@@ -3,7 +3,11 @@ using System.Reactive.Disposables.Fluent;
 using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
+using Avalonia;
+using AtomUIGallery.Localization;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -19,10 +23,8 @@ public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
         {
             if (DataContext is SelectViewModel viewModel)
             {
-                InitializeBasicOptions(viewModel);
                 InitializeRandomOptions(viewModel);
-                InitializeMaxTagCountOptions(viewModel);
-                viewModel.SelectOptionsAsyncLoader = new SelectOptionsAsyncLoader();
+                RefreshLocalizedOptions(viewModel);
 
                 this.OneWayBind(viewModel, vm => vm.SelectOptionsAsyncLoader, v => v.AsyncLoadSelect.OptionsLoader)
                     .DisposeWith(disposables);
@@ -52,6 +54,15 @@ public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
                 this.OneWayBind(viewModel, vm => vm.MaxTagCountOptions, v => v.MaxTagSelect3.OptionsSource)
                     .DisposeWith(disposables);
 
+                var themeManager = Application.Current?.GetThemeManager();
+                if (themeManager != null)
+                {
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedOptions(viewModel);
+                    themeManager.LanguageVariantChanged += handler;
+                    Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
+                        .DisposeWith(disposables);
+                }
+
                 Disposable.Create(() =>
                 {
                     viewModel.SelectOptionsAsyncLoader = null;
@@ -66,28 +77,35 @@ public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
         CustomSearchSelect.Filter = new CustomFilter();
     }
 
+    private void RefreshLocalizedOptions(SelectViewModel viewModel)
+    {
+        InitializeBasicOptions(viewModel);
+        InitializeMaxTagCountOptions(viewModel);
+        viewModel.SelectOptionsAsyncLoader = new SelectOptionsAsyncLoader();
+    }
+
     private void InitializeBasicOptions(SelectViewModel viewModel)
     {
         viewModel.BasicSelectedOptions =
         [
             new SelectOption()
             {
-                Header  = "Jack",
+                Header  = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderJack, "Jack"),
                 Content = "jack",
             },
             new SelectOption()
             {
-                Header  = "Lucy",
+                Header  = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderLucy, "Lucy"),
                 Content = "lucy",
             },
             new SelectOption()
             {
-                Header  = "Yiminghe",
+                Header  = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderYiminghe, "Yiminghe"),
                 Content = "yiminghe",
             },
             new SelectOption()
             {
-                Header    = "Disabled",
+                Header    = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderDisabled, "Disabled"),
                 Content   = "disabled",
                 IsEnabled = false
             }
@@ -113,12 +131,13 @@ public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
     private void InitializeMaxTagCountOptions(SelectViewModel viewModel)
     {
         var options = new List<SelectOption>();
+        var labelPrefix = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2TextLongLabelPrefix, "Long label: ");
         for (var i = 10; i < 36; i++)
         {
             var base36Str = ConvertToBase36(i);
             options.Add(new SelectOption
             {
-                Header  = $"Long label: {base36Str + i}",
+                Header  = $"{labelPrefix}{base36Str + i}",
                 Content = base36Str + i
             });
         }
@@ -172,5 +191,18 @@ public class CustomFilter : IValueFilter
         }
 
         return false;
+    }
+}
+
+internal static class SelectShowCaseLanguage
+{
+    public static string Get(SelectShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        if (Application.Current is null)
+        {
+            return fallback;
+        }
+
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
     }
 }

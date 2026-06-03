@@ -1,6 +1,10 @@
 using System.Reactive.Disposables;
+using AtomUI.Controls;
+using AtomUI.Data;
+using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Interactivity;
+using AtomUIGallery.Localization;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -12,7 +16,7 @@ public partial class StepsShowCase : ReactiveUserControl<StepsViewModel>
 
     public static readonly StyledProperty<double[]> DashedArrayProperty =
         AvaloniaProperty.Register<StepsShowCase, double[]>(nameof(DashedArray));
-    
+
     public double[] DashedArray
     {
         get => GetValue(DashedArrayProperty);
@@ -27,10 +31,19 @@ public partial class StepsShowCase : ReactiveUserControl<StepsViewModel>
             {
                 viewModel.CurrentStep = 0;
                 viewModel.PreviousButtonVisible = false;
+                SetupNextButtonText();
             }
 
             NextStepButton.Click += HandleNextButtonClick;
             PreviousButton.Click += HandlePreviousButtonClick;
+            var themeManager = Application.Current?.GetThemeManager();
+            if (themeManager != null)
+            {
+                EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => SetupNextButtonText();
+                themeManager.LanguageVariantChanged += handler;
+                disposables.Add(Disposable.Create(() => themeManager.LanguageVariantChanged -= handler));
+            }
+
             disposables.Add(Disposable.Create(() =>
             {
                 NextStepButton.Click -= HandleNextButtonClick;
@@ -73,12 +86,17 @@ public partial class StepsShowCase : ReactiveUserControl<StepsViewModel>
         {
             if (viewModel.CurrentStep == CurrentStepContentSteps.ItemCount - 1)
             {
-                NextStepButton.Content = "Done";
+                NextStepButton.Content = Lang(StepsShowCaseLangResourceKind.P2ContentDone, "Done");
             }
             else
             {
-                NextStepButton.Content = "Next";
+                NextStepButton.Content = Lang(StepsShowCaseLangResourceKind.P2ContentNext, "Next");
             }
         }
+    }
+
+    private static string Lang(StepsShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
     }
 }

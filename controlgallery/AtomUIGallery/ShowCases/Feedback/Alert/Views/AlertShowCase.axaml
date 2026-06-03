@@ -11,7 +11,7 @@
             Title="{gallery:AlertShowCaseLangResource BasicTitle}"
             Description="{gallery:AlertShowCaseLangResource BasicDescription}">
             <StackPanel Orientation="Vertical">
-                <atom:Alert Type="Success">Success Text</atom:Alert>
+                <atom:Alert Type="Success" Message="{gallery:AlertShowCaseLangResource P2ContentSuccessText}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -19,10 +19,10 @@
             Title="{gallery:AlertShowCaseLangResource MoreTypesTitle}"
             Description="{gallery:AlertShowCaseLangResource MoreTypesDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Alert Type="Success">Success Text</atom:Alert>
-                <atom:Alert Type="Info">Info Text</atom:Alert>
-                <atom:Alert Type="Warning">Warning Text</atom:Alert>
-                <atom:Alert Type="Error">Error Text</atom:Alert>
+                <atom:Alert Type="Success" Message="{gallery:AlertShowCaseLangResource P2ContentSuccessText}" />
+                <atom:Alert Type="Info" Message="{gallery:AlertShowCaseLangResource P2ContentInfoText}" />
+                <atom:Alert Type="Warning" Message="{gallery:AlertShowCaseLangResource P2ContentWarningText}" />
+                <atom:Alert Type="Error" Message="{gallery:AlertShowCaseLangResource P2ContentErrorText}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -30,18 +30,12 @@
             Title="{gallery:AlertShowCaseLangResource ClosableTitle}"
             Description="{gallery:AlertShowCaseLangResource ClosableDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Alert Type="Warning" IsClosable="True">
-                    Warning Text Warning Text Warning Text Warning Text Warning Text Warning TextWarning Text
-                </atom:Alert>
+                <atom:Alert Type="Warning" IsClosable="True" Message="{gallery:AlertShowCaseLangResource P2ContentWarningTextWarningTextWarningTextWarningText}" />
                 <atom:Alert Type="Error" IsClosable="True"
-                            Description="Error Description Error Description Error Description Error Description Error Description Error Description">
-                    Error Text
-                </atom:Alert>
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc}" Message="{gallery:AlertShowCaseLangResource P2ContentErrorText}" />
                 <atom:Alert Type="Error" IsClosable="True"
-                            Description="Error Description Error Description Error Description Error Description Error Description Error Description"
-                            CloseIcon="{antdicons:AntDesignIconProvider CloseSquareFilled}">
-                    Error Text
-                </atom:Alert>
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc}"
+                            CloseIcon="{antdicons:AntDesignIconProvider CloseSquareFilled}" Message="{gallery:AlertShowCaseLangResource P2ContentErrorText}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -50,56 +44,56 @@
             Description="{gallery:AlertShowCaseLangResource DescriptionDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Success"
-                            Message="Success Text"
-                            Description="Success Description Success Description Success Description" />
+                            Message="{gallery:AlertShowCaseLangResource P2MessageSuccessText}"
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionSuccessDescriptionSuccessDescriptionSuccessDescription}" />
                 <atom:Alert Type="Info"
-                            Message="Info Text"
-                            Description="Info Description Info Description Info Description Info Description" />
+                            Message="{gallery:AlertShowCaseLangResource P2MessageInfoText}"
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionInfoDescriptionInfoDescriptionInfoDescriptionInfoDescript}" />
                 <atom:Alert Type="Warning"
-                            Message="Warning Text"
-                            Description="Warning Description Warning Description Warning Description Warning Description" />
+                            Message="{gallery:AlertShowCaseLangResource P2MessageWarningText}"
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionWarningDescriptionWarningDescriptionWarningDescriptionWar}" />
                 <atom:Alert Type="Error"
-                            Message="Error Text"
-                            Description="Error Description Error Description Error Description Error Description" />
+                            Message="{gallery:AlertShowCaseLangResource P2MessageErrorText}"
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc2}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
 
         <gallery:ShowCaseItem
-            Title="{gallery:AlertShowCaseLangResource DescriptionTitle}"
-            Description="{gallery:AlertShowCaseLangResource DescriptionDescription}">
+            Title="{gallery:AlertShowCaseLangResource IconTitle}"
+            Description="{gallery:AlertShowCaseLangResource IconDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Success"
-                            Message="Success Tips"
+                            Message="{gallery:AlertShowCaseLangResource P2MessageSuccessTips}"
                             IsShowIcon="True" />
                 <atom:Alert Type="Info"
-                            Message="Informational Notes"
+                            Message="{gallery:AlertShowCaseLangResource P2MessageInformationalNotes}"
                             IsShowIcon="True" />
                 <atom:Alert Type="Warning"
-                            Message="Warning"
+                            Message="{gallery:AlertShowCaseLangResource P2MessageWarning}"
                             IsShowIcon="True"
                             IsClosable="True" />
                 <atom:Alert Type="Error"
-                            Message="Error"
+                            Message="{gallery:AlertShowCaseLangResource P2MessageError}"
                             IsShowIcon="True" />
 
                 <atom:Alert Type="Success"
-                            Message="Success Tips"
+                            Message="{gallery:AlertShowCaseLangResource P2MessageSuccessTips}"
                             IsShowIcon="True"
-                            Description="Detailed description and advice about successful copywriting." />
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionDetailedDescriptionAndAdviceAboutSuccessfulCopywriting}" />
                 <atom:Alert Type="Info"
-                            Message="Informational Notes"
+                            Message="{gallery:AlertShowCaseLangResource P2MessageInformationalNotes}"
                             IsShowIcon="True"
-                            Description="Additional description and information about copywriting." />
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionAdditionalDescriptionAndInformationAboutCopywriting}" />
                 <atom:Alert Type="Warning"
-                            Message="Warning"
+                            Message="{gallery:AlertShowCaseLangResource P2MessageWarning}"
                             IsClosable="True"
                             IsShowIcon="True"
-                            Description="This is a warning notice about copywriting." />
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionThisIsAWarningNoticeAboutCopywriting}" />
                 <atom:Alert Type="Error"
-                            Message="Error"
+                            Message="{gallery:AlertShowCaseLangResource P2MessageError}"
                             IsShowIcon="True"
-                            Description="This is an error message about copywriting." />
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionThisIsAnErrorMessageAboutCopywriting}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -107,53 +101,43 @@
             Title="{gallery:AlertShowCaseLangResource CustomActionTitle}"
             Description="{gallery:AlertShowCaseLangResource CustomActionDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Alert Type="Success"
+                <atom:Alert Message="{gallery:AlertShowCaseLangResource P2MessageSuccessTips}" Type="Success"
                             IsShowIcon="True"
                             IsClosable="true">
                     <atom:Alert.ExtraAction>
-                        <atom:Button ButtonType="Text" SizeType="Small">UNDO</atom:Button>
-                    </atom:Alert.ExtraAction>
-                    Success Tips
-                </atom:Alert>
+                        <atom:Button ButtonType="Text" SizeType="Small" Content="{gallery:AlertShowCaseLangResource P2ContentUndo}" />
+                    </atom:Alert.ExtraAction></atom:Alert>
 
-                <atom:Alert Type="Error"
+                <atom:Alert Message="{gallery:AlertShowCaseLangResource P2MessageErrorText}" Type="Error"
                             IsShowIcon="True"
-                            Description="Error Description Error Description Error Description Error Description">
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc2}">
                     <atom:Alert.ExtraAction>
-                        <atom:Button ButtonType="Default" SizeType="Small" IsDanger="True">Detail</atom:Button>
-                    </atom:Alert.ExtraAction>
-                    Error Text
-                </atom:Alert>
+                        <atom:Button ButtonType="Default" SizeType="Small" IsDanger="True" Content="{gallery:AlertShowCaseLangResource P2ContentDetail}" />
+                    </atom:Alert.ExtraAction></atom:Alert>
 
-                <atom:Alert Type="Warning"
+                <atom:Alert Message="{gallery:AlertShowCaseLangResource P2MessageWarningText}" Type="Warning"
                             IsClosable="true">
                     <atom:Alert.ExtraAction>
-                        <atom:Button ButtonType="Text" SizeType="Small">Done</atom:Button>
-                    </atom:Alert.ExtraAction>
-                    Warning Text
-                </atom:Alert>
+                        <atom:Button ButtonType="Text" SizeType="Small" Content="{gallery:AlertShowCaseLangResource P2ContentDone}" />
+                    </atom:Alert.ExtraAction></atom:Alert>
 
-                <atom:Alert Type="Info"
+                <atom:Alert Message="{gallery:AlertShowCaseLangResource P2MessageInfoText}" Type="Info"
                             IsShowIcon="False"
                             IsClosable="true"
-                            Description="Info Description Info Description Info Description Info Description">
+                            Description="{gallery:AlertShowCaseLangResource P2DescriptionInfoDescriptionInfoDescriptionInfoDescriptionInfoDescript}">
                     <atom:Alert.ExtraAction>
                         <StackPanel Orientation="Vertical" Spacing="5">
-                            <atom:Button ButtonType="Primary" SizeType="Small">Accept</atom:Button>
-                            <atom:Button SizeType="Small" IsDanger="True" IsGhost="True">Decline</atom:Button>
+                            <atom:Button ButtonType="Primary" SizeType="Small" Content="{gallery:AlertShowCaseLangResource P2ContentAccept}" />
+                            <atom:Button SizeType="Small" IsDanger="True" IsGhost="True" Content="{gallery:AlertShowCaseLangResource P2ContentDecline}" />
                         </StackPanel>
-                    </atom:Alert.ExtraAction>
-                    Info Text
-                </atom:Alert>
+                    </atom:Alert.ExtraAction></atom:Alert>
             </StackPanel>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:AlertShowCaseLangResource LoopBannerTitle}"
             Description="{gallery:AlertShowCaseLangResource LoopBannerDescription}">
-            <atom:Alert Type="Warning" IsShowIcon="True" IsMessageMarqueeEnabled="True">
-                I can be a React component, multiple React components, or just some text, Info Description Info Description Info Description Info Description
-            </atom:Alert>
+            <atom:Alert Type="Warning" IsShowIcon="True" IsMessageMarqueeEnabled="True" Message="{gallery:AlertShowCaseLangResource P2ContentICanBeAReactComponentMultipleReact}" />
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>
 </UserControl>

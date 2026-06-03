@@ -1,6 +1,9 @@
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
+using AtomUI.Theme.Language;
+using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -93,8 +96,8 @@ public partial class NotificationShowCase : ReactiveUserControl<NotificationView
     private void ShowSimpleNotification(object? sender, RoutedEventArgs e)
     {
         GetBasicManager()?.Show(new AtomUINotification(
-            "Notification Title",
-            "Hello, AtomUI/Avalonia!"
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationTitle, "Notification Title"),
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationHello, "Hello, AtomUI/Avalonia!")
         ));
     }
 
@@ -102,9 +105,9 @@ public partial class NotificationShowCase : ReactiveUserControl<NotificationView
     {
         GetBasicManager()?.Show(new AtomUINotification(
             expiration: TimeSpan.Zero,
-            title: "Notification Title",
-            content:
-            "I will never close automatically. This is a purposely very very long description that has many many characters and words."
+            title: Lang(NotificationShowCaseLangResourceKind.P2NotificationTitle, "Notification Title"),
+            content: Lang(NotificationShowCaseLangResourceKind.P2NotificationNeverCloseContent,
+                "I will never close automatically. This is a purposely very very long description that has many many characters and words.")
         ));
     }
 
@@ -112,9 +115,9 @@ public partial class NotificationShowCase : ReactiveUserControl<NotificationView
     {
         GetBasicManager()?.Show(new AtomUINotification(
             type: NotificationType.Success,
-            title: "Notification Title",
-            content:
-            "This is the content of the notification. This is the content of the notification. This is the content of the notification."
+            title: Lang(NotificationShowCaseLangResourceKind.P2NotificationTitle, "Notification Title"),
+            content: Lang(NotificationShowCaseLangResourceKind.P2NotificationContent,
+                "This is the content of the notification. This is the content of the notification. This is the content of the notification.")
         ));
     }
 
@@ -122,9 +125,9 @@ public partial class NotificationShowCase : ReactiveUserControl<NotificationView
     {
         GetBasicManager()?.Show(new AtomUINotification(
             type: NotificationType.Information,
-            title: "Notification Title",
-            content:
-            "This is the content of the notification. This is the content of the notification. This is the content of the notification."
+            title: Lang(NotificationShowCaseLangResourceKind.P2NotificationTitle, "Notification Title"),
+            content: Lang(NotificationShowCaseLangResourceKind.P2NotificationContent,
+                "This is the content of the notification. This is the content of the notification. This is the content of the notification.")
         ));
     }
 
@@ -132,9 +135,9 @@ public partial class NotificationShowCase : ReactiveUserControl<NotificationView
     {
         GetBasicManager()?.Show(new AtomUINotification(
             type: NotificationType.Warning,
-            title: "Notification Title",
-            content:
-            "This is the content of the notification. This is the content of the notification. This is the content of the notification."
+            title: Lang(NotificationShowCaseLangResourceKind.P2NotificationTitle, "Notification Title"),
+            content: Lang(NotificationShowCaseLangResourceKind.P2NotificationContent,
+                "This is the content of the notification. This is the content of the notification. This is the content of the notification.")
         ));
     }
 
@@ -142,65 +145,66 @@ public partial class NotificationShowCase : ReactiveUserControl<NotificationView
     {
         GetBasicManager()?.Show(new AtomUINotification(
             type: NotificationType.Error,
-            title: "Notification Title",
-            content:
-            "This is the content of the notification. This is the content of the notification. This is the content of the notification."
+            title: Lang(NotificationShowCaseLangResourceKind.P2NotificationTitle, "Notification Title"),
+            content: Lang(NotificationShowCaseLangResourceKind.P2NotificationContent,
+                "This is the content of the notification. This is the content of the notification. This is the content of the notification.")
         ));
     }
 
     private void ShowTopNotification(object? sender, RoutedEventArgs e)
     {
         GetManager(ref _topManager, NotificationPosition.TopCenter)?.Show(new AtomUINotification(
-            "Notification Top",
-            "Hello, AtomUI/Avalonia!"
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationTopTitle, "Notification Top"),
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationHello, "Hello, AtomUI/Avalonia!")
         ));
     }
 
     private void ShowBottomNotification(object? sender, RoutedEventArgs e)
     {
         GetManager(ref _bottomManager, NotificationPosition.BottomCenter)?.Show(new AtomUINotification(
-            "Notification Bottom",
-            "Hello, AtomUI/Avalonia!"
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationBottomTitle, "Notification Bottom"),
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationHello, "Hello, AtomUI/Avalonia!")
         ));
     }
 
     private void ShowTopLeftNotification(object? sender, RoutedEventArgs e)
     {
         GetManager(ref _topLeftManager, NotificationPosition.TopLeft)?.Show(new AtomUINotification(
-            "Notification TopLeft",
-            "Hello, AtomUI/Avalonia!"
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationTopLeftTitle, "Notification TopLeft"),
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationHello, "Hello, AtomUI/Avalonia!")
         ));
     }
 
     private void ShowTopRightNotification(object? sender, RoutedEventArgs e)
     {
         GetManager(ref _topRightManager, NotificationPosition.TopRight)?.Show(new AtomUINotification(
-            "Notification TopRight",
-            "Hello, AtomUI/Avalonia!"
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationTopRightTitle, "Notification TopRight"),
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationHello, "Hello, AtomUI/Avalonia!")
         ));
     }
 
     private void ShowBottomLeftNotification(object? sender, RoutedEventArgs e)
     {
         GetManager(ref _bottomLeftManager, NotificationPosition.BottomLeft)?.Show(new AtomUINotification(
-            "Notification BottomLeft",
-            "Hello, AtomUI/Avalonia!"
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationBottomLeftTitle, "Notification BottomLeft"),
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationHello, "Hello, AtomUI/Avalonia!")
         ));
     }
 
     private void ShowBottomRightNotification(object? sender, RoutedEventArgs e)
     {
         GetManager(ref _bottomRightManager, NotificationPosition.BottomRight)?.Show(new AtomUINotification(
-            "Notification BottomRight",
-            "Hello, AtomUI/Avalonia!"
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationBottomRightTitle, "Notification BottomRight"),
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationHello, "Hello, AtomUI/Avalonia!")
         ));
     }
 
     private void ShowCustomIconNotification(object? sender, RoutedEventArgs e)
     {
         GetBasicManager()?.Show(new AtomUINotification(
-            "Notification Title",
-            "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationTitle, "Notification Title"),
+            Lang(NotificationShowCaseLangResourceKind.P2NotificationContent,
+                "This is the content of the notification. This is the content of the notification. This is the content of the notification."),
             icon: new SettingOutlined()
         ));
     }
@@ -209,10 +213,15 @@ public partial class NotificationShowCase : ReactiveUserControl<NotificationView
     {
         GetBasicManager()?.Show(new AtomUINotification(
             type: NotificationType.Information,
-            title: "Notification Title",
-            content:
-            "This is the content of the notification. This is the content of the notification. This is the content of the notification.",
+            title: Lang(NotificationShowCaseLangResourceKind.P2NotificationTitle, "Notification Title"),
+            content: Lang(NotificationShowCaseLangResourceKind.P2NotificationContent,
+                "This is the content of the notification. This is the content of the notification. This is the content of the notification."),
             showProgress: true
         ));
+    }
+
+    private static string Lang(NotificationShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
     }
 }

@@ -11,19 +11,18 @@
         <gallery:ShowCaseItem
             Title="{gallery:DropdownButtonShowCaseLangResource BasicTitle}"
             Description="{gallery:DropdownButtonShowCaseLangResource BasicDescription}">
-            <atom:DropdownButton ButtonType="Link" TriggerType="Hover" x:Name="Test">
-                Hover me
+            <atom:DropdownButton ButtonType="Link" TriggerType="Hover" x:Name="Test" Content="{gallery:DropdownButtonShowCaseLangResource P2ContentHoverMe}">
                 <atom:DropdownButton.DropdownFlyout>
                     <atom:MenuFlyout>
-                        <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                        <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                        Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                        <atom:MenuItem Header="Copy" InputGesture="Ctrl+C" Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                        <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                        <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C" Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                        <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                        Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                        <atom:MenuItem Header="Paste">
-                            <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
+                        <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderPaste}">
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderPaste}" InputGesture="Ctrl+P"
                                            Icon="{antdicons:AntDesignIconProvider Kind=FileDoneOutlined}" />
-                            <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" />
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderPasteFromHistory}" InputGesture="Ctrl+Shift+V" />
                         </atom:MenuItem>
                     </atom:MenuFlyout>
                 </atom:DropdownButton.DropdownFlyout>
@@ -34,62 +33,58 @@
             Title="{gallery:DropdownButtonShowCaseLangResource ButtonTypesTitle}"
             Description="{gallery:DropdownButtonShowCaseLangResource ButtonTypesDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:DropdownButton ButtonType="Primary" TriggerType="Click">
-                    Edit File
+                <atom:DropdownButton ButtonType="Primary" TriggerType="Click" Content="{gallery:DropdownButtonShowCaseLangResource P2ContentEditFile}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                            <atom:MenuItem Header="Paste">
-                                <atom:MenuItem Header="Paste" InputGesture="Ctrl+P"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderPaste}">
+                                <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderPaste}" InputGesture="Ctrl+P"
                                                Icon="{antdicons:AntDesignIconProvider Kind=FileDoneOutlined}" />
-                                <atom:MenuItem Header="Paste from History" InputGesture="Ctrl+Shift+V" />
+                                <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderPasteFromHistory}" InputGesture="Ctrl+Shift+V" />
                             </atom:MenuItem>
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
         
-                <atom:DropdownButton ButtonType="Primary" Shape="Round" TriggerType="Click">
-                    Edit File
+                <atom:DropdownButton ButtonType="Primary" Shape="Round" TriggerType="Click" Content="{gallery:DropdownButtonShowCaseLangResource P2ContentEditFile}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
         
-                <atom:DropdownButton ButtonType="Default" TriggerType="Click">
-                    Edit File
+                <atom:DropdownButton ButtonType="Default" TriggerType="Click" Content="{gallery:DropdownButtonShowCaseLangResource P2ContentEditFile}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
         
-                <atom:DropdownButton ButtonType="Text" TriggerType="Click">
-                    Edit File
+                <atom:DropdownButton ButtonType="Text" TriggerType="Click" Content="{gallery:DropdownButtonShowCaseLangResource P2ContentEditFile}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
@@ -107,90 +102,90 @@
             </gallery:ShowCaseItem.Styles>
             <WrapPanel>
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
-                                     Placement="BottomEdgeAlignedLeft">
-                    BottomLeft
+                                     Placement="BottomEdgeAlignedLeft"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentBottomLeft}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
 
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
-                                     Placement="Bottom">
-                    Bottom
+                                     Placement="Bottom"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentBottom}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
                 
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
-                                     Placement="BottomEdgeAlignedRight">
-                    BottomRight
+                                     Placement="BottomEdgeAlignedRight"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentBottomRight}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
                 
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
-                                     Placement="TopEdgeAlignedLeft">
-                    TopLeft
+                                     Placement="TopEdgeAlignedLeft"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentTopLeft}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
                 
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
-                                     Placement="Top">
-                    Top
+                                     Placement="Top"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentTop}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
                 
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover" IsArrowVisible="True"
-                                     Placement="TopEdgeAlignedRight">
-                    TopRight
+                                     Placement="TopEdgeAlignedRight"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentTopRight}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
@@ -208,90 +203,90 @@
             </gallery:ShowCaseItem.Styles>
             <WrapPanel>
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
-                                     Placement="BottomEdgeAlignedLeft">
-                    BottomLeft
+                                     Placement="BottomEdgeAlignedLeft"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentBottomLeft}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
         
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
-                                     Placement="Bottom">
-                    Bottom
+                                     Placement="Bottom"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentBottom}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
         
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
-                                     Placement="BottomEdgeAlignedRight">
-                    BottomRight
+                                     Placement="BottomEdgeAlignedRight"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentBottomRight}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
         
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
-                                     Placement="TopEdgeAlignedLeft">
-                    TopLeft
+                                     Placement="TopEdgeAlignedLeft"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentTopLeft}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
         
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
-                                     Placement="Top">
-                    Top
+                                     Placement="Top"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentTop}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>
                 </atom:DropdownButton>
         
                 <atom:DropdownButton ButtonType="Default" TriggerType="Hover"
-                                     Placement="TopEdgeAlignedRight">
-                    TopRight
+                                     Placement="TopEdgeAlignedRight"
+                                     Content="{gallery:DropdownButtonShowCaseLangResource P2ContentTopRight}">
                     <atom:DropdownButton.DropdownFlyout>
                         <atom:MenuFlyout>
-                            <atom:MenuItem Header="Cut" InputGesture="Ctrl+X"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
                                            Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="Copy" InputGesture="Ctrl+C"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
                                            Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="Delete" InputGesture="Ctrl+D"
+                            <atom:MenuItem Header="{gallery:DropdownButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
                                            Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
                         </atom:MenuFlyout>
                     </atom:DropdownButton.DropdownFlyout>

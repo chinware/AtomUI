@@ -1,6 +1,7 @@
 using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
+using AtomUIGallery.Localization;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Select;
@@ -75,22 +76,22 @@ public class SelectOptionsAsyncLoader : ISelectOptionsAsyncLoader
         var options = new List<ISelectOption>();
         options.Add(new SelectOption()
         {
-            Header  = "Jack",
+            Header  = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderJack, "Jack"),
             Content = "jack"
         });
         options.Add(new SelectOption()
         {
-            Header  = "Lucy",
+            Header  = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderLucy, "Lucy"),
             Content = "lucy"
         });
         options.Add(new SelectOption()
         {
-            Header  = "Yiminghe",
+            Header  = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderYiminghe, "Yiminghe"),
             Content = "yiminghe"
         });
         options.Add(new SelectOption()
         {
-            Header    = "Disabled",
+            Header    = SelectShowCaseLanguage.Get(SelectShowCaseLangResourceKind.P2HeaderDisabled, "Disabled"),
             Content   = "disabled",
             IsEnabled = false
         });

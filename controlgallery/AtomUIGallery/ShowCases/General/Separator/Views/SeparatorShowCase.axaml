@@ -10,17 +10,11 @@
             Title="{gallery:SeparatorShowCaseLangResource HorizontalTitle}"
             Description="{gallery:SeparatorShowCaseLangResource HorizontalDescription}">
             <StackPanel Orientation="Vertical">
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
                 <atom:Separator/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
                 <atom:Separator/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -28,33 +22,21 @@
             Title="{gallery:SeparatorShowCaseLangResource DividerWithTitleTitle}"
             Description="{gallery:SeparatorShowCaseLangResource DividerWithTitleDescription}">
             <StackPanel Orientation="Vertical">
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
-                <atom:Separator Title="Text" FontStyle="Italic" IsVisible="False"/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
-                <atom:Separator Title="Left text" TitlePosition="Left" FontWeight="Bold" />
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
-                <atom:Separator Title="Right text" TitlePosition="Right" FontStyle="Oblique" />
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
-                <atom:Separator Title="Left Text with 0 orientationMargin" TitlePosition="Left" FontStyle="Oblique"
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
+                <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleText}" FontStyle="Italic" IsVisible="False"/>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
+                <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleLeftText}" TitlePosition="Left" FontWeight="Bold" />
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
+                <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleRightText}" TitlePosition="Right" FontStyle="Oblique" />
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
+                <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleLeftTextWithN0Orientationmargin}" TitlePosition="Left" FontStyle="Oblique"
                                 FontWeight="Medium" OrientationMargin="0" />
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
 
-                <atom:Separator Title="Right Text with 50px orientationMargin" TitlePosition="Right" TitleColor="Coral"
+                <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleRightTextWithN50pxOrientationmargin}" TitlePosition="Right" TitleColor="Coral"
                                 FontWeight="Medium"
                                 OrientationMargin="50" />
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -62,21 +44,13 @@
             Title="{gallery:SeparatorShowCaseLangResource PlainTextTitle}"
             Description="{gallery:SeparatorShowCaseLangResource PlainTextDescription}">
             <StackPanel Orientation="Vertical">
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
-                <atom:Separator Title="Text" IsPlain="True"/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
-                <atom:Separator Title="Left Text" TitlePosition="Left" IsPlain="True"/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
-                <atom:Separator Title="Right Text" TitlePosition="Right" IsPlain="True"/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
+                <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleText}" IsPlain="True"/>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
+                <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleLeftText2}" TitlePosition="Left" IsPlain="True"/>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
+                <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleRightText2}" TitlePosition="Right" IsPlain="True"/>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -84,21 +58,13 @@
             Title="{gallery:SeparatorShowCaseLangResource SpacingSizeTitle}"
             Description="{gallery:SeparatorShowCaseLangResource SpacingSizeDescription}">
             <StackPanel Orientation="Vertical">
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
                 <atom:Separator SizeType="Small"/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
                 <atom:Separator SizeType="Middle"/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
                 <atom:Separator SizeType="Large"/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -106,17 +72,11 @@
             Title="{gallery:SeparatorShowCaseLangResource VerticalTitle}"
             Description="{gallery:SeparatorShowCaseLangResource VerticalDescription}">
             <StackPanel Orientation="Horizontal">
-                <atom:TextBlock>
-                    Item1
-                </atom:TextBlock>
-                <atom:VerticalSeparator Title="Right text" />
-                <atom:TextBlock>
-                    Item2
-                </atom:TextBlock>
+                <atom:TextBlock Text="{gallery:SeparatorShowCaseLangResource P2TextItem1}" />
+                <atom:VerticalSeparator Title="{gallery:SeparatorShowCaseLangResource P2TitleRightText}" />
+                <atom:TextBlock Text="{gallery:SeparatorShowCaseLangResource P2TextItem2}" />
                 <atom:VerticalSeparator />
-                <atom:TextBlock>
-                    Item3
-                </atom:TextBlock>
+                <atom:TextBlock Text="{gallery:SeparatorShowCaseLangResource P2TextItem3}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -124,21 +84,13 @@
             Title="{gallery:SeparatorShowCaseLangResource VariantTitle}"
             Description="{gallery:SeparatorShowCaseLangResource VariantDescription}">
             <StackPanel Orientation="Vertical">
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
-                <atom:Separator Title="Solid" LineColor="#7cb305"/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
-                <atom:Separator Title="Dotted" LineColor="#7cb305" Variant="Dotted"/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
-                <atom:Separator Title="Dashed" LineColor="#7cb305" Variant="Dashed"/>
-                <atom:TextBlock TextWrapping="Wrap">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed nonne merninisti licere mihi ista probare, quae sunt a te dicta? Refert tamen, quo modo.
-                </atom:TextBlock>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
+                <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleSolid}" LineColor="#7cb305"/>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
+                <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleDotted}" LineColor="#7cb305" Variant="Dotted"/>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
+                <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleDashed}" LineColor="#7cb305" Variant="Dashed"/>
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
             </StackPanel>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

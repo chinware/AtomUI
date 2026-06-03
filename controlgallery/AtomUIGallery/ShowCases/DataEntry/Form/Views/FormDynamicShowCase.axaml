@@ -17,20 +17,20 @@
                        MinWidth="600"
                        HorizontalAlignment="Left"
                        Name="DynamicForm">
-                <atom:FormItem LabelText="Passengers"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPassengers}"
                                FieldName="passengers">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input passenger's name or delete this field!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputPassengerSNameOrDeleteThisField}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit />
                 </atom:FormItem>
-                <atom:FormItem LabelText="Passengers1"
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPassengers1}"
                                FieldName="passengers1">
                     <atom:FormItem.Validators>
                         <atom:FormValidatorProvider>
-                            <atom:FormStringNotEmptyValidator Message="Please input passenger's name or delete this field!" />
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputPassengerSNameOrDeleteThisField}" />
                         </atom:FormValidatorProvider>
                     </atom:FormItem.Validators>
                     <atom:LineEdit />
@@ -38,15 +38,11 @@
         
                 <atom:FormActionsItem>
                     <atom:Button ButtonType="Dashed" HorizontalAlignment="Stretch" Icon="{antdicons:AntDesignIconProvider PlusOutlined}"
-                                 Click="HandleAddFormItem">
-                        Add field
-                    </atom:Button>
+                                 Click="HandleAddFormItem" Content="{gallery:FormShowCaseLangResource P2ContentAddField}" />
                 </atom:FormActionsItem>
                 <atom:FormActionsItem>
                     <atom:Button ButtonType="Dashed" HorizontalAlignment="Stretch" Icon="{antdicons:AntDesignIconProvider PlusOutlined}"
-                                 Click="HandleAddFormItemAtHead">
-                        Add field at head
-                    </atom:Button>
+                                 Click="HandleAddFormItemAtHead" Content="{gallery:FormShowCaseLangResource P2ContentAddFieldAtHead}" />
                 </atom:FormActionsItem>
                 <atom:FormActionsItem>
                     <atom:SubmitButton />

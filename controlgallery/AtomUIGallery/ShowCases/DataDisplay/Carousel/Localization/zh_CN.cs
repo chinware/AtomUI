@@ -18,6 +18,11 @@ internal class zh_CN : LanguageProvider
     public const string SwitchArrowsDescription = "显示用于切换的箭头。";
     public const string DotsProgressTitle = "指示点进度";
     public const string DotsProgressDescription = "显示指示点的进度。";
+    public const string P2TextPaginationPosition = "Pagination Position:";
+    public const string P2ContentTop = "顶部";
+    public const string P2ContentBottom = "底部";
+    public const string P2ContentLeft = "左侧";
+    public const string P2ContentRight = "右侧";
 
     protected override Type GetResourceKindType() => typeof(CarouselShowCaseLangResourceKind);
 }

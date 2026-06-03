@@ -14,7 +14,7 @@
                              IsDefaultExpandAll="True"
                              IsAllowClear="True"
                              IsFilterEnabled="True"
-                             PlaceholderText="Please select" />
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
@@ -26,7 +26,7 @@
                              IsAllowClear="True"
                              IsFilterEnabled="True"
                              IsMultiple="True"
-                             PlaceholderText="Please select" />
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
@@ -37,7 +37,7 @@
                              IsDefaultExpandAll="True"
                              IsAllowClear="True"
                              IsFilterEnabled="True"
-                             PlaceholderText="Please select" />
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
@@ -49,7 +49,7 @@
                              IsAllowClear="True"
                              IsFilterEnabled="True"
                              IsTreeCheckable="True"
-                             PlaceholderText="Please select"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                              ShowCheckedStrategy="ShowParent" />
         </gallery:ShowCaseItem>
 
@@ -59,24 +59,24 @@
             <atom:TreeSelect Name="AsyncLoadTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsAllowClear="True"
-                             PlaceholderText="Please select" />
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TreeSelectShowCaseLangResource PlacementTitle}"
             Description="{gallery:TreeSelectShowCaseLangResource PlacementDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:TextBlock VerticalAlignment="Center">Placement:</atom:TextBlock>
+                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TreeSelectShowCaseLangResource P2TextPlacement}" />
                 <atom:OptionButtonGroup ButtonStyle="Outline" Name="PlacementOptionGroup"
                                         OptionCheckedChanged="HandlePlacementOptionCheckedChanged">
-                    <atom:OptionButton IsChecked="True">TopLeft</atom:OptionButton>
-                    <atom:OptionButton>TopRight</atom:OptionButton>
-                    <atom:OptionButton>BottomLeft</atom:OptionButton>
-                    <atom:OptionButton>BottomRight</atom:OptionButton>
+                    <atom:OptionButton IsChecked="True" Content="{gallery:TreeSelectShowCaseLangResource P2ContentTopleft}" />
+                    <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentTopright}" />
+                    <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentBottomleft}" />
+                    <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentBottomright}" />
                 </atom:OptionButtonGroup>
                 <atom:TreeSelect Name="PlacementTreeSelect"
                                  IsAllowClear="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  IsDefaultExpandAll="True"
                                  IsFilterEnabled="True"
                                  IsPopupMatchSelectWidth="False" />
@@ -87,14 +87,14 @@
             Title="{gallery:TreeSelectShowCaseLangResource ShowTreeLineTitle}"
             Description="{gallery:TreeSelectShowCaseLangResource ShowTreeLineDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ToggleSwitch OnContent="ShowIcon" OffContent="ShowIcon" Name="ShowIconSwitch" />
-                <atom:ToggleSwitch OnContent="TreeLine" OffContent="TreeLine" IsChecked="True"
+                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowIcon}" Name="ShowIconSwitch" />
+                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentTreeLine}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentTreeLine}" IsChecked="True"
                                    Name="ShowTreeLineSwitch" />
-                <atom:ToggleSwitch OnContent="ShowLeafIcon" OffContent="ShowLeafIcon" Name="ShowLeafIconSwitch" />
+                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowLeafIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowLeafIcon}" Name="ShowLeafIconSwitch" />
                 <atom:TreeSelect Name="ShowTreeLineTreeSelect"
                                  HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  IsShowIcon="{Binding #ShowIconSwitch.IsChecked}"
                                  IsShowLeafIcon="{Binding #ShowLeafIconSwitch.IsChecked}"
                                  IsShowLine="{Binding #ShowTreeLineSwitch.IsChecked}"
@@ -108,19 +108,19 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:TreeSelect HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  StyleVariant="Borderless" />
                 <atom:TreeSelect HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  StyleVariant="Filled" />
                 <atom:TreeSelect HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  StyleVariant="Outlined" />
                 <atom:TreeSelect HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  StyleVariant="Underlined" />
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -131,11 +131,11 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:TreeSelect HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  Status="Error" />
                 <atom:TreeSelect HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  Status="Warning" />
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -147,16 +147,16 @@
                 <atom:TreeSelect Name="LeftAddTreeSelect"
                                  HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  IsDefaultExpandAll="True"
-                                 LeftAddOn="Prefix"
+                                 LeftAddOn="{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}"
                                  IsFilterEnabled="True" />
                 <atom:TreeSelect Name="ContentLeftAddTreeSelect"
                                  HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  IsDefaultExpandAll="True"
-                                 ContentLeftAddOn="Prefix"
+                                 ContentLeftAddOn="{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}"
                                  IsFilterEnabled="True" />
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -171,7 +171,7 @@
                                  IsMultiple="True"
                                  IsAllowClear="True"
                                  IsFilterEnabled="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  IsShowMaxCountIndicator="True"
                                  MaxCount="3" />
                 <atom:TreeSelect Name="MaxCheckedTreeSelect"
@@ -181,7 +181,7 @@
                                  IsTreeCheckable="True"
                                  IsAllowClear="True"
                                  IsFilterEnabled="True"
-                                 PlaceholderText="Please select"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  IsShowMaxCountIndicator="True"
                                  MaxCount="3" />
             </StackPanel>

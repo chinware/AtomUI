@@ -1,4 +1,7 @@
 using AtomUI.Desktop.Controls;
+using AtomUI.Data;
+using AtomUI.Theme.Language;
+using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -27,7 +30,7 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
     private void ShowSimpleMessage(object? sender, RoutedEventArgs e)
     {
         ShowMessage(new AtomUIMessage(
-            "Hello, AtomUI/Avalonia!"
+            Lang(MessageShowCaseLangResourceKind.P2MessageHelloAtomUIAvalonia, "Hello, AtomUI/Avalonia!")
         ));
     }
 
@@ -35,7 +38,7 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
     {
         ShowMessage(new AtomUIMessage(
             type: MessageType.Information,
-            content: "This is a information message."
+            content: Lang(MessageShowCaseLangResourceKind.P2MessageInformation, "This is an information message.")
         ));
     }
 
@@ -43,7 +46,7 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
     {
         ShowMessage(new AtomUIMessage(
             type: MessageType.Success,
-            content: "This is a success message."
+            content: Lang(MessageShowCaseLangResourceKind.P2MessageSuccess, "This is a success message.")
         ));
     }
 
@@ -51,7 +54,7 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
     {
         ShowMessage(new AtomUIMessage(
             type: MessageType.Warning,
-            content: "This is a warning message."
+            content: Lang(MessageShowCaseLangResourceKind.P2MessageWarning, "This is a warning message.")
         ));
     }
 
@@ -59,7 +62,7 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
     {
         ShowMessage(new AtomUIMessage(
             type: MessageType.Error,
-            content: "This is a error message."
+            content: Lang(MessageShowCaseLangResourceKind.P2MessageError, "This is an error message.")
         ));
     }
 
@@ -67,7 +70,7 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
     {
         ShowMessage(new AtomUIMessage(
             type: MessageType.Loading,
-            content: "Action in progress..."
+            content: Lang(MessageShowCaseLangResourceKind.P2MessageActionInProgress, "Action in progress...")
         ));
     }
 
@@ -75,20 +78,20 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
     {
         ShowMessage(new AtomUIMessage(
             type: MessageType.Loading,
-            content: "Action in progress...",
+            content: Lang(MessageShowCaseLangResourceKind.P2MessageActionInProgress, "Action in progress..."),
             expiration: TimeSpan.FromSeconds(2.5),
             onClose: () =>
             {
                 ShowMessage(new AtomUIMessage(
                     type: MessageType.Success,
                     expiration: TimeSpan.FromSeconds(2.5),
-                    content: "Loading finished",
+                    content: Lang(MessageShowCaseLangResourceKind.P2MessageLoadingFinished, "Loading finished"),
                     onClose: () =>
                     {
                         ShowMessage(new AtomUIMessage(
                             type: MessageType.Information,
                             expiration: TimeSpan.FromSeconds(2.5),
-                            content: "Loading finished"
+                            content: Lang(MessageShowCaseLangResourceKind.P2MessageLoadingFinished, "Loading finished")
                         ));
                     }
                 ));
@@ -99,6 +102,11 @@ public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
     private void ShowMessage(AtomUIMessage message)
     {
         GetMessageManager()?.Show(message);
+    }
+
+    private static string Lang(MessageShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
     }
 
     private WindowMessageManager? GetMessageManager()

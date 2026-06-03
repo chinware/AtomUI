@@ -11,12 +11,10 @@
             Description="{gallery:ModalShowCaseLangResource BasicDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
-                    <atom:Button ButtonType="Primary" Name="BasicOpenModalButton">
-                        Open Modal Overlay
-                    </atom:Button>
+                    <atom:Button ButtonType="Primary" Name="BasicOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalOverlay}" />
                     <atom:Dialog PlacementTarget="BasicOpenModalButton"
                                  IsOpen="{Binding IsBasicModalOpened, Mode=TwoWay}"
-                                 Title="Basic Modal"
+                                 Title="{gallery:ModalShowCaseLangResource P2TitleBasicModal}"
                                  IsModal="False"
                                  IsResizable="False"
                                  IsDragMovable="True"
@@ -27,19 +25,17 @@
                                  VerticalOffset="30%"
                                  HostMinWidth="300">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
                         </StackPanel>
                     </atom:Dialog>
                 </Panel>
                 <Panel>
-                    <atom:Button ButtonType="Primary" Name="BasicWindowOpenModalButton">
-                        Open Modal Window
-                    </atom:Button>
+                    <atom:Button ButtonType="Primary" Name="BasicWindowOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalWindow}" />
                     <atom:Dialog PlacementTarget="BasicWindowOpenModalButton"
                                  IsOpen="{Binding IsBasicWindowModalOpened, Mode=TwoWay}"
-                                 Title="Basic Window Modal"
+                                 Title="{gallery:ModalShowCaseLangResource P2TitleBasicWindowModal}"
                                  IsModal="True"
                                  IsResizable="True"
                                  IsClosable="True"
@@ -52,9 +48,9 @@
                                  DefaultStandardButton="Yes"
                                  HostMinWidth="300">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
                         </StackPanel>
                     </atom:Dialog>
                 </Panel>
@@ -66,12 +62,10 @@
             Description="{gallery:ModalShowCaseLangResource AsynchronouslyCloseDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
-                    <atom:Button ButtonType="Primary" Name="AsyncDialogOpenModalButton">
-                        Open Modal with async logic
-                    </atom:Button>
+                    <atom:Button ButtonType="Primary" Name="AsyncDialogOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalWithAsyncLogic}" />
                     <atom:Dialog PlacementTarget="AsyncDialogOpenModalButton"
                                  IsOpen="{Binding IsAsyncDialogOpened, Mode=TwoWay}"
-                                 Title="Asynchronously close Modal"
+                                 Title="{gallery:ModalShowCaseLangResource P2TitleAsynchronouslyCloseModal}"
                                  IsModal="True"
                                  IsDragMovable="True"
                                  IsResizable="False"
@@ -83,7 +77,7 @@
                                  ButtonClicked="HandleAsyncDialogButtonClicked"
                                  HostMinWidth="400">
                         <StackPanel>
-                            <TextBlock>Content of the modal</TextBlock>
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextContentOfTheModal}" />
                         </StackPanel>
                     </atom:Dialog>
                 </Panel>
@@ -96,84 +90,84 @@
 
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="5">
-                    <TextBlock VerticalAlignment="Center">Native Window:</TextBlock>
+                    <TextBlock VerticalAlignment="Center" Text="{gallery:ModalShowCaseLangResource P2TextNativeWindow}" />
                     <atom:ToggleSwitch Name="StyleCaseHostTypeSwitch" />
                 </StackPanel>
-                <atom:Separator Title="Normal"/>
+                <atom:Separator Title="{gallery:ModalShowCaseLangResource P2TitleNormal}"/>
                 <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
                     <Panel>
                         <atom:MessageBox PlacementTarget="ConfirmMsgBoxBtn"
-                                         Title="Do you want to delete these items?"
+                                         Title="{gallery:ModalShowCaseLangResource P2TitleDoYouWantToDeleteTheseItems}"
                                          IsOpen="{Binding IsConfirmMsgBoxOpened, Mode=TwoWay}"
                                          Style="Confirm"
                                          DialogHostType="{Binding MessageBoxStyleCaseHostType}">
                             <StackPanel Orientation="Vertical" Spacing="5">
-                                <TextBlock>Some descriptions</TextBlock>
+                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeDescriptions}" />
                             </StackPanel>
                         </atom:MessageBox>
-                        <atom:Button Name="ConfirmMsgBoxBtn">Confirm</atom:Button>
+                        <atom:Button Name="ConfirmMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentConfirm}" />
                     </Panel>
                     <Panel>
                         <atom:MessageBox PlacementTarget="InformationMsgBoxBtn"
-                                         Title="This is a notification message"
+                                         Title="{gallery:ModalShowCaseLangResource P2TitleThisIsANotificationMessage}"
                                          IsOpen="{Binding IsInformationMsgBoxOpened, Mode=TwoWay}"
                                          Style="Information"
                                          DialogHostType="{Binding MessageBoxStyleCaseHostType}">
                             <StackPanel Orientation="Vertical" Spacing="5">
-                                <TextBlock>some messages...some messages...</TextBlock>
-                                <TextBlock>some messages...some messages...</TextBlock>
+                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
                             </StackPanel>
                         </atom:MessageBox>
-                        <atom:Button Name="InformationMsgBoxBtn">Information</atom:Button>
+                        <atom:Button Name="InformationMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentInformation}" />
                     </Panel>
                     <Panel>
                         <atom:MessageBox PlacementTarget="SuccessMsgBoxBtn"
-                                         Title="Operation successful"
+                                         Title="{gallery:ModalShowCaseLangResource P2TitleOperationSuccessful}"
                                          Style="Success"
                                          DialogHostType="{Binding MessageBoxStyleCaseHostType}"
                                          IsOpen="{Binding IsSuccessMsgBoxOpened, Mode=TwoWay}">
                             <StackPanel Orientation="Vertical" Spacing="5">
-                                <TextBlock>some messages...some messages...</TextBlock>
-                                <TextBlock>some messages...some messages...</TextBlock>
+                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
                             </StackPanel>
                         </atom:MessageBox>
-                        <atom:Button Name="SuccessMsgBoxBtn">Success</atom:Button>
+                        <atom:Button Name="SuccessMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentSuccess}" />
                     </Panel>
                     <Panel>
                         <atom:MessageBox PlacementTarget="ErrorMsgBoxBtn"
-                                         Title="This is an error message"
+                                         Title="{gallery:ModalShowCaseLangResource P2TitleThisIsAnErrorMessage}"
                                          Style="Error"
                                          DialogHostType="{Binding MessageBoxStyleCaseHostType}"
                                          IsOpen="{Binding IsErrorMsgBoxOpened, Mode=TwoWay}">
                             <StackPanel Orientation="Vertical" Spacing="5">
-                                <TextBlock>some messages...some messages...</TextBlock>
-                                <TextBlock>some messages...some messages...</TextBlock>
+                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
                             </StackPanel>
                         </atom:MessageBox>
-                        <atom:Button Name="ErrorMsgBoxBtn">Error</atom:Button>
+                        <atom:Button Name="ErrorMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentError}" />
                     </Panel>
                     <Panel>
                         <atom:MessageBox PlacementTarget="WarningMsgBoxBtn"
-                                         Title="This is a warning message"
+                                         Title="{gallery:ModalShowCaseLangResource P2TitleThisIsAWarningMessage}"
                                          Style="Warning"
                                          DialogHostType="{Binding MessageBoxStyleCaseHostType}"
                                          IsOpen="{Binding IsWarningMsgBoxOpened, Mode=TwoWay}">
                             <StackPanel Orientation="Vertical" Spacing="5">
-                                <TextBlock>some messages...some messages...</TextBlock>
-                                <TextBlock>some messages...some messages...</TextBlock>
+                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
                             </StackPanel>
                         </atom:MessageBox>
-                        <atom:Button Name="WarningMsgBoxBtn">Warning</atom:Button>
+                        <atom:Button Name="WarningMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentWarning}" />
                     </Panel>
                 </WrapPanel>
 
-                <atom:Separator Title="Static API" />
+                <atom:Separator Title="{gallery:ModalShowCaseLangResource P2TitleStaticApi}" />
                 <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
-                    <atom:Button Click="HandleCreateConfirmMessageBox">Confirm</atom:Button>
-                    <atom:Button Click="HandleCreateInformationMessageBox">Information</atom:Button>
-                    <atom:Button Click="HandleCreateSuccessMessageBox">Success</atom:Button>
-                    <atom:Button Click="HandleCreateErrorMessageBox">Error</atom:Button>
-                    <atom:Button Click="HandleCreateWarningMessageBox">Warning</atom:Button>
+                    <atom:Button Click="HandleCreateConfirmMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentConfirm}" />
+                    <atom:Button Click="HandleCreateInformationMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentInformation}" />
+                    <atom:Button Click="HandleCreateSuccessMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentSuccess}" />
+                    <atom:Button Click="HandleCreateErrorMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentError}" />
+                    <atom:Button Click="HandleCreateWarningMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentWarning}" />
                 </WrapPanel>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -183,12 +177,10 @@
             Description="{gallery:ModalShowCaseLangResource LoadingDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
-                    <atom:Button ButtonType="Primary" Name="LoadingDialogOpenModalButton">
-                        Open Modal
-                    </atom:Button>
+                    <atom:Button ButtonType="Primary" Name="LoadingDialogOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
                     <atom:Dialog PlacementTarget="LoadingDialogOpenModalButton"
                                  IsOpen="{Binding IsLoadingMsgBoxOpened, Mode=TwoWay}"
-                                 Title="Loading Modal"
+                                 Title="{gallery:ModalShowCaseLangResource P2TitleLoadingModal}"
                                  IsModal="True"
                                  IsLoading="True"
                                  IsDragMovable="True"
@@ -202,9 +194,9 @@
                                  ButtonClicked="HandleLoadingDialogButtonClicked"
                                  HostMinWidth="400">
                         <StackPanel>
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
                         </StackPanel>
                     </atom:Dialog>
                 </Panel>
@@ -216,12 +208,10 @@
             Description="{gallery:ModalShowCaseLangResource CustomFooterButtonsDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
-                    <atom:Button ButtonType="Primary" Name="CustomFooterDialogOpenButton">
-                        Open Modal
-                    </atom:Button>
+                    <atom:Button ButtonType="Primary" Name="CustomFooterDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
                     <atom:Dialog PlacementTarget="CustomFooterDialogOpenButton"
                                  IsOpen="{Binding IsCustomFooterDialogOpened, Mode=TwoWay}"
-                                 Title="Title"
+                                 Title="{gallery:ModalShowCaseLangResource P2TitleTitle}"
                                  IsModal="True"
                                  DialogHostType="Window"
                                  StandardButtons="Ok, Cancel"
@@ -230,33 +220,31 @@
                                  DefaultStandardButton="Ok"
                                  HostMinWidth="400">
                         <atom:Dialog.CustomButtons>
-                            <atom:DialogButton Role="ActionRole">Custom Button</atom:DialogButton>
+                            <atom:DialogButton Role="ActionRole" Content="{gallery:ModalShowCaseLangResource P2ContentCustomButton}" />
                         </atom:Dialog.CustomButtons>
                         <StackPanel Spacing="5">
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
                         </StackPanel>
                     </atom:Dialog>
                 </Panel>
 
                 <Panel>
-                    <atom:Button ButtonType="Primary" Name="CustomFooterMsgBoxOpenButton">
-                        Open Modal
-                    </atom:Button>
+                    <atom:Button ButtonType="Primary" Name="CustomFooterMsgBoxOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
                     <atom:MessageBox PlacementTarget="CustomFooterMsgBoxOpenButton"
                                      IsOpen="{Binding IsCustomFooterMsgBoxOpened, Mode=TwoWay}"
-                                     Title="Confirm"
+                                     Title="{gallery:ModalShowCaseLangResource P2TitleConfirm}"
                                      IsModal="True"
                                      Style="Confirm"
                                      HostMinWidth="400">
                         <atom:MessageBox.CustomButtons>
-                            <atom:DialogButton Role="ActionRole">Custom Button</atom:DialogButton>
+                            <atom:DialogButton Role="ActionRole" Content="{gallery:ModalShowCaseLangResource P2ContentCustomButton}" />
                         </atom:MessageBox.CustomButtons>
                         <StackPanel Spacing="5">
-                            <TextBlock>Bla bla ...</TextBlock>
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextBlaBla}" />
                         </StackPanel>
                     </atom:MessageBox>
                 </Panel>
@@ -268,12 +256,10 @@
             Description="{gallery:ModalShowCaseLangResource OpenDraggableModalDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
-                    <atom:Button ButtonType="Primary" Name="DraggableDialogOpenButton">
-                        Open Modal
-                    </atom:Button>
+                    <atom:Button ButtonType="Primary" Name="DraggableDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
                     <atom:Dialog PlacementTarget="DraggableDialogOpenButton"
                                  IsOpen="{Binding IsDraggableMsgBoxOpened, Mode=TwoWay}"
-                                 Title="Draggable Modal"
+                                 Title="{gallery:ModalShowCaseLangResource P2TitleDraggableModal}"
                                  IsModal="True"
                                  IsDragMovable="True"
                                  StandardButtons="Ok, Cancel"
@@ -282,8 +268,8 @@
                                  DefaultStandardButton="Ok"
                                  HostWidth="400">
                         <StackPanel Spacing="10">
-                            <TextBlock TextWrapping="Wrap">Just don't learn physics at school and your life will be full of magic and miracles.</TextBlock>
-                            <TextBlock TextWrapping="Wrap">Day before yesterday I saw a rabbit, and yesterday a deer, and today, you.</TextBlock>
+                            <TextBlock TextWrapping="Wrap" Text="{gallery:ModalShowCaseLangResource P2TextJustDonTLearnPhysicsAtSchoolAnd}" />
+                            <TextBlock TextWrapping="Wrap" Text="{gallery:ModalShowCaseLangResource P2TextDayBeforeYesterdayISawARabbitAnd}" />
                         </StackPanel>
                     </atom:Dialog>
                 </Panel>
@@ -295,12 +281,10 @@
             Description="{gallery:ModalShowCaseLangResource ManualUpdateDestroyDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
-                    <atom:Button Name="DelayedCloseMsgBoxOpenButton">
-                        Open modal to close in 5s
-                    </atom:Button>
+                    <atom:Button Name="DelayedCloseMsgBoxOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalToCloseInN5s}" />
                     <atom:MessageBox PlacementTarget="DelayedCloseMsgBoxOpenButton"
                                      IsOpen="{Binding IsDelayedCloseMsgBoxOpened, Mode=TwoWay}"
-                                     Title="This is a notification message"
+                                     Title="{gallery:ModalShowCaseLangResource P2TitleThisIsANotificationMessage}"
                                      IsModal="True"
                                      IsDragMovable="False"
                                      IsCenterOnStartup="True"
@@ -308,7 +292,11 @@
                                      Opened="HandleDelayedCloseMsgBoxOpened"
                                      HostWidth="400">
                         <StackPanel Spacing="10">
-                            <TextBlock TextWrapping="Wrap">This modal will be destroyed after <Run Text="{Binding CountdownSeconds}"/> second.</TextBlock>
+                            <TextBlock TextWrapping="Wrap">
+                                <Run Text="{gallery:ModalShowCaseLangResource P2RunThisModalWillBeDestroyedAfter}" />
+                                <Run Text="{Binding CountdownSeconds}" />
+                                <Run Text="{gallery:ModalShowCaseLangResource P2RunSecond}" />
+                            </TextBlock>
                         </StackPanel>
                     </atom:MessageBox>
                 </Panel>
@@ -320,13 +308,11 @@
             Description="{gallery:ModalShowCaseLangResource CustomizeFooterButtonPropsDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
-                    <atom:Button ButtonType="Primary" Name="ConfigureButtonsDialogOpenButton">
-                        Open Modal with customized button props
-                    </atom:Button>
+                    <atom:Button ButtonType="Primary" Name="ConfigureButtonsDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalWithCustomizedButtonProps}" />
                     <atom:Dialog Name="ConfigureButtonPropertiesDialog"
                                  PlacementTarget="ConfigureButtonsDialogOpenButton"
                                  IsOpen="{Binding IsConfigureButtonsDialogOpened, Mode=TwoWay}"
-                                 Title="Basic Modal"
+                                 Title="{gallery:ModalShowCaseLangResource P2TitleBasicModal}"
                                  IsModal="True"
                                  IsDragMovable="True"
                                  StandardButtons="Ok, Cancel"
@@ -335,9 +321,9 @@
                                  DefaultStandardButton="Ok"
                                  HostWidth="400">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
-                            <TextBlock>Some contents...</TextBlock>
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
                         </StackPanel>
                     </atom:Dialog>
                 </Panel>
@@ -348,17 +334,11 @@
             Title="{gallery:ModalShowCaseLangResource StaticDialogApiTitle}"
             Description="{gallery:ModalShowCaseLangResource StaticDialogApiDescription}">
             <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
-                <atom:Button Name="OpenOverlayDialogAPIButton" ButtonType="Primary" Click="HandleOpenOverlayDialogButtonClick">
-                    Open Overlay Dialog
-                </atom:Button>
+                <atom:Button Name="OpenOverlayDialogAPIButton" ButtonType="Primary" Click="HandleOpenOverlayDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenOverlayDialog}" />
 
-                <atom:Button ButtonType="Primary" Click="HandleOpenWindowDialogButtonClick">
-                    Open Window Dialog
-                </atom:Button>
+                <atom:Button ButtonType="Primary" Click="HandleOpenWindowDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenWindowDialog}" />
 
-                <atom:Button ButtonType="Primary" Click="HandleOpenCustomViewDialogButtonClick">
-                    Open CustomView Dialog
-                </atom:Button>
+                <atom:Button ButtonType="Primary" Click="HandleOpenCustomViewDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenCustomviewDialog}" />
             </WrapPanel>
         </gallery:ShowCaseItem>
     </gallery:ShowCasePanel>

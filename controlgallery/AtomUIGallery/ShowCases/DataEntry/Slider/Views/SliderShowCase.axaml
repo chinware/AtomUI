@@ -34,7 +34,7 @@
                     RangeValue="20, 80" />
 
                 <StackPanel Orientation="Horizontal" Spacing="2">
-                    <atom:TextBlock VerticalAlignment="Center">Enabled:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SliderShowCaseLangResource P2TextEnabled}" />
                     <atom:ToggleSwitch VerticalAlignment="Center" SizeType="Small" IsChecked="{Binding NormalEnabled, Mode=TwoWay}" />
                 </StackPanel>
             </StackPanel>
@@ -98,7 +98,7 @@
             Title="{gallery:SliderShowCaseLangResource GraduatedSliderTitle}"
             Description="{gallery:SliderShowCaseLangResource GraduatedSliderDescription}">
             <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:TextBlock FontWeight="Bold">included=true</atom:TextBlock>
+                <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedTrue}" />
                 <atom:Slider
                     Name="Slider4"
                     Maximum="100"
@@ -114,7 +114,7 @@
                     TickFrequency="5"
                     RangeValue="20, 80" />
 
-                <atom:TextBlock FontWeight="Bold">included=false</atom:TextBlock>
+                <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedFalse}" />
                 <atom:Slider
                     Name="Slider6"
                     Maximum="100"

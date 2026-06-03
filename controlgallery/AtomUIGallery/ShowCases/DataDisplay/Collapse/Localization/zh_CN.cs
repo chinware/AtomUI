@@ -26,6 +26,22 @@ internal class zh_CN : LanguageProvider
     public const string CollapsibleDescription = "通过 collapsible 指定折叠触发区域。";
     public const string CustomPaddingTitle = "自定义标题和内容间距";
     public const string CustomPaddingDescription = "请设置自定义标题边距和内容间距。";
+    public const string P2HeaderThisIsPanelHeaderN1 = "这是面板标题 1";
+    public const string P2HeaderThisIsPanelHeaderN2 = "这是面板标题 2";
+    public const string P2HeaderThisIsPanelHeaderN3 = "这是面板标题 3";
+    public const string P2TitleDefaultSize = "默认尺寸";
+    public const string P2HeaderThisIsDefaultSizePanelHeader = "这是默认尺寸面板标题";
+    public const string P2TitleSmallSize = "小尺寸";
+    public const string P2HeaderThisIsSmallSizePanelHeader = "这是小尺寸面板标题";
+    public const string P2TitleLargeSize = "大尺寸";
+    public const string P2HeaderThisIsLargeSizePanelHeader = "这是大尺寸面板标题";
+    public const string P2HeaderThisPanelCanOnlyBeCollapsedByClicking = "只能点击文字折叠此面板";
+    public const string P2HeaderThisPanelCanOnlyBeCollapsedByClicking2 = "只能点击图标折叠此面板";
+    public const string P2HeaderThisPanelCanTBeCollapsed = "此面板不能折叠";
+    public const string P2TextADogIsATypeOfDomesticatedAnimal = "狗是一种被驯养的动物。它以忠诚和可靠著称，在世界各地许多家庭中都是受欢迎的成员。";
+    public const string P2TextExpandIconPosition = "展开图标位置：";
+    public const string P2ContentStart = "开始";
+    public const string P2ContentEnd = "结束";
 
     protected override Type GetResourceKindType() => typeof(CollapseShowCaseLangResourceKind);
 }

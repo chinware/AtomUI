@@ -14,6 +14,19 @@ internal class en_US : LanguageProvider
     public const string CustomizeComponentTokenDescription = "In addition to Design Token, each component has its own Component Token for style customization, and different components do not affect each other. Component Design Tokens can also be overridden in this way.";
     public const string NestedThemeTitle = "Nested Theme";
     public const string NestedThemeDescription = "By nesting ConfigProvider you can apply a local theme to part of your page. Design Tokens that are not changed in the child theme inherit from the parent theme.";
+    public const string P2PlaceholderTextPleaseInput = "Please input";
+    public const string P2ContentPrimaryButton = "Primary Button";
+    public const string P2ContentDefaultButton = "Default Button";
+    public const string P2ContentTextButton = "Text Button";
+    public const string P2ContentLinkButton = "Link Button";
+    public const string P2ContentApple = "Apple";
+    public const string P2ContentPear = "Pear";
+    public const string P2ContentOrange = "Orange";
+    public const string P2ContentSubmit = "Submit";
+    public const string P2TextEnableAlgorithm = "Enable algorithm:";
+    public const string P2TextDisableAlgorithm = "Disable algorithm:";
+    public const string P2ContentThemeN1 = "Theme 1";
+    public const string P2ContentThemeN2 = "Theme 2";
 
     protected override Type GetResourceKindType() => typeof(CustomizeThemeShowCaseLangResourceKind);
 }

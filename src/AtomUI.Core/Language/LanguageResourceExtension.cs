@@ -3,6 +3,7 @@ using AtomUI.Data;
 using Avalonia;
 using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.MarkupExtensions;
+using Avalonia.Styling;
 
 namespace AtomUI.Theme.Language;
 
@@ -25,7 +26,8 @@ public abstract class LanguageResourceExtension<TResourceKind> : MarkupExtension
         Debug.Assert(Kind != null);
         var provideTarget = serviceProvider.GetService(typeof(IProvideValueTarget)) as IProvideValueTarget;
         var dynamicResource = new DynamicResourceExtension(Kind);
-        if (provideTarget?.TargetObject is not StyledElement)
+        var targetObject    = provideTarget?.TargetObject;
+        if (targetObject is not StyledElement)
         {
             var application = Application.Current;
             if (application is null)
@@ -33,7 +35,18 @@ public abstract class LanguageResourceExtension<TResourceKind> : MarkupExtension
                 throw new ApplicationException("The application instance does not exist");
             }
             dynamicResource.SetAnchor(application);
+            if (ShouldUseStaticResourceValue(targetObject))
+            {
+                return LanguageResourceBinder.GetLangResource(Kind) ?? Kind.ToString()!;
+            }
         }
         return dynamicResource;
+    }
+
+    private static bool ShouldUseStaticResourceValue(object? targetObject)
+    {
+        return targetObject is not null &&
+               targetObject is not AvaloniaObject &&
+               targetObject is not SetterBase;
     }
 }

@@ -10,8 +10,8 @@
         <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource BasicLayoutTitle}" Description="{gallery:FlexPanelShowCaseLangResource BasicLayoutDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="16">
                 <StackPanel Orientation="Horizontal" Spacing="20">
-                    <atom:RadioButton x:Name="DirectionHorizontal" IsChecked="True">horizontal</atom:RadioButton>
-                    <atom:RadioButton x:Name="DirectionVertical">vertical</atom:RadioButton>
+                    <atom:RadioButton x:Name="DirectionHorizontal" IsChecked="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentHorizontal}" />
+                    <atom:RadioButton x:Name="DirectionVertical" Content="{gallery:FlexPanelShowCaseLangResource P2ContentVertical}" />
                 </StackPanel>
 
                 <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12"
@@ -31,22 +31,22 @@
 
         <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource AlignmentTitle}" Description="{gallery:FlexPanelShowCaseLangResource AlignmentDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
-                <atom:TextBlock FontWeight="Bold">Select justify:</atom:TextBlock>
+                <atom:TextBlock FontWeight="Bold" Text="{gallery:FlexPanelShowCaseLangResource P2TextSelectJustify}" />
                 <atom:Segmented x:Name="JustifySegmented">
-                    <atom:SegmentedItem IsSelected="True">flex-start</atom:SegmentedItem>
-                    <atom:SegmentedItem>center</atom:SegmentedItem>
-                    <atom:SegmentedItem>flex-end</atom:SegmentedItem>
-                    <atom:SegmentedItem>space-between</atom:SegmentedItem>
-                    <atom:SegmentedItem>space-around</atom:SegmentedItem>
-                    <atom:SegmentedItem>space-evenly</atom:SegmentedItem>
+                    <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexStart}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentCenter}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexEnd}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceBetween}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceAround}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceEvenly}" />
                 </atom:Segmented>
 
-                <atom:TextBlock FontWeight="Bold">Select align:</atom:TextBlock>
+                <atom:TextBlock FontWeight="Bold" Text="{gallery:FlexPanelShowCaseLangResource P2TextSelectAlign}" />
                 <atom:Segmented x:Name="AlignSegmented">
-                    <atom:SegmentedItem>flex-start</atom:SegmentedItem>
-                    <atom:SegmentedItem>center</atom:SegmentedItem>
-                    <atom:SegmentedItem IsSelected="True">flex-end</atom:SegmentedItem>
-                    <atom:SegmentedItem>stretch</atom:SegmentedItem>
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexStart}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentCenter}" />
+                    <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexEnd}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentStretch}" />
                 </atom:Segmented>
 
                 <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6"  Height="120">
@@ -54,10 +54,10 @@
                                     Direction="Row"
                                     JustifyContent="FlexStart"
                                     AlignItems="FlexEnd">
-                        <atom:Button ButtonType="Primary">Primary</atom:Button>
-                        <atom:Button ButtonType="Primary">Primary</atom:Button>
-                        <atom:Button ButtonType="Primary">Primary</atom:Button>
-                        <atom:Button ButtonType="Primary">Primary</atom:Button>
+                        <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentPrimary}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentPrimary}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentPrimary}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentPrimary}" />
                     </atom:FlexPanel>
                 </Border>
             </StackPanel>
@@ -66,14 +66,14 @@
         <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource GapTitle}" Description="{gallery:FlexPanelShowCaseLangResource GapDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="16">
                 <StackPanel Orientation="Horizontal" Spacing="20">
-                    <atom:RadioButton x:Name="GapSmall" IsChecked="True" GroupName="GapMode">small</atom:RadioButton>
-                    <atom:RadioButton x:Name="GapMiddle" GroupName="GapMode">middle</atom:RadioButton>
-                    <atom:RadioButton x:Name="GapLarge" GroupName="GapMode">large</atom:RadioButton>
-                    <atom:RadioButton x:Name="GapCustomize" GroupName="GapMode">customize</atom:RadioButton>
+                    <atom:RadioButton x:Name="GapSmall" IsChecked="True" GroupName="GapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentSmall}" />
+                    <atom:RadioButton x:Name="GapMiddle" GroupName="GapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentMiddle}" />
+                    <atom:RadioButton x:Name="GapLarge" GroupName="GapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentLarge}" />
+                    <atom:RadioButton x:Name="GapCustomize" GroupName="GapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentCustomize}" />
                 </StackPanel>
 
                 <StackPanel x:Name="GapCustomPanel" Orientation="Horizontal" Spacing="8" IsVisible="False">
-                    <atom:TextBlock VerticalAlignment="Center">Custom gap:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextCustomGap}" />
                     <Slider x:Name="GapValueSlider"
                                  Width="200"
                                  Minimum="0"
@@ -83,10 +83,10 @@
                 </StackPanel>
 
                 <atom:FlexPanel x:Name="GapFlexPanel" Direction="Row" ColumnSpacing="8" RowSpacing="8">
-                    <atom:Button ButtonType="Primary">Primary</atom:Button>
-                    <atom:Button ButtonType="Default">Default</atom:Button>
-                    <atom:Button ButtonType="Dashed">Dashed</atom:Button>
-                    <atom:Button ButtonType="Link">Link</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentPrimary}" />
+                    <atom:Button ButtonType="Default" Content="{gallery:FlexPanelShowCaseLangResource P2ContentDefault}" />
+                    <atom:Button ButtonType="Dashed" Content="{gallery:FlexPanelShowCaseLangResource P2ContentDashed}" />
+                    <atom:Button ButtonType="Link" Content="{gallery:FlexPanelShowCaseLangResource P2ContentLink}" />
                 </atom:FlexPanel>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -94,17 +94,17 @@
         <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource AlignSelfTitle}" Description="{gallery:FlexPanelShowCaseLangResource AlignSelfDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <atom:Segmented x:Name="AlignSelfSegmented">
-                    <atom:SegmentedItem IsSelected="True">flex-start</atom:SegmentedItem>
-                    <atom:SegmentedItem>center</atom:SegmentedItem>
-                    <atom:SegmentedItem>flex-end</atom:SegmentedItem>
-                    <atom:SegmentedItem>stretch</atom:SegmentedItem>
+                    <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexStart}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentCenter}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexEnd}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentStretch}" />
                 </atom:Segmented>
 
                 <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12" Height="140">
                     <atom:FlexPanel x:Name="AlignSelfFlexPanel" Direction="Row" ColumnSpacing="8" AlignItems="FlexStart">
                         <Border Background="#4F7CF5" Height="50" Width="80" CornerRadius="4" />
                         <Border x:Name="AlignSelfTarget" Background="#1F5BFF" Height="70" Width="80" CornerRadius="4">
-                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Item A" />
+                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextItemA}" />
                         </Border>
                         <Border Background="#4F7CF5" Height="60" Width="80" CornerRadius="4" />
                     </atom:FlexPanel>
@@ -115,8 +115,8 @@
         <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource AutoWrapTitle}" Description="{gallery:FlexPanelShowCaseLangResource AutoWrapDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="16">
                 <StackPanel Orientation="Horizontal" Spacing="20">
-                    <atom:RadioButton x:Name="WrapEnabled" IsChecked="True" GroupName="WrapMode">wrap</atom:RadioButton>
-                    <atom:RadioButton x:Name="WrapDisabled" GroupName="WrapMode">nowrap</atom:RadioButton>
+                    <atom:RadioButton x:Name="WrapEnabled" IsChecked="True" GroupName="WrapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentWrap}" />
+                    <atom:RadioButton x:Name="WrapDisabled" GroupName="WrapMode" Content="{gallery:FlexPanelShowCaseLangResource P2ContentNowrap}" />
                 </StackPanel>
                 <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12">
                     <atom:ScrollViewer x:Name="WrapScrollViewer"
@@ -128,21 +128,21 @@
                                         ColumnSpacing="8"
                                         RowSpacing="8"
                                         JustifyContent="FlexStart">
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
-                            <atom:Button ButtonType="Primary">Button</atom:Button>
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
+                            <atom:Button ButtonType="Primary" Content="{gallery:FlexPanelShowCaseLangResource P2ContentButton}" />
                         </atom:FlexPanel>
                     </atom:ScrollViewer>
                 </Border>
@@ -152,24 +152,24 @@
         <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource OrderTitle}" Description="{gallery:FlexPanelShowCaseLangResource OrderDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <atom:Segmented x:Name="OrderSegmented">
-                    <atom:SegmentedItem IsSelected="True">default</atom:SegmentedItem>
-                    <atom:SegmentedItem>reverse</atom:SegmentedItem>
-                    <atom:SegmentedItem>custom</atom:SegmentedItem>
+                    <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentDefault2}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentReverse}" />
+                    <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentCustom}" />
                 </atom:Segmented>
 
                 <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12">
                     <atom:FlexPanel Direction="Row" ColumnSpacing="8">
                         <Border x:Name="OrderItemA" Background="#4F7CF5" Width="80" Height="50" CornerRadius="4">
-                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="A" />
+                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextA}" />
                         </Border>
                         <Border x:Name="OrderItemB" Background="#1F5BFF" Width="80" Height="50" CornerRadius="4">
-                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="B" />
+                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextB}" />
                         </Border>
                         <Border x:Name="OrderItemC" Background="#4F7CF5" Width="80" Height="50" CornerRadius="4">
-                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="C" />
+                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextC}" />
                         </Border>
                         <Border x:Name="OrderItemD" Background="#1F5BFF" Width="80" Height="50" CornerRadius="4">
-                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="D" />
+                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextD}" />
                         </Border>
                     </atom:FlexPanel>
                 </Border>
@@ -180,13 +180,13 @@
             <StackPanel Margin="20" Spacing="12">
                 <StackPanel Orientation="Horizontal" Spacing="16">
                     <atom:Segmented x:Name="BasisKindSegmented">
-                        <atom:SegmentedItem IsSelected="True">auto</atom:SegmentedItem>
-                        <atom:SegmentedItem>absolute</atom:SegmentedItem>
-                        <atom:SegmentedItem>relative</atom:SegmentedItem>
+                        <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentAuto}" />
+                        <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentAbsolute}" />
+                        <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentRelative}" />
                     </atom:Segmented>
 
                     <StackPanel x:Name="BasisValuePanel" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
-                        <atom:TextBlock VerticalAlignment="Center">Value:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextValue}" />
                         <atom:NumericUpDown x:Name="BasisValueInput"
                                             Width="120"
                                             Minimum="0"
@@ -194,12 +194,12 @@
                                             Increment="1"
                                             FormatString="0"
                                             Value="120" />
-                        <atom:TextBlock x:Name="BasisValueUnit" VerticalAlignment="Center" Text="px" />
+                        <atom:TextBlock x:Name="BasisValueUnit" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextPx}" />
                     </StackPanel>
 
                     <StackPanel x:Name="BasisPercentPanel" Orientation="Horizontal" Spacing="8"
                                 VerticalAlignment="Center" IsVisible="False">
-                        <atom:TextBlock VerticalAlignment="Center">Percent:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextPercent}" />
                         <Slider x:Name="BasisValueSlider"
                                      Width="160"
                                      Minimum="0"
@@ -213,13 +213,13 @@
                 <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12">
                     <atom:FlexPanel x:Name="BasisFlexPanel" Direction="Row" ColumnSpacing="8">
                         <Border x:Name="BasisItem"  Background="#4F7CF5" Height="50" MinWidth="60" CornerRadius="4">
-                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Item A" />
+                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextItemA}" />
                         </Border>
                         <Border x:Name="BasisGrowItem1" Background="#1F5BFF" Height="50" atom:Flex.Grow="1" CornerRadius="4">
-                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Grow" />
+                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextGrow}" />
                         </Border>
                         <Border x:Name="BasisGrowItem2" Background="#4F7CF5" Height="50" atom:Flex.Grow="1" CornerRadius="4">
-                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Grow" />
+                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextGrow}" />
                         </Border>
                     </atom:FlexPanel>
                 </Border>
@@ -229,7 +229,7 @@
         <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource FlexGrowTitle}" Description="{gallery:FlexPanelShowCaseLangResource FlexGrowDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <StackPanel Orientation="Horizontal" Spacing="16">
-                    <atom:TextBlock VerticalAlignment="Center">Item A:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextItemA2}" />
                     <atom:NumericUpDown x:Name="GrowInputA"
                                         Width="80"
                                         Minimum="0"
@@ -237,7 +237,7 @@
                                         Increment="1"
                                         FormatString="0"
                                         Value="1" />
-                    <atom:TextBlock VerticalAlignment="Center">Item B:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextItemB2}" />
                     <atom:NumericUpDown x:Name="GrowInputB"
                                         Width="80"
                                         Minimum="0"
@@ -250,10 +250,10 @@
                 <Border BorderBrush="#E5E5E5" BorderThickness="1" CornerRadius="6" Padding="12">
                     <atom:FlexPanel x:Name="GrowFlexPanel" Direction="Row" ColumnSpacing="8">
                         <Border x:Name="GrowItemA" Background="#4F7CF5" Height="50" MinWidth="60" CornerRadius="4" >
-                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Item A" />
+                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextItemA}" />
                         </Border>
                         <Border x:Name="GrowItemB" Background="#1F5BFF" Height="50" MinWidth="60" CornerRadius="4" >
-                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Item B" />
+                            <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextItemB}" />
                         </Border>
                         <Border x:Name="GrowItemC" Background="#4F7CF5" Height="50" MinWidth="60" CornerRadius="4" />
                     </atom:FlexPanel>
@@ -264,7 +264,7 @@
         <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource FlexShrinkTitle}" Description="{gallery:FlexPanelShowCaseLangResource FlexShrinkDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="12">
                 <StackPanel Orientation="Horizontal" Spacing="12">
-                    <atom:TextBlock VerticalAlignment="Center">Container width:</atom:TextBlock>
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextContainerWidth}" />
                     <Slider x:Name="ShrinkWidthSlider"
                                  Width="200"
                                  Minimum="180"
@@ -291,7 +291,7 @@
                                 <atom:TextBlock HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Foreground="White"
-                                                Text="Basis 200" />
+                                                Text="{gallery:FlexPanelShowCaseLangResource P2TextBasisN200}" />
                             </Border>
                             <Border Background="#1F5BFF"
                                     Height="50"
@@ -301,7 +301,7 @@
                                 <atom:TextBlock HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Foreground="White"
-                                                Text="Basis 100" />
+                                                Text="{gallery:FlexPanelShowCaseLangResource P2TextBasisN100}" />
                             </Border>
                         </atom:FlexPanel>
                     </Border>
@@ -325,10 +325,10 @@
                             <atom:TextBlock FontSize="20"
                                             FontWeight="Bold"
                                             TextWrapping="Wrap"
-                                            Text="&quot;AtomUI is an enterprise-class UI design language and Avalonia UI library.&quot;" />
+                                            Text="{gallery:FlexPanelShowCaseLangResource P2TextAtomuiIsAnEnterpriseClassUiDesignLanguage}" />
                             <atom:Button ButtonType="Primary"
                                          Width="120"
-                                         atom:Flex.AlignSelf="FlexEnd">Get Started</atom:Button>
+                                         atom:Flex.AlignSelf="FlexEnd" Content="{gallery:FlexPanelShowCaseLangResource P2ContentGetStarted}" />
                         </atom:FlexPanel>
                     </atom:FlexPanel>
                 </Border>
@@ -338,64 +338,64 @@
                 <gallery:ShowCaseItem Title="{gallery:FlexPanelShowCaseLangResource PlaygroundTitle}" Description="{gallery:FlexPanelShowCaseLangResource PlaygroundDescription}" IsOccupyEntireRow="True">
             <StackPanel Margin="20" Spacing="16">
                 <StackPanel Spacing="12">
-                    <atom:TextBlock FontWeight="Bold">Panel</atom:TextBlock>
+                    <atom:TextBlock FontWeight="Bold" Text="{gallery:FlexPanelShowCaseLangResource P2TextPanel}" />
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <atom:TextBlock VerticalAlignment="Center">Direction:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextDirection}" />
                         <atom:Segmented x:Name="PlaygroundDirectionSegmented">
-                            <atom:SegmentedItem IsSelected="True">row</atom:SegmentedItem>
-                            <atom:SegmentedItem>column</atom:SegmentedItem>
-                            <atom:SegmentedItem>row-reverse</atom:SegmentedItem>
-                            <atom:SegmentedItem>column-reverse</atom:SegmentedItem>
+                            <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentRow}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentColumn}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentRowReverse}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentColumnReverse}" />
                         </atom:Segmented>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <atom:TextBlock VerticalAlignment="Center">Wrap:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextWrap}" />
                         <atom:Segmented x:Name="PlaygroundWrapSegmented">
-                            <atom:SegmentedItem>nowrap</atom:SegmentedItem>
-                            <atom:SegmentedItem IsSelected="True">wrap</atom:SegmentedItem>
-                            <atom:SegmentedItem>wrap-reverse</atom:SegmentedItem>
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentNowrap}" />
+                            <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentWrap}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentWrapReverse}" />
                         </atom:Segmented>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <atom:TextBlock VerticalAlignment="Center">Justify:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextJustify}" />
                         <atom:Segmented x:Name="PlaygroundJustifySegmented">
-                            <atom:SegmentedItem IsSelected="True">flex-start</atom:SegmentedItem>
-                            <atom:SegmentedItem>center</atom:SegmentedItem>
-                            <atom:SegmentedItem>flex-end</atom:SegmentedItem>
-                            <atom:SegmentedItem>space-between</atom:SegmentedItem>
-                            <atom:SegmentedItem>space-around</atom:SegmentedItem>
-                            <atom:SegmentedItem>space-evenly</atom:SegmentedItem>
+                            <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexStart}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentCenter}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexEnd}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceBetween}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceAround}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceEvenly}" />
                         </atom:Segmented>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <atom:TextBlock VerticalAlignment="Center">Align items:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextAlignItems}" />
                         <atom:Segmented x:Name="PlaygroundAlignItemsSegmented">
-                            <atom:SegmentedItem>flex-start</atom:SegmentedItem>
-                            <atom:SegmentedItem>center</atom:SegmentedItem>
-                            <atom:SegmentedItem>flex-end</atom:SegmentedItem>
-                            <atom:SegmentedItem IsSelected="True">stretch</atom:SegmentedItem>
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexStart}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentCenter}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexEnd}" />
+                            <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentStretch}" />
                         </atom:Segmented>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <atom:TextBlock VerticalAlignment="Center">Align content:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextAlignContent}" />
                         <atom:Segmented x:Name="PlaygroundAlignContentSegmented">
-                            <atom:SegmentedItem>flex-start</atom:SegmentedItem>
-                            <atom:SegmentedItem>center</atom:SegmentedItem>
-                            <atom:SegmentedItem>flex-end</atom:SegmentedItem>
-                            <atom:SegmentedItem IsSelected="True">stretch</atom:SegmentedItem>
-                            <atom:SegmentedItem>space-between</atom:SegmentedItem>
-                            <atom:SegmentedItem>space-around</atom:SegmentedItem>
-                            <atom:SegmentedItem>space-evenly</atom:SegmentedItem>
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexStart}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentCenter}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexEnd}" />
+                            <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentStretch}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceBetween}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceAround}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentSpaceEvenly}" />
                         </atom:Segmented>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <atom:TextBlock VerticalAlignment="Center">Column gap:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextColumnGap}" />
                         <Slider x:Name="PlaygroundColumnSpacingSlider"
                                      Width="140"
                                      Minimum="0"
@@ -403,7 +403,7 @@
                                      TickFrequency="2"
                                      Value="8" />
                         <atom:TextBlock x:Name="PlaygroundColumnSpacingText" VerticalAlignment="Center" Text="8px" />
-                        <atom:TextBlock VerticalAlignment="Center">Row gap:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextRowGap}" />
                         <Slider x:Name="PlaygroundRowSpacingSlider"
                                      Width="140"
                                      Minimum="0"
@@ -414,7 +414,7 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <atom:TextBlock VerticalAlignment="Center">Width:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextWidth}" />
                         <Slider x:Name="PlaygroundWidthSlider"
                                      Width="200"
                                      Minimum="200"
@@ -422,7 +422,7 @@
                                      TickFrequency="20"
                                      Value="320" />
                         <atom:TextBlock x:Name="PlaygroundWidthText" VerticalAlignment="Center" Text="320px" />
-                        <atom:TextBlock VerticalAlignment="Center">Height:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextHeight}" />
                         <Slider x:Name="PlaygroundHeightSlider"
                                      Width="160"
                                      Minimum="120"
@@ -434,38 +434,38 @@
                 </StackPanel>
 
                 <StackPanel Spacing="12">
-                    <atom:TextBlock FontWeight="Bold">Item</atom:TextBlock>
+                    <atom:TextBlock FontWeight="Bold" Text="{gallery:FlexPanelShowCaseLangResource P2TextItem}" />
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <atom:TextBlock VerticalAlignment="Center">Select:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextSelect}" />
                         <atom:Segmented x:Name="PlaygroundItemSegmented">
-                            <atom:SegmentedItem IsSelected="True">A</atom:SegmentedItem>
-                            <atom:SegmentedItem>B</atom:SegmentedItem>
-                            <atom:SegmentedItem>C</atom:SegmentedItem>
+                            <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentA}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentB}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentC}" />
                         </atom:Segmented>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <atom:TextBlock VerticalAlignment="Center">Align self:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextAlignSelf}" />
                         <atom:Segmented x:Name="PlaygroundAlignSelfSegmented">
-                            <atom:SegmentedItem IsSelected="True">auto</atom:SegmentedItem>
-                            <atom:SegmentedItem>flex-start</atom:SegmentedItem>
-                            <atom:SegmentedItem>center</atom:SegmentedItem>
-                            <atom:SegmentedItem>flex-end</atom:SegmentedItem>
-                            <atom:SegmentedItem>stretch</atom:SegmentedItem>
+                            <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentAuto}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexStart}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentCenter}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentFlexEnd}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentStretch}" />
                         </atom:Segmented>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <atom:TextBlock VerticalAlignment="Center">Basis:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextBasis}" />
                         <atom:Segmented x:Name="PlaygroundBasisKindSegmented">
-                            <atom:SegmentedItem>auto</atom:SegmentedItem>
-                            <atom:SegmentedItem IsSelected="True">absolute</atom:SegmentedItem>
-                            <atom:SegmentedItem>relative</atom:SegmentedItem>
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentAuto}" />
+                            <atom:SegmentedItem IsSelected="True" Content="{gallery:FlexPanelShowCaseLangResource P2ContentAbsolute}" />
+                            <atom:SegmentedItem Content="{gallery:FlexPanelShowCaseLangResource P2ContentRelative}" />
                         </atom:Segmented>
 
                         <StackPanel x:Name="PlaygroundBasisValuePanel" Orientation="Horizontal" Spacing="8">
-                            <atom:TextBlock VerticalAlignment="Center">Value:</atom:TextBlock>
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextValue}" />
                             <atom:NumericUpDown x:Name="PlaygroundBasisValueInput"
                                                 Width="100"
                                                 Minimum="0"
@@ -473,12 +473,12 @@
                                                 Increment="1"
                                                 FormatString="0"
                                                 Value="160" />
-                            <atom:TextBlock x:Name="PlaygroundBasisValueUnit" VerticalAlignment="Center" Text="px" />
+                            <atom:TextBlock x:Name="PlaygroundBasisValueUnit" VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextPx}" />
                         </StackPanel>
 
                         <StackPanel x:Name="PlaygroundBasisPercentPanel" Orientation="Horizontal" Spacing="8"
                                     IsVisible="False">
-                            <atom:TextBlock VerticalAlignment="Center">Percent:</atom:TextBlock>
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextPercent}" />
                             <Slider x:Name="PlaygroundBasisValueSlider"
                                          Width="140"
                                          Minimum="0"
@@ -490,7 +490,7 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <atom:TextBlock VerticalAlignment="Center">Grow:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextGrow2}" />
                         <atom:NumericUpDown x:Name="PlaygroundGrowInput"
                                             Width="70"
                                             Minimum="0"
@@ -498,7 +498,7 @@
                                             Increment="1"
                                             FormatString="0"
                                             Value="1" />
-                        <atom:TextBlock VerticalAlignment="Center">Shrink:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextShrink}" />
                         <atom:NumericUpDown x:Name="PlaygroundShrinkInput"
                                             Width="70"
                                             Minimum="0"
@@ -506,7 +506,7 @@
                                             Increment="1"
                                             FormatString="0"
                                             Value="1" />
-                        <atom:TextBlock VerticalAlignment="Center">Order:</atom:TextBlock>
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FlexPanelShowCaseLangResource P2TextOrder}" />
                         <atom:NumericUpDown x:Name="PlaygroundOrderInput"
                                             Width="70"
                                             Minimum="-5"
@@ -545,7 +545,7 @@
                                 <atom:TextBlock HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Foreground="White"
-                                                Text="A" />
+                                                Text="{gallery:FlexPanelShowCaseLangResource P2TextA}" />
                             </Border>
                             <Border x:Name="PlaygroundItemB"
                                     Background="#1F5BFF"
@@ -558,7 +558,7 @@
                                 <atom:TextBlock HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Foreground="White"
-                                                Text="B" />
+                                                Text="{gallery:FlexPanelShowCaseLangResource P2TextB}" />
                             </Border>
                             <Border x:Name="PlaygroundItemC"
                                     Background="#4F7CF5"
@@ -571,7 +571,7 @@
                                 <atom:TextBlock HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 Foreground="White"
-                                                Text="C" />
+                                                Text="{gallery:FlexPanelShowCaseLangResource P2TextC}" />
                             </Border>
                         </atom:FlexPanel>
                     </Border>

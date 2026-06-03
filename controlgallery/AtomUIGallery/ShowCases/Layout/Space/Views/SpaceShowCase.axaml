@@ -8,10 +8,10 @@
     <atom:TabControl Name="ScenarioTabs"
                      SizeType="Large"
                      SelectedIndex="0">
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Basic}" Tag="Basic" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Size}" Tag="Size" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Align}" Tag="Align" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource CompactForm}" Tag="CompactForm" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource CompactButton}" Tag="CompactButton" />
+        <atom:TabItem Header="{gallery:SpaceShowCaseLangResource ScenarioBasic}" Tag="Basic" />
+        <atom:TabItem Header="{gallery:SpaceShowCaseLangResource ScenarioSize}" Tag="Size" />
+        <atom:TabItem Header="{gallery:SpaceShowCaseLangResource ScenarioAlign}" Tag="Align" />
+        <atom:TabItem Header="{gallery:SpaceShowCaseLangResource ScenarioCompactForm}" Tag="CompactForm" />
+        <atom:TabItem Header="{gallery:SpaceShowCaseLangResource ScenarioCompactButton}" Tag="CompactButton" />
     </atom:TabControl>
 </UserControl>

@@ -13,23 +13,23 @@
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10">
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider LikeOutlined}" atom:ToolTip.Tip="Like"/>
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider CommentOutlined}" atom:ToolTip.Tip="Comment"/>
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider StarOutlined}" atom:ToolTip.Tip="Star"/>
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider HeartOutlined}" atom:ToolTip.Tip="Heart"/>
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider ShareAltOutlined}" atom:ToolTip.Tip="Share"/>
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="Download"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider LikeOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipLike}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider CommentOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipComment}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider StarOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipStar}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider HeartOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipHeart}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider ShareAltOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipShare}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipDownload}"/>
                     <atom:DropdownButton TriggerType="Click"
                                          Placement="BottomEdgeAlignedRight"
                                          IsShowOpenIndicator="False"
                                          Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}">
                         <atom:DropdownButton.DropdownFlyout>
                             <atom:MenuFlyout>
-                                <atom:MenuItem Header="Report"
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderReport}"
                                                Icon="{antdicons:AntDesignIconProvider Kind=WarningOutlined}" />
-                                <atom:MenuItem Header="Mail"
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderMail}"
                                                Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
-                                <atom:MenuItem Header="Mobile"
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderMobile}"
                                                Icon="{antdicons:AntDesignIconProvider Kind=MobileOutlined}" />
                             </atom:MenuFlyout>
                         </atom:DropdownButton.DropdownFlyout>
@@ -37,21 +37,21 @@
                 </atom:CompactSpace>
         
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <atom:Button ButtonType="Primary">Button 1</atom:Button>
-                    <atom:Button ButtonType="Primary">Button 2</atom:Button>
-                    <atom:Button ButtonType="Primary">Button 3</atom:Button>
-                    <atom:Button ButtonType="Primary">Button 4</atom:Button>
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" IsEnabled="False" atom:ToolTip.Tip="Tooltip"/>
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="Tooltip"/>
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN1}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN2}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN3}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN4}" />
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" IsEnabled="False" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipTooltip}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipTooltip}"/>
                 </atom:CompactSpace>
         
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
-                    <atom:Button ButtonType="Default">Button 1</atom:Button>
-                    <atom:Button ButtonType="Default">Button 2</atom:Button>
-                    <atom:Button ButtonType="Default">Button 3</atom:Button>
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" IsEnabled="False" atom:ToolTip.Tip="Tooltip"/>
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="Tooltip"/>
-                    <atom:Button ButtonType="Primary">Button 4</atom:Button>
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN1}" />
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN2}" />
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN3}" />
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" IsEnabled="False" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipTooltip}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipTooltip}"/>
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN4}" />
                     <atom:DropdownButton TriggerType="Click"
                                          Placement="BottomEdgeAlignedRight"
                                          IsShowOpenIndicator="False"
@@ -59,9 +59,9 @@
                                          Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}">
                         <atom:DropdownButton.DropdownFlyout>
                             <atom:MenuFlyout>
-                                <atom:MenuItem Header="1st item"/>
-                                <atom:MenuItem Header="2nd item"/>
-                                <atom:MenuItem Header="3rd item"/>
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderN1stItem}"/>
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderN2ndItem}"/>
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderN3rdItem}"/>
                             </atom:MenuFlyout>
                         </atom:DropdownButton.DropdownFlyout>
                     </atom:DropdownButton>
@@ -74,21 +74,21 @@
                               IsOccupyEntireRow="True">
             <StackPanel Spacing="10" Orientation="Horizontal">
                 <atom:CompactSpace Orientation="Vertical">
-                    <atom:Button ButtonType="Default">Button 1</atom:Button>
-                    <atom:Button ButtonType="Default">Button 2</atom:Button>
-                    <atom:Button ButtonType="Default">Button 3</atom:Button>
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN1}" />
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN2}" />
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN3}" />
                 </atom:CompactSpace>
                 
                 <atom:CompactSpace Orientation="Vertical">
-                    <atom:Button ButtonType="Dashed">Button 1</atom:Button>
-                    <atom:Button ButtonType="Dashed">Button 2</atom:Button>
-                    <atom:Button ButtonType="Dashed">Button 3</atom:Button>
+                    <atom:Button ButtonType="Dashed" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN1}" />
+                    <atom:Button ButtonType="Dashed" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN2}" />
+                    <atom:Button ButtonType="Dashed" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN3}" />
                 </atom:CompactSpace>
                 
                 <atom:CompactSpace Orientation="Vertical">
-                    <atom:Button ButtonType="Primary">Button 1</atom:Button>
-                    <atom:Button ButtonType="Primary">Button 2</atom:Button>
-                    <atom:Button ButtonType="Primary">Button 3</atom:Button>
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN1}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN2}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN3}" />
                 </atom:CompactSpace>
             </StackPanel>
         </gallery:ShowCaseItem>

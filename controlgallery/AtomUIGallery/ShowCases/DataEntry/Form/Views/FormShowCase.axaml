@@ -8,12 +8,12 @@
     <atom:TabControl Name="ScenarioTabs"
                      SizeType="Large"
                      SelectedIndex="0">
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Basic}" Tag="Basic" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Layout}" Tag="Layout" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource States}" Tag="States" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Validation}" Tag="Validation" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Dynamic}" Tag="Dynamic" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Presets}" Tag="Presets" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Controls}" Tag="Controls" />
+        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioBasic}" Tag="Basic" />
+        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioLayout}" Tag="Layout" />
+        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioStates}" Tag="States" />
+        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioValidation}" Tag="Validation" />
+        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioDynamic}" Tag="Dynamic" />
+        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioPresets}" Tag="Presets" />
+        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioControls}" Tag="Controls" />
     </atom:TabControl>
 </UserControl>

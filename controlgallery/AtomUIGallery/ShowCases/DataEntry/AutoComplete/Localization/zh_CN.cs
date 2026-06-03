@@ -24,6 +24,16 @@ internal class zh_CN : LanguageProvider
     public const string VariantsDescription = "可选择描边、填充、无边框和下划线等变体。";
     public const string CustomizeClearButtonTitle = "自定义清除按钮";
     public const string CustomizeClearButtonDescription = "自定义清除按钮。";
+    public const string P2PlaceholderTextInputHere = "在此输入";
+    public const string P2PlaceholderTextTryAOrB = "try 'a' or 'b'";
+    public const string P2TextResults = "results";
+    public const string P2PlaceholderTextTryToTypeB = "try to type `b`";
+    public const string P2PlaceholderTextOutline = "Outline";
+    public const string P2PlaceholderTextFilled = "填充风格";
+    public const string P2PlaceholderTextBorderless = "Borderless";
+    public const string P2PlaceholderTextUnderlined = "Underlined";
+    public const string P2PlaceholderTextUnclearable = "UnClearable";
+    public const string P2PlaceholderTextCustomizedClearIcon = "Customized clear icon";
 
     protected override Type GetResourceKindType() => typeof(AutoCompleteShowCaseLangResourceKind);
 }

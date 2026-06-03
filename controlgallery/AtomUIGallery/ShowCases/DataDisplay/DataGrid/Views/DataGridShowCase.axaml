@@ -8,13 +8,13 @@
     <atom:TabControl Name="ScenarioTabs"
                      SizeType="Large"
                      SelectedIndex="0">
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Basic}" Tag="Basic" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Interaction}" Tag="Interaction" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Filtering}" Tag="Filtering" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Structure}" Tag="Structure" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Fixed}" Tag="Fixed" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Drag}" Tag="Drag" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Editing}" Tag="Editing" />
-        <atom:TabItem Header="{gallery:ShowCaseScenarioLangResource Paging}" Tag="Paging" />
+        <atom:TabItem Header="{gallery:DataGridShowCaseLangResource ScenarioBasic}" Tag="Basic" />
+        <atom:TabItem Header="{gallery:DataGridShowCaseLangResource ScenarioInteraction}" Tag="Interaction" />
+        <atom:TabItem Header="{gallery:DataGridShowCaseLangResource ScenarioFiltering}" Tag="Filtering" />
+        <atom:TabItem Header="{gallery:DataGridShowCaseLangResource ScenarioStructure}" Tag="Structure" />
+        <atom:TabItem Header="{gallery:DataGridShowCaseLangResource ScenarioFixed}" Tag="Fixed" />
+        <atom:TabItem Header="{gallery:DataGridShowCaseLangResource ScenarioDrag}" Tag="Drag" />
+        <atom:TabItem Header="{gallery:DataGridShowCaseLangResource ScenarioEditing}" Tag="Editing" />
+        <atom:TabItem Header="{gallery:DataGridShowCaseLangResource ScenarioPaging}" Tag="Paging" />
     </atom:TabControl>
 </UserControl>

@@ -1,8 +1,14 @@
+using System.Globalization;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.DataLoad;
+using AtomUI.Theme.Language;
+using Avalonia;
 using Avalonia.Interactivity;
+using AtomUIGallery.Localization;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -18,51 +24,77 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         {
             if (DataContext is CascaderViewModel viewModel)
             {
-                InitBasicCascaderData(viewModel);
-                InitDefaultValueCascaderData(viewModel);
-                InitHoverCascaderData(viewModel);
-                InitDisabledCascaderData(viewModel);
-                InitSelectParentCascaderData(viewModel);
-                InitMultiSelectCascaderData(viewModel);
-                InitCheckStrategyCascaderData(viewModel);
-                InitPrefixAndSuffixCascaderData(viewModel);
-                InitPlacementCascaderData(viewModel);
-                InitSearchCascaderData(viewModel);
-                InitSizeCascaderData(viewModel);
-                InitCascaderViewData(viewModel);
-                InitCascaderViewAsyncLoadData(viewModel);
-                InitCascaderViewSearchData(viewModel);
-                InitCascaderViewDefaultExpandData(viewModel);
+                RefreshCascaderData(viewModel);
+                ApplyCascaderData(viewModel);
 
-                BasicCascader.OptionsSource = viewModel.BasicCascaderViewNodes;
-                DefaultValueCascader.OptionsSource = viewModel.BasicCascaderViewNodes;
-                DefaultValueCascader.DefaultSelectOptionPath = viewModel.DefaultSelectOptionPath;
-                HoverCascader.OptionsSource = viewModel.HoverCascaderNodes;
-                DisabledCascader.OptionsSource = viewModel.DisabledCascaderNodes;
-                SelectParentCascader.OptionsSource = viewModel.SelectParentCascaderNodes;
-                MultiSelectCascader.OptionsSource = viewModel.MultipleSelectCascaderNodes;
-                CheckStrategyAllCascader.OptionsSource = viewModel.CheckStrategyShowAllCascaderNodes;
-                CheckStrategyShowParentCascader.OptionsSource = viewModel.CheckStrategyShowParentCascaderNodes;
-                SearchCascader.OptionsSource = viewModel.SearchCascaderNodes;
-                AsyncLoadCascader.OptionsSource = viewModel.AsyncLoadCascaderViewNodes;
-                AsyncLoadCascader.DataLoader = viewModel.AsyncCascaderNodeLoader;
-                PrefixAndSuffixCascader1.OptionsSource = viewModel.PrefixAndSuffixCascaderNodes;
-                PrefixAndSuffixCascader2.OptionsSource = viewModel.PrefixAndSuffixCascaderNodes;
-                PrefixAndSuffixCascader3.OptionsSource = viewModel.PrefixAndSuffixCascaderNodes;
-                PlacementCascader.OptionsSource = viewModel.PlacementCascaderNodes;
-                SizeCascader1.OptionsSource = viewModel.SizeCascaderNodes;
-                SizeCascader2.OptionsSource = viewModel.SizeCascaderNodes;
-                SizeCascader3.OptionsSource = viewModel.SizeCascaderNodes;
-                BasicCascaderView.OptionsSource = viewModel.BasicCascaderViewNodes;
-                BasicCheckableCascaderView.OptionsSource = viewModel.BasicCheckableCascaderViewNodes;
-                AsyncLoadCascaderView.OptionsSource = viewModel.AsyncLoadCascaderViewNodes;
-                AsyncLoadCascaderView.DataLoader = viewModel.AsyncCascaderNodeLoader;
-                SearchCascaderViewItemsSource.OptionsSource = viewModel.SearchCascaderViewNodes;
-                DefaultExpandCascaderView.DefaultExpandedPath = viewModel.DefaultExpandPath;
-                DefaultExpandCascaderView.OptionsSource = viewModel.DefaultExpandCascaderViewNodes;
+                var themeManager = Application.Current?.GetThemeManager();
+                if (themeManager != null)
+                {
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) =>
+                    {
+                        RefreshCascaderData(viewModel);
+                        ApplyCascaderData(viewModel);
+                    };
+                    themeManager.LanguageVariantChanged += handler;
+                    disposables.Add(Disposable.Create(() => themeManager.LanguageVariantChanged -= handler));
+                }
             }
         });
         InitializeComponent();
+    }
+
+    private void RefreshCascaderData(CascaderViewModel viewModel)
+    {
+        InitBasicCascaderData(viewModel);
+        InitDefaultValueCascaderData(viewModel);
+        InitHoverCascaderData(viewModel);
+        InitDisabledCascaderData(viewModel);
+        InitSelectParentCascaderData(viewModel);
+        InitMultiSelectCascaderData(viewModel);
+        InitCheckStrategyCascaderData(viewModel);
+        InitPrefixAndSuffixCascaderData(viewModel);
+        InitPlacementCascaderData(viewModel);
+        InitSearchCascaderData(viewModel);
+        InitSizeCascaderData(viewModel);
+        InitCascaderViewData(viewModel);
+        InitCascaderViewAsyncLoadData(viewModel);
+        InitCascaderViewSearchData(viewModel);
+        InitCascaderViewDefaultExpandData(viewModel);
+    }
+
+    private void ApplyCascaderData(CascaderViewModel viewModel)
+    {
+        BasicCascader.OptionsSource                    = viewModel.BasicCascaderViewNodes;
+        DefaultValueCascader.OptionsSource             = viewModel.BasicCascaderViewNodes;
+        DefaultValueCascader.DefaultSelectOptionPath   = viewModel.DefaultSelectOptionPath;
+        HoverCascader.OptionsSource                    = viewModel.HoverCascaderNodes;
+        DisabledCascader.OptionsSource                 = viewModel.DisabledCascaderNodes;
+        SelectParentCascader.OptionsSource             = viewModel.SelectParentCascaderNodes;
+        MultiSelectCascader.OptionsSource              = viewModel.MultipleSelectCascaderNodes;
+        CheckStrategyAllCascader.OptionsSource         = viewModel.CheckStrategyShowAllCascaderNodes;
+        CheckStrategyShowParentCascader.OptionsSource  = viewModel.CheckStrategyShowParentCascaderNodes;
+        SearchCascader.OptionsSource                   = viewModel.SearchCascaderNodes;
+        AsyncLoadCascader.OptionsSource                = viewModel.AsyncLoadCascaderViewNodes;
+        AsyncLoadCascader.DataLoader                   = viewModel.AsyncCascaderNodeLoader;
+        PrefixAndSuffixCascader1.OptionsSource         = viewModel.PrefixAndSuffixCascaderNodes;
+        PrefixAndSuffixCascader2.OptionsSource         = viewModel.PrefixAndSuffixCascaderNodes;
+        PrefixAndSuffixCascader3.OptionsSource         = viewModel.PrefixAndSuffixCascaderNodes;
+        PlacementCascader.OptionsSource                = viewModel.PlacementCascaderNodes;
+        SizeCascader1.OptionsSource                    = viewModel.SizeCascaderNodes;
+        SizeCascader2.OptionsSource                    = viewModel.SizeCascaderNodes;
+        SizeCascader3.OptionsSource                    = viewModel.SizeCascaderNodes;
+        BasicCascaderView.OptionsSource                = viewModel.BasicCascaderViewNodes;
+        BasicCheckableCascaderView.OptionsSource       = viewModel.BasicCheckableCascaderViewNodes;
+        AsyncLoadCascaderView.OptionsSource            = viewModel.AsyncLoadCascaderViewNodes;
+        AsyncLoadCascaderView.DataLoader               = viewModel.AsyncCascaderNodeLoader;
+        SearchCascaderViewItemsSource.OptionsSource    = viewModel.SearchCascaderViewNodes;
+        DefaultExpandCascaderView.DefaultExpandedPath  = viewModel.DefaultExpandPath;
+        DefaultExpandCascaderView.OptionsSource        = viewModel.DefaultExpandCascaderViewNodes;
+    }
+
+    private static string Lang(CascaderShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return CascaderShowCaseLanguage.Get(resourceKind, fallback);
     }
 
     private void InitBasicCascaderData(CascaderViewModel viewModel)
@@ -70,22 +102,22 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.BasicCascaderViewNodes = [
             new CascaderOption()
             {
-                Header  = "Zhejiang",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 ItemKey = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Hangzhou",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         ItemKey = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "West Lake",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 ItemKey = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header  = "Lingyin shi",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 ItemKey = "lingyinshi",
                             }
                         ]
@@ -94,17 +126,17 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header  = "Jiangsu",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 ItemKey = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Nanjing",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         ItemKey = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "Zhong Hua Men",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 ItemKey = "zhonghuamen",
                             }
                         ]
@@ -124,22 +156,22 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.HoverCascaderNodes = [
             new CascaderOption()
             {
-                Header  = "Zhejiang",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 ItemKey = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Hangzhou",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         ItemKey = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "West Lake",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 ItemKey = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header  = "Lingyin shi",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 ItemKey = "lingyinshi",
                             }
                         ]
@@ -148,17 +180,17 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header  = "Jiangsu",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 ItemKey = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Nanjing",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         ItemKey = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "Zhong Hua Men",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 ItemKey = "zhonghuamen",
                             }
                         ]
@@ -173,28 +205,28 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.DisabledCascaderNodes = [
             new CascaderOption()
             {
-                Header  = "Zhejiang",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 ItemKey = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Hangzhou",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         ItemKey = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "West Lake",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 ItemKey = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header  = "Lingyin shi",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 ItemKey = "lingyinshi",
                             },
                             new CascaderOption()
                             {
                                 IsEnabled = false,
-                                Header    = "Hefang jie",
+                                Header    = Lang(CascaderShowCaseLangResourceKind.P2HeaderHefangJie, "Hefang jie"),
                                 ItemKey   = "Hefang jie",
                             }
                         ]
@@ -203,18 +235,18 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header    = "Jiangsu",
+                Header    = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 ItemKey   = "jiangsu",
                 IsEnabled = false,
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Nanjing",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         ItemKey = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "Zhong Hua Men",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 ItemKey = "zhonghuamen",
                             }
                         ]
@@ -229,22 +261,22 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.SelectParentCascaderNodes = [
             new CascaderOption()
             {
-                Header  = "Zhejiang",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 ItemKey = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Hangzhou",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         ItemKey = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "West Lake",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 ItemKey = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header  = "Lingyin shi",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 ItemKey = "lingyinshi",
                             }
                         ]
@@ -253,17 +285,17 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header  = "Jiangsu",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 ItemKey = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Nanjing",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         ItemKey = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "Zhong Hua Men",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 ItemKey = "zhonghuamen",
                             }
                         ]
@@ -289,50 +321,50 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         return [
             new CascaderOption()
             {
-                Header  = "Zhejiang",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 ItemKey = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Hangzhou",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         ItemKey = "hangzhou",
                         Children = [
-                            new CascaderOption() { Header = "West Lake",  ItemKey = "xihu" },
-                            new CascaderOption() { Header = "Lingyin shi", ItemKey = "lingyinshi" }
+                            new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),  ItemKey = "xihu" },
+                            new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"), ItemKey = "lingyinshi" }
                         ]
                     },
                     new CascaderOption()
                     {
-                        Header  = "Ningbo",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNingbo, "Ningbo"),
                         ItemKey = "ningbo",
                         Children = [
-                            new CascaderOption() { Header = "Tianyi Pavilion", ItemKey = "tianyige" },
-                            new CascaderOption() { Header = "Moon Lake",       ItemKey = "yuehu" }
+                            new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderTianyiPavilion, "Tianyi Pavilion"), ItemKey = "tianyige" },
+                            new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderMoonLake, "Moon Lake"),       ItemKey = "yuehu" }
                         ]
                     }
                 ]
             },
             new CascaderOption()
             {
-                Header  = "Jiangsu",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 ItemKey = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Nanjing",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         ItemKey = "nanjing",
                         Children = [
-                            new CascaderOption() { Header = "Zhong Hua Men",         ItemKey = "zhonghuamen" },
-                            new CascaderOption() { Header = "Sun Yat-sen Mausoleum", ItemKey = "zhongshanling" }
+                            new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),         ItemKey = "zhonghuamen" },
+                            new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderSunYatSenMausoleum, "Sun Yat-sen Mausoleum"), ItemKey = "zhongshanling" }
                         ]
                     },
                     new CascaderOption()
                     {
-                        Header  = "Suzhou",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderSuzhou, "Suzhou"),
                         ItemKey = "suzhou",
                         Children = [
-                            new CascaderOption() { Header = "Humble Administrator's Garden", ItemKey = "zhuozhengyuan" },
-                            new CascaderOption() { Header = "Lingering Garden",              ItemKey = "liuyuan" }
+                            new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderHumbleAdministratorsGarden, "Humble Administrator's Garden"), ItemKey = "zhuozhengyuan" },
+                            new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingeringGarden, "Lingering Garden"),              ItemKey = "liuyuan" }
                         ]
                     }
                 ]
@@ -344,68 +376,68 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
     {
         var lightNode = new CascaderOption()
         {
-            Header = "Light",
+            Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderLight, "Light"),
             Value  = "light",
             Children = [
-                new CascaderOption() { Header = "Bamboo", Value = "bamboo" },
-                new CascaderOption() { Header = "Little", Value = "little" }
+                new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderBamboo, "Bamboo"), Value = "bamboo" },
+                new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderLittle, "Little"), Value = "little" }
             ]
         };
         var boyNode = new CascaderOption()
         {
-            Header = "Bamboo Boy",
+            Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderBambooBoy, "Bamboo Boy"),
             Value  = "bambooBoy",
             Children = [
-                new CascaderOption() { Header = "Little", Value = "little" },
-                new CascaderOption() { Header = "Tadpole", Value = "tadpole" }
+                new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderLittle, "Little"), Value = "little" },
+                new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderTadpole, "Tadpole"), Value = "tadpole" }
             ]
         };
         var mergeNode = new CascaderOption()
         {
-            Header = "Little Tadpole",
+            Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderLittleTadpole, "Little Tadpole"),
             Value  = "littleTadpole",
         };
 
         var zhangSanNode = new CascaderOption()
         {
-            Header   = "Zhang San",
+            Header   = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhangSan, "Zhang San"),
             Value    = "zhangsan",
             Children = [lightNode, boyNode, mergeNode]
         };
 
         var greenNode = new CascaderOption()
         {
-            Header = "Green",
+            Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderGreen, "Green"),
             Value  = "green",
             Children = [
-                new CascaderOption() { Header = "Wild Wolf", Value = "wildWolf" },
-                new CascaderOption() { Header = "Gray Wolf", Value = "grayWolf" }
+                new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderWildWolf, "Wild Wolf"), Value = "wildWolf" },
+                new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderGrayWolf, "Gray Wolf"), Value = "grayWolf" }
             ]
         };
 
         var yellowNode = new CascaderOption()
         {
-            Header = "Yellow",
+            Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderYellow, "Yellow"),
             Value  = "yellow",
             Children = [
-                new CascaderOption() { Header = "Jiao Tailang", Value = "jiaoTailang" },
-                new CascaderOption() { Header = "Banban", Value = "banban" }
+                new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiaoTailang, "Jiao Tailang"), Value = "jiaoTailang" },
+                new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderBanban, "Banban"), Value = "banban" }
             ]
         };
 
         var bigNode = new CascaderOption()
         {
-            Header = "Big",
+            Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderBig, "Big"),
             Value  = "big",
             Children = [
-                new CascaderOption() { Header = "Feifei", Value = "feifei" },
-                new CascaderOption() { Header = "Xiao Xingxing", Value = "xiaoxingxing" }
+                new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderFeifei, "Feifei"), Value = "feifei" },
+                new CascaderOption() { Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderXiaoXingxing, "Xiao Xingxing"), Value = "xiaoxingxing" }
             ]
         };
 
         var xiaoHuihuiNode = new CascaderOption()
         {
-            Header   = "Xiao Huihui",
+            Header   = Lang(CascaderShowCaseLangResourceKind.P2HeaderXiaoHuihui, "Xiao Huihui"),
             Value    = "xiaoHuihui",
             Children = [greenNode, yellowNode, bigNode]
         };
@@ -417,22 +449,22 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.PrefixAndSuffixCascaderNodes = [
             new CascaderOption()
             {
-                Header  = "Zhejiang",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 ItemKey = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Hangzhou",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         ItemKey = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "West Lake",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 ItemKey = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header  = "Lingyin shi",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 ItemKey = "lingyinshi",
                             }
                         ]
@@ -441,17 +473,17 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header  = "Jiangsu",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 ItemKey = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Nanjing",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         ItemKey = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "Zhong Hua Men",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 ItemKey = "zhonghuamen",
                             }
                         ]
@@ -467,22 +499,22 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.PlacementCascaderNodes = [
             new CascaderOption()
             {
-                Header  = "Zhejiang",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 ItemKey = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Hangzhou",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         ItemKey = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "West Lake",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 ItemKey = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header  = "Lingyin shi",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 ItemKey = "lingyinshi",
                             }
                         ]
@@ -491,17 +523,17 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header  = "Jiangsu",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 ItemKey = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Nanjing",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         ItemKey = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "Zhong Hua Men",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 ItemKey = "zhonghuamen",
                             }
                         ]
@@ -516,27 +548,27 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.SearchCascaderNodes = [
             new CascaderOption()
             {
-                Header  = "Zhejiang",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 ItemKey = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Hangzhou",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         ItemKey = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "West Lake",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 ItemKey = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header  = "Lingyin shi",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 ItemKey = "lingyinshi",
                             },
                             new CascaderOption()
                             {
-                                Header    = "XiSha",
+                                Header    = Lang(CascaderShowCaseLangResourceKind.P2HeaderXisha, "Xisha"),
                                 ItemKey   = "xisha",
                                 IsEnabled = false,
                             }
@@ -546,17 +578,17 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header  = "Jiangsu",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 ItemKey = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Nanjing",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         ItemKey = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "Zhong Hua Men",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 ItemKey = "zhonghuamen",
                             }
                         ]
@@ -571,22 +603,22 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.SizeCascaderNodes = [
             new CascaderOption()
             {
-                Header  = "Zhejiang",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 ItemKey = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Hangzhou",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         ItemKey = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "West Lake",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 ItemKey = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header  = "Lingyin shi",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 ItemKey = "lingyinshi",
                             }
                         ]
@@ -595,17 +627,17 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header  = "Jiangsu",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 ItemKey = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Nanjing",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         ItemKey = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "Zhong Hua Men",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 ItemKey = "zhonghuamen",
                             }
                         ]
@@ -620,22 +652,22 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.BasicCascaderViewNodes = [
             new CascaderOption()
             {
-                Header = "Zhejiang",
+                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 Value  = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header = "Hangzhou",
+                        Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         Value  = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header = "West Lake",
+                                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 Value  = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header = "Lingyin shi",
+                                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 Value  = "lingyinshi",
                             }
                         ]
@@ -644,17 +676,17 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header = "Jiangsu",
+                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 Value  = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header = "Nanjing",
+                        Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         Value  = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header = "Zhong Hua Men",
+                                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 Value  = "zhonghuamen",
                             }
                         ]
@@ -665,22 +697,22 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.BasicCheckableCascaderViewNodes = [
             new CascaderOption()
             {
-                Header = "Zhejiang",
+                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 Value  = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header = "Hangzhou",
+                        Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         Value  = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header = "West Lake",
+                                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 Value  = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header = "Lingyin shi",
+                                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 Value  = "lingyinshi",
                             }
                         ]
@@ -689,17 +721,17 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header = "Jiangsu",
+                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 Value  = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header = "Nanjing",
+                        Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         Value  = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header = "Zhong Hua Men",
+                                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 Value  = "zhonghuamen",
                             }
                         ]
@@ -714,13 +746,13 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.AsyncLoadCascaderViewNodes = [
             new CascaderOption()
             {
-                Header = "Zhejiang",
+                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 Value  = "zhejiang",
                 IsLeaf = false,
             },
             new CascaderOption()
             {
-                Header = "Jiangsu",
+                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 Value  = "jiangsu",
                 IsLeaf = false,
             }
@@ -733,27 +765,27 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.SearchCascaderViewNodes = [
             new CascaderOption()
             {
-                Header = "Zhejiang",
+                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 Value  = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header = "Hangzhou",
+                        Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         Value  = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header = "West Lake",
+                                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 Value  = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header = "Lingyin shi",
+                                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 Value  = "lingyinshi",
                             },
                             new CascaderOption()
                             {
-                                Header    = "XiSha",
+                                Header    = Lang(CascaderShowCaseLangResourceKind.P2HeaderXisha, "Xisha"),
                                 Value     = "xisha",
                                 IsEnabled = false,
                             }
@@ -763,17 +795,17 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header = "Jiangsu",
+                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 Value  = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header = "Nanjing",
+                        Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         Value  = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header = "Zhong Hua Men",
+                                Header = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 Value  = "zhonghuamen",
                             }
                         ]
@@ -789,27 +821,27 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
         viewModel.DefaultExpandCascaderViewNodes = [
             new CascaderOption()
             {
-                Header  = "Zhejiang",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhejiang, "Zhejiang"),
                 ItemKey = "zhejiang",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Hangzhou",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderHangzhou, "Hangzhou"),
                         ItemKey = "hangzhou",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "West Lake",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderWestLake, "West Lake"),
                                 ItemKey = "xihu",
                             },
                             new CascaderOption()
                             {
-                                Header  = "Lingyin shi",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderLingyinShi, "Lingyin shi"),
                                 ItemKey = "lingyinshi",
                             },
                             new CascaderOption()
                             {
-                                Header    = "XiSha",
+                                Header    = Lang(CascaderShowCaseLangResourceKind.P2HeaderXisha, "Xisha"),
                                 ItemKey   = "xisha",
                                 IsEnabled = false,
                             }
@@ -819,17 +851,17 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             },
             new CascaderOption()
             {
-                Header  = "Jiangsu",
+                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderJiangsu, "Jiangsu"),
                 ItemKey = "jiangsu",
                 Children = [
                     new CascaderOption()
                     {
-                        Header  = "Nanjing",
+                        Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderNanjing, "Nanjing"),
                         ItemKey = "nanjing",
                         Children = [
                             new CascaderOption()
                             {
-                                Header  = "Zhong Hua Men",
+                                Header  = Lang(CascaderShowCaseLangResourceKind.P2HeaderZhongHuaMen, "Zhong Hua Men"),
                                 ItemKey = "zhonghuamen",
                             }
                         ]
@@ -869,5 +901,29 @@ public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
             2 => SelectPopupPlacement.BottomEdgeAlignedLeft,
             _ => SelectPopupPlacement.BottomEdgeAlignedRight
         };
+    }
+}
+
+internal static class CascaderShowCaseLanguage
+{
+    public static string Get(CascaderShowCaseLangResourceKind resourceKind, string fallback)
+    {
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? fallback;
+    }
+
+    public static string Format(CascaderShowCaseLangResourceKind resourceKind, string fallback, params object?[] args)
+    {
+        return string.Format(CultureInfo.CurrentCulture, Get(resourceKind, fallback), args);
+    }
+
+    public static string FormatDynamicOption(ICascaderOption targetCascaderItem, int index)
+    {
+        var parentHeader = targetCascaderItem.Header?.ToString()
+                           ?? targetCascaderItem.Value?.ToString()
+                           ?? string.Empty;
+        return Format(CascaderShowCaseLangResourceKind.P2HeaderDynamicOptionFormat,
+            "{0} Dynamic {1}",
+            parentHeader,
+            index);
     }
 }

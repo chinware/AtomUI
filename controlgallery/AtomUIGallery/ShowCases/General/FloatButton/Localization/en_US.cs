@@ -28,6 +28,10 @@ internal class en_US : LanguageProvider
     public const string BadgeDescription = "FloatButton with Badge.";
     public const string BackTopTitle = "BackTop";
     public const string BackTopDescription = "BackTop makes it easy to go back to the top of the page.";
+    public const string P2TooltipSinceN5N25N0 = "Since 5.25.0+";
+    public const string P2TooltipDocuments = "Documents";
+    public const string P2DescriptionHelpInfo = "HELP INFO";
+    public const string P2TextScrollToBottom = "Scroll to bottom";
 
     protected override Type GetResourceKindType() => typeof(FloatButtonShowCaseLangResourceKind);
 }

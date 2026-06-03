@@ -1,6 +1,5 @@
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using AtomUIGallery.ShowCases.TreeView;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.TreeSelect;
@@ -61,9 +60,9 @@ public class TreeSelectViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _asyncLoadTreeNodes, value);
     }
 
-    private TreeItemDataLoader? _asyncLoadTreeNodeLoader;
+    private ITreeItemNodeLoader? _asyncLoadTreeNodeLoader;
 
-    public TreeItemDataLoader? AsyncLoadTreeNodeLoader
+    public ITreeItemNodeLoader? AsyncLoadTreeNodeLoader
     {
         get => _asyncLoadTreeNodeLoader;
         set => this.RaiseAndSetIfChanged(ref _asyncLoadTreeNodeLoader, value);

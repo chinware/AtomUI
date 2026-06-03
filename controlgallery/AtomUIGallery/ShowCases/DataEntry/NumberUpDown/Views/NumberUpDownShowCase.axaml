@@ -27,8 +27,11 @@
                                     Increment="0.0001"
                                     Minimum="0"
                                     Maximum="100"
-                                    PlaceholderText="Input weight" />
-                <TextBlock Text="{Binding StringModeValue, StringFormat=Raw: {0}}"/>
+                                    PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextInputWeight}" />
+                <TextBlock>
+                    <Run Text="{gallery:NumberUpDownShowCaseLangResource P2TextRawValuePrefix}" />
+                    <Run Text="{Binding StringModeValue}" />
+                </TextBlock>
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -36,12 +39,12 @@
             Title="{gallery:NumberUpDownShowCaseLangResource KeyboardBehaviorTitle}"
             Description="{gallery:NumberUpDownShowCaseLangResource KeyboardBehaviorDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:CheckBox Content="Keyboard enabled"
+                <atom:CheckBox Content="{gallery:NumberUpDownShowCaseLangResource P2ContentKeyboardEnabled}"
                           IsChecked="{Binding KeyboardEnabled}"/>
                 <atom:NumericUpDown Value="1.2"
                                     Increment="0.1"
                                     IsKeyboardEnabled="{Binding KeyboardEnabled}"
-                                    PlaceholderText="Keyboard disabled" />
+                                    PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextKeyboardDisabled}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -50,7 +53,7 @@
             Description="{gallery:NumberUpDownShowCaseLangResource MouseWheelBehaviorDescription}">
             <atom:NumericUpDown Value="2.5"
                                 Increment="0.5"
-                                PlaceholderText="Focus and scroll wheel" />
+                                PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextFocusAndScrollWheel}" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
@@ -124,7 +127,7 @@
         <gallery:ShowCaseItem
             Title="{gallery:NumberUpDownShowCaseLangResource WithClearIconTitle}"
             Description="{gallery:NumberUpDownShowCaseLangResource WithClearIconDescription}">
-            <atom:NumericUpDown PlaceholderText="input with clear icon" Width="400" HorizontalAlignment="Left"
+            <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextInputWithClearIcon}" Width="400" HorizontalAlignment="Left"
                                 IsAllowClear="True" />
         </gallery:ShowCaseItem>
 
@@ -132,7 +135,7 @@
             Title="{gallery:NumberUpDownShowCaseLangResource PrefixAndSuffixTitle}"
             Description="{gallery:NumberUpDownShowCaseLangResource PrefixAndSuffixDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:NumericUpDown PlaceholderText="Enter your value"
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextEnterYourValue}"
                                     InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
                                     InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, FillBrush=#8C8C8C}" />
                 <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" />
@@ -144,24 +147,24 @@
             Title="{gallery:NumberUpDownShowCaseLangResource StatusTitle}"
             Description="{gallery:NumberUpDownShowCaseLangResource StatusDescription}">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <atom:NumericUpDown PlaceholderText="Error" Status="Error" />
-                <atom:NumericUpDown PlaceholderText="Warning" Status="Warning" />
-                <atom:NumericUpDown PlaceholderText="Error with prefix"
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextError}" Status="Error" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarning}" Status="Warning" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextErrorWithPrefix}"
                                     InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}" Status="Error" />
-                <atom:NumericUpDown PlaceholderText="Warning with prefix"
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarningWithPrefix}"
                                     InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}" Status="Warning" />
 
-                <atom:NumericUpDown PlaceholderText="Error" Status="Error"
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextError}" Status="Error"
                                     InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
                                     StyleVariant="Filled" />
-                <atom:NumericUpDown PlaceholderText="Warning" Status="Warning"
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarning}" Status="Warning"
                                     InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
                                     StyleVariant="Filled" />
 
-                <atom:NumericUpDown PlaceholderText="Error" Status="Error"
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextError}" Status="Error"
                                     InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
                                     StyleVariant="Borderless" />
-                <atom:NumericUpDown PlaceholderText="Warning" Status="Warning"
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarning}" Status="Warning"
                                     InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
                                     StyleVariant="Borderless" />
             </StackPanel>

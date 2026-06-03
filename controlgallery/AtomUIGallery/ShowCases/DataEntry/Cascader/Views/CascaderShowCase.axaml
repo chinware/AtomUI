@@ -12,7 +12,7 @@
             Description="{gallery:CascaderShowCaseLangResource BasicDescription}">
             <atom:Cascader
                 Name="BasicCascader"
-                PlaceholderText="Please select"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                 IsAllowClear="True">
                 <atom:Cascader.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
@@ -28,7 +28,7 @@
             Description="{gallery:CascaderShowCaseLangResource DefaultValueDescription}">
             <atom:Cascader
                 Name="DefaultValueCascader"
-                PlaceholderText="Please select"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                 IsAllowClear="True">
                 <atom:Cascader.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
@@ -44,7 +44,7 @@
             Description="{gallery:CascaderShowCaseLangResource HoverDescription}">
             <atom:Cascader
                 Name="HoverCascader"
-                PlaceholderText="Please select"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                 IsAllowClear="True"
                 ExpandTrigger="Hover">
                 <atom:Cascader.OptionTemplate>
@@ -61,7 +61,7 @@
             Description="{gallery:CascaderShowCaseLangResource DisabledOptionDescription}">
             <atom:Cascader
                 Name="DisabledCascader"
-                PlaceholderText="Please select"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                 IsAllowClear="True">
                 <atom:Cascader.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
@@ -77,7 +77,7 @@
             Description="{gallery:CascaderShowCaseLangResource ChangeOnSelectDescription}">
             <atom:Cascader
                 Name="SelectParentCascader"
-                PlaceholderText="Please select"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                 IsAllowClear="True"
                 IsAllowSelectParent="True">
                 <atom:Cascader.OptionTemplate>
@@ -94,7 +94,7 @@
             Description="{gallery:CascaderShowCaseLangResource MultipleDescription}">
             <atom:Cascader
                 Name="MultiSelectCascader"
-                PlaceholderText="Please select"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                 HorizontalAlignment="Stretch"
                 ShowCheckedStrategy="ShowParent"
                 IsAllowClear="True"
@@ -112,10 +112,10 @@
             Title="{gallery:CascaderShowCaseLangResource ShowCheckedStrategyTitle}"
             Description="{gallery:CascaderShowCaseLangResource ShowCheckedStrategyDescription}">
             <StackPanel Spacing="15">
-                <atom:Separator Title="ShowCheckedStrategy=All"/>
+                <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleShowcheckedstrategyAll}"/>
                 <atom:Cascader
                     Name="CheckStrategyAllCascader"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     HorizontalAlignment="Stretch"
                     ShowCheckedStrategy="All"
                     IsAllowClear="True"
@@ -128,10 +128,10 @@
                         </TreeDataTemplate>
                     </atom:Cascader.OptionTemplate>
                 </atom:Cascader>
-                <atom:Separator Title="ShowCheckedStrategy=ShowParent"/>
+                <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleShowcheckedstrategyShowparent}"/>
                 <atom:Cascader
                     Name="CheckStrategyShowParentCascader"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     HorizontalAlignment="Stretch"
                     ShowCheckedStrategy="ShowParent"
                     IsAllowClear="True"
@@ -152,7 +152,7 @@
             Description="{gallery:CascaderShowCaseLangResource SearchDescription}">
             <atom:Cascader
                 Name="SearchCascader"
-                PlaceholderText="Please select"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                 IsAllowClear="True"
                 IsFilterEnabled="True">
                 <atom:Cascader.OptionTemplate>
@@ -170,7 +170,7 @@
             <atom:Cascader
                 Name="AsyncLoadCascader"
                 x:DataType="viewModels:CascaderViewModel"
-                PlaceholderText="Please select"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                 IsAllowClear="True">
                 <atom:Cascader.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
@@ -187,7 +187,7 @@
             <StackPanel Spacing="10">
                 <atom:Cascader
                     Name="PrefixAndSuffixCascader1"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True"
                     SuffixIcon="{antdicons:AntDesignIconProvider SmileOutlined}">
                     <atom:Cascader.OptionTemplate>
@@ -200,7 +200,7 @@
 
                 <atom:Cascader
                     Name="PrefixAndSuffixCascader2"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True">
                     <atom:Cascader.ExpandIcon>
                         <atom:IconTemplate>
@@ -217,7 +217,7 @@
 
                 <atom:Cascader
                     Name="PrefixAndSuffixCascader3"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True">
                     <atom:Cascader.ContentLeftAddOn>
                         <antdicons:SmileOutlined/>
@@ -238,7 +238,7 @@
             <StackPanel Spacing="15">
                 <atom:Cascader
                     x:DataType="viewModels:CascaderViewModel"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True"
                     StyleVariant="Borderless">
                     <atom:Cascader.OptionTemplate>
@@ -251,7 +251,7 @@
 
                 <atom:Cascader
                     x:DataType="viewModels:CascaderViewModel"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True"
                     StyleVariant="Filled">
                     <atom:Cascader.OptionTemplate>
@@ -264,7 +264,7 @@
 
                 <atom:Cascader
                     x:DataType="viewModels:CascaderViewModel"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True"
                     StyleVariant="Outlined">
                     <atom:Cascader.OptionTemplate>
@@ -277,7 +277,7 @@
 
                 <atom:Cascader
                     x:DataType="viewModels:CascaderViewModel"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True"
                     StyleVariant="Underlined">
                     <atom:Cascader.OptionTemplate>
@@ -295,17 +295,17 @@
             Description="{gallery:CascaderShowCaseLangResource PlacementDescription}">
 
             <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:TextBlock VerticalAlignment="Center">Placement:</atom:TextBlock>
+                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:CascaderShowCaseLangResource P2TextPlacement}" />
                 <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandlePlacementOptionCheckedChanged">
-                    <atom:OptionButton IsChecked="True">TopLeft</atom:OptionButton>
-                    <atom:OptionButton>TopRight</atom:OptionButton>
-                    <atom:OptionButton>BottomLeft</atom:OptionButton>
-                    <atom:OptionButton>BottomRight</atom:OptionButton>
+                    <atom:OptionButton IsChecked="True" Content="{gallery:CascaderShowCaseLangResource P2ContentTopleft}" />
+                    <atom:OptionButton Content="{gallery:CascaderShowCaseLangResource P2ContentTopright}" />
+                    <atom:OptionButton Content="{gallery:CascaderShowCaseLangResource P2ContentBottomleft}" />
+                    <atom:OptionButton Content="{gallery:CascaderShowCaseLangResource P2ContentBottomright}" />
                 </atom:OptionButtonGroup>
                 <atom:Cascader
                     Name="PlacementCascader"
                     x:DataType="viewModels:CascaderViewModel"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True"
                     Placement="{Binding Placement}">
                     <atom:Cascader.OptionTemplate>
@@ -325,7 +325,7 @@
             <StackPanel Spacing="15">
                 <atom:Cascader
                     x:DataType="viewModels:CascaderViewModel"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True"
                     Status="Error">
                     <atom:Cascader.OptionTemplate>
@@ -338,7 +338,7 @@
 
                 <atom:Cascader
                     x:DataType="viewModels:CascaderViewModel"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True"
                     Status="Warning">
                     <atom:Cascader.OptionTemplate>
@@ -359,7 +359,7 @@
                 <atom:Cascader
                     Name="SizeCascader1"
                     x:DataType="viewModels:CascaderViewModel"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     OptionsSource="{Binding SizeCascaderNodes}"
                     IsAllowClear="True"
                     SizeType="Large">
@@ -374,7 +374,7 @@
                 <atom:Cascader
                     Name="SizeCascader2"
                     x:DataType="viewModels:CascaderViewModel"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True"
                     OptionsSource="{Binding SizeCascaderNodes}"
                     SizeType="Middle">
@@ -389,7 +389,7 @@
                 <atom:Cascader
                     Name="SizeCascader3"
                     x:DataType="viewModels:CascaderViewModel"
-                    PlaceholderText="Please select"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                     IsAllowClear="True"
                     OptionsSource="{Binding SizeCascaderNodes}"
                     SizeType="Small">
@@ -409,29 +409,29 @@
             Description="{gallery:CascaderShowCaseLangResource BasicCascaderViewDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:CascaderView>
-                    <atom:CascaderOption Header="Zhejiang" Value="zhejiang">
-                        <atom:CascaderOption Header="Hangzhou" Value="hangzhou">
-                            <atom:CascaderOption Header="West Lake" Value="xihu" />
-                            <atom:CascaderOption Header="Lingyin shi" Value="lingyinshi" />
+                    <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderZhejiang}" Value="zhejiang">
+                        <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderHangzhou}" Value="hangzhou">
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderWestLake}" Value="xihu" />
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderLingyinShi}" Value="lingyinshi" />
                         </atom:CascaderOption>
                     </atom:CascaderOption>
-                    <atom:CascaderOption Header="Jiangsu" Value="jiangsu">
-                        <atom:CascaderOption Header="Nanjing" Value="nanjing">
-                            <atom:CascaderOption Header="Zhong Hua Men" Value="zhonghuamen" />
+                    <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderJiangsu}" Value="jiangsu">
+                        <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderNanjing}" Value="nanjing">
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderZhongHuaMen}" Value="zhonghuamen" />
                         </atom:CascaderOption>
                     </atom:CascaderOption>
                 </atom:CascaderView>
 
                 <atom:CascaderView IsCheckable="True">
-                    <atom:CascaderOption Header="Zhejiang" Value="zhejiang">
-                        <atom:CascaderOption Header="Hangzhou" Value="hangzhou">
-                            <atom:CascaderOption Header="West Lake" Value="xihu" />
-                            <atom:CascaderOption Header="Lingyin shi" Value="lingyinshi" />
+                    <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderZhejiang}" Value="zhejiang">
+                        <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderHangzhou}" Value="hangzhou">
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderWestLake}" Value="xihu" />
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderLingyinShi}" Value="lingyinshi" />
                         </atom:CascaderOption>
                     </atom:CascaderOption>
-                    <atom:CascaderOption Header="Jiangsu" Value="jiangsu">
-                        <atom:CascaderOption Header="Nanjing" Value="nanjing">
-                            <atom:CascaderOption Header="Zhong Hua Men" Value="zhonghuamen" />
+                    <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderJiangsu}" Value="jiangsu">
+                        <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderNanjing}" Value="nanjing">
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderZhongHuaMen}" Value="zhonghuamen" />
                         </atom:CascaderOption>
                     </atom:CascaderOption>
                 </atom:CascaderView>
@@ -484,19 +484,19 @@
             Title="{gallery:CascaderShowCaseLangResource SearchableTitle}"
             Description="{gallery:CascaderShowCaseLangResource SearchableDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:SearchEdit PlaceholderText="Search"
+                <atom:SearchEdit PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextSearch}"
                                  SearchButtonClick="HandleFilterCascaderViewClicked" />
                 <atom:CascaderView Name="SearchCascaderView">
-                    <atom:CascaderOption Header="Zhejiang" Value="zhejiang">
-                        <atom:CascaderOption Header="Hangzhou" Value="hangzhou">
-                            <atom:CascaderOption Header="West Lake" Value="xihu" />
-                            <atom:CascaderOption Header="Lingyin shi" Value="lingyinshi" />
-                            <atom:CascaderOption Header="XiSha" Value="xisha" IsEnabled="False" />
+                    <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderZhejiang}" Value="zhejiang">
+                        <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderHangzhou}" Value="hangzhou">
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderWestLake}" Value="xihu" />
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderLingyinShi}" Value="lingyinshi" />
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderXisha}" Value="xisha" IsEnabled="False" />
                         </atom:CascaderOption>
                     </atom:CascaderOption>
-                    <atom:CascaderOption Header="Jiangsu" Value="jiangsu">
-                        <atom:CascaderOption Header="Nanjing" Value="nanjing">
-                            <atom:CascaderOption Header="Zhong Hua Men" Value="zhonghuamen" />
+                    <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderJiangsu}" Value="jiangsu">
+                        <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderNanjing}" Value="nanjing">
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderZhongHuaMen}" Value="zhonghuamen" />
                         </atom:CascaderOption>
                     </atom:CascaderOption>
                 </atom:CascaderView>
@@ -507,7 +507,7 @@
             Title="{gallery:CascaderShowCaseLangResource SearchableItemsSourceTitle}"
             Description="{gallery:CascaderShowCaseLangResource SearchableItemsSourceDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:SearchEdit PlaceholderText="Search"
+                <atom:SearchEdit PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextSearch}"
                                  SearchButtonClick="HandleFilterCascaderViewItemsSourceClicked" />
                 <atom:CascaderView Name="SearchCascaderViewItemsSource">
                     <atom:CascaderView.OptionTemplate>
@@ -525,20 +525,20 @@
             Description="{gallery:CascaderShowCaseLangResource DefaultExpandedDescription}">
             <StackPanel Spacing="10">
                 <atom:CascaderView DefaultExpandedPath="{Binding DefaultExpandPath}">
-                    <atom:CascaderOption Header="Zhejiang" ItemKey="zhejiang">
-                        <atom:CascaderOption Header="Hangzhou" ItemKey="hangzhou">
-                            <atom:CascaderOption Header="West Lake" ItemKey="xihu" />
-                            <atom:CascaderOption Header="Lingyin shi" ItemKey="lingyinshi" />
-                            <atom:CascaderOption Header="XiSha" ItemKey="xisha" IsEnabled="False" />
+                    <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderZhejiang}" ItemKey="zhejiang">
+                        <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderHangzhou}" ItemKey="hangzhou">
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderWestLake}" ItemKey="xihu" />
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderLingyinShi}" ItemKey="lingyinshi" />
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderXisha}" ItemKey="xisha" IsEnabled="False" />
                         </atom:CascaderOption>
                     </atom:CascaderOption>
-                    <atom:CascaderOption Header="Jiangsu" ItemKey="jiangsu">
-                        <atom:CascaderOption Header="Nanjing" ItemKey="nanjing">
-                            <atom:CascaderOption Header="Zhong Hua Men" ItemKey="zhonghuamen" />
+                    <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderJiangsu}" ItemKey="jiangsu">
+                        <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderNanjing}" ItemKey="nanjing">
+                            <atom:CascaderOption Header="{gallery:CascaderShowCaseLangResource P2HeaderZhongHuaMen}" ItemKey="zhonghuamen" />
                         </atom:CascaderOption>
                     </atom:CascaderOption>
                 </atom:CascaderView>
-                <atom:Separator Title="By template"/>
+                <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleByTemplate}"/>
                 <atom:CascaderView Name="DefaultExpandCascaderView">
                     <atom:CascaderView.OptionTemplate>
                         <TreeDataTemplate ItemsSource="{Binding Children}"

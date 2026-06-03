@@ -14,6 +14,9 @@ internal class en_US : LanguageProvider
     public const string VerticalDescription = "The vertical Slider.";
     public const string GraduatedSliderTitle = "Graduated slider";
     public const string GraduatedSliderDescription = "Using marks property to mark a graduated slider, use value or defaultValue to specify the position of thumb. When included is false, means that different thumbs are coordinative. when step is null, users can only slide the thumbs onto marks.";
+    public const string P2TextEnabled = "Enabled:";
+    public const string P2TextIncludedTrue = "included=true";
+    public const string P2TextIncludedFalse = "included=false";
 
     protected override Type GetResourceKindType() => typeof(SliderShowCaseLangResourceKind);
 }

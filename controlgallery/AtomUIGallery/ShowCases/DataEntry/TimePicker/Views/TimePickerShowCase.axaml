@@ -10,13 +10,13 @@
         <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource BasicTitle}"
             Description="{gallery:TimePickerShowCaseLangResource BasicDescription}">
-            <atom:TimePicker PlaceholderText="Select time" IsNeedConfirm="False" IsShowNow="True" />
+            <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" IsNeedConfirm="False" IsShowNow="True" />
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource HourFormatsTitle}"
             Description="{gallery:TimePickerShowCaseLangResource HourFormatsDescription}">
-            <atom:TimePicker PlaceholderText="Select time" IsNeedConfirm="True" IsShowNow="True"
+            <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" IsNeedConfirm="True" IsShowNow="True"
                              ClockIdentifier="HourClock24" />
         </gallery:ShowCaseItem>
 
@@ -24,9 +24,9 @@
             Title="{gallery:TimePickerShowCaseLangResource ThreeSizesTitle}"
             Description="{gallery:TimePickerShowCaseLangResource ThreeSizesDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:TimePicker PlaceholderText="Select time" SizeType="Large" DefaultTime="12:08:23" />
-                <atom:TimePicker PlaceholderText="Select time" SizeType="Middle" DefaultTime="12:08:23" />
-                <atom:TimePicker PlaceholderText="Select time" SizeType="Small" DefaultTime="12:08:23" />
+                <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" SizeType="Large" DefaultTime="12:08:23" />
+                <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" SizeType="Middle" DefaultTime="12:08:23" />
+                <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" SizeType="Small" DefaultTime="12:08:23" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -34,7 +34,7 @@
             Title="{gallery:TimePickerShowCaseLangResource DisabledTitle}"
             Description="{gallery:TimePickerShowCaseLangResource DisabledDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:TimePicker PlaceholderText="Select time" IsEnabled="False" DefaultTime="12:08:23" />
+                <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" IsEnabled="False" DefaultTime="12:08:23" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
@@ -42,7 +42,7 @@
             Title="{gallery:TimePickerShowCaseLangResource IntervalOptionTitle}"
             Description="{gallery:TimePickerShowCaseLangResource IntervalOptionDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:TimePicker PlaceholderText="Select time"
+                <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}"
                                  DefaultTime="12:08:23"
                                  MinuteIncrement="15"
                                  SecondIncrement="10" />
@@ -53,10 +53,10 @@
             Title="{gallery:TimePickerShowCaseLangResource TwelveHoursTitle}"
             Description="{gallery:TimePickerShowCaseLangResource TwelveHoursDescription}">
             <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:TimePicker PlaceholderText="Select time"
+                <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}"
                                  DefaultTime="12:08:23"
                                  ClockIdentifier="HourClock12" />
-                <atom:TimePicker PlaceholderText="Select time"
+                <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}"
                                  DefaultTime="12:08:23"
                                  ClockIdentifier="HourClock24" />
             </StackPanel>
@@ -67,22 +67,22 @@
             Description="{gallery:TimePickerShowCaseLangResource VariantsDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
-                    <atom:TimePicker PlaceholderText="Outline"
+                    <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextOutline}"
                                      StyleVariant="Outlined" />
                     <atom:RangeTimePicker StyleVariant="Outlined"
-                                          PlaceholderText="Outline" />
+                                          PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextOutline}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
-                    <atom:TimePicker PlaceholderText="Filled"
+                    <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextFilled}"
                                      StyleVariant="Filled" />
                     <atom:RangeTimePicker StyleVariant="Filled"
-                                          PlaceholderText="Filled" />
+                                          PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextFilled}" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
-                    <atom:TimePicker PlaceholderText="Borderless"
+                    <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextBorderless}"
                                      StyleVariant="Borderless" />
                     <atom:RangeTimePicker StyleVariant="Borderless"
-                                          PlaceholderText="Borderless" />
+                                          PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextBorderless}" />
                 </StackPanel>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -93,31 +93,31 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Status="Default"
-                                     PlaceholderText="Select time" />
+                                     PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" />
                     <atom:RangeTimePicker StyleVariant="Outlined"
                                           Status="Default"
-                                          PlaceholderText="Start time"
-                                          SecondaryPlaceholderText="End time"
+                                          PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextStartTime}"
+                                          SecondaryPlaceholderText="{gallery:TimePickerShowCaseLangResource P2SecondaryPlaceholderTextEndTime}"
                                           IsNeedConfirm="True"
                                           ClockIdentifier="HourClock24" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Status="Warning"
-                                     PlaceholderText="Select time" />
+                                     PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" />
                     <atom:RangeTimePicker StyleVariant="Outlined"
                                           Status="Warning"
-                                          PlaceholderText="Start time"
-                                          SecondaryPlaceholderText="End time"
+                                          PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextStartTime}"
+                                          SecondaryPlaceholderText="{gallery:TimePickerShowCaseLangResource P2SecondaryPlaceholderTextEndTime}"
                                           IsNeedConfirm="True"
                                           ClockIdentifier="HourClock24" />
                 </StackPanel>
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Status="Error"
-                                     PlaceholderText="Select time" />
+                                     PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" />
                     <atom:RangeTimePicker StyleVariant="Outlined"
                                           Status="Error"
-                                          PlaceholderText="Start time"
-                                          SecondaryPlaceholderText="End time"
+                                          PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextStartTime}"
+                                          SecondaryPlaceholderText="{gallery:TimePickerShowCaseLangResource P2SecondaryPlaceholderTextEndTime}"
                                           IsNeedConfirm="True"
                                           ClockIdentifier="HourClock24" />
                 </StackPanel>
@@ -129,8 +129,8 @@
             Description="{gallery:TimePickerShowCaseLangResource TimeRangePickerDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:RangeTimePicker Status="Default"
-                                      PlaceholderText="Start time"
-                                      SecondaryPlaceholderText="End time"
+                                      PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextStartTime}"
+                                      SecondaryPlaceholderText="{gallery:TimePickerShowCaseLangResource P2SecondaryPlaceholderTextEndTime}"
                                       RangeStartDefaultTime="10:09:20"
                                       RangeEndDefaultTime="12:12:20" />
             </StackPanel>

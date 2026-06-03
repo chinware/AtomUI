@@ -8,11 +8,9 @@
         <gallery:ShowCaseItem
             Title="{gallery:GroupBoxShowCaseLangResource BasicTitle}"
             Description="{gallery:GroupBoxShowCaseLangResource BasicDescription}">
-            <atom:GroupBox HeaderTitle="Title Info">
+            <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}">
                 <Panel Height="100">
-                    <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                        Content of group box
-                    </atom:TextBlock>
+                    <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:GroupBoxShowCaseLangResource P2TextContentOfGroupBox}" />
                 </Panel>
             </atom:GroupBox>
         </gallery:ShowCaseItem>
@@ -21,25 +19,19 @@
             Title="{gallery:GroupBoxShowCaseLangResource HeaderPositionTitle}"
             Description="{gallery:GroupBoxShowCaseLangResource HeaderPositionDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:GroupBox HeaderTitle="Title Info">
+                <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}">
                     <Panel Height="40">
-                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            Content of group box
-                        </atom:TextBlock>
+                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:GroupBoxShowCaseLangResource P2TextContentOfGroupBox}" />
                     </Panel>
                 </atom:GroupBox>
-                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Center">
+                <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}" HeaderTitlePosition="Center">
                     <Panel Height="40">
-                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            Content of group box
-                        </atom:TextBlock>
+                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:GroupBoxShowCaseLangResource P2TextContentOfGroupBox}" />
                     </Panel>
                 </atom:GroupBox>
-                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Right">
+                <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}" HeaderTitlePosition="Right">
                     <Panel Height="40">
-                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            Content of group box
-                        </atom:TextBlock>
+                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:GroupBoxShowCaseLangResource P2TextContentOfGroupBox}" />
                     </Panel>
                 </atom:GroupBox>
             </StackPanel>
@@ -49,33 +41,25 @@
             Title="{gallery:GroupBoxShowCaseLangResource HeaderStyleTitle}"
             Description="{gallery:GroupBoxShowCaseLangResource HeaderStyleDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:GroupBox HeaderTitle="Title Info" HeaderFontStyle="Italic">
+                <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}" HeaderFontStyle="Italic">
                     <Panel Height="40">
-                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            Content of group box
-                        </atom:TextBlock>
+                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:GroupBoxShowCaseLangResource P2TextContentOfGroupBox}" />
                     </Panel>
                 </atom:GroupBox>
-                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Center" HeaderFontWeight="Bold">
+                <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}" HeaderTitlePosition="Center" HeaderFontWeight="Bold">
                     <Panel Height="40">
-                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            Content of group box
-                        </atom:TextBlock>
+                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:GroupBoxShowCaseLangResource P2TextContentOfGroupBox}" />
                     </Panel>
                 </atom:GroupBox>
-                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Right" HeaderFontStyle="Oblique">
+                <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}" HeaderTitlePosition="Right" HeaderFontStyle="Oblique">
                     <Panel Height="40">
-                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            Content of group box
-                        </atom:TextBlock>
+                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:GroupBoxShowCaseLangResource P2TextContentOfGroupBox}" />
                     </Panel>
                 </atom:GroupBox>
-                <atom:GroupBox HeaderTitle="Title Info" HeaderTitlePosition="Center" HeaderFontStyle="Oblique"
+                <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}" HeaderTitlePosition="Center" HeaderFontStyle="Oblique"
                                HeaderTitleColor="Coral" HeaderFontWeight="Medium">
                     <Panel Height="40">
-                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                            Content of group box
-                        </atom:TextBlock>
+                        <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:GroupBoxShowCaseLangResource P2TextContentOfGroupBox}" />
                     </Panel>
                 </atom:GroupBox>
             </StackPanel>
@@ -84,11 +68,9 @@
         <gallery:ShowCaseItem
             Title="{gallery:GroupBoxShowCaseLangResource HeaderIconTitle}"
             Description="{gallery:GroupBoxShowCaseLangResource HeaderIconDescription}">
-            <atom:GroupBox HeaderTitle="Title Info" HeaderIcon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}">
+            <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}" HeaderIcon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}">
                 <Panel Height="100">
-                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                        Content of group box
-                    </TextBlock>
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:GroupBoxShowCaseLangResource P2TextContentOfGroupBox}" />
                 </Panel>
             </atom:GroupBox>
         </gallery:ShowCaseItem>

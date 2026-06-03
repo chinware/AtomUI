@@ -12,9 +12,9 @@
             <atom:DataGrid x:Name="FixedHeaderDataGrid" Height="400"
                                        x:DataType="vm:DataGridBaseInfo">
                 <atom:DataGrid.Columns>
-                    <atom:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                    <atom:DataGridTextColumn Header="Age" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Address" Binding="{Binding Name}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}" Binding="{Binding Name}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAddress}" Binding="{Binding Name}" />
                 </atom:DataGrid.Columns>
             </atom:DataGrid>
         </gallery:ShowCaseItem>
@@ -35,33 +35,33 @@
                         </DataTemplate>
                     </atom:DataGrid.RowHeaderContentTemplate>
                     <atom:DataGrid.Columns>
-                        <atom:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                        <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}" />
-                        <atom:DataGridTextColumn Header="Column 1" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 2" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 3" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 4" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 5" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 6" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 7" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 8" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 9" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 10" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 11" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 12" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 13" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 14" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 15" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 16" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 17" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 18" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 19" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 20" Binding="{Binding Address}" />
-                        <atom:DataGridTemplateColumn Header="Action">
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}" Binding="{Binding Name}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN1}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN2}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN3}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN4}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN5}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN6}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN7}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN8}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN9}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN10}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN11}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN12}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN13}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN14}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN15}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN16}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN17}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN18}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN19}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN20}" Binding="{Binding Address}" />
+                        <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAction}">
                             <atom:DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Spacing="15">
-                                        <atom:HyperLinkTextBlock Text="Modify" />
+                                        <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextModify}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </atom:DataGridTemplateColumn.CellTemplate>
@@ -80,17 +80,17 @@
                         </DataTemplate>
                     </atom:DataGrid.RowHeaderContentTemplate>
                     <atom:DataGrid.Columns>
-                        <atom:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                        <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}" />
-                        <atom:DataGridTextColumn Header="Column 1" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 2" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 3" Binding="{Binding Address}" />
-                        <atom:DataGridTextColumn Header="Column 4" Binding="{Binding Address}" />
-                        <atom:DataGridTemplateColumn Header="Action">
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}" Binding="{Binding Name}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN1}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN2}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN3}" Binding="{Binding Address}" />
+                        <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN4}" Binding="{Binding Address}" />
+                        <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAction}">
                             <atom:DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Spacing="15">
-                                        <atom:HyperLinkTextBlock Text="Modify" />
+                                        <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextModify}" />
                                     </StackPanel>
                                 </DataTemplate>
                             </atom:DataGridTemplateColumn.CellTemplate>
@@ -116,33 +116,33 @@
                     </DataTemplate>
                 </atom:DataGrid.RowHeaderContentTemplate>
                 <atom:DataGrid.Columns>
-                    <atom:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                    <atom:DataGridTextColumn Header="Age" Binding="{Binding Age}" />
-                    <atom:DataGridTextColumn Header="Column 1" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 2" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 3" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 4" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 5" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 6" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 7" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 8" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 9" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 10" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 11" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 12" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 13" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 14" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 15" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 16" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 17" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 18" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 19" Binding="{Binding Address}" />
-                    <atom:DataGridTextColumn Header="Column 20" Binding="{Binding Address}" />
-                    <atom:DataGridTemplateColumn Header="Action">
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderName}" Binding="{Binding Name}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAge}" Binding="{Binding Age}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN1}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN2}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN3}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN4}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN5}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN6}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN7}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN8}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN9}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN10}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN11}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN12}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN13}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN14}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN15}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN16}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN17}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN18}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN19}" Binding="{Binding Address}" />
+                    <atom:DataGridTextColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderColumnN20}" Binding="{Binding Address}" />
+                    <atom:DataGridTemplateColumn Header="{gallery:DataGridShowCaseLangResource P2HeaderAction}">
                         <atom:DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Spacing="15">
-                                    <atom:HyperLinkTextBlock Text="Modify" />
+                                    <atom:HyperLinkTextBlock Text="{gallery:DataGridShowCaseLangResource P2TextModify}" />
                                 </StackPanel>
                             </DataTemplate>
                         </atom:DataGridTemplateColumn.CellTemplate>

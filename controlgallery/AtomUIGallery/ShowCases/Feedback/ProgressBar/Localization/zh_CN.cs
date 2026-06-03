@@ -40,6 +40,8 @@ internal class zh_CN : LanguageProvider
     public const string VerticalStepsDescription = "普通步骤进度条，支持指定附加区域的位置。";
     public const string ToggleDisabledStatusTitle = "切换禁用状态";
     public const string ToggleDisabledStatusDescription = "进度条处于禁用状态并使用禁用样式。";
+    public const string P2ContentSub = "Sub";
+    public const string P2ContentAdd = "Add";
 
     protected override Type GetResourceKindType() => typeof(ProgressBarShowCaseLangResourceKind);
 }
