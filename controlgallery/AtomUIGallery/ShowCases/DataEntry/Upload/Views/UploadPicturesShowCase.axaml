@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Upload.UploadPicturesShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="using:AtomUIGallery.ShowCases.Upload"
+             x:DataType="viewModels:UploadViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:UploadShowCaseLangResource PicturesWallTitle}"
+            Description="{gallery:UploadShowCaseLangResource PicturesWallDescription}"
+            IsOccupyEntireRow="True">
+            <atom:Upload Name="PicturesWallUpload"
+                         ListType="PictureCard"
+                         DefaultTaskList="{Binding PicturesWallDefaultTaskList}">
+                <StackPanel Orientation="Vertical">
+                    <antdicons:PlusOutlined/>
+                    <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
+                </StackPanel>
+            </atom:Upload>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:UploadShowCaseLangResource PictureCircleTypeTitle}"
+            Description="{gallery:UploadShowCaseLangResource PictureCircleTypeDescription}"
+            IsOccupyEntireRow="True">
+            <atom:Upload Name="PicturesCircleWallUpload"
+                         ListType="PictureCircle"
+                         DefaultTaskList="{Binding PicturesWallDefaultTaskList}">
+                <StackPanel Orientation="Vertical">
+                    <antdicons:PlusOutlined/>
+                    <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
+                </StackPanel>
+            </atom:Upload>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:UploadShowCaseLangResource DragAndDropTitle}"
+            Description="{gallery:UploadShowCaseLangResource DragAndDropDescription}"
+            IsOccupyEntireRow="True">
+            <atom:Upload Name="DragAndDropUpload">
+                <atom:UploadDefaultDropArea/>
+            </atom:Upload>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:UploadShowCaseLangResource PicturesWithListStyleTitle}"
+            Description="{gallery:UploadShowCaseLangResource PicturesWithListStyleDescription}">
+            <atom:Upload Name="PictureListUpload"
+                         ListType="Picture"
+                         DefaultTaskList="{Binding PictureListStyleDefaultTaskList}">
+                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" ButtonType="Primary" Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
+            </atom:Upload>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

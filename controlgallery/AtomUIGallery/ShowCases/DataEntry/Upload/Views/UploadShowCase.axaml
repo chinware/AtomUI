@@ -2,118 +2,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Upload.UploadShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:antdicons="https://atomui.net/icons/antdesign"
-             xmlns:gallery="https://atomui.net/oss-controls/gallery">
-    <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource UploadByClickingTitle}"
-            Description="{gallery:UploadShowCaseLangResource UploadByClickingDescription}">
-            <atom:Upload Name="BasicUpload">
-                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
-            </atom:Upload>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource AvatarTitle}"
-            Description="{gallery:UploadShowCaseLangResource AvatarDescription}">
-            <StackPanel Orientation="Horizontal" Spacing="20">
-                <atom:Upload Name="AvatarDemoPictureCardUpload" ListType="PictureCard">
-                   <StackPanel Orientation="Vertical">
-                       <Panel>
-                           <antdicons:PlusOutlined IsVisible="{Binding IsTaskRunning ,RelativeSource={RelativeSource AncestorType=atom:Upload}, Converter={x:Static BoolConverters.Not}}"/>
-                           <antdicons:LoadingOutlined IsVisible="{Binding IsTaskRunning ,RelativeSource={RelativeSource AncestorType=atom:Upload}}"
-                                                      LoadingAnimation="Spin"/>
-                       </Panel>
-                       <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
-                   </StackPanel>
-                </atom:Upload>
-                <atom:Upload Name="AvatarDemoPictureCircleUpload" ListType="PictureCircle">
-                    <StackPanel Orientation="Vertical">
-                        <antdicons:PlusOutlined/>
-                        <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
-                    </StackPanel>
-                </atom:Upload>
-            </StackPanel>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource DefaultFilesTitle}"
-            Description="{gallery:UploadShowCaseLangResource DefaultFilesDescription}"
-            IsOccupyEntireRow="True">
-            <atom:Upload Name="DefaultFileList">
-                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
-            </atom:Upload>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource PicturesWallTitle}"
-            Description="{gallery:UploadShowCaseLangResource PicturesWallDescription}"
-            IsOccupyEntireRow="True">
-            <atom:Upload Name="PicturesWallUpload" ListType="PictureCard">
-                <StackPanel Orientation="Vertical">
-                    <antdicons:PlusOutlined/>
-                    <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
-                </StackPanel>
-            </atom:Upload>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource PictureCircleTypeTitle}"
-            Description="{gallery:UploadShowCaseLangResource PictureCircleTypeDescription}"
-            IsOccupyEntireRow="True">
-            <atom:Upload Name="PicturesCircleWallUpload" ListType="PictureCircle">
-                <StackPanel Orientation="Vertical">
-                    <antdicons:PlusOutlined/>
-                    <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
-                </StackPanel>
-            </atom:Upload>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource DragAndDropTitle}"
-            Description="{gallery:UploadShowCaseLangResource DragAndDropDescription}"
-            IsOccupyEntireRow="True">
-            <atom:Upload Name="DragAndDropUpload">
-                <atom:UploadDefaultDropArea/>
-            </atom:Upload>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource PicturesWithListStyleTitle}"
-            Description="{gallery:UploadShowCaseLangResource PicturesWithListStyleDescription}">
-            <atom:Upload Name="PictureListUpload" ListType="Picture">
-                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" ButtonType="Primary" Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
-            </atom:Upload>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource MaxCountTitle}"
-            Description="{gallery:UploadShowCaseLangResource MaxCountDescription}">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:Upload Name="MaxCount1Upload" MaxCount="1">
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadMaxN1}" />
-                </atom:Upload>
-
-                <atom:Upload Name="MaxCount3Upload" MaxCount="3" IsMultipleEnabled="True">
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadMaxN3}" />
-                </atom:Upload>
-            </StackPanel>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource UploadDirectoryTitle}"
-            Description="{gallery:UploadShowCaseLangResource UploadDirectoryDescription}">
-            <atom:Upload Name="DirectoryUpload" IsUploadDirectoryEnabled="True">
-                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadDirectory}" />
-            </atom:Upload>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource UploadPngOnlyTitle}"
-            Description="{gallery:UploadShowCaseLangResource UploadPngOnlyDescription}">
-            <atom:Upload Name="PngOnlyUpload" Accepts="*.png">
-                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadPngOnly}" />
-            </atom:Upload>
-        </gallery:ShowCaseItem>
-    </gallery:ShowCasePanel>
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="using:AtomUIGallery.ShowCases.Upload"
+             x:DataType="viewModels:UploadViewModel">
+    <atom:TabControl Name="ScenarioTabs"
+                     SizeType="Large"
+                     SelectedIndex="0">
+        <atom:TabItem Header="{gallery:UploadShowCaseLangResource ScenarioBasic}" Tag="Basic" />
+        <atom:TabItem Header="{gallery:UploadShowCaseLangResource ScenarioPictures}" Tag="Pictures" />
+        <atom:TabItem Header="{gallery:UploadShowCaseLangResource ScenarioConstraints}" Tag="Constraints" />
+    </atom:TabControl>
 </UserControl>

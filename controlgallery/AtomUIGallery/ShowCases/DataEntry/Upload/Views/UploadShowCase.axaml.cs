@@ -21,7 +21,11 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
 {
     public const string LanguageId = nameof(UploadShowCase);
 
-    private WindowMessageManager? _messageManager;
+    private const string BasicScenario       = "Basic";
+    private const string PicturesScenario    = "Pictures";
+    private const string ConstraintsScenario = "Constraints";
+
+    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
 
     public UploadShowCase()
     {
@@ -31,65 +35,6 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
             if (DataContext is UploadViewModel vm)
             {
                 RefreshLocalizedTaskLists(vm);
-
-                this.OneWayBind(vm, m => m.DefaultTaskList, v => v.DefaultFileList.DefaultTaskList).DisposeWith(disposables);
-                this.OneWayBind(vm, m => m.PicturesWallDefaultTaskList, v => v.PicturesWallUpload.DefaultTaskList).DisposeWith(disposables);
-                this.OneWayBind(vm, m => m.PicturesWallDefaultTaskList, v => v.PicturesCircleWallUpload.DefaultTaskList).DisposeWith(disposables);
-                this.OneWayBind(vm, m => m.PictureListStyleDefaultTaskList, v => v.PictureListUpload.DefaultTaskList).DisposeWith(disposables);
-
-                BasicUpload.UploadTransport     =  new UploadMockTransport();
-                BasicUpload.UploadTaskFailed    += HandleUploadFailed;
-                BasicUpload.UploadTaskCompleted += HandleUploadCompleted;
-
-                AvatarDemoPictureCardUpload.UploadTransport     =  new UploadMockTransport();
-                AvatarDemoPictureCardUpload.UploadTaskFailed    += HandleUploadFailed;
-                AvatarDemoPictureCardUpload.UploadTaskCompleted += HandleUploadCompleted;
-
-                AvatarDemoPictureCircleUpload.UploadTransport     =  new UploadMockTransport();
-                AvatarDemoPictureCircleUpload.UploadTaskFailed    += HandleUploadFailed;
-                AvatarDemoPictureCircleUpload.UploadTaskCompleted += HandleUploadCompleted;
-
-                DefaultFileList.UploadTransport     =  new UploadMockTransport();
-                DefaultFileList.UploadTaskFailed    += HandleUploadFailed;
-                DefaultFileList.UploadTaskCompleted += HandleUploadCompleted;
-
-                AvatarDemoPictureCardUpload.UploadTaskAboutToScheduling   += HandleAboutToScheduling;
-                AvatarDemoPictureCircleUpload.UploadTaskAboutToScheduling += HandleAboutToScheduling;
-                AvatarDemoPictureCardUpload.UploadTaskFailed              += HandleUploadFailed;
-                AvatarDemoPictureCircleUpload.UploadTaskFailed            += HandleUploadFailed;
-                AvatarDemoPictureCircleUpload.UploadTaskCompleted         += HandleUploadCompleted;
-                AvatarDemoPictureCardUpload.UploadTaskCompleted           += HandleUploadCompleted;
-                PicturesWallUpload.UploadTransport                        =  new UploadMockTransport();
-                PicturesWallUpload.UploadTaskFailed                       += HandleUploadFailed;
-                PicturesWallUpload.UploadTaskCompleted                    += HandleUploadCompleted;
-
-                PicturesCircleWallUpload.UploadTransport     =  new UploadMockTransport();
-                PicturesCircleWallUpload.UploadTaskFailed    += HandleUploadFailed;
-                PicturesCircleWallUpload.UploadTaskCompleted += HandleUploadCompleted;
-
-                DragAndDropUpload.UploadTransport     =  new UploadMockTransport();
-                DragAndDropUpload.UploadTaskFailed    += HandleUploadFailed;
-                DragAndDropUpload.UploadTaskCompleted += HandleUploadCompleted;
-
-                PictureListUpload.UploadTransport     =  new UploadMockTransport();
-                PictureListUpload.UploadTaskFailed    += HandleUploadFailed;
-                PictureListUpload.UploadTaskCompleted += HandleUploadCompleted;
-
-                MaxCount1Upload.UploadTransport     =  new UploadMockTransport();
-                MaxCount1Upload.UploadTaskFailed    += HandleUploadFailed;
-                MaxCount1Upload.UploadTaskCompleted += HandleUploadCompleted;
-
-                MaxCount3Upload.UploadTransport     =  new UploadMockTransport();
-                MaxCount3Upload.UploadTaskFailed    += HandleUploadFailed;
-                MaxCount3Upload.UploadTaskCompleted += HandleUploadCompleted;
-
-                DirectoryUpload.UploadTransport           =  new UploadMockTransport();
-                DirectoryUpload.UploadTaskFailed          += HandleUploadFailed;
-                DirectoryUpload.UploadTaskCompleted       += HandleUploadCompleted;
-                PngOnlyUpload.UploadTransport             =  new UploadMockTransport();
-                PngOnlyUpload.UploadTaskAboutToScheduling += HandlePngUploadAboutToScheduling;
-                PngOnlyUpload.UploadTaskFailed            += HandleUploadFailed;
-                PngOnlyUpload.UploadTaskCompleted         += HandleUploadCompleted;
 
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)
@@ -102,89 +47,60 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
 
                 Disposable.Create(() =>
                 {
-                    BasicUpload.UploadTransport                   = null;
-                    AvatarDemoPictureCardUpload.UploadTransport   = null;
-                    AvatarDemoPictureCircleUpload.UploadTransport = null;
-                    DefaultFileList.UploadTransport               = null;
-                    PicturesWallUpload.UploadTransport            = null;
-                    PicturesCircleWallUpload.UploadTransport      = null;
-                    DragAndDropUpload.UploadTransport             = null;
-                    PictureListUpload.UploadTransport             = null;
-                    MaxCount1Upload.UploadTransport               = null;
-                    MaxCount3Upload.UploadTransport               = null;
-                    DirectoryUpload.UploadTransport               = null;
-                    PngOnlyUpload.UploadTransport                 = null;
-
-                    BasicUpload.UploadTaskFailed    -= HandleUploadFailed;
-                    BasicUpload.UploadTaskCompleted -= HandleUploadCompleted;
-                    BasicUpload.Reset();
-
-                    AvatarDemoPictureCardUpload.UploadTaskFailed    -= HandleUploadFailed;
-                    AvatarDemoPictureCardUpload.UploadTaskCompleted -= HandleUploadCompleted;
-                    AvatarDemoPictureCardUpload.Reset();
-
-                    AvatarDemoPictureCircleUpload.UploadTaskFailed    -= HandleUploadFailed;
-                    AvatarDemoPictureCircleUpload.UploadTaskCompleted -= HandleUploadCompleted;
-                    AvatarDemoPictureCircleUpload.Reset();
-
-                    DefaultFileList.UploadTaskFailed    -= HandleUploadFailed;
-                    DefaultFileList.UploadTaskCompleted -= HandleUploadCompleted;
-                    DefaultFileList.Reset();
-
-                    AvatarDemoPictureCardUpload.UploadTaskAboutToScheduling -= HandleAboutToScheduling;
-                    AvatarDemoPictureCardUpload.UploadTaskFailed            -= HandleUploadFailed;
-                    AvatarDemoPictureCardUpload.UploadTaskCompleted         -= HandleUploadCompleted;
-                    AvatarDemoPictureCardUpload.Reset();
-                    AvatarDemoPictureCircleUpload.UploadTaskAboutToScheduling -= HandleAboutToScheduling;
-                    AvatarDemoPictureCircleUpload.UploadTaskFailed            -= HandleUploadFailed;
-                    AvatarDemoPictureCircleUpload.UploadTaskCompleted         -= HandleUploadCompleted;
-                    AvatarDemoPictureCircleUpload.Reset();
-
-                    PicturesWallUpload.UploadTaskFailed    -= HandleUploadFailed;
-                    PicturesWallUpload.UploadTaskCompleted -= HandleUploadCompleted;
-                    PicturesWallUpload.Reset();
-
-                    PicturesCircleWallUpload.UploadTaskFailed    -= HandleUploadFailed;
-                    PicturesCircleWallUpload.UploadTaskCompleted -= HandleUploadCompleted;
-                    PicturesCircleWallUpload.Reset();
-
-                    DragAndDropUpload.UploadTaskFailed    -= HandleUploadFailed;
-                    DragAndDropUpload.UploadTaskCompleted -= HandleUploadCompleted;
-                    DragAndDropUpload.Reset();
-
-                    PictureListUpload.UploadTaskFailed    -= HandleUploadFailed;
-                    PictureListUpload.UploadTaskCompleted -= HandleUploadCompleted;
-                    PictureListUpload.Reset();
-
-                    MaxCount1Upload.UploadTaskFailed    -= HandleUploadFailed;
-                    MaxCount1Upload.UploadTaskCompleted -= HandleUploadCompleted;
-                    MaxCount1Upload.Reset();
-
-                    MaxCount3Upload.UploadTaskFailed    -= HandleUploadFailed;
-                    MaxCount3Upload.UploadTaskCompleted -= HandleUploadCompleted;
-                    MaxCount3Upload.Reset();
-
-                    DirectoryUpload.UploadTaskFailed          -= HandleUploadFailed;
-                    DirectoryUpload.UploadTaskCompleted       -= HandleUploadCompleted;
-                    DirectoryUpload.Reset();
-                    PngOnlyUpload.UploadTaskAboutToScheduling -= HandlePngUploadAboutToScheduling;
-                    PngOnlyUpload.UploadTaskFailed            -= HandleUploadFailed;
-                    PngOnlyUpload.UploadTaskCompleted         -= HandleUploadCompleted;
-                    PngOnlyUpload.Reset();
-
                     vm.DefaultTaskList                 = null;
                     vm.PicturesWallDefaultTaskList     = null;
                     vm.PictureListStyleDefaultTaskList = null;
                 }).DisposeWith(disposables);
             }
         });
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        EnsureSelectedScenarioContent();
     }
 
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnDataContextChanged(EventArgs e)
     {
-        base.OnDetachedFromVisualTree(e);
-        _messageManager?.Dispose();
-        _messageManager = null;
+        base.OnDataContextChanged(e);
+        foreach (var content in _scenarioCache.Values)
+        {
+            content.DataContext = DataContext;
+        }
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
+            tabItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _scenarioCache.Add(scenario, content);
+        }
+
+        if (tabItem.Content != content)
+        {
+            tabItem.Content = content;
+        }
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            BasicScenario       => new UploadBasicShowCase(),
+            PicturesScenario    => new UploadPicturesShowCase(),
+            ConstraintsScenario => new UploadConstraintsShowCase(),
+            _                   => throw new InvalidOperationException($"Unknown Upload scenario: {scenario}")
+        };
     }
 
     private void RefreshLocalizedTaskLists(UploadViewModel vm)
@@ -225,87 +141,6 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
                     "Server Error 500")
             },
         ];
-    }
-
-    private void HandleAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)
-    {
-        var fileInfo          = e.UploadFileInfo;
-        var ext               = Path.GetExtension(fileInfo.FilePath.LocalPath);
-        var isAllowedFileType = false;
-        if (ext == ".jpeg" || ext == ".jpg" || ext == ".png")
-        {
-            isAllowedFileType = true;
-        }
-
-        if (!isAllowedFileType)
-        {
-            e.Result       = UploadPredicateResult.CancelWithInTaskList;
-            e.CancelReason = UploadShowCaseLanguage.Get(
-                UploadShowCaseLangResourceKind.P2CancelJpgPngOnly,
-                "You can only upload JPG/PNG file!");
-            return;
-        }
-        var isLt2M = (double)fileInfo.Size / 1024 / 1024 < 2;
-        if (!isLt2M)
-        {
-            e.Result       = UploadPredicateResult.CancelWithInTaskList;
-            e.CancelReason = UploadShowCaseLanguage.Get(
-                UploadShowCaseLangResourceKind.P2CancelImageSize,
-                "Image must be smaller than 2MB!");
-        }
-    }
-
-    private void HandlePngUploadAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)
-    {
-        var fileInfo = e.UploadFileInfo;
-        var ext      = Path.GetExtension(fileInfo.FilePath.LocalPath);
-        if (ext != ".png")
-        {
-            e.Result       = UploadPredicateResult.Cancel;
-            e.CancelReason = UploadShowCaseLanguage.Get(
-                UploadShowCaseLangResourceKind.P2CancelPngOnly,
-                "You can only upload PNG file!");
-        }
-    }
-
-    private void HandleUploadFailed(object? sender, UploadTaskFailedEventArgs e)
-    {
-        var errorMsg = e.Result.UserFriendlyMessage;
-        GetMessageManager()?.Show(new AtomUIMessage(
-            type: MessageType.Error,
-            content:$"{errorMsg}"
-        ));
-    }
-
-    private void HandleUploadCompleted(object? sender, UploadTaskCompletedEventArgs e)
-    {
-        GetMessageManager()?.Show(new AtomUIMessage(
-            type: MessageType.Success,
-            content: UploadShowCaseLanguage.Format(
-                UploadShowCaseLangResourceKind.P2UploadSuccessFormat,
-                "{0} uploaded successfully!",
-                e.UploadFileInfo.Name)
-        ));
-    }
-
-    private WindowMessageManager? GetMessageManager()
-    {
-        if (_messageManager is not null)
-        {
-            return _messageManager;
-        }
-
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is null)
-        {
-            return null;
-        }
-
-        _messageManager = new WindowMessageManager(topLevel)
-        {
-            MaxItems = 10
-        };
-        return _messageManager;
     }
 
     private void InitPictureWallTaskList(UploadViewModel uploadViewModel)
@@ -395,6 +230,120 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
                     "Upload error!")
             },
         ];
+    }
+}
+
+public abstract class UploadScenarioShowCase : ReactiveUserControl<UploadViewModel>
+{
+    private WindowMessageManager? _messageManager;
+
+    protected IDisposable AttachUpload(
+        AtomUI.Desktop.Controls.Upload upload,
+        EventHandler<UploadTaskAboutToSchedulingEventArgs>? aboutToScheduling = null)
+    {
+        upload.UploadTransport     = new UploadMockTransport();
+        upload.UploadTaskFailed    += HandleUploadFailed;
+        upload.UploadTaskCompleted += HandleUploadCompleted;
+        if (aboutToScheduling is not null)
+        {
+            upload.UploadTaskAboutToScheduling += aboutToScheduling;
+        }
+
+        return Disposable.Create(() =>
+        {
+            upload.UploadTransport     = null;
+            upload.UploadTaskFailed    -= HandleUploadFailed;
+            upload.UploadTaskCompleted -= HandleUploadCompleted;
+            if (aboutToScheduling is not null)
+            {
+                upload.UploadTaskAboutToScheduling -= aboutToScheduling;
+            }
+            upload.Reset();
+        });
+    }
+
+    protected void HandleImageUploadAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)
+    {
+        var fileInfo          = e.UploadFileInfo;
+        var ext               = Path.GetExtension(fileInfo.FilePath.LocalPath);
+        var isAllowedFileType = ext is ".jpeg" or ".jpg" or ".png";
+        if (!isAllowedFileType)
+        {
+            e.Result       = UploadPredicateResult.CancelWithInTaskList;
+            e.CancelReason = UploadShowCaseLanguage.Get(
+                UploadShowCaseLangResourceKind.P2CancelJpgPngOnly,
+                "You can only upload JPG/PNG file!");
+            return;
+        }
+
+        var isLt2M = (double)fileInfo.Size / 1024 / 1024 < 2;
+        if (!isLt2M)
+        {
+            e.Result       = UploadPredicateResult.CancelWithInTaskList;
+            e.CancelReason = UploadShowCaseLanguage.Get(
+                UploadShowCaseLangResourceKind.P2CancelImageSize,
+                "Image must be smaller than 2MB!");
+        }
+    }
+
+    protected void HandlePngUploadAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)
+    {
+        var fileInfo = e.UploadFileInfo;
+        var ext      = Path.GetExtension(fileInfo.FilePath.LocalPath);
+        if (ext != ".png")
+        {
+            e.Result       = UploadPredicateResult.Cancel;
+            e.CancelReason = UploadShowCaseLanguage.Get(
+                UploadShowCaseLangResourceKind.P2CancelPngOnly,
+                "You can only upload PNG file!");
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _messageManager?.Dispose();
+        _messageManager = null;
+    }
+
+    private void HandleUploadFailed(object? sender, UploadTaskFailedEventArgs e)
+    {
+        var errorMsg = e.Result.UserFriendlyMessage;
+        GetMessageManager()?.Show(new AtomUIMessage(
+            type: MessageType.Error,
+            content: $"{errorMsg}"
+        ));
+    }
+
+    private void HandleUploadCompleted(object? sender, UploadTaskCompletedEventArgs e)
+    {
+        GetMessageManager()?.Show(new AtomUIMessage(
+            type: MessageType.Success,
+            content: UploadShowCaseLanguage.Format(
+                UploadShowCaseLangResourceKind.P2UploadSuccessFormat,
+                "{0} uploaded successfully!",
+                e.UploadFileInfo.Name)
+        ));
+    }
+
+    private WindowMessageManager? GetMessageManager()
+    {
+        if (_messageManager is not null)
+        {
+            return _messageManager;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null)
+        {
+            return null;
+        }
+
+        _messageManager = new WindowMessageManager(topLevel)
+        {
+            MaxItems = 10
+        };
+        return _messageManager;
     }
 }
 

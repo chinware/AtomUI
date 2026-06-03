@@ -8,6 +8,9 @@ internal class zh_CN : LanguageProvider
 {
     public const string UploadByClickingTitle = "点击上传";
     public const string UploadByClickingDescription = "经典模式。点击上传按钮时弹出文件选择对话框。";
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioPictures = "图片";
+    public const string ScenarioConstraints = "限制";
     public const string AvatarTitle = "头像";
     public const string AvatarDescription = "点击上传用户头像，并通过 beforeUpload 校验图片大小和格式。";
     public const string DefaultFilesTitle = "默认文件";

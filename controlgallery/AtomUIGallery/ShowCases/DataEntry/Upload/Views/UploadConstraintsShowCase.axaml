@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Upload.UploadConstraintsShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="using:AtomUIGallery.ShowCases.Upload"
+             x:DataType="viewModels:UploadViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:UploadShowCaseLangResource MaxCountTitle}"
+            Description="{gallery:UploadShowCaseLangResource MaxCountDescription}">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Upload Name="MaxCount1Upload" MaxCount="1">
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadMaxN1}" />
+                </atom:Upload>
+
+                <atom:Upload Name="MaxCount3Upload" MaxCount="3" IsMultipleEnabled="True">
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadMaxN3}" />
+                </atom:Upload>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:UploadShowCaseLangResource UploadDirectoryTitle}"
+            Description="{gallery:UploadShowCaseLangResource UploadDirectoryDescription}">
+            <atom:Upload Name="DirectoryUpload" IsUploadDirectoryEnabled="True">
+                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadDirectory}" />
+            </atom:Upload>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:UploadShowCaseLangResource UploadPngOnlyTitle}"
+            Description="{gallery:UploadShowCaseLangResource UploadPngOnlyDescription}">
+            <atom:Upload Name="PngOnlyUpload" Accepts="*.png">
+                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadPngOnly}" />
+            </atom:Upload>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

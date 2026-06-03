@@ -8,6 +8,9 @@ internal class en_US : LanguageProvider
 {
     public const string UploadByClickingTitle = "Upload by clicking";
     public const string UploadByClickingDescription = "Classic mode. File selection dialog pops up when upload button is clicked.";
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioPictures = "Pictures";
+    public const string ScenarioConstraints = "Constraints";
     public const string AvatarTitle = "Avatar";
     public const string AvatarDescription = "Click to upload user's avatar, and validate size and format of picture with beforeUpload.";
     public const string DefaultFilesTitle = "Default Files";

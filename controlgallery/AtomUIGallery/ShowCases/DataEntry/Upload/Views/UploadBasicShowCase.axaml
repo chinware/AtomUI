@@ -1,0 +1,51 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Upload.UploadBasicShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="using:AtomUIGallery.ShowCases.Upload"
+             x:DataType="viewModels:UploadViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:UploadShowCaseLangResource UploadByClickingTitle}"
+            Description="{gallery:UploadShowCaseLangResource UploadByClickingDescription}">
+            <atom:Upload Name="BasicUpload">
+                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
+            </atom:Upload>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:UploadShowCaseLangResource AvatarTitle}"
+            Description="{gallery:UploadShowCaseLangResource AvatarDescription}">
+            <StackPanel Orientation="Horizontal" Spacing="20">
+                <atom:Upload Name="AvatarDemoPictureCardUpload" ListType="PictureCard">
+                   <StackPanel Orientation="Vertical">
+                       <Panel>
+                           <antdicons:PlusOutlined IsVisible="{Binding IsTaskRunning ,RelativeSource={RelativeSource AncestorType=atom:Upload}, Converter={x:Static BoolConverters.Not}}"/>
+                           <antdicons:LoadingOutlined IsVisible="{Binding IsTaskRunning ,RelativeSource={RelativeSource AncestorType=atom:Upload}}"
+                                                      LoadingAnimation="Spin"/>
+                       </Panel>
+                       <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
+                   </StackPanel>
+                </atom:Upload>
+                <atom:Upload Name="AvatarDemoPictureCircleUpload" ListType="PictureCircle">
+                    <StackPanel Orientation="Vertical">
+                        <antdicons:PlusOutlined/>
+                        <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
+                    </StackPanel>
+                </atom:Upload>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:UploadShowCaseLangResource DefaultFilesTitle}"
+            Description="{gallery:UploadShowCaseLangResource DefaultFilesDescription}"
+            IsOccupyEntireRow="True">
+            <atom:Upload Name="DefaultFileList"
+                         DefaultTaskList="{Binding DefaultTaskList}">
+                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
+            </atom:Upload>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>
