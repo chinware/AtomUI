@@ -37,6 +37,7 @@ public class TabStrip : BaseTabStrip
     private Border? _selectedIndicator;
     private ItemsPresenter? _itemsPresenter;
     private TabStripScrollViewer? _scrollViewer;
+    private IDisposable? _selectedItemBoundsSubscription;
 
     public TabStrip()
     {
@@ -47,7 +48,22 @@ public class TabStrip : BaseTabStrip
     {
         if (this.IsAttachedToVisualTree())
         {
+            SubscribeSelectedItemBounds();
             SetupSelectedIndicator();
+        }
+    }
+
+    private void SubscribeSelectedItemBounds()
+    {
+        _selectedItemBoundsSubscription?.Dispose();
+        _selectedItemBoundsSubscription = null;
+
+        if (SelectedItem is not null && ContainerFromItem(SelectedItem) is TabStripItem tabStripItem)
+        {
+            _selectedItemBoundsSubscription = tabStripItem.GetObservable(Visual.BoundsProperty).Subscribe(_ =>
+            {
+                SetupSelectedIndicator();
+            });
         }
     }
     
@@ -65,28 +81,29 @@ public class TabStrip : BaseTabStrip
                 var selectedBounds = tabStripItem.Bounds;
                 var builder        = new TransformOperations.Builder(1);
                 var offset         = _itemsPresenter?.Bounds.Position ?? default;
+                var selectedSize   = selectedBounds.Size;
 
                 if (TabStripPlacement == Dock.Top)
                 {
-                    _selectedIndicator.SetCurrentValue(WidthProperty, tabStripItem.DesiredSize.Width);
+                    _selectedIndicator.SetCurrentValue(WidthProperty, selectedSize.Width);
                     _selectedIndicator.SetCurrentValue(HeightProperty, SelectedIndicatorThickness);
                     builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
                 }
                 else if (TabStripPlacement == Dock.Right)
                 {
-                    _selectedIndicator.SetCurrentValue(HeightProperty, tabStripItem.DesiredSize.Height);
+                    _selectedIndicator.SetCurrentValue(HeightProperty, selectedSize.Height);
                     _selectedIndicator.SetCurrentValue(WidthProperty, SelectedIndicatorThickness);
                     builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
                 }
                 else if (TabStripPlacement == Dock.Bottom)
                 {
-                    _selectedIndicator.SetCurrentValue(WidthProperty, tabStripItem.DesiredSize.Width);
+                    _selectedIndicator.SetCurrentValue(WidthProperty, selectedSize.Width);
                     _selectedIndicator.SetCurrentValue(HeightProperty, SelectedIndicatorThickness);
                     builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
                 }
                 else
                 {
-                    _selectedIndicator.SetCurrentValue(HeightProperty, tabStripItem.DesiredSize.Height);
+                    _selectedIndicator.SetCurrentValue(HeightProperty, selectedSize.Height);
                     _selectedIndicator.SetCurrentValue(WidthProperty, SelectedIndicatorThickness);
                     builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
                 }
@@ -130,11 +147,43 @@ public class TabStrip : BaseTabStrip
         base.OnApplyTemplate(e);
         _selectedIndicator = e.NameScope.Find<Border>("PART_SelectedItemIndicator");
         _itemsPresenter    = e.NameScope.Find<ItemsPresenter>("PART_ItemsPresenter");
-        _scrollViewer      = e.NameScope.Find<TabStripScrollViewer>("PART_TabsContainer");
+
         if (_scrollViewer != null)
         {
-            _scrollViewer.TabStrip = this;
+            _scrollViewer.PropertyChanged -= HandleScrollViewerPropertyChanged;
         }
+
+        _scrollViewer = e.NameScope.Find<TabStripScrollViewer>("PART_TabsContainer");
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.TabStrip        = this;
+            _scrollViewer.PropertyChanged += HandleScrollViewerPropertyChanged;
+        }
+
+        SubscribeSelectedItemBounds();
+        SetupSelectedIndicator();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SubscribeSelectedItemBounds();
+        SetupSelectedIndicator();
+    }
+
+    private void HandleScrollViewerPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (e.Property == ScrollViewer.OffsetProperty)
+        {
+            SetupSelectedIndicator();
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _selectedItemBoundsSubscription?.Dispose();
+        _selectedItemBoundsSubscription = null;
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override void OnInitialized()

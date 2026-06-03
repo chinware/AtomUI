@@ -1,5 +1,4 @@
 ﻿using AtomUI.Animations;
-using Avalonia.Threading;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -38,6 +37,7 @@ public class TabControl : BaseTabControl
     private Border? _selectedIndicator;
     private ItemsPresenter? _itemsPresenter;
     private TabControlScrollViewer? _scrollViewer;
+    private IDisposable? _selectedItemBoundsSubscription;
 
     public TabControl()
     {
@@ -48,7 +48,22 @@ public class TabControl : BaseTabControl
     {
         if (this.IsAttachedToVisualTree())
         {
+            SubscribeSelectedItemBounds();
             SetupSelectedIndicator();
+        }
+    }
+
+    private void SubscribeSelectedItemBounds()
+    {
+        _selectedItemBoundsSubscription?.Dispose();
+        _selectedItemBoundsSubscription = null;
+
+        if (SelectedItem is not null && ContainerFromItem(SelectedItem) is TabItem tabItem)
+        {
+            _selectedItemBoundsSubscription = tabItem.GetObservable(Visual.BoundsProperty).Subscribe(_ =>
+            {
+                SetupSelectedIndicator();
+            });
         }
     }
     
@@ -66,28 +81,29 @@ public class TabControl : BaseTabControl
                 var selectedBounds = tabItem.Bounds;
                 var builder        = new TransformOperations.Builder(1);
                 var offset         = _itemsPresenter?.Bounds.Position ?? default;
+                var selectedSize   = selectedBounds.Size;
 
                 if (TabStripPlacement == Dock.Top)
                 {
-                    _selectedIndicator.SetCurrentValue(WidthProperty, tabItem.DesiredSize.Width);
+                    _selectedIndicator.SetCurrentValue(WidthProperty, selectedSize.Width);
                     _selectedIndicator.SetCurrentValue(HeightProperty, SelectedIndicatorThickness);
                     builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
                 }
                 else if (TabStripPlacement == Dock.Right)
                 {
-                    _selectedIndicator.SetCurrentValue(HeightProperty, tabItem.DesiredSize.Height);
+                    _selectedIndicator.SetCurrentValue(HeightProperty, selectedSize.Height);
                     _selectedIndicator.SetCurrentValue(WidthProperty, SelectedIndicatorThickness);
                     builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
                 }
                 else if (TabStripPlacement == Dock.Bottom)
                 {
-                    _selectedIndicator.SetCurrentValue(WidthProperty, tabItem.DesiredSize.Width);
+                    _selectedIndicator.SetCurrentValue(WidthProperty, selectedSize.Width);
                     _selectedIndicator.SetCurrentValue(HeightProperty, SelectedIndicatorThickness);
                     builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
                 }
                 else
                 {
-                    _selectedIndicator.SetCurrentValue(HeightProperty, tabItem.DesiredSize.Height);
+                    _selectedIndicator.SetCurrentValue(HeightProperty, selectedSize.Height);
                     _selectedIndicator.SetCurrentValue(WidthProperty, SelectedIndicatorThickness);
                     builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
                 }
@@ -144,6 +160,23 @@ public class TabControl : BaseTabControl
             _scrollViewer.TabControl      = this;
             _scrollViewer.PropertyChanged += HandleScrollViewerPropertyChanged;
         }
+
+        SubscribeSelectedItemBounds();
+        SetupSelectedIndicator();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SubscribeSelectedItemBounds();
+        SetupSelectedIndicator();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _selectedItemBoundsSubscription?.Dispose();
+        _selectedItemBoundsSubscription = null;
+        base.OnDetachedFromVisualTree(e);
     }
 
     private void HandleScrollViewerPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
