@@ -490,6 +490,7 @@ public partial class CascaderView : TemplatedControl,
                     levelList.Items.Clear();
                     _itemsPanel.Children.RemoveAt(i);
                 }
+                levelList.ResetVirtualizingContext();
             }
         }
     }
