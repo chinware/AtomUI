@@ -6,6 +6,9 @@ namespace AtomUIGallery.ShowCases.Collapse;
 [LanguageProvider(LanguageCode.en_US, CollapseShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioAppearance = "Appearance";
+    public const string ScenarioBehavior = "Behavior";
     public const string CollapseTitle = "Collapse";
     public const string CollapseDescription = "By default, any number of panels can be expanded at a time. The first panel is expanded in this example.";
     public const string SizeTitle = "Size";

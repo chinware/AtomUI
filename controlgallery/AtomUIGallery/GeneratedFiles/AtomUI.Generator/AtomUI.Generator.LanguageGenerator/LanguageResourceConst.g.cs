@@ -780,6 +780,9 @@ namespace AtomUIGallery.Localization
         P2TitleDefaultSize,
         P2TitleLargeSize,
         P2TitleSmallSize,
+        ScenarioAppearance,
+        ScenarioBasic,
+        ScenarioBehavior,
         SizeDescription,
         SizeTitle
     }

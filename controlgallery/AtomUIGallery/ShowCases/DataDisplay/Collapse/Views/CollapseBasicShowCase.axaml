@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Collapse.CollapseBasicShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Collapse"
+             x:DataType="vm:CollapseViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:CollapseShowCaseLangResource CollapseTitle}"
+            Description="{gallery:CollapseShowCaseLangResource CollapseDescription}">
+            <atom:Collapse>
+                <atom:CollapseItem Header="{gallery:CollapseShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:CollapseShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="{gallery:CollapseShowCaseLangResource P2HeaderThisIsPanelHeaderN2}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:CollapseShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="{gallery:CollapseShowCaseLangResource P2HeaderThisIsPanelHeaderN3}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:CollapseShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                </atom:CollapseItem>
+            </atom:Collapse>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CollapseShowCaseLangResource SizeTitle}"
+            Description="{gallery:CollapseShowCaseLangResource SizeDescription}">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Separator Title="{gallery:CollapseShowCaseLangResource P2TitleDefaultSize}" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Collapse SizeType="Middle">
+                    <atom:CollapseItem Header="{gallery:CollapseShowCaseLangResource P2HeaderThisIsDefaultSizePanelHeader}">
+                        <atom:TextBlock TextWrapping="Wrap" Text="{gallery:CollapseShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                    </atom:CollapseItem>
+                </atom:Collapse>
+                <atom:Separator Title="{gallery:CollapseShowCaseLangResource P2TitleSmallSize}" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Collapse SizeType="Small">
+                    <atom:CollapseItem Header="{gallery:CollapseShowCaseLangResource P2HeaderThisIsSmallSizePanelHeader}">
+                        <atom:TextBlock TextWrapping="Wrap" Text="{gallery:CollapseShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                    </atom:CollapseItem>
+                </atom:Collapse>
+                <atom:Separator Title="{gallery:CollapseShowCaseLangResource P2TitleLargeSize}" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Collapse SizeType="Large">
+                    <atom:CollapseItem Header="{gallery:CollapseShowCaseLangResource P2HeaderThisIsLargeSizePanelHeader}">
+                        <atom:TextBlock TextWrapping="Wrap" Text="{gallery:CollapseShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                    </atom:CollapseItem>
+                </atom:Collapse>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:CollapseShowCaseLangResource AccordionTitle}"
+            Description="{gallery:CollapseShowCaseLangResource AccordionDescription}">
+            <atom:Collapse IsAccordion="True">
+                <atom:CollapseItem Header="{gallery:CollapseShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:CollapseShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="{gallery:CollapseShowCaseLangResource P2HeaderThisIsPanelHeaderN2}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:CollapseShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                </atom:CollapseItem>
+                <atom:CollapseItem Header="{gallery:CollapseShowCaseLangResource P2HeaderThisIsPanelHeaderN3}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:CollapseShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                </atom:CollapseItem>
+            </atom:Collapse>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

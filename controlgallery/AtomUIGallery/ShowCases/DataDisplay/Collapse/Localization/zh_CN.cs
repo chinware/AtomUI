@@ -6,6 +6,9 @@ namespace AtomUIGallery.ShowCases.Collapse;
 [LanguageProvider(LanguageCode.zh_CN, CollapseShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioAppearance = "外观";
+    public const string ScenarioBehavior = "行为";
     public const string CollapseTitle = "折叠面板";
     public const string CollapseDescription = "默认情况下，可以同时展开任意数量的面板。本示例中第一个面板处于展开状态。";
     public const string SizeTitle = "尺寸";
