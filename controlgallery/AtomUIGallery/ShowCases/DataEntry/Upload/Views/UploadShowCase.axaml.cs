@@ -1,10 +1,6 @@
-using System;
 using System.Globalization;
-using System.IO;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
-using System.Threading;
-using System.Threading.Tasks;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
@@ -258,7 +254,6 @@ public abstract class UploadScenarioShowCase : ReactiveUserControl<UploadViewMod
             {
                 upload.UploadTaskAboutToScheduling -= aboutToScheduling;
             }
-            upload.Reset();
         });
     }
 

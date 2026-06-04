@@ -6,6 +6,9 @@ namespace AtomUIGallery.ShowCases.Expander;
 [LanguageProvider(LanguageCode.en_US, ExpanderShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioAppearance = "Appearance";
+    public const string ScenarioBehavior = "Behavior";
     public const string ExpanderTitle = "Expander";
     public const string ExpanderDescription = "By default, The simplest usage is to expand downward.";
     public const string SizeTitle = "Size";

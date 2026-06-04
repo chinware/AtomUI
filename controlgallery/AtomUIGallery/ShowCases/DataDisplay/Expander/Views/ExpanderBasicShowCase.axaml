@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Expander.ExpanderBasicShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Expander"
+             x:DataType="vm:ExpanderViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:ExpanderShowCaseLangResource ExpanderTitle}"
+            Description="{gallery:ExpanderShowCaseLangResource ExpanderDescription}">
+            <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
+                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+            </atom:Expander>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ExpanderShowCaseLangResource SizeTitle}"
+            Description="{gallery:ExpanderShowCaseLangResource SizeDescription}">
+            <StackPanel Orientation="Vertical" Spacing="20" Margin="0, 0, 10, 0">
+                <atom:Separator Title="{gallery:ExpanderShowCaseLangResource P2TitleDefaultSize}" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Expander SizeType="Middle" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsDefaultSizePanelHeader}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                </atom:Expander>
+                <atom:Separator Title="{gallery:ExpanderShowCaseLangResource P2TitleSmallSize}" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Expander SizeType="Small" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsSmallSizePanelHeader}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                </atom:Expander>
+                <atom:Separator Title="{gallery:ExpanderShowCaseLangResource P2TitleLargeSize}" TitlePosition="Left" FontWeight="Bold" />
+                <atom:Expander SizeType="Large" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsLargeSizePanelHeader}">
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                </atom:Expander>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

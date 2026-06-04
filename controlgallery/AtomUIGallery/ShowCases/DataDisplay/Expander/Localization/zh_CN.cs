@@ -6,6 +6,9 @@ namespace AtomUIGallery.ShowCases.Expander;
 [LanguageProvider(LanguageCode.zh_CN, ExpanderShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioAppearance = "外观";
+    public const string ScenarioBehavior = "行为";
     public const string ExpanderTitle = "展开器";
     public const string ExpanderDescription = "默认情况下，最简单的用法是向下展开。";
     public const string SizeTitle = "尺寸";
