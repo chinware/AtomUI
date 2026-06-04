@@ -1,6 +1,7 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using ReactiveUI;
@@ -11,6 +12,12 @@ namespace AtomUIGallery.ShowCases.Card;
 public partial class CardShowCase : ReactiveUserControl<CardViewModel>
 {
     public const string LanguageId = nameof(CardShowCase);
+
+    private const string BasicScenario    = "Basic";
+    private const string LayoutScenario   = "Layout";
+    private const string AdvancedScenario = "Advanced";
+
+    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
 
     public CardShowCase()
     {
@@ -24,6 +31,55 @@ public partial class CardShowCase : ReactiveUserControl<CardViewModel>
             }
         });
         InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        ConfigureBorderlessBgFrame();
+        foreach (var content in _scenarioCache.Values)
+        {
+            content.DataContext = DataContext;
+        }
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
+            tabItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _scenarioCache.Add(scenario, content);
+        }
+
+        if (tabItem.Content != content)
+        {
+            tabItem.Content = content;
+        }
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            BasicScenario    => new CardBasicShowCase(),
+            LayoutScenario   => new CardLayoutShowCase(),
+            AdvancedScenario => new CardAdvancedShowCase(),
+            _                => throw new InvalidOperationException($"Unknown Card scenario: {scenario}")
+        };
     }
 
     private void HandleActualThemeVariantChanged(object? sender, EventArgs e)

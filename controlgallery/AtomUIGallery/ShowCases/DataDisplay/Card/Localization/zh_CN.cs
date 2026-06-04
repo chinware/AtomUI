@@ -8,6 +8,9 @@ internal class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础卡片";
     public const string BasicDescription = "包含标题、内容和右上角额外内容的基础卡片。支持默认和小号两种尺寸。";
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioLayout = "布局";
+    public const string ScenarioAdvanced = "高级";
     public const string NoBorderTitle = "无边框";
     public const string NoBorderDescription = "灰色背景上的无边框卡片。";
     public const string SimpleCardTitle = "简单卡片";

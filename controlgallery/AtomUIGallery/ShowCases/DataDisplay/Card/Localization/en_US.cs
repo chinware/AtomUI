@@ -8,6 +8,9 @@ internal class en_US : LanguageProvider
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "A basic card containing a title, content and an extra corner content. Supports two sizes: default and small.";
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioLayout = "Layout";
+    public const string ScenarioAdvanced = "Advanced";
     public const string NoBorderTitle = "No border";
     public const string NoBorderDescription = "A borderless card on a gray background.";
     public const string SimpleCardTitle = "Simple card";
