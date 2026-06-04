@@ -610,6 +610,7 @@ public class Window : AvaloniaWindow,
     {
         base.OnOpened(e);
         EnsureMinSizeForDecorations();
+        ApplyDefaultLogoIfNeeded();
         if (OperatingSystem.IsMacOS())
         {
             _macOsCacheValid = false;
@@ -624,6 +625,30 @@ public class Window : AvaloniaWindow,
         if (!_mediaQueryReady)
         {
             LayoutUpdated += HandleFirstLayoutUpdatedForMediaQuery;
+        }
+    }
+
+    private void ApplyDefaultLogoIfNeeded()
+    {
+        if (Logo != null || LogoTemplate != null)
+        {
+            return;
+        }
+
+        var mainWindow = GetMainWindow();
+        if (mainWindow == null || ReferenceEquals(mainWindow, this))
+        {
+            return;
+        }
+
+        if (mainWindow.LogoTemplate != null)
+        {
+            SetCurrentValue(LogoTemplateProperty, mainWindow.LogoTemplate);
+        }
+
+        if (mainWindow.Logo != null)
+        {
+            SetCurrentValue(LogoProperty, mainWindow.Logo);
         }
     }
 

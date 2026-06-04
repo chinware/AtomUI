@@ -23,10 +23,10 @@ internal class en_US : LanguageProvider
     public const string StatusTitle = "Status";
     public const string StatusDescription = "Add status to Input with status, which could be error or warning.";
     public const string P2PlaceholderTextPleaseSelect = "Please select";
-    public const string P2Content床前明月光 = "床前明月光";
-    public const string P2Content疑是地上霜 = "疑是地上霜";
-    public const string P2Content举头望明月 = "举头望明月";
-    public const string P2Content低头思故乡 = "低头思故乡";
+    public const string P2ContentPoemLine1 = "床前明月光";
+    public const string P2ContentPoemLine2 = "疑是地上霜";
+    public const string P2ContentPoemLine3 = "举头望明月";
+    public const string P2ContentPoemLine4 = "低头思故乡";
 
     protected override Type GetResourceKindType() => typeof(ComboBoxShowCaseLangResourceKind);
 }

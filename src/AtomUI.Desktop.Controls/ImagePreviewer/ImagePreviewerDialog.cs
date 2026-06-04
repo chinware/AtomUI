@@ -761,6 +761,9 @@ internal class ImagePreviewerDialog : Window,
     protected override void NotifyConfigureTitleBar(WindowTitleBar titleBar)
     {
         // 跳过 base 对 TitleProperty 的绑定,预览弹窗不展示 Window.Title。
+        titleBar[!WindowTitleBar.LogoProperty]         = this[!LogoProperty];
+        titleBar[!WindowTitleBar.LogoTemplateProperty] = this[!LogoTemplateProperty];
+
         if (titleBar is ImagePreviewerTitleBar previewerTitleBar)
         {
             previewerTitleBar[!ImagePreviewerTitleBar.CurrentIndexProperty]       = this[!CurrentIndexProperty];

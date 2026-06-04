@@ -23,10 +23,10 @@ internal class zh_TW : LanguageProvider
     public const string StatusTitle = "狀態";
     public const string StatusDescription = "通過 status 為輸入框添加錯誤或警告狀態。";
     public const string P2PlaceholderTextPleaseSelect = "請選擇";
-    public const string P2Content床前明月光 = "床前明月光";
-    public const string P2Content疑是地上霜 = "疑是地上霜";
-    public const string P2Content举头望明月 = "舉頭望明月";
-    public const string P2Content低头思故乡 = "低頭思故鄉";
+    public const string P2ContentPoemLine1 = "床前明月光";
+    public const string P2ContentPoemLine2 = "疑是地上霜";
+    public const string P2ContentPoemLine3 = "舉頭望明月";
+    public const string P2ContentPoemLine4 = "低頭思故鄉";
 
     protected override Type GetResourceKindType() => typeof(ComboBoxShowCaseLangResourceKind);
 }
