@@ -20,7 +20,7 @@ internal class zh_TW : LanguageProvider
     public const string PrefixSuffixDescription = "在輸入框內部添加前綴或後綴圖標。";
     public const string StatusTitle = "狀態";
     public const string StatusDescription = "通過 status 為輸入框添加錯誤或警告狀態。";
-    public const string P2Text床前明月光 = "床前明月光";
+    public const string P2TextPoemLine = "床前明月光";
 
     protected override Type GetResourceKindType() => typeof(ButtonSpinnerShowCaseLangResourceKind);
 }

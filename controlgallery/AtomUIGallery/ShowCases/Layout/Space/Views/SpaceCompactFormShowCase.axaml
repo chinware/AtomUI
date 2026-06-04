@@ -78,7 +78,7 @@
                 <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
                     <atom:RangeDatePicker atom:CompactSpace.ItemSize="7*"/>
                     <atom:LineEdit Text="{gallery:SpaceShowCaseLangResource P2TextInputContent}" atom:CompactSpace.ItemSize="3*"/>
-                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2Content查询}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentSearch}" />
                     <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
                 </atom:CompactSpace>
         

@@ -12,7 +12,7 @@
                 <atom:TextBlock
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
-                    Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                    Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
             </atom:ButtonSpinner>
         </gallery:ShowCaseItem>
 
@@ -24,19 +24,19 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
                 <atom:ButtonSpinner SizeType="Middle">
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
                 <atom:ButtonSpinner SizeType="Small">
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -49,19 +49,19 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
                 <atom:ButtonSpinner StyleVariant="Filled">
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
                 <atom:ButtonSpinner StyleVariant="Borderless">
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -74,19 +74,19 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
                 <atom:ButtonSpinner StyleVariant="Filled" IsEnabled="False">
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
                 <atom:ButtonSpinner StyleVariant="Borderless" IsEnabled="False">
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
             </StackPanel>
         </gallery:ShowCaseItem>
@@ -103,7 +103,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
                 <atom:ButtonSpinner
@@ -113,7 +113,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
                 <atom:ButtonSpinner
@@ -124,7 +124,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
             </StackPanel>
@@ -143,7 +143,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
                 <atom:ButtonSpinner
@@ -154,7 +154,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
                 <atom:ButtonSpinner
@@ -164,7 +164,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
             </StackPanel>
@@ -181,7 +181,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
                 <atom:ButtonSpinner
                     Status="Warning"
@@ -190,7 +190,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
                 <atom:ButtonSpinner
@@ -201,7 +201,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
                 <atom:ButtonSpinner
@@ -212,7 +212,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
                 <atom:ButtonSpinner
@@ -224,7 +224,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
                 <atom:ButtonSpinner
@@ -236,7 +236,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
                 <atom:ButtonSpinner
@@ -248,7 +248,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
                 <atom:ButtonSpinner
@@ -260,7 +260,7 @@
                     <atom:TextBlock
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2Text床前明月光}" />
+                        Text="{gallery:ButtonSpinnerShowCaseLangResource P2TextPoemLine}" />
                 </atom:ButtonSpinner>
 
             </StackPanel>

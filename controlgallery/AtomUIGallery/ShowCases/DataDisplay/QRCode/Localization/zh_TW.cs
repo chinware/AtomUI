@@ -23,9 +23,9 @@ internal class zh_TW : LanguageProvider
     public const string AdvancedUsageTitle = "高級用法";
     public const string AdvancedUsageDescription = "帶氣泡卡片的例子。";
     public const string P2TextLoading = "Loading...";
-    public const string P2Text二维码过期 = "二維碼過期";
-    public const string P2Content点击刷新 = "點擊刷新";
-    public const string P2Text已扫描 = "已掃描";
+    public const string P2TextQRCodeExpired = "二維碼過期";
+    public const string P2ContentClickToRefresh = "點擊刷新";
+    public const string P2TextScanned = "已掃描";
     public const string P2ContentSmaller = "Smaller";
     public const string P2ContentLarger = "Larger";
     public const string P2ContentHoverMe = "Hover me";

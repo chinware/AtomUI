@@ -92,7 +92,7 @@ internal class zh_CN : LanguageProvider
     public const string P2ContentButtonN3 = "按钮 3";
     public const string P2ContentButtonN4 = "按钮 4";
     public const string P2ContentSubmit = "提交";
-    public const string P2Content查询 = "查询";
+    public const string P2ContentSearch = "查询";
     public const string P2ContentSmall = "小号";
     public const string P2ContentMiddle = "中号";
     public const string P2ContentLarge = "大号";

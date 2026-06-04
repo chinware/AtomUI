@@ -92,7 +92,7 @@ internal class zh_TW : LanguageProvider
     public const string P2ContentButtonN3 = "按鈕 3";
     public const string P2ContentButtonN4 = "按鈕 4";
     public const string P2ContentSubmit = "提交";
-    public const string P2Content查询 = "查詢";
+    public const string P2ContentSearch = "查詢";
     public const string P2ContentSmall = "小號";
     public const string P2ContentMiddle = "中號";
     public const string P2ContentLarge = "大號";

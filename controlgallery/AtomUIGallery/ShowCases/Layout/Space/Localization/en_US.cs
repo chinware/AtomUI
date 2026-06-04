@@ -92,7 +92,7 @@ internal class en_US : LanguageProvider
     public const string P2ContentButtonN3 = "Button 3";
     public const string P2ContentButtonN4 = "Button 4";
     public const string P2ContentSubmit = "Submit";
-    public const string P2Content查询 = "Search";
+    public const string P2ContentSearch = "Search";
     public const string P2ContentSmall = "Small";
     public const string P2ContentMiddle = "Middle";
     public const string P2ContentLarge = "Large";
