@@ -18,6 +18,7 @@ public class WorkspaceWindowViewModel : ReactiveObject, IScreen
     public ReactiveCommand<bool, Unit> ToggleMotionCommand      { get; }
     public ReactiveCommand<bool, Unit> ToggleWaveSpiritCommand  { get; }
     public ReactiveCommand<Unit, Unit> SwitchToZhCNCommand      { get; }
+    public ReactiveCommand<Unit, Unit> SwitchToZhTWCommand      { get; }
     public ReactiveCommand<Unit, Unit> SwitchToEnUSCommand      { get; }
 
     private bool _isZhCN;
@@ -25,6 +26,13 @@ public class WorkspaceWindowViewModel : ReactiveObject, IScreen
     {
         get => _isZhCN;
         private set => this.RaiseAndSetIfChanged(ref _isZhCN, value);
+    }
+
+    private bool _isZhTW;
+    public bool IsZhTW
+    {
+        get => _isZhTW;
+        private set => this.RaiseAndSetIfChanged(ref _isZhTW, value);
     }
 
     private bool _isEnUS;
@@ -53,6 +61,9 @@ public class WorkspaceWindowViewModel : ReactiveObject, IScreen
         SwitchToZhCNCommand = ReactiveCommand.Create(() =>
             Application.Current?.SetLanguageVariant(LanguageVariant.zh_CN));
 
+        SwitchToZhTWCommand = ReactiveCommand.Create(() =>
+            Application.Current?.SetLanguageVariant(LanguageVariant.zh_TW));
+
         SwitchToEnUSCommand = ReactiveCommand.Create(() =>
             Application.Current?.SetLanguageVariant(LanguageVariant.en_US));
 
@@ -67,6 +78,7 @@ public class WorkspaceWindowViewModel : ReactiveObject, IScreen
     private void SyncLanguageState(LanguageVariant? variant)
     {
         IsZhCN = variant == LanguageVariant.zh_CN;
+        IsZhTW = variant == LanguageVariant.zh_TW;
         IsEnUS = variant == LanguageVariant.en_US;
     }
 }

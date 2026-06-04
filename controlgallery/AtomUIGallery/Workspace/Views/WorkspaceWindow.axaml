@@ -72,6 +72,10 @@
                                ToggleType="Radio"
                                IsChecked="{Binding IsZhCN}"
                                Tag="{x:Static workspaceviews:WindowMenuItemKind.LanguageZhCN}" />
+                <atom:MenuItem Header="繁體中文"
+                               ToggleType="Radio"
+                               IsChecked="{Binding IsZhTW}"
+                               Tag="{x:Static workspaceviews:WindowMenuItemKind.LanguageZhTW}" />
                 <atom:MenuItem Header="English"
                                ToggleType="Radio"
                                IsChecked="{Binding IsEnUS}"

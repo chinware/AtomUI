@@ -7,7 +7,7 @@ namespace AtomUIGallery.ShowCases.AboutUs;
 internal class en_US : LanguageProvider
 {
     public const string VisionLabel = "Vision:";
-    public const string VisionText = "Become a world-class productivity tool software provider";
+    public const string VisionText = "To become a world-class provider of productivity software";
     public const string MissionLabel = "Mission:";
     public const string MissionText = "Make digital world builders more efficient";
     public const string HomePage = "Home Page";

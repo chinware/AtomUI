@@ -1,0 +1,98 @@
+using AtomUI.Theme.Language;
+using AtomUIGallery.Localization;
+
+namespace AtomUIGallery.ShowCases.Cascader;
+
+[LanguageProvider(LanguageCode.zh_TW, CascaderShowCase.LanguageId)]
+internal class zh_TW : LanguageProvider
+{
+    public const string ScenarioBasic = "基礎";
+    public const string ScenarioMultiple = "多選";
+    public const string ScenarioAdvanced = "高級";
+    public const string ScenarioCascaderView = "級聯視圖";
+    public const string BasicTitle = "基礎用法";
+    public const string BasicDescription = "用於選擇省、市、區的級聯選擇框。";
+    public const string DefaultValueTitle = "默認值";
+    public const string DefaultValueDescription = "通過數組指定默認值。";
+    public const string HoverTitle = "懸停展開";
+    public const string HoverDescription = "懸停展開子菜單，點擊選擇選項。";
+    public const string DisabledOptionTitle = "禁用選項";
+    public const string DisabledOptionDescription = "通過在 options 中指定 disabled 屬性禁用選項。";
+    public const string ChangeOnSelectTitle = "選擇即變化";
+    public const string ChangeOnSelectDescription = "允許只選擇父級選項。";
+    public const string MultipleTitle = "多選";
+    public const string MultipleDescription = "選擇多個選項。可以通過添加 disableCheckbox 屬性禁用復選框並選擇特定項，禁用樣式可通過 className 修改。";
+    public const string ShowCheckedStrategyTitle = "顯示選中策略";
+    public const string ShowCheckedStrategyDescription = "使用 showCheckedStrategy 在選擇框中展示選中項。";
+    public const string SearchTitle = "搜索";
+    public const string SearchDescription = "直接搜索並選擇選項。";
+    public const string LoadOptionsLazilyTitle = "懶加載選項";
+    public const string LoadOptionsLazilyDescription = "使用 loadData 懶加載選項。";
+    public const string PrefixAndSuffixTitle = "前綴和後綴";
+    public const string PrefixAndSuffixDescription = "使用 prefix 自定義前綴內容，使用 suffixIcon 自定義選擇框後綴圖標，使用 expandIcon 自定義當前項展開圖標。";
+    public const string VariantsTitle = "變體";
+    public const string VariantsDescription = "Cascader 提供四種變體：描邊、填充、無邊框和下划線。";
+    public const string PlacementTitle = "彈出位置";
+    public const string PlacementDescription = "可以通過 placement 手動指定彈出層位置。";
+    public const string StatusTitle = "狀態";
+    public const string StatusDescription = "通過 status 為 Cascader 添加狀態，可設置為錯誤或警告。";
+    public const string SizeTitle = "尺寸";
+    public const string SizeDescription = "不同尺寸的級聯選擇框。";
+    public const string BasicCascaderViewTitle = "基礎 CascaderView";
+    public const string BasicCascaderViewDescription = "最基礎的用法。";
+    public const string GenerateByTemplateTitle = "使用模板生成";
+    public const string GenerateByTemplateDescription = "可以使用 Template 機制生成樹節點。";
+    public const string SearchableTitle = "可搜索";
+    public const string SearchableDescription = "可搜索的 CascaderView。";
+    public const string SearchableItemsSourceTitle = "可搜索";
+    public const string SearchableItemsSourceDescription = "使用 ItemsSource 的可搜索 CascaderView。";
+    public const string DefaultExpandedTitle = "默認展開";
+    public const string DefaultExpandedDescription = "可以設置默認展開路徑。";
+    public const string P2PlaceholderTextPleaseSelect = "請選擇";
+    public const string P2TitleShowcheckedstrategyAll = "ShowCheckedStrategy=All";
+    public const string P2TitleShowcheckedstrategyShowparent = "ShowCheckedStrategy=ShowParent";
+    public const string P2HeaderZhejiang = "浙江";
+    public const string P2HeaderHangzhou = "杭州";
+    public const string P2HeaderWestLake = "西湖";
+    public const string P2HeaderLingyinShi = "靈隱寺";
+    public const string P2HeaderHefangJie = "河坊街";
+    public const string P2HeaderNingbo = "寧波";
+    public const string P2HeaderTianyiPavilion = "天一閣";
+    public const string P2HeaderMoonLake = "月湖";
+    public const string P2HeaderJiangsu = "江蘇";
+    public const string P2HeaderNanjing = "南京";
+    public const string P2HeaderZhongHuaMen = "中華門";
+    public const string P2HeaderSunYatSenMausoleum = "中山陵";
+    public const string P2HeaderSuzhou = "蘇州";
+    public const string P2HeaderHumbleAdministratorsGarden = "拙政園";
+    public const string P2HeaderLingeringGarden = "留園";
+    public const string P2PlaceholderTextSearch = "搜索";
+    public const string P2HeaderXisha = "西沙";
+    public const string P2HeaderLight = "淺色";
+    public const string P2HeaderBamboo = "竹子";
+    public const string P2HeaderLittle = "小";
+    public const string P2HeaderBambooBoy = "竹子男孩";
+    public const string P2HeaderTadpole = "蝌蚪";
+    public const string P2HeaderLittleTadpole = "小蝌蚪";
+    public const string P2HeaderZhangSan = "張三";
+    public const string P2HeaderGreen = "綠色";
+    public const string P2HeaderWildWolf = "野狼";
+    public const string P2HeaderGrayWolf = "灰狼";
+    public const string P2HeaderYellow = "黃色";
+    public const string P2HeaderJiaoTailang = "蕉太狼";
+    public const string P2HeaderBanban = "班班";
+    public const string P2HeaderBig = "大";
+    public const string P2HeaderFeifei = "飛飛";
+    public const string P2HeaderXiaoXingxing = "小星星";
+    public const string P2HeaderXiaoHuihui = "小灰灰";
+    public const string P2HeaderDynamicOptionFormat = "{0} 動態 {1}";
+    public const string P2TitleByTemplate = "通過模板";
+    public const string P2TextPlacement = "彈出位置：";
+    public const string P2ContentTopleft = "左上";
+    public const string P2ContentTopright = "右上";
+    public const string P2ContentBottomleft = "左下";
+    public const string P2ContentBottomright = "右下";
+
+    protected override Type GetResourceKindType() => typeof(CascaderShowCaseLangResourceKind);
+}
+

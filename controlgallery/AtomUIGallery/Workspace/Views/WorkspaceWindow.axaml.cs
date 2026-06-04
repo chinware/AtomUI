@@ -22,6 +22,7 @@ internal enum WindowMenuItemKind
     Motion,
     WaveSpirit,
     LanguageZhCN,
+    LanguageZhTW,
     LanguageEnUS,
 }
 
@@ -110,6 +111,10 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
                     break;
                 case WindowMenuItemKind.LanguageZhCN:
                     ViewModel.SwitchToZhCNCommand.Execute(Unit.Default)
+                             .Subscribe();
+                    break;
+                case WindowMenuItemKind.LanguageZhTW:
+                    ViewModel.SwitchToZhTWCommand.Execute(Unit.Default)
                              .Subscribe();
                     break;
                 case WindowMenuItemKind.LanguageEnUS:

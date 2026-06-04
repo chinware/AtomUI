@@ -8,6 +8,7 @@ namespace AtomUI.Theme.Language;
 public sealed record LanguageVariant
 {
     public static LanguageVariant zh_CN { get; } = new(LanguageCode.zh_CN);
+    public static LanguageVariant zh_TW { get; } = new(LanguageCode.zh_TW);
     public static LanguageVariant en_US { get; } = new(LanguageCode.en_US);
     
     internal static readonly StyledProperty<LanguageVariant> LanguageVariantProperty =
@@ -44,6 +45,8 @@ public sealed record LanguageVariant
         {
             case LanguageCode.zh_CN:
                 return "简体中文";
+            case LanguageCode.zh_TW:
+                return "繁體中文";
             case LanguageCode.en_US:
                 return "English";
         }
@@ -56,6 +59,8 @@ public sealed record LanguageVariant
         {
             case LanguageCode.zh_CN:
                 return zh_CN;
+            case LanguageCode.zh_TW:
+                return zh_TW;
             case LanguageCode.en_US:
                 return en_US;
             default:
@@ -79,10 +84,18 @@ public sealed record LanguageVariant
             return FromCode(code);
         }
 
-        // Fuzzy fallback: map any Chinese locale to zh_CN, everything else to en_US.
-        return cultureInfo.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase)
-            ? zh_CN
-            : en_US;
+        if (cultureInfo.TwoLetterISOLanguageName.Equals("zh", StringComparison.OrdinalIgnoreCase))
+        {
+            var cultureNameLower = cultureInfo.Name.ToLowerInvariant();
+            return cultureNameLower.Contains("tw", StringComparison.Ordinal) ||
+                   cultureNameLower.Contains("hk", StringComparison.Ordinal) ||
+                   cultureNameLower.Contains("mo", StringComparison.Ordinal) ||
+                   cultureNameLower.Contains("hant", StringComparison.Ordinal)
+                ? zh_TW
+                : zh_CN;
+        }
+
+        return en_US;
     }
 
     public CultureInfo ToCultureInfo()

@@ -15,6 +15,7 @@ public class LanguageVariantTypeConverter : TypeConverter
         return value switch
         {
             "zh_CN" => LanguageCode.zh_CN.ToHyphenString(),
+            "zh_TW" => LanguageCode.zh_TW.ToHyphenString(),
             "en_US" => LanguageCode.en_US.ToHyphenString(),
             _ => throw new NotSupportedException("LanguageVariant type converter supports only build in variants. For custom variants please use x:Static markup extension.")
         };

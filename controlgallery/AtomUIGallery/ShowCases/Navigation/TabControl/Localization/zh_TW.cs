@@ -1,0 +1,92 @@
+using AtomUI.Theme.Language;
+using AtomUIGallery.Localization;
+
+namespace AtomUIGallery.ShowCases.TabControl;
+
+[LanguageProvider(LanguageCode.zh_TW, TabControlShowCase.LanguageId)]
+internal class zh_TW : LanguageProvider
+{
+    public const string TabControlBasicTitle = "基礎用法";
+    public const string TabControlBasicDescription = "默認激活第一個標籤頁。";
+    public const string TabControlItemsSourceTitle = "通過 ItemSource 生成標籤項";
+    public const string TabControlItemsSourceDescription = "基於數據源和項目模板添加 TabItem。";
+    public const string TabControlDisabledTitle = "禁用標籤";
+    public const string TabControlDisabledDescription = "禁用某個標籤頁。";
+    public const string TabControlCenteredTitle = "居中顯示";
+    public const string TabControlCenteredDescription = "標籤頁居中顯示。";
+    public const string TabControlIconTitle = "帶圖標";
+    public const string TabControlIconDescription = "帶圖標的標籤頁。";
+    public const string TabControlSlideTitle = "滑動";
+    public const string TabControlSlideDescription = "為了容納更多標籤，標籤可以左右滑動（或上下滑動）。";
+    public const string TabControlCardTypeTitle = "卡片式標籤";
+    public const string TabControlCardTypeDescription = "另一種標籤頁類型，不支持垂直模式。";
+    public const string TabControlClosableTitle = "可關閉標籤";
+    public const string TabControlClosableDescription = "支持可關閉的標籤頁設置。";
+    public const string TabControlPositionTitle = "位置";
+    public const string TabControlPositionDescription = "標籤位置可設為 left、right、top 或 bottom，在移動端會自動切換為 top。";
+    public const string TabControlCardShapePositionTitle = "卡片形態位置";
+    public const string TabControlCardShapePositionDescription = "標籤位置可設為 left、right、top 或 bottom，在移動端會自動切換為 top。";
+    public const string TabControlSizeTitle = "尺寸";
+    public const string TabControlSizeDescription = "大尺寸標籤通常用於頁頭，小尺寸可用於模態框。";
+    public const string TabControlAddCloseTitle = "新增和關閉標籤";
+    public const string TabControlAddCloseDescription = "隱藏默認加號圖標，並為自定義觸發器綁定事件。";
+    public const string TabControlExtraContentTitle = "額外內容";
+    public const string TabControlExtraContentDescription = "可以在標籤頁右側、左側或兩側添加額外操作。";
+    public const string P2HeaderTabN1 = "標籤頁 1";
+    public const string P2HeaderTabN2 = "標籤頁 2";
+    public const string P2HeaderTabN3 = "標籤頁 3";
+    public const string P2HeaderTabN4 = "標籤頁 4";
+    public const string P2HeaderTabN5 = "標籤頁 5";
+    public const string P2HeaderTabN6 = "標籤頁 6";
+    public const string P2HeaderTabN7 = "標籤頁 7";
+    public const string P2HeaderTabN8 = "標籤頁 8";
+    public const string P2HeaderTabN9 = "標籤頁 9";
+    public const string P2HeaderTabN10 = "標籤頁 10";
+    public const string P2HeaderTabN11 = "標籤頁 11";
+    public const string P2HeaderTabN12 = "標籤頁 12";
+    public const string P2HeaderTabN13 = "標籤頁 13";
+    public const string P2HeaderTabN14 = "標籤頁 14";
+    public const string P2HeaderTabN15 = "標籤頁 15";
+    public const string P2HeaderTabN16 = "標籤頁 16";
+    public const string P2HeaderTabN17 = "標籤頁 17";
+    public const string P2HeaderTabN18 = "標籤頁 18";
+    public const string P2HeaderTabN19 = "標籤頁 19";
+    public const string P2HeaderTabN20 = "標籤頁 20";
+    public const string P2ContentContentOfTabPaneN1 = "標籤頁內容 1";
+    public const string P2ContentContentOfTabPaneN2 = "標籤頁內容 2";
+    public const string P2ContentContentOfTabPaneN3 = "標籤頁內容 3";
+    public const string P2ContentContentOfTabPaneN4 = "標籤頁內容 4";
+    public const string P2ContentContentOfTabPaneN5 = "標籤頁內容 5";
+    public const string P2ContentContentOfTabPaneN6 = "標籤頁內容 6";
+    public const string P2ContentContentOfTabPaneN7 = "標籤頁內容 7";
+    public const string P2ContentContentOfTabPaneN8 = "標籤頁內容 8";
+    public const string P2ContentContentOfTabPaneN9 = "標籤頁內容 9";
+    public const string P2ContentContentOfTabPaneN10 = "標籤頁內容 10";
+    public const string P2ContentContentOfTabPaneN11 = "標籤頁內容 11";
+    public const string P2ContentContentOfTabPaneN12 = "標籤頁內容 12";
+    public const string P2ContentContentOfTabPaneN13 = "標籤頁內容 13";
+    public const string P2ContentContentOfTabPaneN14 = "標籤頁內容 14";
+    public const string P2ContentContentOfTabPaneN15 = "標籤頁內容 15";
+    public const string P2ContentContentOfTabPaneN16 = "標籤頁內容 16";
+    public const string P2ContentContentOfTabPaneN17 = "標籤頁內容 17";
+    public const string P2ContentContentOfTabPaneN18 = "標籤頁內容 18";
+    public const string P2ContentContentOfTabPaneN19 = "標籤頁內容 19";
+    public const string P2ContentContentOfTabPaneN20 = "標籤頁內容 20";
+    public const string P2ContentDynamicTabContentN1 = "標籤內容 1";
+    public const string P2ContentDynamicTabContentN2 = "標籤內容 2";
+    public const string P2ContentNewTabContentFormat = "新增標籤內容 {0}";
+    public const string P2TextTabPosition = "標籤位置：";
+    public const string P2ContentTop = "頂部";
+    public const string P2ContentBottom = "底部";
+    public const string P2ContentLeft = "左側";
+    public const string P2ContentRight = "右側";
+    public const string P2ContentSmall = "小號";
+    public const string P2ContentMiddle = "中號";
+    public const string P2ContentLarge = "大號";
+    public const string P2ContentStartExtraAction = "左側額外操作";
+    public const string P2ContentEndExtraAction = "右側額外操作";
+    public const string P2HeaderNewTabFormat = "新增標籤 {0}";
+
+    protected override Type GetResourceKindType() => typeof(TabControlShowCaseLangResourceKind);
+}
+
