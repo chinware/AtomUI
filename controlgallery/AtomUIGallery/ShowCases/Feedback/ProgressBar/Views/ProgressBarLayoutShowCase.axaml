@@ -1,0 +1,167 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.ProgressBar.ProgressBarLayoutShowCase"
+             xmlns:vm="using:AtomUIGallery.ShowCases.ProgressBar"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             x:DataType="vm:ProgressBarViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCasePanel.Styles>
+            <Style Selector="atom|CircleProgress">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+            <Style Selector="atom|DashboardProgress">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+            <Style Selector="#CircleWithStep atom|StepsProgressBar">
+                <Setter Property="Margin" Value="5" />
+            </Style>
+        </gallery:ShowCasePanel.Styles>
+        <gallery:ShowCaseItem
+            Title="{gallery:ProgressBarShowCaseLangResource PercentPositionTitle}"
+            Description="{gallery:ProgressBarShowCaseLangResource PercentPositionDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:ProgressBar Value="30" Minimum="0" Maximum="100" Width="300"
+                                  PercentPosition="{Binding InnerStartPercentPosition}" />
+                <atom:ProgressBar Value="60" Minimum="0" Maximum="100" Width="300"
+                                  PercentPosition="{Binding InnerCenterPercentPosition}" />
+                <atom:ProgressBar Value="50" Minimum="0" Maximum="100" Width="300"
+                                  PercentPosition="{Binding InnerEndPercentPosition}" />
+                <atom:ProgressBar Value="70" Minimum="0" Maximum="100" Width="300" StrokeBrush="#001342"
+                                  PercentPosition="{Binding InnerEndPercentPosition}" />
+                <atom:ProgressBar Value="100" Minimum="0" Maximum="100" Width="400"
+                                  PercentPosition="{Binding InnerCenterPercentPosition}" />
+                <atom:ProgressBar Value="100" Minimum="0" Maximum="100"
+                                  PercentPosition="{Binding OuterStartPercentPosition}" />
+                <atom:ProgressBar Value="60" Minimum="0" Maximum="100"
+                                  PercentPosition="{Binding OuterCenterPercentPosition}" SizeType="Small" />
+                <atom:ProgressBar Value="100" Minimum="0" Maximum="100"
+                                  PercentPosition="{Binding OuterCenterPercentPosition}" />
+                <atom:ProgressBar Value="55" Minimum="0" Maximum="100"
+                                  PercentPosition="{Binding OuterStartPercentPosition}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ProgressBarShowCaseLangResource StepsPercentPositionTitle}"
+            Description="{gallery:ProgressBarShowCaseLangResource StepsPercentPositionDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="Start" />
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center" />
+                <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center"
+                                       SizeType="Middle" />
+                <atom:StepsProgressBar Value="60" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center"
+                                       SizeType="Small" />
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="8" PercentPosition="Center" />
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="8" PercentPosition="End" />
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="8" PercentPosition="End"
+                                       Status="Exception" />
+                <atom:StepsProgressBar Value="99" Minimum="0" Maximum="100" Steps="8" PercentPosition="Start" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ProgressBarShowCaseLangResource VerticalLinearTitle}"
+            Description="{gallery:ProgressBarShowCaseLangResource VerticalLinearDescription}">
+            <StackPanel Orientation="Horizontal" Spacing="10" Height="300">
+                <atom:ProgressBar Value="100" Minimum="0" Maximum="100" Orientation="Vertical" />
+                <atom:ProgressBar Value="55" Minimum="0" Maximum="100" Orientation="Vertical" />
+                <atom:ProgressBar Value="55" Minimum="0" Maximum="100" Orientation="Vertical" SizeType="Small" />
+                <atom:ProgressBar Value="55" Minimum="0" Maximum="100" Orientation="Vertical"
+                                  PercentPosition="{Binding OuterStartPercentPosition}" />
+                <atom:ProgressBar Value="55" Minimum="0" Maximum="100" Orientation="Vertical"
+                                  PercentPosition="{Binding OuterCenterPercentPosition}" />
+                <atom:ProgressBar Value="100" Minimum="0" Maximum="100" Orientation="Vertical"
+                                  PercentPosition="{Binding OuterStartPercentPosition}" />
+
+                <atom:ProgressBar Value="55" Minimum="0" Maximum="100" Orientation="Vertical"
+                                  PercentPosition="{Binding InnerStartPercentPosition}" />
+                <atom:ProgressBar Value="55" Minimum="0" Maximum="100" Orientation="Vertical"
+                                  PercentPosition="{Binding InnerCenterPercentPosition}" />
+                <atom:ProgressBar Value="100" Minimum="0" Maximum="100" Orientation="Vertical"
+                                  PercentPosition="{Binding InnerStartPercentPosition}" />
+                <atom:ProgressBar Value="70" Minimum="0" Maximum="100" Orientation="Vertical"
+                                  PercentPosition="{Binding InnerEndPercentPosition}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ProgressBarShowCaseLangResource VerticalStepsTitle}"
+            Description="{gallery:ProgressBarShowCaseLangResource VerticalStepsDescription}">
+            <StackPanel Orientation="Horizontal" Spacing="10" Height="300">
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="10" Orientation="Vertical"
+                                       PercentPosition="End" />
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="5" Orientation="Vertical" />
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="10" Orientation="Vertical"
+                                       SizeType="Small" />
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical"
+                                       PercentPosition="Start" />
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical"
+                                       PercentPosition="Center" />
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical"
+                                       PercentPosition="Start" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ProgressBarShowCaseLangResource VerticalStepsTitle}"
+            Description="{gallery:ProgressBarShowCaseLangResource VerticalStepsDescription}">
+            <StackPanel Orientation="Horizontal" Spacing="10" Height="300">
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="10" Orientation="Vertical"
+                                       PercentPosition="End" />
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="5" Orientation="Vertical" />
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="10" Orientation="Vertical"
+                                       SizeType="Small" />
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical"
+                                       PercentPosition="Start" />
+                <atom:StepsProgressBar Value="55" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical"
+                                       PercentPosition="Center" />
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="6" Orientation="Vertical"
+                                       PercentPosition="Start" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ProgressBarShowCaseLangResource ToggleDisabledStatusTitle}"
+            Description="{gallery:ProgressBarShowCaseLangResource ToggleDisabledStatusDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:ProgressBar Value="30" Minimum="0" Maximum="100" IsEnabled="{Binding ToggleStatus}" />
+                <atom:ProgressBar Value="50" Minimum="0" Maximum="100" IsEnabled="{Binding ToggleStatus}" />
+                <atom:ProgressBar Value="70" Minimum="0" Maximum="100" Status="Exception"
+                                  IsEnabled="{Binding ToggleStatus}" />
+                <atom:ProgressBar Value="100" Minimum="0" Maximum="100" IsEnabled="{Binding ToggleStatus}" />
+
+                <atom:StepsProgressBar Value="30" Minimum="0" Maximum="100" Steps="10"
+                                       IsEnabled="{Binding ToggleStatus}" />
+                <atom:StepsProgressBar Value="50" Minimum="0" Maximum="100" Steps="10"
+                                       IsEnabled="{Binding ToggleStatus}" />
+                <atom:StepsProgressBar Value="70" Minimum="0" Maximum="100" Steps="10" Status="Exception"
+                                       IsEnabled="{Binding ToggleStatus}" />
+                <atom:StepsProgressBar Value="100" Minimum="0" Maximum="100" Steps="10"
+                                       IsEnabled="{Binding ToggleStatus}" />
+
+                <WrapPanel Orientation="Horizontal">
+                    <atom:CircleProgress Value="75" Minimum="0" Maximum="100" SizeType="Middle"
+                                         IsEnabled="{Binding ToggleStatus}" />
+                    <atom:CircleProgress Value="70" Minimum="0" Maximum="100" SizeType="Middle" Status="Exception"
+                                         IsEnabled="{Binding ToggleStatus}" />
+                    <atom:CircleProgress Value="100" Minimum="0" Maximum="100" SizeType="Middle"
+                                         IsEnabled="{Binding ToggleStatus}" />
+                </WrapPanel>
+
+                <WrapPanel Orientation="Horizontal">
+                    <atom:DashboardProgress Value="75" Minimum="0" Maximum="100" SizeType="Middle"
+                                            IsEnabled="{Binding ToggleStatus}" />
+                    <atom:DashboardProgress Value="70" Minimum="0" Maximum="100" SizeType="Middle" Status="Exception"
+                                            IsEnabled="{Binding ToggleStatus}" />
+                    <atom:DashboardProgress Value="100" Minimum="0" Maximum="100" SizeType="Middle"
+                                            IsEnabled="{Binding ToggleStatus}" />
+                </WrapPanel>
+
+                <atom:Button Margin="0, 10, 0, 0"
+                             Content="{Binding ToggleDisabledText}"
+                             Command="{Binding ToggleEnabledStatus}" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

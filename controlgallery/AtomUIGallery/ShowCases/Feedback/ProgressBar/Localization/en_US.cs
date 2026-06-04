@@ -6,6 +6,9 @@ namespace AtomUIGallery.ShowCases.ProgressBar;
 [LanguageProvider(LanguageCode.en_US, ProgressBarShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioAdvanced = "Advanced";
+    public const string ScenarioLayout = "Layout";
     public const string ProgressBarTitle = "Progress bar";
     public const string ProgressBarDescription = "A standard progress bar.";
     public const string CircularProgressBarTitle = "Circular progress bar";

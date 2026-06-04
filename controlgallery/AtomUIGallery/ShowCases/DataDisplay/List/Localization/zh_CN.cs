@@ -6,6 +6,8 @@ namespace AtomUIGallery.ShowCases.List;
 [LanguageProvider(LanguageCode.zh_CN, ListShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioAdvanced = "进阶";
     public const string BasicUsageTitle = "基础用法";
     public const string BasicUsageDescription = "基础用法示例。";
     public const string SelectionTitle = "选择";

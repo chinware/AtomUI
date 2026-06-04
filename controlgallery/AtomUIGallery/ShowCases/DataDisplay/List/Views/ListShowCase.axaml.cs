@@ -21,6 +21,11 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
 {
     public const string LanguageId = nameof(ListShowCase);
 
+    private const string BasicScenario    = "Basic";
+    private const string AdvancedScenario = "Advanced";
+
+    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+
     public ListShowCase()
     {
         this.WhenActivated(disposables =>
@@ -54,19 +59,53 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
             }
         });
         InitializeComponent();
-        SelectionModeOptionGroup.OptionCheckedChanged += HandleSelectionModeOptionCheckedChanged;
-        OrderedList.SortDescriptions = [ListSortDescription.FromPath("Content")];
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        EnsureSelectedScenarioContent();
     }
 
-    private void HandleSelectionModeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs e)
+    protected override void OnDataContextChanged(EventArgs e)
     {
-        if (DataContext is ListViewModel viewModel)
+        base.OnDataContextChanged(e);
+        foreach (var content in _scenarioCache.Values)
         {
-            if (e.CheckedOption.IsChecked == true && e.CheckedOption.Tag is SelectionMode selectionMode)
-            {
-                viewModel.SelectionMode = selectionMode;
-            }
+            content.DataContext = DataContext;
         }
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
+            tabItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _scenarioCache.Add(scenario, content);
+        }
+
+        if (tabItem.Content != content)
+        {
+            tabItem.Content = content;
+        }
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            BasicScenario    => new ListBasicShowCase(),
+            AdvancedScenario => new ListAdvancedShowCase(),
+            _                => throw new InvalidOperationException($"Unknown List scenario: {scenario}")
+        };
     }
 
     private void RefreshLocalizedListItems(ListViewModel viewModel)
@@ -83,7 +122,7 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
         InitializePaginationListBoxItems(viewModel);
     }
 
-    private static string Lang(ListShowCaseLangResourceKind resourceKind, string fallback)
+    internal static string Lang(ListShowCaseLangResourceKind resourceKind, string fallback)
     {
         return ListShowCaseLanguage.Get(resourceKind, fallback);
     }
@@ -318,54 +357,12 @@ public partial class ListShowCase : ReactiveUserControl<ListViewModel>
         ];
     }
 
-    private void HandleAddEmptyItemClicked(object? sender, RoutedEventArgs e)
-    {
-        if (DataContext is not ListViewModel viewModel)
-        {
-            return;
-        }
-
-        var items = viewModel.EmptyDemoItems != null
-            ? new List<IListItemData>(viewModel.EmptyDemoItems)
-            : new List<IListItemData>();
-
-        items.Add(CreateDynamicItem());
-
-        viewModel.EmptyDemoItems = items;
-    }
-
-    private static ListItemData CreateDynamicItem()
+    internal static ListItemData CreateDynamicItem()
     {
         return new ListItemData()
         {
             Content = Lang(ListShowCaseLangResourceKind.P2ContentDynamicItem, "Dynamic item")
         };
-    }
-
-    private void HandleRemoveEmptyItemClicked(object? sender, RoutedEventArgs e)
-    {
-        if (DataContext is not ListViewModel viewModel)
-        {
-            return;
-        }
-
-        if (viewModel.EmptyDemoItems is null || viewModel.EmptyDemoItems.Count <= 1)
-        {
-            viewModel.EmptyDemoItems = [];
-            return;
-        }
-
-        var items = new List<IListItemData>(viewModel.EmptyDemoItems);
-        items.RemoveAt(items.Count - 1);
-        viewModel.EmptyDemoItems = items;
-    }
-
-    private void HandleFilterListBoxClicked(object? sender, RoutedEventArgs e)
-    {
-        if (sender is SearchEdit searchEdit)
-        {
-            SearchListBox.FilterValue = searchEdit.Text?.Trim();
-        }
     }
 
     private void InitializePaginationListBoxItems(ListViewModel viewModel)

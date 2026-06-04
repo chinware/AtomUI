@@ -1,0 +1,64 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AtomUIGallery.ShowCases.List"
+             x:Class="AtomUIGallery.ShowCases.List.ListBasicShowCase"
+             x:DataType="vm:ListViewModel"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:ListShowCaseLangResource BasicUsageTitle}"
+            Description="{gallery:ListShowCaseLangResource BasicUsageDescription}">
+            <atom:ListView ItemsSource="{Binding ListItems}" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ListShowCaseLangResource SelectionTitle}"
+            Description="{gallery:ListShowCaseLangResource SelectionDescription}">
+            <StackPanel Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:ListShowCaseLangResource P2TextSelectionMode}" />
+                    <atom:OptionButtonGroup ButtonStyle="Solid" OptionCheckedChanged="HandleSelectionModeOptionCheckedChanged">
+                        <atom:OptionButton IsChecked="True" Tag="{x:Static SelectionMode.Single}" Content="{gallery:ListShowCaseLangResource P2ContentSingle}" />
+                        <atom:OptionButton Tag="{x:Static SelectionMode.Multiple}" Content="{gallery:ListShowCaseLangResource P2ContentMultiple}" />
+                        <atom:OptionButton Tag="{x:Static SelectionMode.Toggle}" Content="{gallery:ListShowCaseLangResource P2ContentToggle}" />
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+                <atom:ListView SelectionMode="{Binding SelectionMode}"
+                               ItemsSource="{Binding SelectionListItems}"
+                               IsShowSelectedIndicator="True" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ListShowCaseLangResource GroupTitle}"
+            Description="{gallery:ListShowCaseLangResource GroupDescription}">
+            <atom:ListView ItemsSource="{Binding GroupListItems}"
+                           IsGroupEnabled="True"
+                           Height="300" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ListShowCaseLangResource ItemDisabledTitle}"
+            Description="{gallery:ListShowCaseLangResource ItemDisabledDescription}">
+            <atom:ListView ItemsSource="{Binding ListItemsWidthDisabled}" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ListShowCaseLangResource EmptyTitle}"
+            Description="{gallery:ListShowCaseLangResource EmptyDescription}">
+            <StackPanel Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <atom:Button Content="{gallery:ListShowCaseLangResource P2ContentAddItem}"
+                                 Click="HandleAddEmptyItemClicked" />
+                    <atom:Button Content="{gallery:ListShowCaseLangResource P2ContentRemoveItem}"
+                                 Click="HandleRemoveEmptyItemClicked" />
+                </StackPanel>
+                <atom:ListView
+                    ItemsSource="{Binding EmptyDemoItems}"
+                    IsShowEmptyIndicator="True"
+                    IsGroupEnabled="False" />
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

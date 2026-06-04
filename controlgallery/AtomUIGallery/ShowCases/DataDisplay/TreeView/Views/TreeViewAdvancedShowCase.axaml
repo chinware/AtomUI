@@ -1,0 +1,130 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.TreeView.TreeViewAdvancedShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.TreeView"
+             x:DataType="vm:TreeViewViewModel">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeViewShowCaseLangResource AsyncLoadDataTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource AsyncLoadDataDescription}">
+            <atom:TreeView ItemsSource="{Binding AsyncLoadTreeNodes}"
+                           DataLoader="{Binding AsyncLoadTreeNodeLoader}">
+                <atom:TreeView.ItemTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}" DataType="atom:ITreeItemNode">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:TreeView.ItemTemplate>
+            </atom:TreeView>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeViewShowCaseLangResource SearchableByTemplateTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource SearchableByTemplateDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:SearchEdit PlaceholderText="{gallery:TreeViewShowCaseLangResource P2PlaceholderTextSearch}"
+                                 SearchButtonClick="HandleFilterItemsSourceTreeClicked" />
+                <atom:TreeView Name="SearchTreeViewByItemsSource"
+                               ItemsSource="{Binding FilterTreeNodes}">
+                    <atom:TreeView.ItemTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding Children}" x:DataType="atom:ITreeItemNode">
+                            <atom:TextBlock Text="{Binding Header}" />
+                        </TreeDataTemplate>
+                    </atom:TreeView.ItemTemplate>
+                </atom:TreeView>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeViewShowCaseLangResource SearchableTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource SearchableDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:SearchEdit PlaceholderText="{gallery:TreeViewShowCaseLangResource P2PlaceholderTextSearch}"
+                                 SearchButtonClick="HandleFilterTreeClicked" />
+                <atom:TreeView Name="SearchTreeView">
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0N0}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0N1}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0N2}" />
+                        </atom:TreeViewItem>
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1N0}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1N1}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N1N2}" />
+                        </atom:TreeViewItem>
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N2}" />
+                    </atom:TreeViewItem>
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0N0}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0N1}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N0N2}" />
+                        </atom:TreeViewItem>
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1N0}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1N1}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N1N1N2}" />
+                        </atom:TreeViewItem>
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N2}" />
+                    </atom:TreeViewItem>
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N2}" />
+                </atom:TreeView>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TreeViewShowCaseLangResource ContextMenuTitle}"
+            Description="{gallery:TreeViewShowCaseLangResource ContextMenuDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock VerticalAlignment="Center" Text="{gallery:TreeViewShowCaseLangResource P2TextIsselectonrightclick}" />
+                    <atom:ToggleSwitch Name="ContextMenuSelectOnRightClickSwitch" IsChecked="True" VerticalAlignment="Center"/>
+                </StackPanel>
+                <atom:TreeView Name="ContextMenuTree"
+                               NodeHoverMode="Block"
+                               IsDefaultExpandAll="True"
+                               IsSelectOnRightClick="{Binding #ContextMenuSelectOnRightClickSwitch.IsChecked}"
+                               ItemContextMenuRequest="HandleContextMenuTreeItemContextMenuRequest">
+                    <atom:TreeView.Resources>
+                        <atom:MenuFlyout x:Key="TreeItemContextMenu" Placement="Pointer">
+                            <atom:MenuItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderNewNode}" Click="HandleContextMenuNewNodeClick">
+                                <atom:MenuItem.Icon>
+                                    <antdicons:PlusOutlined />
+                                </atom:MenuItem.Icon>
+                            </atom:MenuItem>
+                            <atom:MenuItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderRename}" Click="HandleContextMenuRenameClick">
+                                <atom:MenuItem.Icon>
+                                    <antdicons:EditOutlined />
+                                </atom:MenuItem.Icon>
+                            </atom:MenuItem>
+                            <atom:MenuSeparator />
+                            <atom:MenuItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderDelete}" Click="HandleContextMenuDeleteClick">
+                                <atom:MenuItem.Icon>
+                                    <antdicons:DeleteOutlined />
+                                </atom:MenuItem.Icon>
+                            </atom:MenuItem>
+                        </atom:MenuFlyout>
+                    </atom:TreeView.Resources>
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N0}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN1}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN2}" />
+                        </atom:TreeViewItem>
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN1N1}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeaf}" />
+                        </atom:TreeViewItem>
+                    </atom:TreeViewItem>
+                    <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN2}">
+                        <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderParentN2N0}">
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN1}" />
+                            <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderLeafN2}" />
+                        </atom:TreeViewItem>
+                    </atom:TreeViewItem>
+                </atom:TreeView>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

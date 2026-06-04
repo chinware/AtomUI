@@ -6,6 +6,8 @@ namespace AtomUIGallery.ShowCases.List;
 [LanguageProvider(LanguageCode.en_US, ListShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioAdvanced = "Advanced";
     public const string BasicUsageTitle = "Basic usage";
     public const string BasicUsageDescription = "Basic usage example.";
     public const string SelectionTitle = "Selection";

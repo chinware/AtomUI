@@ -6,6 +6,8 @@ namespace AtomUIGallery.ShowCases.TreeView;
 [LanguageProvider(LanguageCode.en_US, TreeViewShowCase.LanguageId)]
 internal class en_US : LanguageProvider
 {
+    public const string ScenarioBasic = "Basic";
+    public const string ScenarioAdvanced = "Advanced";
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.";
     public const string GenerateByTemplateTitle = "Generate by template";

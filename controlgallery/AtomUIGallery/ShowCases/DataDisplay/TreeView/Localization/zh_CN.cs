@@ -6,6 +6,8 @@ namespace AtomUIGallery.ShowCases.TreeView;
 [LanguageProvider(LanguageCode.zh_CN, TreeViewShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioAdvanced = "进阶";
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "最基础的用法，展示如何使用 checkable、selectable、disabled、defaultExpandKeys 等属性。";
     public const string GenerateByTemplateTitle = "使用模板生成";

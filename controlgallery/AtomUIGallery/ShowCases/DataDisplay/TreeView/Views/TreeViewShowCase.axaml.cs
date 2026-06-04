@@ -4,11 +4,11 @@ using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
+using Avalonia.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Theme.Language;
 using AtomUIGallery.Localization;
 using Avalonia;
-using Avalonia.Interactivity;
 using ReactiveUI;
 using ReactiveUI.Avalonia;
 
@@ -17,6 +17,11 @@ namespace AtomUIGallery.ShowCases.TreeView;
 public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
 {
     public const string LanguageId = nameof(TreeViewShowCase);
+
+    private const string BasicScenario    = "Basic";
+    private const string AdvancedScenario = "Advanced";
+
+    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
 
     public TreeViewShowCase()
     {
@@ -30,30 +35,6 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
                 InitCustomizeCollapseExpandTreeDefaultExpandedPaths(viewModel);
                 InitFilterTreeNodes(viewModel);
                 viewModel.AsyncLoadTreeNodeLoader = new TreeItemDataLoader();
-
-                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultExpandedPaths, v => v.BasicTree.DefaultExpandedPaths)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultSelectedPaths, v => v.BasicTree.DefaultSelectedPaths)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultCheckedPaths, v => v.BasicTree.DefaultCheckedPaths)
-                    .DisposeWith(disposables);
-
-                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultExpandedPaths, v => v.BasicTplTree.DefaultExpandedPaths)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultSelectedPaths, v => v.BasicTplTree.DefaultSelectedPaths)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.BasicTreeViewDefaultCheckedPaths, v => v.BasicTplTree.DefaultCheckedPaths)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.BasicTreeNodes, v => v.BasicTplTree.ItemsSource)
-                    .DisposeWith(disposables);
-
-                this.OneWayBind(ViewModel, vm => vm.AsyncLoadTreeNodes, v => v.AsyncLoadTree.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.AsyncLoadTreeNodeLoader, v => v.AsyncLoadTree.DataLoader)
-                    .DisposeWith(disposables);
-
-                this.OneWayBind(ViewModel, vm => vm.FilterTreeNodes, v => v.SearchTreeViewByItemsSource.ItemsSource)
-                    .DisposeWith(disposables);
 
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)
@@ -77,6 +58,53 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
             }
         });
         InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        foreach (var content in _scenarioCache.Values)
+        {
+            content.DataContext = DataContext;
+        }
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
+            tabItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _scenarioCache.Add(scenario, content);
+        }
+
+        if (tabItem.Content != content)
+        {
+            tabItem.Content = content;
+        }
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            BasicScenario    => new TreeViewBasicShowCase(),
+            AdvancedScenario => new TreeViewAdvancedShowCase(),
+            _                => throw new InvalidOperationException($"Unknown TreeView scenario: {scenario}")
+        };
     }
 
     private void RefreshLocalizedTreeNodes(TreeViewViewModel viewModel)
@@ -85,7 +113,7 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
         InitAsyncLoadTreeNodes(viewModel);
     }
 
-    private static string Lang(TreeViewShowCaseLangResourceKind resourceKind, string fallback)
+    internal static string Lang(TreeViewShowCaseLangResourceKind resourceKind, string fallback)
     {
         return TreeViewShowCaseLanguage.Get(resourceKind, fallback);
     }
@@ -108,23 +136,6 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
         ];
     }
 
-    private void HandleHoverModeChanged(object? sender, RoutedEventArgs e)
-    {
-        if (sender is AtomUI.Desktop.Controls.RadioButton radioButton)
-        {
-            if (radioButton.IsChecked == true)
-            {
-                if (radioButton.Tag is TreeItemHoverMode hoverMode)
-                {
-                    if (DataContext is TreeViewViewModel viewModel)
-                    {
-                        viewModel.TreeViewNodeHoverMode = hoverMode;
-                    }
-                }
-            }
-        }
-    }
-    
     private void InitBasicTreeNodes(TreeViewViewModel viewModel)
     {
         viewModel.BasicTreeNodes = [
@@ -341,85 +352,6 @@ public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
         ];
     }
 
-    private void HandleFilterItemsSourceTreeClicked(object? sender, RoutedEventArgs e)
-    {
-        if (sender is SearchEdit searchEdit)
-        {
-            SearchTreeViewByItemsSource.FilterValue = searchEdit.Text?.Trim();
-        }
-    }
-    
-    private void HandleFilterTreeClicked(object? sender, RoutedEventArgs e)
-    {
-        if (sender is SearchEdit searchEdit)
-        {
-            SearchTreeView.FilterValue = searchEdit.Text?.Trim();
-        }
-    }
-
-    private TreeViewItem? _contextMenuTargetItem;
-
-    private void HandleContextMenuTreeItemContextMenuRequest(object? sender, TreeItemContextMenuEventArgs e)
-    {
-        _contextMenuTargetItem = e.ViewItem;
-        if (ContextMenuTree.Resources.TryGetValue("TreeItemContextMenu", out var resource) &&
-            resource is MenuFlyout flyout)
-        {
-            flyout.ShowAt(e.ViewItem);
-        }
-    }
-
-    private void HandleContextMenuNewNodeClick(object? sender, RoutedEventArgs e)
-    {
-        if (_contextMenuTargetItem is null)
-        {
-            return;
-        }
-
-        var header = _contextMenuTargetItem.Header?.ToString() ??
-                     Lang(TreeViewShowCaseLangResourceKind.P2HeaderNodeFallback, "node");
-        var newItem = new TreeViewItem
-        {
-            Header = string.Format(
-                Lang(TreeViewShowCaseLangResourceKind.P2HeaderNewNodeFormat, "{0} / new ({1})"),
-                header,
-                _contextMenuTargetItem.Items.Count + 1)
-        };
-        _contextMenuTargetItem.Items.Add(newItem);
-        _contextMenuTargetItem.IsExpanded = true;
-    }
-
-    private void HandleContextMenuRenameClick(object? sender, RoutedEventArgs e)
-    {
-        if (_contextMenuTargetItem is null)
-        {
-            return;
-        }
-
-        var header = _contextMenuTargetItem.Header?.ToString() ??
-                     Lang(TreeViewShowCaseLangResourceKind.P2HeaderNodeFallback, "node");
-        _contextMenuTargetItem.Header = string.Format(
-            Lang(TreeViewShowCaseLangResourceKind.P2HeaderRenamedFormat, "{0} (renamed)"),
-            header);
-    }
-
-    private void HandleContextMenuDeleteClick(object? sender, RoutedEventArgs e)
-    {
-        if (_contextMenuTargetItem is null)
-        {
-            return;
-        }
-
-        if (_contextMenuTargetItem.Parent is TreeViewItem parentItem)
-        {
-            parentItem.Items.Remove(_contextMenuTargetItem);
-        }
-        else if (_contextMenuTargetItem.Parent is AtomUITreeView parentTree)
-        {
-            parentTree.Items.Remove(_contextMenuTargetItem);
-        }
-        _contextMenuTargetItem = null;
-    }
 }
 
 internal static class TreeViewShowCaseLanguage

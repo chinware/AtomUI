@@ -1,0 +1,77 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:AtomUIGallery.ShowCases.List"
+             x:Class="AtomUIGallery.ShowCases.List.ListAdvancedShowCase"
+             x:DataType="vm:ListViewModel"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <gallery:ShowCasePanel>
+        <gallery:ShowCaseItem
+            Title="{gallery:ListShowCaseLangResource FilterTitle}"
+            Description="{gallery:ListShowCaseLangResource FilterDescription}">
+            <atom:ListView Name="FilteredList"
+                           ItemsSource="{Binding FilteredGroupListItems}"
+                           IsGroupEnabled="False"
+                           Filter="{atom:ValueFilterProvider Contains}"
+                           FilterValue="{gallery:ListShowCaseLangResource P2FilterValue}"/>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ListShowCaseLangResource OrderedTitle}"
+            Description="{gallery:ListShowCaseLangResource OrderedDescription}">
+            <atom:ListView Name="OrderedList"
+                           ItemsSource="{Binding OrderedGroupListItems}"
+                           IsGroupEnabled="True" />
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ListShowCaseLangResource SimpleListBoxTitle}"
+            Description="{gallery:ListShowCaseLangResource SimpleListBoxDescription}">
+            <atom:ListBox>
+                <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentRacingCarSpraysBurningFuelIntoCrowd}" />
+                <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentJapanesePrincessToWedCommoner}" />
+                <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentAustralianWalksN100kmAfterOutbackCrash}" />
+                <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentManChargedOverMissingWeddingGirl}" />
+                <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentLosAngelesBattlesHugeWildfires}" />
+            </atom:ListBox>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ListShowCaseLangResource SimpleListBoxItemsSourceTitle}"
+            Description="{gallery:ListShowCaseLangResource SimpleListBoxItemsSourceDescription}">
+            <atom:ListBox ItemsSource="{Binding BasicListBoxItems}"
+                          IsShowSelectedIndicator="True"/>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ListShowCaseLangResource SearchableTitle}"
+            Description="{gallery:ListShowCaseLangResource SearchableDescription}">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:SearchEdit PlaceholderText="{gallery:ListShowCaseLangResource P2PlaceholderTextSearch}"
+                                 SearchButtonClick="HandleFilterListBoxClicked"/>
+                <atom:ListBox Name="SearchListBox">
+                    <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentRacingCarSpraysBurningFuelIntoCrowd}" />
+                    <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentJapanesePrincessToWedCommoner}" />
+                    <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentAustralianWalksN100kmAfterOutbackCrash}" />
+                    <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentManChargedOverMissingWeddingGirl}" />
+                    <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentLosAngelesBattlesHugeWildfires}" />
+                </atom:ListBox>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ListShowCaseLangResource PaginationListTitle}"
+            Description="{gallery:ListShowCaseLangResource PaginationListDescription}">
+            <atom:ListView
+                ItemsSource="{Binding PaginationListItems}"
+                PaginationVisibility="Bottom"
+                SelectionMode="Multiple"
+                Height="400"
+                PageSize="100">
+                <atom:ListView.BottomPagination>
+                    <atom:Pagination />
+                </atom:ListView.BottomPagination>
+            </atom:ListView>
+        </gallery:ShowCaseItem>
+    </gallery:ShowCasePanel>
+</UserControl>

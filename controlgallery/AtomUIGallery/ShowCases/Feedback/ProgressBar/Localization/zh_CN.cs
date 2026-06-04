@@ -6,6 +6,9 @@ namespace AtomUIGallery.ShowCases.ProgressBar;
 [LanguageProvider(LanguageCode.zh_CN, ProgressBarShowCase.LanguageId)]
 internal class zh_CN : LanguageProvider
 {
+    public const string ScenarioBasic = "基础";
+    public const string ScenarioAdvanced = "进阶";
+    public const string ScenarioLayout = "布局";
     public const string ProgressBarTitle = "进度条";
     public const string ProgressBarDescription = "标准进度条。";
     public const string CircularProgressBarTitle = "环形进度条";
