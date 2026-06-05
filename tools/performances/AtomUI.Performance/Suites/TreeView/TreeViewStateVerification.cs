@@ -18,6 +18,7 @@ internal static partial class Program
         VerifyNodeSwitcherLeafVisibility(failures);
         VerifyTreeViewCheckboxParentStateAggregation(failures);
         VerifyTreeViewFilterHighlightRuns(failures);
+        VerifyTreeViewItemClearFilterWithoutOwner(failures);
 
         if (failures.Count == 0)
         {
@@ -286,6 +287,34 @@ internal static partial class Program
         header.FilterHighlightWords = string.Empty;
         Expect(header.FilterHighlightRuns is null,
             "TreeView filter empty highlight words should clear highlight runs.",
+            failures);
+    }
+
+    private static void VerifyTreeViewItemClearFilterWithoutOwner(ICollection<string> failures)
+    {
+        var item = new TreeViewItem
+        {
+            IsExpanded = true
+        };
+        item.IsFilterMode         = true;
+        item.IsFilterMatch        = true;
+        item.FilterHighlightWords = "alpha";
+
+        try
+        {
+            item.ClearFilterMode();
+        }
+        catch (Exception ex)
+        {
+            failures.Add($"TreeViewItem.ClearFilterMode should tolerate missing OwnerTreeView. Actual: {ex.GetType().Name}: {ex.Message}");
+            return;
+        }
+
+        Expect(!item.IsExpanded,
+            "TreeViewItem without OwnerTreeView should collapse when clearing filter mode.",
+            failures);
+        Expect(!item.IsFilterMode && !item.IsFilterMatch && item.FilterHighlightWords == null,
+            "TreeViewItem.ClearFilterMode should clear filter state.",
             failures);
     }
 }

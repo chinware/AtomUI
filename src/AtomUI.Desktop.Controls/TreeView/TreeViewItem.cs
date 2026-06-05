@@ -887,7 +887,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
             SetCurrentValue(IsVisibleProperty, _filterContextBackup.IsVisible);
         }
         
-        SetCurrentValue(IsExpandedProperty, OwnerTreeView?.SelectedItemsClosure.Contains(this));
+        SetCurrentValue(IsExpandedProperty, OwnerTreeView?.SelectedItemsClosure.Contains(this) == true);
         IsFilterMatch        = false;
         IsFilterMode         = false;
         FilterHighlightWords = null;
