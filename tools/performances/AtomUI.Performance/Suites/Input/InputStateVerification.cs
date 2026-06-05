@@ -1,10 +1,13 @@
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
+using AtomUI.Theme.Styling;
+using AtomUI.Theme.TokenSystem;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.VisualTree;
 using AtomTextBox = AtomUI.Desktop.Controls.TextBox;
 
@@ -15,6 +18,7 @@ internal static partial class Program
     private static bool RunInputStateVerification()
     {
         var failures = new List<string>();
+        VerifyInputSelectionTokenMapping(failures);
         VerifyTextBoxRuntimeSlots(failures);
         VerifyTextAreaRuntimeSlots(failures);
         VerifySearchEditRuntimeSlots(failures);
@@ -32,6 +36,118 @@ internal static partial class Program
         }
 
         return false;
+    }
+
+    private static void VerifyInputSelectionTokenMapping(ICollection<string> failures)
+    {
+        var defaultToken = new DesignToken();
+        new DefaultThemeVariantCalculator().Calculate(defaultToken);
+
+        Expect(defaultToken.SelectionBackground == defaultToken.ColorPrimary,
+            $"Default SelectionBackground should use ColorPrimary ({defaultToken.ColorPrimary}), actual {defaultToken.SelectionBackground}.",
+            failures);
+        Expect(defaultToken.SelectionForeground == defaultToken.ColorWhite,
+            $"Default SelectionForeground should use ColorWhite ({defaultToken.ColorWhite}), actual {defaultToken.SelectionForeground}.",
+            failures);
+
+        var darkToken = new DesignToken();
+        new DarkThemeVariantCalculator(new DefaultThemeVariantCalculator()).Calculate(darkToken);
+
+        Expect(darkToken.SelectionBackground == darkToken.ColorPrimary,
+            $"Dark SelectionBackground should use ColorPrimary ({darkToken.ColorPrimary}), actual {darkToken.SelectionBackground}.",
+            failures);
+        Expect(darkToken.SelectionForeground == darkToken.ColorWhite,
+            $"Dark SelectionForeground should use ColorWhite ({darkToken.ColorWhite}), actual {darkToken.SelectionForeground}.",
+            failures);
+
+        VerifyInputSelectionBrushes(new AtomTextBox
+        {
+            Width = 260,
+            Text  = "selection"
+        }, defaultToken.ColorPrimary, Colors.White, "TextBox", failures);
+        VerifyInputSelectionBrushes(new LineEdit
+        {
+            Width = 260,
+            Text  = "selection"
+        }, defaultToken.ColorPrimary, Colors.White, "LineEdit", failures);
+        VerifyInputSelectionBrushes(new SearchEdit
+        {
+            Width = 260,
+            Text  = "selection"
+        }, defaultToken.ColorPrimary, Colors.White, "SearchEdit", failures);
+        VerifyInputSelectionBrushes(new TextArea
+        {
+            Width = 260,
+            Text  = "selection"
+        }, defaultToken.ColorPrimary, Colors.White, "TextArea", failures);
+        VerifyInputTextPresenterInvalidatesSelectionTextLayout(failures);
+    }
+
+    private static void VerifyInputSelectionBrushes(Avalonia.Controls.TextBox textBox,
+                                                    Color expectedSelectionBackground,
+                                                    Color expectedSelectionForeground,
+                                                    string label,
+                                                    ICollection<string> failures)
+    {
+        using var realized = RealizeControl(textBox);
+        RefreshLayout(realized.Window);
+
+        Expect(GetSolidBrushColor(textBox.SelectionBrush) == expectedSelectionBackground,
+            $"{label} SelectionBrush should use the Ant Design primary selection token.",
+            failures);
+        Expect(GetSolidBrushColor(textBox.SelectionForegroundBrush) == expectedSelectionForeground,
+            $"{label} SelectionForegroundBrush should use the Ant Design selected-text foreground token.",
+            failures);
+
+        var presenter = FindVisualByName<TextPresenter>(textBox, "PART_TextPresenter");
+        Expect(presenter != null,
+            $"{label} should realize PART_TextPresenter for text selection rendering.",
+            failures);
+        Expect(presenter is InputTextPresenter,
+            $"{label} should use InputTextPresenter to clear Avalonia 12 text run cache for selected text.",
+            failures);
+        Expect(GetSolidBrushColor(presenter?.SelectionBrush) == expectedSelectionBackground,
+            $"{label} PART_TextPresenter SelectionBrush should use the Ant Design primary selection token.",
+            failures);
+        Expect(GetSolidBrushColor(presenter?.SelectionForegroundBrush) == expectedSelectionForeground,
+            $"{label} PART_TextPresenter SelectionForegroundBrush should use the Ant Design selected-text foreground.",
+            failures);
+    }
+
+    private static void VerifyInputTextPresenterInvalidatesSelectionTextLayout(ICollection<string> failures)
+    {
+        var presenter = new CountingInputTextPresenter
+        {
+            Text                     = "selection",
+            SelectionForegroundBrush = Brush(Colors.Black),
+            ShowSelectionHighlight   = true
+        };
+        using var realized = RealizeControl(presenter);
+        RefreshLayout(realized.Window);
+
+        presenter.ResetTextLayoutInvalidations();
+        presenter.SetCurrentValue(TextPresenter.SelectionForegroundBrushProperty, Brush(Colors.White));
+        Expect(presenter.TextLayoutInvalidations > 0,
+            "InputTextPresenter should fully invalidate text layout when SelectionForegroundBrush changes.",
+            failures);
+
+        presenter.ResetTextLayoutInvalidations();
+        presenter.SetCurrentValue(TextPresenter.SelectionStartProperty, 1);
+        Expect(presenter.TextLayoutInvalidations > 0,
+            "InputTextPresenter should fully invalidate text layout when SelectionStart changes.",
+            failures);
+
+        presenter.ResetTextLayoutInvalidations();
+        presenter.SetCurrentValue(TextPresenter.SelectionEndProperty, 8);
+        Expect(presenter.TextLayoutInvalidations > 0,
+            "InputTextPresenter should fully invalidate text layout when SelectionEnd changes.",
+            failures);
+
+        presenter.ResetTextLayoutInvalidations();
+        presenter.SetCurrentValue(TextPresenter.ShowSelectionHighlightProperty, false);
+        Expect(presenter.TextLayoutInvalidations > 0,
+            "InputTextPresenter should fully invalidate text layout when ShowSelectionHighlight changes.",
+            failures);
     }
 
     private static void VerifyTextBoxRuntimeSlots(ICollection<string> failures)
