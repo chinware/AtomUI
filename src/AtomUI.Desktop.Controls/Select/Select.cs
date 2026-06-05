@@ -258,6 +258,7 @@ public partial class Select : AbstractSelect
     private CompositeDisposable? _contentRightAddOnBindings;
     private bool _ignoreSyncSelection;
     private bool _candidateListActivated;
+    private bool _syncingSingleFilterInputText;
     private ISelectOption? _addNewOption;
 
     static Select()
@@ -776,6 +777,7 @@ public partial class Select : AbstractSelect
         base.OnPropertyChanged(change);
         if (change.Property == IsDropDownOpenProperty)
         {
+            ConfigureSingleResultVisible();
             ConfigureSingleFilterTextBox();
         }
         else if (change.Property == IsPopupMatchSelectWidthProperty)
@@ -795,22 +797,33 @@ public partial class Select : AbstractSelect
             ConfigureSingleResultVisible();
             SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count ?? 0);
             CleanDynamicAddedOptions();
+            ConfigureSingleFilterTextBox();
         }
         else if (change.Property == ModeProperty)
         {
             ConfigureOptionsBoxSelectionMode();
             ConfigureSingleResultVisible();
+            ConfigureSingleFilterTextBox();
         }
         else if (change.Property == FilterValueProperty)
         {
             ConfigurePlaceholderVisible();
             ConfigureSingleResultVisible();
+            if (!IsDropDownOpen)
+            {
+                ConfigureSingleFilterTextBox();
+            }
+        }
+        else if (change.Property == PlaceholderTextProperty)
+        {
+            ConfigureSingleFilterTextBox();
         }
 
         if (change.Property == IsFilterEnabledProperty ||
             change.Property == ModeProperty)
         {
             ConfigureEffectiveSearchEnabled();
+            ConfigureSingleFilterTextBox();
         }
     }
 
@@ -818,12 +831,8 @@ public partial class Select : AbstractSelect
     {
         if (Mode == SelectMode.Single)
         {
-            if (_singleFilterInput != null)
-            {
-                _singleFilterInput.Clear();
-                _singleFilterInput.Width = double.NaN;
-                FilterValue              = null;
-            }
+            FilterValue = null;
+            ConfigureSingleFilterTextBox();
         }
 
         _candidateListActivated = false;
@@ -848,7 +857,7 @@ public partial class Select : AbstractSelect
             }
         }
 
-        if (Mode == SelectMode.Single)
+        if (Mode == SelectMode.Single && IsEffectiveFilterEnabled)
         {
             _singleFilterInput?.Focus();
         }
@@ -891,7 +900,7 @@ public partial class Select : AbstractSelect
     {
         if (Mode == SelectMode.Single)
         {
-            SetCurrentValue(IsPlaceholderTextVisibleProperty, SelectedOption == null && string.IsNullOrEmpty(FilterValue?.ToString()));
+            SetCurrentValue(IsPlaceholderTextVisibleProperty, false);
         }
         else
         {
@@ -901,10 +910,7 @@ public partial class Select : AbstractSelect
 
     private void ConfigureSingleResultVisible()
     {
-        SetCurrentValue(IsSingleResultVisibleProperty,
-            Mode == SelectMode.Single &&
-            SelectedOption != null &&
-            string.IsNullOrEmpty(FilterValue?.ToString()));
+        SetCurrentValue(IsSingleResultVisibleProperty, false);
     }
 
     private void ConfigureSelectionIsEmpty()
@@ -921,12 +927,51 @@ public partial class Select : AbstractSelect
 
     private void ConfigureSingleFilterTextBox()
     {
-        if (_singleFilterInput != null)
+        if (_singleFilterInput == null)
         {
-            if (IsDropDownOpen)
-            {
-                _singleFilterInput.Width = double.NaN;
-            }
+            return;
+        }
+
+        _singleFilterInput.Width = double.NaN;
+
+        if (Mode != SelectMode.Single)
+        {
+            _singleFilterInput.IsReadOnly      = true;
+            _singleFilterInput.PlaceholderText = null;
+            SetSingleFilterInputText(null);
+            return;
+        }
+
+        var selectedText = SelectedOption?.Header?.ToString();
+        if (IsDropDownOpen && IsEffectiveFilterEnabled)
+        {
+            _singleFilterInput.IsReadOnly      = false;
+            _singleFilterInput.PlaceholderText = selectedText ?? PlaceholderText;
+            SetSingleFilterInputText(string.Empty);
+        }
+        else
+        {
+            _singleFilterInput.IsReadOnly      = !IsEffectiveFilterEnabled;
+            _singleFilterInput.PlaceholderText = PlaceholderText;
+            SetSingleFilterInputText(selectedText ?? string.Empty);
+        }
+    }
+
+    private void SetSingleFilterInputText(string? text)
+    {
+        if (_singleFilterInput == null || _singleFilterInput.Text == text)
+        {
+            return;
+        }
+
+        _syncingSingleFilterInputText = true;
+        try
+        {
+            _singleFilterInput.Text = text;
+        }
+        finally
+        {
+            _syncingSingleFilterInputText = false;
         }
     }
 
@@ -936,6 +981,14 @@ public partial class Select : AbstractSelect
         {
             if (e.Source is TextBox textBox)
             {
+                if (ReferenceEquals(textBox, _singleFilterInput) &&
+                    Mode == SelectMode.Single &&
+                    (_syncingSingleFilterInputText || !IsDropDownOpen || !IsEffectiveFilterEnabled))
+                {
+                    e.Handled = true;
+                    return;
+                }
+
                 var searchText = textBox.Text?.Trim();
                 FilterValue = string.IsNullOrEmpty(searchText) ? null : searchText;
             }

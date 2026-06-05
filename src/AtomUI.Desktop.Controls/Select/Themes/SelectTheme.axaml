@@ -44,18 +44,10 @@
                                 Text="{TemplateBinding PlaceholderText}"
                                 IsVisible="{TemplateBinding IsPlaceholderTextVisible}"
                                 Foreground="{TemplateBinding PlaceholderForeground}" />
-                            <ContentPresenter Name="SingleSelectResultPresenter"
-                                              Content="{TemplateBinding SelectedOption}"
-                                              IsVisible="{TemplateBinding IsSingleResultVisible}">
-                                <ContentPresenter.ContentTemplate>
-                                    <DataTemplate x:DataType="atom:ISelectOption">
-                                        <TextBlock Text="{Binding Header}" />
-                                    </DataTemplate>
-                                </ContentPresenter.ContentTemplate>
-                            </ContentPresenter>
                             <atom:SelectFilterTextBox Name="PART_SingleFilterInput"
                                                       IsVisible="False"
-                                                      SizeType="{TemplateBinding SizeType}" />
+                                                      SizeType="{TemplateBinding SizeType}"
+                                                      PlaceholderForeground="{TemplateBinding PlaceholderForeground}" />
                             <atom:SelectResultOptionsBox
                                 Name="SelectedOptionsBox"
                                 HorizontalAlignment="Stretch"
@@ -118,18 +110,14 @@
             <Style Selector="^ /template/ atom|SelectCandidateList#PART_CandidateList">
                 <Setter Property="IsShowSelectedIndicator" Value="False" />
             </Style>
+            <Style Selector="^ /template/ atom|SelectFilterTextBox#PART_SingleFilterInput">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
             <Style Selector="^[IsFilterEnabled=False]">
                 <Style Selector="^ /template/ atom|SelectAddOnDecoratedBox#PART_AddOnDecoratedBox">
                     <Setter Property="Cursor" Value="Hand" />
                 </Style>
 
-            </Style>
-            <Style Selector="^[IsFilterEnabled=True]">
-                <Style Selector="^[IsDropDownOpen=True]">
-                    <Style Selector="^ /template/ atom|SelectFilterTextBox#PART_SingleFilterInput">
-                        <Setter Property="IsVisible" Value="True" />
-                    </Style>
-                </Style>
             </Style>
         </Style>
 

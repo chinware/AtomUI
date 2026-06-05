@@ -9,6 +9,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Performance;
@@ -40,8 +41,8 @@ internal static partial class Program
         VerifyOpenTreeSelectTagCloseDoesNotDismissPopup(failures);
         VerifyOpenTreeSelectBoxPressStillDismissesPopup(failures);
         VerifyOpenSingleFilterTreeSelectKeepsInputEditable(failures);
-        VerifySingleFilterSelectUsesResultPresenter(failures);
-        VerifySingleFilterTreeSelectUsesResultPresenter(failures);
+        VerifySingleFilterSelectUsesSingleTextBox(failures);
+        VerifySingleFilterTreeSelectUsesSingleTextBox(failures);
 
         if (failures.Count == 0)
         {
@@ -69,8 +70,8 @@ internal static partial class Program
             "Closed default Select should not create SelectCandidateList.",
             failures);
         var filterInput = FindVisualByName<SelectFilterTextBox>(select, "PART_SingleFilterInput");
-        Expect(filterInput?.IsVisible == false,
-            "Closed default Select should keep the static SelectFilterTextBox hidden.",
+        Expect(filterInput?.IsVisible == true,
+            "Closed default single Select should show the static SelectFilterTextBox as the single display surface.",
             failures);
         var selectedOptionsBox = FindVisualByName<SelectResultOptionsBox>(select, "SelectedOptionsBox");
         Expect(selectedOptionsBox?.IsVisible == false,
@@ -197,14 +198,19 @@ internal static partial class Program
         var filterSelect = new Select
         {
             IsFilterEnabled = true,
-            OptionsSource   = CreateSelectOptions()
+            OptionsSource   = CreateSelectOptions(),
+            PlaceholderText = "Choose fruit"
         };
         using var filterRealized = RealizeControl(filterSelect);
-        Expect(FindVisualByName<SelectFilterTextBox>(filterSelect, "PART_SingleFilterInput")?.IsVisible == false,
-            "Closed single filter Select should keep SelectFilterTextBox hidden until the dropdown opens.",
+        var filterInput = FindVisualByName<SelectFilterTextBox>(filterSelect, "PART_SingleFilterInput");
+        Expect(filterInput?.IsVisible == true,
+            "Closed single filter Select should use SelectFilterTextBox for the single display surface.",
             failures);
-        Expect(FindVisualByName<AtomUI.Desktop.Controls.TextBlock>(filterSelect, "PlaceholderText")?.IsVisible == true,
-            "Closed empty single filter Select should show the normal placeholder text.",
+        Expect(filterInput?.PlaceholderText == "Choose fruit",
+            $"Closed empty single filter Select should show the normal placeholder through SelectFilterTextBox. Actual: {filterInput?.PlaceholderText}.",
+            failures);
+        Expect(FindVisualByName<AtomUI.Desktop.Controls.TextBlock>(filterSelect, "PlaceholderText")?.IsVisible == false,
+            "Closed single filter Select should not use the outer placeholder text block.",
             failures);
         Expect(GetPopupContent<SelectCandidateList>(filterSelect) == null,
             "Closed single filter Select should still defer SelectCandidateList.",
@@ -821,39 +827,51 @@ internal static partial class Program
             failures);
     }
 
-    private static void VerifySingleFilterSelectUsesResultPresenter(ICollection<string> failures)
+    private static void VerifySingleFilterSelectUsesSingleTextBox(ICollection<string> failures)
     {
         var options = CreateSelectOptions();
         var select = new Select
         {
-            Width           = 320,
             IsFilterEnabled = true,
             OptionsSource   = options,
-            SelectedOption  = options[1]
+            SelectedOption  = options[1],
+            PlaceholderText = "Choose fruit"
         };
 
         using var realized = RealizeControl(select);
-        var resultPresenter = FindVisualByName<ContentPresenter>(select, "SingleSelectResultPresenter");
-        var filterInput     = FindVisualByName<SelectFilterTextBox>(select, "PART_SingleFilterInput");
-        Expect(resultPresenter is { IsVisible: true },
-            "Closed single filter Select with a selected option should show the result presenter.",
+        var filterInput = FindVisualByName<SelectFilterTextBox>(select, "PART_SingleFilterInput");
+        Expect(filterInput is { IsVisible: true },
+            "Closed single filter Select with a selected option should show the single filter text box.",
             failures);
-        Expect(filterInput is { IsVisible: false },
-            "Closed single filter Select with a selected option should hide the filter input.",
+        Expect(filterInput?.Text == options[1].Header?.ToString(),
+            $"Closed single filter Select should display the selected option through Text. Actual: {filterInput?.Text}.",
             failures);
-        Expect(string.IsNullOrEmpty(filterInput?.PlaceholderText),
-            $"Single filter Select should not display the selected option through PlaceholderText. Actual: {filterInput?.PlaceholderText}.",
+        Expect(filterInput?.PlaceholderText == "Choose fruit",
+            $"Closed single filter Select should keep the normal placeholder, not the selected option. Actual: {filterInput?.PlaceholderText}.",
             failures);
+        Expect(filterInput?.IsReadOnly == false,
+            "Closed searchable single Select should keep the shared filter text box editable.",
+            failures);
+        var closedTextStart = GetTextPresenterStart(select, filterInput);
+        var addOnBox        = FindVisualByName<AddOnDecoratedBox>(select, AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        var closedWidth = addOnBox?.Bounds.Width ?? 0;
 
         MaterializeLazyPopupContentForTest(select);
         SetDropDownOpenTemplateStateForTest(select, true);
         InvokePopupLifecycleCallbackForTest(select, "PopupOpened");
         RefreshLayout(realized.Window);
-        Expect(resultPresenter is { IsVisible: true },
-            "Open single filter Select should keep the selected-result presenter visible before real search text is typed.",
+        Expect(addOnBox == null || Math.Abs(addOnBox.Bounds.Width - closedWidth) < 0.001,
+            $"Opening single filter Select should not change the select box width. Closed: {closedWidth:0.###}, open: {addOnBox?.Bounds.Width:0.###}.",
             failures);
         Expect(filterInput is { IsVisible: true },
-            "Open single filter Select should show the filter input.",
+            "Open single filter Select should keep the same filter text box visible.",
+            failures);
+        VerifyOpenSingleFilterTextBoxPresentation(
+            select,
+            filterInput,
+            options[1].Header?.ToString(),
+            closedTextStart,
+            "Select",
             failures);
 
         if (filterInput != null)
@@ -863,62 +881,74 @@ internal static partial class Program
             Expect(select.FilterValue?.ToString() == "ora",
                 $"Open single filter Select should write actual typed text to FilterValue. Actual: {select.FilterValue}.",
                 failures);
-            Expect(resultPresenter is { IsVisible: false },
-                "Typing into single filter Select should hide the selected-result presenter while filtering.",
+            Expect(filterInput.PlaceholderText == options[1].Header?.ToString(),
+                $"Typing into single filter Select should keep the selected value only as placeholder backing text. Actual: {filterInput.PlaceholderText}.",
                 failures);
         }
 
         SetDropDownOpenTemplateStateForTest(select, false);
         InvokePopupLifecycleCallbackForTest(select, "PopupClosed");
         RefreshLayout(realized.Window);
-        Expect(resultPresenter is { IsVisible: true },
-            "Closed single filter Select should restore the selected-result presenter.",
+        Expect(filterInput is { IsVisible: true },
+            "Closed single filter Select should keep the same filter text box visible after filtering.",
             failures);
-        Expect(filterInput is { IsVisible: false },
-            "Closed single filter Select should hide the filter input after filtering.",
+        Expect(filterInput?.Text == options[1].Header?.ToString(),
+            $"Closing single filter Select should restore the selected option text. Actual: {filterInput?.Text}.",
             failures);
-        Expect(string.IsNullOrEmpty(filterInput?.Text),
-            $"Closing single filter Select should clear filter input text. Actual: {filterInput?.Text}.",
+        Expect(filterInput?.PlaceholderText == "Choose fruit",
+            $"Closing single filter Select should restore the normal placeholder. Actual: {filterInput?.PlaceholderText}.",
             failures);
         Expect(select.FilterValue == null,
             $"Closing single filter Select should clear FilterValue. Actual: {select.FilterValue}.",
             failures);
     }
 
-    private static void VerifySingleFilterTreeSelectUsesResultPresenter(ICollection<string> failures)
+    private static void VerifySingleFilterTreeSelectUsesSingleTextBox(ICollection<string> failures)
     {
         var nodes        = CreateTreeNodes();
         var selectedNode = nodes[1].Children.ElementAt(1);
         var treeSelect = new TreeSelect
         {
-            Width           = 320,
             IsFilterEnabled = true,
             ItemsSource     = nodes,
-            SelectedItem    = selectedNode
+            SelectedItem    = selectedNode,
+            PlaceholderText = "Choose node"
         };
 
         using var realized = RealizeControl(treeSelect);
-        var resultPresenter = FindVisualByName<ContentPresenter>(treeSelect, "SingleSelectResultPresenter");
-        var filterInput     = FindVisualByName<SelectFilterTextBox>(treeSelect, "PART_SingleFilterInput");
-        Expect(resultPresenter is { IsVisible: true },
-            "Closed single filter TreeSelect with a selected item should show the result presenter.",
+        var filterInput = FindVisualByName<SelectFilterTextBox>(treeSelect, "PART_SingleFilterInput");
+        Expect(filterInput is { IsVisible: true },
+            "Closed single filter TreeSelect with a selected item should show the single filter text box.",
             failures);
-        Expect(filterInput is { IsVisible: false },
-            "Closed single filter TreeSelect with a selected item should hide the filter input.",
+        Expect(filterInput?.Text == selectedNode.Header?.ToString(),
+            $"Closed single filter TreeSelect should display the selected item through Text. Actual: {filterInput?.Text}.",
             failures);
-        Expect(string.IsNullOrEmpty(filterInput?.PlaceholderText),
-            $"Single filter TreeSelect should not display the selected item through PlaceholderText. Actual: {filterInput?.PlaceholderText}.",
+        Expect(filterInput?.PlaceholderText == "Choose node",
+            $"Closed single filter TreeSelect should keep the normal placeholder, not the selected item. Actual: {filterInput?.PlaceholderText}.",
             failures);
+        Expect(filterInput?.IsReadOnly == false,
+            "Closed searchable single TreeSelect should keep the shared filter text box editable.",
+            failures);
+        var closedTextStart = GetTextPresenterStart(treeSelect, filterInput);
+        var addOnBox        = FindVisualByName<AddOnDecoratedBox>(treeSelect, AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        var closedWidth = addOnBox?.Bounds.Width ?? 0;
 
         MaterializeLazyPopupContentForTest(treeSelect);
         SetDropDownOpenTemplateStateForTest(treeSelect, true);
         InvokePopupLifecycleCallbackForTest(treeSelect, "PopupOpened");
         RefreshLayout(realized.Window);
-        Expect(resultPresenter is { IsVisible: true },
-            "Open single filter TreeSelect should keep the selected-result presenter visible before real search text is typed.",
+        Expect(addOnBox == null || Math.Abs(addOnBox.Bounds.Width - closedWidth) < 0.001,
+            $"Opening single filter TreeSelect should not change the select box width. Closed: {closedWidth:0.###}, open: {addOnBox?.Bounds.Width:0.###}.",
             failures);
         Expect(filterInput is { IsVisible: true },
-            "Open single filter TreeSelect should show the filter input.",
+            "Open single filter TreeSelect should keep the same filter text box visible.",
+            failures);
+        VerifyOpenSingleFilterTextBoxPresentation(
+            treeSelect,
+            filterInput,
+            selectedNode.Header?.ToString(),
+            closedTextStart,
+            "TreeSelect",
             failures);
 
         if (filterInput != null)
@@ -928,22 +958,22 @@ internal static partial class Program
             Expect(treeSelect.FilterValue?.ToString() == "Leaf",
                 $"Open single filter TreeSelect should write actual typed text to FilterValue. Actual: {treeSelect.FilterValue}.",
                 failures);
-            Expect(resultPresenter is { IsVisible: false },
-                "Typing into single filter TreeSelect should hide the selected-result presenter while filtering.",
+            Expect(filterInput.PlaceholderText == selectedNode.Header?.ToString(),
+                $"Typing into single filter TreeSelect should keep the selected value only as placeholder backing text. Actual: {filterInput.PlaceholderText}.",
                 failures);
         }
 
         SetDropDownOpenTemplateStateForTest(treeSelect, false);
         InvokePopupLifecycleCallbackForTest(treeSelect, "PopupClosed");
         RefreshLayout(realized.Window);
-        Expect(resultPresenter is { IsVisible: true },
-            "Closed single filter TreeSelect should restore the selected-result presenter.",
+        Expect(filterInput is { IsVisible: true },
+            "Closed single filter TreeSelect should keep the same filter text box visible after filtering.",
             failures);
-        Expect(filterInput is { IsVisible: false },
-            "Closed single filter TreeSelect should hide the filter input after filtering.",
+        Expect(filterInput?.Text == selectedNode.Header?.ToString(),
+            $"Closing single filter TreeSelect should restore the selected item text. Actual: {filterInput?.Text}.",
             failures);
-        Expect(string.IsNullOrEmpty(filterInput?.Text),
-            $"Closing single filter TreeSelect should clear filter input text. Actual: {filterInput?.Text}.",
+        Expect(filterInput?.PlaceholderText == "Choose node",
+            $"Closing single filter TreeSelect should restore the normal placeholder. Actual: {filterInput?.PlaceholderText}.",
             failures);
         Expect(treeSelect.FilterValue == null,
             $"Closing single filter TreeSelect should clear FilterValue. Actual: {treeSelect.FilterValue}.",
@@ -1013,6 +1043,72 @@ internal static partial class Program
         return (bool)(typeof(Select)
                    .GetField("_candidateListActivated", BindingFlags.Instance | BindingFlags.NonPublic)
                    ?.GetValue(select) ?? false);
+    }
+
+    private static Point? GetTextPresenterStart(Control owner, SelectFilterTextBox? filterInput)
+    {
+        if (filterInput == null)
+        {
+            return null;
+        }
+
+        var textPresenter = FindVisualByName<TextPresenter>(filterInput, "PART_TextPresenter");
+        return textPresenter?.TranslatePoint(default, owner);
+    }
+
+    private static void VerifyOpenSingleFilterTextBoxPresentation(
+        Control owner,
+        SelectFilterTextBox? filterInput,
+        string? selectedText,
+        Point? closedTextStart,
+        string controlName,
+        ICollection<string> failures)
+    {
+        if (filterInput == null)
+        {
+            return;
+        }
+
+        Expect(filterInput.PlaceholderText == selectedText,
+            $"Open single filter {controlName} should show the selected value through the search input placeholder. Expected: {selectedText}, actual: {filterInput.PlaceholderText}.",
+            failures);
+        Expect(string.IsNullOrEmpty(filterInput.Text),
+            $"Open single filter {controlName} should clear Text before user input so the selected value behaves as placeholder. Actual: {filterInput.Text}.",
+            failures);
+        Expect(filterInput.IsReadOnly == false,
+            $"Open single filter {controlName} should keep the search text box editable.",
+            failures);
+
+        var placeholder = FindVisualByName<Avalonia.Controls.TextBlock>(filterInput, "Placeholder");
+        var filterTextPresenter = FindVisualByName<TextPresenter>(filterInput, "PART_TextPresenter");
+        if (placeholder == null || filterTextPresenter == null)
+        {
+            failures.Add($"Open single filter {controlName} should materialize placeholder and filter text presenters.");
+            return;
+        }
+
+        var placeholderStart = placeholder.TranslatePoint(default, owner);
+        var filterStart = filterTextPresenter.TranslatePoint(default, owner);
+        if (closedTextStart.HasValue && placeholderStart.HasValue)
+        {
+            var openShift = placeholderStart.Value.X - closedTextStart.Value.X;
+            Expect(Math.Abs(openShift) <= 2,
+                $"Open single filter {controlName} should not visibly shift the selected value when Text switches to PlaceholderText. Shift: {openShift:0.###}.",
+                failures);
+        }
+        else
+        {
+            failures.Add($"Open single filter {controlName} should resolve closed result and open placeholder positions.");
+        }
+        Expect(filterStart.HasValue && placeholderStart.HasValue && filterStart.Value.X <= placeholderStart.Value.X,
+            $"Open single filter {controlName} should keep the caret at the normal input start before the placeholder text.",
+            failures);
+        Expect(!BrushEquals(filterInput.CaretBrush, Brushes.Transparent),
+            $"Open single filter {controlName} should keep the normal caret visible.",
+            failures);
+        Expect(BrushEquals(placeholder.Foreground, filterInput.PlaceholderForeground),
+            $"Open single filter {controlName} selected placeholder should use placeholder foreground.",
+            failures);
     }
 
     private static PointerPressedEventArgs RaisePrimaryPointerPressed(Control target, Visual root)

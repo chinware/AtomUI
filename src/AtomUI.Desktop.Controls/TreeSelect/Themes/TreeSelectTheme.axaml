@@ -44,19 +44,11 @@
                                 Text="{TemplateBinding PlaceholderText}"
                                 IsVisible="{TemplateBinding IsPlaceholderTextVisible}"
                                 Foreground="{TemplateBinding PlaceholderForeground}" />
-                            <ContentPresenter Name="SingleSelectResultPresenter"
-                                              Content="{TemplateBinding SelectedItem}"
-                                              IsVisible="{TemplateBinding IsSingleResultVisible}">
-                                <ContentPresenter.ContentTemplate>
-                                    <DataTemplate x:DataType="atom:ITreeItemNode">
-                                        <TextBlock Text="{Binding Header}" />
-                                    </DataTemplate>
-                                </ContentPresenter.ContentTemplate>
-                            </ContentPresenter>
                             <atom:SelectFilterTextBox
                                 Name="PART_SingleFilterInput"
                                 IsVisible="False"
-                                SizeType="{TemplateBinding SizeType}" />
+                                SizeType="{TemplateBinding SizeType}"
+                                PlaceholderForeground="{TemplateBinding PlaceholderForeground}" />
                             <atom:SelectTagAwareTextBox Name="SelectedItemsBox"
                                                         HorizontalAlignment="Stretch"
                                                         VerticalAlignment="Center"
@@ -113,22 +105,14 @@
         </Style>
 
         <Style Selector="^[IsMultiple=False]">
+            <Style Selector="^ /template/ atom|SelectFilterTextBox#PART_SingleFilterInput">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
             <Style Selector="^[IsFilterEnabled=False]">
                 <Style Selector="^ /template/ atom|TreeSelectAddOnDecoratedBox#PART_AddOnDecoratedBox">
                     <Setter Property="Cursor" Value="Hand" />
                 </Style>
 
-            </Style>
-            <Style Selector="^[IsFilterEnabled=True]">
-                <Style Selector="^ /template/ ContentPresenter#SingleSelectResultPresenter">
-                    <Setter Property="Foreground"
-                            Value="{atom:SharedTokenResource ColorText}" />
-                </Style>
-                <Style Selector="^[IsDropDownOpen=True]">
-                    <Style Selector="^ /template/ atom|SelectFilterTextBox#PART_SingleFilterInput">
-                        <Setter Property="IsVisible" Value="True" />
-                    </Style>
-                </Style>
             </Style>
         </Style>
 
@@ -157,10 +141,6 @@
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
-            <Style Selector="^ /template/ ContentPresenter#SingleSelectResultPresenter">
-                <Setter Property="Foreground"
-                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
-            </Style>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -326,6 +326,7 @@ public class TreeSelect : AbstractSelect
     private CompositeDisposable? _contentRightAddOnBindings;
     private bool _needSkipSyncSelection;
     private bool _needSkipCollectionChangedEvent;
+    private bool _syncingSingleFilterInputText;
     private readonly ItemCollection _items = new();
     
     static TreeSelect()
@@ -430,6 +431,7 @@ public class TreeSelect : AbstractSelect
         base.OnPropertyChanged(change);
         if (change.Property == IsDropDownOpenProperty)
         {
+            ConfigureSingleResultVisible();
             ConfigureSingleFilterTextBox();
         }
         if (change.Property == StyleVariantProperty ||
@@ -455,16 +457,30 @@ public class TreeSelect : AbstractSelect
             {
                 SetCurrentValue(SelectedCountProperty, SelectedItem != null ? 1 : 0);
             }
+            ConfigureSingleFilterTextBox();
         }
         else if (change.Property == IsMultipleProperty)
         {
             ConfigureTreeSelectionMode();
             ConfigureSingleResultVisible();
+            ConfigureSingleFilterTextBox();
         }
         else if (change.Property == FilterValueProperty)
         {
             ConfigurePlaceholderVisible();
             ConfigureSingleResultVisible();
+            if (!IsDropDownOpen)
+            {
+                ConfigureSingleFilterTextBox();
+            }
+        }
+        else if (change.Property == PlaceholderTextProperty)
+        {
+            ConfigureSingleFilterTextBox();
+        }
+        else if (change.Property == IsFilterEnabledProperty)
+        {
+            ConfigureSingleFilterTextBox();
         }
         else if (change.Property == IsTreeCheckableProperty)
         {
@@ -498,15 +514,16 @@ public class TreeSelect : AbstractSelect
     
     private void ConfigurePlaceholderVisible()
     {
-        SetCurrentValue(IsPlaceholderTextVisibleProperty, SelectedItem == null && (SelectedItems == null || SelectedItems?.Count == 0) && string.IsNullOrEmpty(FilterValue?.ToString()));
+        SetCurrentValue(IsPlaceholderTextVisibleProperty,
+            IsMultiple &&
+            SelectedItem == null &&
+            (SelectedItems == null || SelectedItems?.Count == 0) &&
+            string.IsNullOrEmpty(FilterValue?.ToString()));
     }
 
     private void ConfigureSingleResultVisible()
     {
-        SetCurrentValue(IsSingleResultVisibleProperty,
-            !IsMultiple &&
-            SelectedItem != null &&
-            string.IsNullOrEmpty(FilterValue?.ToString()));
+        SetCurrentValue(IsSingleResultVisibleProperty, false);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -688,11 +705,10 @@ public class TreeSelect : AbstractSelect
     
     protected override void PopupClosed(object? sender, EventArgs e)
     {
-        if (!IsMultiple && _singleFilterInput != null)
+        if (!IsMultiple)
         {
-            _singleFilterInput.Clear();
-            _singleFilterInput.Width = double.NaN;
-            FilterValue              = null;
+            FilterValue = null;
+            ConfigureSingleFilterTextBox();
         }
         base.PopupClosed(sender, e);
     }
@@ -703,7 +719,10 @@ public class TreeSelect : AbstractSelect
         if (!IsMultiple)
         {
             SyncSelectedItemToTreeView();
-            _singleFilterInput?.Focus();
+            if (IsFilterEnabled)
+            {
+                _singleFilterInput?.Focus();
+            }
         }
     }
 
@@ -803,12 +822,51 @@ public class TreeSelect : AbstractSelect
     
     private void ConfigureSingleFilterTextBox()
     {
-        if (_singleFilterInput != null)
+        if (_singleFilterInput == null)
         {
-            if (IsDropDownOpen)
-            {
-                _singleFilterInput.Width = double.NaN;
-            }
+            return;
+        }
+
+        _singleFilterInput.Width = double.NaN;
+
+        if (IsMultiple)
+        {
+            _singleFilterInput.IsReadOnly      = true;
+            _singleFilterInput.PlaceholderText = null;
+            SetSingleFilterInputText(null);
+            return;
+        }
+
+        var selectedText = SelectedItem?.Header?.ToString();
+        if (IsDropDownOpen && IsFilterEnabled)
+        {
+            _singleFilterInput.IsReadOnly      = false;
+            _singleFilterInput.PlaceholderText = selectedText ?? PlaceholderText;
+            SetSingleFilterInputText(string.Empty);
+        }
+        else
+        {
+            _singleFilterInput.IsReadOnly      = !IsFilterEnabled;
+            _singleFilterInput.PlaceholderText = PlaceholderText;
+            SetSingleFilterInputText(selectedText ?? string.Empty);
+        }
+    }
+
+    private void SetSingleFilterInputText(string? text)
+    {
+        if (_singleFilterInput == null || _singleFilterInput.Text == text)
+        {
+            return;
+        }
+
+        _syncingSingleFilterInputText = true;
+        try
+        {
+            _singleFilterInput.Text = text;
+        }
+        finally
+        {
+            _syncingSingleFilterInputText = false;
         }
     }
     
@@ -894,6 +952,14 @@ public class TreeSelect : AbstractSelect
         {
             if (e.Source is TextBox textBox)
             {
+                if (ReferenceEquals(textBox, _singleFilterInput) &&
+                    !IsMultiple &&
+                    (_syncingSingleFilterInputText || !IsDropDownOpen || !IsFilterEnabled))
+                {
+                    e.Handled = true;
+                    return;
+                }
+
                 var searchText = textBox.Text?.Trim();
                 FilterValue = string.IsNullOrEmpty(searchText) ? null : searchText;
             }
