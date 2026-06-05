@@ -5,6 +5,7 @@ using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -29,6 +30,7 @@ internal static partial class Program
         VerifyFilteredMultiSelectClickUsesVisibleOption(failures);
         VerifySelectMultiCandidateClicksAccumulate(failures);
         VerifyTreeSelectPopupLifecycle(failures);
+        VerifyTreeSelectSelectedPlaceholderAlignsWithCaret(failures);
 
         if (failures.Count == 0)
         {
@@ -492,6 +494,46 @@ internal static partial class Program
 
         Expect(firstTreeView?.GetVisualParent() == null,
             "Detached TreeSelect should clear lazy TreeSelectTreeView visual parent.",
+            failures);
+    }
+
+    private static void VerifyTreeSelectSelectedPlaceholderAlignsWithCaret(ICollection<string> failures)
+    {
+        var nodes        = CreateTreeNodes();
+        var selectedNode = nodes[1].Children.ElementAt(1);
+        var treeSelect = new TreeSelect
+        {
+            Width           = 320,
+            IsFilterEnabled = true,
+            ItemsSource     = nodes,
+            SelectedItem    = selectedNode
+        };
+
+        using var realized = RealizeControl(treeSelect);
+        var filterInput = FindVisualByName<SelectFilterTextBox>(treeSelect, "PART_SingleFilterInput");
+        Expect(filterInput is { IsVisible: true },
+            "Single filter TreeSelect should show SelectFilterTextBox for selected placeholder layout verification.",
+            failures);
+        if (filterInput is null)
+        {
+            return;
+        }
+
+        var placeholder   = FindVisualByName<AtomUI.Desktop.Controls.TextBlock>(filterInput, "Placeholder");
+        var textPresenter = FindVisualByName<TextPresenter>(filterInput, "PART_TextPresenter");
+        Expect(placeholder is not null,
+            "TreeSelect filter input should materialize placeholder text.",
+            failures);
+        Expect(textPresenter is not null,
+            "TreeSelect filter input should materialize text presenter.",
+            failures);
+        if (placeholder is null || textPresenter is null)
+        {
+            return;
+        }
+
+        Expect(placeholder.Bounds.X >= textPresenter.Bounds.X,
+            $"Selected TreeSelect placeholder should not start before the caret host. Placeholder X: {placeholder.Bounds.X:0.###}, text presenter X: {textPresenter.Bounds.X:0.###}.",
             failures);
     }
 

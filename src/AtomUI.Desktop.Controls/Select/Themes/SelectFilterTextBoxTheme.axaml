@@ -20,5 +20,9 @@
                 <Setter Property="FontSize" Value="{atom:LineEditTokenResource InputFontSize}" />
             </Style>
         </Style>
+
+        <Style Selector="^ /template/ atom|TextBlock#Placeholder">
+            <Setter Property="Margin" Value="2 0 2 0" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>
