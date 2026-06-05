@@ -43,6 +43,8 @@ internal static partial class Program
         VerifyOpenSingleFilterTreeSelectKeepsInputEditable(failures);
         VerifySingleFilterSelectUsesSingleTextBox(failures);
         VerifySingleFilterTreeSelectUsesSingleTextBox(failures);
+        VerifySingleSelectWithoutFilterDoesNotFocusTextBox(failures);
+        VerifySingleTreeSelectWithoutFilterDoesNotFocusTextBox(failures);
 
         if (failures.Count == 0)
         {
@@ -877,6 +879,9 @@ internal static partial class Program
         if (filterInput != null)
         {
             filterInput.Text = "ora";
+            filterInput.CaretIndex = filterInput.Text.Length;
+            filterInput.SelectionStart = filterInput.Text.Length;
+            filterInput.SelectionEnd = filterInput.Text.Length;
             RefreshLayout(realized.Window);
             Expect(select.FilterValue?.ToString() == "ora",
                 $"Open single filter Select should write actual typed text to FilterValue. Actual: {select.FilterValue}.",
@@ -897,6 +902,11 @@ internal static partial class Program
             failures);
         Expect(filterInput?.PlaceholderText == "Choose fruit",
             $"Closing single filter Select should restore the normal placeholder. Actual: {filterInput?.PlaceholderText}.",
+            failures);
+        Expect(filterInput?.CaretIndex == 0 &&
+               filterInput?.SelectionStart == 0 &&
+               filterInput?.SelectionEnd == 0,
+            $"Closing single filter Select should reset the caret to the beginning. Caret: {filterInput?.CaretIndex}, selection: {filterInput?.SelectionStart}-{filterInput?.SelectionEnd}.",
             failures);
         Expect(select.FilterValue == null,
             $"Closing single filter Select should clear FilterValue. Actual: {select.FilterValue}.",
@@ -954,6 +964,9 @@ internal static partial class Program
         if (filterInput != null)
         {
             filterInput.Text = "Leaf";
+            filterInput.CaretIndex = filterInput.Text.Length;
+            filterInput.SelectionStart = filterInput.Text.Length;
+            filterInput.SelectionEnd = filterInput.Text.Length;
             RefreshLayout(realized.Window);
             Expect(treeSelect.FilterValue?.ToString() == "Leaf",
                 $"Open single filter TreeSelect should write actual typed text to FilterValue. Actual: {treeSelect.FilterValue}.",
@@ -975,8 +988,60 @@ internal static partial class Program
         Expect(filterInput?.PlaceholderText == "Choose node",
             $"Closing single filter TreeSelect should restore the normal placeholder. Actual: {filterInput?.PlaceholderText}.",
             failures);
+        Expect(filterInput?.CaretIndex == 0 &&
+               filterInput?.SelectionStart == 0 &&
+               filterInput?.SelectionEnd == 0,
+            $"Closing single filter TreeSelect should reset the caret to the beginning. Caret: {filterInput?.CaretIndex}, selection: {filterInput?.SelectionStart}-{filterInput?.SelectionEnd}.",
+            failures);
         Expect(treeSelect.FilterValue == null,
             $"Closing single filter TreeSelect should clear FilterValue. Actual: {treeSelect.FilterValue}.",
+            failures);
+    }
+
+    private static void VerifySingleSelectWithoutFilterDoesNotFocusTextBox(ICollection<string> failures)
+    {
+        var options = CreateSelectOptions();
+        var select = new Select
+        {
+            IsFilterEnabled = false,
+            OptionsSource   = options,
+            SelectedOption  = options[0]
+        };
+
+        using var realized = RealizeControl(select);
+        var filterInput = FindVisualByName<SelectFilterTextBox>(select, "PART_SingleFilterInput");
+        Expect(filterInput is { IsVisible: true },
+            "Closed single Select without filtering should still show selected text through the shared text box.",
+            failures);
+        Expect(filterInput?.Focusable == false,
+            "Closed single Select without filtering should keep the shared text box non-focusable so it cannot show a caret.",
+            failures);
+        Expect(filterInput?.IsReadOnly == true,
+            "Closed single Select without filtering should keep the shared text box read-only.",
+            failures);
+    }
+
+    private static void VerifySingleTreeSelectWithoutFilterDoesNotFocusTextBox(ICollection<string> failures)
+    {
+        var nodes        = CreateTreeNodes();
+        var selectedNode = nodes[0].Children.ElementAt(0);
+        var treeSelect = new TreeSelect
+        {
+            IsFilterEnabled = false,
+            ItemsSource     = nodes,
+            SelectedItem    = selectedNode
+        };
+
+        using var realized = RealizeControl(treeSelect);
+        var filterInput = FindVisualByName<SelectFilterTextBox>(treeSelect, "PART_SingleFilterInput");
+        Expect(filterInput is { IsVisible: true },
+            "Closed single TreeSelect without filtering should still show selected text through the shared text box.",
+            failures);
+        Expect(filterInput?.Focusable == false,
+            "Closed single TreeSelect without filtering should keep the shared text box non-focusable so it cannot show a caret.",
+            failures);
+        Expect(filterInput?.IsReadOnly == true,
+            "Closed single TreeSelect without filtering should keep the shared text box read-only.",
             failures);
     }
 

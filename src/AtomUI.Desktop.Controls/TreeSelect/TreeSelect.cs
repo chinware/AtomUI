@@ -831,24 +831,29 @@ public class TreeSelect : AbstractSelect
 
         if (IsMultiple)
         {
+            _singleFilterInput.Focusable       = false;
             _singleFilterInput.IsReadOnly      = true;
             _singleFilterInput.PlaceholderText = null;
             SetSingleFilterInputText(null);
+            ResetSingleFilterInputCaret();
             return;
         }
 
         var selectedText = SelectedItem?.Header?.ToString();
+        _singleFilterInput.Focusable = IsFilterEnabled;
         if (IsDropDownOpen && IsFilterEnabled)
         {
             _singleFilterInput.IsReadOnly      = false;
             _singleFilterInput.PlaceholderText = selectedText ?? PlaceholderText;
             SetSingleFilterInputText(string.Empty);
+            ResetSingleFilterInputCaret();
         }
         else
         {
             _singleFilterInput.IsReadOnly      = !IsFilterEnabled;
             _singleFilterInput.PlaceholderText = PlaceholderText;
             SetSingleFilterInputText(selectedText ?? string.Empty);
+            ResetSingleFilterInputCaret();
         }
     }
 
@@ -868,6 +873,18 @@ public class TreeSelect : AbstractSelect
         {
             _syncingSingleFilterInputText = false;
         }
+    }
+
+    private void ResetSingleFilterInputCaret()
+    {
+        if (_singleFilterInput == null)
+        {
+            return;
+        }
+
+        _singleFilterInput.SelectionStart = 0;
+        _singleFilterInput.SelectionEnd   = 0;
+        _singleFilterInput.CaretIndex     = 0;
     }
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)
