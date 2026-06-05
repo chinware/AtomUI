@@ -24,5 +24,12 @@
         <Style Selector="^ /template/ atom|TextBlock#Placeholder">
             <Setter Property="Margin" Value="2 0 2 0" />
         </Style>
+
+        <Style Selector="^[Focusable=False][IsReadOnly=True]">
+            <Setter Property="Cursor" Value="Hand" />
+            <Style Selector="^ /template/ atom|ScrollViewer#ScrollViewer">
+                <Setter Property="Cursor" Value="Hand" />
+            </Style>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

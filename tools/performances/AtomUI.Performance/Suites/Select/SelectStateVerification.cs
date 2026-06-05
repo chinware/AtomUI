@@ -1034,6 +1034,12 @@ internal static partial class Program
         Expect(filterInput?.IsReadOnly == true,
             "Closed single Select without filtering should keep the shared text box read-only.",
             failures);
+        Expect(filterInput?.Cursor?.ToString() == StandardCursorType.Hand.ToString(),
+            $"Closed single Select without filtering should show a hand cursor over the shared text box. Actual: {filterInput?.Cursor}.",
+            failures);
+        Expect(GetSelectFilterTextHostCursor(filterInput)?.ToString() == StandardCursorType.Hand.ToString(),
+            $"Closed single Select without filtering should show a hand cursor over the text host. Actual: {GetSelectFilterTextHostCursor(filterInput)}.",
+            failures);
         VerifyClosedSingleFilterCaretLocked(filterInput, "Select without filtering", failures);
     }
 
@@ -1058,6 +1064,12 @@ internal static partial class Program
             failures);
         Expect(filterInput?.IsReadOnly == true,
             "Closed single TreeSelect without filtering should keep the shared text box read-only.",
+            failures);
+        Expect(filterInput?.Cursor?.ToString() == StandardCursorType.Hand.ToString(),
+            $"Closed single TreeSelect without filtering should show a hand cursor over the shared text box. Actual: {filterInput?.Cursor}.",
+            failures);
+        Expect(GetSelectFilterTextHostCursor(filterInput)?.ToString() == StandardCursorType.Hand.ToString(),
+            $"Closed single TreeSelect without filtering should show a hand cursor over the text host. Actual: {GetSelectFilterTextHostCursor(filterInput)}.",
             failures);
         VerifyClosedSingleFilterCaretLocked(filterInput, "TreeSelect without filtering", failures);
     }
@@ -1231,6 +1243,13 @@ internal static partial class Program
 
         var textPresenter = FindVisualByName<TextPresenter>(filterInput, "PART_TextPresenter");
         return textPresenter?.TranslatePoint(default, owner);
+    }
+
+    private static Cursor? GetSelectFilterTextHostCursor(SelectFilterTextBox? filterInput)
+    {
+        return filterInput == null
+            ? null
+            : FindVisualByName<AtomUI.Desktop.Controls.ScrollViewer>(filterInput, "ScrollViewer")?.Cursor;
     }
 
     private static void VerifyOpenSingleFilterTextBoxPresentation(
