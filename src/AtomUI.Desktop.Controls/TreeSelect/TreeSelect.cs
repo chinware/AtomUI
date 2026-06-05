@@ -409,6 +409,12 @@ public class TreeSelect : AbstractSelect
         ConfigureMaxSelectReached();
     }
 
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureSingleFilterTextBox();
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         ClearPopupContent();
@@ -705,12 +711,12 @@ public class TreeSelect : AbstractSelect
     
     protected override void PopupClosed(object? sender, EventArgs e)
     {
+        base.PopupClosed(sender, e);
         if (!IsMultiple)
         {
             FilterValue = null;
             ConfigureSingleFilterTextBox();
         }
-        base.PopupClosed(sender, e);
     }
 
     protected override void PopupOpened(object? sender, EventArgs e)
@@ -831,27 +837,30 @@ public class TreeSelect : AbstractSelect
 
         if (IsMultiple)
         {
-            _singleFilterInput.Focusable       = false;
-            _singleFilterInput.IsReadOnly      = true;
-            _singleFilterInput.PlaceholderText = null;
+            _singleFilterInput.Focusable            = false;
+            _singleFilterInput.IsCaretLockedToStart = true;
+            _singleFilterInput.IsReadOnly           = true;
+            _singleFilterInput.PlaceholderText      = null;
             SetSingleFilterInputText(null);
             ResetSingleFilterInputCaret();
             return;
         }
 
         var selectedText = SelectedItem?.Header?.ToString();
-        _singleFilterInput.Focusable = IsFilterEnabled;
-        if (IsDropDownOpen && IsFilterEnabled)
+        var isEditableSearch = IsDropDownOpen && IsFilterEnabled;
+        _singleFilterInput.Focusable            = IsFilterEnabled;
+        _singleFilterInput.IsCaretLockedToStart = !isEditableSearch;
+        if (isEditableSearch)
         {
-            _singleFilterInput.IsReadOnly      = false;
-            _singleFilterInput.PlaceholderText = selectedText ?? PlaceholderText;
+            _singleFilterInput.IsReadOnly           = false;
+            _singleFilterInput.PlaceholderText      = selectedText ?? PlaceholderText;
             SetSingleFilterInputText(string.Empty);
             ResetSingleFilterInputCaret();
         }
         else
         {
-            _singleFilterInput.IsReadOnly      = !IsFilterEnabled;
-            _singleFilterInput.PlaceholderText = PlaceholderText;
+            _singleFilterInput.IsReadOnly           = true;
+            _singleFilterInput.PlaceholderText      = PlaceholderText;
             SetSingleFilterInputText(selectedText ?? string.Empty);
             ResetSingleFilterInputCaret();
         }
@@ -882,9 +891,7 @@ public class TreeSelect : AbstractSelect
             return;
         }
 
-        _singleFilterInput.SelectionStart = 0;
-        _singleFilterInput.SelectionEnd   = 0;
-        _singleFilterInput.CaretIndex     = 0;
+        _singleFilterInput.ResetCaretToStart();
     }
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)

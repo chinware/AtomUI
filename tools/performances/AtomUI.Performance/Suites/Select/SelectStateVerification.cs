@@ -851,9 +851,10 @@ internal static partial class Program
         Expect(filterInput?.PlaceholderText == "Choose fruit",
             $"Closed single filter Select should keep the normal placeholder, not the selected option. Actual: {filterInput?.PlaceholderText}.",
             failures);
-        Expect(filterInput?.IsReadOnly == false,
-            "Closed searchable single Select should keep the shared filter text box editable.",
+        Expect(filterInput?.IsReadOnly == true,
+            "Closed searchable single Select should keep the shared filter text box read-only until the popup opens.",
             failures);
+        VerifyClosedSingleFilterCaretLocked(filterInput, "Select", failures);
         var closedTextStart = GetTextPresenterStart(select, filterInput);
         var addOnBox        = FindVisualByName<AddOnDecoratedBox>(select, AddOnDecoratedBox.AddOnDecoratedBoxPart);
         var closedWidth = addOnBox?.Bounds.Width ?? 0;
@@ -883,6 +884,11 @@ internal static partial class Program
             filterInput.SelectionStart = filterInput.Text.Length;
             filterInput.SelectionEnd = filterInput.Text.Length;
             RefreshLayout(realized.Window);
+            Expect(filterInput.CaretIndex == filterInput.Text.Length &&
+                   filterInput.SelectionStart == filterInput.Text.Length &&
+                   filterInput.SelectionEnd == filterInput.Text.Length,
+                $"Open single filter Select should allow the search caret to move while editing. Caret: {filterInput.CaretIndex}, selection: {filterInput.SelectionStart}-{filterInput.SelectionEnd}.",
+                failures);
             Expect(select.FilterValue?.ToString() == "ora",
                 $"Open single filter Select should write actual typed text to FilterValue. Actual: {select.FilterValue}.",
                 failures);
@@ -908,6 +914,7 @@ internal static partial class Program
                filterInput?.SelectionEnd == 0,
             $"Closing single filter Select should reset the caret to the beginning. Caret: {filterInput?.CaretIndex}, selection: {filterInput?.SelectionStart}-{filterInput?.SelectionEnd}.",
             failures);
+        VerifyClosedSingleFilterCaretLocked(filterInput, "Select", failures);
         Expect(select.FilterValue == null,
             $"Closing single filter Select should clear FilterValue. Actual: {select.FilterValue}.",
             failures);
@@ -936,9 +943,10 @@ internal static partial class Program
         Expect(filterInput?.PlaceholderText == "Choose node",
             $"Closed single filter TreeSelect should keep the normal placeholder, not the selected item. Actual: {filterInput?.PlaceholderText}.",
             failures);
-        Expect(filterInput?.IsReadOnly == false,
-            "Closed searchable single TreeSelect should keep the shared filter text box editable.",
+        Expect(filterInput?.IsReadOnly == true,
+            "Closed searchable single TreeSelect should keep the shared filter text box read-only until the popup opens.",
             failures);
+        VerifyClosedSingleFilterCaretLocked(filterInput, "TreeSelect", failures);
         var closedTextStart = GetTextPresenterStart(treeSelect, filterInput);
         var addOnBox        = FindVisualByName<AddOnDecoratedBox>(treeSelect, AddOnDecoratedBox.AddOnDecoratedBoxPart);
         var closedWidth = addOnBox?.Bounds.Width ?? 0;
@@ -968,6 +976,11 @@ internal static partial class Program
             filterInput.SelectionStart = filterInput.Text.Length;
             filterInput.SelectionEnd = filterInput.Text.Length;
             RefreshLayout(realized.Window);
+            Expect(filterInput.CaretIndex == filterInput.Text.Length &&
+                   filterInput.SelectionStart == filterInput.Text.Length &&
+                   filterInput.SelectionEnd == filterInput.Text.Length,
+                $"Open single filter TreeSelect should allow the search caret to move while editing. Caret: {filterInput.CaretIndex}, selection: {filterInput.SelectionStart}-{filterInput.SelectionEnd}.",
+                failures);
             Expect(treeSelect.FilterValue?.ToString() == "Leaf",
                 $"Open single filter TreeSelect should write actual typed text to FilterValue. Actual: {treeSelect.FilterValue}.",
                 failures);
@@ -993,6 +1006,7 @@ internal static partial class Program
                filterInput?.SelectionEnd == 0,
             $"Closing single filter TreeSelect should reset the caret to the beginning. Caret: {filterInput?.CaretIndex}, selection: {filterInput?.SelectionStart}-{filterInput?.SelectionEnd}.",
             failures);
+        VerifyClosedSingleFilterCaretLocked(filterInput, "TreeSelect", failures);
         Expect(treeSelect.FilterValue == null,
             $"Closing single filter TreeSelect should clear FilterValue. Actual: {treeSelect.FilterValue}.",
             failures);
@@ -1019,6 +1033,7 @@ internal static partial class Program
         Expect(filterInput?.IsReadOnly == true,
             "Closed single Select without filtering should keep the shared text box read-only.",
             failures);
+        VerifyClosedSingleFilterCaretLocked(filterInput, "Select without filtering", failures);
     }
 
     private static void VerifySingleTreeSelectWithoutFilterDoesNotFocusTextBox(ICollection<string> failures)
@@ -1042,6 +1057,34 @@ internal static partial class Program
             failures);
         Expect(filterInput?.IsReadOnly == true,
             "Closed single TreeSelect without filtering should keep the shared text box read-only.",
+            failures);
+        VerifyClosedSingleFilterCaretLocked(filterInput, "TreeSelect without filtering", failures);
+    }
+
+    private static void VerifyClosedSingleFilterCaretLocked(
+        SelectFilterTextBox? filterInput,
+        string controlName,
+        ICollection<string> failures)
+    {
+        if (filterInput == null)
+        {
+            return;
+        }
+
+        var moveTarget = filterInput.Text?.Length ?? 0;
+        if (moveTarget == 0)
+        {
+            return;
+        }
+
+        filterInput.SelectionStart = moveTarget;
+        filterInput.SelectionEnd   = moveTarget;
+        filterInput.CaretIndex     = moveTarget;
+
+        Expect(filterInput.CaretIndex == 0 &&
+               filterInput.SelectionStart == 0 &&
+               filterInput.SelectionEnd == 0,
+            $"Closed single filter {controlName} should lock the caret at the beginning. Caret: {filterInput.CaretIndex}, selection: {filterInput.SelectionStart}-{filterInput.SelectionEnd}.",
             failures);
     }
 

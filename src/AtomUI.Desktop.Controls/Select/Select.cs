@@ -936,27 +936,30 @@ public partial class Select : AbstractSelect
 
         if (Mode != SelectMode.Single)
         {
-            _singleFilterInput.Focusable       = false;
-            _singleFilterInput.IsReadOnly      = true;
-            _singleFilterInput.PlaceholderText = null;
+            _singleFilterInput.Focusable            = false;
+            _singleFilterInput.IsCaretLockedToStart = true;
+            _singleFilterInput.IsReadOnly           = true;
+            _singleFilterInput.PlaceholderText      = null;
             SetSingleFilterInputText(null);
             ResetSingleFilterInputCaret();
             return;
         }
 
         var selectedText = SelectedOption?.Header?.ToString();
-        _singleFilterInput.Focusable = IsEffectiveFilterEnabled;
-        if (IsDropDownOpen && IsEffectiveFilterEnabled)
+        var isEditableSearch = IsDropDownOpen && IsEffectiveFilterEnabled;
+        _singleFilterInput.Focusable            = IsEffectiveFilterEnabled;
+        _singleFilterInput.IsCaretLockedToStart = !isEditableSearch;
+        if (isEditableSearch)
         {
-            _singleFilterInput.IsReadOnly      = false;
-            _singleFilterInput.PlaceholderText = selectedText ?? PlaceholderText;
+            _singleFilterInput.IsReadOnly           = false;
+            _singleFilterInput.PlaceholderText      = selectedText ?? PlaceholderText;
             SetSingleFilterInputText(string.Empty);
             ResetSingleFilterInputCaret();
         }
         else
         {
-            _singleFilterInput.IsReadOnly      = !IsEffectiveFilterEnabled;
-            _singleFilterInput.PlaceholderText = PlaceholderText;
+            _singleFilterInput.IsReadOnly           = true;
+            _singleFilterInput.PlaceholderText      = PlaceholderText;
             SetSingleFilterInputText(selectedText ?? string.Empty);
             ResetSingleFilterInputCaret();
         }
@@ -987,9 +990,7 @@ public partial class Select : AbstractSelect
             return;
         }
 
-        _singleFilterInput.SelectionStart = 0;
-        _singleFilterInput.SelectionEnd   = 0;
-        _singleFilterInput.CaretIndex     = 0;
+        _singleFilterInput.ResetCaretToStart();
     }
 
     private void HandleSearchInputTextChanged(TextChangedEventArgs e)
