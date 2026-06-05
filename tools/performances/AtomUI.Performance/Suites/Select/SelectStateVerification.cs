@@ -45,6 +45,7 @@ internal static partial class Program
         VerifySingleFilterTreeSelectUsesSingleTextBox(failures);
         VerifySingleSelectWithoutFilterDoesNotFocusTextBox(failures);
         VerifySingleTreeSelectWithoutFilterDoesNotFocusTextBox(failures);
+        VerifySelectFilterTextBoxCaretLockIgnoresInputEvents(failures);
 
         if (failures.Count == 0)
         {
@@ -1086,6 +1087,74 @@ internal static partial class Program
                filterInput.SelectionEnd == 0,
             $"Closed single filter {controlName} should lock the caret at the beginning. Caret: {filterInput.CaretIndex}, selection: {filterInput.SelectionStart}-{filterInput.SelectionEnd}.",
             failures);
+
+        if (TopLevel.GetTopLevel(filterInput) is not Visual root)
+        {
+            failures.Add($"Closed single filter {controlName} should be attached to a visual root for caret lock event verification.");
+            return;
+        }
+
+        var endPoint = new Point(
+            Math.Max(1, filterInput.Bounds.Width - 2),
+            Math.Max(1, filterInput.Bounds.Height / 2));
+        RaisePrimaryPointerPressed(filterInput, root, endPoint);
+        Expect(filterInput.CaretIndex == 0 &&
+               filterInput.SelectionStart == 0 &&
+               filterInput.SelectionEnd == 0,
+            $"Closed single filter {controlName} should ignore pointer-press caret positioning. Caret: {filterInput.CaretIndex}, selection: {filterInput.SelectionStart}-{filterInput.SelectionEnd}.",
+            failures);
+
+        foreach (var key in new[] { Key.Right, Key.End, Key.Left, Key.Home })
+        {
+            filterInput.CaretIndex     = 0;
+            filterInput.SelectionStart = 0;
+            filterInput.SelectionEnd   = 0;
+            RaiseKeyDown(filterInput, key);
+            Expect(filterInput.CaretIndex == 0 &&
+                   filterInput.SelectionStart == 0 &&
+                   filterInput.SelectionEnd == 0,
+                $"Closed single filter {controlName} should ignore {key} caret navigation. Caret: {filterInput.CaretIndex}, selection: {filterInput.SelectionStart}-{filterInput.SelectionEnd}.",
+                failures);
+        }
+    }
+
+    private static void VerifySelectFilterTextBoxCaretLockIgnoresInputEvents(ICollection<string> failures)
+    {
+        var filterInput = new SelectFilterTextBox
+        {
+            Text                 = "Lucy",
+            Width                = 120,
+            Height               = 32,
+            Focusable            = true,
+            IsReadOnly           = true,
+            IsCaretLockedToStart = true
+        };
+
+        using var realized = RealizeControl(filterInput);
+        RefreshLayout(realized.Window);
+        filterInput.Focus();
+        filterInput.ResetCaretToStart();
+
+        var endPoint = new Point(
+            Math.Max(1, filterInput.Bounds.Width - 2),
+            Math.Max(1, filterInput.Bounds.Height / 2));
+        RaisePrimaryPointerPressed(filterInput, realized.Window, endPoint);
+        RaisePrimaryPointerReleased(filterInput, realized.Window, endPoint);
+        Expect(filterInput.CaretIndex == 0 &&
+               filterInput.SelectionStart == 0 &&
+               filterInput.SelectionEnd == 0,
+            $"Locked SelectFilterTextBox should ignore pointer caret positioning. Caret: {filterInput.CaretIndex}, selection: {filterInput.SelectionStart}-{filterInput.SelectionEnd}.",
+            failures);
+
+        foreach (var key in new[] { Key.Right, Key.End, Key.Left, Key.Home })
+        {
+            RaiseKeyDown(filterInput, key);
+            Expect(filterInput.CaretIndex == 0 &&
+                   filterInput.SelectionStart == 0 &&
+                   filterInput.SelectionEnd == 0,
+                $"Locked SelectFilterTextBox should ignore {key} caret navigation. Caret: {filterInput.CaretIndex}, selection: {filterInput.SelectionStart}-{filterInput.SelectionEnd}.",
+                failures);
+        }
     }
 
     private static Border? GetPopupFrame(Control control)
@@ -1237,6 +1306,65 @@ internal static partial class Program
             1,
             properties,
             KeyModifiers.None);
+        target.RaiseEvent(args);
+        return args;
+    }
+
+    private static PointerPressedEventArgs RaisePrimaryPointerPressed(Control target, Visual root, Point localPoint)
+    {
+        var pointer = new Avalonia.Input.Pointer(
+            Avalonia.Input.Pointer.GetNextFreeId(),
+            PointerType.Mouse,
+            true);
+        var properties = new PointerPointProperties(
+            RawInputModifiers.LeftMouseButton,
+            PointerUpdateKind.LeftButtonPressed);
+        var rootPoint = target.TranslatePoint(localPoint, root) ?? localPoint;
+
+        var args = new PointerPressedEventArgs(
+            target,
+            pointer,
+            root,
+            rootPoint,
+            1,
+            properties,
+            KeyModifiers.None);
+        target.RaiseEvent(args);
+        return args;
+    }
+
+    private static PointerReleasedEventArgs RaisePrimaryPointerReleased(Control target, Visual root, Point localPoint)
+    {
+        var pointer = new Avalonia.Input.Pointer(
+            Avalonia.Input.Pointer.GetNextFreeId(),
+            PointerType.Mouse,
+            true);
+        var properties = new PointerPointProperties(
+            RawInputModifiers.None,
+            PointerUpdateKind.LeftButtonReleased);
+        var rootPoint = target.TranslatePoint(localPoint, root) ?? localPoint;
+
+        var args = new PointerReleasedEventArgs(
+            target,
+            pointer,
+            root,
+            rootPoint,
+            1,
+            properties,
+            KeyModifiers.None,
+            MouseButton.Left);
+        target.RaiseEvent(args);
+        return args;
+    }
+
+    private static KeyEventArgs RaiseKeyDown(Control target, Key key)
+    {
+        var args = new KeyEventArgs
+        {
+            RoutedEvent  = InputElement.KeyDownEvent,
+            Key          = key,
+            KeyModifiers = KeyModifiers.None
+        };
         target.RaiseEvent(args);
         return args;
     }

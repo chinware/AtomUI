@@ -61,13 +61,42 @@ internal class SelectFilterTextBox : TextBox
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
+        if (IsCaretLockedToStart)
+        {
+            if (Focusable && !IsFocused)
+            {
+                Focus(NavigationMethod.Pointer);
+            }
+            ResetCaretToStart();
+            e.Handled = false;
+            return;
+        }
+
         base.OnPointerPressed(e);
         e.Handled = false;
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
+        if (IsCaretLockedToStart)
+        {
+            ResetCaretToStart();
+            e.Handled = false;
+            return;
+        }
+
         base.OnPointerReleased(e);
         e.Handled = false;
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if (IsCaretLockedToStart)
+        {
+            ResetCaretToStart();
+            return;
+        }
+
+        base.OnKeyDown(e);
     }
 }
