@@ -1,4 +1,5 @@
 using AtomUI.Controls;
+using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
 using Avalonia.Controls.Documents;
@@ -18,6 +19,7 @@ internal static partial class Program
         VerifyNodeSwitcherLeafVisibility(failures);
         VerifyTreeViewCheckboxParentStateAggregation(failures);
         VerifyTreeViewFilterHighlightRuns(failures);
+        VerifyTreeViewFullTreeFilterStrategy(failures);
         VerifyTreeViewItemClearFilterWithoutOwner(failures);
 
         if (failures.Count == 0)
@@ -233,8 +235,8 @@ internal static partial class Program
         {
             Content                   = "alpha beta alpha",
             FilterHighlightForeground = highlightBrush,
-            FilterHighlightStrategy   = TreeFilterHighlightStrategy.HighlightedMatch |
-                                        TreeFilterHighlightStrategy.BoldedMatch,
+            FilterStrategy            = TreeFilterStrategy.HighlightedMatch |
+                                        TreeFilterStrategy.BoldedMatch,
             IsFilterMatch             = true,
             FilterHighlightWords      = "alpha"
         };
@@ -258,8 +260,8 @@ internal static partial class Program
                 failures);
         }
 
-        header.FilterHighlightStrategy = TreeFilterHighlightStrategy.HighlightedWhole |
-                                         TreeFilterHighlightStrategy.BoldedMatch;
+        header.FilterStrategy = TreeFilterStrategy.HighlightedWhole |
+                                TreeFilterStrategy.BoldedMatch;
         header.FilterHighlightWords = "missing";
         runs = header.FilterHighlightRuns?.OfType<Run>().ToArray();
         Expect(runs?.Length == 1 && runs[0].Text == "alpha beta alpha",
@@ -274,7 +276,7 @@ internal static partial class Program
         }
 
         var replacementBrush = Brushes.Red;
-        header.FilterHighlightStrategy   = TreeFilterHighlightStrategy.HighlightedMatch;
+        header.FilterStrategy            = TreeFilterStrategy.HighlightedMatch;
         header.FilterHighlightWords      = "alpha";
         header.FilterHighlightForeground = replacementBrush;
         runs = header.FilterHighlightRuns?.OfType<Run>().ToArray();
@@ -287,6 +289,55 @@ internal static partial class Program
         header.FilterHighlightWords = string.Empty;
         Expect(header.FilterHighlightRuns is null,
             "TreeView filter empty highlight words should clear highlight runs.",
+            failures);
+    }
+
+    private static void VerifyTreeViewFullTreeFilterStrategy(ICollection<string> failures)
+    {
+        var match = new TreeItemNode
+        {
+            Header = "target child"
+        };
+        var sibling = new TreeItemNode
+        {
+            Header = "other child"
+        };
+        var parent = new TreeItemNode
+        {
+            Header     = "parent",
+            IsExpanded = true,
+            Children   = { match, sibling }
+        };
+        var tree = new TreeView
+        {
+            Filter         = ValueFilterFactory.BuildFilter(ValueFilterMode.Contains),
+            FilterValue    = "target",
+            FilterStrategy = TreeFilterStrategy.FullTree,
+            Width          = 240,
+            Height         = 160
+        };
+        tree.Items.Add(parent);
+
+        using var realized = RealizeControl(tree);
+        RefreshLayout(realized.Window);
+        tree.FilterTreeNode();
+        RefreshLayout(realized.Window);
+
+        var matchContainer   = tree.TreeContainerFromItem(match) as TreeViewItem;
+        var siblingContainer = tree.TreeContainerFromItem(sibling) as TreeViewItem;
+
+        Expect(matchContainer?.IsVisible == true,
+            "TreeView FullTree filter strategy should keep matched nodes visible.",
+            failures);
+        Expect(siblingContainer?.IsVisible == true,
+            "TreeView FullTree filter strategy should keep unmatched nodes visible.",
+            failures);
+        Expect(matchContainer?.IsFilterMatch == true &&
+               matchContainer.FilterHighlightWords == "target",
+            $"TreeView FullTree filter strategy should still mark and highlight matched nodes. Actual match: {matchContainer?.IsFilterMatch}, words: {matchContainer?.FilterHighlightWords}.",
+            failures);
+        Expect(tree.FilterResultCount == 1,
+            $"TreeView FullTree filter strategy should preserve match counting. Actual: {tree.FilterResultCount}.",
             failures);
     }
 

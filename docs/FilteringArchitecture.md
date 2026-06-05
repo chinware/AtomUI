@@ -81,8 +81,9 @@ public static class ValueFilterFactory
 
 | 属性 | 出现在 | 作用 |
 |---|---|---|
-| `FilterHighlightStrategy` | Cascader、TreeSelect、TreeView、ListBox、ListView | 高亮策略（全部、匹配部分、展开路径、隐藏未匹配等） |
-| `FilterHighlightForeground` | 同上 | 高亮颜色 |
+| `FilterStrategy` | TreeSelect、TreeView | 树过滤策略（匹配部分高亮、展开路径、隐藏未匹配、显示整棵树等） |
+| `FilterHighlightStrategy` | Cascader、ListBox、ListView | 文本高亮策略（全部、匹配部分、隐藏未匹配等） |
+| `FilterHighlightForeground` | Cascader、TreeSelect、TreeView、ListBox、ListView | 高亮颜色 |
 | `FilterResultCount` | Cascader、TreeView、ListBox | 过滤后命中的条目数 |
 | `IsFiltering` | ListView、ListBox | "当前正在过滤中"的通知信号 |
 | `SourceFilterValue` / `TargetFilterValue` | Transfer | 左右两栏独立的过滤条件（`FilterValue` 不存在于 Transfer） |
@@ -224,7 +225,8 @@ myCascader.Filter = new PinyinFilter();
 - **想换匹配策略**：设 `Filter = ValueFilterFactory.BuildFilter(...)`
 - **想按复合字段过滤**：设 `FilterValueSelector = record => ...`
 - **想完全自定义匹配**：实现 `IValueFilter`，设到 `Filter`
-- **想要高亮策略**：只有层级控件 / ListBox 支持，设 `FilterHighlightStrategy`
+- **想要树过滤策略**：TreeView / TreeSelect 设 `FilterStrategy`
+- **想要文本高亮策略**：Cascader / ListBox / ListView 设 `FilterHighlightStrategy`
 - **想让自己写的新控件也加入这套体系**：参见下节
 
 ## 9. 新控件接入指引
@@ -291,7 +293,8 @@ private bool DoFilter(object item)
 ### 9.4 样式层
 
 - 搜索 UI 的可见性用 `IsFilterEnabled` 驱动（ControlTheme 里 `TemplateBinding` 或属性 selector）
-- 如果有高亮需求，暴露 `FilterHighlightStrategy` / `FilterHighlightForeground`，复用 `TextBlockHighlightStrategy` 枚举
+- 如果是平铺文本高亮需求，暴露 `FilterHighlightStrategy` / `FilterHighlightForeground`，复用 `TextBlockHighlightStrategy` 枚举
+- 如果是树结构过滤需求，暴露 `FilterStrategy` / `FilterHighlightForeground`，复用 `TreeFilterStrategy` 枚举
 
 ## 10. 不在体系内的控件
 

@@ -29,14 +29,17 @@ public enum TreeItemHoverMode
 }
 
 [Flags]
-public enum TreeFilterHighlightStrategy
+public enum TreeFilterStrategy
 {
+    None = 0,
     HighlightedMatch = 0x01,
     HighlightedWhole = 0x02,
     BoldedMatch = 0x04,
     ExpandPath = 0x08,
     HideUnMatched = 0x10,
-    All = HighlightedMatch | BoldedMatch | ExpandPath | HideUnMatched
+    MatchedOnly = HighlightedMatch | BoldedMatch | ExpandPath | HideUnMatched,
+    FullTree = HighlightedMatch | BoldedMatch | ExpandPath,
+    All = MatchedOnly
 }
 
 [PseudoClasses(StdPseudoClass.Draggable)]
@@ -136,8 +139,8 @@ public partial class TreeView : AvaloniaTreeView,
     public static readonly StyledProperty<DefaultFilterValueSelector?> FilterValueSelectorProperty =
         AvaloniaProperty.Register<TreeView, DefaultFilterValueSelector?>(nameof(FilterValueSelector));
     
-    public static readonly StyledProperty<TreeFilterHighlightStrategy> FilterHighlightStrategyProperty =
-        AvaloniaProperty.Register<TreeView, TreeFilterHighlightStrategy>(nameof(FilterHighlightStrategy), TreeFilterHighlightStrategy.All);
+    public static readonly StyledProperty<TreeFilterStrategy> FilterStrategyProperty =
+        AvaloniaProperty.Register<TreeView, TreeFilterStrategy>(nameof(FilterStrategy), TreeFilterStrategy.MatchedOnly);
     
     public static readonly DirectProperty<TreeView, int> FilterResultCountProperty =
         AvaloniaProperty.RegisterDirect<TreeView, int>(nameof(FilterResultCount),
@@ -326,10 +329,10 @@ public partial class TreeView : AvaloniaTreeView,
         set => SetValue(FilterValueSelectorProperty, value);
     }
 
-    public TreeFilterHighlightStrategy FilterHighlightStrategy
+    public TreeFilterStrategy FilterStrategy
     {
-        get => GetValue(FilterHighlightStrategyProperty);
-        set => SetValue(FilterHighlightStrategyProperty, value);
+        get => GetValue(FilterStrategyProperty);
+        set => SetValue(FilterStrategyProperty, value);
     }
 
     private int _filterResultCount;
@@ -852,7 +855,7 @@ public partial class TreeView : AvaloniaTreeView,
             SetTreeViewItemIcon(treeViewItem, TreeViewItem.SwitcherLoadingIconProperty, SwitcherLoadingIcon);
             SetTreeViewItemIcon(treeViewItem, TreeViewItem.SwitcherLeafIconProperty, SwitcherLeafIcon);
             
-            treeViewItem[!TreeViewItem.FilterHighlightStrategyProperty]   = this[!FilterHighlightStrategyProperty];
+            treeViewItem[!TreeViewItem.FilterStrategyProperty]           = this[!FilterStrategyProperty];
             treeViewItem[!TreeViewItem.IsMotionEnabledProperty]           = this[!IsMotionEnabledProperty];
             treeViewItem[!TreeViewItem.NodeHoverModeProperty]             = this[!NodeHoverModeProperty];
             treeViewItem[!TreeViewItem.IsShowLineProperty]                = this[!IsShowLineProperty];
@@ -1618,7 +1621,7 @@ public partial class TreeView : AvaloniaTreeView,
             HasTreeItemDataLoader = DataLoader != null;
         }
         else if (change.Property == FilterProperty ||
-                 change.Property == FilterHighlightStrategyProperty ||
+                 change.Property == FilterStrategyProperty ||
                  change.Property == ItemsSourceProperty ||
                  change.Property == FilterValueProperty)
         {

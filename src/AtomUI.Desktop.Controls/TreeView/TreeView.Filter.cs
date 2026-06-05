@@ -97,9 +97,9 @@ public partial class TreeView
             IsFilterMode      = true;
             FilterResultCount = 0;
             HashSet<TreeViewItem>? originExpandedItems = null;
-            var filterHighlightStrategy = FilterHighlightStrategy;
+            var filterStrategy = FilterStrategy;
             var shouldExpandPath =
-                (filterHighlightStrategy & TreeFilterHighlightStrategy.ExpandPath) == TreeFilterHighlightStrategy.ExpandPath;
+                (filterStrategy & TreeFilterStrategy.ExpandPath) == TreeFilterStrategy.ExpandPath;
             if (!shouldExpandPath)
             {
                 originExpandedItems = new HashSet<TreeViewItem>();
@@ -168,12 +168,12 @@ public partial class TreeView
         var selector     = FilterValueSelector ?? DefaultTreeFilterValueSelector;
         var filterResult = Filter.Filter(selector(treeViewItem), FilterValue);
         treeViewItem.IsFilterMatch = filterResult;
-        var filterHighlightStrategy = FilterHighlightStrategy;
+        var filterStrategy = FilterStrategy;
         if (filterResult)
         {
             ++FilterResultCount;
-            if ((filterHighlightStrategy & TreeFilterHighlightStrategy.HighlightedMatch) == TreeFilterHighlightStrategy.HighlightedMatch ||
-                (filterHighlightStrategy & TreeFilterHighlightStrategy.HighlightedWhole) == TreeFilterHighlightStrategy.HighlightedWhole)
+            if ((filterStrategy & TreeFilterStrategy.HighlightedMatch) == TreeFilterStrategy.HighlightedMatch ||
+                (filterStrategy & TreeFilterStrategy.HighlightedWhole) == TreeFilterStrategy.HighlightedWhole)
             {
                 treeViewItem.FilterHighlightWords = FilterValue?.ToString();
             }
@@ -184,7 +184,7 @@ public partial class TreeView
             _descendantsMatchCache!.Add(treeViewItem);
         }
 
-        if ((filterHighlightStrategy & TreeFilterHighlightStrategy.HideUnMatched) == TreeFilterHighlightStrategy.HideUnMatched)
+        if ((filterStrategy & TreeFilterStrategy.HideUnMatched) == TreeFilterStrategy.HideUnMatched)
         {
             if (treeViewItem.IsFilterMatch)
             {
@@ -205,7 +205,7 @@ public partial class TreeView
             }
         }
 
-        if ((filterHighlightStrategy & TreeFilterHighlightStrategy.ExpandPath) == TreeFilterHighlightStrategy.ExpandPath)
+        if ((filterStrategy & TreeFilterStrategy.ExpandPath) == TreeFilterStrategy.ExpandPath)
         {
             SetupExpandForFilter(treeViewItem, anyDescendantMatched);
         }

@@ -223,11 +223,11 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
     internal static readonly StyledProperty<IBrush?> FilterHighlightForegroundProperty =
         TreeView.FilterHighlightForegroundProperty.AddOwner<TreeViewItem>();
     
-    internal static readonly DirectProperty<TreeViewItem, TreeFilterHighlightStrategy> FilterHighlightStrategyProperty =
-        AvaloniaProperty.RegisterDirect<TreeViewItem, TreeFilterHighlightStrategy>(
-            nameof(FilterHighlightStrategy),
-            o => o.FilterHighlightStrategy,
-            (o, v) => o.FilterHighlightStrategy = v);
+    internal static readonly DirectProperty<TreeViewItem, TreeFilterStrategy> FilterStrategyProperty =
+        AvaloniaProperty.RegisterDirect<TreeViewItem, TreeFilterStrategy>(
+            nameof(FilterStrategy),
+            o => o.FilterStrategy,
+            (o, v) => o.FilterStrategy = v);
     
     internal static readonly DirectProperty<TreeViewItem, bool> IsSelectableProperty =
         AvaloniaProperty.RegisterDirect<TreeViewItem, bool>(
@@ -377,12 +377,12 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         set => SetValue(FilterHighlightForegroundProperty, value);
     }
     
-    private TreeFilterHighlightStrategy _filterHighlightStrategy = TreeFilterHighlightStrategy.All;
+    private TreeFilterStrategy _filterStrategy = TreeFilterStrategy.MatchedOnly;
     
-    internal TreeFilterHighlightStrategy FilterHighlightStrategy
+    internal TreeFilterStrategy FilterStrategy
     {
-        get => _filterHighlightStrategy;
-        set => SetAndRaise(FilterHighlightStrategyProperty, ref _filterHighlightStrategy, value);
+        get => _filterStrategy;
+        set => SetAndRaise(FilterStrategyProperty, ref _filterStrategy, value);
     }
 
     private bool _isSelectable = true;
@@ -814,7 +814,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
             {
                 treeViewItem[!HeaderTemplateProperty] = this[!ItemTemplateProperty];
             }
-            treeViewItem[!FilterHighlightStrategyProperty]   = this[!FilterHighlightStrategyProperty];
+            treeViewItem[!FilterStrategyProperty]           = this[!FilterStrategyProperty];
             treeViewItem[!IsMotionEnabledProperty]           = this[!IsMotionEnabledProperty];
             treeViewItem[!NodeHoverModeProperty]             = this[!NodeHoverModeProperty];
             treeViewItem[!IsShowLineProperty]                = this[!IsShowLineProperty];

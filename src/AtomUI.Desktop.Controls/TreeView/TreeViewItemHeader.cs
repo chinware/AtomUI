@@ -229,11 +229,11 @@ internal class TreeViewItemHeader : ContentControl
             nameof(FilterHighlightRuns), t => t.FilterHighlightRuns, 
             (t, v) => t.FilterHighlightRuns = v);
     
-    internal static readonly DirectProperty<TreeViewItemHeader, TreeFilterHighlightStrategy> FilterHighlightStrategyProperty =
-        AvaloniaProperty.RegisterDirect<TreeViewItemHeader, TreeFilterHighlightStrategy>(
-            nameof(FilterHighlightStrategy),
-            o => o.FilterHighlightStrategy,
-            (o, v) => o.FilterHighlightStrategy = v);
+    internal static readonly DirectProperty<TreeViewItemHeader, TreeFilterStrategy> FilterStrategyProperty =
+        AvaloniaProperty.RegisterDirect<TreeViewItemHeader, TreeFilterStrategy>(
+            nameof(FilterStrategy),
+            o => o.FilterStrategy,
+            (o, v) => o.FilterStrategy = v);
     
     internal static readonly StyledProperty<IBrush?> FilterHighlightForegroundProperty =
         TreeView.FilterHighlightForegroundProperty.AddOwner<TreeViewItemHeader>();
@@ -375,12 +375,12 @@ internal class TreeViewItemHeader : ContentControl
         set => SetAndRaise(FilterHighlightRunsProperty, ref _filterHighlightRuns, value);
     }
     
-    private TreeFilterHighlightStrategy _filterHighlightStrategy = TreeFilterHighlightStrategy.All;
+    private TreeFilterStrategy _filterStrategy = TreeFilterStrategy.MatchedOnly;
     
-    internal TreeFilterHighlightStrategy FilterHighlightStrategy
+    internal TreeFilterStrategy FilterStrategy
     {
-        get => _filterHighlightStrategy;
-        set => SetAndRaise(FilterHighlightStrategyProperty, ref _filterHighlightStrategy, value);
+        get => _filterStrategy;
+        set => SetAndRaise(FilterStrategyProperty, ref _filterStrategy, value);
     }
     
     internal IBrush? FilterHighlightForeground
@@ -421,7 +421,7 @@ internal class TreeViewItemHeader : ContentControl
         }
         else if (change.Property == FilterHighlightWordsProperty ||
                  change.Property == IsFilterMatchProperty ||
-                 change.Property == FilterHighlightStrategyProperty ||
+                 change.Property == FilterStrategyProperty ||
                  change.Property == FilterHighlightForegroundProperty)
         {
             BuildFilterHighlightRuns();
@@ -606,10 +606,10 @@ internal class TreeViewItemHeader : ContentControl
             return;
         }
 
-        var strategy         = FilterHighlightStrategy;
-        var highlightedMatch = (strategy & TreeFilterHighlightStrategy.HighlightedMatch) == TreeFilterHighlightStrategy.HighlightedMatch;
-        var highlightedWhole = !highlightedMatch && (strategy & TreeFilterHighlightStrategy.HighlightedWhole) == TreeFilterHighlightStrategy.HighlightedWhole;
-        var bold             = (strategy & TreeFilterHighlightStrategy.BoldedMatch) == TreeFilterHighlightStrategy.BoldedMatch;
+        var strategy         = FilterStrategy;
+        var highlightedMatch = (strategy & TreeFilterStrategy.HighlightedMatch) == TreeFilterStrategy.HighlightedMatch;
+        var highlightedWhole = !highlightedMatch && (strategy & TreeFilterStrategy.HighlightedWhole) == TreeFilterStrategy.HighlightedWhole;
+        var bold             = (strategy & TreeFilterStrategy.BoldedMatch) == TreeFilterStrategy.BoldedMatch;
 
         if (highlightedWhole)
         {

@@ -90,11 +90,11 @@ public class TreeSelect : AbstractSelect
     public static readonly StyledProperty<DefaultFilterValueSelector?> FilterValueSelectorProperty =
         AvaloniaProperty.Register<TreeSelect, DefaultFilterValueSelector?>(nameof(FilterValueSelector));
     
-    public static readonly DirectProperty<TreeSelect, TreeFilterHighlightStrategy> FilterHighlightStrategyProperty =
-        AvaloniaProperty.RegisterDirect<TreeSelect, TreeFilterHighlightStrategy>(
-            nameof(FilterHighlightStrategy),
-            o => o.FilterHighlightStrategy,
-            (o, v) => o.FilterHighlightStrategy = v);
+    public static readonly DirectProperty<TreeSelect, TreeFilterStrategy> FilterStrategyProperty =
+        AvaloniaProperty.RegisterDirect<TreeSelect, TreeFilterStrategy>(
+            nameof(FilterStrategy),
+            o => o.FilterStrategy,
+            (o, v) => o.FilterStrategy = v);
     
     public static readonly StyledProperty<IBrush?> FilterHighlightForegroundProperty =
         AvaloniaProperty.Register<TreeSelect, IBrush?>(nameof(FilterHighlightForeground));
@@ -216,12 +216,12 @@ public class TreeSelect : AbstractSelect
         set => SetValue(FilterValueSelectorProperty, value);
     }
 
-    private TreeFilterHighlightStrategy _itemFilterAction = TreeFilterHighlightStrategy.HighlightedWhole | TreeFilterHighlightStrategy.BoldedMatch | TreeFilterHighlightStrategy.ExpandPath | TreeFilterHighlightStrategy.HideUnMatched;
+    private TreeFilterStrategy _filterStrategy = TreeFilterStrategy.MatchedOnly;
     
-    public TreeFilterHighlightStrategy FilterHighlightStrategy
+    public TreeFilterStrategy FilterStrategy
     {
-        get => _itemFilterAction;
-        set => SetAndRaise(FilterHighlightStrategyProperty, ref _itemFilterAction, value);
+        get => _filterStrategy;
+        set => SetAndRaise(FilterStrategyProperty, ref _filterStrategy, value);
     }
     
     public IBrush? FilterHighlightForeground
@@ -592,7 +592,7 @@ public class TreeSelect : AbstractSelect
             treeView[!TreeView.IsDefaultExpandAllProperty]                    = this[!IsDefaultExpandAllProperty];
             treeView[!TreeView.FilterValueProperty]                           = this[!FilterValueProperty];
             treeView[!TreeView.FilterProperty]                                = this[!FilterProperty];
-            treeView[!TreeView.FilterHighlightStrategyProperty]               = this[!FilterHighlightStrategyProperty];
+            treeView[!TreeView.FilterStrategyProperty]                        = this[!FilterStrategyProperty];
             treeView[!ItemsControl.ItemTemplateProperty]                      = this[!ItemTemplateProperty];
             treeView[!TreeView.DataLoaderProperty]                            = this[!DataLoaderProperty];
             treeView[!TreeView.FilterHighlightForegroundProperty]             = this[!FilterHighlightForegroundProperty];
