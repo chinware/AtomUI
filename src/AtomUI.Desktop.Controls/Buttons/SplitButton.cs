@@ -758,31 +758,22 @@ public class SplitButton : ContentControl,
                ReferenceEquals(target, _secondaryButton);
     }
 
-    private Rect? _originRect;
-
     protected override Size ArrangeOverride(Size finalSize)
     {
         var size = base.ArrangeOverride(finalSize);
-        if (_originRect is null)
+
+        if (_secondaryButton is not null)
         {
-            _originRect = _secondaryButton?.Bounds;
-        }
-        
-        
-        if (!IsPrimaryButtonType)
-        {
-            if (_secondaryButton is not null && _originRect.HasValue)
+            var originRect = _secondaryButton.Bounds;
+            if (!IsPrimaryButtonType)
             {
                 _secondaryButton.Arrange(
-                    _originRect.Value.Inflate(new Thickness(_secondaryButton.BorderThickness.Left * 2, 0, 0, 0)));
+                    originRect.Inflate(new Thickness(_secondaryButton.BorderThickness.Left * 2, 0, 0, 0)));
             }
-        }
-        else
-        {
-            if (_secondaryButton is not null && _originRect.HasValue)
+            else
             {
                 _secondaryButton.Arrange(
-                    _originRect.Value.Deflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
+                    originRect.Deflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
             }
         }
 

@@ -1,6 +1,8 @@
 using System.Reflection;
 using AtomUI;
+using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
+using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 
@@ -36,6 +38,7 @@ internal static partial class Program
         VerifySplitButtonFlyoutEventRegistrationLifecycle(failures);
         VerifySplitButtonSecondaryFlyoutState(failures);
         VerifySplitButtonPrimaryClick(failures);
+        VerifySplitButtonSecondaryButtonRearrangesAfterCompactThemeToggle(failures);
 
         if (failures.Count == 0)
         {
@@ -168,6 +171,54 @@ internal static partial class Program
         Expect(clickCount == 1,
             $"Primary part click should raise SplitButton.Click once. Actual: {clickCount}.",
             failures);
+    }
+
+    private static void VerifySplitButtonSecondaryButtonRearrangesAfterCompactThemeToggle(ICollection<string> failures)
+    {
+        var application = Application.Current;
+        Expect(application is not null,
+            "SplitButton compact theme layout verification requires an Avalonia application.",
+            failures);
+        if (application is null)
+        {
+            return;
+        }
+
+        application.SetCompactThemeMode(false);
+        var splitButton = new SplitButton
+        {
+            Content             = "Split",
+            IsPrimaryButtonType = true,
+            IsMotionEnabled     = false,
+            SizeType            = SizeType.Large,
+            Flyout              = CreateSplitButtonMenuFlyout()
+        };
+
+        using var realized = RealizeControl(splitButton);
+        var secondaryButton = FindVisualByName<AvaloniaButton>(splitButton, "PART_SecondaryButton");
+        Expect(secondaryButton is not null,
+            "SplitButton should materialize PART_SecondaryButton before compact theme layout verification.",
+            failures);
+        if (secondaryButton is null)
+        {
+            return;
+        }
+
+        application.SetCompactThemeMode(true);
+        RefreshLayout(realized.Window);
+
+        Expect(Math.Abs(secondaryButton.Bounds.Right - splitButton.Bounds.Width) <= 0.001,
+            $"Secondary button should be rearranged after compact theme is enabled. SplitButton width: {splitButton.Bounds.Width:0.###}, secondary right: {secondaryButton.Bounds.Right:0.###}.",
+            failures);
+
+        application.SetCompactThemeMode(false);
+        RefreshLayout(realized.Window);
+
+        Expect(Math.Abs(secondaryButton.Bounds.Right - splitButton.Bounds.Width) <= 0.001,
+            $"Secondary button should be rearranged after compact theme is disabled. SplitButton width: {splitButton.Bounds.Width:0.###}, secondary right: {secondaryButton.Bounds.Right:0.###}.",
+            failures);
+
+        application.SetCompactThemeMode(false);
     }
 
     private static int GetFlyoutOpenedHandlerCount(FlyoutBase flyout)
