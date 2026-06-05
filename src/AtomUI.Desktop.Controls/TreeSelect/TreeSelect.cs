@@ -445,6 +445,7 @@ public class TreeSelect : AbstractSelect
                  change.Property == SelectedItemProperty)
         {
             ConfigurePlaceholderVisible();
+            ConfigureSingleResultVisible();
             ConfigureSelectionIsEmpty();
             if (IsMultiple)
             {
@@ -458,6 +459,12 @@ public class TreeSelect : AbstractSelect
         else if (change.Property == IsMultipleProperty)
         {
             ConfigureTreeSelectionMode();
+            ConfigureSingleResultVisible();
+        }
+        else if (change.Property == FilterValueProperty)
+        {
+            ConfigurePlaceholderVisible();
+            ConfigureSingleResultVisible();
         }
         else if (change.Property == IsTreeCheckableProperty)
         {
@@ -494,17 +501,31 @@ public class TreeSelect : AbstractSelect
         SetCurrentValue(IsPlaceholderTextVisibleProperty, SelectedItem == null && (SelectedItems == null || SelectedItems?.Count == 0) && string.IsNullOrEmpty(FilterValue?.ToString()));
     }
 
+    private void ConfigureSingleResultVisible()
+    {
+        SetCurrentValue(IsSingleResultVisibleProperty,
+            !IsMultiple &&
+            SelectedItem != null &&
+            string.IsNullOrEmpty(FilterValue?.ToString()));
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         ClearPopupContent();
         base.OnApplyTemplate(e);
 
         _singleFilterInput = e.NameScope.Find<SelectFilterTextBox>("PART_SingleFilterInput");
+        if (Popup != null)
+        {
+            Popup.OverlayInputPassThroughElement =
+                e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        }
 
         ConfigureSelectionIsEmpty();
         UpdatePseudoClasses();
         ConfigureSingleFilterTextBox();
         ConfigurePlaceholderVisible();
+        ConfigureSingleResultVisible();
         UpdatePseudoClasses();
         SetupContentRightAddOnBindings(e);
         if (IsDropDownOpen)
@@ -786,7 +807,7 @@ public class TreeSelect : AbstractSelect
         {
             if (IsDropDownOpen)
             {
-                _singleFilterInput.Width = _singleFilterInput.Bounds.Width;
+                _singleFilterInput.Width = double.NaN;
             }
         }
     }
@@ -809,24 +830,21 @@ public class TreeSelect : AbstractSelect
             // is pressed, close the drop-down
             if (e.Source is Control sourceControl)
             {
-                var filterTextBox = sourceControl.FindAncestorOfType<SelectFilterTextBox>();
+                var filterTextBox = sourceControl.FindAncestorOfType<SelectFilterTextBox>(includeSelf: true);
                 if (filterTextBox != null)
                 {
                     return;
                 }
        
-                var parent = sourceControl.FindAncestorOfType<IconButton>();
-                var tag    = parent?.FindAncestorOfType<SelectTag>();
-                if (tag != null)
+                if (SelectTag.IsCloseButtonSource(sourceControl))
                 {
+                    e.Handled = true;
                     return;
                 }
             }
-            else
-            {
-                SetCurrentValue(IsDropDownOpenProperty, false); 
-                e.Handled = true;
-            }
+
+            SetCurrentValue(IsDropDownOpenProperty, false);
+            e.Handled = true;
         }
         else
         {
@@ -847,12 +865,7 @@ public class TreeSelect : AbstractSelect
                 var clickInTagCloseButton = false;
                 if (e.Source is Control sourceControl)
                 {
-                    var parent = sourceControl.FindAncestorOfType<IconButton>();
-                    var tag    = parent?.FindAncestorOfType<SelectTag>();
-                    if (tag != null)
-                    {
-                        clickInTagCloseButton = true;
-                    }
+                    clickInTagCloseButton = SelectTag.IsCloseButtonSource(sourceControl);
                 }
     
                 if (!clickInTagCloseButton)
@@ -881,9 +894,11 @@ public class TreeSelect : AbstractSelect
         {
             if (e.Source is TextBox textBox)
             {
-                FilterValue = textBox.Text?.Trim();
+                var searchText = textBox.Text?.Trim();
+                FilterValue = string.IsNullOrEmpty(searchText) ? null : searchText;
             }
             ConfigurePlaceholderVisible();
+            ConfigureSingleResultVisible();
         }
 
         e.Handled = true;

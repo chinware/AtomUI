@@ -1,6 +1,8 @@
 using AtomUI.Controls;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -16,6 +18,12 @@ internal class SelectTag : Tag
     }
 
     public object? Item { get; set; }
+
+    internal static bool IsCloseButtonSource(Control sourceControl)
+    {
+        var closeButton = sourceControl.FindAncestorOfType<IconButton>(includeSelf: true);
+        return closeButton?.FindAncestorOfType<SelectTag>() != null;
+    }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {

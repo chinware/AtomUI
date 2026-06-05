@@ -413,6 +413,12 @@ public abstract class AbstractSelect : TemplatedControl,
             o => o.IsPlaceholderTextVisible,
             (o, v) => o.IsPlaceholderTextVisible = v);
 
+    internal static readonly DirectProperty<AbstractSelect, bool> IsSingleResultVisibleProperty =
+        AvaloniaProperty.RegisterDirect<AbstractSelect, bool>(
+            nameof(IsSingleResultVisible),
+            o => o.IsSingleResultVisible,
+            (o, v) => o.IsSingleResultVisible = v);
+
     internal static readonly DirectProperty<AbstractSelect, bool> IsSelectionEmptyProperty =
         AvaloniaProperty.RegisterDirect<AbstractSelect, bool>(
             nameof(IsSelectionEmpty),
@@ -488,6 +494,14 @@ public abstract class AbstractSelect : TemplatedControl,
     {
         get => _isPlaceholderTextVisible;
         set => SetAndRaise(IsPlaceholderTextVisibleProperty, ref _isPlaceholderTextVisible, value);
+    }
+
+    private bool _isSingleResultVisible;
+
+    internal bool IsSingleResultVisible
+    {
+        get => _isSingleResultVisible;
+        set => SetAndRaise(IsSingleResultVisibleProperty, ref _isSingleResultVisible, value);
     }
 
     private bool _isSelectionEmpty = true;
@@ -655,16 +669,17 @@ public abstract class AbstractSelect : TemplatedControl,
         {
             Popup.Opened -= PopupOpened;
             Popup.Closed -= PopupClosed;
+            Popup.OverlayInputPassThroughElement = null;
         }
 
         Popup = e.NameScope.Find<Popup>("PART_Popup");
+        _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
 
         if (Popup != null)
         {
             Popup.Opened += PopupOpened;
             Popup.Closed += PopupClosed;
         }
-        _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
     }
 
     protected virtual void PopupClosed(object? sender, EventArgs e)

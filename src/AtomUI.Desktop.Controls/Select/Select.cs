@@ -445,18 +445,21 @@ public partial class Select : AbstractSelect
             // is pressed, close the drop-down
             if (e.Source is Control sourceControl)
             {
-                var parent = sourceControl.FindAncestorOfType<IconButton>();
-                var tag    = parent?.FindAncestorOfType<SelectTag>();
-                if (tag != null)
+                var filterTextBox = sourceControl.FindAncestorOfType<SelectFilterTextBox>(includeSelf: true);
+                if (filterTextBox != null)
+                {
+                    return;
+                }
+
+                if (SelectTag.IsCloseButtonSource(sourceControl))
                 {
                     e.Handled = true;
+                    return;
                 }
             }
-            else if (!IsHideSelectedOptions)
-            {
-                SetCurrentValue(IsDropDownOpenProperty, false);
-                e.Handled = true;
-            }
+
+            SetCurrentValue(IsDropDownOpenProperty, false);
+            e.Handled = true;
         }
         else
         {
@@ -477,12 +480,7 @@ public partial class Select : AbstractSelect
                 var clickInTagCloseButton = false;
                 if (e.Source is Control sourceControl)
                 {
-                    var parent = sourceControl.FindAncestorOfType<IconButton>();
-                    var tag    = parent?.FindAncestorOfType<SelectTag>();
-                    if (tag != null)
-                    {
-                        clickInTagCloseButton = true;
-                    }
+                    clickInTagCloseButton = SelectTag.IsCloseButtonSource(sourceControl);
                 }
 
                 if (!clickInTagCloseButton)
@@ -524,9 +522,15 @@ public partial class Select : AbstractSelect
         base.OnApplyTemplate(e);
 
         _singleFilterInput = e.NameScope.Get<SelectFilterTextBox>("PART_SingleFilterInput");
+        if (Popup != null)
+        {
+            Popup.OverlayInputPassThroughElement =
+                e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        }
 
         ConfigurePlaceholderVisible();
         ConfigureSelectionIsEmpty();
+        ConfigureSingleResultVisible();
         UpdatePseudoClasses();
         ConfigureSingleFilterTextBox();
         ConfigureEffectiveSearchEnabled();
@@ -788,12 +792,19 @@ public partial class Select : AbstractSelect
         {
             ConfigureSelectionIsEmpty();
             ConfigurePlaceholderVisible();
+            ConfigureSingleResultVisible();
             SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count ?? 0);
             CleanDynamicAddedOptions();
         }
         else if (change.Property == ModeProperty)
         {
             ConfigureOptionsBoxSelectionMode();
+            ConfigureSingleResultVisible();
+        }
+        else if (change.Property == FilterValueProperty)
+        {
+            ConfigurePlaceholderVisible();
+            ConfigureSingleResultVisible();
         }
 
         if (change.Property == IsFilterEnabledProperty ||
@@ -811,6 +822,7 @@ public partial class Select : AbstractSelect
             {
                 _singleFilterInput.Clear();
                 _singleFilterInput.Width = double.NaN;
+                FilterValue              = null;
             }
         }
 
@@ -887,6 +899,14 @@ public partial class Select : AbstractSelect
         }
     }
 
+    private void ConfigureSingleResultVisible()
+    {
+        SetCurrentValue(IsSingleResultVisibleProperty,
+            Mode == SelectMode.Single &&
+            SelectedOption != null &&
+            string.IsNullOrEmpty(FilterValue?.ToString()));
+    }
+
     private void ConfigureSelectionIsEmpty()
     {
         if (Mode == SelectMode.Single)
@@ -905,7 +925,7 @@ public partial class Select : AbstractSelect
         {
             if (IsDropDownOpen)
             {
-                _singleFilterInput.Width = _singleFilterInput.Bounds.Width;
+                _singleFilterInput.Width = double.NaN;
             }
         }
     }
@@ -916,7 +936,8 @@ public partial class Select : AbstractSelect
         {
             if (e.Source is TextBox textBox)
             {
-                FilterValue = textBox.Text?.Trim();
+                var searchText = textBox.Text?.Trim();
+                FilterValue = string.IsNullOrEmpty(searchText) ? null : searchText;
             }
 
             var filterValue = FilterValue?.ToString();
@@ -931,6 +952,7 @@ public partial class Select : AbstractSelect
                 }
             }
             ConfigurePlaceholderVisible();
+            ConfigureSingleResultVisible();
 
             // Only allow "create from search text" in Tags mode.
             // For Single/Multiple, when data is empty (or filter results are empty),

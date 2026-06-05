@@ -24,15 +24,24 @@ internal static partial class Program
         VerifySelectDefaultValues(failures);
         VerifySelectModeSpecificContent(failures);
         VerifySelectAccessoryPaths(failures);
+        VerifySelectPopupInputPassThroughTargetsSelectBox(failures);
         VerifySelectLoadingLifecycle(failures);
         VerifySelectCandidateKeyboardHighlight(failures);
         VerifyFilteredSelectClickUsesVisibleOption(failures);
         VerifyFilteredMultiSelectClickUsesVisibleOption(failures);
         VerifySelectCandidateGroupingCanInitializeSelection(failures);
         VerifyHiddenSelectedOptionReappearsAfterTagRemoval(failures);
+        VerifyOpenSelectTagCloseDoesNotDismissPopup(failures);
+        VerifyOpenSelectBoxPressStillDismissesPopup(failures);
+        VerifyOpenSingleFilterSelectKeepsInputEditable(failures);
         VerifySelectMultiCandidateClicksAccumulate(failures);
         VerifyTreeSelectPopupLifecycle(failures);
-        VerifyTreeSelectSelectedPlaceholderAlignsWithCaret(failures);
+        VerifyTreeSelectPopupInputPassThroughTargetsSelectBox(failures);
+        VerifyOpenTreeSelectTagCloseDoesNotDismissPopup(failures);
+        VerifyOpenTreeSelectBoxPressStillDismissesPopup(failures);
+        VerifyOpenSingleFilterTreeSelectKeepsInputEditable(failures);
+        VerifySingleFilterSelectUsesResultPresenter(failures);
+        VerifySingleFilterTreeSelectUsesResultPresenter(failures);
 
         if (failures.Count == 0)
         {
@@ -191,8 +200,11 @@ internal static partial class Program
             OptionsSource   = CreateSelectOptions()
         };
         using var filterRealized = RealizeControl(filterSelect);
-        Expect(FindVisualByName<SelectFilterTextBox>(filterSelect, "PART_SingleFilterInput")?.IsVisible == true,
-            "Single filter Select should show SelectFilterTextBox.",
+        Expect(FindVisualByName<SelectFilterTextBox>(filterSelect, "PART_SingleFilterInput")?.IsVisible == false,
+            "Closed single filter Select should keep SelectFilterTextBox hidden until the dropdown opens.",
+            failures);
+        Expect(FindVisualByName<AtomUI.Desktop.Controls.TextBlock>(filterSelect, "PlaceholderText")?.IsVisible == true,
+            "Closed empty single filter Select should show the normal placeholder text.",
             failures);
         Expect(GetPopupContent<SelectCandidateList>(filterSelect) == null,
             "Closed single filter Select should still defer SelectCandidateList.",
@@ -251,6 +263,24 @@ internal static partial class Program
         Expect(FindVisualByTypeName(maxCountSelect, "SelectHandle") != null,
             "Turning max count indicator off should fall back to lightweight SelectHandle.",
             failures);
+    }
+
+    private static void VerifySelectPopupInputPassThroughTargetsSelectBox(ICollection<string> failures)
+    {
+        var select = new Select
+        {
+            OptionsSource = CreateSelectOptions()
+        };
+
+        using (RealizeControl(select))
+        {
+            var popup    = FindVisualByName<Avalonia.Controls.Primitives.Popup>(select, "PART_Popup");
+            var addOnBox = FindVisualByName<AddOnDecoratedBox>(select, AddOnDecoratedBox.AddOnDecoratedBoxPart);
+            Expect(popup?.OverlayInputPassThroughElement != null &&
+                   ReferenceEquals(popup.OverlayInputPassThroughElement, addOnBox),
+                "Select popup should pass overlay input through to the select box so tag close clicks are not light-dismissed first.",
+                failures);
+        }
     }
 
     private static void VerifySelectLoadingLifecycle(ICollection<string> failures)
@@ -463,6 +493,115 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyOpenSelectTagCloseDoesNotDismissPopup(ICollection<string> failures)
+    {
+        var options = CreateSelectOptions();
+        var select = new Select
+        {
+            Mode            = SelectMode.Multiple,
+            IsFilterEnabled = true,
+            OptionsSource   = options,
+            SelectedOptions = options.Take(2).Cast<ISelectOption>().ToList()
+        };
+
+        using var realized = RealizeControl(select);
+        RefreshLayout(realized.Window);
+        SetDropDownOpenTemplateStateForTest(select, true);
+        InvokePopupLifecycleCallbackForTest(select, "PopupOpened");
+        RefreshLayout(realized.Window);
+
+        var tag = select.GetSelfAndVisualDescendants()
+                        .OfType<SelectTag>()
+                        .FirstOrDefault(x => ReferenceEquals(x.Item, options[0]));
+        var closeButton = tag == null ? null : FindVisualByName<IconButton>(tag, "PART_CloseButton");
+        if (closeButton == null)
+        {
+            failures.Add("Open multiple Select should realize a selected tag close button.");
+            return;
+        }
+
+        var pointerPressed = RaisePrimaryPointerPressed(closeButton, realized.Window);
+        closeButton.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, closeButton));
+        RefreshLayout(realized.Window);
+
+        Expect(pointerPressed.Handled,
+            "Open Select should handle pointer press on a selected tag close button.",
+            failures);
+        Expect(select.IsDropDownOpen,
+            "Open Select should keep the popup open after a selected tag close button removes an option.",
+            failures);
+        Expect(select.SelectedOptions?.Contains(options[0]) != true &&
+               select.SelectedOptions?.Contains(options[1]) == true,
+            "Open Select tag close button should remove only the clicked selected option.",
+            failures);
+    }
+
+    private static void VerifyOpenSelectBoxPressStillDismissesPopup(ICollection<string> failures)
+    {
+        var select = new Select
+        {
+            OptionsSource = CreateSelectOptions()
+        };
+
+        using var realized = RealizeControl(select);
+        RefreshLayout(realized.Window);
+        SetDropDownOpenTemplateStateForTest(select, true);
+        InvokePopupLifecycleCallbackForTest(select, "PopupOpened");
+        RefreshLayout(realized.Window);
+
+        var addOnBox = FindVisualByName<AddOnDecoratedBox>(select, AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        if (addOnBox == null)
+        {
+            failures.Add("Open Select should realize the select box for dismiss verification.");
+            return;
+        }
+
+        var pointerPressed = RaisePrimaryPointerPressed(addOnBox, realized.Window);
+        RefreshLayout(realized.Window);
+
+        Expect(pointerPressed.Handled,
+            "Open Select should handle pointer press on the select box.",
+            failures);
+        Expect(!select.IsDropDownOpen,
+            "Pressing the Select box while open should still dismiss the popup.",
+            failures);
+    }
+
+    private static void VerifyOpenSingleFilterSelectKeepsInputEditable(ICollection<string> failures)
+    {
+        var select = new Select
+        {
+            Width           = 240,
+            Mode            = SelectMode.Single,
+            IsFilterEnabled = true,
+            OptionsSource   = CreateSelectOptions()
+        };
+
+        using var realized = RealizeControl(select);
+        var filterInput = FindVisualByName<SelectFilterTextBox>(select, "PART_SingleFilterInput");
+        if (filterInput == null)
+        {
+            failures.Add("Single filter Select should realize its filter input.");
+            return;
+        }
+
+        MaterializeLazyPopupContentForTest(select);
+        SetDropDownOpenTemplateStateForTest(select, true);
+        InvokePopupLifecycleCallbackForTest(select, "PopupOpened");
+        RefreshLayout(realized.Window);
+
+        Expect(filterInput.IsVisible,
+            "Open single filter Select should show its filter input for typing.",
+            failures);
+        Expect(filterInput.Bounds.Width > 0,
+            $"Open single filter Select should give the filter input a positive width. Actual: {filterInput.Bounds.Width:0.###}.",
+            failures);
+        Expect(filterInput.IsFocused ||
+               ReferenceEquals(realized.Window.FocusManager?.GetFocusedElement(), filterInput),
+            "Open single filter Select should focus its filter input so typing goes into search.",
+            failures);
+    }
+
     private static void VerifySelectMultiCandidateClicksAccumulate(ICollection<string> failures)
     {
         var options = CreatePersonSelectOptions();
@@ -551,7 +690,202 @@ internal static partial class Program
             failures);
     }
 
-    private static void VerifyTreeSelectSelectedPlaceholderAlignsWithCaret(ICollection<string> failures)
+    private static void VerifyTreeSelectPopupInputPassThroughTargetsSelectBox(ICollection<string> failures)
+    {
+        var treeSelect = new TreeSelect
+        {
+            ItemsSource = CreateTreeNodes()
+        };
+
+        using (RealizeControl(treeSelect))
+        {
+            var popup    = FindVisualByName<Avalonia.Controls.Primitives.Popup>(treeSelect, "PART_Popup");
+            var addOnBox = FindVisualByName<AddOnDecoratedBox>(treeSelect, AddOnDecoratedBox.AddOnDecoratedBoxPart);
+            Expect(popup?.OverlayInputPassThroughElement != null &&
+                   ReferenceEquals(popup.OverlayInputPassThroughElement, addOnBox),
+                "TreeSelect popup should pass overlay input through to the select box so tag close clicks are not light-dismissed first.",
+                failures);
+        }
+    }
+
+    private static void VerifyOpenTreeSelectTagCloseDoesNotDismissPopup(ICollection<string> failures)
+    {
+        var nodes = CreateTreeNodes();
+        var selectedItems = new List<ITreeItemNode>
+        {
+            nodes[0].Children.ElementAt(1),
+            nodes[1].Children.ElementAt(0)
+        };
+        var treeSelect = new TreeSelect
+        {
+            IsMultiple      = true,
+            IsFilterEnabled = true,
+            ItemsSource     = nodes,
+            SelectedItems   = selectedItems
+        };
+
+        using var realized = RealizeControl(treeSelect);
+        RefreshLayout(realized.Window);
+        SetDropDownOpenTemplateStateForTest(treeSelect, true);
+        InvokePopupLifecycleCallbackForTest(treeSelect, "PopupOpened");
+        RefreshLayout(realized.Window);
+
+        var tag = treeSelect.GetSelfAndVisualDescendants()
+                            .OfType<SelectTag>()
+                            .FirstOrDefault(x => ReferenceEquals(x.Item, selectedItems[0]));
+        var closeButton = tag == null ? null : FindVisualByName<IconButton>(tag, "PART_CloseButton");
+        if (closeButton == null)
+        {
+            failures.Add("Open multiple TreeSelect should realize a selected tag close button.");
+            return;
+        }
+
+        var pointerPressed = RaisePrimaryPointerPressed(closeButton, realized.Window);
+        closeButton.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, closeButton));
+        RefreshLayout(realized.Window);
+
+        Expect(pointerPressed.Handled,
+            "Open TreeSelect should handle pointer press on a selected tag close button.",
+            failures);
+        Expect(treeSelect.IsDropDownOpen,
+            "Open TreeSelect should keep the popup open after a selected tag close button removes an item.",
+            failures);
+        Expect(treeSelect.SelectedItems?.Contains(selectedItems[0]) != true &&
+               treeSelect.SelectedItems?.Contains(selectedItems[1]) == true,
+            "Open TreeSelect tag close button should remove only the clicked selected item.",
+            failures);
+    }
+
+    private static void VerifyOpenTreeSelectBoxPressStillDismissesPopup(ICollection<string> failures)
+    {
+        var treeSelect = new TreeSelect
+        {
+            ItemsSource = CreateTreeNodes()
+        };
+
+        using var realized = RealizeControl(treeSelect);
+        RefreshLayout(realized.Window);
+        SetDropDownOpenTemplateStateForTest(treeSelect, true);
+        InvokePopupLifecycleCallbackForTest(treeSelect, "PopupOpened");
+        RefreshLayout(realized.Window);
+
+        var addOnBox = FindVisualByName<AddOnDecoratedBox>(treeSelect, AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        if (addOnBox == null)
+        {
+            failures.Add("Open TreeSelect should realize the select box for dismiss verification.");
+            return;
+        }
+
+        var pointerPressed = RaisePrimaryPointerPressed(addOnBox, realized.Window);
+        RefreshLayout(realized.Window);
+
+        Expect(pointerPressed.Handled,
+            "Open TreeSelect should handle pointer press on the select box.",
+            failures);
+        Expect(!treeSelect.IsDropDownOpen,
+            "Pressing the TreeSelect box while open should still dismiss the popup.",
+            failures);
+    }
+
+    private static void VerifyOpenSingleFilterTreeSelectKeepsInputEditable(ICollection<string> failures)
+    {
+        var treeSelect = new TreeSelect
+        {
+            Width           = 240,
+            IsFilterEnabled = true,
+            ItemsSource     = CreateTreeNodes()
+        };
+
+        using var realized = RealizeControl(treeSelect);
+        var filterInput = FindVisualByName<SelectFilterTextBox>(treeSelect, "PART_SingleFilterInput");
+        if (filterInput == null)
+        {
+            failures.Add("Single filter TreeSelect should realize its filter input.");
+            return;
+        }
+
+        MaterializeLazyPopupContentForTest(treeSelect);
+        SetDropDownOpenTemplateStateForTest(treeSelect, true);
+        InvokePopupLifecycleCallbackForTest(treeSelect, "PopupOpened");
+        RefreshLayout(realized.Window);
+
+        Expect(filterInput.IsVisible,
+            "Open single filter TreeSelect should show its filter input for typing.",
+            failures);
+        Expect(filterInput.Bounds.Width > 0,
+            $"Open single filter TreeSelect should give the filter input a positive width. Actual: {filterInput.Bounds.Width:0.###}.",
+            failures);
+        Expect(filterInput.IsFocused ||
+               ReferenceEquals(realized.Window.FocusManager?.GetFocusedElement(), filterInput),
+            "Open single filter TreeSelect should focus its filter input so typing goes into search.",
+            failures);
+    }
+
+    private static void VerifySingleFilterSelectUsesResultPresenter(ICollection<string> failures)
+    {
+        var options = CreateSelectOptions();
+        var select = new Select
+        {
+            Width           = 320,
+            IsFilterEnabled = true,
+            OptionsSource   = options,
+            SelectedOption  = options[1]
+        };
+
+        using var realized = RealizeControl(select);
+        var resultPresenter = FindVisualByName<ContentPresenter>(select, "SingleSelectResultPresenter");
+        var filterInput     = FindVisualByName<SelectFilterTextBox>(select, "PART_SingleFilterInput");
+        Expect(resultPresenter is { IsVisible: true },
+            "Closed single filter Select with a selected option should show the result presenter.",
+            failures);
+        Expect(filterInput is { IsVisible: false },
+            "Closed single filter Select with a selected option should hide the filter input.",
+            failures);
+        Expect(string.IsNullOrEmpty(filterInput?.PlaceholderText),
+            $"Single filter Select should not display the selected option through PlaceholderText. Actual: {filterInput?.PlaceholderText}.",
+            failures);
+
+        MaterializeLazyPopupContentForTest(select);
+        SetDropDownOpenTemplateStateForTest(select, true);
+        InvokePopupLifecycleCallbackForTest(select, "PopupOpened");
+        RefreshLayout(realized.Window);
+        Expect(resultPresenter is { IsVisible: true },
+            "Open single filter Select should keep the selected-result presenter visible before real search text is typed.",
+            failures);
+        Expect(filterInput is { IsVisible: true },
+            "Open single filter Select should show the filter input.",
+            failures);
+
+        if (filterInput != null)
+        {
+            filterInput.Text = "ora";
+            RefreshLayout(realized.Window);
+            Expect(select.FilterValue?.ToString() == "ora",
+                $"Open single filter Select should write actual typed text to FilterValue. Actual: {select.FilterValue}.",
+                failures);
+            Expect(resultPresenter is { IsVisible: false },
+                "Typing into single filter Select should hide the selected-result presenter while filtering.",
+                failures);
+        }
+
+        SetDropDownOpenTemplateStateForTest(select, false);
+        InvokePopupLifecycleCallbackForTest(select, "PopupClosed");
+        RefreshLayout(realized.Window);
+        Expect(resultPresenter is { IsVisible: true },
+            "Closed single filter Select should restore the selected-result presenter.",
+            failures);
+        Expect(filterInput is { IsVisible: false },
+            "Closed single filter Select should hide the filter input after filtering.",
+            failures);
+        Expect(string.IsNullOrEmpty(filterInput?.Text),
+            $"Closing single filter Select should clear filter input text. Actual: {filterInput?.Text}.",
+            failures);
+        Expect(select.FilterValue == null,
+            $"Closing single filter Select should clear FilterValue. Actual: {select.FilterValue}.",
+            failures);
+    }
+
+    private static void VerifySingleFilterTreeSelectUsesResultPresenter(ICollection<string> failures)
     {
         var nodes        = CreateTreeNodes();
         var selectedNode = nodes[1].Children.ElementAt(1);
@@ -564,30 +898,55 @@ internal static partial class Program
         };
 
         using var realized = RealizeControl(treeSelect);
-        var filterInput = FindVisualByName<SelectFilterTextBox>(treeSelect, "PART_SingleFilterInput");
+        var resultPresenter = FindVisualByName<ContentPresenter>(treeSelect, "SingleSelectResultPresenter");
+        var filterInput     = FindVisualByName<SelectFilterTextBox>(treeSelect, "PART_SingleFilterInput");
+        Expect(resultPresenter is { IsVisible: true },
+            "Closed single filter TreeSelect with a selected item should show the result presenter.",
+            failures);
+        Expect(filterInput is { IsVisible: false },
+            "Closed single filter TreeSelect with a selected item should hide the filter input.",
+            failures);
+        Expect(string.IsNullOrEmpty(filterInput?.PlaceholderText),
+            $"Single filter TreeSelect should not display the selected item through PlaceholderText. Actual: {filterInput?.PlaceholderText}.",
+            failures);
+
+        MaterializeLazyPopupContentForTest(treeSelect);
+        SetDropDownOpenTemplateStateForTest(treeSelect, true);
+        InvokePopupLifecycleCallbackForTest(treeSelect, "PopupOpened");
+        RefreshLayout(realized.Window);
+        Expect(resultPresenter is { IsVisible: true },
+            "Open single filter TreeSelect should keep the selected-result presenter visible before real search text is typed.",
+            failures);
         Expect(filterInput is { IsVisible: true },
-            "Single filter TreeSelect should show SelectFilterTextBox for selected placeholder layout verification.",
+            "Open single filter TreeSelect should show the filter input.",
             failures);
-        if (filterInput is null)
+
+        if (filterInput != null)
         {
-            return;
+            filterInput.Text = "Leaf";
+            RefreshLayout(realized.Window);
+            Expect(treeSelect.FilterValue?.ToString() == "Leaf",
+                $"Open single filter TreeSelect should write actual typed text to FilterValue. Actual: {treeSelect.FilterValue}.",
+                failures);
+            Expect(resultPresenter is { IsVisible: false },
+                "Typing into single filter TreeSelect should hide the selected-result presenter while filtering.",
+                failures);
         }
 
-        var placeholder   = FindVisualByName<AtomUI.Desktop.Controls.TextBlock>(filterInput, "Placeholder");
-        var textPresenter = FindVisualByName<TextPresenter>(filterInput, "PART_TextPresenter");
-        Expect(placeholder is not null,
-            "TreeSelect filter input should materialize placeholder text.",
+        SetDropDownOpenTemplateStateForTest(treeSelect, false);
+        InvokePopupLifecycleCallbackForTest(treeSelect, "PopupClosed");
+        RefreshLayout(realized.Window);
+        Expect(resultPresenter is { IsVisible: true },
+            "Closed single filter TreeSelect should restore the selected-result presenter.",
             failures);
-        Expect(textPresenter is not null,
-            "TreeSelect filter input should materialize text presenter.",
+        Expect(filterInput is { IsVisible: false },
+            "Closed single filter TreeSelect should hide the filter input after filtering.",
             failures);
-        if (placeholder is null || textPresenter is null)
-        {
-            return;
-        }
-
-        Expect(placeholder.Bounds.X >= textPresenter.Bounds.X,
-            $"Selected TreeSelect placeholder should not start before the caret host. Placeholder X: {placeholder.Bounds.X:0.###}, text presenter X: {textPresenter.Bounds.X:0.###}.",
+        Expect(string.IsNullOrEmpty(filterInput?.Text),
+            $"Closing single filter TreeSelect should clear filter input text. Actual: {filterInput?.Text}.",
+            failures);
+        Expect(treeSelect.FilterValue == null,
+            $"Closing single filter TreeSelect should clear FilterValue. Actual: {treeSelect.FilterValue}.",
             failures);
     }
 
@@ -618,6 +977,23 @@ internal static partial class Program
             ?.Invoke(select, null);
     }
 
+    private static void SetDropDownOpenTemplateStateForTest(AbstractSelect select, bool isOpen)
+    {
+        FindVisualByName<Avalonia.Controls.Primitives.Popup>(select, "PART_Popup")
+            ?.SetValue(Avalonia.Controls.Primitives.Popup.IsOpenProperty, false);
+        typeof(AbstractSelect)
+            .GetField("IgnorePropertyChange", BindingFlags.Instance | BindingFlags.NonPublic)
+            ?.SetValue(select, true);
+        select.SetCurrentValue(AbstractSelect.IsDropDownOpenProperty, isOpen);
+    }
+
+    private static void InvokePopupLifecycleCallbackForTest(AbstractSelect select, string methodName)
+    {
+        select.GetType()
+              .GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic)
+              ?.Invoke(select, new object?[] { null, EventArgs.Empty });
+    }
+
     private static void SetSelectLoadingForTest(AbstractSelect select, bool value)
     {
         typeof(AbstractSelect)
@@ -639,7 +1015,7 @@ internal static partial class Program
                    ?.GetValue(select) ?? false);
     }
 
-    private static void RaisePrimaryPointerPressed(Control target, Visual root)
+    private static PointerPressedEventArgs RaisePrimaryPointerPressed(Control target, Visual root)
     {
         var pointer = new Avalonia.Input.Pointer(
             Avalonia.Input.Pointer.GetNextFreeId(),
@@ -649,13 +1025,15 @@ internal static partial class Program
             RawInputModifiers.LeftMouseButton,
             PointerUpdateKind.LeftButtonPressed);
 
-        target.RaiseEvent(new PointerPressedEventArgs(
+        var args = new PointerPressedEventArgs(
             target,
             pointer,
             root,
             default,
             1,
             properties,
-            KeyModifiers.None));
+            KeyModifiers.None);
+        target.RaiseEvent(args);
+        return args;
     }
 }
