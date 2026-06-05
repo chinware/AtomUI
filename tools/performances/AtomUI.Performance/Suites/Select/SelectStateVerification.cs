@@ -28,6 +28,8 @@ internal static partial class Program
         VerifySelectCandidateKeyboardHighlight(failures);
         VerifyFilteredSelectClickUsesVisibleOption(failures);
         VerifyFilteredMultiSelectClickUsesVisibleOption(failures);
+        VerifySelectCandidateGroupingCanInitializeSelection(failures);
+        VerifyHiddenSelectedOptionReappearsAfterTagRemoval(failures);
         VerifySelectMultiCandidateClicksAccumulate(failures);
         VerifyTreeSelectPopupLifecycle(failures);
         VerifyTreeSelectSelectedPlaceholderAlignsWithCaret(failures);
@@ -406,6 +408,58 @@ internal static partial class Program
         Expect(candidateList.SelectedItems?.Contains(options[1]) == true &&
                candidateList.SelectedItems?.Contains(options[2]) == true,
             "Multi Select should preserve existing selected option when clicking another visible option.",
+            failures);
+    }
+
+    private static void VerifySelectCandidateGroupingCanInitializeSelection(ICollection<string> failures)
+    {
+        var candidateList = new SelectCandidateList
+        {
+            ItemsSource   = CreateSelectOptions(),
+            SelectionMode = SelectionMode.Single
+        };
+
+        using var realized = RealizeControl(candidateList);
+        RefreshLayout(realized.Window);
+
+        try
+        {
+            candidateList.SetCurrentValue(ListView.IsGroupEnabledProperty, true);
+            RefreshLayout(realized.Window);
+        }
+        catch (Exception ex)
+        {
+            failures.Add($"SelectCandidateList should enable grouping without initializing selection during deferred refresh. Actual: {ex.GetType().Name}: {ex.Message}");
+        }
+    }
+
+    private static void VerifyHiddenSelectedOptionReappearsAfterTagRemoval(ICollection<string> failures)
+    {
+        var options = CreateSelectOptions();
+        var candidateList = new SelectCandidateList
+        {
+            IsHideSelectedOptions = true,
+            ItemsSource           = options,
+            SelectionMode         = SelectionMode.Multiple
+        };
+
+        using var realized = RealizeControl(candidateList);
+        RefreshLayout(realized.Window);
+
+        candidateList.SelectedItems = new List<object?>(options);
+        RefreshLayout(realized.Window);
+        Expect(candidateList.IsEffectiveEmptyVisible,
+            "SelectCandidateList should show empty indicator when all options are selected and hidden.",
+            failures);
+
+        candidateList.SelectedItems = options.Take(options.Count - 1).Cast<object?>().ToList();
+        RefreshLayout(realized.Window);
+        var removedContainer = candidateList.ContainerFromItem(options[^1]) as SelectCandidateListItem;
+        Expect(removedContainer is { IsVisible: true },
+            "Removing a selected tag should make that option visible in the dropdown again.",
+            failures);
+        Expect(!candidateList.IsEffectiveEmptyVisible,
+            "SelectCandidateList should hide empty indicator after a removed tag becomes available again.",
             failures);
     }
 

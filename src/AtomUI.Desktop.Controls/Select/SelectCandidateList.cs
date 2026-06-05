@@ -136,6 +136,7 @@ internal class SelectCandidateList : ListView, ICandidateList
         if (!IsSingleMode())
         {
             ConfigureOptionsForMaxCount();
+            ConfigureHasAnyVisibleItem();
         }
     }
 
@@ -384,26 +385,14 @@ internal class SelectCandidateList : ListView, ICandidateList
             ConfigureOptionsForMaxCount();
         }
 
-        if (change.Property == SelectedItemsProperty)
+        if (change.Property == SelectedItemsProperty ||
+            change.Property == IsHideSelectedOptionsProperty ||
+            change.Property == ItemsSourceProperty ||
+            change.Property == IsEmptyDataSourceProperty)
         {
             if (IsHideSelectedOptions)
             {
-                var oldSelectedCount = 0;
-                var newSelectedCount = 0;
-                if (change.OldValue is IList oldList)
-                {
-                    oldSelectedCount = oldList.Count;
-                }
-
-                if (change.NewValue is IList newList)
-                {
-                    newSelectedCount = newList.Count;
-                }
-
-                if (newSelectedCount < oldSelectedCount)
-                {
-                    HasAnyVisibleItem = true;
-                }
+                ConfigureHasAnyVisibleItem();
             }
         }
 
@@ -445,6 +434,32 @@ internal class SelectCandidateList : ListView, ICandidateList
                 }
             }
         }
+    }
+
+    private void ConfigureHasAnyVisibleItem()
+    {
+        if (!IsHideSelectedOptions)
+        {
+            return;
+        }
+
+        var selectedItems = SelectedItems;
+        for (var i = 0; i < ItemCount; i++)
+        {
+            var item = Items[i];
+            if (item is IGroupListItemData groupListItemData && groupListItemData.IsGroupItem)
+            {
+                continue;
+            }
+
+            if (selectedItems == null || !selectedItems.Contains(item))
+            {
+                HasAnyVisibleItem = true;
+                return;
+            }
+        }
+
+        HasAnyVisibleItem = false;
     }
 
     public bool TrySetCandidateItemSelected(object item)

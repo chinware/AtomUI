@@ -579,8 +579,8 @@ public partial class ListView : ItemsControl, ISizeTypeAware, IMotionAwareContro
                 using (_collectionView.DeferRefresh())
                 {
                     ConfigureGroupInfo();
-                    TryInitializeSelectionSource(Selection, false);
                 }
+                TryInitializeSelectionSource(Selection, false);
             }
         }
         else if (change.Property == GroupPropertySelectorProperty)
