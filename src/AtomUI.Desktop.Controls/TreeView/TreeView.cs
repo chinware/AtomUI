@@ -140,7 +140,7 @@ public partial class TreeView : AvaloniaTreeView,
         AvaloniaProperty.Register<TreeView, DefaultFilterValueSelector?>(nameof(FilterValueSelector));
     
     public static readonly StyledProperty<TreeFilterStrategy> FilterStrategyProperty =
-        AvaloniaProperty.Register<TreeView, TreeFilterStrategy>(nameof(FilterStrategy), TreeFilterStrategy.MatchedOnly);
+        AvaloniaProperty.Register<TreeView, TreeFilterStrategy>(nameof(FilterStrategy), TreeFilterStrategy.All);
     
     public static readonly DirectProperty<TreeView, int> FilterResultCountProperty =
         AvaloniaProperty.RegisterDirect<TreeView, int>(nameof(FilterResultCount),

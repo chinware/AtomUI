@@ -124,7 +124,7 @@ public partial class TreeView
 
             for (var i = 0; i < ItemCount; i++)
             {
-                if (ContainerFromIndex(i) is TreeViewItem treeViewItem)
+                if (GetFilterRootItem(i) is TreeViewItem treeViewItem)
                 {
                     FilterItem(treeViewItem, needBackup);
                 }
@@ -139,6 +139,18 @@ public partial class TreeView
         }
     }
 
+    private TreeViewItem? GetFilterRootItem(int index)
+    {
+        return ContainerFromIndex(index) as TreeViewItem ??
+               Items[index] as TreeViewItem;
+    }
+
+    private static TreeViewItem? GetFilterChildItem(TreeViewItem treeViewItem, int index)
+    {
+        return treeViewItem.ContainerFromIndex(index) as TreeViewItem ??
+               treeViewItem.Items[index] as TreeViewItem;
+    }
+
     private void FilterItem(TreeViewItem treeViewItem, bool needBackup)
     {
         if (Filter == null)
@@ -149,7 +161,7 @@ public partial class TreeView
         var anyDescendantMatched = false;
         for (var i = 0; i < treeViewItem.ItemCount; i++)
         {
-            if (treeViewItem.ContainerFromIndex(i) is TreeViewItem childTreeViewItem)
+            if (GetFilterChildItem(treeViewItem, i) is TreeViewItem childTreeViewItem)
             {
                 FilterItem(childTreeViewItem, needBackup);
                 if (_descendantsMatchCache!.Contains(childTreeViewItem))
@@ -238,7 +250,7 @@ public partial class TreeView
 
         for (var i = 0; i < ItemCount; i++)
         {
-            if (ContainerFromIndex(i) is TreeViewItem treeViewItem)
+            if (GetFilterRootItem(i) is TreeViewItem treeViewItem)
             {
                 ClearItemFilterMode(treeViewItem);
             }
@@ -253,7 +265,7 @@ public partial class TreeView
     {
         for (var i = 0; i < treeViewItem.ItemCount; i++)
         {
-            if (treeViewItem.ContainerFromIndex(i) is TreeViewItem childTreeItem)
+            if (GetFilterChildItem(treeViewItem, i) is TreeViewItem childTreeItem)
             {
                 ClearItemFilterMode(childTreeItem);
             }
@@ -265,7 +277,7 @@ public partial class TreeView
     {
         for (var i = 0; i < treeViewItem.ItemCount; i++)
         {
-            if (treeViewItem.ContainerFromIndex(i) is TreeViewItem childTreeItem)
+            if (GetFilterChildItem(treeViewItem, i) is TreeViewItem childTreeItem)
             {
                 CollectExpandedItems(childTreeItem, expandedItems);
             }
@@ -288,7 +300,7 @@ public partial class TreeView
 
             for (int i = 0; i < ItemCount; i++)
             {
-                if (ContainerFromIndex(i) is TreeViewItem item)
+                if (GetFilterRootItem(i) is TreeViewItem item)
                 {
                     RestoreItemExpandedState(item, originExpandedItems);
                 }
@@ -305,7 +317,7 @@ public partial class TreeView
     {
         for (var i = 0; i < treeViewItem.ItemCount; i++)
         {
-            if (treeViewItem.ContainerFromIndex(i) is TreeViewItem childTreeItem)
+            if (GetFilterChildItem(treeViewItem, i) is TreeViewItem childTreeItem)
             {
                 RestoreItemExpandedState(childTreeItem, expandedItems);
             }

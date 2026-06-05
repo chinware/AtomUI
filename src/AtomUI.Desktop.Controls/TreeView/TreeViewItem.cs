@@ -377,7 +377,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         set => SetValue(FilterHighlightForegroundProperty, value);
     }
     
-    private TreeFilterStrategy _filterStrategy = TreeFilterStrategy.MatchedOnly;
+    private TreeFilterStrategy _filterStrategy = TreeFilterStrategy.All;
     
     internal TreeFilterStrategy FilterStrategy
     {

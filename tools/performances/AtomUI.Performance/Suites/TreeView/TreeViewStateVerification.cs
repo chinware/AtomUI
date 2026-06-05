@@ -18,8 +18,10 @@ internal static partial class Program
         VerifyNodeSwitcherRotationAndLoadingIcons(failures);
         VerifyNodeSwitcherLeafVisibility(failures);
         VerifyTreeViewCheckboxParentStateAggregation(failures);
+        VerifyTreeViewFilterStrategyDefaults(failures);
         VerifyTreeViewFilterHighlightRuns(failures);
         VerifyTreeViewFullTreeFilterStrategy(failures);
+        VerifyInlineTreeViewFullTreeFilterStrategy(failures);
         VerifyTreeViewItemClearFilterWithoutOwner(failures);
 
         if (failures.Count == 0)
@@ -292,6 +294,19 @@ internal static partial class Program
             failures);
     }
 
+    private static void VerifyTreeViewFilterStrategyDefaults(ICollection<string> failures)
+    {
+        Expect(new TreeView().FilterStrategy == TreeFilterStrategy.All,
+            "TreeView FilterStrategy should preserve the old TreeFilterHighlightStrategy.All default after the rename.",
+            failures);
+        Expect(new TreeViewItem().FilterStrategy == TreeFilterStrategy.All,
+            "TreeViewItem FilterStrategy should preserve the old TreeFilterHighlightStrategy.All default after the rename.",
+            failures);
+        Expect(new TreeViewItemHeader().FilterStrategy == TreeFilterStrategy.All,
+            "TreeViewItemHeader FilterStrategy should preserve the old TreeFilterHighlightStrategy.All default after the rename.",
+            failures);
+    }
+
     private static void VerifyTreeViewFullTreeFilterStrategy(ICollection<string> failures)
     {
         var match = new TreeItemNode
@@ -338,6 +353,47 @@ internal static partial class Program
             failures);
         Expect(tree.FilterResultCount == 1,
             $"TreeView FullTree filter strategy should preserve match counting. Actual: {tree.FilterResultCount}.",
+            failures);
+    }
+
+    private static void VerifyInlineTreeViewFullTreeFilterStrategy(ICollection<string> failures)
+    {
+        var match = new TreeViewItem
+        {
+            Header = "0-0-1"
+        };
+        var sibling = new TreeViewItem
+        {
+            Header = "0-0-2"
+        };
+        var parent = new TreeViewItem
+        {
+            Header = "0-0"
+        };
+        parent.Items.Add(match);
+        parent.Items.Add(sibling);
+
+        var tree = new TreeView
+        {
+            FilterStrategy = TreeFilterStrategy.FullTree,
+            Width          = 240,
+            Height         = 160
+        };
+        tree.Items.Add(parent);
+
+        using var realized = RealizeControl(tree);
+        RefreshLayout(realized.Window);
+        tree.FilterValue = "0-0-1";
+        RefreshLayout(realized.Window);
+
+        Expect(match.IsVisible && match.IsFilterMatch,
+            $"Inline TreeView filtering should search direct TreeViewItem content after the strategy rename. Visible: {match.IsVisible}, match: {match.IsFilterMatch}.",
+            failures);
+        Expect(sibling.IsVisible,
+            $"Inline TreeView FullTree filtering should keep unmatched TreeViewItem content visible. Actual: {sibling.IsVisible}.",
+            failures);
+        Expect(tree.FilterResultCount == 1,
+            $"Inline TreeView filtering should count the matched TreeViewItem. Actual: {tree.FilterResultCount}.",
             failures);
     }
 

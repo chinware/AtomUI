@@ -375,7 +375,7 @@ internal class TreeViewItemHeader : ContentControl
         set => SetAndRaise(FilterHighlightRunsProperty, ref _filterHighlightRuns, value);
     }
     
-    private TreeFilterStrategy _filterStrategy = TreeFilterStrategy.MatchedOnly;
+    private TreeFilterStrategy _filterStrategy = TreeFilterStrategy.All;
     
     internal TreeFilterStrategy FilterStrategy
     {

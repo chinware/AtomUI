@@ -216,7 +216,10 @@ public class TreeSelect : AbstractSelect
         set => SetValue(FilterValueSelectorProperty, value);
     }
 
-    private TreeFilterStrategy _filterStrategy = TreeFilterStrategy.MatchedOnly;
+    private TreeFilterStrategy _filterStrategy = TreeFilterStrategy.HighlightedWhole |
+                                                 TreeFilterStrategy.BoldedMatch |
+                                                 TreeFilterStrategy.ExpandPath |
+                                                 TreeFilterStrategy.HideUnMatched;
     
     public TreeFilterStrategy FilterStrategy
     {

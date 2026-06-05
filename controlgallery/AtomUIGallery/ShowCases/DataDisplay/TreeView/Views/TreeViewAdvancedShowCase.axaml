@@ -27,6 +27,7 @@
                 <atom:SearchEdit PlaceholderText="{gallery:TreeViewShowCaseLangResource P2PlaceholderTextSearch}"
                                  SearchButtonClick="HandleFilterItemsSourceTreeClicked" />
                 <atom:TreeView Name="SearchTreeViewByItemsSource"
+                               FilterStrategy="FullTree"
                                ItemsSource="{Binding FilterTreeNodes}">
                     <atom:TreeView.ItemTemplate>
                         <TreeDataTemplate ItemsSource="{Binding Children}" x:DataType="atom:ITreeItemNode">
@@ -43,7 +44,8 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:SearchEdit PlaceholderText="{gallery:TreeViewShowCaseLangResource P2PlaceholderTextSearch}"
                                  SearchButtonClick="HandleFilterTreeClicked" />
-                <atom:TreeView Name="SearchTreeView">
+                <atom:TreeView Name="SearchTreeView"
+                               FilterStrategy="FullTree">
                     <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0}">
                         <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0}">
                             <atom:TreeViewItem Header="{gallery:TreeViewShowCaseLangResource P2HeaderN0N0N0N0}" />

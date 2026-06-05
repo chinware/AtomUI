@@ -194,6 +194,14 @@ internal static partial class Program
                 "Multiple Select should apply all matching default values in order.",
                 failures);
         }
+
+        var treeSelectDefaultStrategy = TreeFilterStrategy.HighlightedWhole |
+                                        TreeFilterStrategy.BoldedMatch |
+                                        TreeFilterStrategy.ExpandPath |
+                                        TreeFilterStrategy.HideUnMatched;
+        Expect(new TreeSelect().FilterStrategy == treeSelectDefaultStrategy,
+            "TreeSelect FilterStrategy should preserve the old TreeFilterHighlightStrategy default after the rename.",
+            failures);
     }
 
     private static void VerifySelectModeSpecificContent(ICollection<string> failures)
