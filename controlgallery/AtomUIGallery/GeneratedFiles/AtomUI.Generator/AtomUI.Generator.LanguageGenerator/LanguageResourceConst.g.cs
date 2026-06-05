@@ -351,7 +351,6 @@ namespace AtomUIGallery.Localization
         BasicTitle,
         DisabledDescription,
         DisabledTitle,
-        P2TextPoemLine,
         PrefixSuffixDescription,
         PrefixSuffixTitle,
         PrePostTabDescription,

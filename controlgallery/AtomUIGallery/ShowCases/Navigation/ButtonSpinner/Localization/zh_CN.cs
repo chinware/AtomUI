@@ -20,7 +20,6 @@ internal class zh_CN : LanguageProvider
     public const string PrefixSuffixDescription = "在输入框内部添加前缀或后缀图标。";
     public const string StatusTitle = "状态";
     public const string StatusDescription = "通过 status 为输入框添加错误或警告状态。";
-    public const string P2TextPoemLine = "床前明月光";
 
     protected override Type GetResourceKindType() => typeof(ButtonSpinnerShowCaseLangResourceKind);
 }
