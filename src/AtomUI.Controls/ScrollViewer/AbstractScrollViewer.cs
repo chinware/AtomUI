@@ -28,6 +28,9 @@ public abstract class AbstractScrollViewer : AvaloniaScrollViewer, IMotionAwareC
     internal static readonly StyledProperty<double> ScrollBarOpacityProperty =
         AvaloniaProperty.Register<AbstractScrollViewer, double>(nameof(ScrollBarOpacity));
 
+    internal static readonly StyledProperty<bool> IsScrollBarDraggingProperty =
+        AvaloniaProperty.Register<AbstractScrollViewer, bool>(nameof(IsScrollBarDragging));
+
     internal double ScrollBarsSeparatorOpacity
     {
         get => GetValue(ScrollBarsSeparatorOpacityProperty);
@@ -38,6 +41,12 @@ public abstract class AbstractScrollViewer : AvaloniaScrollViewer, IMotionAwareC
     {
         get => GetValue(ScrollBarOpacityProperty);
         set => SetValue(ScrollBarOpacityProperty, value);
+    }
+
+    internal bool IsScrollBarDragging
+    {
+        get => GetValue(IsScrollBarDraggingProperty);
+        set => SetValue(IsScrollBarDraggingProperty, value);
     }
 
     #endregion

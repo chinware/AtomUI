@@ -1,5 +1,8 @@
 using Avalonia;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 
 namespace AtomUI.Controls.Commons;
 
@@ -32,6 +35,16 @@ public abstract class AbstractScrollBar : AvaloniaScrollBar, IMotionAwareControl
     }
 
     #endregion
+
+    static AbstractScrollBar()
+    {
+        Thumb.DragStartedEvent.AddClassHandler<AbstractScrollBar>(
+            (x, e) => x.NotifyThumbDragStarted(e),
+            RoutingStrategies.Bubble);
+        Thumb.DragCompletedEvent.AddClassHandler<AbstractScrollBar>(
+            (x, e) => x.NotifyThumbDragCompleted(e),
+            RoutingStrategies.Bubble);
+    }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -48,6 +61,12 @@ public abstract class AbstractScrollBar : AvaloniaScrollBar, IMotionAwareControl
             }
         }
     }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        SetOwnerScrollBarDragging(false);
+        base.OnDetachedFromVisualTree(e);
+    }
     
     protected virtual void UpdateIsExpandedState()
     {
@@ -56,6 +75,24 @@ public abstract class AbstractScrollBar : AvaloniaScrollBar, IMotionAwareControl
             var timer = this.GetTimer();
             timer?.Stop();
             IsEffectiveExpanded = false;
+        }
+    }
+
+    protected virtual void NotifyThumbDragStarted(VectorEventArgs e)
+    {
+        SetOwnerScrollBarDragging(true);
+    }
+
+    protected virtual void NotifyThumbDragCompleted(VectorEventArgs e)
+    {
+        SetOwnerScrollBarDragging(false);
+    }
+
+    private void SetOwnerScrollBarDragging(bool isDragging)
+    {
+        if (TemplatedParent is AbstractScrollViewer scrollViewer)
+        {
+            scrollViewer.IsScrollBarDragging = isDragging;
         }
     }
 }

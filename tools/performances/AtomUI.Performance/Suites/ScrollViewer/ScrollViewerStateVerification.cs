@@ -3,11 +3,13 @@ using AtomUI.Utils;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.VisualTree;
 using AtomScrollBar = AtomUI.Desktop.Controls.ScrollBar;
 using AtomScrollBarThumb = AtomUI.Desktop.Controls.ScrollBarThumb;
 using AtomScrollViewer = AtomUI.Desktop.Controls.ScrollViewer;
 using AvaScrollBar = Avalonia.Controls.Primitives.ScrollBar;
+using AvaThumb = Avalonia.Controls.Primitives.Thumb;
 using AvaScrollViewer = Avalonia.Controls.ScrollViewer;
 
 namespace AtomUI.Performance;
@@ -21,6 +23,7 @@ internal static partial class Program
         VerifyScrollViewerAutoHideSpansContentHost(failures);
         VerifyAvaScrollViewerAutoHideSpansContentHost(failures);
         VerifyScrollViewerLiteModeState(failures);
+        VerifyLiteModeScrollBarStaysVisibleDuringThumbDrag(failures);
         VerifyScrollViewerOverlayLayerLifecycle(failures);
         VerifyScrollBarMotionBinding(failures);
 
@@ -163,6 +166,46 @@ internal static partial class Program
         }
     }
 
+    private static void VerifyLiteModeScrollBarStaysVisibleDuringThumbDrag(ICollection<string> failures)
+    {
+        var scrollViewer = CreateAtomScrollViewer(
+            width: 260,
+            height: 120,
+            content: CreateContentBlock(640, 900),
+            horizontalVisibility: ScrollBarVisibility.Auto,
+            verticalVisibility: ScrollBarVisibility.Auto,
+            isLiteMode: true,
+            allowAutoHide: true);
+        scrollViewer.IsMotionEnabled = false;
+        using var realized = RealizeControl(scrollViewer);
+
+        var scrollBar = FindVisualByName<AtomScrollBar>(scrollViewer, "PART_VerticalScrollBar");
+        var thumb     = scrollBar is null ? null : FindVisualByName<AtomScrollBarThumb>(scrollBar, "PART_Thumb");
+        Expect(scrollBar != null && thumb != null,
+            "Lite ScrollViewer should realize a vertical scrollbar thumb for drag visibility verification.",
+            failures);
+        if (scrollBar is null || thumb is null)
+        {
+            return;
+        }
+
+        Expect(MathUtils.AreClose(scrollBar.Opacity, 0d, 0.001),
+            "Lite ScrollViewer should start with hidden overlay scrollbars before thumb dragging.",
+            failures);
+
+        RaiseThumbDragStarted(thumb);
+        RefreshLayout(realized.Window);
+        Expect(MathUtils.AreClose(scrollBar.Opacity, 1d, 0.001),
+            "Lite ScrollViewer should keep scrollbars visible while the thumb is dragging outside the ScrollViewer pointer-over area.",
+            failures);
+
+        RaiseThumbDragCompleted(thumb);
+        RefreshLayout(realized.Window);
+        Expect(MathUtils.AreClose(scrollBar.Opacity, 0d, 0.001),
+            "Lite ScrollViewer should allow scrollbars to hide again after thumb dragging completes outside the ScrollViewer pointer-over area.",
+            failures);
+    }
+
     private static void VerifyScrollViewerOverlayLayerLifecycle(ICollection<string> failures)
     {
         var withoutRequester = CreateAtomScrollViewer(
@@ -231,5 +274,23 @@ internal static partial class Program
         return root.GetSelfAndVisualDescendants()
                    .OfType<T>()
                    .FirstOrDefault();
+    }
+
+    private static void RaiseThumbDragStarted(AvaThumb thumb)
+    {
+        thumb.RaiseEvent(new VectorEventArgs
+        {
+            RoutedEvent = AvaThumb.DragStartedEvent,
+            Vector      = default
+        });
+    }
+
+    private static void RaiseThumbDragCompleted(AvaThumb thumb)
+    {
+        thumb.RaiseEvent(new VectorEventArgs
+        {
+            RoutedEvent = AvaThumb.DragCompletedEvent,
+            Vector      = default
+        });
     }
 }
