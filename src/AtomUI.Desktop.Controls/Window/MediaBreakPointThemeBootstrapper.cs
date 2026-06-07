@@ -112,8 +112,8 @@ internal static class MediaBreakPointThemeBootstrapper
             Query = BuildStyleQuery(min, max)
         };
 
-        var style = new Style(s => s.OfType<WindowMediaQueryIndicator>().Name(WindowMediaQueryIndicator.MediaQueryIndicatorName));
-        style.Setters.Add(new Setter(WindowMediaQueryIndicator.MediaBreakPointProperty, bp));
+        var style = new Style(s => s.OfType<MediaBreakPointIndicator>().Name(MediaBreakPointIndicator.MediaQueryIndicatorName));
+        style.Setters.Add(new Setter(MediaBreakPointIndicator.MediaBreakPointProperty, bp));
         cq.Children.Add(style);
 
         return cq;

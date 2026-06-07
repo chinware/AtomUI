@@ -307,6 +307,7 @@ public class Window : AvaloniaWindow,
     private bool _wasFullScreen;
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
+    private MediaBreakPointIndicator? _mediaBreakPointIndicator;
 
     // macOS 下 ConfigureMacOsWindow 的输入缓存，用于在 live resize 时短路，避免重复 P/Invoke
     private double? _macOsCachedTitleBarHeight;
@@ -387,6 +388,11 @@ public class Window : AvaloniaWindow,
         _mediaQueryReady = true;
         MediaBreakPointChanged?.Invoke(this, new MediaBreakPointChangedEventArgs(MediaBreakPoint));
     }
+
+    private void HandleIndicatorMediaBreakPointChanged(object? sender, MediaBreakPointChangedEventArgs args)
+    {
+        NotifyMediaBreakPointChanged(args.MediaBreakPoint);
+    }
     
     internal void NotifyCloseRequestByUser()
     {
@@ -399,10 +405,17 @@ public class Window : AvaloniaWindow,
 
         HandleCreateTitleBar();
 
-        var mediaQueryIndicator = e.NameScope.Find<WindowMediaQueryIndicator>(WindowMediaQueryIndicator.MediaQueryIndicatorName);
-        if (mediaQueryIndicator != null)
+        if (_mediaBreakPointIndicator != null)
         {
-            mediaQueryIndicator.OwnerWindow = this;
+            _mediaBreakPointIndicator.MediaBreakPointChanged -= HandleIndicatorMediaBreakPointChanged;
+        }
+
+        _mediaBreakPointIndicator =
+            e.NameScope.Find<MediaBreakPointIndicator>(MediaBreakPointIndicator.MediaQueryIndicatorName);
+        if (_mediaBreakPointIndicator != null)
+        {
+            _mediaBreakPointIndicator.MediaBreakPointChanged += HandleIndicatorMediaBreakPointChanged;
+            NotifyMediaBreakPointChanged(_mediaBreakPointIndicator.MediaBreakPoint);
         }
 
         _windowResizer = e.NameScope.Find<WindowResizer>("PART_WindowResizer");

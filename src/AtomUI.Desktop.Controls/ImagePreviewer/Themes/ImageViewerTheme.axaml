@@ -35,7 +35,8 @@
                         IsImageFitToWindow="{TemplateBinding IsImageFitToWindow}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom" />
-                    <atom:WindowMediaQueryIndicator Name="PART_MediaQueryIndicator" />
+                    <atom:MediaBreakPointIndicator
+                        Name="{x:Static atom:MediaBreakPointIndicator.MediaQueryIndicatorName}" />
                 </Panel>
             </ControlTemplate>
         </Setter>
