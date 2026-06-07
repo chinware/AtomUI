@@ -12,7 +12,9 @@ internal static class ThemeManagerBuilderExtensions
         {
             themeManagerBuilder.AddControlToken(controlType);
         }
-        themeManagerBuilder.AddControlThemesProvider(new CommonControlThemesProvider());
+        themeManagerBuilder.AddControlThemesProvider(RuntimePlatform.Features.SupportsNativeWindow
+            ? new CommonControlThemesProvider()
+            : new BrowserCommonControlThemesProvider());
 
         var languageProviders = LanguageProviderPool.GetLanguageProviders();
         foreach (var languageProvider in languageProviders)

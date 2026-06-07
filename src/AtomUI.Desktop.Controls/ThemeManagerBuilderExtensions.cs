@@ -15,12 +15,16 @@ public static class ThemeManagerBuilderExtensions
     public static IThemeManagerBuilder UseDesktopControls(this IThemeManagerBuilder themeManagerBuilder)
     {
         themeManagerBuilder.UseCommonControls();
-        var controlTokenTypes = ControlTokenTypePool.GetTokenTypes();
+        var controlTokenTypes = RuntimePlatform.Features.SupportsNativeWindow
+            ? ControlTokenTypePool.GetTokenTypes()
+            : GetBrowserControlTokenTypes();
         foreach (var controlType in controlTokenTypes)
         {
             themeManagerBuilder.AddControlToken(controlType);
         }
-        themeManagerBuilder.AddControlThemesProvider(new DesktopControlThemesProvider());
+        themeManagerBuilder.AddControlThemesProvider(RuntimePlatform.Features.SupportsNativeWindow
+            ? new DesktopControlThemesProvider()
+            : new BrowserDesktopControlThemesProvider());
 
         var languageProviders = LanguageProviderPool.GetLanguageProviders();
         foreach (var languageProvider in languageProviders)
@@ -28,7 +32,10 @@ public static class ThemeManagerBuilderExtensions
             themeManagerBuilder.AddLanguageProviders(languageProvider);
         }
 
-        themeManagerBuilder.InitializedHandlers.Add(HandleThemeManagerInitialized);
+        if (RuntimePlatform.Features.SupportsNativeWindow)
+        {
+            themeManagerBuilder.InitializedHandlers.Add(HandleThemeManagerInitialized);
+        }
 
         return themeManagerBuilder;
     }
@@ -40,9 +47,20 @@ public static class ThemeManagerBuilderExtensions
         Debug.Assert(inputManager != null);
         AvaloniaLocator.CurrentMutable.BindToSelf(new ToolTipService(inputManager));
 
-        if (sender is ThemeManager themeManager)
+        if (RuntimePlatform.Features.SupportsNativeWindow &&
+            sender is ThemeManager themeManager)
         {
             MediaBreakPointThemeBootstrapper.Attach(themeManager);
         }
+    }
+
+    private static IList<Type> GetBrowserControlTokenTypes()
+    {
+        return new List<Type>
+        {
+            typeof(ButtonToken),
+            typeof(GroupBoxToken),
+            typeof(ScrollViewerToken)
+        };
     }
 }

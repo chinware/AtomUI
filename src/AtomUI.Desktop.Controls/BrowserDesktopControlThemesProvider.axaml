@@ -1,0 +1,11 @@
+<atom:ControlThemesProvider xmlns="https://github.com/avaloniaui"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:atom="https://atomui.net"
+                            x:Class="AtomUI.Desktop.Controls.BrowserDesktopControlThemesProvider"
+                            Id="AtomUI.Desktop.Controls">
+    <atom:ControlThemesProvider.ControlThemes>
+        <ResourceInclude Source="Buttons/Themes/HyperLinkButtonTheme.axaml" />
+        <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
+        <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />
+    </atom:ControlThemesProvider.ControlThemes>
+</atom:ControlThemesProvider>

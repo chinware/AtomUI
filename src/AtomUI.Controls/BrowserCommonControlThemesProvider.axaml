@@ -1,0 +1,12 @@
+<atom:ControlThemesProvider xmlns="https://github.com/avaloniaui"
+                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                            xmlns:atom="https://atomui.net"
+                            x:Class="AtomUI.Controls.BrowserCommonControlThemesProvider"
+                            Id="AtomUI.Controls.Common">
+    <atom:ControlThemesProvider.ControlThemes>
+        <ResourceInclude Source="Icon/Themes/IconThemes.axaml" />
+        <ResourceInclude Source="ItemsControl/Themes/ItemsControlTheme.axaml" />
+        <ResourceInclude Source="TextSelectionHandle/Themes/TextSelectionHandleTheme.axaml" />
+        <ResourceInclude Source="TransitioningContentControl/Themes/TransitioningContentControlTheme.axaml" />
+    </atom:ControlThemesProvider.ControlThemes>
+</atom:ControlThemesProvider>

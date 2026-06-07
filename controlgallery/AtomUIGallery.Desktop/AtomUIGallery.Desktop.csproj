@@ -26,6 +26,10 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Avalonia.Desktop"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="../AtomUIGallery/AtomUIGallery.csproj"/>
     </ItemGroup>
 

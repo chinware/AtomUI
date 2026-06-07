@@ -14,7 +14,7 @@
 
     <ItemGroup>
         <PackageReference Include="ReactiveUI.Avalonia"/>
-        <PackageReference Include="Avalonia.Desktop"/>
+        <PackageReference Include="Avalonia.X11"/>
     </ItemGroup>
 
     <ItemGroup>

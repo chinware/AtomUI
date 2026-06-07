@@ -1,0 +1,34 @@
+html,
+body,
+#out {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background: #ffffff;
+}
+
+.avalonia-splash {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: #111827;
+    background: #ffffff;
+}
+
+.splash-logo {
+    width: 260px;
+    height: auto;
+}
+
+.avalonia-splash.splash-close {
+    display: none;
+}

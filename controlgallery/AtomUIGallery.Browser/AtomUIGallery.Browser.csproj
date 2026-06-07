@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0-browser</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <WasmEnableThreads>false</WasmEnableThreads>
+        <WasmBuildNative>true</WasmBuildNative>
+        <DebuggerSupport>true</DebuggerSupport>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia.Browser" />
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="../AtomUIGallery/Assets/gallery-logo.png" Link="Assets/gallery-logo.png"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../AtomUIGallery/AtomUIGallery.csproj"/>
+    </ItemGroup>
+
+    <Target Name="DeduplicateBrowserWasmStaticWebAssets"
+            AfterTargets="ResolveWasmOutputs"
+            BeforeTargets="_GenerateBuildWasmBootJson;_AddWasmStaticWebAssets">
+        <RemoveDuplicates Inputs="@(WasmStaticWebAsset)">
+            <Output TaskParameter="Filtered" ItemName="_DeduplicatedWasmStaticWebAsset"/>
+        </RemoveDuplicates>
+        <ItemGroup>
+            <WasmStaticWebAsset Remove="@(WasmStaticWebAsset)"/>
+            <WasmStaticWebAsset Include="@(_DeduplicatedWasmStaticWebAsset)"/>
+        </ItemGroup>
+    </Target>
+
+</Project>
