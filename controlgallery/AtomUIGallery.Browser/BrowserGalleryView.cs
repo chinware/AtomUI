@@ -10,6 +10,7 @@ using AtomUIGallery.ShowCases.FloatButton;
 using AtomUIGallery.ShowCases.Icon;
 using AtomUIGallery.ShowCases.Menu;
 using AtomUIGallery.ShowCases.Palette;
+using AtomUIGallery.ShowCases.Separator;
 using AtomUIGallery.ShowCases.SplitButton;
 using Avalonia;
 using Avalonia.Controls;
@@ -37,6 +38,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.Button,
         BrowserGalleryPageKind.FloatButton,
         BrowserGalleryPageKind.SplitButton,
+        BrowserGalleryPageKind.Separator,
         BrowserGalleryPageKind.Menu,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
@@ -202,7 +204,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                                      BrowserGalleryPageKind.FloatButton),
                 CreateNavigationNode(CaseNavigationLangResourceKind.General_SplitButton,
                                      SplitButtonViewModel.ID,
-                                     BrowserGalleryPageKind.SplitButton)));
+                                     BrowserGalleryPageKind.SplitButton),
+                CreateNavigationNode(CaseNavigationLangResourceKind.General_Separator,
+                                     SeparatorViewModel.ID,
+                                     BrowserGalleryPageKind.Separator)));
 
         navMenu.Items.Add(
             CreateNavigationGroup(
@@ -330,6 +335,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new SplitButtonViewModel(this)
             },
+            BrowserGalleryPageKind.Separator => new SeparatorShowCase
+            {
+                DataContext = new SeparatorViewModel(this)
+            },
             BrowserGalleryPageKind.Menu => new MenuShowCase
             {
                 DataContext = new MenuViewModel(this)
@@ -394,6 +403,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Button,
         FloatButton,
         SplitButton,
+        Separator,
         Menu,
         Palette,
         Icons
