@@ -4,10 +4,13 @@
                             x:Class="AtomUI.Desktop.Controls.BrowserDesktopControlThemesProvider"
                             Id="AtomUI.Desktop.Controls">
     <atom:ControlThemesProvider.ControlThemes>
+        <ResourceInclude Source="Primitives/Themes/WaveSpiritDecoratorTheme.axaml" />
         <ResourceInclude Source="Buttons/Themes/BrowserButtonThemes.axaml" />
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
         <ResourceInclude Source="Input/Themes/BrowserInputThemes.axaml" />
+        <ResourceInclude Source="OptionButtonGroup/Themes/OptionButtonBoxThemes.axaml" />
         <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />
+        <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" />
         <ResourceInclude Source="TabControl/Themes/TabControlThemes.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>

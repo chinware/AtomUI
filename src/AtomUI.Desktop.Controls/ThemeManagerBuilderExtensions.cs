@@ -63,7 +63,9 @@ public static class ThemeManagerBuilderExtensions
             typeof(GroupBoxToken),
             typeof(LineEditToken),
             typeof(MenuToken),
+            typeof(OptionButtonToken),
             typeof(ScrollViewerToken),
+            typeof(SeparatorToken),
             typeof(TabControlToken)
         };
     }

@@ -1,4 +1,5 @@
 using AtomUIGallery.ShowCases.AboutUs;
+using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.Icon;
 using AtomUIGallery.ShowCases.Palette;
 using Avalonia;
@@ -14,15 +15,23 @@ namespace AtomUIGallery.Browser;
 
 internal sealed class BrowserGalleryView : UserControl, IScreen
 {
+    private static readonly FontFamily s_appFontFamily =
+        FontFamily.Parse("fonts:AlibabaSans#Alibaba Sans, $Default");
+
     private readonly Border _aboutUsNavigationItem;
+    private readonly Border _buttonNavigationItem;
     private readonly Border _paletteNavigationItem;
     private readonly Border _iconsNavigationItem;
-    private readonly ContentControl _contentHost;
+    private readonly Grid _contentHost;
+    private readonly Dictionary<BrowserGalleryPageKind, Control> _pageCache = new();
+    private BrowserGalleryPageKind? _activePageKind;
 
     public RoutingState Router { get; } = new();
 
     public BrowserGalleryView()
     {
+        FontFamily = s_appFontFamily;
+
         var header = new Border
         {
             BorderBrush     = new SolidColorBrush(Color.Parse("#E5E7EB")),
@@ -55,6 +64,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Grid.SetColumnSpan(header, 2);
 
         _aboutUsNavigationItem = CreateNavigationItem("AboutUs", () => ShowAboutUs());
+        _buttonNavigationItem  = CreateNavigationItem("Button", () => ShowButton());
         _paletteNavigationItem = CreateNavigationItem("Palette", () => ShowPalette());
         _iconsNavigationItem   = CreateNavigationItem("Icons", () => ShowIcons());
 
@@ -77,6 +87,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                         Foreground = new SolidColorBrush(Color.Parse("#374151"))
                     },
                     _aboutUsNavigationItem,
+                    _buttonNavigationItem,
                     _paletteNavigationItem,
                     _iconsNavigationItem
                 }
@@ -84,7 +95,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         };
         Grid.SetRow(navigation, 1);
 
-        _contentHost = new ContentControl();
+        _contentHost = new Grid();
         Grid.SetColumn(_contentHost, 1);
         Grid.SetRow(_contentHost, 1);
 
@@ -130,34 +141,64 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
 
     private void ShowAboutUs()
     {
-        _contentHost.Content = new AboutUsPage
+        ShowPage(BrowserGalleryPageKind.AboutUs, _aboutUsNavigationItem, () => new AboutUsPage
         {
             DataContext = new AboutUsViewModel(this)
-        };
-        UpdateNavigationSelection(_aboutUsNavigationItem);
+        });
+    }
+
+    private void ShowButton()
+    {
+        ShowPage(BrowserGalleryPageKind.Button, _buttonNavigationItem, () => new ButtonShowCase
+        {
+            DataContext = new ButtonViewModel(this)
+        });
     }
 
     private void ShowPalette()
     {
-        _contentHost.Content = new PaletteShowCase
+        ShowPage(BrowserGalleryPageKind.Palette, _paletteNavigationItem, () => new PaletteShowCase
         {
             DataContext = new PaletteViewModel(this)
-        };
-        UpdateNavigationSelection(_paletteNavigationItem);
+        });
     }
 
     private void ShowIcons()
     {
-        _contentHost.Content = new IconShowCase
+        ShowPage(BrowserGalleryPageKind.Icons, _iconsNavigationItem, () => new IconShowCase
         {
             DataContext = new IconViewModel(this)
-        };
-        UpdateNavigationSelection(_iconsNavigationItem);
+        });
+    }
+
+    private void ShowPage(BrowserGalleryPageKind pageKind, Border navigationItem, Func<Control> createPage)
+    {
+        if (_activePageKind == pageKind)
+        {
+            return;
+        }
+
+        if (!_pageCache.TryGetValue(pageKind, out var page))
+        {
+            page           = createPage();
+            page.IsVisible = false;
+            _pageCache.Add(pageKind, page);
+            _contentHost.Children.Add(page);
+        }
+
+        foreach (var cachedPage in _pageCache)
+        {
+            cachedPage.Value.IsVisible = cachedPage.Key == pageKind;
+        }
+
+        _activePageKind = pageKind;
+        UpdateNavigationSelection(navigationItem);
     }
 
     private void UpdateNavigationSelection(Border selectedItem)
     {
         ApplyNavigationItemState(_aboutUsNavigationItem, selectedItem == _aboutUsNavigationItem);
+        ApplyNavigationItemState(_buttonNavigationItem, selectedItem == _buttonNavigationItem);
         ApplyNavigationItemState(_paletteNavigationItem, selectedItem == _paletteNavigationItem);
         ApplyNavigationItemState(_iconsNavigationItem, selectedItem == _iconsNavigationItem);
     }
@@ -172,5 +213,13 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         {
             textBlock.FontWeight = isSelected ? FontWeight.SemiBold : FontWeight.Normal;
         }
+    }
+
+    private enum BrowserGalleryPageKind
+    {
+        AboutUs,
+        Button,
+        Palette,
+        Icons
     }
 }
