@@ -1,0 +1,13 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:themes="using:AtomUI.Desktop.Controls.Themes"
+                    x:ClassModifier="internal">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="SearchEditDecoratedBoxTheme.axaml" />
+        <ResourceInclude Source="InputClearIconButtonTheme.axaml" />
+        <ResourceInclude Source="RevealButtonTheme.axaml" />
+        <ResourceInclude Source="SearchEditTheme.axaml" />
+    </ResourceDictionary.MergedDictionaries>
+    <themes:SearchButtonTheme x:Key="{x:Type atom:SearchButton}" TargetType="atom:SearchButton" />
+</ResourceDictionary>

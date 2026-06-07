@@ -58,8 +58,10 @@ public static class ThemeManagerBuilderExtensions
     {
         return new List<Type>
         {
+            typeof(AddOnDecoratedBoxToken),
             typeof(ButtonToken),
             typeof(GroupBoxToken),
+            typeof(LineEditToken),
             typeof(MenuToken),
             typeof(ScrollViewerToken),
             typeof(TabControlToken)

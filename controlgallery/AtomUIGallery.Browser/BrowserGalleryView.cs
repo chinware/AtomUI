@@ -1,4 +1,5 @@
 using AtomUIGallery.ShowCases.AboutUs;
+using AtomUIGallery.ShowCases.Icon;
 using AtomUIGallery.ShowCases.Palette;
 using Avalonia;
 using Avalonia.Controls;
@@ -15,6 +16,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
 {
     private readonly Border _aboutUsNavigationItem;
     private readonly Border _paletteNavigationItem;
+    private readonly Border _iconsNavigationItem;
     private readonly ContentControl _contentHost;
 
     public RoutingState Router { get; } = new();
@@ -54,6 +56,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
 
         _aboutUsNavigationItem = CreateNavigationItem("AboutUs", () => ShowAboutUs());
         _paletteNavigationItem = CreateNavigationItem("Palette", () => ShowPalette());
+        _iconsNavigationItem   = CreateNavigationItem("Icons", () => ShowIcons());
 
         var navigation = new Border
         {
@@ -74,7 +77,8 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                         Foreground = new SolidColorBrush(Color.Parse("#374151"))
                     },
                     _aboutUsNavigationItem,
-                    _paletteNavigationItem
+                    _paletteNavigationItem,
+                    _iconsNavigationItem
                 }
             }
         };
@@ -142,10 +146,20 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         UpdateNavigationSelection(_paletteNavigationItem);
     }
 
+    private void ShowIcons()
+    {
+        _contentHost.Content = new IconShowCase
+        {
+            DataContext = new IconViewModel(this)
+        };
+        UpdateNavigationSelection(_iconsNavigationItem);
+    }
+
     private void UpdateNavigationSelection(Border selectedItem)
     {
         ApplyNavigationItemState(_aboutUsNavigationItem, selectedItem == _aboutUsNavigationItem);
         ApplyNavigationItemState(_paletteNavigationItem, selectedItem == _paletteNavigationItem);
+        ApplyNavigationItemState(_iconsNavigationItem, selectedItem == _iconsNavigationItem);
     }
 
     private static void ApplyNavigationItemState(Border item, bool isSelected)

@@ -6,6 +6,7 @@
     <atom:ControlThemesProvider.ControlThemes>
         <ResourceInclude Source="Buttons/Themes/BrowserButtonThemes.axaml" />
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
+        <ResourceInclude Source="Input/Themes/BrowserInputThemes.axaml" />
         <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />
         <ResourceInclude Source="TabControl/Themes/TabControlThemes.axaml" />
     </atom:ControlThemesProvider.ControlThemes>

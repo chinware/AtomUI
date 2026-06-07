@@ -48,51 +48,37 @@ public class IconGallery : TemplatedControl
     private ScrollViewer? _scrollViewer;
     private SearchEdit? _searchEdit;
     private int _loadedIconCount;
+    private bool _templateEventsAttached;
 
     private bool HasMoreIconInfos => _loadedIconCount < _matchedIconInfos.Count;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (_scrollViewer != null)
-        {
-            _scrollViewer.ScrollChanged -= HandleScrollChanged;
-        }
-
-        if (_searchEdit != null)
-        {
-            _searchEdit.SearchButtonClick -= HandleSearchButtonClick;
-        }
+        DetachTemplateEvents();
 
         _scrollViewer = e.NameScope.Find<ScrollViewer>(ScrollViewerPart);
         _searchEdit   = e.NameScope.Find<SearchEdit>(SearchInputPart);
-        if (_scrollViewer != null)
-        {
-            _scrollViewer.ScrollChanged += HandleScrollChanged;
-        }
-
-        if (_searchEdit != null)
-        {
-            _searchEdit.SearchButtonClick += HandleSearchButtonClick;
-        }
+        AttachTemplateEvents();
 
         ReLoadIcons();
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        AttachTemplateEvents();
+        if (_scrollViewer != null &&
+            _matchedIconInfos.Count == 0 &&
+            (IconInfos is null || IconInfos.Count == 0))
+        {
+            ReLoadIcons();
+        }
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        if (_scrollViewer != null)
-        {
-            _scrollViewer.ScrollChanged -= HandleScrollChanged;
-            _scrollViewer = null;
-        }
-
-        if (_searchEdit != null)
-        {
-            _searchEdit.SearchButtonClick -= HandleSearchButtonClick;
-            _searchEdit = null;
-        }
-
+        DetachTemplateEvents();
         ResetActivatedIconInfos();
         _matchedIconInfos.Clear();
         base.OnDetachedFromVisualTree(e);
@@ -157,6 +143,46 @@ public class IconGallery : TemplatedControl
     private void HandleSearchButtonClick(object? sender, RoutedEventArgs e)
     {
         ReLoadIcons();
+    }
+
+    private void AttachTemplateEvents()
+    {
+        if (_templateEventsAttached)
+        {
+            return;
+        }
+
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.ScrollChanged += HandleScrollChanged;
+        }
+
+        if (_searchEdit != null)
+        {
+            _searchEdit.SearchButtonClick += HandleSearchButtonClick;
+        }
+
+        _templateEventsAttached = _scrollViewer != null || _searchEdit != null;
+    }
+
+    private void DetachTemplateEvents()
+    {
+        if (!_templateEventsAttached)
+        {
+            return;
+        }
+
+        if (_scrollViewer != null)
+        {
+            _scrollViewer.ScrollChanged -= HandleScrollChanged;
+        }
+
+        if (_searchEdit != null)
+        {
+            _searchEdit.SearchButtonClick -= HandleSearchButtonClick;
+        }
+
+        _templateEventsAttached = false;
     }
 
     private void LoadMoreIconInfos(int count)
