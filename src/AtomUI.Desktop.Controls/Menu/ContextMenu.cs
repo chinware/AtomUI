@@ -123,7 +123,7 @@ public class ContextMenu : AvaloniaContextMenu,
     #endregion
 
     private Popup? _popup;
-    private WindowBase? _attachedWindow;
+    private IDisposable? _deactivationSubscription;
     private bool _ignorePlacementChanged;
 
     static ContextMenu()
@@ -183,11 +183,8 @@ public class ContextMenu : AvaloniaContextMenu,
         if (_popup?.PlacementTarget is { } target)
         {
             var topLevel = TopLevel.GetTopLevel(target);
-            if (topLevel is WindowBase window)
-            {
-                _attachedWindow    =  window;
-                window.Deactivated += HandleWindowDeactivated;
-            }
+            _deactivationSubscription?.Dispose();
+            _deactivationSubscription = TopLevelDeactivation.Subscribe(topLevel, HandleWindowDeactivated);
         }
     }
 
@@ -300,11 +297,8 @@ public class ContextMenu : AvaloniaContextMenu,
 
         _popup!.IsOpen = false;
 
-        if (_attachedWindow != null)
-        {
-            _attachedWindow.Deactivated -= HandleWindowDeactivated;
-            _attachedWindow              =  null;
-        }
+        _deactivationSubscription?.Dispose();
+        _deactivationSubscription = null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

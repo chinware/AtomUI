@@ -332,6 +332,11 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
             targetGroup.Add(buttonRole, buttons);
         }
 
+        if (buttons.Contains(button))
+        {
+            return;
+        }
+
         button.Click += HandleButtonClicked;
         buttons.Add(button);
     }
@@ -348,20 +353,12 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
 
     private void BuildStandardButtons()
     {
-        if (_standardButtons != null)
-        {
-            foreach (var button in _standardButtons)
-            {
-                RemoveButtonFromGroup(button.Role, button, true);
-            }
-            _standardButtons.Clear();
-        }
+        ReleaseStandardButtons();
 
         var standardButtons     = StandardButtons;
         var standardButtonFlags = standardButtons.ButtonFlags;
         if (standardButtonFlags == DialogStandardButton.NoButton)
         {
-            _standardButtons = null;
             return;
         }
         
@@ -672,6 +669,47 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         }
     }
 
+    private void ReleaseStandardButtons()
+    {
+        if (_standardButtons == null)
+        {
+            return;
+        }
+
+        foreach (var button in _standardButtons)
+        {
+            button.Click -= HandleButtonClicked;
+            foreach (var buttons in _standardButtonGroup.Values)
+            {
+                buttons.RemoveAll(x => x == button);
+            }
+        }
+        _standardButtons.Clear();
+        _standardButtons = null;
+    }
+
+    internal void ReleaseButtons()
+    {
+        ClearButtonPanel(_leftGroup);
+        ClearButtonPanel(_centerGroup);
+        ClearButtonPanel(_rightGroup);
+        ReleaseStandardButtons();
+        ReleaseCustomButtons();
+    }
+
+    private void ReleaseCustomButtons()
+    {
+        foreach (var buttons in _buttonGroup.Values)
+        {
+            foreach (var button in buttons)
+            {
+                button.Click -= HandleButtonClicked;
+            }
+            buttons.Clear();
+        }
+        _buttonGroup.Clear();
+    }
+
     private static bool HasStandardButton(DialogStandardButton buttons, DialogStandardButton button)
     {
         return (buttons & button) == button;
@@ -917,9 +955,9 @@ public class DialogButtonBox : TemplatedControl, IMotionAwareControl
         return group.GetValueOrDefault(role) ?? EmptyButtonList;
     }
 
-    private void ClearButtonPanel(Panel panel)
+    private static void ClearButtonPanel(Panel? panel)
     {
-        panel.Children.Clear();
+        panel?.Children.Clear();
     }
 
     private void HandleButtonClicked(object? sender, EventArgs args)

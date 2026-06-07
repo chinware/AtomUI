@@ -1,3 +1,4 @@
+using AtomUI.Controls;
 using AtomUI.Input;
 using Avalonia;
 using Avalonia.Controls;
@@ -19,7 +20,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     private bool _currentPressedIsValid;
     private NavMenuItem? _latestSelectedItem;
     private NavMenuItem? _latestClickedItem;
-    private WindowBase? _attachedWindow;
+    private IDisposable? _deactivationSubscription;
 
     public DefaultNavMenuInteractionHandler()
         : this(AvaloniaLocator.Current.GetService<IInputManager>(), DefaultDelayRun)
@@ -313,15 +314,11 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             inputRoot.AddHandler(InputElement.PointerPressedEvent, RootPointerPressed, RoutingStrategies.Tunnel);
         }
 
-        if (_root is WindowBase window)
-        {
-            _attachedWindow    =  window;
-            window.Deactivated += WindowDeactivated;
-        }
+        _deactivationSubscription = TopLevelDeactivation.Subscribe(_root, WindowDeactivated);
 
-        if (_root is TopLevel tl && tl.PlatformImpl != null)
+        if (_root != null && _root.PlatformImpl != null)
         {
-            tl.PlatformImpl.LostFocus += TopLevelLostPlatformFocus;
+            _root.PlatformImpl.LostFocus += TopLevelLostPlatformFocus;
         }
 
         _inputManagerSubscription = InputManager?.Process.Subscribe(RawInput);
@@ -347,10 +344,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             inputRoot.RemoveHandler(InputElement.PointerPressedEvent, RootPointerPressed);
         }
 
-        if (_attachedWindow != null)
-        {
-            _attachedWindow.Deactivated -= WindowDeactivated;
-        }
+        _deactivationSubscription?.Dispose();
 
         if (_root is TopLevel tl && tl.PlatformImpl != null)
         {
@@ -362,7 +356,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
         Menu                = null;
         _root               = null;
-        _attachedWindow     = null;
+        _deactivationSubscription = null;
         _latestClickedItem  = null;
         _latestSelectedItem = null;
     }

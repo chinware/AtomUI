@@ -131,7 +131,13 @@ public abstract class AbstractHyperLinkButton : AvaloniaButton,
         {
             this.Dispatcher.InvokeAsync(async () =>
             {
-                bool success = await TopLevel.GetTopLevel(this)!.Launcher.LaunchUriAsync(uri);
+                var topLevel = TopLevel.GetTopLevel(this);
+                if (topLevel is null)
+                {
+                    return;
+                }
+
+                bool success = await topLevel.Launcher.LaunchUriAsync(uri);
                 if (success)
                 {
                     SetCurrentValue(IsVisitedProperty, true);

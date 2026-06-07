@@ -122,12 +122,7 @@ internal class DialogWindowContent : TemplatedControl, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (_buttonBox != null)
-        {
-            _buttonBox.CustomButtons.Clear();
-            _buttonBox.Clicked             -= HandleButtonBoxClicked;
-            _buttonBox.ButtonsSynchronized -= HandleButtonsSynchronized;
-        }
+        ReleaseButtonBox();
 
         _buttonBox = e.NameScope.Find<DialogButtonBox>("PART_ButtonBox");
         if (_buttonBox != null)
@@ -137,6 +132,19 @@ internal class DialogWindowContent : TemplatedControl, IMotionAwareControl
             _buttonBox.ButtonsSynchronized += HandleButtonsSynchronized;
         }
         ConfigureEffectiveFooterVisible();
+    }
+
+    internal void ReleaseButtonBox()
+    {
+        if (_buttonBox == null)
+        {
+            return;
+        }
+
+        _buttonBox.ReleaseButtons();
+        _buttonBox.Clicked             -= HandleButtonBoxClicked;
+        _buttonBox.ButtonsSynchronized -= HandleButtonsSynchronized;
+        _buttonBox = null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

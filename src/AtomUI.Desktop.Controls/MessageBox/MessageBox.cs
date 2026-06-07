@@ -462,19 +462,7 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
 
     private static Panel ResolveOverlayLayer(MessageBoxOptions? options, TopLevel? topLevel)
     {
-        Visual? anchor = options?.PlacementTarget ?? topLevel ?? Window.GetMainWindow();
-        if (anchor is null)
-        {
-            throw new InvalidOperationException("Unable to resolve TopLevel for MessageBox.");
-        }
-
-        if (anchor.GetPopupOverlayLayer() is not Panel overlayLayer)
-        {
-            throw new InvalidOperationException(
-                "Unable to resolve overlay layer for MessageBox; ensure the TopLevel is an atom:Window.");
-        }
-
-        return overlayLayer;
+        return OverlayLayerResolver.ResolveOverlayLayer(options?.PlacementTarget, topLevel, nameof(MessageBox));
     }
 
     #endregion

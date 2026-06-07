@@ -394,7 +394,8 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     #endregion
 
-    private Window? _deactivatedWindow;
+    private TopLevel? _deactivationTopLevel;
+    private IDisposable? _deactivationSubscription;
     private Popup? _popup;
     private CompositeDisposable? _triggerSubscriptions;
     private DispatcherTimer? _mouseEnterDelayTimer;
@@ -941,33 +942,31 @@ public abstract class AbstractColorPicker : AvaloniaButton,
 
     private void RegisterWindowDeactivatedHandler()
     {
-        RegisterWindowDeactivatedHandler(TopLevel.GetTopLevel(this) as Window);
+        RegisterWindowDeactivatedHandler(TopLevel.GetTopLevel(this));
     }
 
-    private void RegisterWindowDeactivatedHandler(Window? window)
+    private void RegisterWindowDeactivatedHandler(TopLevel? topLevel)
     {
-        if (ReferenceEquals(_deactivatedWindow, window))
+        if (ReferenceEquals(_deactivationTopLevel, topLevel))
         {
             return;
         }
 
         UnregisterWindowDeactivatedHandler();
-        if (window is null)
+        if (topLevel is null)
         {
             return;
         }
 
-        _deactivatedWindow = window;
-        window.Deactivated += HandleWindowDeactivated;
+        _deactivationTopLevel = topLevel;
+        _deactivationSubscription = TopLevelDeactivation.Subscribe(topLevel, HandleWindowDeactivated);
     }
 
     private void UnregisterWindowDeactivatedHandler()
     {
-        if (_deactivatedWindow != null)
-        {
-            _deactivatedWindow.Deactivated -= HandleWindowDeactivated;
-            _deactivatedWindow = null;
-        }
+        _deactivationSubscription?.Dispose();
+        _deactivationSubscription = null;
+        _deactivationTopLevel = null;
     }
 
     protected virtual void SetupPopupProperties()

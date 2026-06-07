@@ -361,7 +361,7 @@ public abstract class InfoPickerInput : TemplatedControl,
 
     private protected bool IsChoosing;
     private AddOnDecoratedBox? _addOnDecoratedBox;
-    private Window? _attachedWindow;
+    private IDisposable? _deactivationSubscription;
     private Control? _ownedPickerPresenter;
     
 
@@ -701,12 +701,8 @@ public abstract class InfoPickerInput : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
-        {
-            _attachedWindow = window;
-            window.Deactivated += HandleWindowDeactivated;
-        }
+        _deactivationSubscription =
+            TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
     }
 
     private void HandleWindowDeactivated(object? sender, EventArgs e)
@@ -731,11 +727,8 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         base.OnDetachedFromVisualTree(e);
 
-        if (_attachedWindow != null)
-        {
-            _attachedWindow.Deactivated -= HandleWindowDeactivated;
-            _attachedWindow = null;
-        }
+        _deactivationSubscription?.Dispose();
+        _deactivationSubscription = null;
 
         if (DecoratedBox != null)
         {

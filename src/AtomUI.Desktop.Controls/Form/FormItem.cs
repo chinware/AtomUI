@@ -627,7 +627,7 @@ public class FormItem : TemplatedControl, IFormItem
     private IDisposable? _feedbackDisposable;
     private CancellationTokenSource? _validationTokenSource;
     internal Form? OwnerForm;
-    private Window? _attachedWindow;
+    private IMediaBreakAwareControl? _mediaOwner;
     
     static FormItem()
     {
@@ -1110,22 +1110,23 @@ public class FormItem : TemplatedControl, IFormItem
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (TopLevel.GetTopLevel(this) is Window window)
+        if (MediaQueryHost.FindOwner(this) is { } mediaOwner)
         {
-            _attachedWindow               =  window;
-            window.MediaBreakPointChanged += HandleMediaBreakChanged;
+            _mediaOwner = mediaOwner;
+            _breakPoint = mediaOwner.MediaBreakPoint;
+            mediaOwner.MediaBreakPointChanged += HandleMediaBreakChanged;
         }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (_attachedWindow != null)
+        if (_mediaOwner != null)
         {
-            _attachedWindow.MediaBreakPointChanged -= HandleMediaBreakChanged;
+            _mediaOwner.MediaBreakPointChanged -= HandleMediaBreakChanged;
         }
 
-        _attachedWindow = null;
+        _mediaOwner = null;
     }
     
     private void HandleMediaBreakChanged(object? sender, MediaBreakPointChangedEventArgs args)

@@ -160,18 +160,6 @@ public partial class Dialog
 
     private static Panel ResolveOverlayLayer(DialogOptions? options, TopLevel? topLevel)
     {
-        Visual? anchor = options?.PlacementTarget ?? topLevel ?? Window.GetMainWindow();
-        if (anchor is null)
-        {
-            throw new InvalidOperationException("Unable to resolve TopLevel for Dialog.");
-        }
-
-        if (anchor.GetPopupOverlayLayer() is not Panel overlayLayer)
-        {
-            throw new InvalidOperationException(
-                "Unable to resolve overlay layer for Dialog; ensure the TopLevel is an atom:Window.");
-        }
-
-        return overlayLayer;
+        return OverlayLayerResolver.ResolveOverlayLayer(options?.PlacementTarget, topLevel, nameof(Dialog));
     }
 }

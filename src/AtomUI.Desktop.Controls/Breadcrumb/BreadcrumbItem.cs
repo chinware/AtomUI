@@ -154,7 +154,11 @@ public class BreadcrumbItem : AvaloniaButton
             {
                 Dispatcher.InvokeAsync(async () =>
                 {
-                    await TopLevel.GetTopLevel(this)!.Launcher.LaunchUriAsync(uri);
+                    var topLevel = TopLevel.GetTopLevel(this);
+                    if (topLevel is not null)
+                    {
+                        await topLevel.Launcher.LaunchUriAsync(uri);
+                    }
                 });
             }
         }

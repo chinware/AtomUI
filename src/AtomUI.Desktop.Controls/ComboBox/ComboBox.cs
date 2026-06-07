@@ -230,7 +230,7 @@ public class ComboBox : AvaloniaComboBox,
     #endregion
 
     private Popup? _popup;
-    private Window? _attachedWindow;
+    private IDisposable? _deactivationSubscription;
     private ComboBoxHandle? _comboBoxHandle;
     private CompositeDisposable? _contentRightAddOnBindings;
     private IDisposable? _feedbackStatusSubscription;
@@ -315,23 +315,15 @@ public class ComboBox : AvaloniaComboBox,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
-        {
-            _attachedWindow    =  window;
-            window.Deactivated += HandleWindowDeactivated;
-        }
+        _deactivationSubscription =
+            TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (_attachedWindow != null)
-        {
-            _attachedWindow.Deactivated -= HandleWindowDeactivated;
-        }
-
-        _attachedWindow = null;
+        _deactivationSubscription?.Dispose();
+        _deactivationSubscription = null;
     }
     
     private void HandleWindowDeactivated(object? sender, EventArgs e)

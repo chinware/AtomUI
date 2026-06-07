@@ -61,7 +61,7 @@ public class Row : Panel
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (TopLevel.GetTopLevel(this) is IMediaBreakAwareControl mediaOwner)
+        if (MediaQueryHost.FindOwner(this) is { } mediaOwner)
         {
             _mediaOwner = mediaOwner;
             _breakPoint = mediaOwner.MediaBreakPoint;
@@ -316,7 +316,7 @@ public class Row : Panel
             return _breakPoint.Value;
         }
 
-        if (TopLevel.GetTopLevel(this) is IMediaBreakAwareControl mediaOwner)
+        if (MediaQueryHost.FindOwner(this) is { } mediaOwner)
         {
             _breakPoint = mediaOwner.MediaBreakPoint;
             return _breakPoint.Value;

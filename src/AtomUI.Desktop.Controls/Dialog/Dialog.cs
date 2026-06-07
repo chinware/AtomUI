@@ -470,7 +470,8 @@ public partial class Dialog : TemplatedControl,
             var ownershipTransferred = false;
             try
             {
-                var dialogHost = DialogHostType == DialogHostType.Window
+                var effectiveHostType = ResolveDialogHostType(DialogHostType);
+                var dialogHost = effectiveHostType == DialogHostType.Window
                     ? CreateDialogHost(topLevel, this)
                     : CreateOverlayDialogHost(placementTarget, this);
 
@@ -510,7 +511,10 @@ public partial class Dialog : TemplatedControl,
                     SetCurrentValue(IsOpenProperty, true);
                 }
 
-                if (dialogHost is DialogHost windowDialog && IsModal && topLevel is Window ownerWindow)
+                if (dialogHost is DialogHost windowDialog &&
+                    IsModal &&
+                    topLevel is Window ownerWindow &&
+                    RuntimePlatform.Features.SupportsWindowModalDialog)
                 {
                     // Window 宿主 + modal：必须用 ShowDialog() 拿 OS 级 modal 语义
                     // （父窗禁用、焦点限制、macOS 下表现为 sheet）。
@@ -551,6 +555,16 @@ public partial class Dialog : TemplatedControl,
     private protected virtual IDialogHost CreateOverlayDialogHost(Control placementTarget, Dialog dialog)
     {
         return new OverlayDialogHost(placementTarget, dialog, DependencyResolver);
+    }
+
+    private static DialogHostType ResolveDialogHostType(DialogHostType requestedHostType)
+    {
+        if (requestedHostType == DialogHostType.Window && !RuntimePlatform.Features.SupportsNativeWindow)
+        {
+            return DialogHostType.Overlay;
+        }
+
+        return requestedHostType;
     }
 
     public void Accept()
@@ -763,22 +777,7 @@ public partial class Dialog : TemplatedControl,
 
     private Control ResolvePlacementTarget()
     {
-        if (PlacementTarget is not null)
-        {
-            return PlacementTarget;
-        }
-
-        if (this.FindLogicalAncestorOfType<Control>() is { } logicalAncestor)
-        {
-            return logicalAncestor;
-        }
-
-        if (Window.GetMainWindow() is { } mainWindow)
-        {
-            return mainWindow;
-        }
-
-        throw new InvalidOperationException("Unable to resolve Dialog placement target.");
+        return OverlayLayerResolver.ResolvePlacementTarget(this, PlacementTarget, nameof(Dialog));
     }
 
     private IgnoreIsOpenScope BeginIgnoringIsOpen()

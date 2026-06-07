@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
@@ -383,15 +382,7 @@ public class WindowNotificationManager : TemplatedControl, INotificationManager,
         // 不会跟着 VisualLayerManager.Margin 内缩。这里给 manager 自己加 Margin 把内容收到可见客户区，
         // 不然 Top/Right/Bottom/Left 的对齐都会贴到 AdornerLayer 边沿（即装饰外沿），卡片就漏到窗外了。
         _safeAreaMarginSubscription?.Dispose();
-        if (topLevel is Window window)
-        {
-            _safeAreaMarginSubscription = window.GetObservable(Window.IsCsdEnabledProperty)
-                                                .CombineLatest(
-                                                    window.GetObservable(Avalonia.Controls.Window.WindowDecorationMarginProperty),
-                                                    window.GetObservable(Window.FrameShadowThicknessProperty),
-                                                    static (isCsd, wdm, fst) => isCsd ? wdm : fst)
-                                                .Subscribe(margin => Margin = margin);
-        }
+        _safeAreaMarginSubscription = TopLevelMarginBinder.BindHostMargin(topLevel, margin => Margin = margin);
     }
 
     private void TryInstallAdornerLayer(TopLevel topLevel)

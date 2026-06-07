@@ -169,7 +169,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     #endregion
 
     private bool _ignoreIsOpenChanged;
-    private DialogOpenState? _openState;
+    private IImagePreviewerOpenState? _openState;
     private IDisposable? _modalSubscription;
     private bool _dialogOpening;
     private bool _dialogClosing;
@@ -340,7 +340,18 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         var placementTarget = this;
         Debug.Assert(placementTarget != null);
         var topLevel = TopLevel.GetTopLevel(placementTarget);
-        Debug.Assert(topLevel != null);
+        if (!RuntimePlatform.Features.SupportsNativeWindow)
+        {
+            OpenOverlayDialog(placementTarget, topLevel);
+            return;
+        }
+
+        if (topLevel is null)
+        {
+            _dialogOpening = false;
+            throw new InvalidOperationException("Unable to resolve TopLevel for ImagePreviewer.");
+        }
+
         CompositeDisposable relayBindingDisposables = new CompositeDisposable();
 
         var previewDialog = new ImagePreviewerDialog(topLevel, this);
@@ -433,6 +444,93 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         _dialogOpening = false;
     }
 
+    private void OpenOverlayDialog(Control placementTarget, TopLevel? topLevel)
+    {
+        try
+        {
+            var overlayLayer = OverlayLayerResolver.ResolveOverlayLayer(placementTarget, topLevel, nameof(ImagePreviewer));
+            topLevel ??= TopLevel.GetTopLevel(overlayLayer);
+            if (topLevel is null)
+            {
+                _dialogOpening = false;
+                throw new InvalidOperationException("Unable to resolve TopLevel for ImagePreviewer.");
+            }
+
+            CompositeDisposable relayBindingDisposables = new CompositeDisposable();
+            var previewHost = new ImagePreviewerOverlayHost(topLevel, this);
+            RelayOverlayHostBindings(relayBindingDisposables, previewHost);
+
+            var handlerCleanup = new CompositeDisposable(8);
+            ((ISetLogicalParent)previewHost).SetParent(this);
+
+            previewHost
+                .Bind(
+                    ThemeVariantScope.ActualThemeVariantProperty,
+                    this.GetBindingObservable(ThemeVariantScope.ActualThemeVariantProperty))
+                .DisposeWith(handlerCleanup);
+
+            SubscribeToEventHandler<Control, EventHandler<VisualTreeAttachmentEventArgs>>(placementTarget, TargetDetached,
+                (x, handler) => x.DetachedFromVisualTree += handler,
+                (x, handler) => x.DetachedFromVisualTree -= handler).DisposeWith(handlerCleanup);
+
+            ConfigureOverlayHostBounds(previewHost, overlayLayer, topLevel);
+            void HandleOverlayLayerSizeChanged(object? sender, SizeChangedEventArgs args)
+            {
+                ConfigureOverlayHostBounds(previewHost, overlayLayer, topLevel);
+            }
+
+            overlayLayer.SizeChanged += HandleOverlayLayerSizeChanged;
+            overlayLayer.Children.Add(previewHost);
+
+            var cleanupPopup = Disposable.Create((previewHost, overlayLayer, handlerCleanup), state =>
+            {
+                previewHost.Close(() =>
+                {
+                    overlayLayer.SizeChanged -= HandleOverlayLayerSizeChanged;
+                    state.overlayLayer.Children.Remove(state.previewHost);
+                    state.handlerCleanup.Dispose();
+                    ((ISetLogicalParent)state.previewHost).SetParent(null);
+                    relayBindingDisposables.Dispose();
+                    _dialogClosing             = false;
+                    if (DataContext is IDialogAwareDataContext dialogAwareDataContext)
+                    {
+                        dialogAwareDataContext.NotifyClosed();
+                    }
+                    DialogClosed?.Invoke(this, EventArgs.Empty);
+                });
+            });
+
+            _openState = new OverlayOpenState(topLevel, previewHost, cleanupPopup);
+            previewHost.Focus();
+
+            using (BeginIgnoringIsOpen())
+            {
+                SetCurrentValue(IsOpenProperty, true);
+            }
+            DialogOpened?.Invoke(this, EventArgs.Empty);
+            _dialogOpening = false;
+        }
+        catch
+        {
+            _dialogOpening = false;
+            throw;
+        }
+    }
+
+    private static void ConfigureOverlayHostBounds(Control previewHost, Control overlayLayer, TopLevel topLevel)
+    {
+        var size = overlayLayer.Bounds.Size;
+        if (size.Width <= 0 || size.Height <= 0)
+        {
+            size = topLevel.ClientSize;
+        }
+
+        previewHost.Width  = size.Width;
+        previewHost.Height = size.Height;
+        Canvas.SetLeft(previewHost, 0);
+        Canvas.SetTop(previewHost, 0);
+    }
+
     private protected virtual void PrepareDialogOpen()
     {
     }
@@ -484,16 +582,28 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         disposables.Add(BindUtils.RelayBind(this, CurrentIndexProperty, dialogHost, ImagePreviewerDialog.CurrentIndexProperty));
     }
 
+    private void RelayOverlayHostBindings(CompositeDisposable disposables, ImagePreviewerOverlayHost overlayHost)
+    {
+        disposables.Add(BindUtils.RelayBind(this, IsImageMovableProperty, overlayHost, ImagePreviewerOverlayHost.IsImageMovableProperty));
+        disposables.Add(BindUtils.RelayBind(this, ImageScaleStepProperty, overlayHost, ImagePreviewerOverlayHost.ScaleStepProperty));
+        disposables.Add(BindUtils.RelayBind(this, ImageMinScaleProperty, overlayHost, ImagePreviewerOverlayHost.MinScaleProperty));
+        disposables.Add(BindUtils.RelayBind(this, ImageMaxScaleProperty, overlayHost, ImagePreviewerOverlayHost.MaxScaleProperty));
+        disposables.Add(BindUtils.RelayBind(this, EffectiveSourcesProperty, overlayHost, ImagePreviewerOverlayHost.ItemsSourceProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, overlayHost, ImagePreviewerOverlayHost.IsMotionEnabledProperty));
+        disposables.Add(BindUtils.RelayBind(this, IsDialogModalProperty, overlayHost, ImagePreviewerOverlayHost.IsModalProperty));
+        disposables.Add(BindUtils.RelayBind(this, CurrentIndexProperty, overlayHost, ImagePreviewerOverlayHost.CurrentIndexProperty));
+    }
+
     private void RootTemplateApplied(object? sender, TemplateAppliedEventArgs e)
     {
-        if (_openState is null)
+        if (_openState is not DialogOpenState dialogOpenState)
         {
             return;
         }
 
-        var popupHost = _openState.DialogHost;
+        var popupHost = dialogOpenState.DialogHost;
         popupHost.TemplateApplied -= RootTemplateApplied;
-        _openState.SetPresenterSubscription(null);
+        dialogOpenState.SetPresenterSubscription(null);
 
         // If the Popup appears in a control template, then the child controls
         // that appear in the popup host need to have their TemplatedParent
@@ -505,7 +615,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             var presenterSubscription = presenter.GetObservable(ContentPresenter.ChildProperty)
                                                  .Subscribe(SetTemplatedParentAndApplyChildTemplates);
 
-            _openState.SetPresenterSubscription(presenterSubscription);
+            dialogOpenState.SetPresenterSubscription(presenterSubscription);
         }
     }
 
@@ -560,7 +670,12 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         }
     }
 
-    private class DialogOpenState : IDisposable
+    private interface IImagePreviewerOpenState : IDisposable
+    {
+        TopLevel TopLevel { get; }
+    }
+
+    private class DialogOpenState : IImagePreviewerOpenState
     {
         private readonly IDisposable _cleanup;
         private IDisposable? _presenterCleanup;
@@ -584,6 +699,26 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         public void Dispose()
         {
             _presenterCleanup?.Dispose();
+            _cleanup.Dispose();
+        }
+    }
+
+    private class OverlayOpenState : IImagePreviewerOpenState
+    {
+        private readonly IDisposable _cleanup;
+
+        public OverlayOpenState(TopLevel topLevel, ImagePreviewerOverlayHost previewHost, IDisposable cleanup)
+        {
+            TopLevel    = topLevel;
+            PreviewHost = previewHost;
+            _cleanup    = cleanup;
+        }
+
+        public ImagePreviewerOverlayHost PreviewHost { get; }
+        public TopLevel TopLevel { get; }
+
+        public void Dispose()
+        {
             _cleanup.Dispose();
         }
     }

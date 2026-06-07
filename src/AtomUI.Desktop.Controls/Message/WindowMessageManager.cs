@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
@@ -243,15 +242,7 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
         // VisualLayerManager.Margin 内缩。给 manager 自己加 Margin 把内容收到可见客户区，
         // 否则 Top/Center 等对齐会贴到装饰外沿、卡片漏到窗外。
         _safeAreaMarginSubscription?.Dispose();
-        if (topLevel is Window window)
-        {
-            _safeAreaMarginSubscription = window.GetObservable(Window.IsCsdEnabledProperty)
-                                                .CombineLatest(
-                                                    window.GetObservable(Avalonia.Controls.Window.WindowDecorationMarginProperty),
-                                                    window.GetObservable(Window.FrameShadowThicknessProperty),
-                                                    static (isCsd, wdm, fst) => isCsd ? wdm : fst)
-                                                .Subscribe(margin => Margin = margin);
-        }
+        _safeAreaMarginSubscription = TopLevelMarginBinder.BindHostMargin(topLevel, margin => Margin = margin);
     }
 
     private void TryInstallAdornerLayer(TopLevel topLevel)

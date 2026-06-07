@@ -528,7 +528,7 @@ public class Mentions : TemplatedControl,
     private bool _ignorePropertyChange;
     private IDisposable? _collectionChangeSubscription;
     private readonly AsyncSearchLoadCoordinator<string?, MentionOptionsLoadResult> _asyncLoadCoordinator = new();
-    private Window? _attachedWindow;
+    private IDisposable? _deactivationSubscription;
     
     static Mentions()
     {
@@ -949,23 +949,15 @@ public class Mentions : TemplatedControl,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is Window window)
-        {
-            _attachedWindow    =  window;
-            window.Deactivated += HandleWindowDeactivated;
-        }
+        _deactivationSubscription =
+            TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (_attachedWindow != null)
-        {
-            _attachedWindow.Deactivated -= HandleWindowDeactivated;
-        }
-
-        _attachedWindow = null;
+        _deactivationSubscription?.Dispose();
+        _deactivationSubscription = null;
     }
     
     private void HandleWindowDeactivated(object? sender, EventArgs e)

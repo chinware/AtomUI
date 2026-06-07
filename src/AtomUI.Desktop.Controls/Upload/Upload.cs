@@ -272,13 +272,23 @@ public class Upload : ContentControl,
             var storageProvider  = topLevel.StorageProvider;
             if (!storageProvider.CanOpen)
             {
-                throw new InvalidOperationException("Can't open storage provider");
+                if (RuntimePlatform.Features.SupportsNativeWindow)
+                {
+                    throw new InvalidOperationException("Can't open storage provider");
+                }
+
+                return;
             }
 
             Dispatcher.InvokeAsync(async () =>
             {
                 if (IsUploadDirectoryEnabled)
                 {
+                    if (!RuntimePlatform.Features.SupportsLocalFileSystemEnumeration)
+                    {
+                        return;
+                    }
+
                     var directories = await storageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
                     {
                         AllowMultiple = IsMultipleEnabled

@@ -330,6 +330,7 @@ internal class OverlayDialogHost : ContentControl,
         }
 
         _isCloseRequested = true;
+        DetachTemplateHandlers();
         if (!_popup.IsOpen)
         {
             CleanupPopup();
@@ -547,6 +548,7 @@ internal class OverlayDialogHost : ContentControl,
     private void CleanupPopup()
     {
         _popup.Closed          -= HandlePopupClosed;
+        DetachTemplateHandlers();
         _confirmLoadingBindings?.Dispose();
         _confirmLoadingBindings = null;
         _popup.Child           = null;
@@ -1067,9 +1069,10 @@ internal class OverlayDialogHost : ContentControl,
 
         if (_buttonBox != null)
         {
-            _buttonBox.CustomButtons.Clear();
+            _buttonBox.ReleaseButtons();
             _buttonBox.Clicked             -= HandleButtonBoxClicked;
             _buttonBox.ButtonsSynchronized -= HandleButtonsSynchronized;
+            _buttonBox = null;
         }
 
         if (_header != null)

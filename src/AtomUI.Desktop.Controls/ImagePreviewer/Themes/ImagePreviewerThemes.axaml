@@ -1,6 +1,7 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:atom="https://atomui.net"
+                    xmlns:antdicons="https://atomui.net/icons/antdesign"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
         <ResourceInclude Source="ImageViewerTheme.axaml"/>
@@ -16,4 +17,32 @@
                                         TargetType="atom:ImagePreviewerTitleBar" />
     <atom:ImagePreviewerDialogTheme x:Key="{x:Type atom:ImagePreviewerDialog}"
                                     TargetType="atom:ImagePreviewerDialog" />
+    <ControlTheme x:Key="{x:Type atom:ImagePreviewerOverlayHost}"
+                  TargetType="atom:ImagePreviewerOverlayHost">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Background="#E6000000">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Stretch" />
+                    <atom:IconButton Name="PART_CloseButton"
+                                     Icon="{antdicons:AntDesignIconProvider CloseOutlined}"
+                                     HorizontalAlignment="Right"
+                                     VerticalAlignment="Top"
+                                     Margin="{atom:SharedTokenResource MarginLG}" />
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^ /template/ atom|IconButton#PART_CloseButton">
+            <Setter Property="IconWidth" Value="{atom:ImagePreviewerTokenResource PreviewOperationSize}" />
+            <Setter Property="IconHeight" Value="{atom:ImagePreviewerTokenResource PreviewOperationSize}" />
+            <Setter Property="IconBrush" Value="{atom:ImagePreviewerTokenResource PreviewOperationColor}" />
+            <Setter Property="Background" Value="{atom:ImagePreviewerTokenResource NavButtonBgHoverColor}" />
+            <Setter Property="CornerRadius" Value="100" />
+            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingSM}" />
+        </Style>
+        <Style Selector="^ /template/ atom|IconButton#PART_CloseButton:pointerover">
+            <Setter Property="IconBrush" Value="{atom:ImagePreviewerTokenResource PreviewOperationHoverColor}" />
+        </Style>
+    </ControlTheme>
 </ResourceDictionary>
