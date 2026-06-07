@@ -6,11 +6,17 @@
     <atom:ControlThemesProvider.ControlThemes>
         <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" />
         <ResourceInclude Source="Primitives/Themes/WaveSpiritDecoratorTheme.axaml" />
+        <ResourceInclude Source="Primitives/ArrowDecoratedBox/Themes/ArrowDecoratedBoxThemes.axaml" />
         <ResourceInclude Source="Buttons/Themes/BrowserButtonThemes.axaml" />
+        <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" />
         <ResourceInclude Source="FloatButton/Themes/FloatButtonThemes.axaml" />
+        <ResourceInclude Source="Flyouts/Themes/BrowserFlyoutThemes.axaml" />
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
         <ResourceInclude Source="Input/Themes/BrowserInputThemes.axaml" />
+        <ResourceInclude Source="Menu/Themes/BrowserMenuThemes.axaml" />
         <ResourceInclude Source="OptionButtonGroup/Themes/OptionButtonBoxThemes.axaml" />
+        <ResourceInclude Source="Popup/Themes/PopupThemes.axaml" />
+        <ResourceInclude Source="RadioButton/Themes/RadioButtonThemes.axaml" />
         <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />
         <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" />
         <ResourceInclude Source="Switch/Themes/ToggleSwitchThemes.axaml" />

@@ -297,7 +297,7 @@ internal class ShadowsAwareContainer : Decorator
             this[!ArrowSizeProperty]                  = arrowDecoratedBox[!ArrowSizeProperty];
             this[!ArrowIndicatorLayoutBoundsProperty] = arrowDecoratedBox[!ArrowDecoratedBox.ArrowIndicatorLayoutBoundsProperty];
             this[!ArrowDirectionProperty]             = arrowDecoratedBox[!ArrowDirectionProperty];
-            this[!IsArrowVisibleProperty]                = arrowDecoratedBox[!IsArrowVisibleProperty];
+            this[!IsArrowVisibleProperty]             = arrowDecoratedBox[!IsArrowVisibleProperty];
         }
         else if (child is Border bordered)
         {

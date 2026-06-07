@@ -1,10 +1,14 @@
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using AtomUIGallery.ShowCases.AboutUs;
 using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.FloatButton;
 using AtomUIGallery.ShowCases.Icon;
 using AtomUIGallery.ShowCases.Palette;
+using AtomUIGallery.ShowCases.SplitButton;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -23,6 +27,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
     [
         BrowserGalleryPageKind.Button,
         BrowserGalleryPageKind.FloatButton,
+        BrowserGalleryPageKind.SplitButton,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -30,6 +35,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
     private readonly Border _aboutUsNavigationItem;
     private readonly Border _buttonNavigationItem;
     private readonly Border _floatButtonNavigationItem;
+    private readonly Border _splitButtonNavigationItem;
     private readonly Border _paletteNavigationItem;
     private readonly Border _iconsNavigationItem;
     private readonly Grid _contentHost;
@@ -78,6 +84,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         _aboutUsNavigationItem     = CreateNavigationItem("AboutUs", () => ShowAboutUs());
         _buttonNavigationItem      = CreateNavigationItem("Button", () => ShowButton());
         _floatButtonNavigationItem = CreateNavigationItem("FloatButton", () => ShowFloatButton());
+        _splitButtonNavigationItem = CreateNavigationItem("SplitButton", () => ShowSplitButton());
         _paletteNavigationItem     = CreateNavigationItem("Palette", () => ShowPalette());
         _iconsNavigationItem       = CreateNavigationItem("Icons", () => ShowIcons());
 
@@ -102,6 +109,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                     _aboutUsNavigationItem,
                     _buttonNavigationItem,
                     _floatButtonNavigationItem,
+                    _splitButtonNavigationItem,
                     _paletteNavigationItem,
                     _iconsNavigationItem
                 }
@@ -113,7 +121,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Grid.SetColumn(_contentHost, 1);
         Grid.SetRow(_contentHost, 1);
 
-        Content = new Grid
+        var rootLayout = new Grid
         {
             RowDefinitions    = new RowDefinitions("64,*"),
             ColumnDefinitions = new ColumnDefinitions("260,*"),
@@ -125,8 +133,52 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                 _contentHost
             }
         };
+        var visualLayerManager = new VisualLayerManager
+        {
+            Child = rootLayout
+        };
+        ConfigureOverlayLayers(visualLayerManager);
+        Content = visualLayerManager;
 
         ShowAboutUs();
+    }
+
+    [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(VisualLayerManager))]
+    private static void ConfigureOverlayLayers(VisualLayerManager visualLayerManager)
+    {
+        visualLayerManager.EnableOverlayLayer = true;
+        SetVisualLayerManagerProperty(visualLayerManager, "EnablePopupOverlayLayer", true);
+
+        _ = GetVisualLayerManagerPropertyValue(visualLayerManager, "OverlayLayer");
+        _ = GetVisualLayerManagerPropertyValue(visualLayerManager, "PopupOverlayLayer");
+        _ = GetVisualLayerManagerPropertyValue(visualLayerManager, "LightDismissOverlayLayer");
+    }
+
+    private static void SetVisualLayerManagerProperty(VisualLayerManager visualLayerManager,
+                                                      string propertyName,
+                                                      object? value)
+    {
+        var propertyInfo = typeof(VisualLayerManager)
+            .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic);
+        if (propertyInfo is null)
+        {
+            throw new InvalidOperationException($"Unable to find {propertyName} on {nameof(VisualLayerManager)}.");
+        }
+
+        propertyInfo.SetValue(visualLayerManager, value);
+    }
+
+    private static object? GetVisualLayerManagerPropertyValue(VisualLayerManager visualLayerManager,
+                                                              string propertyName)
+    {
+        var propertyInfo = typeof(VisualLayerManager)
+            .GetProperty(propertyName, BindingFlags.Instance | BindingFlags.NonPublic);
+        if (propertyInfo is null)
+        {
+            throw new InvalidOperationException($"Unable to find {propertyName} on {nameof(VisualLayerManager)}.");
+        }
+
+        return propertyInfo.GetValue(visualLayerManager);
     }
 
     private static Bitmap LoadGalleryLogo()
@@ -166,6 +218,11 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
     private void ShowFloatButton()
     {
         ShowPage(BrowserGalleryPageKind.FloatButton, _floatButtonNavigationItem);
+    }
+
+    private void ShowSplitButton()
+    {
+        ShowPage(BrowserGalleryPageKind.SplitButton, _splitButtonNavigationItem);
     }
 
     private void ShowPalette()
@@ -240,6 +297,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new FloatButtonViewModel(this)
             },
+            BrowserGalleryPageKind.SplitButton => new SplitButtonShowCase
+            {
+                DataContext = new SplitButtonViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -290,6 +351,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         ApplyNavigationItemState(_aboutUsNavigationItem, selectedItem == _aboutUsNavigationItem);
         ApplyNavigationItemState(_buttonNavigationItem, selectedItem == _buttonNavigationItem);
         ApplyNavigationItemState(_floatButtonNavigationItem, selectedItem == _floatButtonNavigationItem);
+        ApplyNavigationItemState(_splitButtonNavigationItem, selectedItem == _splitButtonNavigationItem);
         ApplyNavigationItemState(_paletteNavigationItem, selectedItem == _paletteNavigationItem);
         ApplyNavigationItemState(_iconsNavigationItem, selectedItem == _iconsNavigationItem);
     }
@@ -311,6 +373,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         AboutUs,
         Button,
         FloatButton,
+        SplitButton,
         Palette,
         Icons
     }

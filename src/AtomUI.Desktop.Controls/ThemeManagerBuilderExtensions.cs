@@ -60,13 +60,18 @@ public static class ThemeManagerBuilderExtensions
         return new List<Type>
         {
             typeof(AddOnDecoratedBoxToken),
+            typeof(ArrowDecoratedBoxToken),
             typeof(BadgeToken),
             typeof(ButtonToken),
+            typeof(CheckBoxToken),
+            typeof(FlyoutHostToken),
             typeof(FloatButtonToken),
             typeof(GroupBoxToken),
             typeof(LineEditToken),
             typeof(MenuToken),
             typeof(OptionButtonToken),
+            typeof(PopupHostToken),
+            typeof(RadioButtonToken),
             typeof(ScrollViewerToken),
             typeof(SeparatorToken),
             typeof(TabControlToken),
