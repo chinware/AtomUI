@@ -4,7 +4,10 @@
                     xmlns:atom="https://atomui.net"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="ContextMenuTheme.axaml" />
         <ResourceInclude Source="MenuSeparatorTheme.axaml" />
+        <ResourceInclude Source="TopLevelMenuItemTheme.axaml" />
+        <ResourceInclude Source="MenuTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
     <themes:MenuItemTheme x:Key="{x:Type atom:MenuItem}" TargetType="atom:MenuItem" />
 </ResourceDictionary>

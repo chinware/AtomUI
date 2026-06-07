@@ -1,21 +1,30 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using AtomUI.Controls;
+using AtomUI.Data;
+using AtomUI.Icons.AntDesign;
+using AtomUIGallery.Localization;
 using AtomUIGallery.ShowCases.AboutUs;
 using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.FloatButton;
 using AtomUIGallery.ShowCases.Icon;
+using AtomUIGallery.ShowCases.Menu;
 using AtomUIGallery.ShowCases.Palette;
 using AtomUIGallery.ShowCases.SplitButton;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using Avalonia.Threading;
 using ReactiveUI;
+using AtomScrollViewer = AtomUI.Desktop.Controls.ScrollViewer;
+using NavMenu = AtomUI.Desktop.Controls.NavMenu;
+using NavMenuItemClickEventArgs = AtomUI.Desktop.Controls.NavMenuItemClickEventArgs;
+using NavMenuMode = AtomUI.Desktop.Controls.NavMenuMode;
+using NavMenuNode = AtomUI.Desktop.Controls.NavMenuNode;
 
 namespace AtomUIGallery.Browser;
 
@@ -28,16 +37,14 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.Button,
         BrowserGalleryPageKind.FloatButton,
         BrowserGalleryPageKind.SplitButton,
+        BrowserGalleryPageKind.Menu,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
 
-    private readonly Border _aboutUsNavigationItem;
-    private readonly Border _buttonNavigationItem;
-    private readonly Border _floatButtonNavigationItem;
-    private readonly Border _splitButtonNavigationItem;
-    private readonly Border _paletteNavigationItem;
-    private readonly Border _iconsNavigationItem;
+    private readonly NavMenu _showCaseNavMenu;
+    private readonly Dictionary<EntityKey, BrowserGalleryPageKind> _pageKindsByItemKey = new();
+    private readonly Dictionary<BrowserGalleryPageKind, NavMenuNode> _navigationNodes = new();
     private readonly Grid _contentHost;
     private readonly Dictionary<BrowserGalleryPageKind, Control> _pageCache = new();
     private BrowserGalleryPageKind? _activePageKind;
@@ -81,39 +88,14 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         };
         Grid.SetColumnSpan(header, 2);
 
-        _aboutUsNavigationItem     = CreateNavigationItem("AboutUs", () => ShowAboutUs());
-        _buttonNavigationItem      = CreateNavigationItem("Button", () => ShowButton());
-        _floatButtonNavigationItem = CreateNavigationItem("FloatButton", () => ShowFloatButton());
-        _splitButtonNavigationItem = CreateNavigationItem("SplitButton", () => ShowSplitButton());
-        _paletteNavigationItem     = CreateNavigationItem("Palette", () => ShowPalette());
-        _iconsNavigationItem       = CreateNavigationItem("Icons", () => ShowIcons());
+        _showCaseNavMenu = CreateNavigationMenu();
 
         var navigation = new Border
         {
             BorderBrush     = new SolidColorBrush(Color.Parse("#E5E7EB")),
             BorderThickness = new Thickness(0, 0, 1, 0),
-            Background      = new SolidColorBrush(Color.Parse("#F9FAFB")),
-            Padding         = new Thickness(20),
-            Child           = new StackPanel
-            {
-                Spacing = 10,
-                Children =
-                {
-                    new TextBlock
-                    {
-                        Text       = "Showcases",
-                        FontSize   = 16,
-                        FontWeight = FontWeight.SemiBold,
-                        Foreground = new SolidColorBrush(Color.Parse("#374151"))
-                    },
-                    _aboutUsNavigationItem,
-                    _buttonNavigationItem,
-                    _floatButtonNavigationItem,
-                    _splitButtonNavigationItem,
-                    _paletteNavigationItem,
-                    _iconsNavigationItem
-                }
-            }
+            Background      = Brushes.White,
+            Child           = _showCaseNavMenu
         };
         Grid.SetRow(navigation, 1);
 
@@ -140,7 +122,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         ConfigureOverlayLayers(visualLayerManager);
         Content = visualLayerManager;
 
-        ShowAboutUs();
+        ShowPage(BrowserGalleryPageKind.AboutUs);
     }
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(VisualLayerManager))]
@@ -187,52 +169,99 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         return new Bitmap(stream);
     }
 
-    private Border CreateNavigationItem(string text, Action navigate)
+    private NavMenu CreateNavigationMenu()
     {
-        var item = new Border
+        var navMenu = new NavMenu
         {
-            CornerRadius = new CornerRadius(4),
-            Padding      = new Thickness(8, 6),
-            Cursor       = new Cursor(StandardCursorType.Hand),
-            Child        = new TextBlock
-            {
-                Text       = text,
-                FontSize   = 14,
-                Foreground = new SolidColorBrush(Color.Parse("#111827"))
-            }
+            Mode                = NavMenuMode.Inline,
+            Width               = 260,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment   = VerticalAlignment.Stretch
         };
-        item.PointerPressed += (_, _) => navigate();
-        return item;
+        AtomScrollViewer.SetIsLiteMode(navMenu, true);
+        navMenu.NavMenuItemClick += HandleNavigationMenuItemClick;
+
+        navMenu.Items.Add(
+            CreateNavigationGroup(
+                CaseNavigationLangResourceKind.General,
+                AntDesignIconKind.WindowsOutlined,
+                CreateNavigationNode(CaseNavigationLangResourceKind.General_AboutUs,
+                                     AboutUsViewModel.ID,
+                                     BrowserGalleryPageKind.AboutUs),
+                CreateNavigationNode(CaseNavigationLangResourceKind.General_Palette,
+                                     PaletteViewModel.ID,
+                                     BrowserGalleryPageKind.Palette),
+                CreateNavigationNode(CaseNavigationLangResourceKind.General_Icons,
+                                     IconViewModel.ID,
+                                     BrowserGalleryPageKind.Icons),
+                CreateNavigationNode(CaseNavigationLangResourceKind.General_Button,
+                                     ButtonViewModel.ID,
+                                     BrowserGalleryPageKind.Button),
+                CreateNavigationNode(CaseNavigationLangResourceKind.General_FloatButton,
+                                     FloatButtonViewModel.ID,
+                                     BrowserGalleryPageKind.FloatButton),
+                CreateNavigationNode(CaseNavigationLangResourceKind.General_SplitButton,
+                                     SplitButtonViewModel.ID,
+                                     BrowserGalleryPageKind.SplitButton)));
+
+        navMenu.Items.Add(
+            CreateNavigationGroup(
+                CaseNavigationLangResourceKind.Navigation,
+                AntDesignIconKind.MenuOutlined,
+                CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Menu,
+                                     MenuViewModel.ID,
+                                     BrowserGalleryPageKind.Menu)));
+
+        return navMenu;
     }
 
-    private void ShowAboutUs()
+    private NavMenuNode CreateNavigationGroup(CaseNavigationLangResourceKind headerKind,
+                                              AntDesignIconKind iconKind,
+                                              params NavMenuNode[] children)
     {
-        ShowPage(BrowserGalleryPageKind.AboutUs, _aboutUsNavigationItem);
+        var node = new NavMenuNode
+        {
+            Header = GetNavigationText(headerKind),
+            Icon   = CreateNavigationIcon(iconKind)
+        };
+        foreach (var child in children)
+        {
+            node.Children.Add(child);
+        }
+        return node;
     }
 
-    private void ShowButton()
+    private NavMenuNode CreateNavigationNode(CaseNavigationLangResourceKind headerKind,
+                                             EntityKey itemKey,
+                                             BrowserGalleryPageKind pageKind)
     {
-        ShowPage(BrowserGalleryPageKind.Button, _buttonNavigationItem);
+        var node = new NavMenuNode
+        {
+            Header  = GetNavigationText(headerKind),
+            ItemKey = itemKey
+        };
+        _pageKindsByItemKey.Add(itemKey, pageKind);
+        _navigationNodes.Add(pageKind, node);
+        return node;
     }
 
-    private void ShowFloatButton()
+    private static string GetNavigationText(CaseNavigationLangResourceKind resourceKind)
     {
-        ShowPage(BrowserGalleryPageKind.FloatButton, _floatButtonNavigationItem);
+        return LanguageResourceBinder.GetLangResource(resourceKind) ?? resourceKind.ToString();
     }
 
-    private void ShowSplitButton()
+    private static PathIcon CreateNavigationIcon(AntDesignIconKind kind)
     {
-        ShowPage(BrowserGalleryPageKind.SplitButton, _splitButtonNavigationItem);
+        return (PathIcon)new AntDesignIconProvider(kind).ProvideValue(null!);
     }
 
-    private void ShowPalette()
+    private void HandleNavigationMenuItemClick(object? sender, NavMenuItemClickEventArgs args)
     {
-        ShowPage(BrowserGalleryPageKind.Palette, _paletteNavigationItem);
-    }
-
-    private void ShowIcons()
-    {
-        ShowPage(BrowserGalleryPageKind.Icons, _iconsNavigationItem);
+        var key = args.NavMenuItem.ItemKey;
+        if (key.HasValue && _pageKindsByItemKey.TryGetValue(key.Value, out var pageKind))
+        {
+            ShowPage(pageKind);
+        }
     }
 
     private void HandleLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -246,7 +275,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Dispatcher.Post(() => PreloadPages(0), DispatcherPriority.ApplicationIdle);
     }
 
-    private void ShowPage(BrowserGalleryPageKind pageKind, Border navigationItem)
+    private void ShowPage(BrowserGalleryPageKind pageKind)
     {
         if (_activePageKind == pageKind)
         {
@@ -264,7 +293,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         }
 
         _activePageKind = pageKind;
-        UpdateNavigationSelection(navigationItem);
+        UpdateNavigationSelection(pageKind);
     }
 
     private Control EnsurePage(BrowserGalleryPageKind pageKind)
@@ -300,6 +329,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             BrowserGalleryPageKind.SplitButton => new SplitButtonShowCase
             {
                 DataContext = new SplitButtonViewModel(this)
+            },
+            BrowserGalleryPageKind.Menu => new MenuShowCase
+            {
+                DataContext = new MenuViewModel(this)
             },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
@@ -346,25 +379,12 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         }, DispatcherPriority.ApplicationIdle);
     }
 
-    private void UpdateNavigationSelection(Border selectedItem)
+    private void UpdateNavigationSelection(BrowserGalleryPageKind pageKind)
     {
-        ApplyNavigationItemState(_aboutUsNavigationItem, selectedItem == _aboutUsNavigationItem);
-        ApplyNavigationItemState(_buttonNavigationItem, selectedItem == _buttonNavigationItem);
-        ApplyNavigationItemState(_floatButtonNavigationItem, selectedItem == _floatButtonNavigationItem);
-        ApplyNavigationItemState(_splitButtonNavigationItem, selectedItem == _splitButtonNavigationItem);
-        ApplyNavigationItemState(_paletteNavigationItem, selectedItem == _paletteNavigationItem);
-        ApplyNavigationItemState(_iconsNavigationItem, selectedItem == _iconsNavigationItem);
-    }
-
-    private static void ApplyNavigationItemState(Border item, bool isSelected)
-    {
-        item.Background = isSelected
-            ? new SolidColorBrush(Color.Parse("#F3F4F6"))
-            : Brushes.Transparent;
-
-        if (item.Child is TextBlock textBlock)
+        if (_navigationNodes.TryGetValue(pageKind, out var navigationNode) &&
+            !ReferenceEquals(_showCaseNavMenu.SelectedItem, navigationNode))
         {
-            textBlock.FontWeight = isSelected ? FontWeight.SemiBold : FontWeight.Normal;
+            _showCaseNavMenu.SelectedItem = navigationNode;
         }
     }
 
@@ -374,6 +394,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Button,
         FloatButton,
         SplitButton,
+        Menu,
         Palette,
         Icons
     }

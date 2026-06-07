@@ -14,6 +14,7 @@
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
         <ResourceInclude Source="Input/Themes/BrowserInputThemes.axaml" />
         <ResourceInclude Source="Menu/Themes/BrowserMenuThemes.axaml" />
+        <ResourceInclude Source="NavMenu/Themes/NavMenuThemes.axaml" />
         <ResourceInclude Source="OptionButtonGroup/Themes/OptionButtonBoxThemes.axaml" />
         <ResourceInclude Source="Popup/Themes/PopupThemes.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonThemes.axaml" />

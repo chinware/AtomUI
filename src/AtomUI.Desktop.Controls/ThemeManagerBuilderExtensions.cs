@@ -69,6 +69,7 @@ public static class ThemeManagerBuilderExtensions
             typeof(GroupBoxToken),
             typeof(LineEditToken),
             typeof(MenuToken),
+            typeof(NavMenuToken),
             typeof(OptionButtonToken),
             typeof(PopupHostToken),
             typeof(RadioButtonToken),
