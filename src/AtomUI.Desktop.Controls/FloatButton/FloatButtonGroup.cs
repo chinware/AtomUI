@@ -211,6 +211,7 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
     private bool _showAnimating;
     private bool _hideAnimating;
     private bool _closeRequest;
+    private bool _isAttachedToVisualTree;
     
     static FloatButtonGroup()
     {
@@ -291,6 +292,7 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
             _triggerButton.PointerEntered -= HandlePointerEntered;
             _triggerButton.PointerExited  -= HandlePointerExited;
         }
+        DetachItemsControlChildren();
         _itemsControl  = e.NameScope.Find<FloatButtonItemsControl>("ItemsControl");
         _triggerButton = e.NameScope.Find<FloatButton>("Trigger");
         _motionActor   = e.NameScope.Find<BaseMotionActor>(BaseMotionActor.MotionActorPart);
@@ -334,7 +336,7 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                     {
                         foreach (var child in newChildren)
                         {
-                            if (child is FloatButton floatButton)
+                            if (child is AbstractFloatButton floatButton)
                             {
                                 NotifyAddItem(floatButton);
                             }
@@ -351,9 +353,9 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                 case NotifyCollectionChangedAction.Remove:
                     for (var i = 0; i < e.OldItems!.Count; ++i)
                     {
-                        if (e.OldItems[i] is FloatButton floatButton)
+                        if (e.OldItems[i] is AbstractFloatButton floatButton)
                         {
-                            floatButton.SetCurrentValue(FloatButton.IsEmbedModeProperty, false);
+                            floatButton.SetCurrentValue(AbstractFloatButton.IsEmbedModeProperty, false);
                         }
                     }
                     _itemsControl.Children.RemoveRange(e.OldStartingIndex, e.OldItems!.Count);
@@ -409,20 +411,21 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _clickTriggerDisposable?.Dispose();
-        _clickTriggerDisposable = null;
+        _isAttachedToVisualTree = true;
+        ConfigureTriggerType();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        ConfigureTriggerType();
+        _isAttachedToVisualTree = false;
+        DisposeClickTrigger();
     }
 
     private void ConfigureTriggerType()
     {
-        _clickTriggerDisposable?.Dispose();
-        if (Trigger == FloatButtonGroupTrigger.Click)
+        DisposeClickTrigger();
+        if (_isAttachedToVisualTree && Trigger == FloatButtonGroupTrigger.Click)
         {
             var inputManager = AvaloniaLocator.Current.GetService(typeof(IInputManager)) as IInputManager;
             _clickTriggerDisposable = inputManager?.Process.Subscribe(HandleMouseClick);
@@ -431,6 +434,20 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         if (_itemsControl != null)
         {
             _itemsControl.IsTriggerMode = Trigger != FloatButtonGroupTrigger.Default;
+        }
+    }
+
+    private void DisposeClickTrigger()
+    {
+        _clickTriggerDisposable?.Dispose();
+        _clickTriggerDisposable = null;
+    }
+
+    private void DetachItemsControlChildren()
+    {
+        if (_itemsControl is { Children.Count: > 0 } itemsControl)
+        {
+            itemsControl.Children.RemoveRange(0, itemsControl.Children.Count);
         }
     }
 

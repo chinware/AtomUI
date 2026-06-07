@@ -32,10 +32,7 @@ public static class ThemeManagerBuilderExtensions
             themeManagerBuilder.AddLanguageProviders(languageProvider);
         }
 
-        if (RuntimePlatform.Features.SupportsNativeWindow)
-        {
-            themeManagerBuilder.InitializedHandlers.Add(HandleThemeManagerInitialized);
-        }
+        themeManagerBuilder.InitializedHandlers.Add(HandleThemeManagerInitialized);
 
         return themeManagerBuilder;
     }
@@ -43,12 +40,16 @@ public static class ThemeManagerBuilderExtensions
     private static void HandleThemeManagerInitialized(object? sender, EventArgs e)
     {
         Animation.RegisterCustomAnimator<TransformOperations, MotionTransformOptionsAnimator>();
+        if (!RuntimePlatform.Features.SupportsNativeWindow)
+        {
+            return;
+        }
+
         var inputManager = AvaloniaLocator.CurrentMutable.GetService<IInputManager>();
         Debug.Assert(inputManager != null);
         AvaloniaLocator.CurrentMutable.BindToSelf(new ToolTipService(inputManager));
 
-        if (RuntimePlatform.Features.SupportsNativeWindow &&
-            sender is ThemeManager themeManager)
+        if (sender is ThemeManager themeManager)
         {
             MediaBreakPointThemeBootstrapper.Attach(themeManager);
         }
@@ -59,14 +60,17 @@ public static class ThemeManagerBuilderExtensions
         return new List<Type>
         {
             typeof(AddOnDecoratedBoxToken),
+            typeof(BadgeToken),
             typeof(ButtonToken),
+            typeof(FloatButtonToken),
             typeof(GroupBoxToken),
             typeof(LineEditToken),
             typeof(MenuToken),
             typeof(OptionButtonToken),
             typeof(ScrollViewerToken),
             typeof(SeparatorToken),
-            typeof(TabControlToken)
+            typeof(TabControlToken),
+            typeof(ToggleSwitchToken)
         };
     }
 }

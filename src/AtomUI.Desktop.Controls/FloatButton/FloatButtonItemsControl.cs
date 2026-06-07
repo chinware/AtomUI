@@ -93,8 +93,17 @@ internal class FloatButtonItemsControl : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        DetachItemsLayoutChildren();
         _itemsLayout = e.NameScope.Find<StackPanel>("PART_ItemsLayout");
         _itemsLayout?.Children.AddRange(Children);
+    }
+
+    private void DetachItemsLayoutChildren()
+    {
+        if (_itemsLayout is { Children.Count: > 0 } itemsLayout)
+        {
+            itemsLayout.Children.RemoveRange(0, itemsLayout.Children.Count);
+        }
     }
     
     protected virtual void NotifyChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)

@@ -1,5 +1,6 @@
 using AtomUIGallery.ShowCases.AboutUs;
 using AtomUIGallery.ShowCases.Button;
+using AtomUIGallery.ShowCases.FloatButton;
 using AtomUIGallery.ShowCases.Icon;
 using AtomUIGallery.ShowCases.Palette;
 using Avalonia;
@@ -21,12 +22,14 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
     private static readonly BrowserGalleryPageKind[] s_pagesToPreload =
     [
         BrowserGalleryPageKind.Button,
+        BrowserGalleryPageKind.FloatButton,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
 
     private readonly Border _aboutUsNavigationItem;
     private readonly Border _buttonNavigationItem;
+    private readonly Border _floatButtonNavigationItem;
     private readonly Border _paletteNavigationItem;
     private readonly Border _iconsNavigationItem;
     private readonly Grid _contentHost;
@@ -72,10 +75,11 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         };
         Grid.SetColumnSpan(header, 2);
 
-        _aboutUsNavigationItem = CreateNavigationItem("AboutUs", () => ShowAboutUs());
-        _buttonNavigationItem  = CreateNavigationItem("Button", () => ShowButton());
-        _paletteNavigationItem = CreateNavigationItem("Palette", () => ShowPalette());
-        _iconsNavigationItem   = CreateNavigationItem("Icons", () => ShowIcons());
+        _aboutUsNavigationItem     = CreateNavigationItem("AboutUs", () => ShowAboutUs());
+        _buttonNavigationItem      = CreateNavigationItem("Button", () => ShowButton());
+        _floatButtonNavigationItem = CreateNavigationItem("FloatButton", () => ShowFloatButton());
+        _paletteNavigationItem     = CreateNavigationItem("Palette", () => ShowPalette());
+        _iconsNavigationItem       = CreateNavigationItem("Icons", () => ShowIcons());
 
         var navigation = new Border
         {
@@ -97,6 +101,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                     },
                     _aboutUsNavigationItem,
                     _buttonNavigationItem,
+                    _floatButtonNavigationItem,
                     _paletteNavigationItem,
                     _iconsNavigationItem
                 }
@@ -156,6 +161,11 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
     private void ShowButton()
     {
         ShowPage(BrowserGalleryPageKind.Button, _buttonNavigationItem);
+    }
+
+    private void ShowFloatButton()
+    {
+        ShowPage(BrowserGalleryPageKind.FloatButton, _floatButtonNavigationItem);
     }
 
     private void ShowPalette()
@@ -226,6 +236,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new ButtonViewModel(this)
             },
+            BrowserGalleryPageKind.FloatButton => new FloatButtonShowCase
+            {
+                DataContext = new FloatButtonViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -275,6 +289,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
     {
         ApplyNavigationItemState(_aboutUsNavigationItem, selectedItem == _aboutUsNavigationItem);
         ApplyNavigationItemState(_buttonNavigationItem, selectedItem == _buttonNavigationItem);
+        ApplyNavigationItemState(_floatButtonNavigationItem, selectedItem == _floatButtonNavigationItem);
         ApplyNavigationItemState(_paletteNavigationItem, selectedItem == _paletteNavigationItem);
         ApplyNavigationItemState(_iconsNavigationItem, selectedItem == _iconsNavigationItem);
     }
@@ -295,6 +310,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
     {
         AboutUs,
         Button,
+        FloatButton,
         Palette,
         Icons
     }
