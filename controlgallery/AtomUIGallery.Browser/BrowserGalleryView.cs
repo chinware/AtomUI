@@ -1,6 +1,8 @@
 using AtomUIGallery.ShowCases.AboutUs;
+using AtomUIGallery.ShowCases.Palette;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -11,6 +13,10 @@ namespace AtomUIGallery.Browser;
 
 internal sealed class BrowserGalleryView : UserControl, IScreen
 {
+    private readonly Border _aboutUsNavigationItem;
+    private readonly Border _paletteNavigationItem;
+    private readonly ContentControl _contentHost;
+
     public RoutingState Router { get; } = new();
 
     public BrowserGalleryView()
@@ -46,6 +52,9 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         };
         Grid.SetColumnSpan(header, 2);
 
+        _aboutUsNavigationItem = CreateNavigationItem("AboutUs", () => ShowAboutUs());
+        _paletteNavigationItem = CreateNavigationItem("Palette", () => ShowPalette());
+
         var navigation = new Border
         {
             BorderBrush     = new SolidColorBrush(Color.Parse("#E5E7EB")),
@@ -64,23 +73,16 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                         FontWeight = FontWeight.SemiBold,
                         Foreground = new SolidColorBrush(Color.Parse("#374151"))
                     },
-                    new TextBlock
-                    {
-                        Text       = "AboutUs",
-                        FontSize   = 14,
-                        Foreground = new SolidColorBrush(Color.Parse("#111827"))
-                    }
+                    _aboutUsNavigationItem,
+                    _paletteNavigationItem
                 }
             }
         };
         Grid.SetRow(navigation, 1);
 
-        var aboutUsPage = new AboutUsPage
-        {
-            DataContext = new AboutUsViewModel(this)
-        };
-        Grid.SetColumn(aboutUsPage, 1);
-        Grid.SetRow(aboutUsPage, 1);
+        _contentHost = new ContentControl();
+        Grid.SetColumn(_contentHost, 1);
+        Grid.SetRow(_contentHost, 1);
 
         Content = new Grid
         {
@@ -91,14 +93,70 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 header,
                 navigation,
-                aboutUsPage
+                _contentHost
             }
         };
+
+        ShowAboutUs();
     }
 
     private static Bitmap LoadGalleryLogo()
     {
         using var stream = AssetLoader.Open(new Uri("avares://AtomUIGallery.Browser/Assets/gallery-logo.png"));
         return new Bitmap(stream);
+    }
+
+    private Border CreateNavigationItem(string text, Action navigate)
+    {
+        var item = new Border
+        {
+            CornerRadius = new CornerRadius(4),
+            Padding      = new Thickness(8, 6),
+            Cursor       = new Cursor(StandardCursorType.Hand),
+            Child        = new TextBlock
+            {
+                Text       = text,
+                FontSize   = 14,
+                Foreground = new SolidColorBrush(Color.Parse("#111827"))
+            }
+        };
+        item.PointerPressed += (_, _) => navigate();
+        return item;
+    }
+
+    private void ShowAboutUs()
+    {
+        _contentHost.Content = new AboutUsPage
+        {
+            DataContext = new AboutUsViewModel(this)
+        };
+        UpdateNavigationSelection(_aboutUsNavigationItem);
+    }
+
+    private void ShowPalette()
+    {
+        _contentHost.Content = new PaletteShowCase
+        {
+            DataContext = new PaletteViewModel(this)
+        };
+        UpdateNavigationSelection(_paletteNavigationItem);
+    }
+
+    private void UpdateNavigationSelection(Border selectedItem)
+    {
+        ApplyNavigationItemState(_aboutUsNavigationItem, selectedItem == _aboutUsNavigationItem);
+        ApplyNavigationItemState(_paletteNavigationItem, selectedItem == _paletteNavigationItem);
+    }
+
+    private static void ApplyNavigationItemState(Border item, bool isSelected)
+    {
+        item.Background = isSelected
+            ? new SolidColorBrush(Color.Parse("#F3F4F6"))
+            : Brushes.Transparent;
+
+        if (item.Child is TextBlock textBlock)
+        {
+            textBlock.FontWeight = isSelected ? FontWeight.SemiBold : FontWeight.Normal;
+        }
     }
 }

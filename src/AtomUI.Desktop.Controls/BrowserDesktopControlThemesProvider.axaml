@@ -4,8 +4,9 @@
                             x:Class="AtomUI.Desktop.Controls.BrowserDesktopControlThemesProvider"
                             Id="AtomUI.Desktop.Controls">
     <atom:ControlThemesProvider.ControlThemes>
-        <ResourceInclude Source="Buttons/Themes/HyperLinkButtonTheme.axaml" />
+        <ResourceInclude Source="Buttons/Themes/BrowserButtonThemes.axaml" />
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
         <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />
+        <ResourceInclude Source="TabControl/Themes/TabControlThemes.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>
