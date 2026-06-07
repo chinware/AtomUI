@@ -24,8 +24,7 @@
                         Height="{TemplateBinding IconHeight}"
                         IconBrush="{TemplateBinding IconBrush}"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        VerticalAlignment="Center" />
                     <atom:IconPresenter
                         Name="PART_UnCheckedIconPresenter"
                         Icon="{TemplateBinding UnCheckedIcon}"
@@ -34,8 +33,7 @@
                         IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
                         IconBrush="{TemplateBinding IconBrush}"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        VerticalAlignment="Center" />
                 </Panel>
             </Border>
         </ControlTemplate>
@@ -58,6 +56,7 @@
             <Setter Property="Transitions">
                 <Transitions>
                     <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="IconBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                     <TransformOperationsTransition Property="RenderTransform" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                 </Transitions>
             </Setter>

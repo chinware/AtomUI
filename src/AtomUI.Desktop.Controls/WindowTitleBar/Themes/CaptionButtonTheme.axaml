@@ -18,8 +18,7 @@
                         Width="{TemplateBinding IconWidth}"
                         Height="{TemplateBinding IconHeight}"
                         HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        VerticalAlignment="Center" />
                 </Border>
             </ControlTemplate>
         </Setter>

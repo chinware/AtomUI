@@ -34,7 +34,6 @@
                                     VerticalAlignment="Center"
                                     Icon="{TemplateBinding OpenIndicator}"
                                     IconBrush="{TemplateBinding Foreground}"
-                                    IsMotionEnabled="False"
                                     IsVisible="{TemplateBinding IsShowOpenIndicator}" />
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"

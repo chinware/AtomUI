@@ -36,8 +36,9 @@
                 Value="{atom:PaginationTokenResource PaginationItemPaddingInline}" />
         <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorTransparent}" />
         <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
         <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorText}" />
+            <Setter Property="IconBrush" Value="{TemplateBinding Foreground}" />
         </Style>
 
         <Style Selector="^[PaginationItemType=PageIndicator]">
@@ -135,10 +136,6 @@
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Background"
                         Value="{atom:PaginationTokenResource ItemActiveBgDisabled}" />
-            </Style>
-
-            <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
-                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
 
         </Style>

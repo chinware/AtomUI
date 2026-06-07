@@ -19,8 +19,7 @@
                             IconBrush="{TemplateBinding IconBrush}"
                             IsVisible="{TemplateBinding IsChecked, Converter={x:Static BoolConverters.Not}}"
                             HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                            VerticalAlignment="Center"/>
                         <atom:IconPresenter
                             Name="CheckedIconPresenter"
                             Icon="{TemplateBinding CheckedIcon}"
@@ -29,8 +28,7 @@
                             Width="{TemplateBinding IconWidth}"
                             Height="{TemplateBinding IconHeight}"
                             HorizontalAlignment="Center"
-                            VerticalAlignment="Center" 
-                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                            VerticalAlignment="Center"/>
                     </Panel>
                 </Border>
             </ControlTemplate>

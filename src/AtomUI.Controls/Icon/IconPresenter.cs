@@ -10,7 +10,7 @@ namespace AtomUI.Controls;
 
 using IconControl = Icon;
 
-public class IconPresenter : Control, IMotionAwareControl
+public class IconPresenter : Control
 {
     #region 公共属性定义
     public static readonly StyledProperty<PathIcon?> IconProperty =
@@ -18,9 +18,6 @@ public class IconPresenter : Control, IMotionAwareControl
     
     public static readonly StyledProperty<IBrush?> IconBrushProperty =
         AvaloniaProperty.Register<IconPresenter, IBrush?>(nameof(IconBrush));
-    
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconPresenter>();
     
     [Content]
     public PathIcon? Icon
@@ -35,12 +32,6 @@ public class IconPresenter : Control, IMotionAwareControl
         set => SetValue(IconBrushProperty, value);
     }
     
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-
     #endregion
     
     private CompositeDisposable? _disposables;
@@ -104,7 +95,6 @@ public class IconPresenter : Control, IMotionAwareControl
         _disposables.Add(BindUtils.RelayBind(this, HeightProperty, pathIcon, HeightProperty));
         if (pathIcon is Icon icon)
         {
-            _disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, icon, IconControl.IsMotionEnabledProperty));
             _disposables.Add(BindUtils.RelayBind(this, IconBrushProperty, icon, IconControl.StrokeBrushProperty, BindingMode.Default, BindingPriority.Template));
             _disposables.Add(BindUtils.RelayBind(this, IconBrushProperty, icon, IconControl.FillBrushProperty, BindingMode.Default, BindingPriority.Template));
         }

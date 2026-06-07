@@ -53,7 +53,7 @@
                                             HorizontalAlignment="Center"
                                             VerticalAlignment="Center"
                                             Icon="{TemplateBinding Icon}"
-                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                            IconBrush="{TemplateBinding Foreground}"
                                             IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}"
                                             Grid.Column="1" />
                         <ContentPresenter Name="ItemTextPresenter"
@@ -75,6 +75,8 @@
                         <antdicons:RightOutlined Name="MenuIndicatorIcon"
                                                  HorizontalAlignment="Right"
                                                  VerticalAlignment="Center"
+                                                 FillBrush="{TemplateBinding Foreground}"
+                                                 StrokeBrush="{TemplateBinding Foreground}"
                                                  Grid.Column="4" />
                     </Grid>
                 </Border>
@@ -158,13 +160,8 @@
 
         <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
             <Setter Property="Margin" Value="{atom:MenuTokenResource ItemMargin}" />
-            <Setter Property="IconBrush" Value="{atom:MenuTokenResource ItemColor}" />
             <Setter Property="Width" Value="{atom:MenuTokenResource ItemIconSize}" />
             <Setter Property="Height" Value="{atom:MenuTokenResource ItemIconSize}" />
-        </Style>
-
-        <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter:disabled">
-            <Setter Property="IconBrush" Value="{atom:MenuTokenResource ItemDisabledColor}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">

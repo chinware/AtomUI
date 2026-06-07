@@ -15,7 +15,6 @@
                         Icon="{TemplateBinding EffectiveIcon}"
                         Width="{TemplateBinding IconWidth}"
                         Height="{TemplateBinding IconHeight}"
-                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center" />
                 </Border>

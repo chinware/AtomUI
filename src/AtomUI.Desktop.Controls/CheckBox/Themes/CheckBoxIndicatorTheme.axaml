@@ -20,7 +20,6 @@
                                                          HorizontalAlignment="Center"
                                                          VerticalAlignment="Center" 
                                                          StrokeBrush="{TemplateBinding CheckedMarkBrush}"
-                                                         IsMotionEnabled="False"
                                                          RenderTransform="{TemplateBinding CheckedMarkRenderTransform}"
                                                          RenderTransformOrigin="{x:Static RelativePoint.Center}"
                                                          IsVisible="False"/>

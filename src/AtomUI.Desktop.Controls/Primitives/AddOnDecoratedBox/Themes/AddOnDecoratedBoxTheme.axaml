@@ -418,6 +418,8 @@
                 <Transitions>
                     <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                     <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="AddOnStatusForeground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="AddOnStatusIconBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                 </Transitions>
             </Setter>
         </Style>

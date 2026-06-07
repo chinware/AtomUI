@@ -81,51 +81,8 @@
             <Setter Property="IsVisible" Value="True" />
             <Setter Property="Width" Value="{atom:NavMenuTokenResource MenuArrowSize}" />
             <Setter Property="Height" Value="{atom:NavMenuTokenResource MenuArrowSize}" />
-            <Setter Property="FillBrush" Value="{atom:NavMenuTokenResource ItemColor}" />
-            <Setter Property="StrokeBrush" Value="{atom:NavMenuTokenResource ItemColor}" />
-        </Style>
-
-        <Style Selector="^[IsSelected=True], ^[IsInSelectedPath=True]">
-            <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
-                <Setter Property="FillBrush"
-                        Value="{atom:NavMenuTokenResource ItemSelectedColor}" />
-                <Setter Property="StrokeBrush"
-                        Value="{atom:NavMenuTokenResource ItemSelectedColor}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
-                <Setter Property="FillBrush"
-                        Value="{atom:NavMenuTokenResource ItemDisabledColor}" />
-                <Setter Property="StrokeBrush"
-                        Value="{atom:NavMenuTokenResource ItemDisabledColor}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[IsDarkStyle=True]">
-            <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
-                <Setter Property="FillBrush" Value="{atom:NavMenuTokenResource DarkItemColor}" />
-                <Setter Property="StrokeBrush" Value="{atom:NavMenuTokenResource DarkItemColor}" />
-            </Style>
-
-            <Style Selector="^[IsSelected=True], ^[IsInSelectedPath=True]">
-                <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
-                    <Setter Property="FillBrush"
-                            Value="{atom:NavMenuTokenResource DarkItemSelectedColor}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:NavMenuTokenResource DarkItemSelectedColor}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^:disabled">
-                <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
-                    <Setter Property="FillBrush"
-                            Value="{atom:NavMenuTokenResource DarkItemDisabledColor}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:NavMenuTokenResource DarkItemDisabledColor}" />
-                </Style>
-            </Style>
+            <Setter Property="FillBrush" Value="{TemplateBinding Foreground}" />
+            <Setter Property="StrokeBrush" Value="{TemplateBinding Foreground}" />
         </Style>
 
         <Style Selector="^[HasSubMenu=False]">
@@ -143,42 +100,7 @@
             <Setter Property="Height"
                     Value="{atom:NavMenuTokenResource ItemIconSize}" />
             <Setter Property="IconBrush"
-                    Value="{atom:NavMenuTokenResource ItemColor}" />
-        </Style>
-
-        <Style Selector="^:pointerover">
-            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                <Setter Property="IconBrush"
-                        Value="{atom:NavMenuTokenResource ItemHoverColor}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[IsSelected=True], ^[IsInSelectedPath=True]">
-            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                <Setter Property="IconBrush"
-                        Value="{atom:NavMenuTokenResource ItemSelectedColor}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[IsDarkStyle=True]">
-            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                <Setter Property="IconBrush"
-                        Value="{atom:NavMenuTokenResource DarkItemColor}" />
-            </Style>
-            <Style Selector="^:pointerover">
-                <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                    <Setter Property="IconBrush"
-                            Value="{atom:NavMenuTokenResource DarkItemHoverColor}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^[IsSelected=True], ^[IsInSelectedPath=True]">
-                <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
-                    <Setter Property="IconBrush"
-                            Value="{atom:NavMenuTokenResource DarkItemSelectedColor}" />
-                </Style>
-            </Style>
-            
+                    Value="{TemplateBinding Foreground}" />
         </Style>
 
         <Style Selector="^:icon">
@@ -191,19 +113,10 @@
             <Setter Property="Foreground"
                     Value="{atom:NavMenuTokenResource ItemDisabledColor}" />
         </Style>
-        
-        <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter:disabled">
-            <Setter Property="IconBrush"
-                    Value="{atom:NavMenuTokenResource ItemDisabledColor}" />
-        </Style>
 
         <Style Selector="^[IsDarkStyle=True]">
             <Style Selector="^:disabled">
                 <Setter Property="Foreground"
-                        Value="{atom:NavMenuTokenResource DarkItemDisabledColor}" />
-            </Style>
-            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter:disabled">
-                <Setter Property="IconBrush"
                         Value="{atom:NavMenuTokenResource DarkItemDisabledColor}" />
             </Style>
         </Style>

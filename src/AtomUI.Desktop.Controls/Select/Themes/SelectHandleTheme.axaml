@@ -17,8 +17,7 @@
                         <Panel>
                             <atom:IconPresenter Name="OpenIndicator"
                                                 Icon="{TemplateBinding CurrentIndicatorIcon}"
-                                                IsVisible="{TemplateBinding IsCurrentIndicatorVisible}"
-                                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                                IsVisible="{TemplateBinding IsCurrentIndicatorVisible}" />
                             <atom:InputClearIconButton
                                 Name="PART_ClearButton"
                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}"

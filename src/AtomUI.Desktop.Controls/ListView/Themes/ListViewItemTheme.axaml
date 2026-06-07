@@ -44,7 +44,7 @@
             </Style>
         </Style>
         
-        <Style Selector="^ /template/ atom|IconPresenter#SelectedIndicator">
+        <Style Selector="^ /template/ atom|IconTemplatePresenter#SelectedIndicator">
             <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
             <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
             <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />

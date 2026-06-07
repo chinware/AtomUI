@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj" />
   <Project Path="controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj" />
   <Project Path="controlgallery/AtomUIGallery/AtomUIGallery.csproj" />
   <Project Path="src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj" />

@@ -27,14 +27,12 @@
                                         <antdicons:CheckOutlined Name="FinishedMark"
                                                                  VerticalAlignment="Center"
                                                                  HorizontalAlignment="Center"
-                                                                 IsVisible="False"
-                                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                                                 IsVisible="False" />
                                         
                                         <antdicons:CloseOutlined Name="ErrorMark"
                                                                  VerticalAlignment="Center"
                                                                  HorizontalAlignment="Center"
-                                                                 IsVisible="False"
-                                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                                                                 IsVisible="False" />
                                     </Panel>
                                 </Border>
                             </Border>

@@ -26,7 +26,7 @@
 | Browser Button 视觉降级过头 | Button ShowCase 中 dashed、icon-only、Search、Ghost 等区域与 Desktop 正常效果差异明显 | 首版 Browser Button 主题只保留基础状态，缺少 Desktop 的 Frame 高度、icon-only padding/尺寸、DashedBorder 和 Ghost/Danger 组合样式 | 在不恢复完整 Desktop `ButtonTheme` 的前提下，补齐 Browser Button 的关键可见样式；Release host 中验证 Button 和 Ghost 区域正常渲染 |
 | Link Button 在 Ghost 区域出现白底 | Desktop Gallery 的 Ghost Button 示例里，Link 类型按钮在灰色背景上出现白色背景块 | Desktop `ButtonTheme` 的 `ButtonType=Link` 分支直接给 template `Border#Frame` 设置了 `DefaultBg`，覆盖了按钮自身的透明背景 | 删除 Link 类型对 `Frame.Background` 的白底设置，改为 Link 按钮自身 `Background=Transparent`，让 template binding 正常透传 |
 | Browser shell 字体未继承 AtomUI 字体 | Browser Gallery 外壳文字看起来没有使用 AtomUI 的 AlibabaSans | Browser 根是 `UserControl`，没有 Desktop `atom:Window` theme 里的 `FontFamily="{atom:SharedTokenResource FontFamily}"` 继承入口 | `BrowserGalleryView` 根设置 `fonts:AlibabaSans#Alibaba Sans, $Default`，由 Avalonia 可继承 `FontFamily` 向导航外壳和共享 ShowCase 传递 |
-| Browser 导航切页卡顿明显 | AboutUs / Button / Palette / Icons 之间切换时，新页面出来有明显停顿 | Browser 宿主原先每次点击都 `new` 页面和 ViewModel，并替换 `ContentControl.Content`，导致 ShowCase XAML、控件模板、主题匹配、首次布局和绘制全部冷启动 | `BrowserGalleryView` 改为 lazy page cache，首次进入页面才创建，之后保留在同一个 `Grid` 中，切换只调整 `IsVisible`；二次切回避免重新 inflate 控件树 |
+| Browser 导航切页卡顿明显 | AboutUs / Button / Palette / Icons 之间切换时，新页面出来有明显停顿 | Browser 宿主原先每次点击都 `new` 页面和 ViewModel，并替换 `ContentControl.Content`，导致 ShowCase XAML、控件模板、主题匹配、首次布局和绘制全部冷启动 | `BrowserGalleryView` 改为 lazy page cache，首次进入页面后保留在同一个 `Grid` 中，切换只调整 `IsVisible`；首屏加载后再按 idle 顺序预热 Button / Palette / Icons，降低用户首次点击重页面时的冷启动体感 |
 
 ## 当前实现要点
 
@@ -83,7 +83,11 @@ var iconShowCase = new IconShowCase
 };
 ```
 
-页面首次打开后会保留在 Browser 宿主的内容 `Grid` 中，非当前页通过 `IsVisible = false` 隐藏。这样可以保留 ViewModel、控件树、滚动位置和 Icons 已加载内容，避免切回时再次触发 XAML inflate / template / layout 冷启动。当前 Browser 已接入页面没有后台定时任务；后续迁移有持续订阅或异步任务的 ShowCase 时，需要单独评估隐藏页保持 attached 的成本。
+页面首次打开后会保留在 Browser 宿主的内容 `Grid` 中，非当前页通过 `IsVisible = false` 隐藏。这样可以保留 ViewModel、控件树、滚动位置和 Icons 已加载内容，避免切回时再次触发 XAML inflate / template / layout 冷启动。
+
+首屏 `AboutUsPage` 加载完成后，Browser 宿主会用 `DispatcherPriority.ApplicationIdle` 依次预热 `ButtonShowCase`、`PaletteShowCase` 和 `IconShowCase`。预热页面先以 `Opacity = 0`、`IsHitTestVisible = false` 放入内容 `Grid`，让模板和布局在用户空闲时完成一轮，再隐藏回缓存；如果用户在预热期间点击该页面，正常导航会接管可见性。
+
+当前 Browser 已接入页面没有后台定时任务；后续迁移有持续订阅或异步任务的 ShowCase 时，需要单独评估隐藏页保持 attached 的成本。
 
 ### Common 控件降级
 
@@ -184,6 +188,7 @@ dotnet build controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj -
 - `ButtonShowCase` 在 Release host 中验证首屏渲染成功，Button hover 状态可见，点击 smoke test 无当前端口错误日志；最终代码仍默认进入 `AboutUsPage`。
 - `IconShowCase` 的 `Outlined` / `Filled` / `Two Tone` tab 均已在 Browser 中切换并渲染图标网格。
 - Browser 导航 lazy cache 后，Release host 中执行 Button / Icons / Button / Icons 切换 smoke test，Icons 二次切回仍正常渲染，无当前端口错误日志。
+- Browser 导航 idle 预热后，Release host 中等待首屏预热并执行 Button / Palette / Icons 切换 smoke test，最终 Icons 正常渲染，无当前端口错误日志。
 
 Browser 运行验证时不要只依赖 DOM 文本，因为 Avalonia Browser 页面内容主要在 canvas 中绘制；需要结合 splash error 和截图。
 

@@ -11,8 +11,7 @@
                     Name="PART_IconPresenter"
                     Icon="{TemplateBinding Icon}"
                     Width="{TemplateBinding Width}"
-                    Height="{TemplateBinding Height}"
-                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"/>
+                    Height="{TemplateBinding Height}"/>
             </ControlTemplate>
         </Setter>
 

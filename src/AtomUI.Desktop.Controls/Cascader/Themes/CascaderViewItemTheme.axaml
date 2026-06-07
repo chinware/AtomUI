@@ -48,8 +48,7 @@
                                       Content="{TemplateBinding Header}"
                                       ContentTemplate="{TemplateBinding HeaderTemplate}" />
                     <atom:IconTemplatePresenter Name="ExpandIconPresenter" Grid.Column="3"
-                                        IconTemplate="{TemplateBinding ExpandIcon}"
-                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}">
+                                        IconTemplate="{TemplateBinding ExpandIcon}">
                         <atom:IconPresenter.IsVisible>
                             <MultiBinding
                                 Converter="{x:Static atom:CascaderViewItemTheme.CascaderViewItemExpanderIsVisibleConverter}">

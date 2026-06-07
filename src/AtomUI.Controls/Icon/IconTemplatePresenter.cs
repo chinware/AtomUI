@@ -5,7 +5,7 @@ using Avalonia.Metadata;
 
 namespace AtomUI.Controls;
 
-public class IconTemplatePresenter : Control, IMotionAwareControl
+public class IconTemplatePresenter : Control
 {
     #region 公共属性定义
     public static readonly StyledProperty<IconTemplate?> IconTemplateProperty =
@@ -13,9 +13,6 @@ public class IconTemplatePresenter : Control, IMotionAwareControl
     
     public static readonly StyledProperty<IBrush?> IconBrushProperty =
         AvaloniaProperty.Register<IconTemplatePresenter, IBrush?>(nameof(IconBrush));
-    
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<IconTemplatePresenter>();
     
     [Content]
     public IconTemplate? IconTemplate
@@ -30,12 +27,6 @@ public class IconTemplatePresenter : Control, IMotionAwareControl
         set => SetValue(IconBrushProperty, value);
     }
     
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-
     #endregion
     
     static IconTemplatePresenter()
@@ -69,7 +60,6 @@ public class IconTemplatePresenter : Control, IMotionAwareControl
     {
         pathIcon[!WidthProperty]            = this[!WidthProperty];
         pathIcon[!HeightProperty]           = this[!HeightProperty];
-        pathIcon[!IsMotionEnabledProperty]  = this[!IsMotionEnabledProperty];
         pathIcon[!Icon.StrokeBrushProperty] = this[!IconBrushProperty];
         pathIcon[!Icon.FillBrushProperty]   = this[!IconBrushProperty];
         VisualChildren.Add(pathIcon);

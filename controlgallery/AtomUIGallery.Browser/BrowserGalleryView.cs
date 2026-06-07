@@ -9,6 +9,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.Browser;
@@ -17,6 +18,12 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
 {
     private static readonly FontFamily s_appFontFamily =
         FontFamily.Parse("fonts:AlibabaSans#Alibaba Sans, $Default");
+    private static readonly BrowserGalleryPageKind[] s_pagesToPreload =
+    [
+        BrowserGalleryPageKind.Button,
+        BrowserGalleryPageKind.Palette,
+        BrowserGalleryPageKind.Icons
+    ];
 
     private readonly Border _aboutUsNavigationItem;
     private readonly Border _buttonNavigationItem;
@@ -25,11 +32,13 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
     private readonly Grid _contentHost;
     private readonly Dictionary<BrowserGalleryPageKind, Control> _pageCache = new();
     private BrowserGalleryPageKind? _activePageKind;
+    private bool _pagePreloadStarted;
 
     public RoutingState Router { get; } = new();
 
     public BrowserGalleryView()
     {
+        Loaded += HandleLoaded;
         FontFamily = s_appFontFamily;
 
         var header = new Border
@@ -141,58 +150,125 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
 
     private void ShowAboutUs()
     {
-        ShowPage(BrowserGalleryPageKind.AboutUs, _aboutUsNavigationItem, () => new AboutUsPage
-        {
-            DataContext = new AboutUsViewModel(this)
-        });
+        ShowPage(BrowserGalleryPageKind.AboutUs, _aboutUsNavigationItem);
     }
 
     private void ShowButton()
     {
-        ShowPage(BrowserGalleryPageKind.Button, _buttonNavigationItem, () => new ButtonShowCase
-        {
-            DataContext = new ButtonViewModel(this)
-        });
+        ShowPage(BrowserGalleryPageKind.Button, _buttonNavigationItem);
     }
 
     private void ShowPalette()
     {
-        ShowPage(BrowserGalleryPageKind.Palette, _paletteNavigationItem, () => new PaletteShowCase
-        {
-            DataContext = new PaletteViewModel(this)
-        });
+        ShowPage(BrowserGalleryPageKind.Palette, _paletteNavigationItem);
     }
 
     private void ShowIcons()
     {
-        ShowPage(BrowserGalleryPageKind.Icons, _iconsNavigationItem, () => new IconShowCase
-        {
-            DataContext = new IconViewModel(this)
-        });
+        ShowPage(BrowserGalleryPageKind.Icons, _iconsNavigationItem);
     }
 
-    private void ShowPage(BrowserGalleryPageKind pageKind, Border navigationItem, Func<Control> createPage)
+    private void HandleLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (_pagePreloadStarted)
+        {
+            return;
+        }
+
+        _pagePreloadStarted = true;
+        Dispatcher.Post(() => PreloadPages(0), DispatcherPriority.ApplicationIdle);
+    }
+
+    private void ShowPage(BrowserGalleryPageKind pageKind, Border navigationItem)
     {
         if (_activePageKind == pageKind)
         {
             return;
         }
 
-        if (!_pageCache.TryGetValue(pageKind, out var page))
-        {
-            page           = createPage();
-            page.IsVisible = false;
-            _pageCache.Add(pageKind, page);
-            _contentHost.Children.Add(page);
-        }
+        var page = EnsurePage(pageKind);
 
         foreach (var cachedPage in _pageCache)
         {
-            cachedPage.Value.IsVisible = cachedPage.Key == pageKind;
+            var isActive = cachedPage.Key == pageKind;
+            cachedPage.Value.Opacity          = 1;
+            cachedPage.Value.IsHitTestVisible = true;
+            cachedPage.Value.IsVisible        = isActive;
         }
 
         _activePageKind = pageKind;
         UpdateNavigationSelection(navigationItem);
+    }
+
+    private Control EnsurePage(BrowserGalleryPageKind pageKind)
+    {
+        if (_pageCache.TryGetValue(pageKind, out var page))
+        {
+            return page;
+        }
+
+        page           = CreatePage(pageKind);
+        page.IsVisible = false;
+        _pageCache.Add(pageKind, page);
+        _contentHost.Children.Add(page);
+        return page;
+    }
+
+    private Control CreatePage(BrowserGalleryPageKind pageKind)
+    {
+        return pageKind switch
+        {
+            BrowserGalleryPageKind.AboutUs => new AboutUsPage
+            {
+                DataContext = new AboutUsViewModel(this)
+            },
+            BrowserGalleryPageKind.Button => new ButtonShowCase
+            {
+                DataContext = new ButtonViewModel(this)
+            },
+            BrowserGalleryPageKind.Palette => new PaletteShowCase
+            {
+                DataContext = new PaletteViewModel(this)
+            },
+            BrowserGalleryPageKind.Icons => new IconShowCase
+            {
+                DataContext = new IconViewModel(this)
+            },
+            _ => throw new ArgumentOutOfRangeException(nameof(pageKind), pageKind, null)
+        };
+    }
+
+    private void PreloadPages(int index)
+    {
+        var pagesToPreload = s_pagesToPreload;
+        if (index >= pagesToPreload.Length)
+        {
+            return;
+        }
+
+        var pageKind = pagesToPreload[index];
+        if (_pageCache.TryGetValue(pageKind, out _))
+        {
+            Dispatcher.Post(() => PreloadPages(index + 1), DispatcherPriority.ApplicationIdle);
+            return;
+        }
+
+        var page = EnsurePage(pageKind);
+        page.Opacity          = 0;
+        page.IsHitTestVisible = false;
+        page.IsVisible        = true;
+
+        Dispatcher.Post(() =>
+        {
+            if (_activePageKind != pageKind)
+            {
+                page.IsVisible = false;
+            }
+
+            page.Opacity          = 1;
+            page.IsHitTestVisible = true;
+            Dispatcher.Post(() => PreloadPages(index + 1), DispatcherPriority.ApplicationIdle);
+        }, DispatcherPriority.ApplicationIdle);
     }
 
     private void UpdateNavigationSelection(Border selectedItem)

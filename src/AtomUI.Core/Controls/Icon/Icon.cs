@@ -2,7 +2,6 @@
 
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using AtomUI.Animations;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Controls;
@@ -11,11 +10,10 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Rendering;
 using Avalonia.Styling;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls;
 
-public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
+public abstract class Icon : PathIcon, ICustomHitTest
 {
     protected override Type StyleKeyOverride { get; } = typeof(Icon);
 
@@ -62,13 +60,6 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     public static readonly StyledProperty<TimeSpan> LoadingAnimationDurationProperty =
         AvaloniaProperty.Register<Icon, TimeSpan>(
             nameof(LoadingAnimationDuration), TimeSpan.FromSeconds(1));
-
-    public static readonly StyledProperty<TimeSpan> FillAnimationDurationProperty =
-        AvaloniaProperty.Register<Icon, TimeSpan>(
-            nameof(FillAnimationDuration), TimeSpan.FromMilliseconds(200));
-
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Icon>();
     
     public IBrush? StrokeBrush
     {
@@ -130,22 +121,10 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         set => SetValue(LoadingAnimationDurationProperty, value);
     }
 
-    public TimeSpan FillAnimationDuration
-    {
-        get => GetValue(FillAnimationDurationProperty);
-        set => SetValue(FillAnimationDurationProperty, value);
-    }
-
     public IconAnimation LoadingAnimation
     {
         get => GetValue(LoadingAnimationProperty);
         set => SetValue(LoadingAnimationProperty, value);
-    }
-    
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
     }
 
     #region 内部属性定义
@@ -153,24 +132,11 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
     internal static readonly StyledProperty<double> AngleAnimationRotateProperty =
         AvaloniaProperty.Register<Icon, double>(
             nameof(AngleAnimationRotate));
-    
-    internal static readonly DirectProperty<Icon, bool> IsSupportSimpleTransitionProperty =
-        AvaloniaProperty.RegisterDirect<Icon, bool>(nameof(IsSupportSimpleTransition),
-            o => o.IsSupportSimpleTransition,
-            (o, v) => o.IsSupportSimpleTransition = v);
 
     internal double AngleAnimationRotate
     {
         get => GetValue(AngleAnimationRotateProperty);
         set => SetValue(AngleAnimationRotateProperty, value);
-    }
-    
-    private bool _isSupportSimpleTransition;
-
-    internal bool IsSupportSimpleTransition
-    {
-        get => _isSupportSimpleTransition;
-        set => SetAndRaise(IsSupportSimpleTransitionProperty, ref _isSupportSimpleTransition, value);
     }
 
     #endregion
@@ -222,45 +188,11 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         DrawPens[secondaryStrokeIndex] = new Pen(secondaryStrokeBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
         DrawPens[secondaryFillIndex]   = new Pen(secondaryFillBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
         DrawPens[fallbackIndex]        = new Pen(fallbackBrush, StrokeWidth, lineCap: StrokeLineCap, lineJoin: StrokeLineJoin);
-        ConfigureTransitions(false);
-        this.DisableTransitions();
-    }
-    
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
     }
 
     protected virtual IBrush? ProcessBrush(IBrush? brush)
     {
         return brush;
-    }
-
-    private void ConfigureTransitions(bool force)
-    {
-        if (IsMotionEnabled)
-        {
-            if (force || Transitions == null)
-            {
-                Transitions = [
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(StrokeBrushProperty,
-                        FillAnimationDuration),
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(FillBrushProperty,
-                        FillAnimationDuration),
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(SecondaryFillBrushProperty,
-                        FillAnimationDuration),
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(SecondaryStrokeBrushProperty,
-                        FillAnimationDuration),
-                    BaseTransitionUtils.CreateTransition<SolidColorBrushTransition>(FallbackBrushProperty,
-                        FillAnimationDuration)
-                ];
-            }
-        }
-        else
-        {
-            Transitions = null;
-        }
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -304,29 +236,9 @@ public abstract class Icon : PathIcon, ICustomHitTest, IMotionAwareControl
         {
             HandleLineJoinChanged(StrokeLineJoin);
         }
-        else if (change.Property == IconThemeProperty)
-        {
-            if (IconTheme == IconThemeType.Filled ||
-                IconTheme == IconThemeType.Outlined ||
-                IconTheme == IconThemeType.Rounded ||
-                IconTheme == IconThemeType.Sharp)
-            {
-                IsSupportSimpleTransition = true;
-            }
-            else
-            {
-                IsSupportSimpleTransition = false;
-            }
-        }
 
         if (IsLoaded)
         {
-            if (change.Property == IsMotionEnabledProperty ||
-                change.Property == FillAnimationDurationProperty)
-            {
-                ConfigureTransitions(true);
-            }
-
             if (change.Property == LoadingAnimationDurationProperty ||
                 change.Property == LoadingAnimationProperty ||
                 change.Property == IsVisibleProperty)

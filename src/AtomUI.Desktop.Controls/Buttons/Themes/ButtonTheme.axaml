@@ -28,11 +28,14 @@
                                 <antdicons:LoadingOutlined
                                     Name="PART_LoadingIcon"
                                     LoadingAnimation="Spin"
+                                    FillBrush="{TemplateBinding Foreground}"
+                                    StrokeBrush="{TemplateBinding Foreground}"
                                     DockPanel.Dock="Left" />
 
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
                                     Icon="{TemplateBinding Icon}"
+                                    IconBrush="{TemplateBinding Foreground}"
                                     DockPanel.Dock="Left">
                                     <atom:IconPresenter.IsVisible>
                                         <MultiBinding
@@ -81,11 +84,14 @@
                                 <antdicons:LoadingOutlined
                                     Name="PART_LoadingIcon"
                                     LoadingAnimation="Spin"
+                                    FillBrush="{TemplateBinding Foreground}"
+                                    StrokeBrush="{TemplateBinding Foreground}"
                                     DockPanel.Dock="Left" />
 
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
                                     Icon="{TemplateBinding Icon}"
+                                    IconBrush="{TemplateBinding Foreground}"
                                     DockPanel.Dock="Left">
                                     <atom:IconPresenter.IsVisible>
                                         <MultiBinding
@@ -174,50 +180,6 @@
             </Style>
             <Style Selector="^:icononly">
                 <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPaddingSM}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextSecondary}" />
-        </Style>
-
-        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorTextSecondary}" />
-            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextSecondary}" />
-        </Style>
-
-        <Style Selector="^:pointerover">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconBrush" Value="{atom:ButtonTokenResource DefaultHoverColor}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="FillBrush" Value="{atom:ButtonTokenResource DefaultHoverColor}" />
-                <Setter Property="StrokeBrush"
-                        Value="{atom:ButtonTokenResource DefaultHoverColor}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^:pressed">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconBrush"
-                        Value="{atom:ButtonTokenResource DefaultActiveColor}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="FillBrush"
-                        Value="{atom:ButtonTokenResource DefaultActiveColor}" />
-                <Setter Property="StrokeBrush"
-                        Value="{atom:ButtonTokenResource DefaultActiveColor}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                <Setter Property="StrokeBrush"
-                        Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>
 
@@ -432,96 +394,6 @@
                 </Style>
             </Style>
 
-            <!-- icon 的各种颜色 -->
-            <Style Selector="^[IsGhost=True]">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush"
-                            Value="{atom:SharedTokenResource ColorTextLightSolid}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush"
-                            Value="{atom:SharedTokenResource ColorTextLightSolid}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:SharedTokenResource ColorTextLightSolid}" />
-                </Style>
-
-                <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryHover}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryHover}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryHover}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^:pressed">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryActive}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryActive}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryActive}" />
-                    </Style>
-                </Style>
-
-            </Style>
-
-            <Style Selector="^:danger">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorError}" />
-                    <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorError}" />
-                </Style>
-
-                <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^:pressed">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                    </Style>
-                </Style>
-            </Style>
-
-            <Style Selector="^:disabled">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                </Style>
-            </Style>
-
             <Style Selector="^ /template/ Border#ShadowsFrame">
                 <Setter Property="BoxShadow" Value="{atom:ButtonTokenResource DefaultShadow}" />
             </Style>
@@ -619,126 +491,6 @@
                 </Style>
             </Style>
 
-            <!-- icon 的各种颜色 -->
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconBrush" Value="{atom:ButtonTokenResource PrimaryColor}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="FillBrush" Value="{atom:ButtonTokenResource PrimaryColor}" />
-                <Setter Property="StrokeBrush" Value="{atom:ButtonTokenResource PrimaryColor}" />
-            </Style>
-
-            <Style Selector="^:pointerover">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush" Value="{atom:ButtonTokenResource PrimaryColor}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush" Value="{atom:ButtonTokenResource PrimaryColor}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:ButtonTokenResource PrimaryColor}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^:pressed">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush" Value="{atom:ButtonTokenResource PrimaryColor}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush" Value="{atom:ButtonTokenResource PrimaryColor}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:ButtonTokenResource PrimaryColor}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^:disabled">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^[IsGhost=True]">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:SharedTokenResource ColorPrimary}" />
-                </Style>
-
-                <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryHover}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryHover}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryHover}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^:pressed">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryActive}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryActive}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryActive}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^:danger">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorError}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorError}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorError}" />
-                    </Style>
-
-                    <Style Selector="^:pointerover">
-                        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                            <Setter Property="IconBrush"
-                                    Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
-                        </Style>
-                        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                            <Setter Property="FillBrush"
-                                    Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
-                            <Setter Property="StrokeBrush"
-                                    Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
-                        </Style>
-                    </Style>
-
-                    <Style Selector="^:pressed">
-                        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                            <Setter Property="IconBrush"
-                                    Value="{atom:SharedTokenResource ColorErrorActive}" />
-                        </Style>
-                        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                            <Setter Property="FillBrush"
-                                    Value="{atom:SharedTokenResource ColorErrorActive}" />
-                            <Setter Property="StrokeBrush"
-                                    Value="{atom:SharedTokenResource ColorErrorActive}" />
-                        </Style>
-                    </Style>
-                </Style>
-            </Style>
-
             <Style Selector="^ /template/ Border#ShadowsFrame">
                 <Setter Property="BoxShadow" Value="{atom:ButtonTokenResource PrimaryShadow}" />
             </Style>
@@ -790,102 +542,6 @@
                 <Setter Property="Background" Value="Transparent" />
             </Style>
 
-            <!-- icon 的各种颜色 -->
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorLink}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorLink}" />
-                <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorLink}" />
-            </Style>
-
-            <Style Selector="^:pointerover">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush"
-                            Value="{atom:SharedTokenResource ColorLinkHover}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush"
-                            Value="{atom:SharedTokenResource ColorLinkHover}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:SharedTokenResource ColorLinkHover}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^:pressed">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush"
-                            Value="{atom:SharedTokenResource ColorLinkActive}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush"
-                            Value="{atom:SharedTokenResource ColorLinkActive}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:SharedTokenResource ColorLinkActive}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^:disabled">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^:danger">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorError}" />
-                    <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorError}" />
-                </Style>
-
-                <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorErrorHover}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorErrorHover}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorErrorHover}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^:pressed">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^:disabled">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                    </Style>
-                </Style>
-            </Style>
         </Style>
         <!-- 链接按钮样式结束 -->
 
@@ -928,98 +584,6 @@
                 <Setter Property="Background" Value="Transparent" />
             </Style>
 
-            <!-- icon 的各种颜色 -->
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconBrush" Value="{atom:ButtonTokenResource DefaultColor}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="FillBrush" Value="{atom:ButtonTokenResource DefaultColor}" />
-                <Setter Property="StrokeBrush" Value="{atom:ButtonTokenResource DefaultColor}" />
-            </Style>
-
-            <Style Selector="^:pointerover">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush" Value="{atom:ButtonTokenResource DefaultColor}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush" Value="{atom:ButtonTokenResource DefaultColor}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:ButtonTokenResource DefaultColor}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^:pressed">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush" Value="{atom:ButtonTokenResource DefaultColor}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush" Value="{atom:ButtonTokenResource DefaultColor}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:ButtonTokenResource DefaultColor}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^:disabled">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                </Style>
-            </Style>
-
-            <Style Selector="^:danger">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorError}" />
-                    <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorError}" />
-                </Style>
-
-                <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorErrorHover}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorErrorHover}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorErrorHover}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^:pressed">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^:disabled">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                    </Style>
-                </Style>
-            </Style>
         </Style>
         <!-- 文字按钮样式结束 -->
 
@@ -1048,6 +612,7 @@
                             <atom:IconPresenter
                                 Name="PART_ButtonIcon"
                                 Icon="{TemplateBinding Icon}"
+                                IconBrush="{TemplateBinding Foreground}"
                                 DockPanel.Dock="Left">
                                 <atom:IconPresenter.IsVisible>
                                     <MultiBinding
@@ -1061,6 +626,8 @@
                             <antdicons:LoadingOutlined
                                 Name="PART_LoadingIcon"
                                 LoadingAnimation="Spin"
+                                FillBrush="{TemplateBinding Foreground}"
+                                StrokeBrush="{TemplateBinding Foreground}"
                                 DockPanel.Dock="Left" />
                             <ContentPresenter
                                 Name="PART_ContentPresenter"
@@ -1157,101 +724,11 @@
                 </Style>
             </Style>
 
-            <Style Selector="^[IsGhost=True]">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush"
-                            Value="{atom:SharedTokenResource ColorTextLightSolid}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush"
-                            Value="{atom:SharedTokenResource ColorTextLightSolid}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:SharedTokenResource ColorTextLightSolid}" />
-                </Style>
-
-                <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryHover}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryHover}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryHover}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^:pressed">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryActive}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryActive}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorPrimaryActive}" />
-                    </Style>
-                </Style>
-
-            </Style>
-
             <Style Selector="^ /template/ Border#FocusVisual">
                 <Setter Property="IsVisible" Value="False" />
             </Style>
             <Style Selector="^:focus-visible /template/ Border#FocusVisual">
                 <Setter Property="IsVisible" Value="True" />
-            </Style>
-
-            <Style Selector="^:danger">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorError}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush" Value="{atom:SharedTokenResource ColorError}" />
-                    <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorError}" />
-                </Style>
-
-                <Style Selector="^:pointerover">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
-                    </Style>
-                </Style>
-
-                <Style Selector="^:pressed">
-                    <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                        <Setter Property="IconBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                    </Style>
-                    <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                        <Setter Property="FillBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                        <Setter Property="StrokeBrush"
-                                Value="{atom:SharedTokenResource ColorErrorActive}" />
-                    </Style>
-                </Style>
-
-            </Style>
-
-            <Style Selector="^:disabled">
-                <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                    <Setter Property="IconBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                </Style>
-                <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                    <Setter Property="FillBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                    <Setter Property="StrokeBrush"
-                            Value="{atom:SharedTokenResource ColorTextDisabled}" />
-                </Style>
             </Style>
 
             <Style Selector="^ /template/ Border#ShadowsFrame">

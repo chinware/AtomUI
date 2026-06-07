@@ -50,39 +50,19 @@
                         Value="{atom:SharedTokenResource ColorWarningActive}" />
             </Style>
         </Style>
-        
-        <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextDescription}" />
-        </Style>
-        <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}" />
-        </Style>
+
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDescription}" />
 
         <Style Selector="^:pointerover">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconBrush" Value="{atom:ButtonTokenResource DefaultHoverColor}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="Foreground" Value="{atom:ButtonTokenResource DefaultHoverColor}" />
-            </Style>
+            <Setter Property="Foreground" Value="{atom:ButtonTokenResource DefaultHoverColor}" />
         </Style>
 
         <Style Selector="^:pressed">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconBrush" Value="{atom:ButtonTokenResource DefaultActiveColor}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="Foreground" Value="{atom:ButtonTokenResource DefaultActiveColor}" />
-            </Style>
+            <Setter Property="Foreground" Value="{atom:ButtonTokenResource DefaultActiveColor}" />
         </Style>
         
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
-                <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorTextDisabled}" />
-            </Style>
-            <Style Selector="^ /template/ atom|Icon#PART_LoadingIcon">
-                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
-            </Style>
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
     </Style>
 
