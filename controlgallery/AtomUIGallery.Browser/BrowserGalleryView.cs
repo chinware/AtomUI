@@ -6,6 +6,8 @@ using AtomUI.Icons.AntDesign;
 using AtomUIGallery.Localization;
 using AtomUIGallery.ShowCases.AboutUs;
 using AtomUIGallery.ShowCases.Button;
+using AtomUIGallery.ShowCases.CustomizeTheme;
+using AtomUIGallery.ShowCases.FlexPanel;
 using AtomUIGallery.ShowCases.FloatButton;
 using AtomUIGallery.ShowCases.Icon;
 using AtomUIGallery.ShowCases.Menu;
@@ -39,7 +41,9 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.FloatButton,
         BrowserGalleryPageKind.SplitButton,
         BrowserGalleryPageKind.Separator,
+        BrowserGalleryPageKind.CustomizeTheme,
         BrowserGalleryPageKind.Menu,
+        BrowserGalleryPageKind.FlexPanel,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -207,7 +211,18 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                                      BrowserGalleryPageKind.SplitButton),
                 CreateNavigationNode(CaseNavigationLangResourceKind.General_Separator,
                                      SeparatorViewModel.ID,
-                                     BrowserGalleryPageKind.Separator)));
+                                     BrowserGalleryPageKind.Separator),
+                CreateNavigationNode(CaseNavigationLangResourceKind.General_CustomizeTheme,
+                                     CustomizeThemeViewModel.ID,
+                                     BrowserGalleryPageKind.CustomizeTheme)));
+
+        navMenu.Items.Add(
+            CreateNavigationGroup(
+                CaseNavigationLangResourceKind.Layout,
+                AntDesignIconKind.LayoutOutlined,
+                CreateNavigationNode(CaseNavigationLangResourceKind.Layout_FlexPanel,
+                                     FlexPanelViewModel.ID,
+                                     BrowserGalleryPageKind.FlexPanel)));
 
         navMenu.Items.Add(
             CreateNavigationGroup(
@@ -339,9 +354,17 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new SeparatorViewModel(this)
             },
+            BrowserGalleryPageKind.CustomizeTheme => new CustomizeThemeShowCase
+            {
+                DataContext = new CustomizeThemeViewModel(this)
+            },
             BrowserGalleryPageKind.Menu => new MenuShowCase
             {
                 DataContext = new MenuViewModel(this)
+            },
+            BrowserGalleryPageKind.FlexPanel => new FlexPanelShowCase
+            {
+                DataContext = new FlexPanelViewModel(this)
             },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
@@ -404,7 +427,9 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         FloatButton,
         SplitButton,
         Separator,
+        CustomizeTheme,
         Menu,
+        FlexPanel,
         Palette,
         Icons
     }
