@@ -23,6 +23,7 @@ internal class ControlTokenTypePoolClassWriter
     private void SetupUsingInfos()
     {
         _usingInfos.Add("System.Collections.Generic");
+        _usingInfos.Add("System.Diagnostics.CodeAnalysis");
         _usingInfos.Add("AtomUI.Theme");
     }
 
@@ -99,15 +100,39 @@ internal class ControlTokenTypePoolClassWriter
         statements.Add(
             SyntaxFactory.ReturnStatement(SyntaxFactory.IdentifierName("tokenTypes")));
         
-        return SyntaxFactory.MethodDeclaration(
-                                SyntaxFactory.GenericName(SyntaxFactory.Identifier("IList"))
-                                             .WithTypeArgumentList(SyntaxFactory.TypeArgumentList(
-                                                 SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
-                                                     SyntaxFactory.ParseTypeName("Type")))),
-                                SyntaxFactory.Identifier("GetTokenTypes"))
-                            .WithModifiers(SyntaxFactory.TokenList(
-                                SyntaxFactory.Token(SyntaxKind.InternalKeyword),
-                                SyntaxFactory.Token(SyntaxKind.StaticKeyword)))
-                            .WithBody(SyntaxFactory.Block(statements));
+        var methodDecl = SyntaxFactory.MethodDeclaration(
+                                             SyntaxFactory.GenericName(SyntaxFactory.Identifier("IList"))
+                                                          .WithTypeArgumentList(SyntaxFactory.TypeArgumentList(
+                                                              SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
+                                                                  SyntaxFactory.ParseTypeName("Type")))),
+                                             SyntaxFactory.Identifier("GetTokenTypes"))
+                                         .WithModifiers(SyntaxFactory.TokenList(
+                                             SyntaxFactory.Token(SyntaxKind.InternalKeyword),
+                                             SyntaxFactory.Token(SyntaxKind.StaticKeyword)))
+                                         .WithBody(SyntaxFactory.Block(statements));
+
+        foreach (var className in _classes)
+        {
+            methodDecl = methodDecl.AddAttributeLists(GenerateDynamicDependencyAttributeList(className));
+        }
+
+        return methodDecl;
+    }
+
+    private static AttributeListSyntax GenerateDynamicDependencyAttributeList(string className)
+    {
+        var attribute = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("DynamicDependency"))
+                                     .WithArgumentList(SyntaxFactory.AttributeArgumentList(
+                                         SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(
+                                             new SyntaxNodeOrToken[]
+                                             {
+                                                 SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression(
+                                                     "DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties")),
+                                                 SyntaxFactory.Token(SyntaxKind.CommaToken),
+                                                 SyntaxFactory.AttributeArgument(SyntaxFactory.TypeOfExpression(
+                                                     SyntaxFactory.ParseTypeName(className)))
+                                             })));
+
+        return SyntaxFactory.AttributeList(SyntaxFactory.SingletonSeparatedList(attribute));
     }
 }

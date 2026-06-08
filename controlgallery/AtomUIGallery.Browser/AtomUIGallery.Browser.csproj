@@ -20,6 +20,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <TrimmerRootDescriptor Include="Roots.xml"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="../AtomUIGallery/AtomUIGallery.csproj"/>
         <ProjectReference Include="../../src/AtomUI.Fonts.AlibabaPuHuiTi/AtomUI.Fonts.AlibabaPuHuiTi.csproj"/>
     </ItemGroup>

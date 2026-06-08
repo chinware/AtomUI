@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Globalization;
-using System.Reactive.Disposables;
 using AtomUI.Collections.Pooled;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using Avalonia;
@@ -216,7 +214,7 @@ internal class CalendarItem : TemplatedControl
     #endregion
     
     protected DateTime _currentMonth;
-    protected UniformGrid? _headerLayout;
+    protected Panel? _headerLayout;
     protected bool _isMouseLeftButtonDownYearView;
 
     protected HeadTextButton? _headerButton;
@@ -242,9 +240,6 @@ internal class CalendarItem : TemplatedControl
     /// </summary>
     internal Grid? YearView { get; set; }
     
-    private protected CompositeDisposable? DayBtnBindingDisposables;
-    private protected CompositeDisposable? MonthBtnBindingDisposables;
-
     private void PopulateGrids()
     {
         PopulateMonthViewsGrid();
@@ -257,9 +252,6 @@ internal class CalendarItem : TemplatedControl
             EventHandler<PointerPressedEventArgs> monthCalendarButtonMouseDown = HandleMonthCalendarButtonMouseDown;
             EventHandler<PointerReleasedEventArgs> monthCalendarButtonMouseUp = HandleMonthCalendarButtonMouseUp;
             EventHandler<PointerEventArgs> monthMouseEntered = HandleMonthMouseEntered;
-            
-            MonthBtnBindingDisposables?.Dispose();
-            MonthBtnBindingDisposables = new CompositeDisposable(Calendar.RowsPerYear * Calendar.ColumnsPerYear);
 
             for (var i = 0; i < Calendar.RowsPerYear; i++)
             {
@@ -270,8 +262,7 @@ internal class CalendarItem : TemplatedControl
                     if (Owner != null)
                     {
                         month.Owner = Owner;
-                        MonthBtnBindingDisposables.Add(BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, month,
-                            CalendarButton.IsMotionEnabledProperty));
+                        month[!CalendarButton.IsMotionEnabledProperty] = Owner[!Calendar.IsMotionEnabledProperty];
                     }
 
                     month.SetValue(Grid.RowProperty, i);
@@ -291,8 +282,6 @@ internal class CalendarItem : TemplatedControl
     {
         if (MonthView != null)
         {
-            DayBtnBindingDisposables?.Dispose();
-            DayBtnBindingDisposables = new CompositeDisposable(Calendar.RowsPerMonth * Calendar.ColumnsPerMonth);
             PopulateMonthViewGrid(MonthView);
         }
     }
@@ -328,8 +317,7 @@ internal class CalendarItem : TemplatedControl
                 if (Owner != null)
                 {
                     cell.Owner = Owner;
-                    DayBtnBindingDisposables?.Add(BindUtils.RelayBind(Owner, Calendar.IsMotionEnabledProperty, cell,
-                        CalendarDayButton.IsMotionEnabledProperty));
+                    cell[!CalendarDayButton.IsMotionEnabledProperty] = Owner[!Calendar.IsMotionEnabledProperty];
                 }
 
                 cell.SetValue(Grid.RowProperty, i);
@@ -363,7 +351,7 @@ internal class CalendarItem : TemplatedControl
         MonthViewLayout = e.NameScope.Get<UniformGrid>("PART_MonthViewLayout");
         MonthView       = e.NameScope.Get<Grid>("PART_MonthView");
         YearView        = e.NameScope.Get<Grid>("PART_YearView");
-        _headerLayout   = e.NameScope.Get<UniformGrid>("PART_HeaderLayout");
+        _headerLayout   = e.NameScope.Get<Panel>("PART_HeaderLayout");
 
         if (Owner != null)
         {

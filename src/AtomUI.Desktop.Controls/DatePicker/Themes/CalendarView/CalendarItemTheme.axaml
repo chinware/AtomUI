@@ -20,35 +20,40 @@
                     <Border Name="PART_HeaderFrame"
                             DockPanel.Dock="Top"
                             BorderThickness="{TemplateBinding HeaderBorderThickness, Converter={x:Static themes:CalendarItemTheme.BorderThicknessFilterConverter}}">
-                        <UniformGrid Name="PART_HeaderLayout"
-                                     Columns="1">
-                            <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
+                        <Grid Name="PART_HeaderLayout"
+                              MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
+                              MinHeight="{atom:SharedTokenResource ControlHeight}">
+                            <atom:HeadTextButton
+                                Name="PART_HeaderButton"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontWeight="Bold"
+                                IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center">
                                 <atom:IconButton
                                     Name="PART_PreviousButton"
-                                    Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}"
-                                    Grid.Column="0" />
+                                    Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}" />
                                 <atom:IconButton
                                     Name="PART_PreviousMonthButton"
                                     IsVisible="{TemplateBinding IsMonthViewMode}"
-                                    Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
-                                    Grid.Column="1" />
+                                    Icon="{antdicons:AntDesignIconProvider LeftOutlined}" />
+                            </StackPanel>
 
-                                <atom:HeadTextButton
-                                    Name="PART_HeaderButton"
-                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                    Grid.Column="2" />
-
+                            <StackPanel Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center">
                                 <atom:IconButton
                                     Name="PART_NextMonthButton"
                                     Icon="{antdicons:AntDesignIconProvider RightOutlined}"
-                                    IsVisible="{TemplateBinding IsMonthViewMode}"
-                                    Grid.Column="3" />
+                                    IsVisible="{TemplateBinding IsMonthViewMode}" />
                                 <atom:IconButton
                                     Name="PART_NextButton"
-                                    Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}"
-                                    Grid.Column="4" />
-                            </Grid>
-                        </UniformGrid>
+                                    Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}" />
+                            </StackPanel>
+                        </Grid>
                     </Border>
 
                     <UniformGrid Name="PART_MonthViewLayout"
@@ -119,6 +124,7 @@
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton">
+            <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="IconBrush"

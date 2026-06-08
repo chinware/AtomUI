@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
 
@@ -6,6 +7,33 @@ namespace AtomUI.Theme.Language
 {
     internal class LanguageProviderPool
     {
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.DatePickerLang.en_US))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.DatePickerLang.zh_CN))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.DatePickerLang.zh_TW))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.DialogLang.en_US))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.DialogLang.zh_CN))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.DialogLang.zh_TW))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.ImagePreviewerLang.en_US))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.ImagePreviewerLang.zh_CN))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.ImagePreviewerLang.zh_TW))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.PaginationLang.en_US))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.PaginationLang.zh_CN))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.PaginationLang.zh_TW))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.QRCodeLang.en_US))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.QRCodeLang.zh_CN))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.QRCodeLang.zh_TW))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.TimePickerLang.en_US))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.TimePickerLang.zh_CN))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.TimePickerLang.zh_TW))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.TourLang.en_US))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.TourLang.zh_CN))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.TourLang.zh_TW))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.TransferLang.en_US))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.TransferLang.zh_CN))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.TransferLang.zh_TW))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.UploadLang.en_US))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.UploadLang.zh_CN))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicFields, typeof(AtomUI.Desktop.Controls.UploadLang.zh_TW))]
         internal static IList<LanguageProvider> GetLanguageProviders()
         {
             List<LanguageProvider> languageProviders = new List<LanguageProvider>(27);

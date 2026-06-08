@@ -1,5 +1,4 @@
-﻿using System.Reactive.Disposables;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
@@ -216,8 +215,6 @@ internal class DualMonthCalendarItem : RangeCalendarItem
 
     protected override void PopulateMonthViewsGrid()
     {
-        DayBtnBindingDisposables?.Dispose();
-        DayBtnBindingDisposables = new CompositeDisposable(Calendar.RowsPerMonth * Calendar.ColumnsPerMonth * 2);
         if (MonthView != null)
         {
             PopulateMonthViewGrid(MonthView);
@@ -242,15 +239,22 @@ internal class DualMonthCalendarItem : RangeCalendarItem
         base.SetupHeaderForDisplayModeChanged();
         if (Owner is not null && _headerLayout is not null && MonthViewLayout is not null)
         {
+            var headerLayout = _headerLayout as UniformGrid;
             if (Owner.DisplayMode == CalendarMode.Month)
             {
                 MonthViewLayout.Columns     = 2;
-                _headerLayout.Columns = 2;
+                if (headerLayout is not null)
+                {
+                    headerLayout.Columns = 2;
+                }
             }
             else if (Owner.DisplayMode == CalendarMode.Year || Owner.DisplayMode == CalendarMode.Decade)
             {
                 MonthViewLayout.Columns     = 1;
-                _headerLayout.Columns = 1;
+                if (headerLayout is not null)
+                {
+                    headerLayout.Columns = 1;
+                }
             }
         }
     }

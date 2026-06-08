@@ -11,23 +11,39 @@ using AtomUIGallery.ShowCases.Breadcrumb;
 using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.ButtonSpinner;
 using AtomUIGallery.ShowCases.Cascader;
+using AtomUIGallery.ShowCases.CheckBox;
+using AtomUIGallery.ShowCases.ColorPicker;
 using AtomUIGallery.ShowCases.ComboBox;
 using AtomUIGallery.ShowCases.CustomizeTheme;
+using AtomUIGallery.ShowCases.DatePicker;
 using AtomUIGallery.ShowCases.DropdownButton;
 using AtomUIGallery.ShowCases.FlexPanel;
 using AtomUIGallery.ShowCases.FloatButton;
+using AtomUIGallery.ShowCases.Form;
 using AtomUIGallery.ShowCases.Grid;
 using AtomUIGallery.ShowCases.Icon;
+using AtomUIGallery.ShowCases.LineEdit;
+using AtomUIGallery.ShowCases.Mentions;
 using AtomUIGallery.ShowCases.Menu;
+using AtomUIGallery.ShowCases.NumberUpDown;
 using AtomUIGallery.ShowCases.Palette;
 using AtomUIGallery.ShowCases.Pagination;
+using AtomUIGallery.ShowCases.RadioButton;
+using AtomUIGallery.ShowCases.Rate;
+using AtomUIGallery.ShowCases.Select;
 using AtomUIGallery.ShowCases.Separator;
+using AtomUIGallery.ShowCases.Slider;
 using AtomUIGallery.ShowCases.Space;
 using AtomUIGallery.ShowCases.SplitButton;
 using AtomUIGallery.ShowCases.Splitter;
 using AtomUIGallery.ShowCases.Steps;
 using AtomUIGallery.ShowCases.TabControl;
 using AtomUIGallery.ShowCases.TabStrip;
+using AtomUIGallery.ShowCases.TimePicker;
+using AtomUIGallery.ShowCases.ToggleSwitch;
+using AtomUIGallery.ShowCases.Transfer;
+using AtomUIGallery.ShowCases.TreeSelect;
+using AtomUIGallery.ShowCases.Upload;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -78,6 +94,22 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.TabStrip,
         BrowserGalleryPageKind.AutoComplete,
         BrowserGalleryPageKind.Cascader,
+        BrowserGalleryPageKind.CheckBox,
+        BrowserGalleryPageKind.ColorPicker,
+        BrowserGalleryPageKind.DatePicker,
+        BrowserGalleryPageKind.TimePicker,
+        BrowserGalleryPageKind.Form,
+        BrowserGalleryPageKind.LineEdit,
+        BrowserGalleryPageKind.Mentions,
+        BrowserGalleryPageKind.NumberUpDown,
+        BrowserGalleryPageKind.RadioButton,
+        BrowserGalleryPageKind.Rate,
+        BrowserGalleryPageKind.Select,
+        BrowserGalleryPageKind.Slider,
+        BrowserGalleryPageKind.ToggleSwitch,
+        BrowserGalleryPageKind.TreeSelect,
+        BrowserGalleryPageKind.Transfer,
+        BrowserGalleryPageKind.Upload,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -324,7 +356,55 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                                      BrowserGalleryPageKind.AutoComplete),
                 CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_Cascader,
                                      CascaderViewModel.ID,
-                                     BrowserGalleryPageKind.Cascader)));
+                                     BrowserGalleryPageKind.Cascader),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_CheckBox,
+                                     CheckBoxViewModel.ID,
+                                     BrowserGalleryPageKind.CheckBox),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_ColorPicker,
+                                     ColorPickerViewModel.ID,
+                                     BrowserGalleryPageKind.ColorPicker),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_DatePicker,
+                                     DatePickerViewModel.ID,
+                                     BrowserGalleryPageKind.DatePicker),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_TimePicker,
+                                     TimePickerViewModel.ID,
+                                     BrowserGalleryPageKind.TimePicker),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_Form,
+                                     FormViewModel.ID,
+                                     BrowserGalleryPageKind.Form),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_LineEdit,
+                                     LineEditViewModel.ID,
+                                     BrowserGalleryPageKind.LineEdit),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_Mentions,
+                                     MentionsViewModel.ID,
+                                     BrowserGalleryPageKind.Mentions),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_NumberUpDown,
+                                     NumberUpDownViewModel.ID,
+                                     BrowserGalleryPageKind.NumberUpDown),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_RadioButton,
+                                     RadioButtonViewModel.ID,
+                                     BrowserGalleryPageKind.RadioButton),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_Rate,
+                                     RateViewModel.ID,
+                                     BrowserGalleryPageKind.Rate),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_Select,
+                                     SelectViewModel.ID,
+                                     BrowserGalleryPageKind.Select),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_Slider,
+                                     SliderViewModel.ID,
+                                     BrowserGalleryPageKind.Slider),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_ToggleSwitch,
+                                     ToggleSwitchViewModel.ID,
+                                     BrowserGalleryPageKind.ToggleSwitch),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_TreeSelect,
+                                     TreeSelectViewModel.ID,
+                                     BrowserGalleryPageKind.TreeSelect),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_Transfer,
+                                     TransferViewModel.ID,
+                                     BrowserGalleryPageKind.Transfer),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_Upload,
+                                     UploadViewModel.ID,
+                                     BrowserGalleryPageKind.Upload)));
 
         return navMenu;
     }
@@ -530,6 +610,70 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new CascaderViewModel(this)
             },
+            BrowserGalleryPageKind.CheckBox => new CheckBoxShowCase
+            {
+                DataContext = new CheckBoxViewModel(this)
+            },
+            BrowserGalleryPageKind.ColorPicker => new ColorPickerShowCase
+            {
+                DataContext = new ColorPickerViewModel(this)
+            },
+            BrowserGalleryPageKind.DatePicker => new DatePickerShowCase
+            {
+                DataContext = new DatePickerViewModel(this)
+            },
+            BrowserGalleryPageKind.TimePicker => new TimePickerShowCase
+            {
+                DataContext = new TimePickerViewModel(this)
+            },
+            BrowserGalleryPageKind.Form => new FormShowCase
+            {
+                DataContext = new FormViewModel(this)
+            },
+            BrowserGalleryPageKind.LineEdit => new LineEditShowCase
+            {
+                DataContext = new LineEditViewModel(this)
+            },
+            BrowserGalleryPageKind.Mentions => new MentionsShowCase
+            {
+                DataContext = new MentionsViewModel(this)
+            },
+            BrowserGalleryPageKind.NumberUpDown => new NumberUpDownShowCase
+            {
+                DataContext = new NumberUpDownViewModel(this)
+            },
+            BrowserGalleryPageKind.RadioButton => new RadioButtonShowCase
+            {
+                DataContext = new RadioButtonViewModel(this)
+            },
+            BrowserGalleryPageKind.Rate => new RateShowCase
+            {
+                DataContext = new RateViewModel(this)
+            },
+            BrowserGalleryPageKind.Select => new SelectShowCase
+            {
+                DataContext = new SelectViewModel(this)
+            },
+            BrowserGalleryPageKind.Slider => new SliderShowCase
+            {
+                DataContext = new SliderViewModel(this)
+            },
+            BrowserGalleryPageKind.ToggleSwitch => new ToggleSwitchShowCase
+            {
+                DataContext = new ToggleSwitchViewModel(this)
+            },
+            BrowserGalleryPageKind.TreeSelect => new TreeSelectShowCase
+            {
+                DataContext = new TreeSelectViewModel(this)
+            },
+            BrowserGalleryPageKind.Transfer => new TransferShowCase
+            {
+                DataContext = new TransferViewModel(this)
+            },
+            BrowserGalleryPageKind.Upload => new UploadShowCase
+            {
+                DataContext = new UploadViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -680,6 +824,22 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         TabStrip,
         AutoComplete,
         Cascader,
+        CheckBox,
+        ColorPicker,
+        DatePicker,
+        TimePicker,
+        Form,
+        LineEdit,
+        Mentions,
+        NumberUpDown,
+        RadioButton,
+        Rate,
+        Select,
+        Slider,
+        ToggleSwitch,
+        TreeSelect,
+        Transfer,
+        Upload,
         Palette,
         Icons
     }

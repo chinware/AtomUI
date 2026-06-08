@@ -76,11 +76,13 @@ public static class ThemeManagerBuilderExtensions
             typeof(EmptyToken),
             typeof(FlyoutHostToken),
             typeof(FloatButtonToken),
+            typeof(FormToken),
             typeof(GroupBoxToken),
             typeof(InfoPickerInputToken),
             typeof(LineEditToken),
             typeof(ListBoxToken),
             typeof(ListViewToken),
+            typeof(MentionsToken),
             typeof(MenuToken),
             typeof(MessageToken),
             typeof(NavMenuToken),
@@ -89,7 +91,9 @@ public static class ThemeManagerBuilderExtensions
             typeof(PaginationToken),
             typeof(PopupConfirmToken),
             typeof(PopupHostToken),
+            typeof(ProgressBarToken),
             typeof(RadioButtonToken),
+            typeof(RateToken),
             typeof(ScrollViewerToken),
             typeof(SegmentedToken),
             typeof(SelectToken),
@@ -102,11 +106,14 @@ public static class ThemeManagerBuilderExtensions
             typeof(StepsToken),
             typeof(TabControlToken),
             typeof(TagToken),
+            typeof(TextAreaToken),
             typeof(TimePickerToken),
             typeof(ToggleSwitchToken),
             typeof(ToolTipToken),
+            typeof(TransferToken),
             typeof(TreeSelectToken),
-            typeof(TreeViewToken)
+            typeof(TreeViewToken),
+            typeof(UploadToken)
         };
     }
 }

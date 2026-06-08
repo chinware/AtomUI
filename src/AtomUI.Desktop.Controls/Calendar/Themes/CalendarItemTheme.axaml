@@ -15,6 +15,7 @@
                         LastChildFill="True">
                         <Grid Name="PART_HeaderLayout"
                               ColumnDefinitions="Auto, Auto, *, Auto, Auto"
+                              MinHeight="{atom:SharedTokenResource ControlHeight}"
                               DockPanel.Dock="Top">
                             <atom:IconButton
                                 Name="PART_PreviousButton"
@@ -95,6 +96,7 @@
         </Style>
 
         <Style Selector="^ /template/ atom|IconButton">
+            <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeSM}" />
             <Setter Property="IconBrush"

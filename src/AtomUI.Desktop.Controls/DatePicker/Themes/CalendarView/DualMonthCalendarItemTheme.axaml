@@ -21,59 +21,74 @@
                         <Border Name="PART_HeaderFrame"
                                 DockPanel.Dock="Top">
                             <UniformGrid Name="PART_HeaderLayout"
-                                         Columns="2">
-                                <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
-                                    <atom:IconButton
-                                        Name="PART_PreviousButton"
-                                        Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}"
-                                        IsVisible="{TemplateBinding IsMonthViewMode}"
-                                        Grid.Column="0" />
-                                    <atom:IconButton
-                                        Name="PART_PreviousMonthButton"
-                                        Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
-                                        Grid.Column="1" />
-
+                                         Columns="2"
+                                         ColumnSpacing="{atom:DatePickerTokenResource RangeCalendarSpacing}">
+                                <Grid MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
+                                      MinHeight="{atom:SharedTokenResource ControlHeight}">
                                     <atom:HeadTextButton
                                         Name="PART_HeaderButton"
-                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                        Grid.Column="2" />
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontWeight="Bold"
+                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
 
-                                    <atom:IconButton
-                                        Name="PART_NextMonthButton"
-                                        Icon="{antdicons:AntDesignIconProvider RightOutlined}"
-                                        Grid.Column="3" />
-                                    <atom:IconButton
-                                        Name="PART_NextButton"
-                                        Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}"
-                                        IsVisible="{TemplateBinding IsMonthViewMode}"
-                                        Grid.Column="4" />
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center">
+                                        <atom:IconButton
+                                            Name="PART_PreviousButton"
+                                            Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}"
+                                            IsVisible="{TemplateBinding IsMonthViewMode}" />
+                                        <atom:IconButton
+                                            Name="PART_PreviousMonthButton"
+                                            Icon="{antdicons:AntDesignIconProvider LeftOutlined}" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center">
+                                        <atom:IconButton
+                                            Name="PART_NextMonthButton"
+                                            Icon="{antdicons:AntDesignIconProvider RightOutlined}" />
+                                        <atom:IconButton
+                                            Name="PART_NextButton"
+                                            Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}"
+                                            IsVisible="{TemplateBinding IsMonthViewMode}" />
+                                    </StackPanel>
                                 </Grid>
 
-                                <Grid ColumnDefinitions="Auto, Auto, *, Auto, Auto">
-                                    <atom:IconButton
-                                        Name="PART_SecondaryPreviousButton"
-                                        Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}"
-                                        IsVisible="{TemplateBinding IsMonthViewMode}"
-                                        Grid.Column="0" />
-                                    <atom:IconButton
-                                        Name="PART_SecondaryPreviousMonthButton"
-                                        Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
-                                        Grid.Column="1" />
-
+                                <Grid MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
+                                      MinHeight="{atom:SharedTokenResource ControlHeight}">
                                     <atom:HeadTextButton
                                         Name="PART_SecondaryHeaderButton"
-                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                        Grid.Column="2" />
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontWeight="Bold"
+                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
 
-                                    <atom:IconButton
-                                        Name="PART_SecondaryNextMonthButton"
-                                        Icon="{antdicons:AntDesignIconProvider RightOutlined}"
-                                        Grid.Column="3" />
-                                    <atom:IconButton
-                                        Name="PART_SecondaryNextButton"
-                                        Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}"
-                                        IsVisible="{TemplateBinding IsMonthViewMode}"
-                                        Grid.Column="4" />
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center">
+                                        <atom:IconButton
+                                            Name="PART_SecondaryPreviousButton"
+                                            Icon="{antdicons:AntDesignIconProvider DoubleLeftOutlined}"
+                                            IsVisible="{TemplateBinding IsMonthViewMode}" />
+                                        <atom:IconButton
+                                            Name="PART_SecondaryPreviousMonthButton"
+                                            Icon="{antdicons:AntDesignIconProvider LeftOutlined}" />
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal"
+                                                HorizontalAlignment="Right"
+                                                VerticalAlignment="Center">
+                                        <atom:IconButton
+                                            Name="PART_SecondaryNextMonthButton"
+                                            Icon="{antdicons:AntDesignIconProvider RightOutlined}" />
+                                        <atom:IconButton
+                                            Name="PART_SecondaryNextButton"
+                                            Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}"
+                                            IsVisible="{TemplateBinding IsMonthViewMode}" />
+                                    </StackPanel>
                                 </Grid>
                             </UniformGrid>
                         </Border>
@@ -83,8 +98,7 @@
                                      IsVisible="False">
                             <Grid Name="PART_MonthView"
                                   HorizontalAlignment="Stretch"
-                                  IsVisible="{TemplateBinding IsVisible}"
-                                  Width="250">
+                                  IsVisible="{TemplateBinding IsVisible}">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
                                     <RowDefinition Height="*" />

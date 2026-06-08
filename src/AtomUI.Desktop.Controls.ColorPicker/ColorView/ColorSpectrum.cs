@@ -288,6 +288,9 @@ internal class ColorSpectrum : TemplatedControl
     private ImageBrush? _saturationMaximumBrush;
 
     private ImageBrush? _valueBrush;
+    private LinearGradientBrush? _saturationValueSpectrumBrush;
+    private LinearGradientBrush? _saturationValueOverlayBrush;
+    private GradientStop? _saturationValueHueStop;
 
     // Fields used by UpdateEllipse() to ensure that it's using the data
     // associated with the last call to CreateBitmapsAndColorMap(),
@@ -915,45 +918,48 @@ internal class ColorSpectrum : TemplatedControl
     /// <param name="point">The point on the spectrum representing the color.</param>
     private void UpdateColorFromPoint(PointerPoint point)
     {
-        // If we haven't initialized our HSV value array yet, then we should just ignore any user input -
-        // we don't yet know what to do with it.
-        if (_hsvValues.Count == 0)
+        if (!TryGetHsvFromFastSpectrum(point, out var hsvAtPoint))
         {
-            return;
-        }
+            // If we haven't initialized our HSV value array yet, then we should just ignore any user input -
+            // we don't yet know what to do with it.
+            if (_hsvValues.Count == 0)
+            {
+                return;
+            }
 
-        // Remember the bitmap size follows physical device pixels
-        var scale = LayoutHelper.GetLayoutScale(this);
-        double xPosition = point.Position.X * scale;
-        double yPosition = point.Position.Y * scale;
+            // Remember the bitmap size follows physical device pixels
+            var scale = LayoutHelper.GetLayoutScale(this);
+            double xPosition = point.Position.X * scale;
+            double yPosition = point.Position.Y * scale;
 
-        // Now we need to find the index into the array of HSL values at each point in the spectrum m_image.
-        int x = (int)Math.Round(xPosition);
-        int y = (int)Math.Round(yPosition);
-        int width = (int)Math.Round(_imageWidthFromLastBitmapCreation);
+            // Now we need to find the index into the array of HSL values at each point in the spectrum m_image.
+            int x = (int)Math.Round(xPosition);
+            int y = (int)Math.Round(yPosition);
+            int width = (int)Math.Round(_imageWidthFromLastBitmapCreation);
 
-        if (x < 0)
-        {
-            x = 0;
-        }
-        else if (x >= _imageWidthFromLastBitmapCreation)
-        {
-            x = (int)Math.Round(_imageWidthFromLastBitmapCreation) - 1;
-        }
+            if (x < 0)
+            {
+                x = 0;
+            }
+            else if (x >= _imageWidthFromLastBitmapCreation)
+            {
+                x = (int)Math.Round(_imageWidthFromLastBitmapCreation) - 1;
+            }
 
-        if (y < 0)
-        {
-            y = 0;
-        }
-        else if (y >= _imageHeightFromLastBitmapCreation)
-        {
-            y = (int)Math.Round(_imageHeightFromLastBitmapCreation) - 1;
-        }
+            if (y < 0)
+            {
+                y = 0;
+            }
+            else if (y >= _imageHeightFromLastBitmapCreation)
+            {
+                y = (int)Math.Round(_imageHeightFromLastBitmapCreation) - 1;
+            }
 
-        // The gradient image contains two dimensions of HSL information, but not the third.
-        // We should keep the third where it already was.
-        // Note: This can sometimes cause a crash -- possibly due to differences in c# rounding. Therefore, index is now clamped.
-        Hsv hsvAtPoint = _hsvValues[Math.Clamp((y * width + x), 0, _hsvValues.Count - 1)];
+            // The gradient image contains two dimensions of HSL information, but not the third.
+            // We should keep the third where it already was.
+            // Note: This can sometimes cause a crash -- possibly due to differences in c# rounding. Therefore, index is now clamped.
+            hsvAtPoint = _hsvValues[Math.Clamp((y * width + x), 0, _hsvValues.Count - 1)];
+        }
 
         var hsvColor = HsvColor;
 
@@ -976,6 +982,38 @@ internal class ColorSpectrum : TemplatedControl
         }
 
         UpdateColor(hsvAtPoint);
+    }
+
+    private bool TryGetHsvFromFastSpectrum(PointerPoint point, out Hsv hsvAtPoint)
+    {
+        hsvAtPoint = default;
+        if (!CanUseFastSaturationValueSpectrum())
+        {
+            return false;
+        }
+
+        if (_imageWidthFromLastBitmapCreation <= 0 || _imageHeightFromLastBitmapCreation <= 0)
+        {
+            return false;
+        }
+
+        var scale = LayoutHelper.GetLayoutScale(this);
+        var x = Math.Clamp(point.Position.X * scale, 0, _imageWidthFromLastBitmapCreation - 1);
+        var y = Math.Clamp(point.Position.Y * scale, 0, _imageHeightFromLastBitmapCreation - 1);
+        var xPercent = _imageWidthFromLastBitmapCreation <= 1 ? 0 : x / (_imageWidthFromLastBitmapCreation - 1);
+        var yPercent = _imageHeightFromLastBitmapCreation <= 1 ? 0 : y / (_imageHeightFromLastBitmapCreation - 1);
+
+        var hsvColor = HsvColor;
+        var minSaturation = _minSaturationFromLastBitmapCreation / 100.0;
+        var maxSaturation = _maxSaturationFromLastBitmapCreation / 100.0;
+        var minValue = _minValueFromLastBitmapCreation / 100.0;
+        var maxValue = _maxValueFromLastBitmapCreation / 100.0;
+
+        hsvAtPoint = new Hsv(
+            hsvColor.H,
+            minSaturation + xPercent * (maxSaturation - minSaturation),
+            maxValue - yPercent * (maxValue - minValue));
+        return true;
     }
 
     /// <summary>
@@ -1204,6 +1242,19 @@ internal class ColorSpectrum : TemplatedControl
             var scale = LayoutHelper.GetLayoutScale(this);
             int pixelWidth = (int)Math.Round(width * scale);
             int pixelHeight = (int)Math.Round(height * scale);
+            if (TryUseFastSaturationValueSpectrum(pixelWidth,
+                    pixelHeight,
+                    components,
+                    minHue,
+                    maxHue,
+                    minSaturation,
+                    maxSaturation,
+                    minValue,
+                    maxValue))
+            {
+                return;
+            }
+
             var pixelCount = pixelWidth * pixelHeight;
             var pixelDataSize = pixelCount * 4;
             // We'll only save pixel data for the middle bitmaps if our third dimension is hue.
@@ -1488,6 +1539,11 @@ internal class ColorSpectrum : TemplatedControl
             return;
         }
 
+        if (TryUpdateFastSaturationValueSpectrumBrushes())
+        {
+            return;
+        }
+
         HsvColor hsvColor = HsvColor;
         ColorSpectrumComponents components = Components;
 
@@ -1590,6 +1646,118 @@ internal class ColorSpectrum : TemplatedControl
         _spectrumOverlayRectangle.Opacity = overlayOpacity;
         _spectrumRectangle.Fill = spectrumBrush;
         _spectrumOverlayRectangle.Fill = spectrumOverlayBrush;
+    }
+
+    private bool TryUseFastSaturationValueSpectrum(
+        int pixelWidth,
+        int pixelHeight,
+        ColorSpectrumComponents components,
+        int minHue,
+        int maxHue,
+        int minSaturation,
+        int maxSaturation,
+        int minValue,
+        int maxValue)
+    {
+        if (!CanUseFastSaturationValueSpectrum(components,
+                minHue,
+                maxHue,
+                minSaturation,
+                maxSaturation,
+                minValue,
+                maxValue))
+        {
+            return false;
+        }
+
+        _componentsFromLastBitmapCreation = components;
+        _imageWidthFromLastBitmapCreation = pixelWidth;
+        _imageHeightFromLastBitmapCreation = pixelHeight;
+        _minHueFromLastBitmapCreation = minHue;
+        _maxHueFromLastBitmapCreation = maxHue;
+        _minSaturationFromLastBitmapCreation = minSaturation;
+        _maxSaturationFromLastBitmapCreation = maxSaturation;
+        _minValueFromLastBitmapCreation = minValue;
+        _maxValueFromLastBitmapCreation = maxValue;
+        _hsvValues = Array.Empty<Hsv>();
+
+        UpdateBitmapSources();
+        UpdateEllipse();
+        return true;
+    }
+
+    private bool TryUpdateFastSaturationValueSpectrumBrushes()
+    {
+        if (_spectrumOverlayRectangle == null ||
+            _spectrumRectangle == null ||
+            !CanUseFastSaturationValueSpectrum())
+        {
+            return false;
+        }
+
+        var hueColor = HsvColor.ToRgb(HsvColor.H, 1.0, 1.0);
+        if (_saturationValueSpectrumBrush == null || _saturationValueHueStop == null)
+        {
+            _saturationValueHueStop = new GradientStop(hueColor, 1);
+            _saturationValueSpectrumBrush = new LinearGradientBrush
+            {
+                StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
+                EndPoint = new RelativePoint(1, 0.5, RelativeUnit.Relative),
+                GradientStops = new GradientStops
+                {
+                    new(Colors.White, 0),
+                    _saturationValueHueStop
+                }
+            };
+        }
+        else
+        {
+            _saturationValueHueStop.Color = hueColor;
+        }
+
+        _saturationValueOverlayBrush ??= new LinearGradientBrush
+        {
+            StartPoint = new RelativePoint(0.5, 0, RelativeUnit.Relative),
+            EndPoint = new RelativePoint(0.5, 1, RelativeUnit.Relative),
+            GradientStops = new GradientStops
+            {
+                new(Colors.Transparent, 0),
+                new(Colors.Black, 1)
+            }
+        };
+
+        SetSpectrumBrushes(_saturationValueSpectrumBrush, _saturationValueOverlayBrush, 1.0);
+        return true;
+    }
+
+    private bool CanUseFastSaturationValueSpectrum()
+    {
+        return CanUseFastSaturationValueSpectrum(Components,
+            MinHue,
+            MaxHue,
+            MinSaturation,
+            MaxSaturation,
+            MinValue,
+            MaxValue);
+    }
+
+    private bool CanUseFastSaturationValueSpectrum(
+        ColorSpectrumComponents components,
+        int minHue,
+        int maxHue,
+        int minSaturation,
+        int maxSaturation,
+        int minValue,
+        int maxValue)
+    {
+        return GetValue(ShapeProperty) == ColorSpectrumShape.Box &&
+               components == ColorSpectrumComponents.SaturationValue &&
+               minHue == 0 &&
+               maxHue == 359 &&
+               minSaturation == 0 &&
+               maxSaturation == 100 &&
+               minValue == 0 &&
+               maxValue == 100;
     }
 
     /// <summary>

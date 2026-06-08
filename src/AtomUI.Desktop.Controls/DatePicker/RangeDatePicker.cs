@@ -241,6 +241,7 @@ public class RangeDatePicker : RangeInfoPickerInput
 
             _pickerPresenter.SelectedDateTime          = RangeStartSelectedDate;
             _pickerPresenter.SecondarySelectedDateTime = RangeEndSelectedDate;
+            _pickerPresenter.ResetRangePickState();
             if (RangeActivatedPart == RangeActivatedPart.Start)
             {
                 _pickerPresenter.NotifySelectRangeStart(true);

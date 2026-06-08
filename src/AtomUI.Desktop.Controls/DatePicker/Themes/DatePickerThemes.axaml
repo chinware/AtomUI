@@ -5,6 +5,7 @@
                     xmlns:calendarview="using:AtomUI.Desktop.Controls.CalendarView"
                     x:ClassModifier="internal">
     <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="../../Calendar/Themes/HeadTextButtonTheme.axaml"/>
         <ResourceInclude Source="CalendarView/CalendarButtonTheme.axaml"/>
         <ResourceInclude Source="CalendarView/CalendarDayButtonTheme.axaml"/>
         <ResourceInclude Source="CalendarView/RangeCalendarTheme.axaml"/>

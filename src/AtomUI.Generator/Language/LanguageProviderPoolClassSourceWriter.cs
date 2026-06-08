@@ -23,6 +23,7 @@ internal class LanguageProviderPoolClassSourceWriter
     private void SetupUsingInfos()
     {
         _usingInfos.Add("System.Collections.Generic");
+        _usingInfos.Add("System.Diagnostics.CodeAnalysis");
         _usingInfos.Add("AtomUI.Theme");
         _usingInfos.Add("AtomUI.Theme.Language");
     }
@@ -92,15 +93,40 @@ internal class LanguageProviderPoolClassSourceWriter
         statements.Add(
             SyntaxFactory.ReturnStatement(SyntaxFactory.IdentifierName("languageProviders")));
         
-        return SyntaxFactory.MethodDeclaration(
-                                SyntaxFactory.GenericName(SyntaxFactory.Identifier("IList"))
-                                             .WithTypeArgumentList(SyntaxFactory.TypeArgumentList(
-                                                 SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
-                                                     SyntaxFactory.ParseTypeName("LanguageProvider")))),
-                                SyntaxFactory.Identifier("GetLanguageProviders"))
-                            .WithModifiers(SyntaxFactory.TokenList(
-                                SyntaxFactory.Token(SyntaxKind.InternalKeyword),
-                                SyntaxFactory.Token(SyntaxKind.StaticKeyword)))
-                            .WithBody(SyntaxFactory.Block(statements));
+        var methodDecl = SyntaxFactory.MethodDeclaration(
+                                             SyntaxFactory.GenericName(SyntaxFactory.Identifier("IList"))
+                                                          .WithTypeArgumentList(SyntaxFactory.TypeArgumentList(
+                                                              SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
+                                                                  SyntaxFactory.ParseTypeName("LanguageProvider")))),
+                                             SyntaxFactory.Identifier("GetLanguageProviders"))
+                                         .WithModifiers(SyntaxFactory.TokenList(
+                                             SyntaxFactory.Token(SyntaxKind.InternalKeyword),
+                                             SyntaxFactory.Token(SyntaxKind.StaticKeyword)))
+                                         .WithBody(SyntaxFactory.Block(statements));
+
+        foreach (var languageInfo in _languageInfos)
+        {
+            methodDecl = methodDecl.AddAttributeLists(GenerateDynamicDependencyAttributeList(languageInfo));
+        }
+
+        return methodDecl;
+    }
+
+    private static AttributeListSyntax GenerateDynamicDependencyAttributeList(LanguageInfo languageInfo)
+    {
+        var attribute = SyntaxFactory.Attribute(SyntaxFactory.IdentifierName("DynamicDependency"))
+                                     .WithArgumentList(SyntaxFactory.AttributeArgumentList(
+                                         SyntaxFactory.SeparatedList<AttributeArgumentSyntax>(
+                                             new SyntaxNodeOrToken[]
+                                             {
+                                                 SyntaxFactory.AttributeArgument(SyntaxFactory.ParseExpression(
+                                                     "DynamicallyAccessedMemberTypes.PublicFields")),
+                                                 SyntaxFactory.Token(SyntaxKind.CommaToken),
+                                                 SyntaxFactory.AttributeArgument(SyntaxFactory.TypeOfExpression(
+                                                     SyntaxFactory.ParseTypeName(
+                                                         $"{languageInfo.Namespace}.{languageInfo.ClassName}")))
+                                             })));
+
+        return SyntaxFactory.AttributeList(SyntaxFactory.SingletonSeparatedList(attribute));
     }
 }
