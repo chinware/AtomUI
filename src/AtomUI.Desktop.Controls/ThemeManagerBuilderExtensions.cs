@@ -99,6 +99,7 @@ public static class ThemeManagerBuilderExtensions
             typeof(SpaceToken),
             typeof(SplitterToken),
             typeof(SpinToken),
+            typeof(StepsToken),
             typeof(TabControlToken),
             typeof(TagToken),
             typeof(TimePickerToken),

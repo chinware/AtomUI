@@ -23,6 +23,7 @@ using AtomUIGallery.ShowCases.Separator;
 using AtomUIGallery.ShowCases.Space;
 using AtomUIGallery.ShowCases.SplitButton;
 using AtomUIGallery.ShowCases.Splitter;
+using AtomUIGallery.ShowCases.Steps;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -68,6 +69,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.ComboBox,
         BrowserGalleryPageKind.DropdownButton,
         BrowserGalleryPageKind.Pagination,
+        BrowserGalleryPageKind.Steps,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -294,7 +296,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                                      BrowserGalleryPageKind.Menu),
                 CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Pagination,
                                      PaginationViewModel.ID,
-                                     BrowserGalleryPageKind.Pagination)));
+                                     BrowserGalleryPageKind.Pagination),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Steps,
+                                     StepsViewModel.ID,
+                                     BrowserGalleryPageKind.Steps)));
 
         return navMenu;
     }
@@ -480,6 +485,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new PaginationViewModel(this)
             },
+            BrowserGalleryPageKind.Steps => new StepsShowCase
+            {
+                DataContext = new StepsViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -625,6 +634,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         ComboBox,
         DropdownButton,
         Pagination,
+        Steps,
         Palette,
         Icons
     }
