@@ -11,6 +11,7 @@ using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.ButtonSpinner;
 using AtomUIGallery.ShowCases.ComboBox;
 using AtomUIGallery.ShowCases.CustomizeTheme;
+using AtomUIGallery.ShowCases.DropdownButton;
 using AtomUIGallery.ShowCases.FlexPanel;
 using AtomUIGallery.ShowCases.FloatButton;
 using AtomUIGallery.ShowCases.Grid;
@@ -64,6 +65,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.Breadcrumb,
         BrowserGalleryPageKind.ButtonSpinner,
         BrowserGalleryPageKind.ComboBox,
+        BrowserGalleryPageKind.DropdownButton,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -282,6 +284,9 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                 CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_ComboBox,
                                      ComboBoxViewModel.ID,
                                      BrowserGalleryPageKind.ComboBox),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_DropdownButton,
+                                     DropdownButtonViewModel.ID,
+                                     BrowserGalleryPageKind.DropdownButton),
                 CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Menu,
                                      MenuViewModel.ID,
                                      BrowserGalleryPageKind.Menu)));
@@ -462,6 +467,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new ComboBoxViewModel(this)
             },
+            BrowserGalleryPageKind.DropdownButton => new DropdownButtonShowCase
+            {
+                DataContext = new DropdownButtonViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -605,6 +614,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Breadcrumb,
         ButtonSpinner,
         ComboBox,
+        DropdownButton,
         Palette,
         Icons
     }
