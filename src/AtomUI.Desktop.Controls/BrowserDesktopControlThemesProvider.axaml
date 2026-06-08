@@ -9,6 +9,7 @@
         <ResourceInclude Source="Breadcrumb/Themes/BreadcrumbThemes.axaml" />
         <ResourceInclude Source="Card/Themes/CardThemes.axaml" />
         <ResourceInclude Source="Cascader/Themes/CascaderThemes.axaml" />
+        <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" />
         <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" />
         <ResourceInclude Source="Primitives/Themes/WaveSpiritDecoratorTheme.axaml" />
         <ResourceInclude Source="Primitives/AddOnDecoratedBox/Themes/AddOnDecoratedBoxThemes.axaml" />

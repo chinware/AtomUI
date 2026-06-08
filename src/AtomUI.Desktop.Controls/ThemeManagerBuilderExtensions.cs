@@ -71,6 +71,7 @@ public static class ThemeManagerBuilderExtensions
             typeof(CardToken),
             typeof(CascaderToken),
             typeof(CheckBoxToken),
+            typeof(ComboBoxToken),
             typeof(DatePickerToken),
             typeof(EmptyToken),
             typeof(FlyoutHostToken),

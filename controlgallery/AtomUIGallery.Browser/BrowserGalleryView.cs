@@ -9,6 +9,7 @@ using AtomUIGallery.ShowCases.AboutUs;
 using AtomUIGallery.ShowCases.Breadcrumb;
 using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.ButtonSpinner;
+using AtomUIGallery.ShowCases.ComboBox;
 using AtomUIGallery.ShowCases.CustomizeTheme;
 using AtomUIGallery.ShowCases.FlexPanel;
 using AtomUIGallery.ShowCases.FloatButton;
@@ -62,6 +63,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.Splitter,
         BrowserGalleryPageKind.Breadcrumb,
         BrowserGalleryPageKind.ButtonSpinner,
+        BrowserGalleryPageKind.ComboBox,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -277,6 +279,9 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                 CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_ButtonSpinner,
                                      ButtonSpinnerViewModel.ID,
                                      BrowserGalleryPageKind.ButtonSpinner),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_ComboBox,
+                                     ComboBoxViewModel.ID,
+                                     BrowserGalleryPageKind.ComboBox),
                 CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Menu,
                                      MenuViewModel.ID,
                                      BrowserGalleryPageKind.Menu)));
@@ -453,6 +458,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new ButtonSpinnerViewModel(this)
             },
+            BrowserGalleryPageKind.ComboBox => new ComboBoxShowCase
+            {
+                DataContext = new ComboBoxViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -595,6 +604,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Splitter,
         Breadcrumb,
         ButtonSpinner,
+        ComboBox,
         Palette,
         Icons
     }
