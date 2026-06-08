@@ -93,6 +93,7 @@ public static class ThemeManagerBuilderExtensions
             typeof(SkeletonToken),
             typeof(SliderToken),
             typeof(SpaceToken),
+            typeof(SplitterToken),
             typeof(SpinToken),
             typeof(TabControlToken),
             typeof(TagToken),

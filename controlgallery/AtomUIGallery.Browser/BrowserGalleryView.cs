@@ -16,6 +16,7 @@ using AtomUIGallery.ShowCases.Palette;
 using AtomUIGallery.ShowCases.Separator;
 using AtomUIGallery.ShowCases.Space;
 using AtomUIGallery.ShowCases.SplitButton;
+using AtomUIGallery.ShowCases.Splitter;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -48,6 +49,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.FlexPanel,
         BrowserGalleryPageKind.Grid,
         BrowserGalleryPageKind.Space,
+        BrowserGalleryPageKind.Splitter,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -233,7 +235,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                                      BrowserGalleryPageKind.Grid),
                 CreateNavigationNode(CaseNavigationLangResourceKind.Layout_Space,
                                      SpaceViewModel.ID,
-                                     BrowserGalleryPageKind.Space)));
+                                     BrowserGalleryPageKind.Space),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Layout_Splitter,
+                                     SplitterViewModel.ID,
+                                     BrowserGalleryPageKind.Splitter)));
 
         navMenu.Items.Add(
             CreateNavigationGroup(
@@ -385,6 +390,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new SpaceViewModel(this)
             },
+            BrowserGalleryPageKind.Splitter => new SplitterShowCase
+            {
+                DataContext = new SplitterViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -451,6 +460,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         FlexPanel,
         Grid,
         Space,
+        Splitter,
         Palette,
         Icons
     }
