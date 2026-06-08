@@ -5,6 +5,7 @@ using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
 using AtomUIGallery.Localization;
 using AtomUIGallery.ShowCases.AboutUs;
+using AtomUIGallery.ShowCases.Breadcrumb;
 using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.CustomizeTheme;
 using AtomUIGallery.ShowCases.FlexPanel;
@@ -50,6 +51,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.Grid,
         BrowserGalleryPageKind.Space,
         BrowserGalleryPageKind.Splitter,
+        BrowserGalleryPageKind.Breadcrumb,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -244,6 +246,9 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             CreateNavigationGroup(
                 CaseNavigationLangResourceKind.Navigation,
                 AntDesignIconKind.MenuOutlined,
+                CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Breadcrumb,
+                                     BreadcrumbViewModel.ID,
+                                     BrowserGalleryPageKind.Breadcrumb),
                 CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Menu,
                                      MenuViewModel.ID,
                                      BrowserGalleryPageKind.Menu)));
@@ -394,6 +399,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new SplitterViewModel(this)
             },
+            BrowserGalleryPageKind.Breadcrumb => new BreadcrumbShowCase
+            {
+                DataContext = new BreadcrumbViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -461,6 +470,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Grid,
         Space,
         Splitter,
+        Breadcrumb,
         Palette,
         Icons
     }
