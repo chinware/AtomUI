@@ -21,6 +21,7 @@
 
     <ItemGroup>
         <ProjectReference Include="../AtomUIGallery/AtomUIGallery.csproj"/>
+        <ProjectReference Include="../../src/AtomUI.Fonts.AlibabaPuHuiTi/AtomUI.Fonts.AlibabaPuHuiTi.csproj"/>
     </ItemGroup>
 
     <Target Name="DeduplicateBrowserWasmStaticWebAssets"

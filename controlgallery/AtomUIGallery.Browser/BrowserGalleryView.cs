@@ -2,11 +2,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Fonts.AlibabaPuHuiTi;
 using AtomUI.Icons.AntDesign;
 using AtomUIGallery.Localization;
 using AtomUIGallery.ShowCases.AboutUs;
 using AtomUIGallery.ShowCases.Breadcrumb;
 using AtomUIGallery.ShowCases.Button;
+using AtomUIGallery.ShowCases.ButtonSpinner;
 using AtomUIGallery.ShowCases.CustomizeTheme;
 using AtomUIGallery.ShowCases.FlexPanel;
 using AtomUIGallery.ShowCases.FloatButton;
@@ -21,6 +23,8 @@ using AtomUIGallery.ShowCases.Splitter;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -37,8 +41,13 @@ namespace AtomUIGallery.Browser;
 
 internal sealed class BrowserGalleryView : UserControl, IScreen
 {
+    private static readonly TimeSpan s_pagePreloadInitialDelay = TimeSpan.FromSeconds(6);
+    private static readonly TimeSpan s_pagePreloadUserIdleDelay = TimeSpan.FromSeconds(3);
+    private static readonly TimeSpan s_pagePreloadStepDelay = TimeSpan.FromSeconds(2);
+    private static readonly TimeSpan s_pagePreloadTimerInterval = TimeSpan.FromSeconds(1);
+    private static readonly DispatcherPriority s_pagePreloadPriority = DispatcherPriority.SystemIdle;
     private static readonly FontFamily s_appFontFamily =
-        FontFamily.Parse("fonts:AlibabaSans#Alibaba Sans, $Default");
+        FontFamily.Parse($"fonts:AlibabaSans#Alibaba Sans, {AlibabaPuHuiTiFontConstants.FontFamily}, $Default");
     private static readonly BrowserGalleryPageKind[] s_pagesToPreload =
     [
         BrowserGalleryPageKind.Button,
@@ -52,6 +61,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.Space,
         BrowserGalleryPageKind.Splitter,
         BrowserGalleryPageKind.Breadcrumb,
+        BrowserGalleryPageKind.ButtonSpinner,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -61,14 +71,22 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
     private readonly Dictionary<BrowserGalleryPageKind, NavMenuNode> _navigationNodes = new();
     private readonly Grid _contentHost;
     private readonly Dictionary<BrowserGalleryPageKind, Control> _pageCache = new();
+    private readonly HashSet<BrowserGalleryPageKind> _warmedPages = new();
     private BrowserGalleryPageKind? _activePageKind;
-    private bool _pagePreloadStarted;
+    private BrowserGalleryPageKind? _warmingPageKind;
+    private Control? _warmingPage;
+    private DispatcherTimer? _pagePreloadTimer;
+    private DateTime _nextAllowedPagePreloadUtc;
+    private int _nextPreloadPageIndex;
 
     public RoutingState Router { get; } = new();
 
     public BrowserGalleryView()
     {
         Loaded += HandleLoaded;
+        AddHandler(PointerPressedEvent, HandleUserInput, RoutingStrategies.Tunnel);
+        AddHandler(PointerWheelChangedEvent, HandleUserInput, RoutingStrategies.Tunnel);
+        AddHandler(KeyDownEvent, HandleUserInput, RoutingStrategies.Tunnel);
         FontFamily = s_appFontFamily;
 
         var header = new Border
@@ -137,6 +155,13 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Content = visualLayerManager;
 
         ShowPage(BrowserGalleryPageKind.AboutUs);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        CancelPageWarmup();
+        StopPagePreloadTimer();
+        base.OnDetachedFromVisualTree(e);
     }
 
     [DynamicDependency(DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(VisualLayerManager))]
@@ -249,6 +274,9 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                 CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Breadcrumb,
                                      BreadcrumbViewModel.ID,
                                      BrowserGalleryPageKind.Breadcrumb),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_ButtonSpinner,
+                                     ButtonSpinnerViewModel.ID,
+                                     BrowserGalleryPageKind.ButtonSpinner),
                 CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Menu,
                                      MenuViewModel.ID,
                                      BrowserGalleryPageKind.Menu)));
@@ -298,6 +326,8 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
 
     private void HandleNavigationMenuItemClick(object? sender, NavMenuItemClickEventArgs args)
     {
+        DelayPagePreload(s_pagePreloadUserIdleDelay);
+        CancelPageWarmup();
         var key = args.NavMenuItem.ItemKey;
         if (key.HasValue && _pageKindsByItemKey.TryGetValue(key.Value, out var pageKind))
         {
@@ -305,15 +335,28 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         }
     }
 
-    private void HandleLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void HandleUserInput(object? sender, RoutedEventArgs args)
     {
-        if (_pagePreloadStarted)
+        DelayPagePreload(s_pagePreloadUserIdleDelay);
+        CancelPageWarmup();
+    }
+
+    private void HandleLoaded(object? sender, RoutedEventArgs e)
+    {
+        StartPagePreloadTimer(s_pagePreloadInitialDelay);
+    }
+
+    private void StartPagePreloadTimer(TimeSpan delay)
+    {
+        if (_pagePreloadTimer is not null || _nextPreloadPageIndex >= s_pagesToPreload.Length)
         {
             return;
         }
 
-        _pagePreloadStarted = true;
-        Dispatcher.Post(() => PreloadPages(0), DispatcherPriority.ApplicationIdle);
+        DelayPagePreload(delay);
+        _pagePreloadTimer = new DispatcherTimer(s_pagePreloadTimerInterval, s_pagePreloadPriority, Dispatcher);
+        _pagePreloadTimer.Tick += HandlePagePreloadTimerTick;
+        _pagePreloadTimer.Start();
     }
 
     private void ShowPage(BrowserGalleryPageKind pageKind)
@@ -323,6 +366,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             return;
         }
 
+        CancelPageWarmup();
         var page = EnsurePage(pageKind);
 
         foreach (var cachedPage in _pageCache)
@@ -334,6 +378,8 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         }
 
         _activePageKind = pageKind;
+        _warmedPages.Add(pageKind);
+        SkipWarmedPreloadPages();
         UpdateNavigationSelection(pageKind);
     }
 
@@ -403,6 +449,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new BreadcrumbViewModel(this)
             },
+            BrowserGalleryPageKind.ButtonSpinner => new ButtonSpinnerShowCase
+            {
+                DataContext = new ButtonSpinnerViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -415,37 +465,110 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         };
     }
 
-    private void PreloadPages(int index)
+    private void HandlePagePreloadTimerTick(object? sender, EventArgs e)
     {
-        var pagesToPreload = s_pagesToPreload;
-        if (index >= pagesToPreload.Length)
+        if (DateTime.UtcNow < _nextAllowedPagePreloadUtc)
         {
             return;
         }
 
-        var pageKind = pagesToPreload[index];
-        if (_pageCache.TryGetValue(pageKind, out _))
+        SkipWarmedPreloadPages();
+        if (_nextPreloadPageIndex >= s_pagesToPreload.Length)
         {
-            Dispatcher.Post(() => PreloadPages(index + 1), DispatcherPriority.ApplicationIdle);
+            StopPagePreloadTimer();
             return;
         }
 
+        BeginPageWarmup(s_pagesToPreload[_nextPreloadPageIndex]);
+    }
+
+    private void BeginPageWarmup(BrowserGalleryPageKind pageKind)
+    {
         var page = EnsurePage(pageKind);
-        page.Opacity          = 0;
-        page.IsHitTestVisible = false;
-        page.IsVisible        = true;
-
-        Dispatcher.Post(() =>
+        if (_activePageKind == pageKind)
         {
-            if (_activePageKind != pageKind)
-            {
-                page.IsVisible = false;
-            }
+            _warmedPages.Add(pageKind);
+            SkipWarmedPreloadPages();
+            return;
+        }
 
-            page.Opacity          = 1;
-            page.IsHitTestVisible = true;
-            Dispatcher.Post(() => PreloadPages(index + 1), DispatcherPriority.ApplicationIdle);
-        }, DispatcherPriority.ApplicationIdle);
+        _warmingPageKind       = pageKind;
+        _warmingPage           = page;
+        page.Opacity           = 0;
+        page.IsHitTestVisible  = false;
+        page.IsVisible         = true;
+
+        Dispatcher.Post(() => CompletePageWarmup(pageKind, page), DispatcherPriority.Loaded);
+    }
+
+    private void CompletePageWarmup(BrowserGalleryPageKind pageKind, Control page)
+    {
+        if (!ReferenceEquals(_warmingPage, page))
+        {
+            return;
+        }
+
+        if (_activePageKind != pageKind)
+        {
+            page.IsVisible = false;
+        }
+
+        page.Opacity          = 1;
+        page.IsHitTestVisible = true;
+        _warmedPages.Add(pageKind);
+        _warmingPageKind = null;
+        _warmingPage     = null;
+
+        SkipWarmedPreloadPages();
+        DelayPagePreload(s_pagePreloadStepDelay);
+    }
+
+    private void CancelPageWarmup()
+    {
+        if (_warmingPage is null)
+        {
+            return;
+        }
+
+        if (_activePageKind != _warmingPageKind)
+        {
+            _warmingPage.IsVisible = false;
+        }
+
+        _warmingPage.Opacity          = 1;
+        _warmingPage.IsHitTestVisible = true;
+        _warmingPageKind = null;
+        _warmingPage     = null;
+    }
+
+    private void SkipWarmedPreloadPages()
+    {
+        while (_nextPreloadPageIndex < s_pagesToPreload.Length &&
+               _warmedPages.Contains(s_pagesToPreload[_nextPreloadPageIndex]))
+        {
+            _nextPreloadPageIndex++;
+        }
+    }
+
+    private void DelayPagePreload(TimeSpan delay)
+    {
+        var nextAllowedPreloadUtc = DateTime.UtcNow + delay;
+        if (nextAllowedPreloadUtc > _nextAllowedPagePreloadUtc)
+        {
+            _nextAllowedPagePreloadUtc = nextAllowedPreloadUtc;
+        }
+    }
+
+    private void StopPagePreloadTimer()
+    {
+        if (_pagePreloadTimer is null)
+        {
+            return;
+        }
+
+        _pagePreloadTimer.Stop();
+        _pagePreloadTimer.Tick -= HandlePagePreloadTimerTick;
+        _pagePreloadTimer = null;
     }
 
     private void UpdateNavigationSelection(BrowserGalleryPageKind pageKind)
@@ -471,6 +594,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Space,
         Splitter,
         Breadcrumb,
+        ButtonSpinner,
         Palette,
         Icons
     }
