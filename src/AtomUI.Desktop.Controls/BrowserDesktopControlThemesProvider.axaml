@@ -15,6 +15,7 @@
         <ResourceInclude Source="Primitives/AddOnDecoratedBox/Themes/AddOnDecoratedBoxThemes.axaml" />
         <ResourceInclude Source="Primitives/InfoPickerInput/Themes/InfoPickerInputThemes.axaml" />
         <ResourceInclude Source="Primitives/ArrowDecoratedBox/Themes/ArrowDecoratedBoxThemes.axaml" />
+        <ResourceInclude Source="Primitives/CandidateList/Themes/CandidateListThemes.axaml" />
         <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" />
         <ResourceInclude Source="Buttons/Themes/BrowserButtonThemes.axaml" />
         <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" />

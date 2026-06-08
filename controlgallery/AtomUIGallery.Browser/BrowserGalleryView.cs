@@ -6,6 +6,7 @@ using AtomUI.Fonts.AlibabaPuHuiTi;
 using AtomUI.Icons.AntDesign;
 using AtomUIGallery.Localization;
 using AtomUIGallery.ShowCases.AboutUs;
+using AtomUIGallery.ShowCases.AutoComplete;
 using AtomUIGallery.ShowCases.Breadcrumb;
 using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.ButtonSpinner;
@@ -74,6 +75,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.Steps,
         BrowserGalleryPageKind.TabControl,
         BrowserGalleryPageKind.TabStrip,
+        BrowserGalleryPageKind.AutoComplete,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -311,6 +313,14 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                                      TabStripViewModel.ID,
                                      BrowserGalleryPageKind.TabStrip)));
 
+        navMenu.Items.Add(
+            CreateNavigationGroup(
+                CaseNavigationLangResourceKind.DataEntry,
+                AntDesignIconKind.FormOutlined,
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_AutoComplete,
+                                     AutoCompleteViewModel.ID,
+                                     BrowserGalleryPageKind.AutoComplete)));
+
         return navMenu;
     }
 
@@ -507,6 +517,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new TabStripViewModel(this)
             },
+            BrowserGalleryPageKind.AutoComplete => new AutoCompleteShowCase
+            {
+                DataContext = new AutoCompleteViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -655,6 +669,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Steps,
         TabControl,
         TabStrip,
+        AutoComplete,
         Palette,
         Icons
     }
