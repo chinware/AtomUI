@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>$(AtomUITargetFrameworks)</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets/*" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../AtomUI.Core/AtomUI.Core.csproj" />
+    </ItemGroup>
+
+</Project>
