@@ -10,6 +10,7 @@ using AtomUIGallery.ShowCases.AutoComplete;
 using AtomUIGallery.ShowCases.Breadcrumb;
 using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.ButtonSpinner;
+using AtomUIGallery.ShowCases.Cascader;
 using AtomUIGallery.ShowCases.ComboBox;
 using AtomUIGallery.ShowCases.CustomizeTheme;
 using AtomUIGallery.ShowCases.DropdownButton;
@@ -76,6 +77,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.TabControl,
         BrowserGalleryPageKind.TabStrip,
         BrowserGalleryPageKind.AutoComplete,
+        BrowserGalleryPageKind.Cascader,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -319,7 +321,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                 AntDesignIconKind.FormOutlined,
                 CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_AutoComplete,
                                      AutoCompleteViewModel.ID,
-                                     BrowserGalleryPageKind.AutoComplete)));
+                                     BrowserGalleryPageKind.AutoComplete),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataEntry_Cascader,
+                                     CascaderViewModel.ID,
+                                     BrowserGalleryPageKind.Cascader)));
 
         return navMenu;
     }
@@ -521,6 +526,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new AutoCompleteViewModel(this)
             },
+            BrowserGalleryPageKind.Cascader => new CascaderShowCase
+            {
+                DataContext = new CascaderViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -670,6 +679,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         TabControl,
         TabStrip,
         AutoComplete,
+        Cascader,
         Palette,
         Icons
     }
