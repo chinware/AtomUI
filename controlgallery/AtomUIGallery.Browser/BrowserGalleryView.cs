@@ -9,6 +9,7 @@ using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.CustomizeTheme;
 using AtomUIGallery.ShowCases.FlexPanel;
 using AtomUIGallery.ShowCases.FloatButton;
+using AtomUIGallery.ShowCases.Grid;
 using AtomUIGallery.ShowCases.Icon;
 using AtomUIGallery.ShowCases.Menu;
 using AtomUIGallery.ShowCases.Palette;
@@ -44,6 +45,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.CustomizeTheme,
         BrowserGalleryPageKind.Menu,
         BrowserGalleryPageKind.FlexPanel,
+        BrowserGalleryPageKind.Grid,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -222,7 +224,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                 AntDesignIconKind.LayoutOutlined,
                 CreateNavigationNode(CaseNavigationLangResourceKind.Layout_FlexPanel,
                                      FlexPanelViewModel.ID,
-                                     BrowserGalleryPageKind.FlexPanel)));
+                                     BrowserGalleryPageKind.FlexPanel),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Layout_Grid,
+                                     GridViewModel.ID,
+                                     BrowserGalleryPageKind.Grid)));
 
         navMenu.Items.Add(
             CreateNavigationGroup(
@@ -366,6 +371,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new FlexPanelViewModel(this)
             },
+            BrowserGalleryPageKind.Grid => new GridShowCase
+            {
+                DataContext = new GridViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -430,6 +439,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         CustomizeTheme,
         Menu,
         FlexPanel,
+        Grid,
         Palette,
         Icons
     }
