@@ -19,6 +19,7 @@ internal static partial class Program
         var failures = new List<string>();
         VerifyCompactSpaceFillerValidation(failures);
         VerifyCompactSpacePositions(failures);
+        VerifyCompactSpaceHorizontalCrossAxisStretch(failures);
         VerifyCompactSpaceZIndexState(failures);
         VerifyCompactSpaceRemoveChildCleanup(failures);
         VerifySpaceExplicitSpacing(failures);
@@ -127,6 +128,33 @@ internal static partial class Program
             failures);
         Expect(boxes[2].CompactSpaceItemPosition?.HasFlag(SpaceItemPosition.Last) == true,
             $"CompactSpace {orientation} last child should be Last.",
+            failures);
+    }
+
+    private static void VerifyCompactSpaceHorizontalCrossAxisStretch(ICollection<string> failures)
+    {
+        var input = new LineEdit
+        {
+            Text = "https://atomui.net"
+        };
+        var button = new AtomUI.Desktop.Controls.Button
+        {
+            Content = "Submit",
+            Height  = 48
+        };
+        var compactSpace = new CompactSpace
+        {
+            Orientation = Orientation.Horizontal,
+            Width       = 320
+        };
+        compactSpace.Children.Add(input);
+        compactSpace.Children.Add(button);
+
+        using var realized = RealizeControl(compactSpace);
+        RefreshLayout(realized.Window);
+
+        ExpectClose(input.Bounds.Height, button.Bounds.Height,
+            $"Horizontal CompactSpace should stretch children to the same row height, input {input.Bounds.Height}, button {button.Bounds.Height}.",
             failures);
     }
 

@@ -7,6 +7,7 @@
         <ResourceInclude Source="SearchEditDecoratedBoxTheme.axaml" />
         <ResourceInclude Source="InputClearIconButtonTheme.axaml" />
         <ResourceInclude Source="RevealButtonTheme.axaml" />
+        <ResourceInclude Source="LineEditTheme.axaml" />
         <ResourceInclude Source="SearchEditTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
     <themes:SearchButtonTheme x:Key="{x:Type atom:SearchButton}" TargetType="atom:SearchButton" />

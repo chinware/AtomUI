@@ -203,6 +203,7 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
         {
             if (compactSpaceOrientation == Orientation.Horizontal)
             {
+                SetCurrentValue(VerticalAlignmentProperty, VerticalAlignment.Stretch);
                 if (size.IsStar)
                 {
                     ClearValue(WidthProperty);
@@ -222,14 +223,16 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
                 if (Child != null)
                 {
                     Child.SetCurrentValue(HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+                    Child.SetCurrentValue(VerticalAlignmentProperty, VerticalAlignment.Stretch);
                 }
             }
             else
             {
+                SetCurrentValue(HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
                 if (size.IsStar)
                 {
                     ClearValue(HeightProperty);
-                    SetCurrentValue(VerticalAlignmentProperty, HorizontalAlignment.Stretch);
+                    SetCurrentValue(VerticalAlignmentProperty, VerticalAlignment.Stretch);
                 }
                 else if (size.IsAbsolute)
                 {
@@ -244,6 +247,7 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
                 
                 if (Child != null)
                 {
+                    Child.SetCurrentValue(HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
                     Child.SetCurrentValue(VerticalAlignmentProperty, VerticalAlignment.Stretch);
                 }
             }

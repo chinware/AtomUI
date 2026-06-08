@@ -18,6 +18,7 @@ public class BrowserGalleryApplication : Application
             builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
             builder.UseAlibabaSansFont();
             builder.UseDesktopControls();
+            builder.UseDesktopColorPicker();
             builder.UseGalleryControls();
         });
     }

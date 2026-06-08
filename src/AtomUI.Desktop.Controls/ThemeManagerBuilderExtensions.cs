@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AtomUI.Controls;
+using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.MotionScene;
 using AtomUI.Theme;
 using AtomUI.Theme.Language;
@@ -61,25 +62,45 @@ public static class ThemeManagerBuilderExtensions
         {
             typeof(AddOnDecoratedBoxToken),
             typeof(ArrowDecoratedBoxToken),
+            typeof(AutoCompleteToken),
             typeof(BadgeToken),
             typeof(ButtonSpinnerToken),
             typeof(ButtonToken),
+            typeof(CalendarToken),
+            typeof(CardToken),
+            typeof(CascaderToken),
             typeof(CheckBoxToken),
+            typeof(DatePickerToken),
+            typeof(EmptyToken),
             typeof(FlyoutHostToken),
             typeof(FloatButtonToken),
             typeof(GroupBoxToken),
+            typeof(InfoPickerInputToken),
             typeof(LineEditToken),
+            typeof(ListBoxToken),
+            typeof(ListViewToken),
             typeof(MenuToken),
             typeof(NavMenuToken),
             typeof(NumericUpDownToken),
             typeof(OptionButtonToken),
+            typeof(PopupConfirmToken),
             typeof(PopupHostToken),
             typeof(RadioButtonToken),
             typeof(ScrollViewerToken),
             typeof(SegmentedToken),
+            typeof(SelectToken),
             typeof(SeparatorToken),
+            typeof(SkeletonToken),
+            typeof(SliderToken),
+            typeof(SpaceToken),
+            typeof(SpinToken),
             typeof(TabControlToken),
-            typeof(ToggleSwitchToken)
+            typeof(TagToken),
+            typeof(TimePickerToken),
+            typeof(ToggleSwitchToken),
+            typeof(ToolTipToken),
+            typeof(TreeSelectToken),
+            typeof(TreeViewToken)
         };
     }
 }

@@ -4,26 +4,46 @@
                             x:Class="AtomUI.Desktop.Controls.BrowserDesktopControlThemesProvider"
                             Id="AtomUI.Desktop.Controls">
     <atom:ControlThemesProvider.ControlThemes>
+        <ResourceInclude Source="AutoComplete/Themes/AutoCompleteThemes.axaml" />
         <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" />
+        <ResourceInclude Source="Card/Themes/CardThemes.axaml" />
+        <ResourceInclude Source="Cascader/Themes/CascaderThemes.axaml" />
+        <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" />
         <ResourceInclude Source="Primitives/Themes/WaveSpiritDecoratorTheme.axaml" />
+        <ResourceInclude Source="Primitives/AddOnDecoratedBox/Themes/AddOnDecoratedBoxThemes.axaml" />
+        <ResourceInclude Source="Primitives/InfoPickerInput/Themes/InfoPickerInputThemes.axaml" />
         <ResourceInclude Source="Primitives/ArrowDecoratedBox/Themes/ArrowDecoratedBoxThemes.axaml" />
         <ResourceInclude Source="ButtonSpinner/Themes/ButtonSpinnerThemes.axaml" />
         <ResourceInclude Source="Buttons/Themes/BrowserButtonThemes.axaml" />
         <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" />
+        <ResourceInclude Source="Empty/Themes/EmptyTheme.axaml" />
         <ResourceInclude Source="FloatButton/Themes/FloatButtonThemes.axaml" />
         <ResourceInclude Source="Flyouts/Themes/BrowserFlyoutThemes.axaml" />
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
         <ResourceInclude Source="Input/Themes/BrowserInputThemes.axaml" />
+        <ResourceInclude Source="ListBox/Themes/ListBoxThemes.axaml" />
+        <ResourceInclude Source="ListView/Themes/ListViewThemes.axaml" />
         <ResourceInclude Source="Menu/Themes/BrowserMenuThemes.axaml" />
         <ResourceInclude Source="NavMenu/Themes/NavMenuThemes.axaml" />
         <ResourceInclude Source="NumericUpDown/Themes/NumericUpDownTheme.axaml" />
         <ResourceInclude Source="OptionButtonGroup/Themes/OptionButtonBoxThemes.axaml" />
+        <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmThemes.axaml" />
         <ResourceInclude Source="Popup/Themes/PopupThemes.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonThemes.axaml" />
         <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />
         <ResourceInclude Source="Segmented/Themes/SegmentedThemes.axaml" />
+        <ResourceInclude Source="Select/Themes/SelectThemes.axaml" />
         <ResourceInclude Source="Separator/Themes/SeparatorTheme.axaml" />
+        <ResourceInclude Source="Skeleton/Themes/SkeletonThemes.axaml" />
+        <ResourceInclude Source="Slider/Themes/SliderThemes.axaml" />
+        <ResourceInclude Source="Space/Themes/SpaceThemes.axaml" />
+        <ResourceInclude Source="Spin/Themes/SpinThemes.axaml" />
         <ResourceInclude Source="Switch/Themes/ToggleSwitchThemes.axaml" />
         <ResourceInclude Source="TabControl/Themes/TabControlThemes.axaml" />
+        <ResourceInclude Source="Tag/Themes/TagThemes.axaml" />
+        <ResourceInclude Source="TimePicker/Themes/TimePickerThemes.axaml" />
+        <ResourceInclude Source="Tooltip/Themes/ToolTipTheme.axaml" />
+        <ResourceInclude Source="TreeSelect/Themes/TreeSelectThemes.axaml" />
+        <ResourceInclude Source="TreeView/Themes/TreeViewThemes.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>

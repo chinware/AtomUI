@@ -14,6 +14,7 @@ using AtomUIGallery.ShowCases.Icon;
 using AtomUIGallery.ShowCases.Menu;
 using AtomUIGallery.ShowCases.Palette;
 using AtomUIGallery.ShowCases.Separator;
+using AtomUIGallery.ShowCases.Space;
 using AtomUIGallery.ShowCases.SplitButton;
 using Avalonia;
 using Avalonia.Controls;
@@ -46,6 +47,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.Menu,
         BrowserGalleryPageKind.FlexPanel,
         BrowserGalleryPageKind.Grid,
+        BrowserGalleryPageKind.Space,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -182,6 +184,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         var navMenu = new NavMenu
         {
             Mode                = NavMenuMode.Inline,
+            IsMotionEnabled     = false,
             Width               = 260,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment   = VerticalAlignment.Stretch
@@ -227,7 +230,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                                      BrowserGalleryPageKind.FlexPanel),
                 CreateNavigationNode(CaseNavigationLangResourceKind.Layout_Grid,
                                      GridViewModel.ID,
-                                     BrowserGalleryPageKind.Grid)));
+                                     BrowserGalleryPageKind.Grid),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Layout_Space,
+                                     SpaceViewModel.ID,
+                                     BrowserGalleryPageKind.Space)));
 
         navMenu.Items.Add(
             CreateNavigationGroup(
@@ -375,6 +381,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new GridViewModel(this)
             },
+            BrowserGalleryPageKind.Space => new SpaceShowCase
+            {
+                DataContext = new SpaceViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -440,6 +450,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Menu,
         FlexPanel,
         Grid,
+        Space,
         Palette,
         Icons
     }
