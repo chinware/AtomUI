@@ -24,6 +24,8 @@ using AtomUIGallery.ShowCases.Space;
 using AtomUIGallery.ShowCases.SplitButton;
 using AtomUIGallery.ShowCases.Splitter;
 using AtomUIGallery.ShowCases.Steps;
+using AtomUIGallery.ShowCases.TabControl;
+using AtomUIGallery.ShowCases.TabStrip;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -70,6 +72,8 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.DropdownButton,
         BrowserGalleryPageKind.Pagination,
         BrowserGalleryPageKind.Steps,
+        BrowserGalleryPageKind.TabControl,
+        BrowserGalleryPageKind.TabStrip,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -299,7 +303,13 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                                      BrowserGalleryPageKind.Pagination),
                 CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Steps,
                                      StepsViewModel.ID,
-                                     BrowserGalleryPageKind.Steps)));
+                                     BrowserGalleryPageKind.Steps),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_TabControl,
+                                     TabControlViewModel.ID,
+                                     BrowserGalleryPageKind.TabControl),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_TabStrip,
+                                     TabStripViewModel.ID,
+                                     BrowserGalleryPageKind.TabStrip)));
 
         return navMenu;
     }
@@ -489,6 +499,14 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new StepsViewModel(this)
             },
+            BrowserGalleryPageKind.TabControl => new TabControlShowCase
+            {
+                DataContext = new TabControlViewModel(this)
+            },
+            BrowserGalleryPageKind.TabStrip => new TabStripShowCase
+            {
+                DataContext = new TabStripViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -635,6 +653,8 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         DropdownButton,
         Pagination,
         Steps,
+        TabControl,
+        TabStrip,
         Palette,
         Icons
     }
