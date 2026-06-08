@@ -18,6 +18,7 @@ using AtomUIGallery.ShowCases.Grid;
 using AtomUIGallery.ShowCases.Icon;
 using AtomUIGallery.ShowCases.Menu;
 using AtomUIGallery.ShowCases.Palette;
+using AtomUIGallery.ShowCases.Pagination;
 using AtomUIGallery.ShowCases.Separator;
 using AtomUIGallery.ShowCases.Space;
 using AtomUIGallery.ShowCases.SplitButton;
@@ -66,6 +67,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.ButtonSpinner,
         BrowserGalleryPageKind.ComboBox,
         BrowserGalleryPageKind.DropdownButton,
+        BrowserGalleryPageKind.Pagination,
         BrowserGalleryPageKind.Palette,
         BrowserGalleryPageKind.Icons
     ];
@@ -289,7 +291,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                                      BrowserGalleryPageKind.DropdownButton),
                 CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Menu,
                                      MenuViewModel.ID,
-                                     BrowserGalleryPageKind.Menu)));
+                                     BrowserGalleryPageKind.Menu),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Navigation_Pagination,
+                                     PaginationViewModel.ID,
+                                     BrowserGalleryPageKind.Pagination)));
 
         return navMenu;
     }
@@ -471,6 +476,10 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new DropdownButtonViewModel(this)
             },
+            BrowserGalleryPageKind.Pagination => new PaginationShowCase
+            {
+                DataContext = new PaginationViewModel(this)
+            },
             BrowserGalleryPageKind.Palette => new PaletteShowCase
             {
                 DataContext = new PaletteViewModel(this)
@@ -615,6 +624,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         ButtonSpinner,
         ComboBox,
         DropdownButton,
+        Pagination,
         Palette,
         Icons
     }
