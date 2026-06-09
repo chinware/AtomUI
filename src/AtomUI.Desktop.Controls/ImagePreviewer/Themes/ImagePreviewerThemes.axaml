@@ -19,6 +19,8 @@
                                     TargetType="atom:ImagePreviewerDialog" />
     <ControlTheme x:Key="{x:Type atom:ImagePreviewerOverlayHost}"
                   TargetType="atom:ImagePreviewerOverlayHost">
+        <Setter Property="ImageScaleX" Value="1.0" />
+        <Setter Property="ImageScaleY" Value="1.0" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel Background="#E6000000">
