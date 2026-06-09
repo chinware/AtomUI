@@ -45,7 +45,7 @@
                         <x:String>Default</x:String>
                     </atom:ThemeConfigProvider.Algorithms>
                     <atom:ThemeConfigProvider.SharedTokenSetters>
-                        <atom:TokenSetter Key="ColorPrimary" Value="red" />
+                        <atom:TokenSetter Key="ColorPrimary" Value="#ff0000" />
                         <atom:TokenSetter Key="BorderRadius" Value="0" />
                     </atom:ThemeConfigProvider.SharedTokenSetters>
                     <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">

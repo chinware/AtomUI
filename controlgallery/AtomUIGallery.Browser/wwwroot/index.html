@@ -10,6 +10,15 @@
 <div id="out">
     <div class="avalonia-splash">
         <img class="splash-logo" src="./atomui-logo.svg" alt="AtomUI">
+        <div class="splash-progress" role="progressbar" aria-label="AtomUI Browser Gallery 加载进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="splash-progress-track">
+                <div class="splash-progress-value"></div>
+            </div>
+            <div class="splash-progress-meta">
+                <span class="splash-progress-status" aria-live="polite">准备加载...</span>
+                <span class="splash-progress-percent">0%</span>
+            </div>
+        </div>
     </div>
 </div>
 <script type="module" src="./main.js"></script>

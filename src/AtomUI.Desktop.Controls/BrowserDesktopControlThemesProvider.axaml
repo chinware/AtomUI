@@ -61,6 +61,7 @@
         <ResourceInclude Source="Switch/Themes/ToggleSwitchThemes.axaml" />
         <ResourceInclude Source="TabControl/Themes/TabControlThemes.axaml" />
         <ResourceInclude Source="Tag/Themes/TagThemes.axaml" />
+        <ResourceInclude Source="TextBlock/Themes/HyperLinkTextBlockTheme.axaml" />
         <ResourceInclude Source="TimePicker/Themes/TimePickerThemes.axaml" />
         <ResourceInclude Source="Timeline/Themes/TimelineThemes.axaml" />
         <ResourceInclude Source="Tooltip/Themes/ToolTipTheme.axaml" />

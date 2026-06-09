@@ -29,6 +29,51 @@ body {
     height: auto;
 }
 
+.splash-progress {
+    width: min(360px, calc(100vw - 48px));
+}
+
+.splash-progress-track {
+    width: 100%;
+    height: 4px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #f3f4f6;
+}
+
+.splash-progress-value {
+    width: 0;
+    height: 100%;
+    border-radius: inherit;
+    background: #e60012;
+    transition: width 160ms ease;
+}
+
+.splash-progress-meta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 10px;
+    font-size: 13px;
+    line-height: 20px;
+    color: #6b7280;
+}
+
+.splash-progress-percent {
+    color: #111827;
+    font-variant-numeric: tabular-nums;
+}
+
 .avalonia-splash.splash-close {
     display: none;
+}
+
+.splash-error {
+    width: min(720px, calc(100vw - 48px));
+    max-height: 180px;
+    margin: 0;
+    overflow: auto;
+    color: #b91c1c;
+    white-space: pre-wrap;
 }
