@@ -85,7 +85,7 @@ using NavMenuNode = AtomUI.Desktop.Controls.NavMenuNode;
 
 namespace AtomUIGallery.Browser;
 
-internal sealed class BrowserGalleryView : UserControl, IScreen
+internal sealed class BrowserGalleryView : UserControl, IScreen, IMediaBreakAwareControl
 {
     private static readonly TimeSpan s_pagePreloadInitialDelay = TimeSpan.FromSeconds(6);
     private static readonly TimeSpan s_pagePreloadUserIdleDelay = TimeSpan.FromSeconds(3);
@@ -172,6 +172,8 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
     private int _nextPreloadPageIndex;
 
     public RoutingState Router { get; } = new();
+    public MediaBreakPoint MediaBreakPoint { get; private set; } = MediaBreakPoint.Large;
+    public event EventHandler<MediaBreakPointChangedEventArgs>? MediaBreakPointChanged;
 
     public BrowserGalleryView()
     {
@@ -224,6 +226,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Grid.SetRow(navigation, 1);
 
         _contentHost = new Grid();
+        _contentHost.SizeChanged += HandleContentHostSizeChanged;
         Grid.SetColumn(_contentHost, 1);
         Grid.SetRow(_contentHost, 1);
 
@@ -247,6 +250,52 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Content = visualLayerManager;
 
         ShowPage(BrowserGalleryPageKind.AboutUs);
+    }
+
+    private void HandleContentHostSizeChanged(object? sender, SizeChangedEventArgs e)
+    {
+        NotifyMediaBreakPointChanged(ResolveMediaBreakPoint(e.NewSize.Width));
+    }
+
+    private void NotifyMediaBreakPointChanged(MediaBreakPoint breakPoint)
+    {
+        if (MediaBreakPoint == breakPoint)
+        {
+            return;
+        }
+
+        MediaBreakPoint = breakPoint;
+        MediaBreakPointChanged?.Invoke(this, new MediaBreakPointChangedEventArgs(breakPoint));
+    }
+
+    private static MediaBreakPoint ResolveMediaBreakPoint(double width)
+    {
+        if (width >= (double)MediaBreakPoint.ExtraExtraLarge)
+        {
+            return MediaBreakPoint.ExtraExtraLarge;
+        }
+
+        if (width >= (double)MediaBreakPoint.ExtraLarge)
+        {
+            return MediaBreakPoint.ExtraLarge;
+        }
+
+        if (width >= (double)MediaBreakPoint.Large)
+        {
+            return MediaBreakPoint.Large;
+        }
+
+        if (width >= (double)MediaBreakPoint.Medium)
+        {
+            return MediaBreakPoint.Medium;
+        }
+
+        if (width >= (double)MediaBreakPoint.Small)
+        {
+            return MediaBreakPoint.Small;
+        }
+
+        return MediaBreakPoint.ExtraSmall;
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -617,9 +666,19 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         foreach (var cachedPage in _pageCache)
         {
             var isActive = cachedPage.Key == pageKind;
-            cachedPage.Value.Opacity          = 1;
-            cachedPage.Value.IsHitTestVisible = true;
-            cachedPage.Value.IsVisible        = isActive;
+            var cachedPageControl = cachedPage.Value;
+            cachedPageControl.Opacity          = 1;
+            cachedPageControl.IsHitTestVisible = true;
+            cachedPageControl.IsVisible        = isActive;
+
+            if (isActive)
+            {
+                AttachPage(cachedPageControl);
+            }
+            else
+            {
+                DetachPage(cachedPageControl);
+            }
         }
 
         _activePageKind = pageKind;
@@ -638,8 +697,23 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         page           = CreatePage(pageKind);
         page.IsVisible = false;
         _pageCache.Add(pageKind, page);
-        _contentHost.Children.Add(page);
         return page;
+    }
+
+    private void AttachPage(Control page)
+    {
+        if (!_contentHost.Children.Contains(page))
+        {
+            _contentHost.Children.Add(page);
+        }
+    }
+
+    private void DetachPage(Control page)
+    {
+        if (_contentHost.Children.Contains(page))
+        {
+            _contentHost.Children.Remove(page);
+        }
     }
 
     private Control CreatePage(BrowserGalleryPageKind pageKind)
@@ -926,6 +1000,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         page.Opacity           = 0;
         page.IsHitTestVisible  = false;
         page.IsVisible         = true;
+        AttachPage(page);
 
         Dispatcher.Post(() => CompletePageWarmup(pageKind, page), DispatcherPriority.Loaded);
     }
@@ -940,6 +1015,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         if (_activePageKind != pageKind)
         {
             page.IsVisible = false;
+            DetachPage(page);
         }
 
         page.Opacity          = 1;
@@ -962,6 +1038,7 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         if (_activePageKind != _warmingPageKind)
         {
             _warmingPage.IsVisible = false;
+            DetachPage(_warmingPage);
         }
 
         _warmingPage.Opacity          = 1;

@@ -213,6 +213,8 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
             _mediaOwner = mediaOwner;
             _breakPoint = mediaOwner.MediaBreakPoint;
             mediaOwner.MediaBreakPointChanged += HandleMediaBreakChanged;
+            var columns = GetColumnsForMediaBreak(_breakPoint.Value);
+            UpdateGridColumns(columns, true);
         }
     }
 
@@ -233,7 +235,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         if (_breakPoint != null)
         {
             var columns = GetColumnsForMediaBreak(_breakPoint.Value);
-            UpdateGridColumns(columns);
+            UpdateGridColumns(columns, true);
         }
     }
 
@@ -277,7 +279,11 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         {
             _breakPoint = mediaOwner.MediaBreakPoint;
             var columns = GetColumnsForMediaBreak(_breakPoint.Value);
-            UpdateGridColumns(columns);
+            UpdateGridColumns(columns, true);
+        }
+        else
+        {
+            DoLayoutChildren();
         }
     }
 
@@ -469,26 +475,22 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         return Layout == Orientation.Horizontal && IsBordered ? itemCount * 2 : itemCount;
     }
 
-    private void UpdateGridColumns(int columnCount)
+    private void UpdateGridColumns(int columnCount, bool forceLayout = false)
     {
-    
-        if (columnCount != _effectiveColumns)
+        var effectiveColumns = columnCount;
+        if (Layout == Orientation.Horizontal && IsBordered)
         {
-            if (Layout == Orientation.Horizontal)
-            {
-                if (IsBordered)
-                {
-                    _effectiveColumns = columnCount * 2;
-                }
-                else
-                {
-                    _effectiveColumns = columnCount;
-                }
-            }
-            else
-            {
-                _effectiveColumns = columnCount;
-            }
+            effectiveColumns = columnCount * 2;
+        }
+
+        if (effectiveColumns != _effectiveColumns)
+        {
+            _effectiveColumns = effectiveColumns;
+            forceLayout       = true;
+        }
+
+        if (forceLayout)
+        {
             DoLayoutChildren();
         }
     }
@@ -718,5 +720,6 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     {
         _gridLayout?.Children.Clear();
         AddDescriptionItems((IEnumerable<DescriptionItem>)Items);
+        DoLayoutChildren();
     }
 }
