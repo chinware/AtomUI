@@ -425,5 +425,5 @@ if (Environment.OSVersion.Version.Build >= 22000)
 
 | 文档 | 内容 |
 |------|------|
-| `docs/Native/WindowsDisableCsdShadowScheme.md` | Windows 禁用 CSD + 纯 Win32 DWM 阴影方案详细设计 |
-| `docs/Native/WindowDrawnDecorations.md` | Avalonia 12 WindowDrawnDecorations 完整使用指南 |
+| `docs/modules/native/windows-disable-csd-shadow-scheme.md` | Windows 禁用 CSD + 纯 Win32 DWM 阴影方案详细设计 |
+| `docs/modules/native/window-drawn-decorations.md` | Avalonia 12 WindowDrawnDecorations 完整使用指南 |

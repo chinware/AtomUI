@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.MotionScene;
@@ -41,14 +40,16 @@ public static class ThemeManagerBuilderExtensions
     private static void HandleThemeManagerInitialized(object? sender, EventArgs e)
     {
         Animation.RegisterCustomAnimator<TransformOperations, MotionTransformOptionsAnimator>();
+        var inputManager = AvaloniaLocator.CurrentMutable.GetService<IInputManager>();
+        if (inputManager is not null)
+        {
+            AvaloniaLocator.CurrentMutable.BindToSelf(new ToolTipService(inputManager));
+        }
+
         if (!RuntimePlatform.Features.SupportsNativeWindow)
         {
             return;
         }
-
-        var inputManager = AvaloniaLocator.CurrentMutable.GetService<IInputManager>();
-        Debug.Assert(inputManager != null);
-        AvaloniaLocator.CurrentMutable.BindToSelf(new ToolTipService(inputManager));
 
         if (sender is ThemeManager themeManager)
         {

@@ -353,9 +353,9 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
 
     internal void HandleCustomPlacement(CustomPopupPlacement placement)
     {
-        var          shadowThickness    = FrameShadow.Thickness();
         var          requestedPlacement = RequestedPlacement!.Value;
-        var          isUseOverlayHost   = ShouldUseOverlayLayer;
+        var          isUseOverlayHost   = ShouldUseOverlayLayer || !RuntimePlatform.Features.SupportsNativeWindow;
+        var          shadowThickness    = GetPositioningShadowThickness(isUseOverlayHost);
         var          hOffset            = HorizontalOffset;
         var          vOffset            = VerticalOffset;
         var          marginToAnchor     = MarginToAnchor;
@@ -488,6 +488,11 @@ public class Popup : AvaloniaPopup, IMotionAwareControl
         placement.Offset  = new Point(hOffset, vOffset);
         NotifyFlipped(false, false);
         CustomPlacementCallback?.Invoke(placement, shadowThickness, marginToAnchor, isUseOverlayHost, false, false);
+    }
+
+    private Thickness GetPositioningShadowThickness(bool isUseOverlayHost)
+    {
+        return (isUseOverlayHost ? OverlayHostShadow : PopupRootShadow).Thickness();
     }
 
     #endregion
