@@ -7,29 +7,45 @@ using AtomUI.Icons.AntDesign;
 using AtomUIGallery.Localization;
 using AtomUIGallery.ShowCases.AboutUs;
 using AtomUIGallery.ShowCases.AutoComplete;
+using AtomUIGallery.ShowCases.Avatar;
+using AtomUIGallery.ShowCases.Badge;
 using AtomUIGallery.ShowCases.Breadcrumb;
 using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.ButtonSpinner;
+using AtomUIGallery.ShowCases.Calendar;
+using AtomUIGallery.ShowCases.Card;
+using AtomUIGallery.ShowCases.Carousel;
 using AtomUIGallery.ShowCases.Cascader;
 using AtomUIGallery.ShowCases.CheckBox;
+using AtomUIGallery.ShowCases.Collapse;
 using AtomUIGallery.ShowCases.ColorPicker;
 using AtomUIGallery.ShowCases.ComboBox;
 using AtomUIGallery.ShowCases.CustomizeTheme;
+using AtomUIGallery.ShowCases.DataGrid;
 using AtomUIGallery.ShowCases.DatePicker;
+using AtomUIGallery.ShowCases.Descriptions;
 using AtomUIGallery.ShowCases.DropdownButton;
+using AtomUIGallery.ShowCases.Empty;
+using AtomUIGallery.ShowCases.Expander;
 using AtomUIGallery.ShowCases.FlexPanel;
 using AtomUIGallery.ShowCases.FloatButton;
 using AtomUIGallery.ShowCases.Form;
 using AtomUIGallery.ShowCases.Grid;
+using AtomUIGallery.ShowCases.GroupBox;
 using AtomUIGallery.ShowCases.Icon;
+using AtomUIGallery.ShowCases.ImagePreviewer;
+using AtomUIGallery.ShowCases.InfoFlyout;
 using AtomUIGallery.ShowCases.LineEdit;
+using AtomUIGallery.ShowCases.List;
 using AtomUIGallery.ShowCases.Mentions;
 using AtomUIGallery.ShowCases.Menu;
 using AtomUIGallery.ShowCases.NumberUpDown;
 using AtomUIGallery.ShowCases.Palette;
 using AtomUIGallery.ShowCases.Pagination;
+using AtomUIGallery.ShowCases.QRCode;
 using AtomUIGallery.ShowCases.RadioButton;
 using AtomUIGallery.ShowCases.Rate;
+using AtomUIGallery.ShowCases.Segmented;
 using AtomUIGallery.ShowCases.Select;
 using AtomUIGallery.ShowCases.Separator;
 using AtomUIGallery.ShowCases.Slider;
@@ -37,11 +53,17 @@ using AtomUIGallery.ShowCases.Space;
 using AtomUIGallery.ShowCases.SplitButton;
 using AtomUIGallery.ShowCases.Splitter;
 using AtomUIGallery.ShowCases.Steps;
+using AtomUIGallery.ShowCases.Statistic;
 using AtomUIGallery.ShowCases.TabControl;
 using AtomUIGallery.ShowCases.TabStrip;
+using AtomUIGallery.ShowCases.Tag;
 using AtomUIGallery.ShowCases.TimePicker;
+using AtomUIGallery.ShowCases.Timeline;
 using AtomUIGallery.ShowCases.ToggleSwitch;
+using AtomUIGallery.ShowCases.Tooltip;
+using AtomUIGallery.ShowCases.Tour;
 using AtomUIGallery.ShowCases.Transfer;
+using AtomUIGallery.ShowCases.TreeView;
 using AtomUIGallery.ShowCases.TreeSelect;
 using AtomUIGallery.ShowCases.Upload;
 using Avalonia;
@@ -111,7 +133,29 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         BrowserGalleryPageKind.Transfer,
         BrowserGalleryPageKind.Upload,
         BrowserGalleryPageKind.Palette,
-        BrowserGalleryPageKind.Icons
+        BrowserGalleryPageKind.Icons,
+        BrowserGalleryPageKind.Avatar,
+        BrowserGalleryPageKind.Badge,
+        BrowserGalleryPageKind.Calendar,
+        BrowserGalleryPageKind.Card,
+        BrowserGalleryPageKind.Carousel,
+        BrowserGalleryPageKind.Collapse,
+        BrowserGalleryPageKind.Descriptions,
+        BrowserGalleryPageKind.DataGrid,
+        BrowserGalleryPageKind.Expander,
+        BrowserGalleryPageKind.Empty,
+        BrowserGalleryPageKind.ImagePreviewer,
+        BrowserGalleryPageKind.GroupBox,
+        BrowserGalleryPageKind.InfoFlyout,
+        BrowserGalleryPageKind.List,
+        BrowserGalleryPageKind.QRCode,
+        BrowserGalleryPageKind.Segmented,
+        BrowserGalleryPageKind.Statistic,
+        BrowserGalleryPageKind.Tag,
+        BrowserGalleryPageKind.Timeline,
+        BrowserGalleryPageKind.TreeView,
+        BrowserGalleryPageKind.Tooltip,
+        BrowserGalleryPageKind.Tour
     ];
 
     private readonly NavMenu _showCaseNavMenu;
@@ -406,6 +450,77 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
                                      UploadViewModel.ID,
                                      BrowserGalleryPageKind.Upload)));
 
+        navMenu.Items.Add(
+            CreateNavigationGroup(
+                CaseNavigationLangResourceKind.DataDisplay,
+                AntDesignIconKind.AreaChartOutlined,
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Avatar,
+                                     AvatarViewModel.ID,
+                                     BrowserGalleryPageKind.Avatar),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Badge,
+                                     BadgeViewModel.ID,
+                                     BrowserGalleryPageKind.Badge),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Calendar,
+                                     CalendarViewModel.ID,
+                                     BrowserGalleryPageKind.Calendar),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Card,
+                                     CardViewModel.ID,
+                                     BrowserGalleryPageKind.Card),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Carousel,
+                                     CarouselViewModel.ID,
+                                     BrowserGalleryPageKind.Carousel),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Collapse,
+                                     CollapseViewModel.ID,
+                                     BrowserGalleryPageKind.Collapse),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Descriptions,
+                                     DescriptionsViewModel.ID,
+                                     BrowserGalleryPageKind.Descriptions),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_DataGrid,
+                                     DataGridViewModel.ID,
+                                     BrowserGalleryPageKind.DataGrid),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Expander,
+                                     ExpanderViewModel.ID,
+                                     BrowserGalleryPageKind.Expander),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Empty,
+                                     EmptyViewModel.ID,
+                                     BrowserGalleryPageKind.Empty),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_ImagePreviewer,
+                                     ImagePreviewerViewModel.ID,
+                                     BrowserGalleryPageKind.ImagePreviewer),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_GroupBox,
+                                     GroupBoxViewModel.ID,
+                                     BrowserGalleryPageKind.GroupBox),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_InfoFlyout,
+                                     InfoFlyoutViewModel.ID,
+                                     BrowserGalleryPageKind.InfoFlyout),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_List,
+                                     ListViewModel.ID,
+                                     BrowserGalleryPageKind.List),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_QRCode,
+                                     QRCodeViewModel.ID,
+                                     BrowserGalleryPageKind.QRCode),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Segmented,
+                                     SegmentedViewModel.ID,
+                                     BrowserGalleryPageKind.Segmented),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Statistic,
+                                     StatisticViewModel.ID,
+                                     BrowserGalleryPageKind.Statistic),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Tag,
+                                     TagViewModel.ID,
+                                     BrowserGalleryPageKind.Tag),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Timeline,
+                                     TimelineViewModel.ID,
+                                     BrowserGalleryPageKind.Timeline),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_TreeView,
+                                     TreeViewViewModel.ID,
+                                     BrowserGalleryPageKind.TreeView),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Tooltip,
+                                     TooltipViewModel.ID,
+                                     BrowserGalleryPageKind.Tooltip),
+                CreateNavigationNode(CaseNavigationLangResourceKind.DataDisplay_Tour,
+                                     TourViewModel.ID,
+                                     BrowserGalleryPageKind.Tour)));
+
         return navMenu;
     }
 
@@ -451,9 +566,14 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
 
     private void HandleNavigationMenuItemClick(object? sender, NavMenuItemClickEventArgs args)
     {
+        var key = args.NavMenuItem.ItemKey;
+        NavigateToPage(key);
+    }
+
+    private void NavigateToPage(EntityKey? key)
+    {
         DelayPagePreload(s_pagePreloadUserIdleDelay);
         CancelPageWarmup();
-        var key = args.NavMenuItem.ItemKey;
         if (key.HasValue && _pageKindsByItemKey.TryGetValue(key.Value, out var pageKind))
         {
             ShowPage(pageKind);
@@ -682,6 +802,94 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
             {
                 DataContext = new IconViewModel(this)
             },
+            BrowserGalleryPageKind.Avatar => new AvatarShowCase
+            {
+                DataContext = new AvatarViewModel(this)
+            },
+            BrowserGalleryPageKind.Badge => new BadgeShowCase
+            {
+                DataContext = new BadgeViewModel(this)
+            },
+            BrowserGalleryPageKind.Calendar => new CalendarShowCase
+            {
+                DataContext = new CalendarViewModel(this)
+            },
+            BrowserGalleryPageKind.Card => new CardShowCase
+            {
+                DataContext = new CardViewModel(this)
+            },
+            BrowserGalleryPageKind.Carousel => new CarouselShowCase
+            {
+                DataContext = new CarouselViewModel(this)
+            },
+            BrowserGalleryPageKind.Collapse => new CollapseShowCase
+            {
+                DataContext = new CollapseViewModel(this)
+            },
+            BrowserGalleryPageKind.Descriptions => new DescriptionsShowCase
+            {
+                DataContext = new DescriptionsViewModel(this)
+            },
+            BrowserGalleryPageKind.DataGrid => new DataGridShowCase
+            {
+                DataContext = new DataGridViewModel(this)
+            },
+            BrowserGalleryPageKind.Expander => new ExpanderShowCase
+            {
+                DataContext = new ExpanderViewModel(this)
+            },
+            BrowserGalleryPageKind.Empty => new EmptyShowCase
+            {
+                DataContext = new EmptyViewModel(this)
+            },
+            BrowserGalleryPageKind.ImagePreviewer => new ImagePreviewerShowCase
+            {
+                DataContext = new ImagePreviewerViewModel(this)
+            },
+            BrowserGalleryPageKind.GroupBox => new GroupBoxShowCase
+            {
+                DataContext = new GroupBoxViewModel(this)
+            },
+            BrowserGalleryPageKind.InfoFlyout => new InfoFlyoutShowCase
+            {
+                DataContext = new InfoFlyoutViewModel(this)
+            },
+            BrowserGalleryPageKind.List => new ListShowCase
+            {
+                DataContext = new ListViewModel(this)
+            },
+            BrowserGalleryPageKind.QRCode => new QRCodeShowCase
+            {
+                DataContext = new QRCodeViewModel(this)
+            },
+            BrowserGalleryPageKind.Segmented => new SegmentedShowCase
+            {
+                DataContext = new SegmentedViewModel(this)
+            },
+            BrowserGalleryPageKind.Statistic => new StatisticShowCase
+            {
+                DataContext = new StatisticViewModel(this)
+            },
+            BrowserGalleryPageKind.Tag => new TagShowCase
+            {
+                DataContext = new TagViewModel(this)
+            },
+            BrowserGalleryPageKind.Timeline => new TimelineShowCase
+            {
+                DataContext = new TimelineViewModel(this)
+            },
+            BrowserGalleryPageKind.TreeView => new TreeViewShowCase
+            {
+                DataContext = new TreeViewViewModel(this)
+            },
+            BrowserGalleryPageKind.Tooltip => new TooltipShowCase
+            {
+                DataContext = new TooltipViewModel(this)
+            },
+            BrowserGalleryPageKind.Tour => new TourShowCase
+            {
+                DataContext = new TourViewModel(this)
+            },
             _ => throw new ArgumentOutOfRangeException(nameof(pageKind), pageKind, null)
         };
     }
@@ -841,6 +1049,28 @@ internal sealed class BrowserGalleryView : UserControl, IScreen
         Transfer,
         Upload,
         Palette,
-        Icons
+        Icons,
+        Avatar,
+        Badge,
+        Calendar,
+        Card,
+        Carousel,
+        Collapse,
+        Descriptions,
+        DataGrid,
+        Expander,
+        Empty,
+        ImagePreviewer,
+        GroupBox,
+        InfoFlyout,
+        List,
+        QRCode,
+        Segmented,
+        Statistic,
+        Tag,
+        Timeline,
+        TreeView,
+        Tooltip,
+        Tour
     }
 }

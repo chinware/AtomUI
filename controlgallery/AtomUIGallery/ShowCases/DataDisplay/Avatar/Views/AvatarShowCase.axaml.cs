@@ -13,10 +13,13 @@ public partial class AvatarShowCase : ReactiveUserControl<AvatarViewModel>
         InitializeComponent();
         this.WhenActivated(disposables =>
         {
-            this.BindCommand(ViewModel!, vm => vm.ChangeUserCommand, v => v.ChangeUserButton)
-                .DisposeWith(disposables);
-            this.BindCommand(ViewModel!, vm => vm.ChangeGapCommand, v => v.ChangeGapButton)
-                .DisposeWith(disposables);
+            if (DataContext is AvatarViewModel viewModel)
+            {
+                this.BindCommand(viewModel, vm => vm.ChangeUserCommand, v => v.ChangeUserButton)
+                    .DisposeWith(disposables);
+                this.BindCommand(viewModel, vm => vm.ChangeGapCommand, v => v.ChangeGapButton)
+                    .DisposeWith(disposables);
+            }
         });
     }
 }

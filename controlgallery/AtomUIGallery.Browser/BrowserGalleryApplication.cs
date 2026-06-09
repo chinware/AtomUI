@@ -24,6 +24,7 @@ public class BrowserGalleryApplication : Application
                 $"fonts:AlibabaSans#Alibaba Sans, {AlibabaPuHuiTiFontConstants.FontFamily}, $Default"));
             builder.UseDesktopControls();
             builder.UseDesktopColorPicker();
+            builder.UseDesktopDataGrid();
             builder.UseGalleryControls();
         });
     }

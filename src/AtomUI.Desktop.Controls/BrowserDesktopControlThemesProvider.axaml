@@ -5,12 +5,17 @@
                             Id="AtomUI.Desktop.Controls">
     <atom:ControlThemesProvider.ControlThemes>
         <ResourceInclude Source="AutoComplete/Themes/AutoCompleteThemes.axaml" />
+        <ResourceInclude Source="Avatar/Themes/AvatarThemes.axaml" />
         <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" />
         <ResourceInclude Source="Breadcrumb/Themes/BreadcrumbThemes.axaml" />
+        <ResourceInclude Source="Calendar/Themes/CalendarThemes.axaml" />
         <ResourceInclude Source="Card/Themes/CardThemes.axaml" />
         <ResourceInclude Source="Cascader/Themes/CascaderThemes.axaml" />
+        <ResourceInclude Source="Carousel/Themes/CarouselThemes.axaml" />
         <ResourceInclude Source="ComboBox/Themes/ComboBoxThemes.axaml" />
+        <ResourceInclude Source="Collapse/Themes/CollapseThemes.axaml" />
         <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" />
+        <ResourceInclude Source="Descriptions/Themes/DescriptionsThemes.axaml" />
         <ResourceInclude Source="Primitives/Themes/WaveSpiritDecoratorTheme.axaml" />
         <ResourceInclude Source="Primitives/AddOnDecoratedBox/Themes/AddOnDecoratedBoxThemes.axaml" />
         <ResourceInclude Source="Primitives/InfoPickerInput/Themes/InfoPickerInputThemes.axaml" />
@@ -20,10 +25,12 @@
         <ResourceInclude Source="Buttons/Themes/BrowserButtonThemes.axaml" />
         <ResourceInclude Source="CheckBox/Themes/CheckBoxThemes.axaml" />
         <ResourceInclude Source="Empty/Themes/EmptyTheme.axaml" />
+        <ResourceInclude Source="Expander/Themes/ExpanderTheme.axaml" />
         <ResourceInclude Source="FloatButton/Themes/FloatButtonThemes.axaml" />
         <ResourceInclude Source="Flyouts/Themes/BrowserFlyoutThemes.axaml" />
         <ResourceInclude Source="Form/Themes/FormThemes.axaml" />
         <ResourceInclude Source="GroupBox/Themes/GroupBoxTheme.axaml" />
+        <ResourceInclude Source="ImagePreviewer/Themes/ImagePreviewerThemes.axaml" />
         <ResourceInclude Source="Input/Themes/BrowserInputThemes.axaml" />
         <ResourceInclude Source="ListBox/Themes/ListBoxThemes.axaml" />
         <ResourceInclude Source="ListView/Themes/ListViewThemes.axaml" />
@@ -37,6 +44,7 @@
         <ResourceInclude Source="PopupConfirm/Themes/PopupConfirmThemes.axaml" />
         <ResourceInclude Source="Popup/Themes/PopupThemes.axaml" />
         <ResourceInclude Source="ProgressBar/Themes/ProgressBarThemes.axaml" />
+        <ResourceInclude Source="QRCode/Themes/QRCodeTheme.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonThemes.axaml" />
         <ResourceInclude Source="Rate/Themes/RateThemes.axaml" />
         <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />
@@ -49,11 +57,14 @@
         <ResourceInclude Source="Splitter/Themes/SplitterThemes.axaml" />
         <ResourceInclude Source="Spin/Themes/SpinThemes.axaml" />
         <ResourceInclude Source="Steps/Themes/StepsThemes.axaml" />
+        <ResourceInclude Source="Statistic/Themes/StatisticThemes.axaml" />
         <ResourceInclude Source="Switch/Themes/ToggleSwitchThemes.axaml" />
         <ResourceInclude Source="TabControl/Themes/TabControlThemes.axaml" />
         <ResourceInclude Source="Tag/Themes/TagThemes.axaml" />
         <ResourceInclude Source="TimePicker/Themes/TimePickerThemes.axaml" />
+        <ResourceInclude Source="Timeline/Themes/TimelineThemes.axaml" />
         <ResourceInclude Source="Tooltip/Themes/ToolTipTheme.axaml" />
+        <ResourceInclude Source="Tour/Themes/TourThemes.axaml" />
         <ResourceInclude Source="TreeSelect/Themes/TreeSelectThemes.axaml" />
         <ResourceInclude Source="TreeView/Themes/TreeViewThemes.axaml" />
         <ResourceInclude Source="Transfer/Themes/TransferThemes.axaml" />

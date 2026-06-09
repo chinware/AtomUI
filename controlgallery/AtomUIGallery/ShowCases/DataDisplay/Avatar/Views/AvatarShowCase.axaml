@@ -99,7 +99,7 @@
                                   FoldInfoAvatarBackground="#fde3cf"
                                   SizeType="Large"
                                   FoldAvatarFlyoutTriggerType="Click">
-                    <atom:Avatar BitmapSrc="/Assets/AvatarShowCase/PeopleAvatar4.png"/>
+                    <atom:Avatar BitmapSrc="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar4.png"/>
                     <atom:Avatar Background="#f56a00" Text="{gallery:AvatarShowCaseLangResource P2ContentK}" />
                     <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                     <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
