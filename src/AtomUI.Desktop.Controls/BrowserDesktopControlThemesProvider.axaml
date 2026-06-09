@@ -4,6 +4,7 @@
                             x:Class="AtomUI.Desktop.Controls.BrowserDesktopControlThemesProvider"
                             Id="AtomUI.Desktop.Controls">
     <atom:ControlThemesProvider.ControlThemes>
+        <ResourceInclude Source="Alert/Themes/AlertTheme.axaml" />
         <ResourceInclude Source="AutoComplete/Themes/AutoCompleteThemes.axaml" />
         <ResourceInclude Source="Avatar/Themes/AvatarThemes.axaml" />
         <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" />
@@ -16,6 +17,8 @@
         <ResourceInclude Source="Collapse/Themes/CollapseThemes.axaml" />
         <ResourceInclude Source="DatePicker/Themes/DatePickerThemes.axaml" />
         <ResourceInclude Source="Descriptions/Themes/DescriptionsThemes.axaml" />
+        <ResourceInclude Source="Dialog/Themes/DialogThemes.axaml" />
+        <ResourceInclude Source="Drawer/Themes/DrawerThemes.axaml" />
         <ResourceInclude Source="Primitives/Themes/WaveSpiritDecoratorTheme.axaml" />
         <ResourceInclude Source="Primitives/AddOnDecoratedBox/Themes/AddOnDecoratedBoxThemes.axaml" />
         <ResourceInclude Source="Primitives/InfoPickerInput/Themes/InfoPickerInputThemes.axaml" />
@@ -37,7 +40,9 @@
         <ResourceInclude Source="Mentions/Themes/MentionsThemes.axaml" />
         <ResourceInclude Source="Menu/Themes/BrowserMenuThemes.axaml" />
         <ResourceInclude Source="Message/Themes/MessageThemes.axaml" />
+        <ResourceInclude Source="MessageBox/Themes/MessageBoxThemes.axaml" />
         <ResourceInclude Source="NavMenu/Themes/NavMenuThemes.axaml" />
+        <ResourceInclude Source="Notifications/Themes/NotificationsThemes.axaml" />
         <ResourceInclude Source="NumericUpDown/Themes/NumericUpDownTheme.axaml" />
         <ResourceInclude Source="OptionButtonGroup/Themes/OptionButtonBoxThemes.axaml" />
         <ResourceInclude Source="Pagination/Themes/PaginationThemes.axaml" />
@@ -47,6 +52,7 @@
         <ResourceInclude Source="QRCode/Themes/QRCodeTheme.axaml" />
         <ResourceInclude Source="RadioButton/Themes/RadioButtonThemes.axaml" />
         <ResourceInclude Source="Rate/Themes/RateThemes.axaml" />
+        <ResourceInclude Source="Result/Themes/ResultTheme.axaml" />
         <ResourceInclude Source="ScrollViewer/Themes/ScrollViewerThemes.axaml" />
         <ResourceInclude Source="Segmented/Themes/SegmentedThemes.axaml" />
         <ResourceInclude Source="Select/Themes/SelectThemes.axaml" />

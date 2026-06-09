@@ -6,6 +6,7 @@ using AtomUI.Fonts.AlibabaPuHuiTi;
 using AtomUI.Icons.AntDesign;
 using AtomUIGallery.Localization;
 using AtomUIGallery.ShowCases.AboutUs;
+using AtomUIGallery.ShowCases.Alert;
 using AtomUIGallery.ShowCases.AutoComplete;
 using AtomUIGallery.ShowCases.Avatar;
 using AtomUIGallery.ShowCases.Badge;
@@ -24,6 +25,7 @@ using AtomUIGallery.ShowCases.CustomizeTheme;
 using AtomUIGallery.ShowCases.DataGrid;
 using AtomUIGallery.ShowCases.DatePicker;
 using AtomUIGallery.ShowCases.Descriptions;
+using AtomUIGallery.ShowCases.Drawer;
 using AtomUIGallery.ShowCases.DropdownButton;
 using AtomUIGallery.ShowCases.Empty;
 using AtomUIGallery.ShowCases.Expander;
@@ -39,17 +41,25 @@ using AtomUIGallery.ShowCases.LineEdit;
 using AtomUIGallery.ShowCases.List;
 using AtomUIGallery.ShowCases.Mentions;
 using AtomUIGallery.ShowCases.Menu;
+using AtomUIGallery.ShowCases.Message;
+using AtomUIGallery.ShowCases.Modal;
+using AtomUIGallery.ShowCases.Notification;
 using AtomUIGallery.ShowCases.NumberUpDown;
 using AtomUIGallery.ShowCases.Palette;
 using AtomUIGallery.ShowCases.Pagination;
+using AtomUIGallery.ShowCases.PopupConfirm;
+using AtomUIGallery.ShowCases.ProgressBar;
 using AtomUIGallery.ShowCases.QRCode;
 using AtomUIGallery.ShowCases.RadioButton;
 using AtomUIGallery.ShowCases.Rate;
+using AtomUIGallery.ShowCases.Result;
 using AtomUIGallery.ShowCases.Segmented;
 using AtomUIGallery.ShowCases.Select;
 using AtomUIGallery.ShowCases.Separator;
 using AtomUIGallery.ShowCases.Slider;
+using AtomUIGallery.ShowCases.Skeleton;
 using AtomUIGallery.ShowCases.Space;
+using AtomUIGallery.ShowCases.Spin;
 using AtomUIGallery.ShowCases.SplitButton;
 using AtomUIGallery.ShowCases.Splitter;
 using AtomUIGallery.ShowCases.Steps;
@@ -66,6 +76,7 @@ using AtomUIGallery.ShowCases.Transfer;
 using AtomUIGallery.ShowCases.TreeView;
 using AtomUIGallery.ShowCases.TreeSelect;
 using AtomUIGallery.ShowCases.Upload;
+using AtomUIGallery.ShowCases.Watermark;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -155,7 +166,18 @@ internal sealed class BrowserGalleryView : UserControl, IScreen, IMediaBreakAwar
         BrowserGalleryPageKind.Timeline,
         BrowserGalleryPageKind.TreeView,
         BrowserGalleryPageKind.Tooltip,
-        BrowserGalleryPageKind.Tour
+        BrowserGalleryPageKind.Tour,
+        BrowserGalleryPageKind.Alert,
+        BrowserGalleryPageKind.Drawer,
+        BrowserGalleryPageKind.Message,
+        BrowserGalleryPageKind.Modal,
+        BrowserGalleryPageKind.Notification,
+        BrowserGalleryPageKind.PopupConfirm,
+        BrowserGalleryPageKind.ProgressBar,
+        BrowserGalleryPageKind.Result,
+        BrowserGalleryPageKind.Skeleton,
+        BrowserGalleryPageKind.Spin,
+        BrowserGalleryPageKind.Watermark
     ];
 
     private readonly NavMenu _showCaseNavMenu;
@@ -570,6 +592,44 @@ internal sealed class BrowserGalleryView : UserControl, IScreen, IMediaBreakAwar
                                      TourViewModel.ID,
                                      BrowserGalleryPageKind.Tour)));
 
+        navMenu.Items.Add(
+            CreateNavigationGroup(
+                CaseNavigationLangResourceKind.Feedback,
+                AntDesignIconKind.UserSwitchOutlined,
+                CreateNavigationNode(CaseNavigationLangResourceKind.Feedback_Alert,
+                                     AlertViewModel.ID,
+                                     BrowserGalleryPageKind.Alert),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Feedback_Drawer,
+                                     DrawerViewModel.ID,
+                                     BrowserGalleryPageKind.Drawer),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Feedback_Message,
+                                     MessageViewModel.ID,
+                                     BrowserGalleryPageKind.Message),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Feedback_Modal,
+                                     ModalViewModel.ID,
+                                     BrowserGalleryPageKind.Modal),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Feedback_Notification,
+                                     NotificationViewModel.ID,
+                                     BrowserGalleryPageKind.Notification),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Feedback_PopupConfirm,
+                                     PopupConfirmViewModel.ID,
+                                     BrowserGalleryPageKind.PopupConfirm),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Feedback_ProgressBar,
+                                     ProgressBarViewModel.ID,
+                                     BrowserGalleryPageKind.ProgressBar),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Feedback_Result,
+                                     ResultViewModel.ID,
+                                     BrowserGalleryPageKind.Result),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Feedback_Skeleton,
+                                     SkeletonViewModel.ID,
+                                     BrowserGalleryPageKind.Skeleton),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Feedback_Spin,
+                                     SpinViewModel.ID,
+                                     BrowserGalleryPageKind.Spin),
+                CreateNavigationNode(CaseNavigationLangResourceKind.Feedback_Watermark,
+                                     WatermarkViewModel.ID,
+                                     BrowserGalleryPageKind.Watermark)));
+
         return navMenu;
     }
 
@@ -964,6 +1024,50 @@ internal sealed class BrowserGalleryView : UserControl, IScreen, IMediaBreakAwar
             {
                 DataContext = new TourViewModel(this)
             },
+            BrowserGalleryPageKind.Alert => new AlertShowCase
+            {
+                DataContext = new AlertViewModel(this)
+            },
+            BrowserGalleryPageKind.Drawer => new DrawerShowCase
+            {
+                DataContext = new DrawerViewModel(this)
+            },
+            BrowserGalleryPageKind.Message => new MessageShowCase
+            {
+                DataContext = new MessageViewModel(this)
+            },
+            BrowserGalleryPageKind.Modal => new ModalShowCase
+            {
+                DataContext = new ModalViewModel(this)
+            },
+            BrowserGalleryPageKind.Notification => new NotificationShowCase
+            {
+                DataContext = new NotificationViewModel(this)
+            },
+            BrowserGalleryPageKind.PopupConfirm => new PopupConfirmShowCase
+            {
+                DataContext = new PopupConfirmViewModel(this)
+            },
+            BrowserGalleryPageKind.ProgressBar => new ProgressBarShowCase
+            {
+                DataContext = new ProgressBarViewModel(this)
+            },
+            BrowserGalleryPageKind.Result => new ResultShowCase
+            {
+                DataContext = new ResultViewModel(this)
+            },
+            BrowserGalleryPageKind.Skeleton => new SkeletonShowCase
+            {
+                DataContext = new SkeletonViewModel(this)
+            },
+            BrowserGalleryPageKind.Spin => new SpinShowCase
+            {
+                DataContext = new SpinViewModel(this)
+            },
+            BrowserGalleryPageKind.Watermark => new WatermarkShowCase
+            {
+                DataContext = new WatermarkViewModel(this)
+            },
             _ => throw new ArgumentOutOfRangeException(nameof(pageKind), pageKind, null)
         };
     }
@@ -1148,6 +1252,17 @@ internal sealed class BrowserGalleryView : UserControl, IScreen, IMediaBreakAwar
         Timeline,
         TreeView,
         Tooltip,
-        Tour
+        Tour,
+        Alert,
+        Drawer,
+        Message,
+        Modal,
+        Notification,
+        PopupConfirm,
+        ProgressBar,
+        Result,
+        Skeleton,
+        Spin,
+        Watermark
     }
 }
