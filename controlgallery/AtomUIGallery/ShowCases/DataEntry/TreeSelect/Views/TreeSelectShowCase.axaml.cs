@@ -13,7 +13,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TreeSelect;
 
-public partial class TreeSelectShowCase : ReactiveUserControl<TreeSelectViewModel>
+public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectViewModel>
 {
     public const string LanguageId = nameof(TreeSelectShowCase);
 

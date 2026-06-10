@@ -6,7 +6,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.FlexPanel;
 
-public partial class FlexPanelAlignmentShowCase : ReactiveUserControl<FlexPanelViewModel>
+public partial class FlexPanelAlignmentShowCase : GalleryReactiveUserControl<FlexPanelViewModel>
 {
     private const double GapSmallValue = 8;
     private const double GapMiddleValue = 16;

@@ -2,7 +2,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TreeSelect;
 
-public partial class TreeSelectAppearanceShowCase : ReactiveUserControl<TreeSelectViewModel>
+public partial class TreeSelectAppearanceShowCase : GalleryReactiveUserControl<TreeSelectViewModel>
 {
     public TreeSelectAppearanceShowCase()
     {

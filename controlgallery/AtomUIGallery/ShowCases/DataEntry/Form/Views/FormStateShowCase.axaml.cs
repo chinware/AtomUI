@@ -7,7 +7,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Form;
 
-public partial class FormStateShowCase : ReactiveUserControl<FormViewModel>
+public partial class FormStateShowCase : GalleryReactiveUserControl<FormViewModel>
 {
     public FormStateShowCase()
     {

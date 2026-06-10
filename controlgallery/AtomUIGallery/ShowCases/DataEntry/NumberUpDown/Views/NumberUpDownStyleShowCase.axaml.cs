@@ -2,7 +2,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.NumberUpDown;
 
-public partial class NumberUpDownStyleShowCase : ReactiveUserControl<NumberUpDownViewModel>
+public partial class NumberUpDownStyleShowCase : GalleryReactiveUserControl<NumberUpDownViewModel>
 {
     public NumberUpDownStyleShowCase()
     {

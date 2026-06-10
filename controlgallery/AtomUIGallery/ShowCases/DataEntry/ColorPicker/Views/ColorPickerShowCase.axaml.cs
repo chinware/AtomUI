@@ -6,7 +6,7 @@ using ColorPicker = AtomUI.Desktop.Controls.ColorPicker;
 
 namespace AtomUIGallery.ShowCases.ColorPicker;
 
-public partial class ColorPickerShowCase : ReactiveUserControl<ColorPickerViewModel>
+public partial class ColorPickerShowCase : GalleryReactiveUserControl<ColorPickerViewModel>
 {
     public const string LanguageId = nameof(ColorPickerShowCase);
 

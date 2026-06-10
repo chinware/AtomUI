@@ -5,7 +5,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Tooltip;
 
-public partial class TooltipShowCase : ReactiveUserControl<TooltipViewModel>
+public partial class TooltipShowCase : GalleryReactiveUserControl<TooltipViewModel>
 {
     public const string LanguageId = nameof(TooltipShowCase);
 

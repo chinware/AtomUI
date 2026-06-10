@@ -14,7 +14,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TreeView;
 
-public partial class TreeViewShowCase : ReactiveUserControl<TreeViewViewModel>
+public partial class TreeViewShowCase : GalleryReactiveUserControl<TreeViewViewModel>
 {
     public const string LanguageId = nameof(TreeViewShowCase);
 

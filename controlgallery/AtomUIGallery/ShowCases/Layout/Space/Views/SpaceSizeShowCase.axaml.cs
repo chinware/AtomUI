@@ -5,7 +5,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Space;
 
-public partial class SpaceSizeShowCase : ReactiveUserControl<SpaceViewModel>
+public partial class SpaceSizeShowCase : GalleryReactiveUserControl<SpaceViewModel>
 {
     public SpaceSizeShowCase()
     {

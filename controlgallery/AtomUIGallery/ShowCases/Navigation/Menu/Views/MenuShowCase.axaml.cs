@@ -15,7 +15,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Menu;
 
-public partial class MenuShowCase : ReactiveUserControl<MenuViewModel>
+public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
 {
     public const string LanguageId = nameof(MenuShowCase);
 

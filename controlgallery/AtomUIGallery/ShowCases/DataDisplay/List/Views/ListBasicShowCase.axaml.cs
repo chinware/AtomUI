@@ -7,7 +7,7 @@ using IListItemData = AtomUI.Controls.Data.IListItemData;
 
 namespace AtomUIGallery.ShowCases.List;
 
-public partial class ListBasicShowCase : ReactiveUserControl<ListViewModel>
+public partial class ListBasicShowCase : GalleryReactiveUserControl<ListViewModel>
 {
     public ListBasicShowCase()
     {

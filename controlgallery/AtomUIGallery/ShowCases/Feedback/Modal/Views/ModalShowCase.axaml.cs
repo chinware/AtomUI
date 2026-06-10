@@ -12,7 +12,7 @@ using ToggleSwitch = AtomUI.Desktop.Controls.ToggleSwitch;
 
 namespace AtomUIGallery.ShowCases.Modal;
 
-public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
+public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
 {
     public const string LanguageId = nameof(ModalShowCase);
 

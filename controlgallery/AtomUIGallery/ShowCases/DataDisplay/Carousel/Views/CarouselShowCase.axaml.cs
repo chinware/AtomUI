@@ -6,7 +6,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Carousel;
 
-public partial class CarouselShowCase : ReactiveUserControl<CarouselViewModel>
+public partial class CarouselShowCase : GalleryReactiveUserControl<CarouselViewModel>
 {
     public const string LanguageId = nameof(CarouselShowCase);
 

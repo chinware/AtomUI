@@ -2,7 +2,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Card;
 
-public partial class CardLayoutShowCase : ReactiveUserControl<CardViewModel>
+public partial class CardLayoutShowCase : GalleryReactiveUserControl<CardViewModel>
 {
     public CardLayoutShowCase()
     {

@@ -6,7 +6,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Mentions;
 
-public partial class MentionsShowCase : ReactiveUserControl<MentionsViewModel>
+public partial class MentionsShowCase : GalleryReactiveUserControl<MentionsViewModel>
 {
     public const string LanguageId = nameof(MentionsShowCase);
 
@@ -20,24 +20,42 @@ public partial class MentionsShowCase : ReactiveUserControl<MentionsViewModel>
                 viewModel.MentionTriggers          = ["@", "#"];
                 viewModel.MentionOptionAsyncLoader = new MentionOptionsAsyncLoader();
 
-                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v => v.BasicMentions.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v => v.DisabledMentions.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v => v.ReadonlyMentions.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v => v.PlacementMentions.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v => v.ErrorMentions.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v => v.WarningMentions.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v => v.AutoSizeMentions.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v => v.ClearableMentions1.OptionsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.BasicMentionOptions, v => v.ClearableMentions2.OptionsSource)
-                    .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(MentionsViewModel.BasicMentionOptions),
+                                           vm => vm.BasicMentionOptions, BasicMentions,
+                                           AtomUI.Desktop.Controls.Mentions.OptionsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(MentionsViewModel.BasicMentionOptions),
+                                           vm => vm.BasicMentionOptions, DisabledMentions,
+                                           AtomUI.Desktop.Controls.Mentions.OptionsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(MentionsViewModel.BasicMentionOptions),
+                                           vm => vm.BasicMentionOptions, ReadonlyMentions,
+                                           AtomUI.Desktop.Controls.Mentions.OptionsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(MentionsViewModel.BasicMentionOptions),
+                                           vm => vm.BasicMentionOptions, PlacementMentions,
+                                           AtomUI.Desktop.Controls.Mentions.OptionsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(MentionsViewModel.BasicMentionOptions),
+                                           vm => vm.BasicMentionOptions, ErrorMentions,
+                                           AtomUI.Desktop.Controls.Mentions.OptionsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(MentionsViewModel.BasicMentionOptions),
+                                           vm => vm.BasicMentionOptions, WarningMentions,
+                                           AtomUI.Desktop.Controls.Mentions.OptionsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(MentionsViewModel.BasicMentionOptions),
+                                           vm => vm.BasicMentionOptions, AutoSizeMentions,
+                                           AtomUI.Desktop.Controls.Mentions.OptionsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(MentionsViewModel.BasicMentionOptions),
+                                           vm => vm.BasicMentionOptions, ClearableMentions1,
+                                           AtomUI.Desktop.Controls.Mentions.OptionsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(MentionsViewModel.BasicMentionOptions),
+                                           vm => vm.BasicMentionOptions, ClearableMentions2,
+                                           AtomUI.Desktop.Controls.Mentions.OptionsSourceProperty)
+                                   .DisposeWith(disposables);
 
                 Disposable.Create(() =>
                 {

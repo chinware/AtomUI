@@ -9,7 +9,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Form;
 
-public partial class FormDynamicShowCase : ReactiveUserControl<FormViewModel>
+public partial class FormDynamicShowCase : GalleryReactiveUserControl<FormViewModel>
 {
     private static int s_formGid = 3;
 

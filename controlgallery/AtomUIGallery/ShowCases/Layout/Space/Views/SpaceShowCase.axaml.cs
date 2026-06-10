@@ -12,7 +12,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Space;
 
-public partial class SpaceShowCase : ReactiveUserControl<SpaceViewModel>
+public partial class SpaceShowCase : GalleryReactiveUserControl<SpaceViewModel>
 {
     public const string LanguageId = nameof(SpaceShowCase);
 

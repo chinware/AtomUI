@@ -8,13 +8,12 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Skeleton;
 
-public partial class SkeletonShowCase : ReactiveUserControl<SkeletonViewModel>
+public partial class SkeletonShowCase : GalleryReactiveUserControl<SkeletonViewModel>
 {
     public const string LanguageId = nameof(SkeletonShowCase);
 
     public SkeletonShowCase()
     {
-        this.WhenActivated(disposables => { });
         InitializeComponent();
     }
 

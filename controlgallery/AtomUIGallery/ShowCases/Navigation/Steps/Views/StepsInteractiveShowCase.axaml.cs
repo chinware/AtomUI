@@ -10,7 +10,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Steps;
 
-public partial class StepsInteractiveShowCase : ReactiveUserControl<StepsViewModel>
+public partial class StepsInteractiveShowCase : GalleryReactiveUserControl<StepsViewModel>
 {
     public static readonly StyledProperty<double[]> DashedArrayProperty =
         AvaloniaProperty.Register<StepsInteractiveShowCase, double[]>(nameof(DashedArray));

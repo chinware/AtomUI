@@ -9,7 +9,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Message;
 
-public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
+public partial class MessageShowCase : GalleryReactiveUserControl<MessageViewModel>
 {
     public const string LanguageId = nameof(MessageShowCase);
 

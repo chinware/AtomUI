@@ -7,7 +7,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Tour;
 
-public partial class TourShowCase : ReactiveUserControl<TourViewModel>
+public partial class TourShowCase : GalleryReactiveUserControl<TourViewModel>
 {
     public const string LanguageId = nameof(TourShowCase);
 

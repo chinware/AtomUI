@@ -32,7 +32,16 @@ public class BadgeViewModel : ReactiveObject, IRoutableViewModel
     public bool StandaloneSwitchChecked
     {
         get => _standaloneSwitchChecked;
-        set => this.RaiseAndSetIfChanged(ref _standaloneSwitchChecked, value);
+        set
+        {
+            if (_standaloneSwitchChecked == value)
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _standaloneSwitchChecked, value);
+            HandleStandaloneSwitchChecked(value);
+        }
     }
 
     private double _standaloneBadgeCount1;
@@ -62,9 +71,7 @@ public class BadgeViewModel : ReactiveObject, IRoutableViewModel
     public BadgeViewModel(IScreen screen)
     {
         HostScreen = screen;
-
-        this.WhenAnyValue(vm => vm.StandaloneSwitchChecked)
-            .Subscribe(HandleStandaloneSwitchChecked);
+        HandleStandaloneSwitchChecked(StandaloneSwitchChecked);
     }
 
     private void HandleStandaloneSwitchChecked(bool value)

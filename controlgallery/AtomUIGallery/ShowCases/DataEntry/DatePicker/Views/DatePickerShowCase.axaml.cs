@@ -7,7 +7,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.DatePicker;
 
-public partial class DatePickerShowCase : ReactiveUserControl<DatePickerViewModel>
+public partial class DatePickerShowCase : GalleryReactiveUserControl<DatePickerViewModel>
 {
     public const string LanguageId = nameof(DatePickerShowCase);
 

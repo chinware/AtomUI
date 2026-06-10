@@ -3,7 +3,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Collapse;
 
-public partial class CollapseBehaviorShowCase : ReactiveUserControl<CollapseViewModel>
+public partial class CollapseBehaviorShowCase : GalleryReactiveUserControl<CollapseViewModel>
 {
     public CollapseBehaviorShowCase()
     {

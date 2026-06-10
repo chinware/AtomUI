@@ -13,7 +13,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Upload;
 
-public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
+public partial class UploadShowCase : GalleryReactiveUserControl<UploadViewModel>
 {
     public const string LanguageId = nameof(UploadShowCase);
 
@@ -229,7 +229,7 @@ public partial class UploadShowCase : ReactiveUserControl<UploadViewModel>
     }
 }
 
-public abstract class UploadScenarioShowCase : ReactiveUserControl<UploadViewModel>
+public abstract class UploadScenarioShowCase : GalleryReactiveUserControl<UploadViewModel>
 {
     private WindowMessageManager? _messageManager;
 

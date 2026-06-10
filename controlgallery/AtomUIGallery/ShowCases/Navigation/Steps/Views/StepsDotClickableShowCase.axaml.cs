@@ -2,7 +2,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Steps;
 
-public partial class StepsDotClickableShowCase : ReactiveUserControl<StepsViewModel>
+public partial class StepsDotClickableShowCase : GalleryReactiveUserControl<StepsViewModel>
 {
     public StepsDotClickableShowCase()
     {

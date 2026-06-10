@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Reactive;
+using System.Reactive.Subjects;
 using AtomUI.Controls;
 using ReactiveUI;
 
@@ -28,12 +29,23 @@ public class QRCodeViewModel : ReactiveObject, IRoutableViewModel
     public int Size
     {
         get => _size;
-        set => this.RaiseAndSetIfChanged(ref _size, value);
+        set
+        {
+            if (_size == value)
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _size, value);
+            this.RaisePropertyChanged(nameof(IconSize));
+            UpdateSizeCommandState();
+        }
     }
 
-    private readonly ObservableAsPropertyHelper<int> _iconSize;
+    private readonly BehaviorSubject<bool> _smallerCanExecute;
+    private readonly BehaviorSubject<bool> _largerCanExecute;
 
-    public int IconSize => _iconSize.Value;
+    public int IconSize => Size / 4;
 
     private IList? _eccLevels;
 
@@ -49,10 +61,25 @@ public class QRCodeViewModel : ReactiveObject, IRoutableViewModel
     public QRCodeViewModel(IScreen screen)
     {
         HostScreen = screen;
-        var smallerCanExecute = this.WhenAnyValue(x => x.Size, size => size > MinSize);
-        var largerCanExecute  = this.WhenAnyValue(x => x.Size, size => size < MaxSize);
-        SmallerCommand = ReactiveCommand.Create(() => { Size -= 10; }, smallerCanExecute);
-        LargerCommand  = ReactiveCommand.Create(() => { Size += 10; }, largerCanExecute);
-        _iconSize = this.WhenAnyValue(x => x.Size, size => size / 4).ToProperty(this, x => x.IconSize);
+        _smallerCanExecute = new BehaviorSubject<bool>(CanDecreaseSize());
+        _largerCanExecute  = new BehaviorSubject<bool>(CanIncreaseSize());
+        SmallerCommand     = ReactiveCommand.Create(() => { Size -= 10; }, _smallerCanExecute);
+        LargerCommand      = ReactiveCommand.Create(() => { Size += 10; }, _largerCanExecute);
+    }
+
+    private bool CanDecreaseSize()
+    {
+        return Size > MinSize;
+    }
+
+    private bool CanIncreaseSize()
+    {
+        return Size < MaxSize;
+    }
+
+    private void UpdateSizeCommandState()
+    {
+        _smallerCanExecute.OnNext(CanDecreaseSize());
+        _largerCanExecute.OnNext(CanIncreaseSize());
     }
 }

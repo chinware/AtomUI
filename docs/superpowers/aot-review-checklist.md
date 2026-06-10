@@ -34,13 +34,14 @@
 | AOT-RV-012：NavMenu node binding | `[x] 已通过` | 未提交 | `INavMenuNode` 字符串 path binding 已替换为强类型 getter relay，容器复用释放旧 node binding 的语义已确认。 |
 | AOT-RV-013：ReactiveWindow AOT 边界 | `[x] 已通过` | 未提交 | ReactiveUI view-side `WhenActivated` 已移除，VM activation 语义和释放边界已确认。 |
 | AOT-RV-014：Generated files 与 source generator packaging | `[x] 已通过` | 未提交 | 生成物稳定复现，source generator packaging 和 AOT analyzer 属性隔离已确认。 |
-| AOT-RV-015：剩余 controlgallery AOT warning | `[ ] 待 review` | 未提交 | 待确认 Gallery 是否纳入 AOT 发布范围及 warning 处理策略。 |
+| AOT-RV-015：剩余 controlgallery AOT warning | `[ ] 待 review` | 部分已提交；ReactiveUI 批次未提交 | Gallery localization/icon 已通过并提交；ReactiveUI expression API 已改造并清零 analyzer warning，待 review。 |
 
 最近一次验证快照：
 
 - `src/` AOT analyzer：`dotnet build src/AtomUI.Core/AtomUI.Core.csproj -c Release --no-incremental /p:IsAotCompatible=true /p:EnableTrimAnalyzer=true /p:EnableAotAnalyzer=true /p:EnableSingleFileAnalyzer=true /nr:false --nologo -v:minimal` 通过，`0 Warning(s), 0 Error(s)`。
 - `src/AtomUI.Desktop.Controls.DataGrid` AOT analyzer：`dotnet build src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj -c Release --no-incremental /m:1 /p:IsAotCompatible=true /p:EnableTrimAnalyzer=true /p:EnableAotAnalyzer=true /p:EnableSingleFileAnalyzer=true /nr:false --nologo -v:minimal` 通过，`0 Warning(s), 0 Error(s)`。
-- 全解决方案 AOT analyzer：`dotnet build AtomUI.slnx -c Release --no-incremental /m:1 /p:IsAotCompatible=true /p:EnableTrimAnalyzer=true /p:EnableAotAnalyzer=true /p:EnableSingleFileAnalyzer=true /nr:false --nologo -v:minimal` 通过，`178 Warning(s), 0 Error(s)`；warning 均在 `controlgallery/AtomUIGallery`，`src/` 库项目未见 analyzer warning。
+- Gallery AOT analyzer：`dotnet build controlgallery/AtomUIGallery/AtomUIGallery.csproj -c Release --no-incremental /m:1 /p:IsAotCompatible=true /p:EnableTrimAnalyzer=true /p:EnableAotAnalyzer=true /p:EnableSingleFileAnalyzer=true /nr:false --nologo -v:minimal` 通过，`0 Warning(s), 0 Error(s)`。
+- 全解决方案 AOT analyzer：`dotnet build AtomUI.slnx -c Release --no-incremental /m:1 /p:IsAotCompatible=true /p:EnableTrimAnalyzer=true /p:EnableAotAnalyzer=true /p:EnableSingleFileAnalyzer=true /nr:false --nologo -v:minimal` 通过，`0 Warning(s), 0 Error(s)`。
 
 ## Review 项
 
@@ -468,25 +469,31 @@
 - 主要文件：
   - `controlgallery/AtomUIGallery/**`
 - 为什么这样改：
-  - 全解决方案 analyzer 仍报告 Gallery warning，当前剩余均来自 ReactiveUI expression API。
+  - 全解决方案 analyzer 曾报告 Gallery warning，最后剩余来自 ReactiveUI expression API。
   - Gallery localization provider 原本没有显式构造函数，编译器会生成隐式 `base()` 调用，触发 `LanguageProvider()` 的反射构造 warning。
   - Gallery localization provider 已改成 `partial`，由 Language SG 读取 `[LanguageProvider(LanguageCode, LanguageId)]` 元数据并生成显式 `base(LanguageCode, LanguageId)` 构造，保留旧 metadata 语义但不再走运行时反射构造。
   - `IconGallery` 原本通过 `Assembly.GetTypes()` 扫描 AntDesign icon 类型，再用 `Activator.CreateInstance(Type)` 创建 icon；现改为由 icon generator 生成 `AntDesignIconCatalog`，Gallery 只消费 catalog。
-  - 这些 warning 不阻塞 `src/` library AOT 状态，但需要单独跟踪。
+  - `ReactiveUserControl<T>` 构造阶段会进入 ReactiveUI view activation 管线，`WhenActivated` / `OneWayBind` / `BindCommand` / `WhenAnyValue` 这批表达式 API 会触发 trim/AOT warning。Gallery 如果纳入 AOT 发布范围，就不能靠 suppression 压住。
+  - ReactiveUI 本身的 `ViewModelActivator.AddActivationBlock` 在当前包里是 `internal`，不能直接调用；VM 侧需要用公开的 `Activated` observable 或显式属性 setter 保留旧效果。
+  - 这些 warning 不阻塞 `src/` library AOT 状态，但 Gallery 已按 AOT-clean 目标处理。
 - Review 重点：
   - `[x] 已通过`：`222` 个 Gallery raw localization provider 只增加 `partial`，不修改资源文本、resource kind 或 `BuildResourceDictionary` 逻辑。
   - `[x] 已通过`：`LanguageProviderConstructorSourceWriter` 只对 `partial && !HasParameterlessConstructor` 的 provider 生成构造函数，避免和已有手写构造函数冲突。
-  - `[ ] 待 review`：`AntDesignIconCatalog.g.cs` 由现有 icon generator 的 `IconFiles` 生成，和 `AntDesignIconProvider.Factory.g.cs` 同源；每个 descriptor 保存 `Name`、`ThemeType`、`Kind`、`IconType` 和直接 `new XxxIcon()` 的 creator。
-  - `[ ] 待 review`：`IconGallery` 仍保留旧排序、theme 过滤、搜索过滤和懒加载语义，但不再运行时扫描 assembly 或反射构造 icon。
-  - 决定 Gallery 是否纳入 AOT 发布范围。
-  - 如果纳入，需要继续替换 ReactiveUI expression binding 或制定明确 preservation/suppression 策略。
-  - 如果不纳入，应记录 Gallery 是非 AOT-clean demo app。
+  - `[x] 已通过`：`AntDesignIconCatalog.g.cs` 由现有 icon generator 的 `IconFiles` 生成，和 `AntDesignIconProvider.Factory.g.cs` 同源；每个 descriptor 保存 `Name`、`ThemeType`、`Kind`、`IconType` 和直接 `new XxxIcon()` 的 creator。
+  - `[x] 已通过`：`IconGallery` 仍保留旧排序、theme 过滤、搜索过滤和懒加载语义，但不再运行时扫描 assembly 或反射构造 icon。
+  - `[ ] 待 review`：`GalleryReactiveUserControl<TViewModel>` 替换 Gallery 里的 `ReactiveUserControl<TViewModel>`；保留 `IViewFor<TViewModel>`、`ViewModel`/`DataContext` 双向同步、Loaded/Unloaded activation 和 `IActivatableViewModel.Activator.Activate()` 语义，Unload 时先 deactivate VM、再释放 view disposables；`WhenActivated` 返回的 disposable 会移除 callback 并释放该 callback 当前 activation scope，避开 ReactiveUI view-side reflection activation path。
+  - `[ ] 待 review`：空 `this.WhenActivated(...)` 删除；非空 activation block 保留在 view 侧，但调用目标改为 `GalleryReactiveUserControl.WhenActivated`，disposable 仍在 Unloaded 时释放。
+  - `[ ] 待 review`：`GalleryBindingUtils.OneWay` 替换 Gallery 的 ReactiveUI `OneWayBind`；强类型 AvaloniaProperty 走 `BindUtils.RelayBind`，非泛型 AvaloniaProperty 走本地 `INotifyPropertyChanged` observable + `target.Bind(...)`，保留初始值、PropertyChanged 更新和 dispose 释放语义。
+  - `[ ] 待 review`：`GalleryBindingUtils.BindCommand` 替换 ReactiveUI expression `BindCommand`；设置 `Button.CommandProperty`，dispose 时恢复进入绑定前的 command，disposable 挂在 activation scope 下。
+  - `[ ] 待 review`：`AvatarViewModel` / `CaseNavigationViewModel` 的 VM activation 初始化改为监听 `Activator.Activated`，保持“VM 被 view 激活时执行”的语义，不再调用会触发 AOT warning 的 VM `WhenActivated` extension。
+  - `[ ] 待 review`：`BadgeViewModel` / `QRCodeViewModel` 移除 `WhenAnyValue` / `ToProperty`；Badge 反应逻辑进入 setter，QRCode 的 `IconSize` 改为派生属性并在 `Size` setter 里 raise，command canExecute 用 `BehaviorSubject<bool>` 显式更新。
 - 验证：
   - `dotnet test tests/AtomUI.Generator.Tests/AtomUI.Generator.Tests.csproj --filter LanguageProviderConstructorGeneratorTests --nologo -v:minimal` 通过，`Failed: 0, Passed: 1`。
   - `dotnet test tests/AtomUI.Icons.Shared.Tests/AtomUI.Icons.Shared.Tests.csproj --filter IconCatalogGeneratorTests --nologo -v:minimal` 通过，`Failed: 0, Passed: 1`。
-  - 当前 Gallery AOT analyzer 能成功退出，`178 Warning(s), 0 Error(s)`。
-  - 当前全解决方案 AOT analyzer 能成功退出，`178 Warning(s), 0 Error(s)`。
-  - warning 归属全部在 `controlgallery/AtomUIGallery`，不在 `src/` 库项目。
+  - `dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --filter GalleryReactiveUserControlTests --nologo -v:minimal` 通过，`Failed: 0, Passed: 7`。
+  - `dotnet build controlgallery/AtomUIGallery/AtomUIGallery.csproj -c Release --no-incremental /m:1 /nr:false --nologo -v:minimal` 通过，`0 Warning(s), 0 Error(s)`。
+  - 当前 Gallery AOT analyzer 能成功退出，`0 Warning(s), 0 Error(s)`。
+  - 当前全解决方案 AOT analyzer 能成功退出，`0 Warning(s), 0 Error(s)`。
   - `LanguageProvider()` warning 已清零；Gallery `222` 个 raw localization provider 对应生成 `222` 个显式构造函数。
   - `IconGallery` warning 已清零：`Assembly.GetTypes()` 和 `Activator.CreateInstance(Type)` 不再出现在 Gallery/full solution AOT analyzer 日志中。
-  - 当前分类：`178` 个 ReactiveUI `WhenActivated` / `OneWayBind` / `BindCommand` / `WhenAnyValue` expression API。
+  - ReactiveUI expression API warning 已清零：旧 `.OneWayBind(...)`、ReactiveUI `.BindCommand(...)`、`.WhenAnyValue(...)`、`.ToProperty(...)`、`ReactiveUserControl<T>` 在 Gallery 源码里不再残留。

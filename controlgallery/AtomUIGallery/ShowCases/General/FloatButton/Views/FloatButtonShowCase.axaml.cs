@@ -3,7 +3,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.FloatButton;
 
-public partial class FloatButtonShowCase : ReactiveUserControl<FloatButtonViewModel>
+public partial class FloatButtonShowCase : GalleryReactiveUserControl<FloatButtonViewModel>
 {
     public const string LanguageId = nameof(FloatButtonShowCase);
 

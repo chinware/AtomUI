@@ -12,7 +12,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Rate;
 
-public partial class RateShowCase : ReactiveUserControl<RateViewModel>
+public partial class RateShowCase : GalleryReactiveUserControl<RateViewModel>
 {
     public const string LanguageId = nameof(RateShowCase);
 
@@ -24,8 +24,9 @@ public partial class RateShowCase : ReactiveUserControl<RateViewModel>
             {
                 ConfigureLocalizedTooltips(viewModel);
 
-                this.OneWayBind(viewModel, vm => vm.Tooltips, v => v.ToolTipRate.ToolTips)
-                    .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(RateViewModel.Tooltips), vm => vm.Tooltips,
+                                           ToolTipRate, AtomUI.Controls.Commons.AbstractRate.ToolTipsProperty)
+                                   .DisposeWith(disposables);
 
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)

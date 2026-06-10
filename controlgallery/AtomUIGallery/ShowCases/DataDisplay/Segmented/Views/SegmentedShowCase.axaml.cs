@@ -3,13 +3,12 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Segmented;
 
-public partial class SegmentedShowCase : ReactiveUserControl<SegmentedViewModel>
+public partial class SegmentedShowCase : GalleryReactiveUserControl<SegmentedViewModel>
 {
     public const string LanguageId = nameof(SegmentedShowCase);
 
     public SegmentedShowCase()
     {
-        this.WhenActivated(disposables => { });
         InitializeComponent();
     }
 }

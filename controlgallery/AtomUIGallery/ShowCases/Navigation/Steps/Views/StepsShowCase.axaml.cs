@@ -3,7 +3,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Steps;
 
-public partial class StepsShowCase : ReactiveUserControl<StepsViewModel>
+public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
 {
     public const string LanguageId = nameof(StepsShowCase);
 

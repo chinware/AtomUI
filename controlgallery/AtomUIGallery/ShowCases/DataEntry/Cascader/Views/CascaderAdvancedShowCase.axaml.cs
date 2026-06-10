@@ -4,7 +4,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Cascader;
 
-public partial class CascaderAdvancedShowCase : ReactiveUserControl<CascaderViewModel>
+public partial class CascaderAdvancedShowCase : GalleryReactiveUserControl<CascaderViewModel>
 {
     public CascaderAdvancedShowCase()
     {

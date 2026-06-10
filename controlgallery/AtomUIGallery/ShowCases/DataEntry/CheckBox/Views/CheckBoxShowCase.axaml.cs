@@ -11,7 +11,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.CheckBox;
 
-public partial class CheckBoxShowCase : ReactiveUserControl<CheckBoxViewModel>
+public partial class CheckBoxShowCase : GalleryReactiveUserControl<CheckBoxViewModel>
 {
     public const string LanguageId = nameof(CheckBoxShowCase);
 
@@ -23,24 +23,25 @@ public partial class CheckBoxShowCase : ReactiveUserControl<CheckBoxViewModel>
             {
                 RefreshLocalizedContent(viewModel);
                 
-                this.OneWayBind(viewModel, vm => vm.CheckBoxOptions, v => v.BasicCheckBoxGroup.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.DefaultCheckBoxOptions, v => v.BasicCheckBoxGroup.CheckedItems)
-                    .DisposeWith(disposables);
-                this.BindCommand(viewModel, vm => vm.CheckStatusCommand, v => v.CheckStatusBtn)
-                    .DisposeWith(disposables);
-                this.BindCommand(viewModel, vm => vm.EnableStatusCommand, v => v.EnableStatusBtn)
-                    .DisposeWith(disposables);
-                this.BindCommand(viewModel, vm => vm.CheckBoxCommand, v => v.ControlledCheckbox)
-                    .DisposeWith(disposables);
-                this.BindCommand(viewModel, vm => vm.CheckedAllStatusCommand, v => v.CheckAllCheckbox)
-                    .DisposeWith(disposables);
-                this.BindCommand(viewModel, vm => vm.CheckedItemStatusCommand1, v => v.AppleCheckBox)
-                    .DisposeWith(disposables);
-                this.BindCommand(viewModel, vm => vm.CheckedItemStatusCommand2, v => v.PearCheckBox)
-                    .DisposeWith(disposables);
-                this.BindCommand(viewModel, vm => vm.CheckedItemStatusCommand3, v => v.OrangeCheckBox)
-                    .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(CheckBoxViewModel.CheckBoxOptions),
+                                           vm => vm.CheckBoxOptions, BasicCheckBoxGroup,
+                                           AtomUI.Controls.Commons.AbstractCheckBoxGroup.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(CheckBoxViewModel.DefaultCheckBoxOptions),
+                                           vm => vm.DefaultCheckBoxOptions, BasicCheckBoxGroup,
+                                           AtomUI.Controls.Commons.AbstractCheckBoxGroup.CheckedItemsProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.BindCommand(CheckStatusBtn, viewModel.CheckStatusCommand).DisposeWith(disposables);
+                GalleryBindingUtils.BindCommand(EnableStatusBtn, viewModel.EnableStatusCommand).DisposeWith(disposables);
+                GalleryBindingUtils.BindCommand(ControlledCheckbox, viewModel.CheckBoxCommand).DisposeWith(disposables);
+                GalleryBindingUtils.BindCommand(CheckAllCheckbox, viewModel.CheckedAllStatusCommand)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.BindCommand(AppleCheckBox, viewModel.CheckedItemStatusCommand1)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.BindCommand(PearCheckBox, viewModel.CheckedItemStatusCommand2)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.BindCommand(OrangeCheckBox, viewModel.CheckedItemStatusCommand3)
+                                   .DisposeWith(disposables);
 
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)

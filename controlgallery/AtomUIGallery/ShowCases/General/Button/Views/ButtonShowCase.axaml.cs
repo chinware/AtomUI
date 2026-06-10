@@ -8,7 +8,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Button;
 
-public partial class ButtonShowCase : ReactiveUserControl<ButtonViewModel>
+public partial class ButtonShowCase : GalleryReactiveUserControl<ButtonViewModel>
 {
     public const string LanguageId = nameof(ButtonShowCase);
 

@@ -8,7 +8,7 @@ using NumericUpDown = AtomUI.Desktop.Controls.NumericUpDown;
 
 namespace AtomUIGallery.ShowCases.FlexPanel;
 
-public partial class FlexPanelItemShowCase : ReactiveUserControl<FlexPanelViewModel>
+public partial class FlexPanelItemShowCase : GalleryReactiveUserControl<FlexPanelViewModel>
 {
     private const double BasisAbsoluteDefault = 60;
 

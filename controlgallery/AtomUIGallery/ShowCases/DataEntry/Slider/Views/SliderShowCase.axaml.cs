@@ -7,7 +7,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Slider;
 
-public partial class SliderShowCase : ReactiveUserControl<SliderViewModel>
+public partial class SliderShowCase : GalleryReactiveUserControl<SliderViewModel>
 {
     public const string LanguageId = nameof(SliderShowCase);
 
@@ -28,20 +28,27 @@ public partial class SliderShowCase : ReactiveUserControl<SliderViewModel>
                 });
                 viewModel.SliderMarks = marks;
 
-                this.OneWayBind(ViewModel, vm => vm.SliderMarks, v => v.Slider1.Marks)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.SliderMarks, v => v.Slider2.Marks)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.SliderMarks, v => v.Slider3.Marks)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.SliderMarks, v => v.Slider4.Marks)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.SliderMarks, v => v.Slider5.Marks)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.SliderMarks, v => v.Slider6.Marks)
-                    .DisposeWith(disposables);
-                this.OneWayBind(ViewModel, vm => vm.SliderMarks, v => v.Slider7.Marks)
-                    .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(SliderViewModel.SliderMarks), vm => vm.SliderMarks,
+                                           Slider1, AtomUI.Desktop.Controls.Slider.MarksProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(SliderViewModel.SliderMarks), vm => vm.SliderMarks,
+                                           Slider2, AtomUI.Desktop.Controls.Slider.MarksProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(SliderViewModel.SliderMarks), vm => vm.SliderMarks,
+                                           Slider3, AtomUI.Desktop.Controls.Slider.MarksProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(SliderViewModel.SliderMarks), vm => vm.SliderMarks,
+                                           Slider4, AtomUI.Desktop.Controls.Slider.MarksProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(SliderViewModel.SliderMarks), vm => vm.SliderMarks,
+                                           Slider5, AtomUI.Desktop.Controls.Slider.MarksProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(SliderViewModel.SliderMarks), vm => vm.SliderMarks,
+                                           Slider6, AtomUI.Desktop.Controls.Slider.MarksProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(SliderViewModel.SliderMarks), vm => vm.SliderMarks,
+                                           Slider7, AtomUI.Desktop.Controls.Slider.MarksProperty)
+                                   .DisposeWith(disposables);
 
                 Disposable.Create(() =>
                 {

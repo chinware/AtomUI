@@ -1,5 +1,5 @@
 using System.Reactive;
-using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using AtomUI.Controls;
 using ReactiveUI;
 
@@ -59,7 +59,7 @@ public class AvatarViewModel : ReactiveObject, IRoutableViewModel, IActivatableV
         ChangeUserCommand = ReactiveCommand.Create(SetupAvatarText);
         ChangeGapCommand  = ReactiveCommand.Create(SetupAvatarGap);
 
-        this.WhenActivated((CompositeDisposable disposables) =>
+        Activator.Activated.Subscribe(_ =>
         {
             SetupAvatarText();
             SetupAvatarGap();

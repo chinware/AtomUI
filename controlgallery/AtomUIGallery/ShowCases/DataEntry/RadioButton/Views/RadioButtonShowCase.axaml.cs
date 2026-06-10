@@ -12,7 +12,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.RadioButton;
 
-public partial class RadioButtonShowCase : ReactiveUserControl<RadioButtonViewModel>
+public partial class RadioButtonShowCase : GalleryReactiveUserControl<RadioButtonViewModel>
 {
     public const string LanguageId = nameof(RadioButtonShowCase);
 

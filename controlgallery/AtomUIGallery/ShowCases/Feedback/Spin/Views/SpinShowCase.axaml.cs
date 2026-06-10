@@ -3,13 +3,12 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Spin;
 
-public partial class SpinShowCase : ReactiveUserControl<SpinViewModel>
+public partial class SpinShowCase : GalleryReactiveUserControl<SpinViewModel>
 {
     public const string LanguageId = nameof(SpinShowCase);
 
     public SpinShowCase()
     {
-        this.WhenActivated(disposables => { });
         InitializeComponent();
     }
 }

@@ -15,7 +15,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Transfer;
 
-public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
+public partial class TransferShowCase : GalleryReactiveUserControl<TransferViewModel>
 {
     public const string LanguageId = nameof(TransferShowCase);
 

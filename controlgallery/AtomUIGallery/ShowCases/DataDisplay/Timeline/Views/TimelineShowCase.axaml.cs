@@ -8,7 +8,7 @@ using RadioButton = Avalonia.Controls.RadioButton;
 
 namespace AtomUIGallery.ShowCases.Timeline;
 
-public partial class TimelineShowCase : ReactiveUserControl<TimelineViewModel>
+public partial class TimelineShowCase : GalleryReactiveUserControl<TimelineViewModel>
 {
     public const string LanguageId = nameof(TimelineShowCase);
 

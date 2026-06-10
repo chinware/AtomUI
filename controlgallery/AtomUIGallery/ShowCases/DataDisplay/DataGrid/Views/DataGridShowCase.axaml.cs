@@ -6,7 +6,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.DataGrid;
 
-public partial class DataGridShowCase : ReactiveUserControl<DataGridViewModel>
+public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewModel>
 {
     public const string LanguageId = nameof(DataGridShowCase);
 
@@ -105,7 +105,7 @@ public partial class DataGridShowCase : ReactiveUserControl<DataGridViewModel>
     }
 }
 
-public abstract class DataGridScenarioShowCase : ReactiveUserControl<DataGridViewModel>
+public abstract class DataGridScenarioShowCase : GalleryReactiveUserControl<DataGridViewModel>
 {
     protected override void OnDataContextChanged(EventArgs e)
     {

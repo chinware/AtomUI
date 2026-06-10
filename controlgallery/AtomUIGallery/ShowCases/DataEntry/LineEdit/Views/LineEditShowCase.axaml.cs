@@ -3,7 +3,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.LineEdit;
 
-public partial class LineEditShowCase : ReactiveUserControl<LineEditViewModel>
+public partial class LineEditShowCase : GalleryReactiveUserControl<LineEditViewModel>
 {
     public const string LanguageId = nameof(LineEditShowCase);
 

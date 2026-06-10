@@ -13,7 +13,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Form;
 
-public partial class FormShowCase : ReactiveUserControl<FormViewModel>
+public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
 {
     public const string LanguageId = nameof(FormShowCase);
 

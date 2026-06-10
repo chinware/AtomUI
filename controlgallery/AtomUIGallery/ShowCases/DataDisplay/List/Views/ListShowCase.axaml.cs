@@ -17,7 +17,7 @@ using ListItemData = AtomUI.Controls.Data.ListItemData;
 
 namespace AtomUIGallery.ShowCases.List;
 
-public partial class ListShowCase : ReactiveUserControl<ListViewModel>
+public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
 {
     public const string LanguageId = nameof(ListShowCase);
 

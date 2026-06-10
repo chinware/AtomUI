@@ -3,13 +3,12 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Tag;
 
-public partial class TagShowCase : ReactiveUserControl<TagViewModel>
+public partial class TagShowCase : GalleryReactiveUserControl<TagViewModel>
 {
     public const string LanguageId = nameof(TagShowCase);
 
     public TagShowCase()
     {
-        this.WhenActivated(disposables => { });
         InitializeComponent();
     }
 }

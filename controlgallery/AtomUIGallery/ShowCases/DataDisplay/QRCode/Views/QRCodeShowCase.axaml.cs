@@ -6,7 +6,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.QRCode;
 
-public partial class QRCodeShowCase : ReactiveUserControl<QRCodeViewModel>
+public partial class QRCodeShowCase : GalleryReactiveUserControl<QRCodeViewModel>
 {
     public const string LanguageId = nameof(QRCodeShowCase);
 
@@ -23,13 +23,12 @@ public partial class QRCodeShowCase : ReactiveUserControl<QRCodeViewModel>
                     nameof(QRCodeEccLevel.Q),
                     nameof(QRCodeEccLevel.H)
                 };
-                this.BindCommand(viewModel, vm => vm.SmallerCommand, v => v.SmallerBtn)
-                    .DisposeWith(disposables);
-                this.BindCommand(viewModel, vm => vm.LargerCommand, v => v.LargerBtn)
-                    .DisposeWith(disposables);
+                GalleryBindingUtils.BindCommand(SmallerBtn, viewModel.SmallerCommand).DisposeWith(disposables);
+                GalleryBindingUtils.BindCommand(LargerBtn, viewModel.LargerCommand).DisposeWith(disposables);
                 
-                this.OneWayBind(viewModel, vm => vm.EccLevels, v => v.EccLevelSegmented.ItemsSource)
-                    .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(QRCodeViewModel.EccLevels), vm => vm.EccLevels,
+                                           EccLevelSegmented, Avalonia.Controls.ItemsControl.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
 
                 Disposable.Create(() =>
                 {

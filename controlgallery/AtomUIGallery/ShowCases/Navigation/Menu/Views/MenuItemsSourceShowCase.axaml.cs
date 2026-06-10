@@ -4,7 +4,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Menu;
 
-public partial class MenuItemsSourceShowCase : ReactiveUserControl<MenuViewModel>
+public partial class MenuItemsSourceShowCase : GalleryReactiveUserControl<MenuViewModel>
 {
     public MenuItemsSourceShowCase()
     {
@@ -12,12 +12,20 @@ public partial class MenuItemsSourceShowCase : ReactiveUserControl<MenuViewModel
 
         this.WhenActivated(disposables =>
         {
-            this.OneWayBind(ViewModel, vm => vm.MenuItems, v => v.BasicItemsSourceMenu.ItemsSource)
-                .DisposeWith(disposables);
-            this.OneWayBind(ViewModel, vm => vm.InlineNavMenuNodes, v => v.InlineModeMenu.ItemsSource)
-                .DisposeWith(disposables);
-            this.OneWayBind(ViewModel, vm => vm.ItemsSourceDemoNavMenuNodes, v => v.ItemsSourceDemoNavMenu.ItemsSource)
-                .DisposeWith(disposables);
+            if (ViewModel is not null)
+            {
+                GalleryBindingUtils.OneWay(ViewModel, nameof(MenuViewModel.MenuItems), vm => vm.MenuItems,
+                                           BasicItemsSourceMenu, Avalonia.Controls.ItemsControl.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(ViewModel, nameof(MenuViewModel.InlineNavMenuNodes),
+                                           vm => vm.InlineNavMenuNodes, InlineModeMenu,
+                                           Avalonia.Controls.ItemsControl.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(ViewModel, nameof(MenuViewModel.ItemsSourceDemoNavMenuNodes),
+                                           vm => vm.ItemsSourceDemoNavMenuNodes, ItemsSourceDemoNavMenu,
+                                           Avalonia.Controls.ItemsControl.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
+            }
         });
     }
 }

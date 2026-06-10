@@ -13,7 +13,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TabStrip;
 
-public partial class TabStripShowCase : ReactiveUserControl<TabStripViewModel>
+public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewModel>
 {
     public const string LanguageId = nameof(TabStripShowCase);
 

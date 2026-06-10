@@ -5,7 +5,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TreeView;
 
-public partial class TreeViewBasicShowCase : ReactiveUserControl<TreeViewViewModel>
+public partial class TreeViewBasicShowCase : GalleryReactiveUserControl<TreeViewViewModel>
 {
     public TreeViewBasicShowCase()
     {

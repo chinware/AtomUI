@@ -5,7 +5,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Menu;
 
-public partial class MenuNavigationShowCase : ReactiveUserControl<MenuViewModel>
+public partial class MenuNavigationShowCase : GalleryReactiveUserControl<MenuViewModel>
 {
     public MenuNavigationShowCase()
     {

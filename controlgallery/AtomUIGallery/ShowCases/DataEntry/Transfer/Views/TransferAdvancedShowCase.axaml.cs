@@ -3,7 +3,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Transfer;
 
-public partial class TransferAdvancedShowCase : ReactiveUserControl<TransferViewModel>
+public partial class TransferAdvancedShowCase : GalleryReactiveUserControl<TransferViewModel>
 {
     public TransferAdvancedShowCase()
     {

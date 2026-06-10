@@ -1,5 +1,4 @@
 using System.Reactive;
-using System.Reactive.Disposables.Fluent;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.Workspace.ViewModels;
 using Avalonia.Controls;
@@ -35,13 +34,11 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
         ViewModel = new WorkspaceWindowViewModel();
         InitializeComponent();
 
-        this.WhenActivated(disposables =>
+        if (ViewModel is not null)
         {
-            this.OneWayBind(ViewModel, vm => vm.Router, v => v.RoutedViewHost.Router)
-                .DisposeWith(disposables);
-
-            ShowCaseNavigation.ViewModel = ViewModel!.CaseNavigation;
-        });
+            RoutedViewHost.Router       = ViewModel.Router;
+            ShowCaseNavigation.ViewModel = ViewModel.CaseNavigation;
+        }
     }
 
     protected override void OnLoaded(RoutedEventArgs e)

@@ -15,3 +15,4 @@ global using AtomUISplitter = AtomUI.Desktop.Controls.Splitter;
 global using AtomUIToggleSwitch = AtomUI.Desktop.Controls.ToggleSwitch;
 global using AtomUITour = AtomUI.Desktop.Controls.Tour;
 global using AtomUITreeView = AtomUI.Desktop.Controls.TreeView;
+global using AtomUIGallery.Controls;

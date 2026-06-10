@@ -5,7 +5,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.List;
 
-public partial class ListAdvancedShowCase : ReactiveUserControl<ListViewModel>
+public partial class ListAdvancedShowCase : GalleryReactiveUserControl<ListViewModel>
 {
     public ListAdvancedShowCase()
     {

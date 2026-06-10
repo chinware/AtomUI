@@ -2,7 +2,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Grid;
 
-public partial class GridOrderShowCase : ReactiveUserControl<GridViewModel>
+public partial class GridOrderShowCase : GalleryReactiveUserControl<GridViewModel>
 {
     public GridOrderShowCase()
     {

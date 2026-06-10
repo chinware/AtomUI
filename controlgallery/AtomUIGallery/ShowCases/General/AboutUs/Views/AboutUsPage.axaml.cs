@@ -7,7 +7,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.AboutUs;
 
-public partial class AboutUsPage : ReactiveUserControl<AboutUsViewModel>
+public partial class AboutUsPage : GalleryReactiveUserControl<AboutUsViewModel>
 {
     public const string LanguageId = nameof(AboutUsPage);
 

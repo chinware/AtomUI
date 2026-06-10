@@ -2,7 +2,7 @@ using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.RadioButton;
 
-public partial class RadioButtonOptionsShowCase : ReactiveUserControl<RadioButtonViewModel>
+public partial class RadioButtonOptionsShowCase : GalleryReactiveUserControl<RadioButtonViewModel>
 {
     public RadioButtonOptionsShowCase()
     {
