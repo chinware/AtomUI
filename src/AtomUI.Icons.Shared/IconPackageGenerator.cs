@@ -70,6 +70,11 @@ public abstract class AbstractIconPackageGenerator
     {
         return Task.CompletedTask;
     }
+
+    protected virtual Task GenerateIconCatalogAsync()
+    {
+        return Task.CompletedTask;
+    }
     
     public async Task GenerateAsync(CancellationToken cancellationToken = default)
     {
@@ -87,6 +92,9 @@ public abstract class AbstractIconPackageGenerator
             await GenerateIconProviderFactoryAsync();
             cancellationToken.ThrowIfCancellationRequested();
             Console.WriteLine("Generate IconProvider factory successfully.");
+            await GenerateIconCatalogAsync();
+            cancellationToken.ThrowIfCancellationRequested();
+            Console.WriteLine("Generate Icon catalog successfully.");
         }
     }
 }

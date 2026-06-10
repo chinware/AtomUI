@@ -114,4 +114,42 @@ public abstract class DefaultIconPackageGenerator : AbstractIconPackageGenerator
         sourceText.AppendLine("}");
         await output.WriteAsync(Encoding.UTF8.GetBytes(sourceText.ToString()));
     }
+
+    protected override async Task GenerateIconCatalogAsync()
+    {
+        await using var output = new FileStream(Path.Combine(TargetPath, $"{PackageName}IconCatalog.g.cs"),
+            FileMode.Create, FileAccess.Write);
+        var sourceText = new StringBuilder();
+        sourceText.AppendLine("// This code is auto generated. Do not modify.");
+        sourceText.AppendLine("using System;");
+        sourceText.AppendLine("using System.Collections.Generic;");
+        sourceText.AppendLine("using AtomUI.Controls;");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"namespace {PackageNamespace};");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"public readonly record struct {PackageName}IconInfo(");
+        sourceText.AppendLine("    string Name,");
+        sourceText.AppendLine("    IconThemeType ThemeType,");
+        sourceText.AppendLine($"    {PackageName}IconKind Kind,");
+        sourceText.AppendLine("    Type IconType,");
+        sourceText.AppendLine("    Func<Icon> Creator);");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"public static class {PackageName}IconCatalog");
+        sourceText.AppendLine("{");
+        sourceText.AppendLine($"    private static readonly {PackageName}IconInfo[] Icons = [");
+        foreach (var info in IconFiles)
+        {
+            var iconClassName = $"{info.Name}{info.ThemeType}";
+            sourceText.AppendLine($"        new(\"{iconClassName}\", IconThemeType.{info.ThemeType}, {PackageName}IconKind.{iconClassName}, typeof({iconClassName}), static () => new {iconClassName}()),");
+        }
+
+        sourceText.AppendLine("    ];");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"    public static IReadOnlyList<{PackageName}IconInfo> GetIcons()");
+        sourceText.AppendLine("    {");
+        sourceText.AppendLine("        return Icons;");
+        sourceText.AppendLine("    }");
+        sourceText.AppendLine("}");
+        await output.WriteAsync(Encoding.UTF8.GetBytes(sourceText.ToString()));
+    }
 }

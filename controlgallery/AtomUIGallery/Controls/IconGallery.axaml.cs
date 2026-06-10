@@ -1,8 +1,6 @@
-using System.Collections.Concurrent;
-using System.Collections.Frozen;
-using System.Reflection;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
+using AtomUI.Icons.AntDesign;
 using AtomUIGallery.Models;
 using Avalonia;
 using Avalonia.Collections;
@@ -101,26 +99,25 @@ public class IconGallery : TemplatedControl
         ResetActivatedIconInfos();
         _matchedIconInfos.Clear();
 
-        var allIconClasses = CachedLoadedAssemblyTypeScanner.GetInheritedTypes<Icon>("AtomUI.Icons.AntDesign");
-        var iconThemeName = IconThemeType?.ToString();
-        var targetClasses = allIconClasses
-            .Where(t => string.IsNullOrEmpty(iconThemeName) || t.Name.EndsWith(iconThemeName, StringComparison.Ordinal))
-            .OrderBy(t => t.Name)
-            .ToArray();
+        var iconThemeType = IconThemeType;
+        var targetIcons = AntDesignIconCatalog.GetIcons()
+                                              .Where(info => iconThemeType is null || info.ThemeType == iconThemeType)
+                                              .OrderBy(info => info.Name)
+                                              .ToArray();
 
         var filter = _searchEdit?.Text?.Trim();
-        foreach (var iconInfoType in targetClasses)
+        foreach (var iconInfo in targetIcons)
         {
             if (!string.IsNullOrEmpty(filter) &&
-                !iconInfoType.Name.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
+                !iconInfo.Name.Contains(filter, StringComparison.InvariantCultureIgnoreCase))
             {
                 continue;
             }
 
             _matchedIconInfos.Add(new PackageIconItem(
-                iconInfoType.Name,
-                iconInfoType,
-                () => (Icon)Activator.CreateInstance(iconInfoType)!));
+                iconInfo.Name,
+                iconInfo.IconType,
+                iconInfo.Creator));
         }
 
         LoadMoreIconInfos(InitialIconLoadCount);
@@ -217,94 +214,5 @@ public class IconGallery : TemplatedControl
         {
             _scrollViewer.Offset = new Vector(0, 0);
         }
-    }
-}
-
-public static class CachedLoadedAssemblyTypeScanner
-{
-    private static FrozenSet<Assembly>? _loadedAssemblies;
-    private static DateTime _lastAssemblyCheck = DateTime.MinValue;
-    private static readonly TimeSpan AssemblyCacheTimeout = TimeSpan.FromSeconds(5);
-
-    private static readonly ConcurrentDictionary<string, FrozenSet<Type>> _typeScanCache = new();
-
-    public static Assembly GetLoadedAssembly(string assemblyName)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(assemblyName);
-
-        var assemblies = GetCachedLoadedAssemblies();
-
-        var assembly = assemblies.FirstOrDefault(asm =>
-            asm.GetName().Name?.Equals(assemblyName, StringComparison.OrdinalIgnoreCase) == true);
-
-        return assembly ?? throw new FileNotFoundException($"未找到已加载的程序集: {assemblyName}");
-    }
-
-    private static FrozenSet<Assembly> GetCachedLoadedAssemblies()
-    {
-        if (_loadedAssemblies is null || DateTime.UtcNow - _lastAssemblyCheck > AssemblyCacheTimeout)
-        {
-            _loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToFrozenSet();
-            _lastAssemblyCheck = DateTime.UtcNow;
-        }
-
-        return _loadedAssemblies;
-    }
-
-    public static IReadOnlySet<Type> GetInheritedTypes(string assemblyName, Type baseType, bool includeAbstract = false)
-    {
-        ArgumentNullException.ThrowIfNull(baseType);
-
-        var cacheKey = $"{assemblyName}|{baseType.FullName}|{includeAbstract}";
-
-        return _typeScanCache.GetOrAdd(cacheKey, _ =>
-        {
-            var assembly = GetLoadedAssembly(assemblyName);
-            var types = ScanInheritedTypes(assembly, baseType, includeAbstract);
-            return types.ToFrozenSet();
-        });
-    }
-
-    public static IReadOnlySet<Type> GetInheritedTypes<TBase>(string assemblyName, bool includeAbstract = false)
-        where TBase : class
-    {
-        return GetInheritedTypes(assemblyName, typeof(TBase), includeAbstract);
-    }
-
-    private static IEnumerable<Type> ScanInheritedTypes(Assembly assembly, Type baseType, bool includeAbstract)
-    {
-        Type[] types;
-
-        try
-        {
-            types = assembly.GetTypes();
-        }
-        catch (ReflectionTypeLoadException ex)
-        {
-            types = ex.Types.Where(t => t is not null).ToArray()!;
-        }
-
-        foreach (var type in types)
-        {
-            if (IsValidInheritedType(type, baseType, includeAbstract))
-            {
-                yield return type;
-            }
-        }
-    }
-
-    private static bool IsValidInheritedType(Type? type, Type baseType, bool includeAbstract)
-    {
-        return type is not null &&
-               type != baseType &&
-               type.IsClass &&
-               baseType.IsAssignableFrom(type) &&
-               (includeAbstract || !type.IsAbstract);
-    }
-
-    public static void ClearCache()
-    {
-        _typeScanCache.Clear();
-        _loadedAssemblies = null;
     }
 }
