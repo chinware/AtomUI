@@ -1,8 +1,6 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Desktop.Controls;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.AutoComplete;
 

@@ -6,8 +6,6 @@ using AtomUI.Data;
 using AtomUI.Theme.Language;
 using Avalonia;
 using AtomUIGallery.Localization;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.CheckBox;
 

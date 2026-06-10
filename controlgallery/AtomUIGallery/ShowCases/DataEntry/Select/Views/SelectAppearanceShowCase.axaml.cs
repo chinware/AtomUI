@@ -1,6 +1,5 @@
 using AtomUI;
 using AtomUI.Controls;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Select;
 

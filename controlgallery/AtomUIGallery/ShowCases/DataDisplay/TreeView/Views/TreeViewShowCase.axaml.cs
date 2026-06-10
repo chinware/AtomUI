@@ -9,8 +9,6 @@ using AtomUI.Desktop.Controls;
 using AtomUI.Theme.Language;
 using AtomUIGallery.Localization;
 using Avalonia;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TreeView;
 

@@ -1,5 +1,4 @@
 using Avalonia.Interactivity;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Transfer;
 

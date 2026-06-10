@@ -3,8 +3,6 @@ using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Button;
 

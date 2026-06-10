@@ -2,8 +2,6 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Theme;
 using Avalonia;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.AboutUs;
 

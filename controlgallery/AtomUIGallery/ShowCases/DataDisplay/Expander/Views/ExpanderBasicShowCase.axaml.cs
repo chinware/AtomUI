@@ -1,4 +1,3 @@
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Expander;
 

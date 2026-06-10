@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Steps;
 

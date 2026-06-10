@@ -2,7 +2,6 @@ using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.Localization;
 using Avalonia.Interactivity;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TreeView;
 

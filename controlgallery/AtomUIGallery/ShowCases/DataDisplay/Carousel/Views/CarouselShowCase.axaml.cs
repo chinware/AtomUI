@@ -1,8 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Carousel;
 

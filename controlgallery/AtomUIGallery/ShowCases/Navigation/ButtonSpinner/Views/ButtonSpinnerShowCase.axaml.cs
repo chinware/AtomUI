@@ -2,8 +2,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 using ButtonSpinner = AtomUI.Desktop.Controls.ButtonSpinner;
 
 namespace AtomUIGallery.ShowCases.ButtonSpinner;

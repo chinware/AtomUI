@@ -9,8 +9,6 @@ using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Interactivity;
 using AtomUIGallery.Localization;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TabControl;
 

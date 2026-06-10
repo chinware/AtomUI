@@ -2,7 +2,6 @@ using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Layout;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Form;
 

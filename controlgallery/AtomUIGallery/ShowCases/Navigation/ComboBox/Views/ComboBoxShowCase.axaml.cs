@@ -1,7 +1,5 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.ComboBox;
 

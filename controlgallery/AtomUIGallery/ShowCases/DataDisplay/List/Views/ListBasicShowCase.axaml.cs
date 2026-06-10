@@ -2,7 +2,6 @@ using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using ReactiveUI.Avalonia;
 using IListItemData = AtomUI.Controls.Data.IListItemData;
 
 namespace AtomUIGallery.ShowCases.List;

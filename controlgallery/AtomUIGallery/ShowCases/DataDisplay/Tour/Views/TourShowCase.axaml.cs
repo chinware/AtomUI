@@ -2,8 +2,6 @@ using AtomUI.Controls;
 using AtomUI.Controls.Commons;
 using AtomUI.Desktop.Controls;
 using Avalonia;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Tour;
 

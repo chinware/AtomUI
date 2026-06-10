@@ -4,7 +4,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using AtomUIGallery.Localization;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Form;
 

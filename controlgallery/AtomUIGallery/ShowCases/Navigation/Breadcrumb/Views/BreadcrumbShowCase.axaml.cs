@@ -3,8 +3,6 @@ using System.Reactive.Disposables.Fluent;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Breadcrumb;
 

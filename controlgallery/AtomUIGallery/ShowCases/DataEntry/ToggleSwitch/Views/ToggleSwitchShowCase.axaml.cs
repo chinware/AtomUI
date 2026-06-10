@@ -1,7 +1,6 @@
 ﻿using System.Reactive;
 using Avalonia.Controls;
 using ReactiveUI;
-using ReactiveUI.Avalonia;
 using Button = AtomUI.Desktop.Controls.Button;
 using ToggleSwitch = AtomUI.Desktop.Controls.ToggleSwitch;
 

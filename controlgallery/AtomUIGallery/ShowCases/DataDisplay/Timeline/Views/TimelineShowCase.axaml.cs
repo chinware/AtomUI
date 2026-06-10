@@ -1,9 +1,7 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
-using ReactiveUI;
 using Avalonia.Interactivity;
-using ReactiveUI.Avalonia;
 using RadioButton = Avalonia.Controls.RadioButton;
 
 namespace AtomUIGallery.ShowCases.Timeline;

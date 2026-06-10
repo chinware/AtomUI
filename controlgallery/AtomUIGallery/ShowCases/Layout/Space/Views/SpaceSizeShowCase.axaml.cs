@@ -1,7 +1,6 @@
 using AtomUI;
 using AtomUI.Desktop.Controls;
 using Avalonia.Interactivity;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Space;
 

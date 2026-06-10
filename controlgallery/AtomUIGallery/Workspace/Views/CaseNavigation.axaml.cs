@@ -7,7 +7,6 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using ReactiveUI;
-using ReactiveUI.Avalonia;
 using Window = Avalonia.Controls.Window;
 
 namespace AtomUIGallery.Workspace.Views;

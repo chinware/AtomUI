@@ -10,8 +10,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using AtomUIGallery.Localization;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Menu;
 

@@ -5,7 +5,6 @@ using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Message;
 

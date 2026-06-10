@@ -1,6 +1,5 @@
 using AtomUI.Controls;
 using Avalonia.Layout;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.FlexPanel;
 

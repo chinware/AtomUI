@@ -10,8 +10,6 @@ using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 using IListItemData = AtomUI.Controls.Data.IListItemData;
 using ListItemData = AtomUI.Controls.Data.ListItemData;
 

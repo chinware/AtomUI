@@ -2,7 +2,6 @@ using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using DynamicData;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.DataGrid;
 
