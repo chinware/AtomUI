@@ -5,7 +5,7 @@ using AtomUIGallery.Workspace.Views;
 namespace AtomUIGallery.Workspace.Localization.CaseNavigationLang;
 
 [LanguageProvider(LanguageCode.zh_CN, CaseNavigation.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string General = "通用";
     public const string General_AboutUs = "关于我们";

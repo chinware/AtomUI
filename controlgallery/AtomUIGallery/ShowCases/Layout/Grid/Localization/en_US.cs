@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Grid;
 
 [LanguageProvider(LanguageCode.en_US, GridShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string ScenarioBasic = "Basic";
     public const string ScenarioSpacing = "Spacing";

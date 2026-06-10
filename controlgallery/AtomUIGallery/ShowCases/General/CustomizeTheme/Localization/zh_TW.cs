@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.CustomizeTheme;
 
 [LanguageProvider(LanguageCode.zh_TW, CustomizeThemeShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string CustomizeDesignTokenTitle = "自定義設計令牌";
     public const string CustomizeDesignTokenDescription = "通過修改主題的 token 屬性，可以全局修改 Design Token。部分 token 會影響其他 token，這類 token 稱為 Seed Token。";

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Carousel;
 
 [LanguageProvider(LanguageCode.zh_TW, CarouselShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "基礎用法。";

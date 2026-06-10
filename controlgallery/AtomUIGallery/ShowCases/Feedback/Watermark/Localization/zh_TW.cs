@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Watermark;
 
 [LanguageProvider(LanguageCode.zh_TW, WatermarkShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最基礎的用法。";

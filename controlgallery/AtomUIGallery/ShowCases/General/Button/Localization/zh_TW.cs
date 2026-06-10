@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Button;
 
 [LanguageProvider(LanguageCode.zh_TW, ButtonShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string TypeTitle = "按鈕類型";
     public const string TypeDescription = "Ant Design 中包含主按鈕、默認按鈕、虛線按鈕、文本按鈕和鏈接按鈕。";

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.DatePicker;
 
 [LanguageProvider(LanguageCode.zh_CN, DatePickerShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "点击 DatePicker 后，可以在面板中选择或输入日期。";

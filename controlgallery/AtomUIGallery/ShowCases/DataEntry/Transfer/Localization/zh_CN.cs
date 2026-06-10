@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Transfer;
 
 [LanguageProvider(LanguageCode.zh_CN, TransferShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "Transfer 的基础用法需要提供源数据、目标 keys 数组，以及渲染和部分回调函数。";

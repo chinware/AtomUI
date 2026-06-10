@@ -77,6 +77,8 @@ internal class LanguageProviderWalker : CSharpSyntaxWalker
         var classDeclaredSymbol = _semanticModel.GetDeclaredSymbol(node);
         if (classDeclaredSymbol is not null)
         {
+            LanguageInfo.Accessibility = GetAccessibility(classDeclaredSymbol.DeclaredAccessibility);
+
             foreach (var attribute in classDeclaredSymbol.GetAttributes())
             {
                 if (!IsLanguageProviderAttribute(attribute))
@@ -104,6 +106,10 @@ internal class LanguageProviderWalker : CSharpSyntaxWalker
         }
 
         LanguageInfo.ClassName = node.Identifier.ToString();
+        LanguageInfo.IsPartial = node.Modifiers.Any(SyntaxKind.PartialKeyword);
+        LanguageInfo.HasParameterlessConstructor = node.Members
+                                                      .OfType<ConstructorDeclarationSyntax>()
+                                                      .Any(ctor => ctor.ParameterList.Parameters.Count == 0);
         var ns = string.Empty;
         if (node.Parent is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDecl)
         {
@@ -147,5 +153,15 @@ internal class LanguageProviderWalker : CSharpSyntaxWalker
         }
 
         return argument.Value as string;
+    }
+
+    private static string GetAccessibility(Accessibility accessibility)
+    {
+        return accessibility switch
+        {
+            Accessibility.Public => "public",
+            Accessibility.Internal => "internal",
+            _ => "internal"
+        };
     }
 }

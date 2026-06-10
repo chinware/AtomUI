@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Modal;
 
 [LanguageProvider(LanguageCode.zh_CN, ModalShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "基础模态框。";

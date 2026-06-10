@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Form;
 
 [LanguageProvider(LanguageCode.zh_CN, FormShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string BasicUsageTitle = "基础用法";
     public const string BasicUsageDescription = "基础表单数据控制，包含布局、初始值、校验和提交。";

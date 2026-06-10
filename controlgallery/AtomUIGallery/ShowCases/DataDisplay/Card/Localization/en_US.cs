@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Card;
 
 [LanguageProvider(LanguageCode.en_US, CardShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "A basic card containing a title, content and an extra corner content. Supports two sizes: default and small.";

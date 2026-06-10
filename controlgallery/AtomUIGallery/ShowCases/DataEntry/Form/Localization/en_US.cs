@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Form;
 
 [LanguageProvider(LanguageCode.en_US, FormShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string BasicUsageTitle = "Basic usage";
     public const string BasicUsageDescription = "Basic Form data control. Includes layout, initial values, validation and submit.";

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Tag;
 
 [LanguageProvider(LanguageCode.zh_CN, TagShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "基础 Tag 用法。可通过 IsClosable 设置为可关闭，并通过 closeIcon 属性自定义关闭按钮；closeIcon 设置为 true 时显示默认关闭按钮。IsClosable Tag 支持 onClose 事件。";

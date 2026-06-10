@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Spin;
 
 [LanguageProvider(LanguageCode.zh_TW, SpinShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string BasicUsageTitle = "基礎用法";
     public const string BasicUsageDescription = "簡單的加載狀態。";

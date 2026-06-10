@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.CustomizeTheme;
 
 [LanguageProvider(LanguageCode.en_US, CustomizeThemeShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string CustomizeDesignTokenTitle = "Customize Design Token";
     public const string CustomizeDesignTokenDescription = "By modifying token property of theme, we can modify Design Token globally. Some tokens will affect other tokens. We call these tokens Seed Token.";

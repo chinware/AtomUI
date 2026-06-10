@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.TimePicker;
 
 [LanguageProvider(LanguageCode.zh_CN, TimePickerShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "点击 TimePicker 后，可以在面板中选择或输入时间。";

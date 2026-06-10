@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.DataGrid;
 
 [LanguageProvider(LanguageCode.zh_TW, DataGridShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string BasicTitle = "基礎表格";
     public const string BasicDescription = "帶操作列的簡單表格。";

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Cascader;
 
 [LanguageProvider(LanguageCode.zh_TW, CascaderShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string ScenarioBasic = "基礎";
     public const string ScenarioMultiple = "多選";

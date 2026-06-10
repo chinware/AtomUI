@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.TabControl;
 
 [LanguageProvider(LanguageCode.en_US, TabControlShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string TabControlBasicTitle = "Basic";
     public const string TabControlBasicDescription = "Default activate first tab.";

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Collapse;
 
 [LanguageProvider(LanguageCode.en_US, CollapseShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string ScenarioBasic = "Basic";
     public const string ScenarioAppearance = "Appearance";

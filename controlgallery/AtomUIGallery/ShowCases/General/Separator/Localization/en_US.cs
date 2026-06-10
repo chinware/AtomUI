@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Separator;
 
 [LanguageProvider(LanguageCode.en_US, SeparatorShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string HorizontalTitle = "Horizontal";
     public const string HorizontalDescription = "A Separator is horizontal by default. You can add text within Separator.";

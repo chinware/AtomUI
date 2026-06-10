@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.PopupConfirm;
 
 [LanguageProvider(LanguageCode.en_US, PopupConfirmShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string BasicUsageTitle = "Basic usage";
     public const string BasicUsageDescription = "The basic example supports the title and description props of confirmation.";

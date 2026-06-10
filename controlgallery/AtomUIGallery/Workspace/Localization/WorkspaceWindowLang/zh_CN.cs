@@ -5,7 +5,7 @@ using AtomUIGallery.Workspace.Views;
 namespace AtomUIGallery.Workspace.Localization.WorkspaceWindowLang;
 
 [LanguageProvider(LanguageCode.zh_CN, WorkspaceWindow.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string WindowTitle = "AtomUI 桌面控件库";
 

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Menu;
 
 [LanguageProvider(LanguageCode.zh_TW, MenuShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string ScenarioBasic = "基礎";
     public const string ScenarioFeatures = "特性";

@@ -5,7 +5,7 @@ using AtomUIGallery.Workspace.Views;
 namespace AtomUIGallery.Workspace.Localization.WorkspaceWindowLang;
 
 [LanguageProvider(LanguageCode.en_US, WorkspaceWindow.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string WindowTitle = "AtomUI Desktop Gallery";
 

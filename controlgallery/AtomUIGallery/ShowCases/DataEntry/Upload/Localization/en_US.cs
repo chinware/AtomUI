@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Upload;
 
 [LanguageProvider(LanguageCode.en_US, UploadShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string UploadByClickingTitle = "Upload by clicking";
     public const string UploadByClickingDescription = "Classic mode. File selection dialog pops up when upload button is clicked.";

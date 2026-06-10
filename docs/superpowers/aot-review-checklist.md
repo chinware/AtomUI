@@ -40,7 +40,7 @@
 
 - `src/` AOT analyzer：`dotnet build src/AtomUI.Core/AtomUI.Core.csproj -c Release --no-incremental /p:IsAotCompatible=true /p:EnableTrimAnalyzer=true /p:EnableAotAnalyzer=true /p:EnableSingleFileAnalyzer=true /nr:false --nologo -v:minimal` 通过，`0 Warning(s), 0 Error(s)`。
 - `src/AtomUI.Desktop.Controls.DataGrid` AOT analyzer：`dotnet build src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj -c Release --no-incremental /m:1 /p:IsAotCompatible=true /p:EnableTrimAnalyzer=true /p:EnableAotAnalyzer=true /p:EnableSingleFileAnalyzer=true /nr:false --nologo -v:minimal` 通过，`0 Warning(s), 0 Error(s)`。
-- 全解决方案 AOT analyzer：`dotnet build AtomUI.slnx -c Release --no-incremental /m:1 /p:IsAotCompatible=true /p:EnableTrimAnalyzer=true /p:EnableAotAnalyzer=true /p:EnableSingleFileAnalyzer=true /nr:false --nologo -v:minimal` 通过，`402 Warning(s), 0 Error(s)`；warning 均在 `controlgallery/AtomUIGallery`，`src/` 库项目未见 analyzer warning。
+- 全解决方案 AOT analyzer：`dotnet build AtomUI.slnx -c Release --no-incremental /m:1 /p:IsAotCompatible=true /p:EnableTrimAnalyzer=true /p:EnableAotAnalyzer=true /p:EnableSingleFileAnalyzer=true /nr:false --nologo -v:minimal` 通过，`180 Warning(s), 0 Error(s)`；warning 均在 `controlgallery/AtomUIGallery`，`src/` 库项目未见 analyzer warning。
 
 ## Review 项
 
@@ -469,12 +469,20 @@
   - `controlgallery/AtomUIGallery/**`
 - 为什么这样改：
   - 全解决方案 analyzer 仍报告 Gallery warning，主要来自 ReactiveUI expression API 和 demo reflection。
+  - Gallery localization provider 原本没有显式构造函数，编译器会生成隐式 `base()` 调用，触发 `LanguageProvider()` 的反射构造 warning。
+  - Gallery localization provider 已改成 `partial`，由 Language SG 读取 `[LanguageProvider(LanguageCode, LanguageId)]` 元数据并生成显式 `base(LanguageCode, LanguageId)` 构造，保留旧 metadata 语义但不再走运行时反射构造。
   - 这些 warning 不阻塞 `src/` library AOT 状态，但需要单独跟踪。
 - Review 重点：
+  - 本次候选子项：`222` 个 Gallery raw localization provider 只增加 `partial`，不修改资源文本、resource kind 或 `BuildResourceDictionary` 逻辑。
+  - 本次候选子项：`LanguageProviderConstructorSourceWriter` 只对 `partial && !HasParameterlessConstructor` 的 provider 生成构造函数，避免和已有手写构造函数冲突。
   - 决定 Gallery 是否纳入 AOT 发布范围。
-  - 如果纳入，需要替换 ReactiveUI expression binding 或制定明确 preservation/suppression 策略。
+  - 如果纳入，需要继续替换 ReactiveUI expression binding 或制定明确 preservation/suppression 策略。
+  - `IconGallery` 仍需要用生成 catalog/factory 替换 demo 反射扫描和 `Activator.CreateInstance(Type)`。
   - 如果不纳入，应记录 Gallery 是非 AOT-clean demo app。
 - 验证：
-  - 当前全解决方案 AOT analyzer 能成功退出，`402 Warning(s), 0 Error(s)`。
+  - `dotnet test tests/AtomUI.Generator.Tests/AtomUI.Generator.Tests.csproj --filter LanguageProviderConstructorGeneratorTests --nologo -v:minimal` 通过，`Failed: 0, Passed: 1`。
+  - 当前 Gallery AOT analyzer 能成功退出，`180 Warning(s), 0 Error(s)`。
+  - 当前全解决方案 AOT analyzer 能成功退出，`180 Warning(s), 0 Error(s)`。
   - warning 归属全部在 `controlgallery/AtomUIGallery`，不在 `src/` 库项目。
-  - 当前分类：`222` 个 Gallery localization provider 仍走 `LanguageProvider()` 反射构造；`178` 个 ReactiveUI `WhenActivated` / `OneWayBind` / `BindCommand` / `WhenAnyValue` expression API；`1` 个 `IconGallery.axaml.cs` 的 `Activator.CreateInstance(Type)`；`1` 个 `IconGallery.axaml.cs` 的 `Assembly.GetTypes()`。
+  - `LanguageProvider()` warning 已清零；Gallery `222` 个 raw localization provider 对应生成 `222` 个显式构造函数。
+  - 当前分类：`178` 个 ReactiveUI `WhenActivated` / `OneWayBind` / `BindCommand` / `WhenAnyValue` expression API；`1` 个 `IconGallery.axaml.cs` 的 `Activator.CreateInstance(Type)`；`1` 个 `IconGallery.axaml.cs` 的 `Assembly.GetTypes()`。

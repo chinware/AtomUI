@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Separator;
 
 [LanguageProvider(LanguageCode.zh_CN, SeparatorShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string HorizontalTitle = "水平分割线";
     public const string HorizontalDescription = "Separator 默认是水平分割线，可以在 Separator 中添加文本。";

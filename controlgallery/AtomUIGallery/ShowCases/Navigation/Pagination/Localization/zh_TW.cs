@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Pagination;
 
 [LanguageProvider(LanguageCode.zh_TW, PaginationShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string BasicTitle = "基礎分頁";
     public const string BasicDescription = "基礎分頁。";

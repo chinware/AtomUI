@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Slider;
 
 [LanguageProvider(LanguageCode.zh_CN, SliderShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "基础滑块。range 为 true 时显示为双滑块模式；disable 为 true 时滑块不可交互。";

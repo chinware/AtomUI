@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.TabStrip;
 
 [LanguageProvider(LanguageCode.zh_TW, TabStripShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string TabStripBasicTitle = "基礎用法";
     public const string TabStripBasicDescription = "默認激活第一個標籤項。";

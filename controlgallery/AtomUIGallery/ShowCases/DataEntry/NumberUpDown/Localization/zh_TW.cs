@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.NumberUpDown;
 
 [LanguageProvider(LanguageCode.zh_TW, NumberUpDownShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string ScenarioBasic = "基礎";
     public const string ScenarioRange = "範圍";

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Button;
 
 [LanguageProvider(LanguageCode.en_US, ButtonShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string TypeTitle = "Type";
     public const string TypeDescription = "There are primary button, default button, dashed button, text button and link button in antd.";
