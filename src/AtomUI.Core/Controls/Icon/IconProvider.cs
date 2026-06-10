@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using System.Linq.Expressions;
+using System.Diagnostics.CodeAnalysis;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 
@@ -96,8 +96,7 @@ public abstract class IconProvider<TIconKind> : MarkupExtension
             var creator = IconProviderCache.GetOrAddCreator(
                 enumType,
                 kind,
-                value => GetTypeForKind((TIconKind)value),
-                CreateFactory);
+                value => CreateFactory(GetTypeForKind((TIconKind)value)));
             
             var icon = creator();
             Debug.Assert(icon != null);
@@ -109,28 +108,21 @@ public abstract class IconProvider<TIconKind> : MarkupExtension
         }
     }
     
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
     protected abstract Type GetTypeForKind(TIconKind kind);
     
-    protected virtual Func<Icon> CreateFactory(Type type)
+    protected virtual Func<Icon> CreateFactory(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
+        Type type)
     {
-        try
+        var constructor = type.GetConstructor(Type.EmptyTypes);
+        if (constructor == null)
         {
-            var constructor = type.GetConstructor(Type.EmptyTypes);
-            if (constructor == null)
-            {
-                throw new InvalidOperationException(
-                    $"No parameterless constructor found for {type.Name}");
-            }
-            
-            var newExpr = Expression.New(constructor);
-            var lambda  = Expression.Lambda<Func<Icon>>(newExpr);
-            return lambda.Compile();
+            throw new InvalidOperationException(
+                $"No parameterless constructor found for {type.Name}");
         }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Failed to create expression tree for {type.Name}: {ex.Message}");
-            return () => (Icon)Activator.CreateInstance(type)!;
-        }
+
+        return () => (Icon)constructor.Invoke(null);
     }
     
     public static void ClearCache()

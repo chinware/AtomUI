@@ -6,6 +6,11 @@ namespace AtomUI.Icons.AntDesign;
 public class AntDesignIcon : Icon
 {
     private Rect? _geometryBounds;
+
+    public override Icon CreateInstance()
+    {
+        return new AntDesignIcon();
+    }
     
     protected override Matrix CalculateGlobalGeometryMatrix()
     {

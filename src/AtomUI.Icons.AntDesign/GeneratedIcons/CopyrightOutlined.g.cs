@@ -17,6 +17,11 @@ public class CopyrightOutlined : AntDesignIcon
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
 
+    public override Icon CreateInstance()
+    {
+        return new CopyrightOutlined();
+    }
+
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()
         {

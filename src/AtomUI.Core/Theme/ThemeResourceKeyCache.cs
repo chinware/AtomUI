@@ -25,16 +25,12 @@ internal static class ThemeResourceKeyCache
 
     private static ThemeResourceKeyEntry[] BuildEnumEntries(Type enumType)
     {
-        var values  = Enum.GetValues(enumType);
-        var entries = new ThemeResourceKeyEntry[values.Length];
-        for (int i = 0; i < values.Length; i++)
+        var names   = Enum.GetNames(enumType);
+        var entries = new ThemeResourceKeyEntry[names.Length];
+        for (int i = 0; i < names.Length; i++)
         {
-            var value = values.GetValue(i)!;
-            var name  = Enum.GetName(enumType, value);
-            if (name is null)
-            {
-                throw new InvalidOperationException($"Enum value '{value}' has no name in {enumType.FullName}.");
-            }
+            var name  = names[i];
+            var value = Enum.Parse(enumType, name);
 
             entries[i] = new ThemeResourceKeyEntry(value, name);
         }

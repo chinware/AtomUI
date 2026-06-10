@@ -68,4 +68,50 @@ public abstract class DefaultIconPackageGenerator : AbstractIconPackageGenerator
         sourceText.AppendLine("}");
         await output.WriteAsync(Encoding.UTF8.GetBytes(sourceText.ToString()));
     }
+
+    protected override async Task GenerateIconProviderFactoryAsync()
+    {
+        await using var output = new FileStream(Path.Combine(TargetPath, $"{PackageName}IconProvider.Factory.g.cs"),
+            FileMode.Create, FileAccess.Write);
+        var sourceText = new StringBuilder();
+        sourceText.AppendLine("// This code is auto generated. Do not modify.");
+        sourceText.AppendLine("using System;");
+        sourceText.AppendLine("using System.Diagnostics.CodeAnalysis;");
+        sourceText.AppendLine("using AtomUI.Controls;");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"namespace {PackageNamespace};");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"public partial class {PackageName}IconProvider");
+        sourceText.AppendLine("{");
+        sourceText.AppendLine("    [UnconditionalSuppressMessage(\"Trimming\", \"IL2063\",");
+        sourceText.AppendLine("        Justification = \"Every switch arm returns typeof(...) for a generated icon class with a public parameterless constructor.\")]");
+        sourceText.AppendLine("    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]");
+        sourceText.AppendLine($"    private static Type GetIconType({PackageName}IconKind kind)");
+        sourceText.AppendLine("    {");
+        sourceText.AppendLine("        switch (kind)");
+        sourceText.AppendLine("        {");
+        foreach (var info in IconFiles)
+        {
+            var iconClassName = $"{info.Name}{info.ThemeType}";
+            sourceText.AppendLine($"            case {PackageName}IconKind.{iconClassName}: return typeof({iconClassName});");
+        }
+        sourceText.AppendLine("            default: throw new InvalidOperationException($\"Icon kind {kind} does not exist\");");
+        sourceText.AppendLine("        }");
+        sourceText.AppendLine("    }");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"    private static Icon CreateIcon({PackageName}IconKind kind)");
+        sourceText.AppendLine("    {");
+        sourceText.AppendLine("        return kind switch");
+        sourceText.AppendLine("        {");
+        foreach (var info in IconFiles)
+        {
+            var iconClassName = $"{info.Name}{info.ThemeType}";
+            sourceText.AppendLine($"            {PackageName}IconKind.{iconClassName} => new {iconClassName}(),");
+        }
+        sourceText.AppendLine("            _ => throw new InvalidOperationException($\"Icon kind {kind} does not exist\")");
+        sourceText.AppendLine("        };");
+        sourceText.AppendLine("    }");
+        sourceText.AppendLine("}");
+        await output.WriteAsync(Encoding.UTF8.GetBytes(sourceText.ToString()));
+    }
 }

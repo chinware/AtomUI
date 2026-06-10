@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using AtomUI.Controls.Data;
 using AtomUI.Utils;
 using Avalonia.Collections;
 
@@ -10,6 +12,9 @@ public class DataGridFilterDescription
     private List<object>? _filterConditions;
     private Type? _propertyOwnerType;
     private Type? _propertyType;
+    private IDataGridDataMemberPathAccessor? _propertyAccessor;
+
+    internal int AccessorVersion { get; private set; }
 
     public string? PropertyPath
     {
@@ -21,6 +26,8 @@ public class DataGridFilterDescription
                 _propertyPath      = value;
                 _propertyOwnerType = null;
                 _propertyType      = null;
+                _propertyAccessor  = null;
+                AccessorVersion++;
             }
         }
     }
@@ -75,28 +82,35 @@ public class DataGridFilterDescription
         return false;
     }
     
-    private Type? GetPropertyType(object o)
+    internal void Initialize(Type itemType,
+                             IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                             bool isDynamicCodeSupported = true)
     {
-        var ownerType = o.GetType();
-        if (_propertyOwnerType != ownerType)
+        if (!HasPropertyPath)
         {
-            _propertyType      = ownerType.GetNestedPropertyType(PropertyPath);
-            _propertyOwnerType = ownerType;
+            return;
         }
 
-        return _propertyType;
+        EnsurePropertyAccessor(itemType, dataMemberAccessorDescriptor, isDynamicCodeSupported);
     }
-    
-    private static object? InvokePath(object item, string propertyPath, Type propertyType)
+
+    private void EnsurePropertyAccessor(Type itemType,
+                                        IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                                        bool isDynamicCodeSupported)
     {
-        object? propertyValue =
-            TypeHelper.GetNestedPropertyValue(item, propertyPath, propertyType, out Exception? exception);
-        if (exception != null)
+        if (_propertyOwnerType == itemType && _propertyAccessor != null)
         {
-            throw exception;
+            return;
         }
 
-        return propertyValue;
+        Debug.Assert(PropertyPath != null);
+        _propertyAccessor = DataGridDataMemberPathAccessor.Resolve(
+            PropertyPath,
+            itemType,
+            dataMemberAccessorDescriptor,
+            isDynamicCodeSupported);
+        _propertyType      = _propertyAccessor.ValueType;
+        _propertyOwnerType = itemType;
     }
     
     private object? GetValue(object? o)
@@ -110,11 +124,10 @@ public class DataGridFilterDescription
             return o;
         }
 
-        var type = GetPropertyType(o);
-        if (type != null)
+        EnsurePropertyAccessor(o.GetType(), null, RuntimeFeature.IsDynamicCodeSupported);
+        if (_propertyType != null)
         {
-            Debug.Assert(PropertyPath != null);
-            return InvokePath(o, PropertyPath, type);
+            return _propertyAccessor?.GetValue(o);
         }
                
         return null;

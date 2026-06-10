@@ -6,6 +6,11 @@ namespace AtomUI.Desktop.Controls.DialogLang;
 [LanguageProvider(LanguageCode.zh_TW, DialogToken.ID)]
 internal class zh_TW : LanguageProvider
 {
+    public zh_TW()
+        : base(LanguageCode.zh_TW, DialogToken.ID)
+    {
+    }
+
     public const string Ok = "確定";
     public const string Open = "打開";
     public const string Save = "保存";

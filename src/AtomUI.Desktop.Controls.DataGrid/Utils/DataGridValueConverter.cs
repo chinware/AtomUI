@@ -5,6 +5,7 @@
 
 using System.Globalization;
 using AtomUI.Utils;
+using Avalonia.Data;
 using Avalonia.Data.Converters;
 
 namespace AtomUI.Desktop.Controls.Utils;
@@ -15,7 +16,7 @@ internal class DataGridValueConverter : IValueConverter
 
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
     {
-        return DefaultValueConverter.Instance.Convert(value, targetType, parameter, culture);
+        return ConvertValue(value, targetType, culture);
     }
 
 
@@ -34,6 +35,53 @@ internal class DataGridValueConverter : IValueConverter
                 return null;
             }
         }
-        return DefaultValueConverter.Instance.ConvertBack(value, targetType, parameter, culture);
+        return ConvertValue(value, targetType, culture);
+    }
+
+    private static object? ConvertValue(object? value, Type targetType, CultureInfo culture)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        var nonNullableTargetType = targetType.GetNonNullableType();
+        if (nonNullableTargetType == typeof(object) ||
+            nonNullableTargetType.IsInstanceOfType(value))
+        {
+            return value;
+        }
+
+        try
+        {
+            if (nonNullableTargetType == typeof(string))
+            {
+                return value.ToString();
+            }
+
+            if (nonNullableTargetType.IsEnum)
+            {
+                if (value is string enumText)
+                {
+                    return Enum.Parse(nonNullableTargetType, enumText, ignoreCase: true);
+                }
+
+                var enumValue = System.Convert.ChangeType(value, Enum.GetUnderlyingType(nonNullableTargetType), culture);
+                return Enum.ToObject(nonNullableTargetType, enumValue!);
+            }
+
+            if (value is IConvertible)
+            {
+                return System.Convert.ChangeType(value, nonNullableTargetType, culture);
+            }
+        }
+        catch (Exception exception)
+        {
+            return new BindingNotification(exception, BindingErrorType.Error);
+        }
+
+        return new BindingNotification(
+            new InvalidCastException($"Could not convert '{value}' to '{targetType.Name}'."),
+            BindingErrorType.Error);
     }
 }

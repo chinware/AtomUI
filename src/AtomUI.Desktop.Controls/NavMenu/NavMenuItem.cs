@@ -1,3 +1,4 @@
+using System.Reactive.Disposables;
 using System.Windows.Input;
 using AtomUI.Controls;
 using AtomUI.Data;
@@ -351,9 +352,23 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
 
     private Control? _itemHeader;
     private bool _animating;
+    private CompositeDisposable? _nodeBindingDisposables;
     
     internal Popup? Popup => _popup;
     internal NavMenu? OwnerMenu;
+
+    internal CompositeDisposable ResetNodeBindingDisposables()
+    {
+        _nodeBindingDisposables?.Dispose();
+        _nodeBindingDisposables = new CompositeDisposable();
+        return _nodeBindingDisposables;
+    }
+
+    internal void ClearNodeBindingDisposables()
+    {
+        _nodeBindingDisposables?.Dispose();
+        _nodeBindingDisposables = null;
+    }
     
     static NavMenuItem()
     {
@@ -808,21 +823,23 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         if (container is NavMenuItem menuItem)
         {
             menuItem.OwnerMenu = OwnerMenu;
+            var nodeBindingDisposables = menuItem.ResetNodeBindingDisposables();
             {
                 if (item is INavMenuNode menuNode)
                 {
                     menuItem.SetCurrentValue(NavMenuItem.HeaderProperty, menuNode);
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Icon), menuItem, NavMenuItem.IconProperty);
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.IsEnabled), menuItem,
-                        NavMenuItem.IsEnabledProperty);
+                    nodeBindingDisposables.Add(BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Icon),
+                        node => node.Icon, menuItem, NavMenuItem.IconProperty));
+                    nodeBindingDisposables.Add(BindUtils.RelayBind(menuNode, nameof(INavMenuNode.IsEnabled),
+                        node => node.IsEnabled, menuItem, NavMenuItem.IsEnabledProperty));
                     menuItem.ItemKey = menuNode.ItemKey;
                 }
             }
             {
                 if (item is INavMenuNode menuNode && menuNode.HeaderTemplate != null)
                 {
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.HeaderTemplate), menuItem,
-                        NavMenuItem.HeaderTemplateProperty);
+                    nodeBindingDisposables.Add(BindUtils.RelayBind(menuNode, nameof(INavMenuNode.HeaderTemplate),
+                        node => node.HeaderTemplate, menuItem, NavMenuItem.HeaderTemplateProperty));
                 }
                 else if (ItemTemplate != null)
                 {
@@ -842,6 +859,16 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         {
             throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type NavMenuItem.");
         }
+    }
+
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is NavMenuItem menuItem)
+        {
+            menuItem.ClearNodeBindingDisposables();
+        }
+
+        base.ClearContainerForItemOverride(container);
     }
 
     protected virtual void PrepareNavMenuItem(NavMenuItem menuItem, object? item, int index)

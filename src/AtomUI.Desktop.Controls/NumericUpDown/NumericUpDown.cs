@@ -2,6 +2,7 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
+using AtomUI.Data;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Theme;
 using Avalonia;
@@ -294,28 +295,28 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
         if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
         {
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
-                new Binding(nameof(ClearIcon)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IsMotionEnabledProperty,
-                new Binding(nameof(IsMotionEnabled)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(IsEffectiveShowClearButton)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ClearIconProperty, clearButton,
+                AbstractIconButton.IconProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, clearButton,
+                AbstractIconButton.IsMotionEnabledProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEffectiveShowClearButtonProperty, clearButton,
+                Visual.IsVisibleProperty));
         }
 
         if (e.NameScope.Find<ContentPresenter>("PART_InnerRightContentPresenter") is { } innerRightContent)
         {
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(ContentPresenter.ContentProperty,
-                new Binding(nameof(InnerRightContent)) { Source = this }));
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(ContentPresenter.ContentTemplateProperty,
-                new Binding(nameof(InnerRightContentTemplate)) { Source = this }));
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(InnerRightContent)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
+                ContentPresenter.ContentProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentTemplateProperty,
+                innerRightContent, ContentPresenter.ContentTemplateProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
+                Visual.IsVisibleProperty, value => value is not null));
         }
 
         if (e.NameScope.Find<TextBox>("PART_TextBox") is { } textBox)
         {
-            _contentRightAddOnBindings.Add(textBox.Bind(TextBox.IsCustomFontSizeProperty,
-                new Binding(nameof(IsCustomFontSize)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsCustomFontSizeProperty, textBox,
+                TextBox.IsCustomFontSizeProperty));
         }
     }
     

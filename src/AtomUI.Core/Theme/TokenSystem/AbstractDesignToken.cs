@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
@@ -8,6 +9,9 @@ using Avalonia.Media.Immutable;
 
 namespace AtomUI.Theme.TokenSystem;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor |
+                            DynamicallyAccessedMemberTypes.PublicProperties |
+                            DynamicallyAccessedMemberTypes.NonPublicProperties)]
 public abstract class AbstractDesignToken : IDesignToken
 {
     private readonly Dictionary<string, object?> _tokenAccessCache = new Dictionary<string, object?>();
@@ -21,19 +25,7 @@ public abstract class AbstractDesignToken : IDesignToken
 
     static AbstractDesignToken()
     {
-        _valueConverters = new Dictionary<Type, ITokenValueConverter>();
-        var allTypes = Assembly.GetExecutingAssembly().GetTypes();
-        foreach (var type in allTypes)
-        {
-            if (!type.IsDefined(typeof(TokenValueConverterAttribute), false) ||
-                !typeof(ITokenValueConverter).IsAssignableFrom(type))
-            {
-                continue;
-            }
-
-            var valueConverter = (ITokenValueConverter)Activator.CreateInstance(type)!;
-            _valueConverters.Add(valueConverter.TargetType(), valueConverter);
-        }
+        _valueConverters = TokenValueConverterRegistry.Create();
     }
     
     internal virtual void LoadConfig(IDictionary<string, string> tokenConfigInfo)
@@ -147,23 +139,37 @@ public abstract class AbstractDesignToken : IDesignToken
         return cloned;
     }
 
-    protected static PropertyInfo[] GetTokenProperties(Type type)
+    protected static PropertyInfo[] GetTokenProperties(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties |
+                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
+        Type type)
     {
-        return s_tokenPropertiesByType.GetOrAdd(type, static tokenType => tokenType.GetProperties(TokenPropertyFlags));
+        if (s_tokenPropertiesByType.TryGetValue(type, out var cachedProperties))
+        {
+            return cachedProperties;
+        }
+
+        var tokenProperties = type.GetProperties(TokenPropertyFlags);
+        return s_tokenPropertiesByType.GetOrAdd(type, tokenProperties);
     }
 
-    protected static IReadOnlyDictionary<string, PropertyInfo> GetTokenPropertyMap(Type type)
+    protected static IReadOnlyDictionary<string, PropertyInfo> GetTokenPropertyMap(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties |
+                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
+        Type type)
     {
-        return s_tokenPropertyMapsByType.GetOrAdd(type, static tokenType =>
+        if (s_tokenPropertyMapsByType.TryGetValue(type, out var cachedMap))
         {
-            var tokenProperties = GetTokenProperties(tokenType);
-            var propertyMap     = new Dictionary<string, PropertyInfo>(tokenProperties.Length);
-            foreach (var property in tokenProperties)
-            {
-                propertyMap[property.Name] = property;
-            }
+            return cachedMap;
+        }
 
-            return propertyMap;
-        });
+        var tokenProperties = GetTokenProperties(type);
+        var propertyMap     = new Dictionary<string, PropertyInfo>(tokenProperties.Length);
+        foreach (var property in tokenProperties)
+        {
+            propertyMap[property.Name] = property;
+        }
+
+        return s_tokenPropertyMapsByType.GetOrAdd(type, propertyMap);
     }
 }

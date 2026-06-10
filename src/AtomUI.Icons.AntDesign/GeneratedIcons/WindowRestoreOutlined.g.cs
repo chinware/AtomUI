@@ -17,6 +17,11 @@ public class WindowRestoreOutlined : AntDesignIcon
         ViewBox = new Rect(0, 0, 24, 24);
     }
 
+    public override Icon CreateInstance()
+    {
+        return new WindowRestoreOutlined();
+    }
+
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()
         {

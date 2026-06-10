@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using AtomUI.Controls;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
@@ -93,7 +94,7 @@ internal class ThemeManager : Styles, IThemeManager
     public static ThemeManager? Current => AvaloniaLocator.Current.GetService(typeof(ThemeManager)) as ThemeManager;
     public string DefaultThemeId { get; set; }
     public FontFamily? FontFamily { get; internal set; }
-    internal List<Type> ControlTokenTypes { get; set; }
+    internal List<ControlTokenRegistration> ControlTokenTypes { get; set; }
     internal IThemeVariantCalculatorFactory? ThemeVariantCalculatorFactory { get; set; }
     
     public event EventHandler<ThemeOperateEventArgs>? ThemeCreated;
@@ -128,7 +129,7 @@ internal class ThemeManager : Styles, IThemeManager
         DefaultThemeId           = IThemeManager.DEFAULT_THEME_ID;
         _controlThemesProviders  = new List<IControlThemesProvider>();
         _themeAssetPathProviders = new List<IThemeAssetPathProvider>();
-        ControlTokenTypes        = new List<Type>();
+        ControlTokenTypes        = new List<ControlTokenRegistration>();
         _languageProviders       = new List<ILanguageProvider>();
         _languages               = new Dictionary<LanguageVariant, ResourceDictionary>();
     }
@@ -283,9 +284,13 @@ internal class ThemeManager : Styles, IThemeManager
         _languageProviders?.Add(languageProvider);
     }
 
-    public void RegisterControlTokenType(Type tokenType)
+    public void RegisterControlTokenType(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor |
+                                    DynamicallyAccessedMemberTypes.PublicProperties |
+                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
+        Type tokenType)
     {
-        ControlTokenTypes.Add(tokenType);
+        ControlTokenTypes.Add(new ControlTokenRegistration(tokenType));
     }
 
     internal void ScanThemes()

@@ -247,10 +247,8 @@ internal class RateItem : TemplatedControl
         Control? charControl = null;
         if (Character is Icon iconChar)
         {
-            var iconType = iconChar.GetType();
-            var newIcon  = Activator.CreateInstance(iconType) as Icon;
-            Debug.Assert(newIcon != null);
-            charControl         = newIcon;
+            var newIcon = iconChar.CreateInstance();
+            charControl = newIcon;
             newIcon.FillBrush   = brush;
             newIcon.StrokeBrush = brush;
         }

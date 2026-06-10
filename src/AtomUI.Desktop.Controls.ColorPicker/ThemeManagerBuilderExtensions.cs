@@ -8,9 +8,9 @@ public static class ColorPickerThemeManagerBuilderExtensions
     public static IThemeManagerBuilder UseDesktopColorPicker(this IThemeManagerBuilder themeManagerBuilder)
     {
         var controlTokenTypes = ControlTokenTypePool.GetTokenTypes();
-        foreach (var controlType in controlTokenTypes)
+        foreach (var controlTokenRegistration in controlTokenTypes)
         {
-            themeManagerBuilder.AddControlToken(controlType);
+            themeManagerBuilder.AddControlToken(controlTokenRegistration.TokenType);
         }
         themeManagerBuilder.AddControlThemesProvider(new AtomUIColorPickerThemesProvider());
 

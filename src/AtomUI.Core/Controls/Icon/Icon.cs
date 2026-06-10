@@ -404,6 +404,12 @@ public abstract class Icon : PathIcon, ICustomHitTest
     {
         return Matrix.Identity;
     }
+
+    public virtual Icon CreateInstance()
+    {
+        throw new NotSupportedException(
+            $"{GetType().FullName} must override {nameof(CreateInstance)} for AOT-safe cloning.");
+    }
     
     protected Rect CalculateGeometryBounds()
     {

@@ -17,6 +17,11 @@ public class DiscordOutlined : AntDesignIcon
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
 
+    public override Icon CreateInstance()
+    {
+        return new DiscordOutlined();
+    }
+
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()
         {

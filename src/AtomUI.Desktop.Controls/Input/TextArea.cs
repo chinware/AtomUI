@@ -1,6 +1,7 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls.Utils;
 using AtomUI.Theme;
 using Avalonia;
@@ -309,26 +310,26 @@ public class TextArea : AvaloniaTextBox,
 
         if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
         {
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IsMotionEnabledProperty,
-                new Binding(nameof(IsMotionEnabled)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(IsEffectiveShowClearButton)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
-                new Binding(nameof(ClearIcon)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, clearButton,
+                AbstractIconButton.IsMotionEnabledProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEffectiveShowClearButtonProperty, clearButton,
+                Visual.IsVisibleProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ClearIconProperty, clearButton,
+                AbstractIconButton.IconProperty));
         }
 
         if (e.NameScope.Find<ContentPresenter>("PART_FormFeedBack") is { } formFeedback)
         {
-            _contentRightAddOnBindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(IsFormFeedbackVisible)) { Source = this }));
-            _contentRightAddOnBindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
-                new Binding(nameof(FormFeedback)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsFormFeedbackVisibleProperty, formFeedback,
+                Visual.IsVisibleProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, FormFeedbackProperty, formFeedback,
+                ContentPresenter.ContentProperty));
         }
 
         if (e.NameScope.Find<ContentPresenter>("PART_InnerRightContentPresenter") is { } innerRightContent)
         {
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(ContentPresenter.ContentProperty,
-                new Binding(nameof(InnerRightContent)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
+                ContentPresenter.ContentProperty));
         }
     }
 

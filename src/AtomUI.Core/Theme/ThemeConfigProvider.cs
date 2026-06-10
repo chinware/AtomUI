@@ -271,9 +271,9 @@ public class ThemeConfigProvider : Control, IThemeConfigProvider
         }
 
         _controlTokens.EnsureCapacity(controlTokenTypes.Count);
-        foreach (var tokenType in controlTokenTypes)
+        foreach (var tokenRegistration in controlTokenTypes)
         {
-            var obj = Activator.CreateInstance(tokenType);
+            var obj = Activator.CreateInstance(tokenRegistration.TokenType);
             if (obj is AbstractControlDesignToken controlToken)
             {
                 _controlTokens.Add(controlToken.Id, controlToken);

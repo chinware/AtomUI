@@ -8,6 +8,7 @@ using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 
@@ -24,6 +25,7 @@ internal static class TypeHelper
     private static readonly ConcurrentDictionary<Type, string> s_defaultMemberNames = new();
     private static readonly ConcurrentDictionary<MemberInfo, bool> s_readOnlyValues = new();
 
+    [RequiresUnreferencedCode("Dynamic data property paths reflect over generic interface metadata.")]
     private static Type? FindGenericType(Type definition, Type? type)
     {
         while ((type != null) && (type != typeof(object)))
@@ -145,6 +147,7 @@ internal static class TypeHelper
     /// <param name="type">Type to search</param>
     /// <param name="propertyPath">property path</param>
     /// <returns>DisplayAttribute.ShortName if it exists, null otherwise</returns>
+    [RequiresUnreferencedCode("Dynamic data property paths reflect over public property metadata.")]
     internal static string? GetDisplayName(this Type type, string propertyPath)
     {
         PropertyInfo? propertyInfo = type.GetNestedProperty(propertyPath);
@@ -168,6 +171,7 @@ internal static class TypeHelper
         return null;
     }
 
+    [RequiresUnreferencedCode("Dynamic data property paths reflect over generic interface metadata.")]
     internal static Type GetEnumerableItemType(this Type enumerableType)
     {
         Type? type = FindGenericType(typeof(IEnumerable<>), enumerableType);
@@ -188,6 +192,7 @@ internal static class TypeHelper
     /// <param name="exception">Potential exception</param>
     /// <param name="item">Parent item which will be set to the property value if non-null.</param>
     /// <returns></returns>
+    [RequiresUnreferencedCode("Dynamic data property paths reflect over public property and indexer metadata.")]
     private static PropertyInfo? GetNestedProperty(this Type? parentType, string? propertyPath,
                                                    out Exception? exception, ref object? item)
     {
@@ -266,11 +271,13 @@ internal static class TypeHelper
     /// <param name="propertyPath">Property path.</param>
     /// <param name="item">Parent item which will be set to the property value if non-null.</param>
     /// <returns>The PropertyInfo.</returns>
+    [RequiresUnreferencedCode("Dynamic data property paths reflect over public property and indexer metadata.")]
     internal static PropertyInfo? GetNestedProperty(this Type parentType, string? propertyPath, ref object? item)
     {
         return parentType.GetNestedProperty(propertyPath, out Exception? ex, ref item);
     }
 
+    [RequiresUnreferencedCode("Dynamic data property paths reflect over public property and indexer metadata.")]
     internal static PropertyInfo? GetNestedProperty(this Type? parentType, string? propertyPath)
     {
         if (parentType != null)
@@ -299,6 +306,7 @@ internal static class TypeHelper
         return s;
     }
 
+    [RequiresUnreferencedCode("Dynamic data property paths reflect over public property and indexer metadata.")]
     internal static Type? GetNestedPropertyType(this Type? parentType, string? propertyPath)
     {
         if (parentType == null || string.IsNullOrEmpty(propertyPath))
@@ -325,6 +333,7 @@ internal static class TypeHelper
     /// <param name="propertyType">Property type</param>
     /// <param name="exception">Potential exception</param>
     /// <returns>Property value</returns>
+    [RequiresUnreferencedCode("Dynamic data property paths reflect over public property and indexer metadata.")]
     internal static object? GetNestedPropertyValue(object? item, string? propertyPath, Type propertyType,
                                                    out Exception? exception)
     {
@@ -359,6 +368,7 @@ internal static class TypeHelper
     /// <param name="item">Parent data item.</param>
     /// <param name="propertyPath">Property path.</param>
     /// <returns>Value.</returns>
+    [RequiresUnreferencedCode("Dynamic data property paths reflect over public property and indexer metadata.")]
     internal static object? GetNestedPropertyValue(object? item, string? propertyPath)
     {
         if (item != null)
@@ -399,6 +409,7 @@ internal static class TypeHelper
     /// <param name="propertyPath">Property path.</param>
     /// <param name="index">Set to the index if return value is an indexer, otherwise null.</param>
     /// <returns>PropertyInfo for either a property or an indexer.</returns>
+    [RequiresUnreferencedCode("Dynamic data property paths reflect over public property and indexer metadata.")]
     internal static PropertyInfo? GetPropertyOrIndexer(this Type type, string? propertyPath, out object[]? index)
     {
         index = null;
@@ -449,35 +460,23 @@ internal static class TypeHelper
             return indexer;
         }
 
-        var elementType = type.GetElementType();
-        if (elementType == null)
+        // If the object is of type IList, try to use its default indexer.
+        var genericList = FindGenericType(typeof(IList<>), type);
+        if (genericList is not null)
         {
-            var genericArguments = type.GetGenericArguments();
-            if (genericArguments.Length == 1)
-            {
-                elementType = genericArguments[0];
-            }
+            indexer = FindIndexerInMembers(genericList.GetDefaultMembers(), stringIndexSpan, ref stringIndex, out index);
         }
 
-        if (elementType != null)
+        var genericReadOnlyList = FindGenericType(typeof(IReadOnlyList<>), type);
+        if (genericReadOnlyList is not null)
         {
-            // If the object is of type IList, try to use its default indexer.
-            if (typeof(IList<>).MakeGenericType(elementType) is Type genericList
-                && genericList.IsAssignableFrom(type))
-            {
-                indexer = FindIndexerInMembers(genericList.GetDefaultMembers(), stringIndexSpan, ref stringIndex, out index);
-            }
-
-            if (typeof(IReadOnlyList<>).MakeGenericType(elementType) is Type genericReadOnlyList
-                && genericReadOnlyList.IsAssignableFrom(type))
-            {
-                indexer = FindIndexerInMembers(genericReadOnlyList.GetDefaultMembers(), stringIndexSpan, ref stringIndex, out index);
-            }
+            indexer = FindIndexerInMembers(genericReadOnlyList.GetDefaultMembers(), stringIndexSpan, ref stringIndex, out index);
         }
 
         return indexer;
     }
 
+    [RequiresUnreferencedCode("Dynamic data property paths reflect over generic interface metadata.")]
     internal static bool IsEnumerableType(this Type enumerableType)
     {
         return (FindGenericType(typeof(IEnumerable<>), enumerableType) != null);
@@ -704,6 +703,7 @@ internal static class TypeHelper
         });
     }
 
+    [RequiresUnreferencedCode("Dynamic collection item type inference reflects over generic interface metadata.")]
     internal static Type? GetItemType(this IEnumerable list)
     {
         Type  listType = list.GetType();

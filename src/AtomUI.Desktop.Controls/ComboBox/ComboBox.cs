@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -282,28 +283,28 @@ public class ComboBox : AvaloniaComboBox,
 
         if (e.NameScope.Find<ContentPresenter>("PART_ContentRightAddOnPresenter") is { } contentPresenter)
         {
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentProperty,
-                new Binding(nameof(ContentRightAddOn)) { Source = this }));
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentTemplateProperty,
-                new Binding(nameof(ContentRightAddOnTemplate)) { Source = this }));
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(ContentRightAddOn)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnProperty, contentPresenter,
+                ContentPresenter.ContentProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnTemplateProperty,
+                contentPresenter, ContentPresenter.ContentTemplateProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnProperty, contentPresenter,
+                Visual.IsVisibleProperty, value => value is not null));
         }
 
         if (e.NameScope.Find<ContentPresenter>("PART_FormFeedBack") is { } formFeedback)
         {
-            _contentRightAddOnBindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(IsFormFeedbackVisible)) { Source = this }));
-            _contentRightAddOnBindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
-                new Binding(nameof(FormFeedback)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsFormFeedbackVisibleProperty, formFeedback,
+                Visual.IsVisibleProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, FormFeedbackProperty, formFeedback,
+                ContentPresenter.ContentProperty));
         }
 
         if (_comboBoxHandle != null)
         {
-            _contentRightAddOnBindings.Add(_comboBoxHandle.Bind(InputElement.IsEnabledProperty,
-                new Binding(nameof(IsEnabled)) { Source = this }));
-            _contentRightAddOnBindings.Add(_comboBoxHandle.Bind(ComboBoxHandle.IsMotionEnabledProperty,
-                new Binding(nameof(IsMotionEnabled)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEnabledProperty, _comboBoxHandle,
+                InputElement.IsEnabledProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, _comboBoxHandle,
+                ComboBoxHandle.IsMotionEnabledProperty));
         }
     }
     

@@ -17,6 +17,11 @@ public class WindowCloseOutlined : AntDesignIcon
         ViewBox = new Rect(0, 0, 24, 24);
     }
 
+    public override Icon CreateInstance()
+    {
+        return new WindowCloseOutlined();
+    }
+
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()
         {

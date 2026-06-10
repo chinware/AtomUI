@@ -1,28 +1,34 @@
-using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 using AtomUI.Controls;
 
 namespace AtomUI.Icons.AntDesign;
 
-public class AntDesignIconProvider : IconProvider<AntDesignIconKind>
+public partial class AntDesignIconProvider : IconProvider<AntDesignIconKind>
 {
     public AntDesignIconProvider()
-    {}
-    
+    {
+    }
+
     public AntDesignIconProvider(AntDesignIconKind kind)
         : base(kind)
     {
     }
-    
+
+    protected override Icon GetIcon(AntDesignIconKind kind)
+    {
+        try
+        {
+            return CreateIcon(kind);
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException($"Create icon {kind} failed", ex);
+        }
+    }
+
+    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]
     protected override Type GetTypeForKind(AntDesignIconKind kind)
     {
-        var typeName = $"AtomUI.Icons.AntDesign.{kind.ToString()}";
-        
-        var type = Type.GetType(typeName) 
-                   ?? Assembly.GetExecutingAssembly().GetType(typeName);
-        if (type == null)
-        {
-            throw new InvalidOperationException($"Type {typeName} does not exist");
-        }
-        return type;
+        return GetIconType(kind);
     }
 }

@@ -9,13 +9,7 @@ internal static class IconProviderCache
     /// </summary>
     private const int MaxCacheSize = 256;
     
-    private static readonly ConcurrentDictionary<Type, ConcurrentDictionary<object, Type>> TypeCache = 
-        new();
-    
     private static readonly ConcurrentDictionary<Type, ConcurrentDictionary<object, Func<Icon>>> CreatorCache = 
-        new();
-    
-    private static readonly ConcurrentDictionary<Type, Func<Icon>> TypeToCreator = 
         new();
     
     /// <summary>
@@ -25,24 +19,8 @@ internal static class IconProviderCache
     
     private static readonly object _lockObject = new();
     
-    public static Type GetOrAddType(Type enumType, object enumValue, Func<object, Type> typeFactory)
-    {
-        EnsureCacheSize();
-        
-        var cache = TypeCache.GetOrAdd(enumType, _ =>
-        {
-            lock (_lockObject)
-            {
-                CacheInsertionOrder.Enqueue(enumType);
-            }
-            return new ConcurrentDictionary<object, Type>();
-        });
-        
-        return cache.GetOrAdd(enumValue, typeFactory);
-    }
-    
     public static Func<Icon> GetOrAddCreator(Type enumType, object enumValue, 
-        Func<object, Type> typeFactory, Func<Type, Func<Icon>> creatorFactory)
+        Func<object, Func<Icon>> creatorFactory)
     {
         EnsureCacheSize();
         
@@ -58,11 +36,7 @@ internal static class IconProviderCache
             return new ConcurrentDictionary<object, Func<Icon>>();
         });
         
-        return cache.GetOrAdd(enumValue, value =>
-        {
-            var type = GetOrAddType(enumType, value, typeFactory);
-            return TypeToCreator.GetOrAdd(type, creatorFactory);
-        });
+        return cache.GetOrAdd(enumValue, creatorFactory);
     }
     
     /// <summary>
@@ -72,10 +46,9 @@ internal static class IconProviderCache
     {
         lock (_lockObject)
         {
-            while (TypeCache.Count > MaxCacheSize && CacheInsertionOrder.Count > 0)
+            while (CreatorCache.Count > MaxCacheSize && CacheInsertionOrder.Count > 0)
             {
                 var oldestType = CacheInsertionOrder.Dequeue();
-                TypeCache.TryRemove(oldestType, out _);
                 CreatorCache.TryRemove(oldestType, out _);
             }
         }
@@ -85,7 +58,6 @@ internal static class IconProviderCache
     {
         lock (_lockObject)
         {
-            TypeCache.TryRemove(enumType, out _);
             CreatorCache.TryRemove(enumType, out _);
             // Note: We don't remove from CacheInsertionOrder to avoid lock contention
             // The queue will naturally be cleaned up during EnsureCacheSize operations
@@ -96,9 +68,7 @@ internal static class IconProviderCache
     {
         lock (_lockObject)
         {
-            TypeCache.Clear();
             CreatorCache.Clear();
-            TypeToCreator.Clear();
             CacheInsertionOrder.Clear();
         }
     }

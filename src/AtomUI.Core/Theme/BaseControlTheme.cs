@@ -110,49 +110,37 @@ public abstract class BaseControlTheme : ControlTheme
         });
     }
 
+    [Obsolete("String-based template-parent binding is not AOT-safe. Use the AvaloniaProperty overload instead.", true)]
     protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
                                                              string templateParentPath,
                                                              BindingPriority priority,
                                                              BindingMode mode = BindingMode.Default,
                                                              IValueConverter? converter = null)
     {
-        return target.Bind(property, new Binding(templateParentPath)
-        {
-            RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-            Mode           = mode,
-            Converter      = converter,
-            Priority       = priority
-        });
+        throw new NotSupportedException(
+            "String-based template-parent binding is not AOT-safe. Use the AvaloniaProperty overload instead.");
     }
 
+    [Obsolete("String-based template-parent binding is not AOT-safe. Use the AvaloniaProperty overload instead.", true)]
     protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, StyledProperty<T> property,
                                                                 string templateParentPath,
                                                                 BindingPriority priority,
                                                                 BindingMode mode = BindingMode.Default,
                                                                 IValueConverter? converter = null)
     {
-        return target.Bind(property, new Binding(templateParentPath)
-        {
-            RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-            Mode           = mode,
-            Converter      = converter,
-            Priority       = priority
-        });
+        throw new NotSupportedException(
+            "String-based template-parent binding is not AOT-safe. Use the AvaloniaProperty overload instead.");
     }
 
+    [Obsolete("String-based template-parent binding is not AOT-safe. Use the AvaloniaProperty overload instead.", true)]
     protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, DirectPropertyBase<T> property,
                                                                 string templateParentPath,
                                                                 BindingPriority priority,
                                                                 BindingMode mode = BindingMode.Default,
                                                                 IValueConverter? converter = null)
     {
-        return target.Bind(property, new Binding(templateParentPath)
-        {
-            RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-            Mode           = mode,
-            Converter      = converter,
-            Priority       = priority
-        });
+        throw new NotSupportedException(
+            "String-based template-parent binding is not AOT-safe. Use the AvaloniaProperty overload instead.");
     }
     
     protected static IDisposable CreateTemplateParentBinding(AvaloniaObject target, AvaloniaProperty property,
@@ -161,7 +149,11 @@ public abstract class BaseControlTheme : ControlTheme
                                                              BindingMode mode = BindingMode.Default,
                                                              IValueConverter? converter = null)
     {
-        return CreateTemplateParentBinding(target, property, parentProperty.Name, priority, mode, converter);
+        return target.Bind(property, new TemplateBinding(parentProperty)
+        {
+            Mode      = mode,
+            Converter = converter
+        });
     }
     
     protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, StyledProperty<T> property,
@@ -170,7 +162,11 @@ public abstract class BaseControlTheme : ControlTheme
                                                                 BindingMode mode = BindingMode.Default,
                                                                 IValueConverter? converter = null)
     {
-        return CreateTemplateParentBinding(target, property, parentProperty.Name, priority, mode, converter);
+        return target.Bind(property, new TemplateBinding(parentProperty)
+        {
+            Mode      = mode,
+            Converter = converter
+        });
     }
     
     protected static IDisposable CreateTemplateParentBinding<T>(AvaloniaObject target, DirectPropertyBase<T> property,
@@ -179,6 +175,10 @@ public abstract class BaseControlTheme : ControlTheme
                                                                 BindingMode mode = BindingMode.Default,
                                                                 IValueConverter? converter = null)
     {
-        return CreateTemplateParentBinding(target, property, parentProperty.Name, priority, mode, converter);
+        return target.Bind(property, new TemplateBinding(parentProperty)
+        {
+            Mode      = mode,
+            Converter = converter
+        });
     }
 }

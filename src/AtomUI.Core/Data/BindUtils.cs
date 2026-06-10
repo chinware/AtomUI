@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using Avalonia;
 using Avalonia.Data;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Data;
 
@@ -41,6 +43,44 @@ public static class BindUtils
             BindingMode.OneTime        => OneTimeRelayBind(source, sourceProperty, target, targetProperty, priority),
             _                          => throw new NotSupportedException($"{nameof(RelayBind)} does not support {mode}.")
         };
+    }
+
+    public static IDisposable BindVisualAncestor<TResult>(
+        Visual relativeTo,
+        AvaloniaObject target,
+        AvaloniaProperty<TResult?> targetProperty,
+        Type ancestorType,
+        int ancestorLevel = 1,
+        BindingPriority priority = BindingPriority.LocalValue)
+        where TResult : class
+    {
+        ArgumentNullException.ThrowIfNull(relativeTo);
+        ArgumentNullException.ThrowIfNull(target);
+        ArgumentNullException.ThrowIfNull(targetProperty);
+        ArgumentNullException.ThrowIfNull(ancestorType);
+        if (ancestorLevel <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(ancestorLevel), "AncestorLevel may not be set to less than 1.");
+        }
+
+        if (!typeof(TResult).IsAssignableFrom(ancestorType))
+        {
+            throw new ArgumentException(
+                $"Ancestor type {ancestorType.Name} cannot be assigned to {typeof(TResult).Name}.",
+                nameof(ancestorType));
+        }
+
+        var registry = AvaloniaPropertyRegistry.Instance;
+        if (!targetProperty.IsAttached && !registry.IsRegistered(target.GetType(), targetProperty))
+        {
+            throw new ArgumentException($"Relay target property is not registered for: {target.GetType().Name}.");
+        }
+
+        return target.Bind(
+            targetProperty,
+            VisualLocator.Track(relativeTo, ancestorLevel - 1, ancestorType)
+                         .Select(static ancestor => (TResult?)(object?)ancestor),
+            priority);
     }
 
     private static BindingMode ResolveBindingMode(AvaloniaObject target, AvaloniaProperty targetProperty, BindingMode mode)

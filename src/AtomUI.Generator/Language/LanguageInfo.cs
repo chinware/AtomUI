@@ -13,6 +13,12 @@ internal class LanguageInfo
 
     public Dictionary<string, string> Items { get; internal set; }
 
+    public string ProviderTypeFullName =>
+        string.IsNullOrEmpty(Namespace) ? ClassName : $"{Namespace}.{ClassName}";
+
+    public string ResourceKindTypeFullName =>
+        $"{TargetNamespace ?? Namespace}.{LanguageId}LangResourceKind";
+
     public LanguageInfo()
     {
         Items = new Dictionary<string, string>();

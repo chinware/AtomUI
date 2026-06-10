@@ -68,6 +68,11 @@ public class AntDesignGenerator : DefaultIconPackageGenerator
         sourceText.AppendLine($"        ViewBox = new Rect({viewBox.X}, {viewBox.Y}, {viewBox.Width}, {viewBox.Height});");
         sourceText.AppendLine(@"    }");
         sourceText.AppendLine(@"");
+        sourceText.AppendLine(@"    public override Icon CreateInstance()");
+        sourceText.AppendLine(@"    {");
+        sourceText.AppendLine($"        return new {className}();");
+        sourceText.AppendLine(@"    }");
+        sourceText.AppendLine(@"");
         sourceText.AppendLine(@"    private static readonly DrawingInstruction[] StaticInstructions = [");
         for (var i = 0; i < svgParsedInfo.GraphicElements.Count; i++)
         {

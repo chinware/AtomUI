@@ -17,6 +17,11 @@ public class BugTwoTone : AntDesignIcon
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
 
+    public override Icon CreateInstance()
+    {
+        return new BugTwoTone();
+    }
+
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()
         {

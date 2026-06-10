@@ -79,17 +79,27 @@ internal class LanguageProviderWalker : CSharpSyntaxWalker
         {
             foreach (var attribute in classDeclaredSymbol.GetAttributes())
             {
-                if (attribute.ConstructorArguments.Any() &&
-                    attribute.ConstructorArguments[0].Value is string languageCode)
+                if (!IsLanguageProviderAttribute(attribute))
                 {
-                    LanguageInfo.LanguageCode = languageCode;
+                    continue;
                 }
 
-                if (attribute.ConstructorArguments.Any() &&
+                if (attribute.ConstructorArguments.Length > 0)
+                {
+                    LanguageInfo.LanguageCode = GetLanguageCode(attribute.ConstructorArguments[0]) ?? string.Empty;
+                }
+
+                if (attribute.ConstructorArguments.Length > 1 &&
                     attribute.ConstructorArguments[1].Value is string languageId)
                 {
                     LanguageInfo.LanguageId = languageId;
                 }
+                else
+                {
+                    LanguageInfo.LanguageId = "Default";
+                }
+
+                break;
             }
         }
 
@@ -107,5 +117,35 @@ internal class LanguageProviderWalker : CSharpSyntaxWalker
         LanguageInfo.Namespace = ns;
 
         base.VisitClassDeclaration(node);
+    }
+
+    private static bool IsLanguageProviderAttribute(AttributeData attribute)
+    {
+        var attributeClass = attribute.AttributeClass;
+        if (attributeClass is null)
+        {
+            return false;
+        }
+
+        return attributeClass.Name == "LanguageProviderAttribute" ||
+               attributeClass.ToDisplayString() == TargetMarkConstants.LanguageProviderAttribute;
+    }
+
+    private static string? GetLanguageCode(TypedConstant argument)
+    {
+        if (argument.Kind == TypedConstantKind.Enum &&
+            argument.Type is INamedTypeSymbol enumType)
+        {
+            foreach (var member in enumType.GetMembers().OfType<IFieldSymbol>())
+            {
+                if (member.HasConstantValue &&
+                    Equals(member.ConstantValue, argument.Value))
+                {
+                    return member.Name;
+                }
+            }
+        }
+
+        return argument.Value as string;
     }
 }

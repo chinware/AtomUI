@@ -1,10 +1,12 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Text;
 
 namespace AtomUI.Reflection;
 
 public static class ObjectExtension
 {
+    [RequiresUnreferencedCode("Reflects over the runtime type of source.")]
     public static bool TryGetProperty<T>(
         this object source,
         string name,
@@ -25,6 +27,8 @@ public static class ObjectExtension
 
     public static bool TryGetProperty<T>(
         this object source,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties |
+                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
         Type declareType,
         string name,
         out T? result,
@@ -63,6 +67,7 @@ public static class ObjectExtension
         throw new Exception($"Get Property {info.Name} value failed.");
     }
 
+    [RequiresUnreferencedCode("Reflects over the runtime type of source.")]
     public static T? GetPropertyOrThrow<T>(this object source, string name,
                                            BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic |
                                                                 BindingFlags.Public | BindingFlags.FlattenHierarchy)
@@ -95,6 +100,8 @@ public static class ObjectExtension
 
     public static T? GetPropertyOrThrow<T>(
         this object source,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties |
+                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
         Type declareType,
         string name,
         BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
@@ -127,6 +134,8 @@ public static class ObjectExtension
 
     public static bool TrySetProperty<T>(
         this object source,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties |
+                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
         Type declareType,
         string name,
         T? value,
@@ -142,6 +151,7 @@ public static class ObjectExtension
         return true;
     }
 
+    [RequiresUnreferencedCode("Reflects over the runtime type of source.")]
     public static bool TryGetField<T>(
         this object source,
         string name,
@@ -162,6 +172,8 @@ public static class ObjectExtension
 
     public static bool TryGetField<T>(
         this object source,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields |
+                                    DynamicallyAccessedMemberTypes.NonPublicFields)]
         Type declareType,
         string name,
         out T? result,
@@ -190,6 +202,7 @@ public static class ObjectExtension
         return false;
     }
 
+    [RequiresUnreferencedCode("Reflects over the runtime type of source.")]
     public static T? GetFieldOrThrow<T>(this object source, string name,
                                         BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic |
                                                              BindingFlags.Public | BindingFlags.FlattenHierarchy)
@@ -222,6 +235,8 @@ public static class ObjectExtension
 
     public static T? GetFieldOrThrow<T>(
         this object source,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields |
+                                    DynamicallyAccessedMemberTypes.NonPublicFields)]
         Type declareType,
         string name,
         BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
@@ -254,6 +269,8 @@ public static class ObjectExtension
 
     public static bool TrySetField<T>(
         this object source,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields |
+                                    DynamicallyAccessedMemberTypes.NonPublicFields)]
         Type declareType,
         string name,
         T? value,
@@ -271,6 +288,8 @@ public static class ObjectExtension
 
     public static bool TryInvokeMethod(
         this object source,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods |
+                                    DynamicallyAccessedMemberTypes.NonPublicMethods)]
         Type declareType,
         string name,
         out object? result,
@@ -289,6 +308,8 @@ public static class ObjectExtension
 
     public static object? InvokeMethodOrThrow(
         this object source,
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods |
+                                    DynamicallyAccessedMemberTypes.NonPublicMethods)]
         Type declareType,
         string name,
         params object[] parameters)

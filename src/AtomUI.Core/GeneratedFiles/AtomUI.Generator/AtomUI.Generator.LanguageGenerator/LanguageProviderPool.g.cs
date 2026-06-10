@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using AtomUI.Theme;
 using AtomUI.Theme.Language;
+using Avalonia.Controls;
 
 namespace AtomUI.Theme.Language
 {

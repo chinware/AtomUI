@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
 using Avalonia.Media;
@@ -14,7 +15,11 @@ public interface IThemeManagerBuilder
     IList<EventHandler> InitializedHandlers { get; }
     LanguageVariant LanguageVariant { get; }
     string ThemeId { get; }
-    void AddControlToken(Type tokenType);
+    void AddControlToken(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor |
+                                    DynamicallyAccessedMemberTypes.PublicProperties |
+                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
+        Type tokenType);
     void AddControlThemesProvider(IThemeAssetPathProvider themeAssetPathProvider);
     void AddControlThemesProvider(IControlThemesProvider controlThemesProvider);
     void AddLanguageProviders(LanguageProvider languageProvider);

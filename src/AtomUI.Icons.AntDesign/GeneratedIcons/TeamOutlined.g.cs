@@ -17,6 +17,11 @@ public class TeamOutlined : AntDesignIcon
         ViewBox = new Rect(0, 0, 1024, 1024);
     }
 
+    public override Icon CreateInstance()
+    {
+        return new TeamOutlined();
+    }
+
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()
         {

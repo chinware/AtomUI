@@ -329,7 +329,7 @@ public abstract partial class DataGridColumn : AvaloniaObject
             else if (OwningGrid != null && OwningGrid.CanUserSortColumns)
             {
                 string? propertyPath = GetSortPropertyName();
-                Type?  propertyType = OwningGrid.DataConnection.DataType.GetNestedPropertyType(propertyPath);
+                Type?  propertyType = OwningGrid.DataConnection.GetPropertyType(propertyPath);
             
                 // if the type is nullable, then we will compare the non-nullable type
                 if (propertyType != null && propertyType.IsNullableType())

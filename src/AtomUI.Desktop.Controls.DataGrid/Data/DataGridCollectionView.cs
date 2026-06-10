@@ -7,9 +7,11 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using AtomUI.Controls;
+using AtomUI.Controls.Data;
 using AtomUI.Utils;
 using Avalonia.Collections;
 
@@ -147,10 +149,14 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// </summary>
     private ConstructorInfo? _itemConstructor;
 
+    private Func<object>? _newItemFactory;
+
     /// <summary>
     /// Whether we have the correct ConstructorInfo information for the ItemConstructor
     /// </summary>
     private bool _itemConstructorIsValid;
+
+    private IDataMemberAccessorDescriptor? _dataMemberAccessorDescriptor;
 
     /// <summary>
     /// The new item we are getting ready to add to the collection
@@ -182,6 +188,9 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// Private accessor for the FilterDescriptions
     /// </summary>
     private DataGridFilterDescriptionCollection? _filterDescriptions;
+    private Type? _filterDescriptionsInitializedItemType;
+    private IDataMemberAccessorDescriptor? _filterDescriptionsInitializedDescriptor;
+    private int _filterDescriptionsInitializedStamp = -1;
     
     /// <summary>
     /// Private accessor for the SourceCollection
@@ -216,7 +225,12 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// </summary>
     /// <param name="source">The source for the collection</param>
     public DataGridCollectionView(IEnumerable source)
-        : this(source, false /*isDataSorted*/, false /*isDataInGroupOrder*/)
+        : this(source, false /*isDataSorted*/, false /*isDataInGroupOrder*/, null)
+    {
+    }
+
+    public DataGridCollectionView(IEnumerable source, IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor)
+        : this(source, false /*isDataSorted*/, false /*isDataInGroupOrder*/, dataMemberAccessorDescriptor)
     {
     }
 
@@ -227,8 +241,18 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <param name="isDataSorted">Determines whether the source is already sorted</param>
     /// <param name="isDataInGroupOrder">Whether the source is already in the correct order for grouping</param>
     public DataGridCollectionView(IEnumerable source, bool isDataSorted, bool isDataInGroupOrder)
+        : this(source, isDataSorted, isDataInGroupOrder, null)
+    {
+    }
+
+    private DataGridCollectionView(IEnumerable source,
+                                   bool isDataSorted,
+                                   bool isDataInGroupOrder,
+                                   IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor)
     {
         _sourceCollection = source ?? throw new ArgumentNullException(nameof(source));
+        _dataMemberAccessorDescriptor = dataMemberAccessorDescriptor;
+        _newItemFactory               = dataMemberAccessorDescriptor?.NewItemFactory;
 
         SetFlag(CollectionViewFlags.IsDataSorted, isDataSorted);
         SetFlag(CollectionViewFlags.IsDataInGroupOrder, isDataInGroupOrder);
@@ -440,9 +464,35 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         {
             if (_itemType == null)
             {
-                _itemType = GetItemType(true);
+                _itemType = _dataMemberAccessorDescriptor?.DataType ?? GetItemType(true);
+                ResolveDataMemberAccessorDescriptor(_itemType);
             }
             return _itemType;
+        }
+    }
+
+    internal IDataMemberAccessorDescriptor? DataMemberAccessorDescriptor
+    {
+        get
+        {
+            if (_dataMemberAccessorDescriptor == null)
+            {
+                ResolveDataMemberAccessorDescriptor(_itemType);
+            }
+
+            return _dataMemberAccessorDescriptor;
+        }
+    }
+
+    private void ResolveDataMemberAccessorDescriptor(Type? itemType)
+    {
+        if (_dataMemberAccessorDescriptor == null &&
+            itemType != null &&
+            DataMemberAccessorRegistry.TryGetCompatible(itemType, out var descriptor))
+        {
+            _dataMemberAccessorDescriptor = descriptor;
+            _newItemFactory               = descriptor.NewItemFactory;
+            InvalidateFilterDescriptionInitialization();
         }
     }
 
@@ -976,7 +1026,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 EnsureItemConstructor();
             }
 
-            return _itemConstructor != null;
+            return _newItemFactory != null || _itemConstructor != null;
         }
     }
 
@@ -1163,7 +1213,11 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         object? newItem = null;
 
-        if (_itemConstructor != null)
+        if (_newItemFactory != null)
+        {
+            newItem = _newItemFactory();
+        }
+        else if (_itemConstructor != null)
         {
             newItem = _itemConstructor.Invoke(null);
         }
@@ -2277,10 +2331,66 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     {
         if (Filter != null)
         {
+            InitializeFilterDescriptions(item.GetType());
             return Filter(item);
         }
 
         return true;
+    }
+
+    private void InitializeFilterDescriptions(Type itemType)
+    {
+        var dataMemberAccessorDescriptor = DataMemberAccessorDescriptor;
+        var filterDescriptionStamp       = GetFilterDescriptionStamp();
+        if (_filterDescriptionsInitializedItemType == itemType &&
+            ReferenceEquals(_filterDescriptionsInitializedDescriptor, dataMemberAccessorDescriptor) &&
+            _filterDescriptionsInitializedStamp == filterDescriptionStamp)
+        {
+            return;
+        }
+
+        foreach (var filterDescription in FilterDescriptions)
+        {
+            filterDescription.Initialize(itemType, dataMemberAccessorDescriptor);
+        }
+
+        _filterDescriptionsInitializedItemType   = itemType;
+        _filterDescriptionsInitializedDescriptor = dataMemberAccessorDescriptor;
+        _filterDescriptionsInitializedStamp      = filterDescriptionStamp;
+    }
+
+    private int GetFilterDescriptionStamp()
+    {
+        var stamp = FilterDescriptions.Count;
+        foreach (var filterDescription in FilterDescriptions)
+        {
+            stamp = unchecked((stamp * 397) ^ filterDescription.AccessorVersion);
+        }
+        return stamp;
+    }
+
+    private void InvalidateFilterDescriptionInitialization()
+    {
+        _filterDescriptionsInitializedItemType   = null;
+        _filterDescriptionsInitializedDescriptor = null;
+        _filterDescriptionsInitializedStamp      = -1;
+    }
+
+    private void InitializeGroupDescriptions()
+    {
+        var itemType = ItemType;
+        if (itemType == null)
+        {
+            return;
+        }
+
+        foreach (var groupDescription in GroupDescriptions)
+        {
+            if (groupDescription is DataGridPathGroupDescription pathGroupDescription)
+            {
+                pathGroupDescription.Initialize(itemType, DataMemberAccessorDescriptor);
+            }
+        }
     }
 
     /// <summary>
@@ -2427,25 +2537,6 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                     GetItemAt(PageSize - 1),
                     PageSize - 1));
         }
-    }
-
-    /// <summary>
-    /// Helper for SortList to handle nested properties (e.g. Address.Street)
-    /// </summary>
-    /// <param name="item">parent object</param>
-    /// <param name="propertyPath">property names path</param>
-    /// <param name="propertyType">property type that we want to check for</param>
-    /// <returns>child object</returns>
-    private static object? InvokePath(object item, string propertyPath, Type propertyType)
-    {
-        object? propertyValue =
-            TypeHelper.GetNestedPropertyValue(item, propertyPath, propertyType, out var exception);
-        if (exception != null)
-        {
-            throw exception;
-        }
-
-        return propertyValue;
     }
 
     /// <summary>
@@ -2806,15 +2897,24 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <summary>
     /// Makes sure that the ItemConstructor is set for the correct type
     /// </summary>
+    [UnconditionalSuppressMessage("Trimming", "IL2075",
+        Justification = "AddNew support probes the item parameterless constructor for dynamic data collections. NativeAOT apps must preserve item constructors or avoid AddNew.")]
     private void EnsureItemConstructor()
     {
         if (!_itemConstructorIsValid)
         {
-            Type? itemType = ItemType;
-            if (itemType != null)
+            if (_newItemFactory != null)
             {
-                _itemConstructor        = itemType.GetConstructor(Type.EmptyTypes);
                 _itemConstructorIsValid = true;
+            }
+            else
+            {
+                Type? itemType = ItemType;
+                if (itemType != null)
+                {
+                    _itemConstructor        = itemType.GetConstructor(Type.EmptyTypes);
+                    _itemConstructorIsValid = true;
+                }
             }
         }
     }
@@ -2872,6 +2972,8 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// </summary>
     /// <param name="useRepresentativeItem">Whether we should use a representative item</param>
     /// <returns>The type of the items in the collection</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2075",
+        Justification = "Dynamic collection views infer item type from runtime collection interfaces. NativeAOT apps must preserve collection interface metadata.")]
     private Type? GetItemType(bool useRepresentativeItem)
     {
         Type   collectionType = SourceCollection.GetType();
@@ -3226,6 +3328,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
         Debug.Assert(PageSize == 0, "Unexpected PageSize != 0");
         
         _group.Clear();
+        InitializeGroupDescriptions();
         _group.Initialize();
 
         _group.IsDataInGroupOrder = CheckFlag(CollectionViewFlags.IsDataInGroupOrder);
@@ -3274,6 +3377,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     {
         Debug.Assert(_group != null);
         _temporaryGroup = new CollectionViewGroupRoot(this, CheckFlag(CollectionViewFlags.IsDataInGroupOrder));
+        InitializeGroupDescriptions();
 
         foreach (var gd in _group.GroupDescriptions)
         {
@@ -3318,6 +3422,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     private void PrepareGroupsForCurrentPage()
     {
         _group.Clear();
+        InitializeGroupDescriptions();
         _group.Initialize();
 
         // set to indicate that we will be pulling data from the temporary group data
@@ -3731,7 +3836,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
                 var itemType = ItemType;
                 Debug.Assert(itemType != null);
                 foreach (var sort in SortDescriptions)
-                    sort.Initialize(itemType);
+                    sort.Initialize(itemType, DataMemberAccessorDescriptor);
 
                 if (InternalList.Count > 0)
                 {
@@ -4095,6 +4200,8 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
     /// <param name="descriptions"></param>
     private void SetFilterDescriptions(DataGridFilterDescriptionCollection descriptions)
     {
+        InvalidateFilterDescriptionInitialization();
+
         if (_filterDescriptions != null)
         {
             _filterDescriptions.CollectionChanged -= FilterDescriptionsChanged;
@@ -4154,6 +4261,8 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
             throw new InvalidOperationException(GetOperationNotAllowedDuringAddOrEditText("Filtering"));
         }
 
+        InvalidateFilterDescriptionInitialization();
+
         // we want to make sure that the data is refreshed before we try to move to a page
         // since the refresh would take care of the filtering, sorting, and grouping.
         RefreshOrDefer();
@@ -4191,7 +4300,7 @@ public sealed class DataGridCollectionView : IDataGridCollectionView, IDataGridE
 
         foreach (var sort in SortDescriptions)
         {
-            sort.Initialize(itemType);
+            sort.Initialize(itemType, DataMemberAccessorDescriptor);
             if (!shouldSort)
             {
                 continue;
