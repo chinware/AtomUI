@@ -35,6 +35,7 @@
 | AOT-RV-013：ReactiveWindow AOT 边界 | `[x] 已通过` | 未提交 | ReactiveUI view-side `WhenActivated` 已移除，VM activation 语义和释放边界已确认。 |
 | AOT-RV-014：Generated files 与 source generator packaging | `[x] 已通过` | 未提交 | 生成物稳定复现，source generator packaging 和 AOT analyzer 属性隔离已确认。 |
 | AOT-RV-015：剩余 controlgallery AOT warning | `[ ] 待 review` | 部分已提交；ReactiveUI 批次未提交 | Gallery localization/icon 已通过并提交；ReactiveUI expression API 已改造并清零 analyzer warning，待 review。 |
+| AOT-RV-016：Gallery.Desktop NativeAOT publish 配置 | `[ ] 待 review` | 未提交 | NativeAOT publish 已能产出 osx-arm64 Mach-O，剩余 warning 来自 ReactiveUI 包内部和 macOS linker 环境。 |
 
 最近一次验证快照：
 
@@ -497,3 +498,37 @@
   - `LanguageProvider()` warning 已清零；Gallery `222` 个 raw localization provider 对应生成 `222` 个显式构造函数。
   - `IconGallery` warning 已清零：`Assembly.GetTypes()` 和 `Activator.CreateInstance(Type)` 不再出现在 Gallery/full solution AOT analyzer 日志中。
   - ReactiveUI expression API warning 已清零：旧 `.OneWayBind(...)`、ReactiveUI `.BindCommand(...)`、`.WhenAnyValue(...)`、`.ToProperty(...)`、`ReactiveUserControl<T>` 在 Gallery 源码里不再残留。
+
+### AOT-RV-016：Gallery.Desktop NativeAOT publish 配置
+
+- 状态：`[ ] 待 review`
+- 主要文件：
+  - `controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj`
+  - `src/AtomUI.Generator/AtomUI.Generator.csproj`
+- 为什么这样改：
+  - `dotnet publish ... -p:PublishAot=true` 会把 `PublishAot` 作为 MSBuild global property 传给 ProjectReference 图；`AtomUI.Generator` 是 `netstandard2.0` Roslyn source generator，不是运行时发布目标，因此会触发 `NETSDK1207`。
+  - `AtomUI.Generator` 需要把 `PublishAot`、`PublishTrimmed`、`PublishSingleFile`、`SelfContained`、`RuntimeIdentifier` 也纳入 `TreatAsLocalProperty` 并在自身关闭，避免外层应用发布属性污染 generator 项目。
+  - macOS NativeAOT 链接阶段需要找到 Homebrew OpenSSL；本机 `libssl/libcrypto` 在 `/opt/homebrew/lib`，默认 clang/ld 搜索路径没有覆盖。
+  - 历史验证中，保留粗粒度 `Roots.xml` 时默认 Apple linker 曾触发 `too many large addends` 断言；删除 Desktop `Roots.xml` 后，默认 linker 已能完成当前 NativeAOT 产物链接，因此不再固化 `-ld_classic`。
+  - `Roots.xml` 原本是整包 `preserve="All"` 的粗粒度兜底，会掩盖真实 trim 边界并扩大 NativeAOT 保留面。当前 Gallery/AtomUI 内置路径已通过 AOT 改造消除关键动态发现路径，Desktop 这组 root 可以整体删除。
+- Review 重点：
+  - `AtomUI.Generator` 的 publish/runtime 属性隔离只影响 generator 项目自身，不应改变消费项目的 AOT analyzer 或 source generator 执行。
+  - `AtomUIGallery.Desktop.csproj` 的 linker 参数只在 `PublishAot=true` 且 macOS 环境生效。
+  - `-L/opt/homebrew/lib` 使用 `Exists('/opt/homebrew/lib/libssl.dylib')` 条件，避免非 Homebrew/macOS 环境硬失败。
+  - `-ld_classic` 不应作为默认项目配置；如果某个 Xcode/NativeAOT 组合再次触发 linker bug，应作为本机或 CI 发布参数单独处理。
+  - 删除 `Roots.xml` 后不能影响真实需要保留的 runtime assembly；需要用真实 NativeAOT publish 和启动 smoke test 证明 AXAML、主题、图标、语言资源等路径仍能加载。
+- 验证：
+  - 初始失败：`dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj -c Release -r osx-arm64 -p:PublishAot=true --self-contained true --nologo -v:minimal` 报 `NETSDK1207`，原因是 `PublishAot=true` 传入 `AtomUI.Generator`。
+  - 修复 generator 属性隔离后，NativeAOT 进入 native code 阶段，但首次链接失败于 `ld: library 'ssl' not found`。
+  - 使用 `LIBRARY_PATH=/opt/homebrew/lib` 后 OpenSSL 问题消失，但在保留粗粒度 `Roots.xml` 的历史状态下，Apple ld 报 `too many large addends` 断言。
+  - 历史上加入 `-ld_classic` 后可绕过该 linker 断言，但该参数已被 Apple 标记 deprecated，不适合长期固化。
+  - 完整 NativeAOT 发布：`dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj -c Release -r osx-arm64 -p:PublishAot=true --self-contained true --nologo -v:minimal` 通过，输出 `output/bin/Release/net10.0/osx-arm64/publish/`。
+  - `file output/bin/Release/net10.0/osx-arm64/publish/AtomUIGallery.Desktop` 确认产物为 `Mach-O 64-bit executable arm64`。
+  - 删除 Desktop `Roots.xml` 和 `TrimmerRootDescriptor` 后重新发布：`dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj -c Release -r osx-arm64 -p:PublishAot=true --self-contained true --nologo -v:minimal` 通过。
+  - 删除 Desktop `Roots.xml` 后，裸 AOT 可执行文件大小为 `53,132,072 bytes`，`ls -lh` 显示约 `51M`。
+  - 删除 Desktop `Roots.xml` 后，用 `.app` bundle 启动最新 NativeAOT 产物，进程运行超过 60 秒，没有终端异常输出；随后手动结束验证进程。
+  - 移除 `-ld_classic` 后，重新执行 `dotnet clean controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj -c Release -r osx-arm64 --nologo -v:minimal && dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj -c Release -r osx-arm64 -p:PublishAot=true --self-contained true --nologo -v:minimal` 通过。
+  - 移除 `-ld_classic` 后，裸 AOT 可执行文件大小为 `53,082,536 bytes`，`ls -lh` 显示约 `51M`。
+  - 移除 `-ld_classic` 后，直接启动裸 AOT 可执行文件，进程运行超过 30 秒，没有终端异常输出；随后手动结束验证进程。
+  - `git diff --check` 通过。
+  - 当前剩余 warning：`ReactiveUI` / `ReactiveUI.Avalonia` 包内部 IL2104/IL3053 汇总；macOS linker 报 Homebrew dylib 构建版本高于链接目标版本。

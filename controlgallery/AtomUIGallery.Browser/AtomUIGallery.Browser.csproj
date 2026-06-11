@@ -7,7 +7,7 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <WasmEnableThreads>false</WasmEnableThreads>
         <WasmBuildNative>true</WasmBuildNative>
-        <DebuggerSupport>true</DebuggerSupport>
+        <DebuggerSupport Condition="'$(Configuration)' == 'Debug'">true</DebuggerSupport>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,8 +19,8 @@
         <AvaloniaResource Include="../AtomUIGallery/Assets/gallery-logo.png" Link="Assets/gallery-logo.png"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <TrimmerRootDescriptor Include="Roots.xml"/>
+    <ItemGroup Condition="'$(RunAOTCompilation)' == 'true' and '$(BrowserAotForceInterpretAssemblies)' != ''">
+        <_AOT_InternalForceInterpretAssemblies Include="$(BrowserAotForceInterpretAssemblies)"/>
     </ItemGroup>
 
     <ItemGroup>

@@ -26,6 +26,5 @@ RuntimePlatform.Features.SupportsNativeWindow
 
 ## 相关文档
 
-- [../../AtomUIGallery/browser-gallery-porting-notes.md](../../AtomUIGallery/browser-gallery-porting-notes.md)
+- [../../gallery/browser-gallery-porting-notes.md](../../gallery/browser-gallery-porting-notes.md)
 - [../../architecture/runtime-platforms.md](../../architecture/runtime-platforms.md)
-
