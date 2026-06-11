@@ -90,9 +90,16 @@
                     <x:String>Dark</x:String>
                 </atom:ThemeConfigProvider.Algorithms>
                 <Border Background="#2b2d30" Padding="20">
-                    <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:LineEdit PlaceholderText="{gallery:CustomizeThemeShowCaseLangResource P2PlaceholderTextPleaseInput}" Width="200" />
-                        <atom:Button ButtonType="Primary" Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}" />
+                    <StackPanel Orientation="Horizontal"
+                                Spacing="5"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <atom:LineEdit PlaceholderText="{gallery:CustomizeThemeShowCaseLangResource P2PlaceholderTextPleaseInput}"
+                                       Width="200"
+                                       VerticalAlignment="Center" />
+                        <atom:Button ButtonType="Primary"
+                                     Content="{gallery:CustomizeThemeShowCaseLangResource P2ContentSubmit}"
+                                     VerticalAlignment="Center" />
                     </StackPanel>
                 </Border>
             </atom:ThemeConfigProvider>
