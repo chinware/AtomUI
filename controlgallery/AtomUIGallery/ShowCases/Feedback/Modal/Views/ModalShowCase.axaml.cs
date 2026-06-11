@@ -5,14 +5,12 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 using TextBlock = AtomUI.Desktop.Controls.TextBlock;
 using ToggleSwitch = AtomUI.Desktop.Controls.ToggleSwitch;
 
 namespace AtomUIGallery.ShowCases.Modal;
 
-public partial class ModalShowCase : ReactiveUserControl<ModalViewModel>
+public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
 {
     public const string LanguageId = nameof(ModalShowCase);
 

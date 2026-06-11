@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Result;
 
 [LanguageProvider(LanguageCode.zh_CN, ResultShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string SuccessTitle = "成功";
     public const string SuccessDescription = "展示成功结果。";

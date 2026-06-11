@@ -1,9 +1,8 @@
 using Avalonia.Controls;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.NumberUpDown;
 
-public partial class NumberUpDownShowCase : ReactiveUserControl<NumberUpDownViewModel>
+public partial class NumberUpDownShowCase : GalleryReactiveUserControl<NumberUpDownViewModel>
 {
     public const string LanguageId = nameof(NumberUpDownShowCase);
 

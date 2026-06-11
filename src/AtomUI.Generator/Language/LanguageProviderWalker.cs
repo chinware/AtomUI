@@ -77,23 +77,39 @@ internal class LanguageProviderWalker : CSharpSyntaxWalker
         var classDeclaredSymbol = _semanticModel.GetDeclaredSymbol(node);
         if (classDeclaredSymbol is not null)
         {
+            LanguageInfo.Accessibility = GetAccessibility(classDeclaredSymbol.DeclaredAccessibility);
+
             foreach (var attribute in classDeclaredSymbol.GetAttributes())
             {
-                if (attribute.ConstructorArguments.Any() &&
-                    attribute.ConstructorArguments[0].Value is string languageCode)
+                if (!IsLanguageProviderAttribute(attribute))
                 {
-                    LanguageInfo.LanguageCode = languageCode;
+                    continue;
                 }
 
-                if (attribute.ConstructorArguments.Any() &&
+                if (attribute.ConstructorArguments.Length > 0)
+                {
+                    LanguageInfo.LanguageCode = GetLanguageCode(attribute.ConstructorArguments[0]) ?? string.Empty;
+                }
+
+                if (attribute.ConstructorArguments.Length > 1 &&
                     attribute.ConstructorArguments[1].Value is string languageId)
                 {
                     LanguageInfo.LanguageId = languageId;
                 }
+                else
+                {
+                    LanguageInfo.LanguageId = "Default";
+                }
+
+                break;
             }
         }
 
         LanguageInfo.ClassName = node.Identifier.ToString();
+        LanguageInfo.IsPartial = node.Modifiers.Any(SyntaxKind.PartialKeyword);
+        LanguageInfo.HasParameterlessConstructor = node.Members
+                                                      .OfType<ConstructorDeclarationSyntax>()
+                                                      .Any(ctor => ctor.ParameterList.Parameters.Count == 0);
         var ns = string.Empty;
         if (node.Parent is FileScopedNamespaceDeclarationSyntax fileScopedNamespaceDecl)
         {
@@ -107,5 +123,45 @@ internal class LanguageProviderWalker : CSharpSyntaxWalker
         LanguageInfo.Namespace = ns;
 
         base.VisitClassDeclaration(node);
+    }
+
+    private static bool IsLanguageProviderAttribute(AttributeData attribute)
+    {
+        var attributeClass = attribute.AttributeClass;
+        if (attributeClass is null)
+        {
+            return false;
+        }
+
+        return attributeClass.Name == "LanguageProviderAttribute" ||
+               attributeClass.ToDisplayString() == TargetMarkConstants.LanguageProviderAttribute;
+    }
+
+    private static string? GetLanguageCode(TypedConstant argument)
+    {
+        if (argument.Kind == TypedConstantKind.Enum &&
+            argument.Type is INamedTypeSymbol enumType)
+        {
+            foreach (var member in enumType.GetMembers().OfType<IFieldSymbol>())
+            {
+                if (member.HasConstantValue &&
+                    Equals(member.ConstantValue, argument.Value))
+                {
+                    return member.Name;
+                }
+            }
+        }
+
+        return argument.Value as string;
+    }
+
+    private static string GetAccessibility(Accessibility accessibility)
+    {
+        return accessibility switch
+        {
+            Accessibility.Public => "public",
+            Accessibility.Internal => "internal",
+            _ => "internal"
+        };
     }
 }

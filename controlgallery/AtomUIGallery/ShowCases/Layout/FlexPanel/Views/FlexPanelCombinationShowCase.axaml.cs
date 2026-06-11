@@ -1,8 +1,7 @@
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.FlexPanel;
 
-public partial class FlexPanelCombinationShowCase : ReactiveUserControl<FlexPanelViewModel>
+public partial class FlexPanelCombinationShowCase : GalleryReactiveUserControl<FlexPanelViewModel>
 {
     public FlexPanelCombinationShowCase()
     {

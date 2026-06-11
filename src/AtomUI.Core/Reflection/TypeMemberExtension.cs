@@ -6,6 +6,8 @@ namespace AtomUI.Reflection;
 public static class TypeMemberExtension
 {
     public static bool TryGetPropertyInfo(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties |
+                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
         this Type type,
         string name,
         [NotNullWhen(true)] out PropertyInfo? info,
@@ -16,6 +18,8 @@ public static class TypeMemberExtension
     }
 
     public static bool TryGetFieldInfo(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields |
+                                    DynamicallyAccessedMemberTypes.NonPublicFields)]
         this Type type,
         string name,
         [NotNullWhen(true)] out FieldInfo? info,
@@ -26,6 +30,8 @@ public static class TypeMemberExtension
     }
 
     public static bool TryGetMethodInfo(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods |
+                                    DynamicallyAccessedMemberTypes.NonPublicMethods)]
         this Type type,
         string name,
         [NotNullWhen(true)] out MethodInfo? info,
@@ -37,6 +43,8 @@ public static class TypeMemberExtension
     }
     
     public static bool TryGetEventInfo(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicEvents |
+                                    DynamicallyAccessedMemberTypes.NonPublicEvents)]
         this Type type,
         string name,
         [NotNullWhen(true)] out EventInfo? info,
@@ -48,6 +56,8 @@ public static class TypeMemberExtension
     }
 
     public static PropertyInfo GetPropertyInfoOrThrow(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicProperties |
+                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
         this Type type,
         string name,
         BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public |
@@ -61,7 +71,10 @@ public static class TypeMemberExtension
         return info;
     }
 
-    public static FieldInfo GetFieldInfoOrThrow(this Type type, string name,
+    public static FieldInfo GetFieldInfoOrThrow(
+                                                [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields |
+                                                                            DynamicallyAccessedMemberTypes.NonPublicFields)]
+                                                this Type type, string name,
                                                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic |
                                                                      BindingFlags.Public |
                                                                      BindingFlags.FlattenHierarchy)
@@ -74,7 +87,10 @@ public static class TypeMemberExtension
         return info;
     }
 
-    public static MethodInfo GetMethodInfoOrThrow(this Type type, string name,
+    public static MethodInfo GetMethodInfoOrThrow(
+                                                  [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods |
+                                                                              DynamicallyAccessedMemberTypes.NonPublicMethods)]
+                                                  this Type type, string name,
                                                   BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic |
                                                                        BindingFlags.Public |
                                                                        BindingFlags.FlattenHierarchy)
@@ -87,7 +103,10 @@ public static class TypeMemberExtension
         return info;
     }
 
-    public static EventInfo GetEventInfoOrThrow(this Type type, string name,
+    public static EventInfo GetEventInfoOrThrow(
+                                                [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicEvents |
+                                                                            DynamicallyAccessedMemberTypes.NonPublicEvents)]
+                                                this Type type, string name,
                                                 BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic |
                                                                      BindingFlags.Public |
                                                                      BindingFlags.FlattenHierarchy)

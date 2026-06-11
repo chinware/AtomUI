@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using AtomUI.Theme;
 using Avalonia.Controls;
@@ -6,6 +7,7 @@ using Avalonia.Logging;
 
 namespace AtomUI.Theme.Language;
 
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)]
 public abstract class LanguageProvider : ILanguageProvider
 {
     private static readonly ConcurrentDictionary<Type, IReadOnlyDictionary<string, FieldInfo>> s_languageFieldsByType = new();
@@ -14,6 +16,13 @@ public abstract class LanguageProvider : ILanguageProvider
 
     public string LangId { get; }
 
+    protected LanguageProvider(LanguageCode langCode, string langId)
+    {
+        LangCode = langCode;
+        LangId   = langId;
+    }
+
+    [RequiresUnreferencedCode("Reflects over the runtime language provider type to read LanguageProviderAttribute.")]
     public LanguageProvider()
     {
         var type                      = GetType();
@@ -27,7 +36,7 @@ public abstract class LanguageProvider : ILanguageProvider
         LangId          = languageProviderAttribute.LanguageId;
     }
 
-    public void BuildResourceDictionary(IResourceDictionary dictionary)
+    public virtual void BuildResourceDictionary(IResourceDictionary dictionary)
     {
         var type             = GetType();
         var resourceKindType = GetResourceKindType();
@@ -49,28 +58,37 @@ public abstract class LanguageProvider : ILanguageProvider
         }
         catch (Exception)
         {
-            var logger = Logger.TryGet(LogEventLevel.Error, AtomUILogArea.Theme);
-            logger?.Log(this, $"Build Resource for Language {resourceKindType.FullName} error.");
+            LogBuildResourceDictionaryError(resourceKindType);
             throw;
         }
     }
 
     protected abstract Type GetResourceKindType();
 
-    private static IReadOnlyDictionary<string, FieldInfo> GetLanguageFieldMap(Type type)
+    protected void LogBuildResourceDictionaryError(Type resourceKindType)
     {
-        return s_languageFieldsByType.GetOrAdd(type, static languageType =>
-        {
-            var fields = languageType.GetFields(BindingFlags.Public |
-                                                BindingFlags.Static |
-                                                BindingFlags.FlattenHierarchy);
-            var fieldMap = new Dictionary<string, FieldInfo>(fields.Length);
-            foreach (var field in fields)
-            {
-                fieldMap[field.Name] = field;
-            }
+        var logger = Logger.TryGet(LogEventLevel.Error, AtomUILogArea.Theme);
+        logger?.Log(this, $"Build Resource for Language {resourceKindType.FullName} error.");
+    }
 
-            return fieldMap;
-        });
+    private static IReadOnlyDictionary<string, FieldInfo> GetLanguageFieldMap(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicFields)]
+        Type type)
+    {
+        if (s_languageFieldsByType.TryGetValue(type, out var cachedFields))
+        {
+            return cachedFields;
+        }
+
+        var fields = type.GetFields(BindingFlags.Public |
+                                    BindingFlags.Static |
+                                    BindingFlags.FlattenHierarchy);
+        var fieldMap = new Dictionary<string, FieldInfo>(fields.Length);
+        foreach (var field in fields)
+        {
+            fieldMap[field.Name] = field;
+        }
+
+        return s_languageFieldsByType.GetOrAdd(type, fieldMap);
     }
 }

@@ -4,6 +4,8 @@
 // All other rights reserved.
 
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using AtomUI.Controls.Data;
 using AtomUI.Utils;
 using Avalonia.Data.Converters;
 
@@ -14,6 +16,7 @@ public class DataGridPathGroupDescription : DataGridGroupDescription
     private string _propertyPath;
     private Type? _propertyOwnerType;
     private Type? _propertyType;
+    private IDataGridDataMemberPathAccessor? _propertyAccessor;
     private IValueConverter? _valueConverter;
     private StringComparison _stringComparison = StringComparison.Ordinal;
 
@@ -21,6 +24,14 @@ public class DataGridPathGroupDescription : DataGridGroupDescription
     {
         _propertyPath = propertyPath;
     }
+
+    public DataGridPathGroupDescription(string propertyPath, IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor)
+        : this(propertyPath)
+    {
+        _dataMemberAccessorDescriptor = dataMemberAccessorDescriptor;
+    }
+
+    private readonly IDataMemberAccessorDescriptor? _dataMemberAccessorDescriptor;
 
     public override object? GroupKeyFromItem(object item, int level, CultureInfo culture)
     {
@@ -31,10 +42,10 @@ public class DataGridPathGroupDescription : DataGridGroupDescription
                 return null;
             }
             
-            var propertyType = GetPropertyType(o);
-            if (propertyType != null)
+            EnsurePropertyAccessor(o.GetType(), _dataMemberAccessorDescriptor, RuntimeFeature.IsDynamicCodeSupported);
+            if (_propertyType != null)
             {
-                return InvokePath(o, _propertyPath, propertyType);
+                return _propertyAccessor?.GetValue(o);
             }
             return null;
         }
@@ -69,27 +80,28 @@ public class DataGridPathGroupDescription : DataGridGroupDescription
         set => _valueConverter = value;
     }
 
-    private Type? GetPropertyType(object o)
+    internal void Initialize(Type itemType,
+                             IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                             bool isDynamicCodeSupported = true)
     {
-        var ownerType = o.GetType();
-        if (_propertyOwnerType != ownerType)
-        {
-            _propertyType      = ownerType.GetNestedPropertyType(_propertyPath);
-            _propertyOwnerType = ownerType;
-        }
-
-        return _propertyType;
+        EnsurePropertyAccessor(itemType, dataMemberAccessorDescriptor ?? _dataMemberAccessorDescriptor, isDynamicCodeSupported);
     }
 
-    private static object? InvokePath(object item, string propertyPath, Type propertyType)
+    private void EnsurePropertyAccessor(Type itemType,
+                                        IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                                        bool isDynamicCodeSupported)
     {
-        object? propertyValue =
-            TypeHelper.GetNestedPropertyValue(item, propertyPath, propertyType, out var exception);
-        if (exception != null)
+        if (_propertyOwnerType == itemType && _propertyAccessor != null)
         {
-            throw exception;
+            return;
         }
 
-        return propertyValue;
+        _propertyAccessor = DataGridDataMemberPathAccessor.Resolve(
+            _propertyPath,
+            itemType,
+            dataMemberAccessorDescriptor,
+            isDynamicCodeSupported);
+        _propertyType      = _propertyAccessor.ValueType;
+        _propertyOwnerType = itemType;
     }
 }

@@ -1,8 +1,7 @@
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Collapse;
 
-public partial class CollapseBasicShowCase : ReactiveUserControl<CollapseViewModel>
+public partial class CollapseBasicShowCase : GalleryReactiveUserControl<CollapseViewModel>
 {
     public CollapseBasicShowCase()
     {

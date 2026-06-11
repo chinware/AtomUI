@@ -1,6 +1,5 @@
 using System.Reactive;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.ShowCases.AboutUs;
@@ -116,7 +115,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         TestNavigatePagesCommand     = ReactiveCommand.Create<TimeSpan>(DoTestNavigatePages);
         StopTestNavigatePagesCommand = ReactiveCommand.Create(DoStopTestNavigatePages);
 
-        this.WhenActivated((CompositeDisposable disposables) =>
+        Activator.Activated.Subscribe(_ =>
         {
             DoNavigateTo(AboutUsViewModel.ID);
         });

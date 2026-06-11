@@ -6,6 +6,11 @@ namespace AtomUI.Desktop.Controls.DataGridLocalization;
 [LanguageProvider(LanguageCode.en_US, DataGridToken.ID)]
 internal class en_US : LanguageProvider
 {
+    public en_US()
+        : base(LanguageCode.en_US, DataGridToken.ID)
+    {
+    }
+
     public const string SelectAllFilterItems = "Select all items";
     public const string AscendTooltip = "Click to sort ascending";
     public const string DescendTooltip = "Click to sort descending";

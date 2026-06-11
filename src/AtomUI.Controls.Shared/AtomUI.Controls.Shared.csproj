@@ -25,6 +25,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtomUI.Controls" />
+        <InternalsVisibleTo Include="AtomUI.Controls.Shared.Tests" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.DataGrid" />
         <InternalsVisibleTo Include="AtomUI.Desktop.Controls.ColorPicker" />

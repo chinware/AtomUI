@@ -66,6 +66,7 @@ public class NavMenu : ItemsControl,
         AvaloniaProperty.Register<NavMenu, bool>(nameof (ShouldUseOverlayPopup));
     
     private INavMenuNode? _selectedItem;
+    private int _selectedItemRevision;
 
     public INavMenuNode? SelectedItem
     {
@@ -249,9 +250,10 @@ public class NavMenu : ItemsControl,
 
         if (change.Property == SelectedItemProperty)
         {
+            _selectedItemRevision++;
             if (SelectedItem != null)
             {
-                SelectTargetMenuNode(SelectedItem);
+                SelectTargetMenuNode(SelectedItem, _selectedItemRevision);
             }
         }
     }
@@ -291,14 +293,16 @@ public class NavMenu : ItemsControl,
         if (container is NavMenuItem menuItem)
         {
             menuItem.OwnerMenu = this;
+            var nodeBindingDisposables = menuItem.ResetNodeBindingDisposables();
 
             {
                 if (item is INavMenuNode menuNode)
                 {
                     menuItem.SetCurrentValue(NavMenuItem.HeaderProperty, menuNode);
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Icon), menuItem, NavMenuItem.IconProperty);
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.IsEnabled), menuItem,
-                        NavMenuItem.IsEnabledProperty);
+                    nodeBindingDisposables.Add(BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Icon),
+                        node => node.Icon, menuItem, NavMenuItem.IconProperty));
+                    nodeBindingDisposables.Add(BindUtils.RelayBind(menuNode, nameof(INavMenuNode.IsEnabled),
+                        node => node.IsEnabled, menuItem, NavMenuItem.IsEnabledProperty));
                     menuItem.ItemKey = menuNode.ItemKey;
                 }
             }
@@ -306,12 +310,13 @@ public class NavMenu : ItemsControl,
             {
                 if (item is INavMenuNode menuNode && menuNode.HeaderTemplate != null)
                 {
-                    BindUtils.RelayBind(menuNode, nameof(INavMenuNode.HeaderTemplate), menuItem,
-                        NavMenuItem.HeaderTemplateProperty);
+                    nodeBindingDisposables.Add(BindUtils.RelayBind(menuNode, nameof(INavMenuNode.HeaderTemplate),
+                        node => node.HeaderTemplate, menuItem, NavMenuItem.HeaderTemplateProperty));
                 }
                 else if (ItemTemplate != null)
                 {
-                    BindUtils.RelayBind(this, ItemTemplateProperty, menuItem, NavMenuItem.HeaderTemplateProperty);
+                    nodeBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem,
+                        NavMenuItem.HeaderTemplateProperty));
                 }
             }
             
@@ -326,6 +331,16 @@ public class NavMenu : ItemsControl,
         {
             throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type NavMenuItem.");
         }
+    }
+
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is NavMenuItem menuItem)
+        {
+            menuItem.ClearNodeBindingDisposables();
+        }
+
+        base.ClearContainerForItemOverride(container);
     }
     
     internal virtual void PrepareNavMenuItem(NavMenuItem menuItem, object? item, int index)
@@ -409,7 +424,7 @@ public class NavMenu : ItemsControl,
         // 直接设置 SelectedItem 优先级高于 DefaultSelectedPath
         if (SelectedItem != null)
         {
-            SelectTargetMenuNode(SelectedItem);
+            SelectTargetMenuNode(SelectedItem, _selectedItemRevision);
         }
         else if (DefaultSelectedPath != null)
         {
@@ -423,7 +438,7 @@ public class NavMenu : ItemsControl,
         }
     }
 
-    private void SelectTargetMenuNode(INavMenuNode node)
+    private void SelectTargetMenuNode(INavMenuNode node, int selectedItemRevision)
     {
         var selectPathNodes = CollectPathNodes(node);
         if (selectPathNodes.Count > 0)
@@ -432,7 +447,11 @@ public class NavMenu : ItemsControl,
             {
                 if (i == selectPathNodes.Count - 1)
                 {
-                    InteractionHandler?.Select(menuItem);
+                    if (selectedItemRevision == _selectedItemRevision &&
+                        ReferenceEquals(SelectedItem, node))
+                    {
+                        InteractionHandler?.Select(menuItem);
+                    }
                 }
             }));
         }

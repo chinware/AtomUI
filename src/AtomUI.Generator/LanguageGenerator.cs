@@ -28,6 +28,10 @@ public class LanguageGenerator : IIncrementalGenerator
                 var classWriter = new LanguageProviderPoolClassSourceWriter(context, providerList);
                 classWriter.Write();
             }
+            {
+                var classWriter = new LanguageProviderConstructorSourceWriter(context, providerList);
+                classWriter.Write();
+            }
         });
     }
 }

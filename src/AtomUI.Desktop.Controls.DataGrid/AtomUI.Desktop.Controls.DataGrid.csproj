@@ -20,4 +20,8 @@
         <ProjectReference Include="../AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="AtomUI.Desktop.Controls.DataGrid.Tests" />
+    </ItemGroup>
+
 </Project>

@@ -3069,7 +3069,7 @@ public partial class DataGrid
         }
         else
         {
-            groupHeader.PropertyName = DataConnection.DataType?.GetDisplayName(propertyName) ?? propertyName;
+            groupHeader.PropertyName = DataConnection.GetDisplayName(propertyName) ?? propertyName;
         }
 
         if (rowGroupInfo.CollectionViewGroup is INotifyPropertyChanged inpc)

@@ -171,13 +171,14 @@ public class FloatButtonGroupHost : TemplatedControl, IMotionAwareControl
     {
         if (FloatButtonGroup != null)
         {
-            _overlayLayer = ScopeAwareOverlayLayer.FindLayer(this);
             DetachFloatButtonGroupChildren();
             _overlayLayer?.Children.Remove(FloatButtonGroup);
             Disposables?.Dispose();
             Disposables      = null;
             FloatButtonGroup = null;
         }
+
+        _overlayLayer = null;
     }
 
     private void DetachFloatButtonGroupChildren()

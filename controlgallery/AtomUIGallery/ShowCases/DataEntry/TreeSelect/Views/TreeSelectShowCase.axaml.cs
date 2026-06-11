@@ -8,12 +8,10 @@ using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
 using AtomUIGallery.Localization;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TreeSelect;
 
-public partial class TreeSelectShowCase : ReactiveUserControl<TreeSelectViewModel>
+public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectViewModel>
 {
     public const string LanguageId = nameof(TreeSelectShowCase);
 

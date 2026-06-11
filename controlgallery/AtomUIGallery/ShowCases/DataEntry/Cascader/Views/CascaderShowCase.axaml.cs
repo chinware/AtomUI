@@ -9,12 +9,10 @@ using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
 using AtomUIGallery.Localization;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Cascader;
 
-public partial class CascaderShowCase : ReactiveUserControl<CascaderViewModel>
+public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewModel>
 {
     public const string LanguageId = nameof(CascaderShowCase);
 

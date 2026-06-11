@@ -2,13 +2,11 @@ using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using Avalonia.Controls;
 using Avalonia.VisualTree;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 using ButtonSpinner = AtomUI.Desktop.Controls.ButtonSpinner;
 
 namespace AtomUIGallery.ShowCases.ButtonSpinner;
 
-public partial class ButtonSpinnerShowCase : ReactiveUserControl<ButtonSpinnerViewModel>
+public partial class ButtonSpinnerShowCase : GalleryReactiveUserControl<ButtonSpinnerViewModel>
 {
     public const string LanguageId = nameof(ButtonSpinnerShowCase);
 

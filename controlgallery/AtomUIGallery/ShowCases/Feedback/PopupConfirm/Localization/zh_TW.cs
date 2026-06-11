@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.PopupConfirm;
 
 [LanguageProvider(LanguageCode.zh_TW, PopupConfirmShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string BasicUsageTitle = "基礎用法";
     public const string BasicUsageDescription = "基礎示例支持確認框的標題和描述屬性。";

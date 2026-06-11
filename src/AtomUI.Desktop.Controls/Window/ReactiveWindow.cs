@@ -1,5 +1,7 @@
 ﻿using Avalonia;
+using Avalonia.Interactivity;
 using ReactiveUI;
+using System;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -17,15 +19,11 @@ public class ReactiveWindow<TViewModel> : Window, IViewFor<TViewModel> where TVi
     public static readonly StyledProperty<TViewModel?> ViewModelProperty = 
         AvaloniaProperty.Register<ReactiveWindow<TViewModel>, TViewModel?>(nameof(ViewModel));
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ReactiveWindow{TViewModel}"/> class.
-    /// </summary>
-    public ReactiveWindow()
-    {
-        // This WhenActivated block calls ViewModel's WhenActivated
-        // block if the ViewModel implements IActivatableViewModel.
-        this.WhenActivated(disposables => { });
-    }
+    private IDisposable? _viewModelActivationDisposable;
+    private object? _activatedViewModel;
+    private bool _isViewActivated;
+    private bool _isUpdatingViewModelActivation;
+    private bool _hasPendingViewModelActivationUpdate;
 
     /// <summary>
     /// The ViewModel.
@@ -60,6 +58,83 @@ public class ReactiveWindow<TViewModel> : Window, IViewFor<TViewModel> where TVi
             {
                 SetCurrentValue(DataContextProperty, change.NewValue);
             }
+
+            if (_isViewActivated && !ReferenceEquals(change.OldValue, change.NewValue))
+            {
+                UpdateViewModelActivation();
+            }
         }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+
+        if (_isViewActivated)
+        {
+            return;
+        }
+
+        _isViewActivated = true;
+        UpdateViewModelActivation();
+    }
+
+    protected override void OnUnloaded(RoutedEventArgs e)
+    {
+        if (!_isViewActivated)
+        {
+            base.OnUnloaded(e);
+            return;
+        }
+
+        _isViewActivated = false;
+        UpdateViewModelActivation();
+
+        base.OnUnloaded(e);
+    }
+
+    private void UpdateViewModelActivation()
+    {
+        if (_isUpdatingViewModelActivation)
+        {
+            _hasPendingViewModelActivationUpdate = true;
+            return;
+        }
+
+        _isUpdatingViewModelActivation = true;
+        try
+        {
+            do
+            {
+                _hasPendingViewModelActivationUpdate = false;
+                var targetViewModel = _isViewActivated ? ViewModel : null;
+                if (ReferenceEquals(_activatedViewModel, targetViewModel))
+                {
+                    continue;
+                }
+
+                DeactivateViewModel();
+
+                targetViewModel = _isViewActivated ? ViewModel : null;
+                if (targetViewModel is IActivatableViewModel activatableViewModel)
+                {
+                    var activationDisposable = activatableViewModel.Activator.Activate();
+                    _activatedViewModel = targetViewModel;
+                    _viewModelActivationDisposable = activationDisposable;
+                }
+            } while (_hasPendingViewModelActivationUpdate);
+        }
+        finally
+        {
+            _isUpdatingViewModelActivation = false;
+        }
+    }
+
+    private void DeactivateViewModel()
+    {
+        var activationDisposable = _viewModelActivationDisposable;
+        _viewModelActivationDisposable = null;
+        _activatedViewModel = null;
+        activationDisposable?.Dispose();
     }
 }

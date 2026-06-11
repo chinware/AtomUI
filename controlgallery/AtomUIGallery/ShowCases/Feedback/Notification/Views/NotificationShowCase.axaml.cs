@@ -7,11 +7,10 @@ using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Notification;
 
-public partial class NotificationShowCase : ReactiveUserControl<NotificationViewModel>
+public partial class NotificationShowCase : GalleryReactiveUserControl<NotificationViewModel>
 {
     public const string LanguageId = nameof(NotificationShowCase);
 

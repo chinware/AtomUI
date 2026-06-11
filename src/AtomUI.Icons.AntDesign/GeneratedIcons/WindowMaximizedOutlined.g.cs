@@ -17,6 +17,11 @@ public class WindowMaximizedOutlined : AntDesignIcon
         ViewBox = new Rect(0, 0, 24, 24);
     }
 
+    public override Icon CreateInstance()
+    {
+        return new WindowMaximizedOutlined();
+    }
+
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()
         {

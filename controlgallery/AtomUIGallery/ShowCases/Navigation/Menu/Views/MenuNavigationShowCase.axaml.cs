@@ -1,11 +1,9 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Menu;
 
-public partial class MenuNavigationShowCase : ReactiveUserControl<MenuViewModel>
+public partial class MenuNavigationShowCase : GalleryReactiveUserControl<MenuViewModel>
 {
     public MenuNavigationShowCase()
     {

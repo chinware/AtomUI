@@ -1,15 +1,12 @@
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.DropdownButton;
 
-public partial class DropdownButtonShowCase : ReactiveUserControl<DropdownButtonViewModel>
+public partial class DropdownButtonShowCase : GalleryReactiveUserControl<DropdownButtonViewModel>
 {
     public const string LanguageId = nameof(DropdownButtonShowCase);
 
     public DropdownButtonShowCase()
     {
-        this.WhenActivated(disposables => { });
         InitializeComponent();
     }
 }

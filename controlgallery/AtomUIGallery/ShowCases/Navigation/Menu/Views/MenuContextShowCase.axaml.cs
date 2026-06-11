@@ -1,10 +1,8 @@
 using System.Reactive.Disposables.Fluent;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Menu;
 
-public partial class MenuContextShowCase : ReactiveUserControl<MenuViewModel>
+public partial class MenuContextShowCase : GalleryReactiveUserControl<MenuViewModel>
 {
     public MenuContextShowCase()
     {
@@ -12,8 +10,13 @@ public partial class MenuContextShowCase : ReactiveUserControl<MenuViewModel>
 
         this.WhenActivated(disposables =>
         {
-            this.OneWayBind(ViewModel, vm => vm.ContextMenuItems, v => v.BasicContextMenu.ItemsSource)
-                .DisposeWith(disposables);
+            if (ViewModel is not null)
+            {
+                GalleryBindingUtils.OneWay(ViewModel, nameof(MenuViewModel.ContextMenuItems),
+                                           vm => vm.ContextMenuItems, BasicContextMenu,
+                                           Avalonia.Controls.ContextMenu.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
+            }
         });
     }
 }

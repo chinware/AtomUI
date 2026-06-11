@@ -205,12 +205,13 @@ public abstract class AbstractFloatButtonHost : TemplatedControl, IMotionAwareCo
     {
         if (FloatButton != null)
         {
-            _overlayLayer = ScopeAwareOverlayLayer.FindLayer(this);
             _overlayLayer?.Children.Remove(FloatButton);
             Disposables?.Dispose();
             Disposables = null;
             FloatButton = null;
         }
+
+        _overlayLayer = null;
     }
 
     protected abstract AbstractFloatButton CreateFloatButton(CompositeDisposable disposables);

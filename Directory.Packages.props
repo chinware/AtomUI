@@ -22,6 +22,7 @@
         <PackageVersion Include="Shouldly" Version="4.3.0"/>
         <PackageVersion Include="xunit.v3" Version="3.2.2"/>
         <PackageVersion Include="xunit.v3.extensibility.core" Version="3.2.2"/>
+        <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5"/>
         <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
         <!-- 源码生成 -->
         <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0"/>
@@ -32,17 +33,5 @@
         <!-- 其他依赖 -->
         <PackageVersion Include="ThomasLevesque.WeakEvent" Version="4.1.0"/>
         
-    </ItemGroup>
-    <ItemGroup Condition=" '$(Configuration)' == 'Release' ">
-        <PackageVersion Include="AtomUI.Core" Version="$(AtomUIVersion)"/>
-        <PackageVersion Include="AtomUI.Fonts.AlibabaSans" Version="$(AtomUIVersion)"/>
-        <PackageVersion Include="AtomUI.Controls.Shared" Version="$(AtomUIVersion)"/>
-        <PackageVersion Include="AtomUI.Generator" Version="$(AtomUIVersion)"/>
-        <PackageVersion Include="AtomUI.Icons.AntDesign" Version="$(AtomUIVersion)"/>
-        <PackageVersion Include="AtomUI.Icons.Shared" Version="$(AtomUIVersion)"/>
-        <PackageVersion Include="AtomUI.Desktop.Controls" Version="$(AtomUIVersion)"/>
-        <PackageVersion Include="AtomUI.Desktop.Controls.ColorPicker" Version="$(AtomUIVersion)"/>
-        <PackageVersion Include="AtomUI.Desktop.Controls.DataGrid" Version="$(AtomUIVersion)"/>
-        <PackageVersion Include="AtomUI.Native" Version="$(AtomUIVersion)"/>
     </ItemGroup>
 </Project>

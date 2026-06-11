@@ -1,9 +1,8 @@
 using Avalonia.Controls;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Expander;
 
-public partial class ExpanderShowCase : ReactiveUserControl<ExpanderViewModel>
+public partial class ExpanderShowCase : GalleryReactiveUserControl<ExpanderViewModel>
 {
     public const string LanguageId = nameof(ExpanderShowCase);
 

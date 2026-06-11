@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Icon;
 
 [LanguageProvider(LanguageCode.zh_TW, IconShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string P2HeaderOutlined = "線框風格";
     public const string P2HeaderFilled = "填充風格";

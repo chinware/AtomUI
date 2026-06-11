@@ -1,7 +1,6 @@
 ﻿using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Media;
-using Avalonia.Threading;
 using Avalonia;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls.Metadata;

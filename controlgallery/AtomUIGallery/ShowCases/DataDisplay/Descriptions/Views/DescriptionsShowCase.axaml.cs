@@ -4,12 +4,10 @@ using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia.Interactivity;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Descriptions;
 
-public partial class DescriptionsShowCase : ReactiveUserControl<DescriptionsViewModel>
+public partial class DescriptionsShowCase : GalleryReactiveUserControl<DescriptionsViewModel>
 {
     public const string LanguageId = nameof(DescriptionsShowCase);
 

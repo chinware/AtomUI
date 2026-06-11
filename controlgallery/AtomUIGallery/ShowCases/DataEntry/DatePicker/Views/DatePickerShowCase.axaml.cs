@@ -2,12 +2,10 @@ using System;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using Avalonia.Controls;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.DatePicker;
 
-public partial class DatePickerShowCase : ReactiveUserControl<DatePickerViewModel>
+public partial class DatePickerShowCase : GalleryReactiveUserControl<DatePickerViewModel>
 {
     public const string LanguageId = nameof(DatePickerShowCase);
 

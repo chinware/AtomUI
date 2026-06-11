@@ -1,9 +1,8 @@
 using Avalonia.Controls;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Collapse;
 
-public partial class CollapseShowCase : ReactiveUserControl<CollapseViewModel>
+public partial class CollapseShowCase : GalleryReactiveUserControl<CollapseViewModel>
 {
     public const string LanguageId = nameof(CollapseShowCase);
 

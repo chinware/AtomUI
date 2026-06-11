@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Upload;
 
 [LanguageProvider(LanguageCode.zh_TW, UploadShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string UploadByClickingTitle = "點擊上傳";
     public const string UploadByClickingDescription = "經典模式。點擊上傳按鈕時彈出文件選擇對話框。";

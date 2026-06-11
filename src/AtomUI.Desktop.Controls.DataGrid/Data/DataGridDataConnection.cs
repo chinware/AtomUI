@@ -8,7 +8,10 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using AtomUI.Controls.Data;
 using AtomUI.Utils;
 
 namespace AtomUI.Desktop.Controls.Data;
@@ -17,6 +20,9 @@ internal class DataGridDataConnection
 {
     private int _backupSlotForCurrentChanged;
     private int _columnForCurrentChanged;
+    private IReadOnlyList<IDataMemberAccessor> _dataAccessors;
+    private IDataMemberAccessorDescriptor? _dataMemberAccessorDescriptor;
+    private IDataMemberAccessorDescriptor? _dataPropertiesDescriptor;
     private PropertyInfo[] _dataProperties;
     private Type? _dataPropertiesType;
     private IEnumerable? _dataSource;
@@ -30,6 +36,7 @@ internal class DataGridDataConnection
     public DataGridDataConnection(DataGrid owner)
     {
         _owner          = owner;
+        _dataAccessors  = [];
         _dataProperties = [];
     }
     
@@ -42,6 +49,7 @@ internal class DataGridDataConnection
             // Because the DataSource is changing, we need to reset our cached values for DataType and DataProperties,
             // which are dependent on the current DataSource
             _dataType = null;
+            _dataMemberAccessorDescriptor = null;
             ClearDataProperties();
             UpdateDataProperties();
         }
@@ -51,12 +59,15 @@ internal class DataGridDataConnection
     {
         get
         {
-            // We need to use the raw ItemsSource as opposed to DataSource because DataSource
-            // may be the ItemsSource wrapped in a collection view, in which case we wouldn't
-            // be able to take T to be the type if we're given IEnumerable<T>
             if (_dataType == null && _owner.ItemsSource != null)
             {
-                _dataType = _owner.ItemsSource.GetItemType();
+                _dataType = DataMemberAccessorDescriptor?.DataType ??
+                            GetRepresentativeItemType(_owner.ItemsSource) ??
+                            GetRepresentativeItemType(DataSource);
+                if (_dataType == null && RuntimeFeature.IsDynamicCodeSupported)
+                {
+                    _dataType = GetRuntimeDataType(_owner.ItemsSource);
+                }
             }
             return _dataType;
         }
@@ -142,6 +153,15 @@ internal class DataGridDataConnection
         {
             UpdateDataProperties();
             return _dataProperties;
+        }
+    }
+
+    public IReadOnlyList<IDataMemberAccessor> DataAccessors
+    {
+        get
+        {
+            UpdateDataProperties();
+            return _dataAccessors;
         }
     }
 
@@ -364,21 +384,35 @@ internal class DataGridDataConnection
     
     private void UpdateDataProperties()
     {
-        Type? dataType = DataType;
-        if (_dataPropertiesType == dataType)
+        var dataMemberAccessorDescriptor = DataMemberAccessorDescriptor;
+        Type? dataType = dataMemberAccessorDescriptor?.DataType ?? DataType;
+        if (_dataPropertiesType == dataType &&
+            ReferenceEquals(_dataPropertiesDescriptor, dataMemberAccessorDescriptor))
         {
             return;
         }
 
-        _dataPropertiesType = dataType;
+        _dataPropertiesType       = dataType;
+        _dataPropertiesDescriptor = dataMemberAccessorDescriptor;
 
-        if (DataSource != null && dataType != null && !DataTypeIsPrimitive(dataType))
+        if (DataSource != null &&
+            dataMemberAccessorDescriptor != null &&
+            !DataTypeIsPrimitive(dataMemberAccessorDescriptor.DataType))
         {
-            _dataProperties = dataType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
-            Debug.Assert(_dataProperties != null);
+            _dataAccessors  = dataMemberAccessorDescriptor.Accessors;
+            _dataProperties = [];
+        }
+        else if (DataSource != null &&
+                 dataType != null &&
+                 !DataTypeIsPrimitive(dataType) &&
+                 RuntimeFeature.IsDynamicCodeSupported)
+        {
+            _dataAccessors  = [];
+            _dataProperties = GetRuntimeDataProperties(dataType);
         }
         else
         {
+            _dataAccessors  = [];
             _dataProperties = [];
         }
     }
@@ -434,6 +468,67 @@ internal class DataGridDataConnection
     
     public bool GetPropertyIsReadOnly(string propertyName)
     {
+        if (!string.IsNullOrEmpty(propertyName) &&
+            TryGetDataMemberAccessor(propertyName, out var accessor))
+        {
+            var metadata = GetMetadata(accessor);
+            var dataTypeIsReadOnly = DataMemberAccessorDescriptor is IDataMemberAccessorDescriptorMetadataProvider provider &&
+                                     provider.IsDataTypeReadOnly;
+            return dataTypeIsReadOnly ||
+                   metadata.IsReadOnly ||
+                   !metadata.IsEditable ||
+                   !accessor.CanWrite ||
+                   !AllowEdit ||
+                   !CanEdit(accessor.ValueType);
+        }
+
+        if (!RuntimeFeature.IsDynamicCodeSupported)
+        {
+            return true;
+        }
+
+        return GetRuntimePropertyIsReadOnly(propertyName);
+    }
+
+    internal string? GetDisplayName(string propertyName)
+    {
+        if (TryGetDataMemberAccessor(propertyName, out var accessor))
+        {
+            return GetMetadata(accessor).DisplayName;
+        }
+
+        if (DataType != null && RuntimeFeature.IsDynamicCodeSupported)
+        {
+            return GetRuntimeDisplayName(DataType, propertyName);
+        }
+
+        return null;
+    }
+
+    internal Type? GetPropertyType(string? propertyName)
+    {
+        if (string.IsNullOrEmpty(propertyName))
+        {
+            return DataType;
+        }
+
+        if (TryGetDataMemberAccessor(propertyName, out var accessor))
+        {
+            return accessor.ValueType;
+        }
+
+        if (RuntimeFeature.IsDynamicCodeSupported)
+        {
+            return GetRuntimePropertyType(DataType, propertyName);
+        }
+
+        return null;
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2026",
+        Justification = "Legacy JIT fallback for read-only metadata when generated accessors are unavailable.")]
+    private bool GetRuntimePropertyIsReadOnly(string propertyName)
+    {
         if (DataType != null)
         {
             if (!String.IsNullOrEmpty(propertyName))
@@ -473,6 +568,131 @@ internal class DataGridDataConnection
             }
         }
         return !AllowEdit;
+    }
+
+    private bool TryGetDataMemberAccessor(string propertyPath,
+                                          [NotNullWhen(true)] out IDataMemberAccessor? accessor)
+    {
+        accessor = null;
+        return DataMemberAccessorDescriptor?.TryGetAccessor(propertyPath, out accessor!) == true;
+    }
+
+    private IDataMemberAccessorDescriptor? DataMemberAccessorDescriptor
+    {
+        get
+        {
+            if (_dataMemberAccessorDescriptor == null)
+            {
+                ResolveDataMemberAccessorDescriptor();
+            }
+
+            return _dataMemberAccessorDescriptor;
+        }
+    }
+
+    private void ResolveDataMemberAccessorDescriptor()
+    {
+        if (_dataMemberAccessorDescriptor != null)
+        {
+            return;
+        }
+
+        if (TryResolveDataMemberAccessorDescriptor(DataSource, out var descriptor) ||
+            TryResolveDataMemberAccessorDescriptor(_owner.ItemsSource, out descriptor))
+        {
+            _dataMemberAccessorDescriptor = descriptor;
+        }
+    }
+
+    private static bool TryResolveDataMemberAccessorDescriptor(IEnumerable? source,
+                                                              [NotNullWhen(true)] out IDataMemberAccessorDescriptor? descriptor)
+    {
+        if (source is DataGridCollectionView dataGridCollectionView &&
+            dataGridCollectionView.DataMemberAccessorDescriptor is { } collectionViewDescriptor)
+        {
+            descriptor = collectionViewDescriptor;
+            return true;
+        }
+
+        var itemType = GetRepresentativeItemType(source);
+        if (itemType != null && DataMemberAccessorRegistry.TryGetCompatible(itemType, out descriptor))
+        {
+            return true;
+        }
+
+        descriptor = null;
+        return false;
+    }
+
+    private static Type? GetRepresentativeItemType(IEnumerable? source)
+    {
+        switch (source)
+        {
+            case null:
+                return null;
+
+            case IList list:
+                for (var i = 0; i < list.Count; i++)
+                {
+                    var item = list[i];
+                    if (item != null)
+                    {
+                        return item.GetType();
+                    }
+                }
+                return null;
+
+            case IReadOnlyList<object?> readOnlyList:
+                for (var i = 0; i < readOnlyList.Count; i++)
+                {
+                    var item = readOnlyList[i];
+                    if (item != null)
+                    {
+                        return item.GetType();
+                    }
+                }
+                return null;
+
+            default:
+                return null;
+        }
+    }
+
+    private static DataMemberAccessorMetadata GetMetadata(IDataMemberAccessor accessor)
+    {
+        return accessor is IDataMemberAccessorMetadataProvider provider
+            ? provider.Metadata
+            : DataMemberAccessorMetadata.Default;
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2026",
+        Justification = "Legacy JIT fallback for dynamic data sources without generated accessors.")]
+    private static Type? GetRuntimeDataType(IEnumerable source)
+    {
+        return source.GetItemType();
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2075",
+        Justification = "Legacy JIT fallback for auto-generation when generated accessors are unavailable.")]
+    [UnconditionalSuppressMessage("Trimming", "IL2070",
+        Justification = "Legacy JIT fallback for auto-generation when generated accessors are unavailable.")]
+    private static PropertyInfo[] GetRuntimeDataProperties(Type dataType)
+    {
+        return dataType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2026",
+        Justification = "Legacy JIT fallback for display metadata when generated accessors are unavailable.")]
+    private static string? GetRuntimeDisplayName(Type dataType, string propertyName)
+    {
+        return dataType.GetDisplayName(propertyName);
+    }
+
+    [UnconditionalSuppressMessage("Trimming", "IL2026",
+        Justification = "Legacy JIT fallback for property metadata when generated accessors are unavailable.")]
+    private static Type? GetRuntimePropertyType(Type? dataType, string? propertyName)
+    {
+        return dataType.GetNestedPropertyType(propertyName);
     }
 
     public int IndexOf(object? dataItem)

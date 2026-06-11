@@ -1,10 +1,9 @@
 using AtomUI;
 using AtomUI.Controls;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Select;
 
-public partial class SelectAppearanceShowCase : ReactiveUserControl<SelectViewModel>
+public partial class SelectAppearanceShowCase : GalleryReactiveUserControl<SelectViewModel>
 {
     public SelectAppearanceShowCase()
     {

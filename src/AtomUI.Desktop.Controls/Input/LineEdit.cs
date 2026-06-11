@@ -1,6 +1,7 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Commons;
+using AtomUI.Data;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -136,44 +137,44 @@ public class LineEdit : TextBox,
 
         if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
         {
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IconProperty,
-                new Binding(nameof(ClearIcon)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(IsEffectiveShowClearButton)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearButton.Bind(AbstractIconButton.IsMotionEnabledProperty,
-                new Binding(nameof(IsMotionEnabled)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ClearIconProperty, clearButton,
+                AbstractIconButton.IconProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEffectiveShowClearButtonProperty, clearButton,
+                Visual.IsVisibleProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, clearButton,
+                AbstractIconButton.IsMotionEnabledProperty));
         }
 
         if (e.NameScope.Find<RevealButton>("PART_RevealButton") is { } revealButton)
         {
-            _contentRightAddOnBindings.Add(revealButton.Bind(ToggleButton.IsCheckedProperty,
-                new Binding(nameof(RevealPassword)) { Source = this, Mode = BindingMode.TwoWay }));
-            _contentRightAddOnBindings.Add(revealButton.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(IsEnableRevealButton)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, RevealPasswordProperty, revealButton,
+                ToggleButton.IsCheckedProperty, BindingMode.TwoWay));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEnableRevealButtonProperty, revealButton,
+                Visual.IsVisibleProperty));
         }
 
         if (e.NameScope.Find<ContentPresenter>("FormFeedBack") is { } formFeedback)
         {
-            _contentRightAddOnBindings.Add(formFeedback.Bind(ContentPresenter.ContentProperty,
-                new Binding(nameof(FormFeedback)) { Source = this }));
-            _contentRightAddOnBindings.Add(formFeedback.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(IsFormFeedbackVisible)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, FormFeedbackProperty, formFeedback,
+                ContentPresenter.ContentProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsFormFeedbackVisibleProperty, formFeedback,
+                Visual.IsVisibleProperty));
         }
 
         if (e.NameScope.Find<ContentPresenter>("InnerRightContentPresenter") is { } innerRightContent)
         {
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(ContentPresenter.ContentProperty,
-                new Binding(nameof(InnerRightContent)) { Source = this }));
-            _contentRightAddOnBindings.Add(innerRightContent.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(InnerRightContent)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
+                ContentPresenter.ContentProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
+                Visual.IsVisibleProperty, value => value is not null));
         }
 
         if (e.NameScope.Find<TextBlock>("TextCountIndicator") is { } textCountIndicator)
         {
-            _contentRightAddOnBindings.Add(textCountIndicator.Bind(Avalonia.Controls.TextBlock.TextProperty,
-                new Binding(nameof(CountText)) { Source = this }));
-            _contentRightAddOnBindings.Add(textCountIndicator.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(IsShowCount)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, CountTextProperty, textCountIndicator,
+                Avalonia.Controls.TextBlock.TextProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsShowCountProperty, textCountIndicator,
+                Visual.IsVisibleProperty));
         }
     }
     

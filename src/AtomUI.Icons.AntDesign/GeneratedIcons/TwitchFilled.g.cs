@@ -17,6 +17,11 @@ public class TwitchFilled : AntDesignIcon
         ViewBox = new Rect(0, 0, 1042, 1042);
     }
 
+    public override Icon CreateInstance()
+    {
+        return new TwitchFilled();
+    }
+
     private static readonly DrawingInstruction[] StaticInstructions = [
         new PathDrawingInstruction()
         {

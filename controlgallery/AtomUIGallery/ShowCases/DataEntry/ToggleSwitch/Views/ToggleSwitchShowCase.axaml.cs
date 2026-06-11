@@ -1,13 +1,12 @@
 ﻿using System.Reactive;
 using Avalonia.Controls;
 using ReactiveUI;
-using ReactiveUI.Avalonia;
 using Button = AtomUI.Desktop.Controls.Button;
 using ToggleSwitch = AtomUI.Desktop.Controls.ToggleSwitch;
 
 namespace AtomUIGallery.ShowCases.ToggleSwitch;
 
-public partial class ToggleSwitchShowCase : ReactiveUserControl<ToggleSwitchViewModel>
+public partial class ToggleSwitchShowCase : GalleryReactiveUserControl<ToggleSwitchViewModel>
 {
     public const string LanguageId = nameof(ToggleSwitchShowCase);
 
@@ -19,7 +18,6 @@ public partial class ToggleSwitchShowCase : ReactiveUserControl<ToggleSwitchView
         ToggleSwitchCommand = ReactiveCommand.Create(HandleToggleDisabledStatus);
         ToggleLoadingStatus = ReactiveCommand.Create(HandleToggleLoadingStatus);
         InitializeComponent();
-        this.WhenActivated(disposables => { });
     }
 
     private void HandleToggleDisabledStatus()

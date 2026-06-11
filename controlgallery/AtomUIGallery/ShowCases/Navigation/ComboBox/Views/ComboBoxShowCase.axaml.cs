@@ -1,11 +1,9 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.ComboBox;
 
-public partial class ComboBoxShowCase : ReactiveUserControl<ComboBoxViewModel>
+public partial class ComboBoxShowCase : GalleryReactiveUserControl<ComboBoxViewModel>
 {
     public const string LanguageId = nameof(ComboBoxShowCase);
 
@@ -16,8 +14,10 @@ public partial class ComboBoxShowCase : ReactiveUserControl<ComboBoxViewModel>
             if (DataContext is ComboBoxViewModel viewModel)
             {
                 InitComboBoxItems(viewModel);
-                this.OneWayBind(viewModel, vm => vm.ComboBoxItems, v => v.TplComboBox.ItemsSource)
-                    .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(ComboBoxViewModel.ComboBoxItems),
+                                           vm => vm.ComboBoxItems, TplComboBox,
+                                           Avalonia.Controls.ItemsControl.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
                 Disposable.Create(() =>
                 {
                     viewModel.ComboBoxItems = null;

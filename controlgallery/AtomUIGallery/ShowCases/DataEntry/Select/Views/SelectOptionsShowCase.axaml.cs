@@ -1,8 +1,7 @@
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Select;
 
-public partial class SelectOptionsShowCase : ReactiveUserControl<SelectViewModel>
+public partial class SelectOptionsShowCase : GalleryReactiveUserControl<SelectViewModel>
 {
     public SelectOptionsShowCase()
     {

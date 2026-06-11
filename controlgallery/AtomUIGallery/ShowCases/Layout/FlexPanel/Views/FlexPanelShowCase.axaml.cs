@@ -1,9 +1,8 @@
 using Avalonia.Controls;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.FlexPanel;
 
-public partial class FlexPanelShowCase : ReactiveUserControl<FlexPanelViewModel>
+public partial class FlexPanelShowCase : GalleryReactiveUserControl<FlexPanelViewModel>
 {
     public const string LanguageId = nameof(FlexPanelShowCase);
 

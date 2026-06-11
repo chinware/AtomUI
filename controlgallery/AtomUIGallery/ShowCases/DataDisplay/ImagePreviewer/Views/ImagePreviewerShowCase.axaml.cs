@@ -1,11 +1,10 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
+using AtomUI.Desktop.Controls;
 
 namespace AtomUIGallery.ShowCases.ImagePreviewer;
 
-public partial class ImagePreviewerShowCase : ReactiveUserControl<ImagePreviewerViewModel>
+public partial class ImagePreviewerShowCase : GalleryReactiveUserControl<ImagePreviewerViewModel>
 {
     public const string LanguageId = nameof(ImagePreviewerShowCase);
 
@@ -30,18 +29,30 @@ public partial class ImagePreviewerShowCase : ReactiveUserControl<ImagePreviewer
                 viewModel.FallbackImage = "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/Fallback.png";
                 viewModel.BlurImage = "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/Blur.png";
 
-                this.OneWayBind(viewModel, vm => vm.DefaultImages, v => v.BasicPreviewer.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.FallbackImage, v => v.FaultTolerantPreviewer.FallbackImageSrc)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.ThreeImages, v => v.FromOnImagePreviewer.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.DefaultImages, v => v.CustomImagePreviewer.ItemsSource)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.BlurImage, v => v.CustomImagePreviewer.CoverImageSrc)
-                    .DisposeWith(disposables);
-                this.OneWayBind(viewModel, vm => vm.TwoImages, v => v.MultiImagesPreviewer.ItemsSource)
-                    .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(ImagePreviewerViewModel.DefaultImages),
+                                           vm => vm.DefaultImages, BasicPreviewer,
+                                           AbstractImagePreviewer.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(ImagePreviewerViewModel.FallbackImage),
+                                           vm => vm.FallbackImage, FaultTolerantPreviewer,
+                                           AbstractImagePreviewer.FallbackImageSrcProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(ImagePreviewerViewModel.ThreeImages),
+                                           vm => vm.ThreeImages, FromOnImagePreviewer,
+                                           AbstractImagePreviewer.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(ImagePreviewerViewModel.DefaultImages),
+                                           vm => vm.DefaultImages, CustomImagePreviewer,
+                                           AbstractImagePreviewer.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(ImagePreviewerViewModel.BlurImage),
+                                           vm => vm.BlurImage, CustomImagePreviewer,
+                                           AtomUI.Desktop.Controls.ImagePreviewer.CoverImageSrcProperty)
+                                   .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(ImagePreviewerViewModel.TwoImages),
+                                           vm => vm.TwoImages, MultiImagesPreviewer,
+                                           AbstractImagePreviewer.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
 
                 Disposable.Create(() =>
                 {

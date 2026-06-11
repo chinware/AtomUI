@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Reflection;
 using AtomUI.Utils;
@@ -425,7 +426,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
         {
             if (_itemType == null)
             {
-                _itemType = GetItemType(true);
+                _itemType = _dataMemberAccessorDescriptor?.DataType ?? GetItemType(true);
             }
             return _itemType;
         }
@@ -443,7 +444,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
                 EnsureItemConstructor();
             }
 
-            return _itemConstructor != null;
+            return _newItemFactory != null || _itemConstructor != null;
         }
     }
 
@@ -607,11 +608,15 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
     /// ConstructorInfo obtained from reflection for generating new items
     /// </summary>
     private ConstructorInfo? _itemConstructor;
+
+    private Func<object>? _newItemFactory;
     
     /// <summary>
     /// Whether we have the correct ConstructorInfo information for the ItemConstructor
     /// </summary>
     private bool _itemConstructorIsValid;
+
+    private readonly IDataMemberAccessorDescriptor? _dataMemberAccessorDescriptor;
     
     /// <summary>
     /// The new item we are getting ready to add to the collection
@@ -677,7 +682,12 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
     /// </summary>
     /// <param name="source">The source for the collection</param>
     public ListCollectionView(IEnumerable source)
-        : this(source, false /*isDataSorted*/, false /*isDataInGroupOrder*/)
+        : this(source, false /*isDataSorted*/, false /*isDataInGroupOrder*/, null)
+    {
+    }
+
+    public ListCollectionView(IEnumerable source, IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor)
+        : this(source, false /*isDataSorted*/, false /*isDataInGroupOrder*/, dataMemberAccessorDescriptor)
     {
     }
     
@@ -688,8 +698,18 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
     /// <param name="isDataSorted">Determines whether the source is already sorted</param>
     /// <param name="isDataInGroupOrder">Whether the source is already in the correct order for grouping</param>
     public ListCollectionView(IEnumerable source, bool isDataSorted, bool isDataInGroupOrder)
+        : this(source, isDataSorted, isDataInGroupOrder, null)
+    {
+    }
+
+    private ListCollectionView(IEnumerable source,
+                               bool isDataSorted,
+                               bool isDataInGroupOrder,
+                               IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor)
     {
         _sourceCollection = source ?? throw new ArgumentNullException(nameof(source));
+        _dataMemberAccessorDescriptor = dataMemberAccessorDescriptor;
+        _newItemFactory               = dataMemberAccessorDescriptor?.NewItemFactory;
 
         SetFlag(CollectionViewFlags.IsDataSorted, isDataSorted);
         SetFlag(CollectionViewFlags.IsDataInGroupOrder, isDataInGroupOrder);
@@ -843,7 +863,11 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
 
         object? newItem = null;
 
-        if (_itemConstructor != null)
+        if (_newItemFactory != null)
+        {
+            newItem = _newItemFactory();
+        }
+        else if (_itemConstructor != null)
         {
             newItem = _itemConstructor.Invoke(null);
         }
@@ -1649,25 +1673,6 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
     }
 
     /// <summary>
-    /// Helper for SortList to handle nested properties (e.g. Address.Street)
-    /// </summary>
-    /// <param name="item">parent object</param>
-    /// <param name="propertyPath">property names path</param>
-    /// <param name="propertyType">property type that we want to check for</param>
-    /// <returns>child object</returns>
-    private static object? InvokePath(object item, string propertyPath, Type propertyType)
-    {
-        object? propertyValue =
-            TypeHelper.GetNestedPropertyValue(item, propertyPath, propertyType, out var exception);
-        if (exception != null)
-        {
-            throw exception;
-        }
-
-        return propertyValue;
-    }
-    
-    /// <summary>
     /// Returns true if specified flag in flags is set.
     /// </summary>
     /// <param name="flags">Flag we are checking for</param>
@@ -1803,15 +1808,24 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
     /// <summary>
     /// Makes sure that the ItemConstructor is set for the correct type
     /// </summary>
+    [UnconditionalSuppressMessage("Trimming", "IL2075",
+        Justification = "AddNew support probes the item parameterless constructor for dynamic data collections. NativeAOT apps must preserve item constructors or avoid AddNew.")]
     private void EnsureItemConstructor()
     {
         if (!_itemConstructorIsValid)
         {
-            Type? itemType = ItemType;
-            if (itemType != null)
+            if (_newItemFactory != null)
             {
-                _itemConstructor        = itemType.GetConstructor(Type.EmptyTypes);
                 _itemConstructorIsValid = true;
+            }
+            else
+            {
+                Type? itemType = ItemType;
+                if (itemType != null)
+                {
+                    _itemConstructor        = itemType.GetConstructor(Type.EmptyTypes);
+                    _itemConstructorIsValid = true;
+                }
             }
         }
     }
@@ -1847,6 +1861,8 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
     /// </summary>
     /// <param name="useRepresentativeItem">Whether we should use a representative item</param>
     /// <returns>The type of the items in the collection</returns>
+    [UnconditionalSuppressMessage("Trimming", "IL2075",
+        Justification = "Dynamic collection views infer item type from runtime collection interfaces. NativeAOT apps must preserve collection interface metadata.")]
     private Type? GetItemType(bool useRepresentativeItem)
     {
         Type   collectionType = SourceCollection.GetType();
@@ -2548,7 +2564,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
                 Debug.Assert(itemType != null);
                 foreach (var sort in SortDescriptions)
                 {
-                    (sort as ListSortDescription)?.Initialize(itemType);
+                    (sort as ListSortDescription)?.Initialize(itemType, _dataMemberAccessorDescriptor);
                 }
 
                 // create the SortFieldComparer to use
@@ -2827,7 +2843,7 @@ internal class ListCollectionView : IListCollectionView, IList, INotifyPropertyC
 
         foreach (var sort in SortDescriptions)
         {
-            (sort as ListSortDescription)?.Initialize(itemType);
+            (sort as ListSortDescription)?.Initialize(itemType, _dataMemberAccessorDescriptor);
             if (seq is IOrderedEnumerable<object> orderedEnum)
             {
                 seq = sort.ThenBy(orderedEnum);

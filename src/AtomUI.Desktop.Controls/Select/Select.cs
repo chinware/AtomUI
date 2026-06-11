@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -10,8 +11,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
-using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -635,54 +634,54 @@ public partial class Select : AbstractSelect
 
         if (e.NameScope.Find<SelectMaxCountIndicator>("PART_SelectMaxCountIndicator") is { } indicator)
         {
-            _contentRightAddOnBindings.Add(indicator.Bind(SelectMaxCountIndicator.MaxCountProperty,
-                new Binding(nameof(MaxCount)) { Source = this }));
-            _contentRightAddOnBindings.Add(indicator.Bind(SelectMaxCountIndicator.SelectedCountProperty,
-                new Binding(nameof(SelectedCount)) { Source = this }));
-            _contentRightAddOnBindings.Add(indicator.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(IsShowMaxCountIndicator)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, MaxCountProperty, indicator,
+                SelectMaxCountIndicator.MaxCountProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, SelectedCountProperty, indicator,
+                SelectMaxCountIndicator.SelectedCountProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsShowMaxCountIndicatorProperty, indicator,
+                Visual.IsVisibleProperty));
         }
 
         if (e.NameScope.Find<ContentPresenter>("PART_ContentRightAddOnPresenter") is { } contentPresenter)
         {
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentProperty,
-                new Binding(nameof(ContentRightAddOn)) { Source = this }));
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentTemplateProperty,
-                new Binding(nameof(ContentRightAddOnTemplate)) { Source = this }));
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(ContentRightAddOn)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnProperty, contentPresenter,
+                ContentPresenter.ContentProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnTemplateProperty,
+                contentPresenter, ContentPresenter.ContentTemplateProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnProperty, contentPresenter,
+                Visual.IsVisibleProperty, value => value is not null));
         }
 
         if (e.NameScope.Find<SelectHandle>("PART_SelectHandle") is { } handle)
         {
-            _contentRightAddOnBindings.Add(handle.Bind(SelectHandle.FormFeedbackProperty,
-                new Binding(nameof(FormFeedback)) { Source = this }));
-            _contentRightAddOnBindings.Add(handle.Bind(SelectHandle.LoadingIconProperty,
-                new Binding(nameof(SuffixLoadingIcon)) { Source = this }));
-            _contentRightAddOnBindings.Add(handle.Bind(SelectHandle.OpenIndicatorProperty,
-                new Binding(nameof(SuffixIcon)) { Source = this }));
-            _contentRightAddOnBindings.Add(handle.Bind(SelectHandle.IsFilterEnabledProperty,
-                new Binding(nameof(IsEffectiveFilterEnabled)) { Source = this }));
-            _contentRightAddOnBindings.Add(handle.Bind(InputElement.IsEnabledProperty,
-                new Binding(nameof(IsEnabled)) { Source = this }));
-            _contentRightAddOnBindings.Add(handle.Bind(SelectHandle.IsMotionEnabledProperty,
-                new Binding(nameof(IsMotionEnabled)) { Source = this }));
-            _contentRightAddOnBindings.Add(handle.Bind(SelectHandle.IsLoadingProperty,
-                new Binding(nameof(IsLoading)) { Source = this }));
-            _contentRightAddOnBindings.Add(handle.Bind(SelectHandle.IsAllowClearProperty,
-                new Binding(nameof(IsAllowClear)) { Source = this }));
-            _contentRightAddOnBindings.Add(handle.Bind(SelectHandle.IsSelectionEmptyProperty,
-                new Binding(nameof(IsSelectionEmpty)) { Source = this }));
-            _contentRightAddOnBindings.Add(handle.Bind(SelectHandle.IsDropDownOpenProperty,
-                new Binding(nameof(IsDropDownOpen)) { Source = this }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, FormFeedbackProperty, handle,
+                SelectHandle.FormFeedbackProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, SuffixLoadingIconProperty, handle,
+                SelectHandle.LoadingIconProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, SuffixIconProperty, handle,
+                SelectHandle.OpenIndicatorProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEffectiveFilterEnabledProperty, handle,
+                SelectHandle.IsFilterEnabledProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEnabledProperty, handle,
+                InputElement.IsEnabledProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, handle,
+                SelectHandle.IsMotionEnabledProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsLoadingProperty, handle,
+                SelectHandle.IsLoadingProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsAllowClearProperty, handle,
+                SelectHandle.IsAllowClearProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsSelectionEmptyProperty, handle,
+                SelectHandle.IsSelectionEmptyProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsDropDownOpenProperty, handle,
+                SelectHandle.IsDropDownOpenProperty));
 
             var addOnBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
             if (addOnBox != null)
             {
-                _contentRightAddOnBindings.Add(handle.Bind(SelectHandle.IsInputHoverProperty,
-                    new Binding(nameof(AddOnDecoratedBox.IsInnerBoxHover)) { Source = addOnBox }));
-                _contentRightAddOnBindings.Add(handle.Bind(SelectHandle.IsInputPressedProperty,
-                    new Binding(nameof(AddOnDecoratedBox.IsInnerBoxPressed)) { Source = addOnBox }));
+                _contentRightAddOnBindings.Add(BindUtils.RelayBind(addOnBox,
+                    AddOnDecoratedBox.IsInnerBoxHoverProperty, handle, SelectHandle.IsInputHoverProperty));
+                _contentRightAddOnBindings.Add(BindUtils.RelayBind(addOnBox,
+                    AddOnDecoratedBox.IsInnerBoxPressedProperty, handle, SelectHandle.IsInputPressedProperty));
             }
         }
     }

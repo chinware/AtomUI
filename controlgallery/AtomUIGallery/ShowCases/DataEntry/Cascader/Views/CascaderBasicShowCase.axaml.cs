@@ -1,8 +1,7 @@
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Cascader;
 
-public partial class CascaderBasicShowCase : ReactiveUserControl<CascaderViewModel>
+public partial class CascaderBasicShowCase : GalleryReactiveUserControl<CascaderViewModel>
 {
     public CascaderBasicShowCase()
     {

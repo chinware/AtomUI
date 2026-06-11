@@ -109,7 +109,7 @@ public abstract class DataGridBoundColumn : DataGridColumn
             var path = GetBindingPath(binding);
             if (!string.IsNullOrWhiteSpace(path))
             {
-                var header = OwningGrid.DataConnection.DataType.GetDisplayName(path);
+                var header = OwningGrid.DataConnection.GetDisplayName(path);
                 if (header != null)
                 {
                     Header = header;

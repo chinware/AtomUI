@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.AboutUs;
 
 [LanguageProvider(LanguageCode.zh_TW, AboutUsPage.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string VisionLabel = "願景：";
     public const string VisionText = "致力於成為世界一流的生產力工具軟件提供商";

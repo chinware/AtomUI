@@ -2,11 +2,10 @@ using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.Localization;
 using Avalonia.Interactivity;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TreeView;
 
-public partial class TreeViewAdvancedShowCase : ReactiveUserControl<TreeViewViewModel>
+public partial class TreeViewAdvancedShowCase : GalleryReactiveUserControl<TreeViewViewModel>
 {
     private TreeViewItem? _contextMenuTargetItem;
 

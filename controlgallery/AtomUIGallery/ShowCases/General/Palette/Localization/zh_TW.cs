@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Palette;
 
 [LanguageProvider(LanguageCode.zh_TW, PaletteShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string P2HeaderLight = "淺色";
     public const string P2HeaderDark = "深色";

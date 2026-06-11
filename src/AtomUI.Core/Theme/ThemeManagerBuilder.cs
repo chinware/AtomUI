@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Diagnostics.CodeAnalysis;
 using AtomUI.Theme.Language;
 using AtomUI.Theme.Styling;
 using Avalonia.Media;
@@ -39,7 +40,11 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         _registeredControlThemesProviders = new HashSet<string>();
     }
 
-    public void AddControlToken(Type tokenType)
+    public void AddControlToken(
+        [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor |
+                                    DynamicallyAccessedMemberTypes.PublicProperties |
+                                    DynamicallyAccessedMemberTypes.NonPublicProperties)]
+        Type tokenType)
     {
         var typeStr = tokenType.FullName!;
         if (!_registeredTokenTypes.Add(typeStr))
@@ -107,6 +112,8 @@ internal class ThemeManagerBuilder : IThemeManagerBuilder
         LanguageVariant = languageVariant;
     }
 
+    [UnconditionalSuppressMessage("Trimming", "IL2072",
+        Justification = "AddControlToken and generated token pools preserve token constructors/properties. Direct ControlDesignTokens mutation is kept for compatibility and must preserve token metadata at the app boundary.")]
     internal ThemeManager Build()
     {
         var themeManager = new ThemeManager();

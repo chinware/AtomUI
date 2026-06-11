@@ -5,12 +5,10 @@ using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Interactivity;
 using AtomUIGallery.Localization;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Steps;
 
-public partial class StepsInteractiveShowCase : ReactiveUserControl<StepsViewModel>
+public partial class StepsInteractiveShowCase : GalleryReactiveUserControl<StepsViewModel>
 {
     public static readonly StyledProperty<double[]> DashedArrayProperty =
         AvaloniaProperty.Register<StepsInteractiveShowCase, double[]>(nameof(DashedArray));

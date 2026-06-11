@@ -3,12 +3,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using ReactiveUI.Avalonia;
 using NumericUpDown = AtomUI.Desktop.Controls.NumericUpDown;
 
 namespace AtomUIGallery.ShowCases.FlexPanel;
 
-public partial class FlexPanelItemShowCase : ReactiveUserControl<FlexPanelViewModel>
+public partial class FlexPanelItemShowCase : GalleryReactiveUserControl<FlexPanelViewModel>
 {
     private const double BasisAbsoluteDefault = 60;
 

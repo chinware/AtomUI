@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Badge;
 
 [LanguageProvider(LanguageCode.zh_TW, BadgeShowCase.LanguageId)]
-internal class zh_TW : LanguageProvider
+internal partial class zh_TW : LanguageProvider
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最簡單的用法。count 為 0 時 Badge 會隱藏，但可以使用 showZero 顯示。";

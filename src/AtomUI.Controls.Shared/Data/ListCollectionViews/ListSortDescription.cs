@@ -1,6 +1,8 @@
 using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using AtomUI.Utils;
 using Avalonia.Collections;
 
@@ -33,18 +35,102 @@ public abstract class ListSortDescription : IListSortDescription
 
     internal virtual void Initialize(Type itemType)
     {
+        Initialize(itemType, null, RuntimeFeature.IsDynamicCodeSupported);
     }
 
-    private static object? InvokePath(object item, string propertyPath, Type propertyType)
+    internal virtual void Initialize(Type itemType, bool isDynamicCodeSupported)
     {
-        object? propertyValue =
-            TypeHelper.GetNestedPropertyValue(item, propertyPath, propertyType, out Exception? exception);
-        if (exception != null)
+        Initialize(itemType, null, isDynamicCodeSupported);
+    }
+
+    internal virtual void Initialize(Type itemType, IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor)
+    {
+        Initialize(itemType, dataMemberAccessorDescriptor, RuntimeFeature.IsDynamicCodeSupported);
+    }
+
+    internal virtual void Initialize(Type itemType,
+                                     IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                                     bool isDynamicCodeSupported)
+    {
+    }
+
+    private interface IPropertyPathAccessor
+    {
+        Type? ValueType { get; }
+
+        IComparer? Comparer { get; }
+
+        void Initialize(Type itemType);
+
+        object? GetValue(object instance);
+    }
+
+    private sealed class DataMemberPropertyPathAccessor : IPropertyPathAccessor
+    {
+        private readonly IDataMemberAccessor _accessor;
+
+        public Type ValueType => _accessor.ValueType;
+
+        public IComparer? Comparer => _accessor.Comparer;
+
+        public DataMemberPropertyPathAccessor(IDataMemberAccessor accessor)
         {
-            throw exception;
+            _accessor = accessor;
         }
 
-        return propertyValue;
+        public void Initialize(Type itemType)
+        {
+        }
+
+        public object? GetValue(object instance)
+        {
+            return _accessor.GetValue(instance);
+        }
+    }
+
+    private sealed class RuntimeReflectionPropertyPathAccessor : IPropertyPathAccessor
+    {
+        private readonly string _propertyPath;
+        private Type? _valueType;
+
+        public Type? ValueType => _valueType;
+
+        public IComparer? Comparer => null;
+
+        public RuntimeReflectionPropertyPathAccessor(string propertyPath)
+        {
+            _propertyPath = propertyPath;
+        }
+
+        [UnconditionalSuppressMessage("Trimming", "IL2026",
+            Justification = "Legacy reflection path is created only when dynamic code is available; NativeAOT requires generated data member accessors.")]
+        public void Initialize(Type itemType)
+        {
+            _valueType = itemType.GetNestedPropertyType(_propertyPath);
+        }
+
+        [UnconditionalSuppressMessage("Trimming", "IL2026",
+            Justification = "Legacy reflection path is created only when dynamic code is available; NativeAOT requires generated data member accessors.")]
+        public object? GetValue(object instance)
+        {
+            if (_valueType == null)
+            {
+                Initialize(instance.GetType());
+                if (_valueType == null)
+                {
+                    return null;
+                }
+            }
+
+            object? propertyValue =
+                TypeHelper.GetNestedPropertyValue(instance, _propertyPath, _valueType, out Exception? exception);
+            if (exception != null)
+            {
+                throw exception;
+            }
+
+            return propertyValue;
+        }
     }
     
     public static ListSortDescription FromPath(string propertyPath, ListSortDirection direction = ListSortDirection.Ascending, CultureInfo? culture = null)
@@ -125,27 +211,29 @@ public abstract class ListSortDescription : IListSortDescription
         private readonly string _propertyPath;
         private readonly Lazy<CultureSensitiveComparer> _cultureSensitiveComparer;
         private readonly Lazy<IComparer<object>> _comparer;
+        private readonly IComparer? _explicitComparer;
         private Type? _propertyType;
-        private IComparer? _internalComparer;
-        private IComparer<object?>? _internalComparerTyped;
+        private IComparer? _activeComparer;
+        private IComparer<object?>? _activeComparerTyped;
+        private IPropertyPathAccessor? _propertyAccessor;
 
         private IComparer<object?>? InternalComparer
         {
             get
             {
-                if (_internalComparerTyped == null && _internalComparer != null)
+                if (_activeComparerTyped == null && _activeComparer != null)
                 {
-                    if (_internalComparer is IComparer<object?> c)
+                    if (_activeComparer is IComparer<object?> c)
                     {
-                        _internalComparerTyped = c;
+                        _activeComparerTyped = c;
                     }
                     else
                     {
-                        _internalComparerTyped = Comparer<object?>.Create((x, y) => _internalComparer.Compare(x, y));
+                        _activeComparerTyped = Comparer<object?>.Create((x, y) => _activeComparer.Compare(x, y));
                     }
                 }
 
-                return _internalComparerTyped;
+                return _activeComparerTyped;
             }
         }
 
@@ -160,7 +248,8 @@ public abstract class ListSortDescription : IListSortDescription
             _direction    = direction;
             _cultureSensitiveComparer = new Lazy<CultureSensitiveComparer>(() =>
                 new CultureSensitiveComparer(culture ?? CultureInfo.CurrentCulture));
-            _internalComparer = internalComparer;
+            _explicitComparer = internalComparer;
+            _activeComparer   = internalComparer;
             _comparer         = new Lazy<IComparer<object>>(() => Comparer<object>.Create(Compare));
         }
 
@@ -170,8 +259,10 @@ public abstract class ListSortDescription : IListSortDescription
             _direction                = direction;
             _propertyType             = inner._propertyType;
             _cultureSensitiveComparer = inner._cultureSensitiveComparer;
-            _internalComparer         = inner._internalComparer;
-            _internalComparerTyped    = inner._internalComparerTyped;
+            _explicitComparer         = inner._explicitComparer;
+            _activeComparer           = inner._activeComparer;
+            _activeComparerTyped      = inner._activeComparerTyped;
+            _propertyAccessor         = inner._propertyAccessor;
 
             _comparer = new Lazy<IComparer<object>>(() => Comparer<object>.Create(Compare));
         }
@@ -182,10 +273,11 @@ public abstract class ListSortDescription : IListSortDescription
             {
                 return null;
             }
-            
+
             if (HasPropertyPath)
             {
-                return InvokePath(o, _propertyPath, _propertyType!);
+                EnsurePropertyAccessor(o.GetType(), null, RuntimeFeature.IsDynamicCodeSupported);
+                return _propertyAccessor?.GetValue(o);
             }
 
             if (_propertyType == o.GetType())
@@ -207,56 +299,124 @@ public abstract class ListSortDescription : IListSortDescription
 
         internal static IComparer? GetComparerForNotStringType(Type type)
         {
-            if (System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported == false)
-            {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                    type.GetGenericArguments()[0].IsAssignableTo(typeof(IComparable)))
-                {
-                    return Comparer<object>.Create((x, y) => (x as IComparable)!.CompareTo(y));
-                }
-                    
-                if (type.IsAssignableTo(typeof(IComparable)))
-                {
-                    //enum should be here
-                    return Comparer<object>.Create((x, y) => (x as IComparable)!.CompareTo(y));
-                }
-                return Comparer<object>.Create((x, y) => 0); //avoid using reflection to avoid crash on AOT
-            }
-            return (typeof(Comparer<>).MakeGenericType(type).GetProperty("Default"))?.GetValue(null, null) as
-                IComparer;
+            return DataMemberRuntimeComparerFactory.CreateForNotStringType(type);
         }
 
-        private Type? GetPropertyType(object o)
+        private void EnsurePropertyAccessor(Type itemType,
+                                            IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                                            bool isDynamicCodeSupported)
         {
-            return o.GetType().GetNestedPropertyType(_propertyPath);
+            if (_propertyAccessor != null || !HasPropertyPath)
+            {
+                return;
+            }
+
+            IPropertyPathAccessor propertyAccessor =
+                CreatePropertyAccessor(itemType, dataMemberAccessorDescriptor, isDynamicCodeSupported);
+            propertyAccessor.Initialize(itemType);
+            _propertyAccessor = propertyAccessor;
+            _propertyType     = propertyAccessor.ValueType;
+            SetActiveComparer(GetComparerForAccessor(propertyAccessor));
+        }
+
+        private IPropertyPathAccessor CreatePropertyAccessor(Type itemType,
+                                                             IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                                                             bool isDynamicCodeSupported)
+        {
+            if (TryResolveDataMemberAccessor(itemType, dataMemberAccessorDescriptor, out var accessor))
+            {
+                return new DataMemberPropertyPathAccessor(accessor);
+            }
+
+            if (!isDynamicCodeSupported)
+            {
+                throw new InvalidOperationException(
+                    $"AOT-safe data member accessor for path '{_propertyPath}' on type '{itemType.FullName}' was not found. " +
+                    $"Mark the data type with [{nameof(GenerateDataMemberAccessorsAttribute)}] or pass an {nameof(IDataMemberAccessorDescriptor)}.");
+            }
+
+            return new RuntimeReflectionPropertyPathAccessor(_propertyPath);
+        }
+
+        private bool TryResolveDataMemberAccessor(Type itemType,
+                                                  IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                                                  out IDataMemberAccessor accessor)
+        {
+            if (dataMemberAccessorDescriptor != null &&
+                IsDescriptorCompatible(dataMemberAccessorDescriptor, itemType) &&
+                dataMemberAccessorDescriptor.TryGetAccessor(_propertyPath, out accessor!))
+            {
+                return true;
+            }
+
+            if (DataMemberAccessorRegistry.TryGet(itemType, out var descriptor) &&
+                descriptor.TryGetAccessor(_propertyPath, out accessor!))
+            {
+                return true;
+            }
+
+            accessor = null!;
+            return false;
+        }
+
+        private static bool IsDescriptorCompatible(IDataMemberAccessorDescriptor descriptor, Type itemType)
+        {
+            return descriptor.DataType == itemType || descriptor.DataType.IsAssignableFrom(itemType);
+        }
+
+        private IComparer? GetComparerForAccessor(IPropertyPathAccessor accessor)
+        {
+            if (_explicitComparer != null)
+            {
+                return _explicitComparer;
+            }
+
+            if (accessor.ValueType == typeof(string))
+            {
+                return _cultureSensitiveComparer.Value;
+            }
+
+            return accessor.Comparer ?? (accessor.ValueType == null ? null : GetComparerForType(accessor.ValueType));
+        }
+
+        private void SetActiveComparer(IComparer? comparer)
+        {
+            if (!ReferenceEquals(_activeComparer, comparer))
+            {
+                _activeComparer      = comparer;
+                _activeComparerTyped = null;
+            }
+        }
+
+        private void EnsurePropertyType(object? x, object? y, bool isDynamicCodeSupported)
+        {
+            if (_propertyAccessor != null || !HasPropertyPath)
+            {
+                return;
+            }
+
+            if (x != null)
+            {
+                EnsurePropertyAccessor(x.GetType(), null, isDynamicCodeSupported);
+                return;
+            }
+
+            if (y != null)
+            {
+                EnsurePropertyAccessor(y.GetType(), null, isDynamicCodeSupported);
+            }
         }
 
         private int Compare(object? x, object? y)
         {
             int result = 0;
 
-            if (_propertyType == null)
-            {
-                if (x != null)
-                {
-                    _propertyType = GetPropertyType(x);
-                }
-
-                if (_propertyType == null && y != null)
-                {
-                    _propertyType = GetPropertyType(y);
-                }
-            }
+            EnsurePropertyType(x, y, RuntimeFeature.IsDynamicCodeSupported);
 
             var v1 = GetValue(x);
             var v2 = GetValue(y);
 
-            if (_propertyType != null)
-            {
-                _internalComparer = GetComparerForType(_propertyType);
-            }
-
-            result = _internalComparer?.Compare(v1, v2) ?? 0;
+            result = _activeComparer?.Compare(v1, v2) ?? 0;
 
             if (Direction == ListSortDirection.Descending)
             {
@@ -265,17 +425,20 @@ public abstract class ListSortDescription : IListSortDescription
             return result;
         }
 
-        internal override void Initialize(Type itemType)
+        internal override void Initialize(Type itemType,
+                                          IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                                          bool isDynamicCodeSupported)
         {
-            base.Initialize(itemType);
+            base.Initialize(itemType, dataMemberAccessorDescriptor, isDynamicCodeSupported);
 
-            if (_propertyType == null)
+            if (HasPropertyPath)
             {
-                _propertyType = itemType.GetNestedPropertyType(_propertyPath);
+                EnsurePropertyAccessor(itemType, dataMemberAccessorDescriptor, isDynamicCodeSupported);
             }
             else
             {
-                _internalComparer = GetComparerForType(_propertyType);
+                _propertyType ??= itemType;
+                SetActiveComparer(_explicitComparer ?? GetComparerForType(_propertyType));
             }
         }
 

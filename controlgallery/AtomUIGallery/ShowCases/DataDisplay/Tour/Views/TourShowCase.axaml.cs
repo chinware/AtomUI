@@ -2,12 +2,10 @@ using AtomUI.Controls;
 using AtomUI.Controls.Commons;
 using AtomUI.Desktop.Controls;
 using Avalonia;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Tour;
 
-public partial class TourShowCase : ReactiveUserControl<TourViewModel>
+public partial class TourShowCase : GalleryReactiveUserControl<TourViewModel>
 {
     public const string LanguageId = nameof(TourShowCase);
 

@@ -152,7 +152,7 @@
 | 根因 | `LanguageResourceExtension` 只有在目标是 Avalonia 对象时才能返回动态资源；`SelectOption`、`CascaderOption`、`TreeItemNode`、`AutoCompleteOption` 等普通 POCO 选项对象会得到一次性静态值，语言切换后不会自动刷新 |
 | 控件层修复 | `Cascader`、`CascaderView`、`Select`、`TreeSelect`、`TreeView` 在数据源刷新后按稳定 `ItemKey` / `Content` / `Value` 恢复已选项、默认路径、展开和勾选状态 |
 | Gallery 结构修复 | `Cascader` ShowCase 拆分为 lazy tab 子场景；`CascaderView` 示例改为 ViewModel `OptionsSource`，避免在 XAML 内联本地化 `CascaderOption` |
-| 规范补充 | `docs/AtomUIGallery/organization.md` 已明确禁止把 ShowCase 语言资源直接写到普通选项数据对象上；选项 Header/Description 由 ViewModel 重建，稳定身份使用 `ItemKey`、`Content` 或 `Value` |
+| 规范补充 | `docs/gallery/organization.md` 已明确禁止把 ShowCase 语言资源直接写到普通选项数据对象上；选项 Header/Description 由 ViewModel 重建，稳定身份使用 `ItemKey`、`Content` 或 `Value` |
 | 剩余示例层风险 | 已迁移 `SelectShowCase.axaml`、`FormPresetShowCase.axaml`、`FormControlsShowCase.axaml`、`FormBasicShowCase.axaml`、`FormStateShowCase.axaml`、`FormValidationShowCase.axaml`、`PriceInputTheme.axaml`、`SpaceCompactFormShowCase.axaml`；全局 `SelectOption` / `CascaderOption` / `TreeItemNode` / `AutoCompleteOption` 上 `LangResource` 扫描为 0；`DonationTheme.axaml`、`PhoneNumberTheme.axaml` 只包含符号/区号静态值，不属于本地化动态风险 |
 | 验证结果 | `git diff --check` 通过；`AtomUIGallery.Desktop` Debug build 通过，0 warning / 0 error |
 

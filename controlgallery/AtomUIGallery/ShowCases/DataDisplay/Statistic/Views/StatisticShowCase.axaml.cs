@@ -1,9 +1,7 @@
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Statistic;
 
-public partial class StatisticShowCase : ReactiveUserControl<StatisticViewModel>
+public partial class StatisticShowCase : GalleryReactiveUserControl<StatisticViewModel>
 {
     public const string LanguageId = nameof(StatisticShowCase);
 

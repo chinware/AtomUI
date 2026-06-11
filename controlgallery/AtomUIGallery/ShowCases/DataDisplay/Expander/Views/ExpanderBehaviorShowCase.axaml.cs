@@ -1,9 +1,8 @@
 using AtomUI.Controls;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Expander;
 
-public partial class ExpanderBehaviorShowCase : ReactiveUserControl<ExpanderViewModel>
+public partial class ExpanderBehaviorShowCase : GalleryReactiveUserControl<ExpanderViewModel>
 {
     public ExpanderBehaviorShowCase()
     {

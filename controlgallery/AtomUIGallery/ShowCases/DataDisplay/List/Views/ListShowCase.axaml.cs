@@ -10,14 +10,12 @@ using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 using IListItemData = AtomUI.Controls.Data.IListItemData;
 using ListItemData = AtomUI.Controls.Data.ListItemData;
 
 namespace AtomUIGallery.ShowCases.List;
 
-public partial class ListShowCase : ReactiveUserControl<ListViewModel>
+public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
 {
     public const string LanguageId = nameof(ListShowCase);
 

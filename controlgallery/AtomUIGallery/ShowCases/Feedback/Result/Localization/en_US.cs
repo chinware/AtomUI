@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Result;
 
 [LanguageProvider(LanguageCode.en_US, ResultShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string SuccessTitle = "Success";
     public const string SuccessDescription = "Show successful results.";

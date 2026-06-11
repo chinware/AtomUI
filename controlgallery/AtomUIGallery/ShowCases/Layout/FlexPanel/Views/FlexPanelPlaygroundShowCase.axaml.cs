@@ -3,12 +3,11 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Layout;
-using ReactiveUI.Avalonia;
 using NumericUpDown = AtomUI.Desktop.Controls.NumericUpDown;
 
 namespace AtomUIGallery.ShowCases.FlexPanel;
 
-public partial class FlexPanelPlaygroundShowCase : ReactiveUserControl<FlexPanelViewModel>
+public partial class FlexPanelPlaygroundShowCase : GalleryReactiveUserControl<FlexPanelViewModel>
 {
     private bool _suppressPlaygroundValueChanged;
 

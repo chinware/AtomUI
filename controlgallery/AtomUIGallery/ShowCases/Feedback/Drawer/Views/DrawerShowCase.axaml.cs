@@ -2,12 +2,10 @@ using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia.Interactivity;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Drawer;
 
-public partial class DrawerShowCase : ReactiveUserControl<DrawerViewModel>
+public partial class DrawerShowCase : GalleryReactiveUserControl<DrawerViewModel>
 {
     public const string LanguageId = nameof(DrawerShowCase);
 

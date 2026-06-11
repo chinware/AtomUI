@@ -1,5 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls.Primitives.Themes;
 using AtomUI.Theme;
 using Avalonia;
@@ -570,24 +571,24 @@ public abstract class InfoPickerInput : TemplatedControl,
 
         if (PickerClearUpButton is { } clearUpButton)
         {
-            _contentRightAddOnBindings.Add(clearUpButton.Bind(PickerClearUpButton.IsInClearModeProperty,
-                new Binding(nameof(IsClearButtonVisible)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearUpButton.Bind(PickerClearUpButton.IconProperty,
-                new Binding(nameof(InfoIcon)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearUpButton.Bind(PickerClearUpButton.FormFeedbackProperty,
-                new Binding(nameof(FormFeedback)) { Source = this }));
-            _contentRightAddOnBindings.Add(clearUpButton.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(InfoIcon)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsClearButtonVisibleProperty, clearUpButton,
+                PickerClearUpButton.IsInClearModeProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InfoIconProperty, clearUpButton,
+                PickerClearUpButton.IconProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, FormFeedbackProperty, clearUpButton,
+                PickerClearUpButton.FormFeedbackProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InfoIconProperty, clearUpButton,
+                Visual.IsVisibleProperty, value => value is not null));
         }
 
         if (e.NameScope.Find<ContentPresenter>("PART_ContentRightAddOnPresenter") is { } contentPresenter)
         {
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentProperty,
-                new Binding(nameof(ContentRightAddOn)) { Source = this }));
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(ContentPresenter.ContentTemplateProperty,
-                new Binding(nameof(ContentRightAddOnTemplate)) { Source = this }));
-            _contentRightAddOnBindings.Add(contentPresenter.Bind(Visual.IsVisibleProperty,
-                new Binding(nameof(ContentRightAddOn)) { Source = this, Converter = ObjectConverters.IsNotNull }));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnProperty, contentPresenter,
+                ContentPresenter.ContentProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnTemplateProperty,
+                contentPresenter, ContentPresenter.ContentTemplateProperty));
+            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnProperty, contentPresenter,
+                Visual.IsVisibleProperty, value => value is not null));
         }
     }
 

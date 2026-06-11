@@ -6,6 +6,11 @@ namespace AtomUI.Desktop.Controls.ColorPickerLang;
 [LanguageProvider(LanguageCode.zh_CN, ColorPickerToken.ID)]
 internal class zh_CN : LanguageProvider
 {
+    public zh_CN()
+        : base(LanguageCode.zh_CN, ColorPickerToken.ID)
+    {
+    }
+
     public const string EmptyColorText = "无色";
 
     protected override Type GetResourceKindType() => typeof(ColorPickerLangResourceKind);

@@ -5,6 +5,11 @@ namespace AtomUI.Controls.Localization;
 [LanguageProvider(LanguageCode.zh_TW, CommonLangId.Common)]
 internal class zh_TW : LanguageProvider
 {
+    public zh_TW()
+        : base(LanguageCode.zh_TW, CommonLangId.Common)
+    {
+    }
+
     public const string Ok = "確定";
     public const string Submit = "提交";
     public const string Cancel = "取消";

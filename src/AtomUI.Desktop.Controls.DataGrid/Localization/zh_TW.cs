@@ -6,6 +6,11 @@ namespace AtomUI.Desktop.Controls.DataGridLocalization;
 [LanguageProvider(LanguageCode.zh_TW, DataGridToken.ID)]
 internal class zh_TW : LanguageProvider
 {
+    public zh_TW()
+        : base(LanguageCode.zh_TW, DataGridToken.ID)
+    {
+    }
+
     public const string SelectAllFilterItems = "選擇所有";
     public const string AscendTooltip = "點擊升序";
     public const string DescendTooltip = "點擊降序";

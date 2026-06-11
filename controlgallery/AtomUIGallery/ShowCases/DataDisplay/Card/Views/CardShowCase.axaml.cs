@@ -4,12 +4,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Card;
 
-public partial class CardShowCase : ReactiveUserControl<CardViewModel>
+public partial class CardShowCase : GalleryReactiveUserControl<CardViewModel>
 {
     public const string LanguageId = nameof(CardShowCase);
 

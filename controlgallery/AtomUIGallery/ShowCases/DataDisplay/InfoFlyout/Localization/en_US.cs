@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.InfoFlyout;
 
 [LanguageProvider(LanguageCode.en_US, InfoFlyoutShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The most basic example. The size of the floating layer depends on the contents region.";

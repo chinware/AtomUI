@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using AtomUI.Theme.Styling;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -9,6 +10,9 @@ namespace AtomUI.Theme.TokenSystem;
 /// <summary>
 /// 所有的组件 Token 定义是除了全局的 Token 的之外的专属于当前的组件的 Token 值
 /// </summary>
+[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor |
+                            DynamicallyAccessedMemberTypes.PublicProperties |
+                            DynamicallyAccessedMemberTypes.NonPublicProperties)]
 public abstract class AbstractControlDesignToken : AbstractDesignToken,
                                                    IControlDesignToken,
                                                    IControlTokenResourceScopeProvider

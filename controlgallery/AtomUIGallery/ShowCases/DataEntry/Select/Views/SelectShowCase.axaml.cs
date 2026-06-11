@@ -9,12 +9,10 @@ using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
 using AtomUIGallery.Localization;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Select;
 
-public partial class SelectShowCase : ReactiveUserControl<SelectViewModel>
+public partial class SelectShowCase : GalleryReactiveUserControl<SelectViewModel>
 {
     public const string LanguageId = nameof(SelectShowCase);
 

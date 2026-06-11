@@ -1,19 +1,16 @@
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 using RadioButton = AtomUI.Desktop.Controls.RadioButton;
 
 namespace AtomUIGallery.ShowCases.Splitter;
 
-public partial class SplitterShowCase : ReactiveUserControl<SplitterViewModel>
+public partial class SplitterShowCase : GalleryReactiveUserControl<SplitterViewModel>
 {
     public const string LanguageId = nameof(SplitterShowCase);
 
     public SplitterShowCase()
     {
-        this.WhenActivated(_ => { });
         InitializeComponent();
         UpdateShowCollapsibleIconMode(SplitterCollapsibleIconDisplayMode.Always);
     }

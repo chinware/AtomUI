@@ -1,10 +1,8 @@
 using System.Reactive.Disposables.Fluent;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Avatar;
 
-public partial class AvatarShowCase : ReactiveUserControl<AvatarViewModel>
+public partial class AvatarShowCase : GalleryReactiveUserControl<AvatarViewModel>
 {
     public const string LanguageId = nameof(AvatarShowCase);
 
@@ -15,10 +13,8 @@ public partial class AvatarShowCase : ReactiveUserControl<AvatarViewModel>
         {
             if (DataContext is AvatarViewModel viewModel)
             {
-                this.BindCommand(viewModel, vm => vm.ChangeUserCommand, v => v.ChangeUserButton)
-                    .DisposeWith(disposables);
-                this.BindCommand(viewModel, vm => vm.ChangeGapCommand, v => v.ChangeGapButton)
-                    .DisposeWith(disposables);
+                GalleryBindingUtils.BindCommand(ChangeUserButton, viewModel.ChangeUserCommand).DisposeWith(disposables);
+                GalleryBindingUtils.BindCommand(ChangeGapButton, viewModel.ChangeGapCommand).DisposeWith(disposables);
             }
         });
     }

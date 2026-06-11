@@ -3,12 +3,10 @@ using System.Reactive.Disposables.Fluent;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Breadcrumb;
 
-public partial class BreadcrumbShowCase : ReactiveUserControl<BreadcrumbViewModel>
+public partial class BreadcrumbShowCase : GalleryReactiveUserControl<BreadcrumbViewModel>
 {
     public const string LanguageId = nameof(BreadcrumbShowCase);
 
@@ -43,8 +41,10 @@ public partial class BreadcrumbShowCase : ReactiveUserControl<BreadcrumbViewMode
                     }
                 ];
 
-                this.OneWayBind(viewModel, vm => vm.BreadcrumbItems, v => v.TplBreadcrumb.ItemsSource)
-                    .DisposeWith(disposables);
+                GalleryBindingUtils.OneWay(viewModel, nameof(BreadcrumbViewModel.BreadcrumbItems),
+                                           vm => vm.BreadcrumbItems, TplBreadcrumb,
+                                           ItemsControl.ItemsSourceProperty)
+                                   .DisposeWith(disposables);
 
                 Disposable.Create(() =>
                 {

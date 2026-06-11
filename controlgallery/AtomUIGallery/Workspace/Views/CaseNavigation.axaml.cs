@@ -7,12 +7,11 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using ReactiveUI;
-using ReactiveUI.Avalonia;
 using Window = Avalonia.Controls.Window;
 
 namespace AtomUIGallery.Workspace.Views;
 
-public partial class CaseNavigation : ReactiveUserControl<CaseNavigationViewModel>
+public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationViewModel>
 {
     public const string LanguageId = nameof(CaseNavigation);
 

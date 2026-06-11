@@ -5,7 +5,10 @@
 
 using System.Collections;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.CompilerServices;
+using AtomUI.Controls.Data;
 using AtomUI.Utils;
 using Avalonia.Collections;
 
@@ -40,18 +43,23 @@ public abstract class DataGridSortDescription
 
     internal virtual void Initialize(Type itemType)
     {
+        Initialize(itemType, null, RuntimeFeature.IsDynamicCodeSupported);
     }
 
-    private static object? InvokePath(object item, string propertyPath, Type propertyType)
+    internal virtual void Initialize(Type itemType, bool isDynamicCodeSupported)
     {
-        object? propertyValue =
-            TypeHelper.GetNestedPropertyValue(item, propertyPath, propertyType, out Exception? exception);
-        if (exception != null)
-        {
-            throw exception;
-        }
+        Initialize(itemType, null, isDynamicCodeSupported);
+    }
 
-        return propertyValue;
+    internal virtual void Initialize(Type itemType, IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor)
+    {
+        Initialize(itemType, dataMemberAccessorDescriptor, RuntimeFeature.IsDynamicCodeSupported);
+    }
+
+    internal virtual void Initialize(Type itemType,
+                                     IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                                     bool isDynamicCodeSupported)
+    {
     }
     
     public static DataGridSortDescription FromPath(string propertyPath, ListSortDirection direction = ListSortDirection.Ascending, CultureInfo? culture = null)
@@ -141,6 +149,7 @@ public abstract class DataGridSortDescription
         private IComparer? _internalComparer;
         private IComparer<object?>? _internalComparerTyped;
         private Type? _internalComparerType;
+        private IDataGridDataMemberPathAccessor? _propertyAccessor;
 
         private IComparer<object?>? InternalComparer
         {
@@ -190,6 +199,7 @@ public abstract class DataGridSortDescription
             _internalComparer         = inner._internalComparer;
             _internalComparerTyped    = inner._internalComparerTyped;
             _internalComparerType     = inner._internalComparerType;
+            _propertyAccessor         = inner._propertyAccessor;
             _getValue                 = GetValue;
 
             _comparer = new Lazy<IComparer<object>>(() => Comparer<object>.Create(Compare));
@@ -204,7 +214,8 @@ public abstract class DataGridSortDescription
             
             if (HasPropertyPath)
             {
-                return InvokePath(o, _propertyPath, _propertyType!);
+                EnsurePropertyAccessor(o.GetType(), null, RuntimeFeature.IsDynamicCodeSupported);
+                return _propertyAccessor?.GetValue(o);
             }
 
             if (_propertyType == o.GetType())
@@ -245,28 +256,25 @@ public abstract class DataGridSortDescription
 
         private static IComparer? CreateComparerForNotStringType(Type type)
         {
-            if (System.Runtime.CompilerServices.RuntimeFeature.IsDynamicCodeSupported == false)
-            {
-                if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>) &&
-                    type.GetGenericArguments()[0].IsAssignableTo(typeof(IComparable)))
-                {
-                    return Comparer<object>.Create((x, y) => (x as IComparable)!.CompareTo(y));
-                }
-                    
-                if (type.IsAssignableTo(typeof(IComparable)))
-                {
-                    //enum should be here
-                    return Comparer<object>.Create((x, y) => (x as IComparable)!.CompareTo(y));
-                }
-                return Comparer<object>.Create((x, y) => 0); //avoid using reflection to avoid crash on AOT
-            }
-            return (typeof(Comparer<>).MakeGenericType(type).GetProperty("Default"))?.GetValue(null, null) as
-                IComparer;
+            return DataMemberRuntimeComparerFactory.CreateForNotStringType(type);
         }
 
-        private Type? GetPropertyType(object o)
+        private void EnsurePropertyAccessor(Type itemType,
+                                            IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                                            bool isDynamicCodeSupported)
         {
-            return o.GetType().GetNestedPropertyType(_propertyPath);
+            if (_propertyAccessor != null || !HasPropertyPath)
+            {
+                return;
+            }
+
+            _propertyAccessor = DataGridDataMemberPathAccessor.Resolve(
+                _propertyPath,
+                itemType,
+                dataMemberAccessorDescriptor,
+                isDynamicCodeSupported);
+            _propertyType = _propertyAccessor.ValueType;
+            EnsureInternalComparer();
         }
 
         private void EnsureInternalComparer()
@@ -288,27 +296,45 @@ public abstract class DataGridSortDescription
                 return;
             }
 
-            _internalComparer      = GetComparerForType(_propertyType);
+            _internalComparer      = GetComparerForAccessor();
             _internalComparerTyped = null;
             _internalComparerType  = _propertyType;
+        }
+
+        private IComparer? GetComparerForAccessor()
+        {
+            if (_propertyType == typeof(string))
+            {
+                return _cultureSensitiveComparer.Value;
+            }
+
+            return _propertyAccessor?.Comparer ?? GetComparerForType(_propertyType!);
+        }
+
+        private void EnsurePropertyType(object? x, object? y, bool isDynamicCodeSupported)
+        {
+            if (_propertyAccessor != null || !HasPropertyPath)
+            {
+                return;
+            }
+
+            if (x != null)
+            {
+                EnsurePropertyAccessor(x.GetType(), null, isDynamicCodeSupported);
+                return;
+            }
+
+            if (y != null)
+            {
+                EnsurePropertyAccessor(y.GetType(), null, isDynamicCodeSupported);
+            }
         }
 
         private int Compare(object? x, object? y)
         {
             int result = 0;
 
-            if (_propertyType == null)
-            {
-                if (x != null)
-                {
-                    _propertyType = GetPropertyType(x);
-                }
-
-                if (_propertyType == null && y != null)
-                {
-                    _propertyType = GetPropertyType(y);
-                }
-            }
+            EnsurePropertyType(x, y, RuntimeFeature.IsDynamicCodeSupported);
 
             var v1 = GetValue(x);
             var v2 = GetValue(y);
@@ -324,13 +350,19 @@ public abstract class DataGridSortDescription
             return result;
         }
 
-        internal override void Initialize(Type itemType)
+        internal override void Initialize(Type itemType,
+                                          IDataMemberAccessorDescriptor? dataMemberAccessorDescriptor,
+                                          bool isDynamicCodeSupported)
         {
-            base.Initialize(itemType);
+            base.Initialize(itemType, dataMemberAccessorDescriptor, isDynamicCodeSupported);
 
-            if (_propertyType == null)
+            if (HasPropertyPath)
             {
-                _propertyType = itemType.GetNestedPropertyType(_propertyPath);
+                EnsurePropertyAccessor(itemType, dataMemberAccessorDescriptor, isDynamicCodeSupported);
+            }
+            else if (_propertyType == null)
+            {
+                _propertyType = itemType;
             }
 
             EnsureInternalComparer();

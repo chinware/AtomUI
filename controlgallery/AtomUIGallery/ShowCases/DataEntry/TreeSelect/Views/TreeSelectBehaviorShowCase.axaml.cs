@@ -1,10 +1,9 @@
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TreeSelect;
 
-public partial class TreeSelectBehaviorShowCase : ReactiveUserControl<TreeSelectViewModel>
+public partial class TreeSelectBehaviorShowCase : GalleryReactiveUserControl<TreeSelectViewModel>
 {
     public TreeSelectBehaviorShowCase()
     {

@@ -9,8 +9,7 @@ internal static class AvaloniaPropertyReflectionExtensions
 {
     public static void InvokeNotifying(this AvaloniaProperty property, AvaloniaObject target, bool status)
     {
-        var type = property.GetType();
-        var notifyingProp  = type.GetPropertyInfoOrThrow("Notifying", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
+        var notifyingProp  = typeof(AvaloniaProperty).GetPropertyInfoOrThrow("Notifying", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy);
         var notifyingDelegate = notifyingProp.GetValue(property) 
             as Action<AvaloniaObject, bool>;
         if (notifyingDelegate == null)

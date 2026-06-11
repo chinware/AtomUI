@@ -1,9 +1,8 @@
 using AtomUI.Controls;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Form;
 
-public partial class FormBasicShowCase : ReactiveUserControl<FormViewModel>
+public partial class FormBasicShowCase : GalleryReactiveUserControl<FormViewModel>
 {
     public FormBasicShowCase()
     {

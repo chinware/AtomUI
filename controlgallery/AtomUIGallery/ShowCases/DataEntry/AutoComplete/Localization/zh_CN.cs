@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.AutoComplete;
 
 [LanguageProvider(LanguageCode.zh_CN, AutoCompleteShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string BasicUsageTitle = "基础用法";
     public const string BasicUsageDescription = "基础用法，通过 options 属性设置自动完成的数据源。";

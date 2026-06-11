@@ -9,8 +9,6 @@ using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Interactivity;
 using AtomUIGallery.Localization;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.TabControl;
 
@@ -19,7 +17,7 @@ public class MyTabItemData : TabItemData
     public object? Content { get; init; }
 }
 
-public partial class TabControlShowCase : ReactiveUserControl<TabControlViewModel>
+public partial class TabControlShowCase : GalleryReactiveUserControl<TabControlViewModel>
 {
     public const string LanguageId = nameof(TabControlShowCase);
 

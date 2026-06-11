@@ -5,6 +5,7 @@
 ## 阅读路径
 
 - 想快速理解项目整体：先读 [architecture/overview.md](architecture/overview.md)，再读 [architecture/dependency-graph.md](architecture/dependency-graph.md)。
+- 想新增或修改会影响 trimming / NativeAOT 的代码：先读 [engineering/aot-programming-guidelines.md](engineering/aot-programming-guidelines.md)。
 - 想理解某个源码包：从 [modules/](modules/) 下对应模块的 `overview.md` 开始。
 - 想查具体控件：从 [controls/overview.md](controls/overview.md) 进入，按桌面端和移动端分层。
 - 想查已有专题沉淀：通过本文档索引跳转。
@@ -15,9 +16,10 @@
 docs/
 ├── overview.md
 ├── architecture/            # 全局架构，不写单个控件使用细节
+├── engineering/             # 工程实践与编程规范
 ├── modules/                 # 项目/包级架构，按 NuGet/源码模块分目录
 ├── controls/                # 具体控件文档，按平台分目录
-└── AtomUIGallery/           # 现有 Gallery 专题文档，当前不纳入 modules
+└── gallery/                 # Gallery 专题文档，当前不纳入 modules
 ```
 
 `modules/` 和 `controls/` 的边界需要保持清楚：
@@ -47,6 +49,9 @@ docs/
 - [AsyncLoadingArchitecture.md](AsyncLoadingArchitecture.md) - 异步加载体系
 - [FilteringArchitecture.md](FilteringArchitecture.md) - 过滤体系
 - [PopupAnchorScopeGuide.md](PopupAnchorScopeGuide.md) - Popup Anchor 作用域检查
+- [engineering/aot-programming-guidelines.md](engineering/aot-programming-guidelines.md) - AtomUI AOT 编程规范
+- [engineering/windows-native-aot-publish.md](engineering/windows-native-aot-publish.md) - Windows 11 Gallery Native AOT 发布维护手册
+- [engineering/linux-native-aot-publish.md](engineering/linux-native-aot-publish.md) - Linux Gallery Native AOT 发布维护手册
 - [modules/native/architecture.md](modules/native/architecture.md) - Native 项目架构
 - [modules/native/atomui-window-cross-platform-guide.md](modules/native/atomui-window-cross-platform-guide.md) - Window 跨平台定制
-- [AtomUIGallery/organization.md](AtomUIGallery/organization.md) - Gallery 组织规范
+- [gallery/organization.md](gallery/organization.md) - Gallery 组织规范

@@ -6,6 +6,11 @@ namespace AtomUI.Desktop.Controls.TransferLang;
 [LanguageProvider(LanguageCode.zh_CN, TransferToken.ID)]
 internal class zh_CN : LanguageProvider
 {
+    public zh_CN()
+        : base(LanguageCode.zh_CN, TransferToken.ID)
+    {
+    }
+
     public const string Item = "项";
     public const string Items = "项";
     public const string SelectAll = "全选所有";

@@ -4,11 +4,10 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using AtomUIGallery.Localization;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Form;
 
-public partial class FormValidationShowCase : ReactiveUserControl<FormViewModel>
+public partial class FormValidationShowCase : GalleryReactiveUserControl<FormViewModel>
 {
     private WindowMessageManager? _messageManager;
 

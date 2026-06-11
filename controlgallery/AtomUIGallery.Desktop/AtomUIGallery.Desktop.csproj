@@ -9,14 +9,12 @@
         <ApplicationIcon>../AtomUIGallery/Assets/AtomUIGallery.ico</ApplicationIcon>
     </PropertyGroup>
 
-    <ItemGroup>
-        <TrimmerRootDescriptor Include="Roots.xml"/>
-    </ItemGroup>
-
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <!--        <IsTrimmable>true</IsTrimmable>-->
-        <!--        <PublishTrimmed>true</PublishTrimmed>-->
-        <!--        <PublishAot>true</PublishAot>-->
+        <IsAotCompatible>true</IsAotCompatible>
+        <IsTrimmable>true</IsTrimmable>
+        <PublishTrimmed>true</PublishTrimmed>
+        <PublishAot>true</PublishAot>
+        <SelfContained>true</SelfContained>
         <UseAppHost>true</UseAppHost>
     </PropertyGroup>
 
@@ -27,6 +25,10 @@
 
     <ItemGroup>
         <PackageReference Include="Avalonia.Desktop"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(PublishAot)' == 'true' and $([MSBuild]::IsOSPlatform('OSX'))">
+        <LinkerArg Include="-L/opt/homebrew/lib" Condition="Exists('/opt/homebrew/lib/libssl.dylib')"/>
     </ItemGroup>
 
     <ItemGroup>

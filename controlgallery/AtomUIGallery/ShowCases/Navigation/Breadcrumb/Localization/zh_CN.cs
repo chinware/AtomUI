@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Breadcrumb;
 
 [LanguageProvider(LanguageCode.zh_CN, BreadcrumbShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string BasicUsageTitle = "基础用法";
     public const string BasicUsageDescription = "最简单的用法。";

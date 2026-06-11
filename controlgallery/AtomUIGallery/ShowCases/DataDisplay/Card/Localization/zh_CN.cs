@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Card;
 
 [LanguageProvider(LanguageCode.zh_CN, CardShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础卡片";
     public const string BasicDescription = "包含标题、内容和右上角额外内容的基础卡片。支持默认和小号两种尺寸。";

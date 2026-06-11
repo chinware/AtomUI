@@ -250,14 +250,12 @@ public class Drawer : Control,
         }
         else
         {
-            _relayBindingDisposables.Add(Bind(OpenOnProperty, new Binding()
-            {
-                Priority = BindingPriority.Template,
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor)
-                {
-                    AncestorType = typeof(TopLevel),
-                }
-            }));
+            _relayBindingDisposables.Add(BindUtils.BindVisualAncestor(
+                this,
+                this,
+                OpenOnProperty,
+                typeof(TopLevel),
+                priority: BindingPriority.Template));
         }
 
         if (IsOpen)

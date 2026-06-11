@@ -1,11 +1,9 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.InfoFlyout;
 
-public partial class InfoFlyoutShowCase : ReactiveUserControl<InfoFlyoutViewModel>
+public partial class InfoFlyoutShowCase : GalleryReactiveUserControl<InfoFlyoutViewModel>
 {
     public const string LanguageId = nameof(InfoFlyoutShowCase);
 

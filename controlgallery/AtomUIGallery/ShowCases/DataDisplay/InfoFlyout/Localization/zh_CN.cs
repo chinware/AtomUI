@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.InfoFlyout;
 
 [LanguageProvider(LanguageCode.zh_CN, InfoFlyoutShowCase.LanguageId)]
-internal class zh_CN : LanguageProvider
+internal partial class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "最基础的示例。浮层大小取决于内容区域。";

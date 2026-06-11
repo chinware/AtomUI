@@ -6,8 +6,11 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <WasmEnableThreads>false</WasmEnableThreads>
+        <!-- .NET 10 browser-wasm Webcil output currently fails during mono_wasm_load_runtime in Chromium. -->
+        <WasmEnableWebcil>false</WasmEnableWebcil>
         <WasmBuildNative>true</WasmBuildNative>
-        <DebuggerSupport>true</DebuggerSupport>
+        <RunAOTCompilation>false</RunAOTCompilation>
+        <DebuggerSupport Condition="'$(Configuration)' == 'Debug'">true</DebuggerSupport>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,8 +22,8 @@
         <AvaloniaResource Include="../AtomUIGallery/Assets/gallery-logo.png" Link="Assets/gallery-logo.png"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <TrimmerRootDescriptor Include="Roots.xml"/>
+    <ItemGroup Condition="'$(RunAOTCompilation)' == 'true' and '$(BrowserAotForceInterpretAssemblies)' != ''">
+        <_AOT_InternalForceInterpretAssemblies Include="$(BrowserAotForceInterpretAssemblies)"/>
     </ItemGroup>
 
     <ItemGroup>

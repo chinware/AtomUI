@@ -1,9 +1,8 @@
 using Avalonia.Controls;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Grid;
 
-public partial class GridShowCase : ReactiveUserControl<GridViewModel>
+public partial class GridShowCase : GalleryReactiveUserControl<GridViewModel>
 {
     public const string LanguageId = nameof(GridShowCase);
 

@@ -10,12 +10,10 @@ using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
 using AtomUIGallery.Localization;
-using ReactiveUI;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Transfer;
 
-public partial class TransferShowCase : ReactiveUserControl<TransferViewModel>
+public partial class TransferShowCase : GalleryReactiveUserControl<TransferViewModel>
 {
     public const string LanguageId = nameof(TransferShowCase);
 

@@ -1,4 +1,3 @@
-using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Upload;
 

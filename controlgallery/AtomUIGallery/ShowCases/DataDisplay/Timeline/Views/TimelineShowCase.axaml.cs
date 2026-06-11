@@ -1,14 +1,12 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
-using ReactiveUI;
 using Avalonia.Interactivity;
-using ReactiveUI.Avalonia;
 using RadioButton = Avalonia.Controls.RadioButton;
 
 namespace AtomUIGallery.ShowCases.Timeline;
 
-public partial class TimelineShowCase : ReactiveUserControl<TimelineViewModel>
+public partial class TimelineShowCase : GalleryReactiveUserControl<TimelineViewModel>
 {
     public const string LanguageId = nameof(TimelineShowCase);
 

@@ -65,33 +65,16 @@ internal class ControlTokenTypePoolClassWriter
 
     private MethodDeclarationSyntax GenerateGetControlTokenTypesMethod()
     {
-        List<ExpressionStatementSyntax> objectCreateStmts = new();
-        foreach (var className in _classes)
-        {
-            var registerExprStmt =
-                SyntaxFactory.ParseExpression($"ThemeManager.Current.RegisterControlTokenType(typeof({className}))");
-            var statement = SyntaxFactory.ExpressionStatement(registerExprStmt);
-            objectCreateStmts.Add(statement);
-        }
-
         var statements = new List<StatementSyntax>
         {
-            SyntaxFactory.ParseStatement($"List<Type> tokenTypes = new List<Type>({_classes.Count});")
+            SyntaxFactory.ParseStatement($"List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>({_classes.Count});")
         };
 
         // 动态添加 themes.Add(typeof(XXX));
         foreach (var className in _classes)
         {
-            var addStatement = SyntaxFactory.ExpressionStatement(
-                SyntaxFactory.InvocationExpression(
-                                 SyntaxFactory.MemberAccessExpression(
-                                     SyntaxKind.SimpleMemberAccessExpression,
-                                     SyntaxFactory.IdentifierName("tokenTypes"),
-                                     SyntaxFactory.IdentifierName("Add")))
-                             .WithArgumentList(SyntaxFactory.ArgumentList(
-                                 SyntaxFactory.SingletonSeparatedList(
-                                     SyntaxFactory.Argument(
-                                         SyntaxFactory.TypeOfExpression(SyntaxFactory.ParseTypeName(className)))))));
+            var addStatement = SyntaxFactory.ParseStatement(
+                $"tokenTypes.Add(new ControlTokenRegistration(typeof({className})));");
 
             statements.Add(addStatement);
         }
@@ -104,7 +87,7 @@ internal class ControlTokenTypePoolClassWriter
                                              SyntaxFactory.GenericName(SyntaxFactory.Identifier("IList"))
                                                           .WithTypeArgumentList(SyntaxFactory.TypeArgumentList(
                                                               SyntaxFactory.SingletonSeparatedList<TypeSyntax>(
-                                                                  SyntaxFactory.ParseTypeName("Type")))),
+                                                                  SyntaxFactory.ParseTypeName("ControlTokenRegistration")))),
                                              SyntaxFactory.Identifier("GetTokenTypes"))
                                          .WithModifiers(SyntaxFactory.TokenList(
                                              SyntaxFactory.Token(SyntaxKind.InternalKeyword),

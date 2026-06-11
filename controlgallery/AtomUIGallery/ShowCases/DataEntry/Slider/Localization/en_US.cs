@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Slider;
 
 [LanguageProvider(LanguageCode.en_US, SliderShowCase.LanguageId)]
-internal class en_US : LanguageProvider
+internal partial class en_US : LanguageProvider
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Basic slider. When range is true, display as dual thumb mode. When disable is true, the slider will not be interactable.";

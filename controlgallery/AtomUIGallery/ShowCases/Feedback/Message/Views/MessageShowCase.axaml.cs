@@ -5,11 +5,10 @@ using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.ShowCases.Message;
 
-public partial class MessageShowCase : ReactiveUserControl<MessageViewModel>
+public partial class MessageShowCase : GalleryReactiveUserControl<MessageViewModel>
 {
     public const string LanguageId = nameof(MessageShowCase);
 
