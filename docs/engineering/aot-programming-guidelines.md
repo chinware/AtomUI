@@ -461,7 +461,7 @@ observable.ToProperty(...);
 
 AOT analyzer 通过，只说明静态分析没有发现项目自身 warning。它不等于 NativeAOT 链接一定成功。涉及发布配置或 native 依赖时，要做真实 publish。
 
-Windows 11 上 Gallery Desktop 的 NativeAOT 工具链、发布命令、产物验证和排障记录见 [windows-native-aot-publish.md](windows-native-aot-publish.md)。
+Windows 11 上 Gallery Desktop 的 NativeAOT 工具链、发布命令、产物验证和排障记录见 [windows-native-aot-publish.md](windows-native-aot-publish.md)。Linux 平台的对应手册见 [linux-native-aot-publish.md](linux-native-aot-publish.md)。
 
 库项目 analyzer：
 
