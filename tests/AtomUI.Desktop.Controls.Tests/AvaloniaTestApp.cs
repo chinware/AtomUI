@@ -1,6 +1,8 @@
+using System.Threading;
 using Avalonia;
 using Avalonia.Headless;
-using System.Threading;
+using AtomUI;
+using AtomUI.Desktop.Controls;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUI.Desktop.Controls.Tests.TestAppBuilder))]
 
@@ -30,4 +32,10 @@ public static class TestAppBuilder
     }
 }
 
-internal sealed class TestApplication : Application;
+internal sealed class TestApplication : Application
+{
+    public override void Initialize()
+    {
+        this.UseAtomUI(builder => builder.UseDesktopControls());
+    }
+}

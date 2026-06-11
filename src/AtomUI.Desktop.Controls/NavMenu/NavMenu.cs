@@ -66,6 +66,7 @@ public class NavMenu : ItemsControl,
         AvaloniaProperty.Register<NavMenu, bool>(nameof (ShouldUseOverlayPopup));
     
     private INavMenuNode? _selectedItem;
+    private int _selectedItemRevision;
 
     public INavMenuNode? SelectedItem
     {
@@ -249,9 +250,10 @@ public class NavMenu : ItemsControl,
 
         if (change.Property == SelectedItemProperty)
         {
+            _selectedItemRevision++;
             if (SelectedItem != null)
             {
-                SelectTargetMenuNode(SelectedItem);
+                SelectTargetMenuNode(SelectedItem, _selectedItemRevision);
             }
         }
     }
@@ -422,7 +424,7 @@ public class NavMenu : ItemsControl,
         // 直接设置 SelectedItem 优先级高于 DefaultSelectedPath
         if (SelectedItem != null)
         {
-            SelectTargetMenuNode(SelectedItem);
+            SelectTargetMenuNode(SelectedItem, _selectedItemRevision);
         }
         else if (DefaultSelectedPath != null)
         {
@@ -436,7 +438,7 @@ public class NavMenu : ItemsControl,
         }
     }
 
-    private void SelectTargetMenuNode(INavMenuNode node)
+    private void SelectTargetMenuNode(INavMenuNode node, int selectedItemRevision)
     {
         var selectPathNodes = CollectPathNodes(node);
         if (selectPathNodes.Count > 0)
@@ -445,7 +447,11 @@ public class NavMenu : ItemsControl,
             {
                 if (i == selectPathNodes.Count - 1)
                 {
-                    InteractionHandler?.Select(menuItem);
+                    if (selectedItemRevision == _selectedItemRevision &&
+                        ReferenceEquals(SelectedItem, node))
+                    {
+                        InteractionHandler?.Select(menuItem);
+                    }
                 }
             }));
         }
