@@ -134,9 +134,9 @@ public abstract class AbstractSegmented : SelectingItemsControl,
             }
         }
         
-        if (!hasDefaultSelected)
+        if (!hasDefaultSelected && SelectedIndex == -1 && SelectedItem is null && Items.Count > 0)
         {
-            SelectedIndex = 0;
+            SetCurrentValue(SelectedIndexProperty, 0);
         }
         
         SetupSelectedThumbRect();
