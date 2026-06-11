@@ -548,14 +548,14 @@ Browser 发布要先区分两类问题：
 
 原因是当前 .NET 10 browser-wasm 工具链生成的 Webcil managed assembly 在 Chromium 下会在 `mono_wasm_load_runtime` 阶段失败；同一个最小纯 .NET Browser 项目关闭 Webcil 后可以正常进入 managed `Main`。这个配置只改变 managed assembly 的发布包装格式，不改变 AtomUI/Gallery 的运行语义。
 
-后续升级 .NET SDK、wasm-tools workload 或 runtime pack 时，可以重新做单变量验证：
+后续升级 .NET SDK、wasm-tools workload 或 runtime pack 时，可以用临时最小 Browser 项目重新做单变量验证。普通发布的关键对照是：
 
 ```bash
-dotnet publish experiments/DotNetBrowserAotSmoke/DotNetBrowserAotSmoke.csproj \
+dotnet publish path/to/DotNetBrowserSmoke.csproj \
   -c Release -p:RunAOTCompilation=false \
   --nologo -v:minimal
 
-dotnet publish experiments/DotNetBrowserAotSmoke/DotNetBrowserAotSmoke.csproj \
+dotnet publish path/to/DotNetBrowserSmoke.csproj \
   -c Release -p:RunAOTCompilation=false -p:WasmEnableWebcil=false \
   --nologo -v:minimal
 ```
