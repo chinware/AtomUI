@@ -1,8 +1,6 @@
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator;
 
@@ -29,11 +27,8 @@ internal class ResourceKeyClassWriter
     public void Write()
     {
         var compilationUnitSyntax = BuildCompilationUnitSyntax();
-        var sourceText = SourceText.From(
-            compilationUnitSyntax.NormalizeWhitespace().ToFullString().Replace("\r\n", "\n"), 
-            Encoding.UTF8
-        );
-        _context.AddSource("TokenResourceConst.g.cs", sourceText);
+        _context.AddSource("TokenResourceConst.g.cs",
+            GeneratedSourceText.From(compilationUnitSyntax.NormalizeWhitespace().ToFullString()));
     }
     
     private EnumDeclarationSyntax BuildControlResourceKeyEnumSyntax(ControlTokenInfo controlTokenInfo)

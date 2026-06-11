@@ -1,8 +1,6 @@
-﻿using System.Text;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator.Language;
 
@@ -45,11 +43,8 @@ internal class LangResourceKeyClassSourceWriter
     public void Write()
     {
         var compilationUnitSyntax = BuildCompilationUnitSyntax();
-        var sourceText = SourceText.From(
-            compilationUnitSyntax.NormalizeWhitespace().ToFullString().Replace("\r\n", "\n"), 
-            Encoding.UTF8
-        );
-        _context.AddSource("LanguageResourceConst.g.cs", sourceText);
+        _context.AddSource("LanguageResourceConst.g.cs",
+            GeneratedSourceText.From(compilationUnitSyntax.NormalizeWhitespace().ToFullString()));
     }
 
     private ClassDeclarationSyntax BuildClassSyntax(string className)

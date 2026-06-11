@@ -1,6 +1,5 @@
 using System.Text;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator;
 
@@ -17,8 +16,7 @@ internal class TokenValueConverterRegistryClassWriter
 
     public void Write()
     {
-        var sourceText = SourceText.From(BuildSource(), Encoding.UTF8);
-        _context.AddSource("TokenValueConverterRegistry.g.cs", sourceText);
+        _context.AddSource("TokenValueConverterRegistry.g.cs", GeneratedSourceText.From(BuildSource()));
     }
 
     private string BuildSource()

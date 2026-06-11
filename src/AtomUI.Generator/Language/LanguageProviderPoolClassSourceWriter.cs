@@ -1,7 +1,6 @@
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator.Language;
 
@@ -21,8 +20,7 @@ internal class LanguageProviderPoolClassSourceWriter
 
     public void Write()
     {
-        var sourceText = SourceText.From(BuildSourceText(), Encoding.UTF8);
-        _context.AddSource("LanguageProviderPool.g.cs", sourceText);
+        _context.AddSource("LanguageProviderPool.g.cs", GeneratedSourceText.From(BuildSourceText()));
     }
 
     private string BuildSourceText()

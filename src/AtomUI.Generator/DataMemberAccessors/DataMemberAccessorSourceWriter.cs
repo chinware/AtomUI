@@ -1,7 +1,6 @@
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Text;
 
 namespace AtomUI.Generator.DataMemberAccessors;
 
@@ -18,7 +17,7 @@ internal sealed class DataMemberAccessorSourceWriter
 
     public void Write()
     {
-        _context.AddSource($"{_typeInfo.GeneratedClassName}.g.cs", SourceText.From(BuildSource(), Encoding.UTF8));
+        _context.AddSource($"{_typeInfo.GeneratedClassName}.g.cs", GeneratedSourceText.From(BuildSource()));
     }
 
     private string BuildSource()
