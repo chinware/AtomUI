@@ -605,6 +605,7 @@ public partial class Dialog : TemplatedControl,
         }
 
         _closing = true;
+        var closeCompletionPending = false;
         try
         {
             if (Result is DialogCode code)
@@ -625,26 +626,48 @@ public partial class Dialog : TemplatedControl,
                 dialogAwareDataContext.NotifyClosed();
             }
 
+            var result    = Result;
             var openState = _openState;
-            _openState = null;
+            _openState    = null;
             _dialogHostChangedHandler?.Invoke(null);
-            openState?.Dispose();
 
             using (BeginIgnoringIsOpen())
             {
                 SetCurrentValue(IsOpenProperty, false);
             }
 
-            Closed?.Invoke(this, EventArgs.Empty);
-            _frameCancellationTokenSource?.Cancel();
-            _frameCancellationTokenSource?.Dispose();
-            _frameCancellationTokenSource = null;
-            openState?.SetClosed(Result);
+            if (openState is not null)
+            {
+                var closeCompletedSynchronously = false;
+                openState.Close(() =>
+                {
+                    closeCompletedSynchronously = true;
+                    CompleteClose(openState, result);
+                });
+                closeCompletionPending = !closeCompletedSynchronously;
+            }
+            else
+            {
+                CompleteClose(null, result);
+            }
         }
         finally
         {
-            _closing = false;
+            if (!closeCompletionPending)
+            {
+                _closing = false;
+            }
         }
+    }
+
+    private void CompleteClose(DialogOpenState? openState, object? result)
+    {
+        openState?.SetClosed(result);
+        Closed?.Invoke(this, EventArgs.Empty);
+        _frameCancellationTokenSource?.Cancel();
+        _frameCancellationTokenSource?.Dispose();
+        _frameCancellationTokenSource = null;
+        _closing = false;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -804,7 +827,8 @@ public partial class Dialog : TemplatedControl,
     private class DialogOpenState : IDisposable
     {
         private readonly IDisposable _cleanup;
-        private readonly TaskCompletionSource<object?> _closedTaskSource = new();
+        private readonly TaskCompletionSource<object?> _closedTaskSource =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
 
         public DialogOpenState(IDialogHost dialogHost,
                                IDisposable cleanup)
@@ -821,10 +845,19 @@ public partial class Dialog : TemplatedControl,
             _closedTaskSource.TrySetResult(result);
         }
 
-        public void Dispose()
+        public void Close(Action? closedCallback = null)
         {
             _cleanup.Dispose();
-            DialogHost.Close(() => DialogHost.Content = null);
+            DialogHost.Close(() =>
+            {
+                DialogHost.Content = null;
+                closedCallback?.Invoke();
+            });
+        }
+
+        public void Dispose()
+        {
+            Close();
         }
     }
 
