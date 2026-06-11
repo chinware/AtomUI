@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk"
-         TreatAsLocalProperty="IsAotCompatible;EnableAotAnalyzer;EnableTrimAnalyzer;EnableSingleFileAnalyzer;PublishAot;PublishTrimmed;PublishSingleFile;SelfContained;RuntimeIdentifier">
+         TreatAsLocalProperty="IsAotCompatible;EnableAotAnalyzer;EnableTrimAnalyzer;EnableSingleFileAnalyzer">
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
@@ -12,11 +12,6 @@
         <EnableAotAnalyzer>false</EnableAotAnalyzer>
         <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
         <EnableSingleFileAnalyzer>false</EnableSingleFileAnalyzer>
-        <PublishAot>false</PublishAot>
-        <PublishTrimmed>false</PublishTrimmed>
-        <PublishSingleFile>false</PublishSingleFile>
-        <SelfContained>false</SelfContained>
-        <RuntimeIdentifier></RuntimeIdentifier>
     </PropertyGroup>
 
     <ItemGroup>

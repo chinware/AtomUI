@@ -6,7 +6,10 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <WasmEnableThreads>false</WasmEnableThreads>
+        <!-- .NET 10 browser-wasm Webcil output currently fails during mono_wasm_load_runtime in Chromium. -->
+        <WasmEnableWebcil>false</WasmEnableWebcil>
         <WasmBuildNative>true</WasmBuildNative>
+        <RunAOTCompilation>false</RunAOTCompilation>
         <DebuggerSupport Condition="'$(Configuration)' == 'Debug'">true</DebuggerSupport>
     </PropertyGroup>
 

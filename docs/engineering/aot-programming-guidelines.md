@@ -531,6 +531,82 @@ dotnet publish controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj
 - preserve 范围为什么不能更小。
 - 是否会明显扩大 NativeAOT 体积。
 
+### Browser WebAssembly 发布
+
+Browser 发布要先区分两类问题：
+
+- runtime 在 `dotnet.create()` / `mono_wasm_load_runtime` 阶段失败：优先怀疑 SDK、workload、runtime pack、WebAssembly 输出格式或浏览器兼容性。
+- managed `Main` 已进入后失败：再回到 AtomUI、Gallery 业务代码和资源加载路径。
+
+不要在 runtime 初始化阶段的错误上盲改业务代码。先用最小纯 .NET Browser 项目验证，再用最小 Avalonia Browser 项目验证，最后才回到 Gallery。
+
+当前 `AtomUIGallery.Browser` 普通发布固定关闭 Webcil：
+
+```xml
+<WasmEnableWebcil>false</WasmEnableWebcil>
+```
+
+原因是当前 .NET 10 browser-wasm 工具链生成的 Webcil managed assembly 在 Chromium 下会在 `mono_wasm_load_runtime` 阶段失败；同一个最小纯 .NET Browser 项目关闭 Webcil 后可以正常进入 managed `Main`。这个配置只改变 managed assembly 的发布包装格式，不改变 AtomUI/Gallery 的运行语义。
+
+后续升级 .NET SDK、wasm-tools workload 或 runtime pack 时，可以重新做单变量验证：
+
+```bash
+dotnet publish experiments/DotNetBrowserAotSmoke/DotNetBrowserAotSmoke.csproj \
+  -c Release -p:RunAOTCompilation=false \
+  --nologo -v:minimal
+
+dotnet publish experiments/DotNetBrowserAotSmoke/DotNetBrowserAotSmoke.csproj \
+  -c Release -p:RunAOTCompilation=false -p:WasmEnableWebcil=false \
+  --nologo -v:minimal
+```
+
+只有默认 Webcil 输出也能稳定启动时，才能考虑删除 `WasmEnableWebcil=false`。
+
+#### 当前 Browser AOT 结论
+
+截至 2026-06-11，在下面这套环境里，`AtomUIGallery.Browser` 的 WebAssembly AOT 结论是：
+
+| 发布方式 | 结果 | 说明 |
+| --- | --- | --- |
+| `RunAOTCompilation=false` + `WasmEnableWebcil=false` | 可以发布，也可以运行 | Gallery Browser 可以进入 Avalonia canvas，页面显示加载完成。 |
+| `RunAOTCompilation=true` + `WasmEnableWebcil=false` | 可以发布，但不能运行 | 浏览器启动阶段在 `mono_wasm_load_runtime` 失败，错误是 `RuntimeError: remainder by zero`，未进入 managed `Main`。 |
+
+也就是说，`WasmEnableWebcil=false` 只解决普通 Browser 发布的 Webcil 加载问题；它不能解决当前环境下 WebAssembly AOT runtime 初始化失败的问题。
+
+本次验证环境：
+
+| 项 | 版本 |
+| --- | --- |
+| OS | macOS 26.3.1(a), build `25D771280a`, `arm64`；`dotnet --info` 识别为 Mac OS X 26.3 |
+| .NET SDK | `10.0.300` |
+| `global.json` SDK | `10.0.300`, `rollForward=latestFeature` |
+| .NET host runtime | `10.0.8`, `osx-arm64` |
+| MSBuild | `18.6.3+caa81fa49` |
+| workload set | `10.0.301.1` |
+| wasm-tools manifest | `10.0.109/10.0.100` |
+| `Microsoft.NETCore.App.Runtime.Mono.browser-wasm` pack | `10.0.9` |
+| Emscripten `3.1.56` SDK / Node / Cache packs | `10.0.9` |
+| Avalonia / Avalonia.Browser | `12.0.4` |
+| ReactiveUI.Avalonia | `12.0.3` |
+| ReactiveUI | `23.2.28` |
+| SkiaSharp native WebAssembly assets | `3.119.4` |
+| HarfBuzzSharp native WebAssembly assets | `8.3.1.3` |
+| 浏览器 | Codex in-app Browser；当前插件环境未能读取具体 UA 版本 |
+
+本次产物规模：
+
+| 发布方式 | 发布目录 | `dotnet.native*.wasm` |
+| --- | ---: | ---: |
+| 普通发布，关闭 Webcil | 约 105 MB | 约 9.3 MB |
+| AOT 发布，关闭 Webcil | 约 240 MB | 约 111 MB |
+
+当前工程决策：
+
+- Gallery Browser 发布保持 `RunAOTCompilation=false`。
+- `AtomUIGallery.Browser` 保留 `WasmEnableWebcil=false`，用于保证普通 Browser 发布可运行。
+- 当前不要把 Browser AOT 作为可交付发布目标；只有在 .NET SDK、wasm-tools、runtime pack、Avalonia Browser 或浏览器版本升级后，重新验证 `RunAOTCompilation=true` 能稳定启动，才能打开。
+- 如果重新验证 Browser AOT，先跑最小纯 .NET Browser AOT，再跑最小 Avalonia Browser AOT，最后跑 Gallery Browser AOT。runtime 初始化阶段失败时，不要先改 AtomUI/Gallery 业务代码。
+
 ## Review 时看什么
 
 每个 AOT 改动 review 时，至少回答这些问题：

@@ -71,8 +71,11 @@ public abstract class DefaultIconPackageGenerator : AbstractIconPackageGenerator
 
     protected override async Task GenerateIconProviderFactoryAsync()
     {
+        const int iconFactoryChunkSize = 64;
+
         await using var output = new FileStream(Path.Combine(TargetPath, $"{PackageName}IconProvider.Factory.g.cs"),
             FileMode.Create, FileAccess.Write);
+        var chunkCount = (IconFiles.Count + iconFactoryChunkSize - 1) / iconFactoryChunkSize;
         var sourceText = new StringBuilder();
         sourceText.AppendLine("// This code is auto generated. Do not modify.");
         sourceText.AppendLine("using System;");
@@ -83,45 +86,108 @@ public abstract class DefaultIconPackageGenerator : AbstractIconPackageGenerator
         sourceText.AppendLine("");
         sourceText.AppendLine($"public partial class {PackageName}IconProvider");
         sourceText.AppendLine("{");
+        sourceText.AppendLine($"    private const int IconFactoryIconCount = {IconFiles.Count};");
+        sourceText.AppendLine($"    private const int IconFactoryChunkSize = {iconFactoryChunkSize};");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"    private static int GetIconIndex({PackageName}IconKind kind)");
+        sourceText.AppendLine("    {");
+        sourceText.AppendLine("        var index = (int)kind - 1;");
+        sourceText.AppendLine("        if ((uint)index >= IconFactoryIconCount)");
+        sourceText.AppendLine("        {");
+        sourceText.AppendLine("            throw new InvalidOperationException($\"Icon kind {kind} does not exist\");");
+        sourceText.AppendLine("        }");
+        sourceText.AppendLine("");
+        sourceText.AppendLine("        return index;");
+        sourceText.AppendLine("    }");
+        sourceText.AppendLine("");
         sourceText.AppendLine("    [UnconditionalSuppressMessage(\"Trimming\", \"IL2063\",");
         sourceText.AppendLine("        Justification = \"Every switch arm returns typeof(...) for a generated icon class with a public parameterless constructor.\")]");
         sourceText.AppendLine("    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]");
         sourceText.AppendLine($"    private static Type GetIconType({PackageName}IconKind kind)");
         sourceText.AppendLine("    {");
-        sourceText.AppendLine("        switch (kind)");
+        sourceText.AppendLine("        var index = GetIconIndex(kind);");
+        sourceText.AppendLine("        return GetIconTypeChunk(index / IconFactoryChunkSize, kind);");
+        sourceText.AppendLine("    }");
+        sourceText.AppendLine("");
+        sourceText.AppendLine("    [UnconditionalSuppressMessage(\"Trimming\", \"IL2063\",");
+        sourceText.AppendLine("        Justification = \"Every switch arm returns typeof(...) for a generated icon class with a public parameterless constructor.\")]");
+        sourceText.AppendLine("    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]");
+        sourceText.AppendLine($"    private static Type GetIconTypeChunk(int chunkIndex, {PackageName}IconKind kind)");
+        sourceText.AppendLine("    {");
+        sourceText.AppendLine("        return chunkIndex switch");
         sourceText.AppendLine("        {");
-        foreach (var info in IconFiles)
+        for (var i = 0; i < chunkCount; i++)
         {
-            var iconClassName = $"{info.Name}{info.ThemeType}";
-            sourceText.AppendLine($"            case {PackageName}IconKind.{iconClassName}: return typeof({iconClassName});");
+            sourceText.AppendLine($"            {i} => GetIconTypeChunk{i}(kind),");
         }
-        sourceText.AppendLine("            default: throw new InvalidOperationException($\"Icon kind {kind} does not exist\");");
-        sourceText.AppendLine("        }");
+        sourceText.AppendLine("            _ => throw new ArgumentOutOfRangeException(nameof(chunkIndex))");
+        sourceText.AppendLine("        };");
         sourceText.AppendLine("    }");
         sourceText.AppendLine("");
         sourceText.AppendLine($"    private static Icon CreateIcon({PackageName}IconKind kind)");
         sourceText.AppendLine("    {");
-        sourceText.AppendLine("        return kind switch");
+        sourceText.AppendLine("        var index = GetIconIndex(kind);");
+        sourceText.AppendLine("        return CreateIconChunk(index / IconFactoryChunkSize, kind);");
+        sourceText.AppendLine("    }");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"    private static Icon CreateIconChunk(int chunkIndex, {PackageName}IconKind kind)");
+        sourceText.AppendLine("    {");
+        sourceText.AppendLine("        return chunkIndex switch");
         sourceText.AppendLine("        {");
-        foreach (var info in IconFiles)
+        for (var i = 0; i < chunkCount; i++)
         {
-            var iconClassName = $"{info.Name}{info.ThemeType}";
-            sourceText.AppendLine($"            {PackageName}IconKind.{iconClassName} => new {iconClassName}(),");
+            sourceText.AppendLine($"            {i} => CreateIconChunk{i}(kind),");
         }
-        sourceText.AppendLine("            _ => throw new InvalidOperationException($\"Icon kind {kind} does not exist\")");
+        sourceText.AppendLine("            _ => throw new ArgumentOutOfRangeException(nameof(chunkIndex))");
         sourceText.AppendLine("        };");
         sourceText.AppendLine("    }");
+        for (var i = 0; i < chunkCount; i++)
+        {
+            sourceText.AppendLine("");
+            sourceText.AppendLine("    [UnconditionalSuppressMessage(\"Trimming\", \"IL2063\",");
+            sourceText.AppendLine("        Justification = \"Every switch arm returns typeof(...) for a generated icon class with a public parameterless constructor.\")]");
+            sourceText.AppendLine("    [return: DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)]");
+            sourceText.AppendLine($"    private static Type GetIconTypeChunk{i}({PackageName}IconKind kind)");
+            sourceText.AppendLine("    {");
+            sourceText.AppendLine("        switch (kind)");
+            sourceText.AppendLine("        {");
+            foreach (var info in IconFiles.Skip(i * iconFactoryChunkSize).Take(iconFactoryChunkSize))
+            {
+                var iconClassName = $"{info.Name}{info.ThemeType}";
+                sourceText.AppendLine($"            case {PackageName}IconKind.{iconClassName}: return typeof({iconClassName});");
+            }
+            sourceText.AppendLine("            default: throw new InvalidOperationException($\"Icon kind {kind} does not exist\");");
+            sourceText.AppendLine("        }");
+            sourceText.AppendLine("    }");
+            sourceText.AppendLine("");
+            sourceText.AppendLine($"    private static Icon CreateIconChunk{i}({PackageName}IconKind kind)");
+            sourceText.AppendLine("    {");
+            sourceText.AppendLine("        return kind switch");
+            sourceText.AppendLine("        {");
+            foreach (var info in IconFiles.Skip(i * iconFactoryChunkSize).Take(iconFactoryChunkSize))
+            {
+                var iconClassName = $"{info.Name}{info.ThemeType}";
+                sourceText.AppendLine($"            {PackageName}IconKind.{iconClassName} => new {iconClassName}(),");
+            }
+            sourceText.AppendLine("            _ => throw new InvalidOperationException($\"Icon kind {kind} does not exist\")");
+            sourceText.AppendLine("        };");
+            sourceText.AppendLine("    }");
+        }
         sourceText.AppendLine("}");
         await output.WriteAsync(Encoding.UTF8.GetBytes(sourceText.ToString()));
     }
 
     protected override async Task GenerateIconCatalogAsync()
     {
+        const int iconCatalogChunkSize = 64;
+
         await using var output = new FileStream(Path.Combine(TargetPath, $"{PackageName}IconCatalog.g.cs"),
             FileMode.Create, FileAccess.Write);
+        var chunkCount = (IconFiles.Count + iconCatalogChunkSize - 1) / iconCatalogChunkSize;
         var sourceText = new StringBuilder();
         sourceText.AppendLine("// This code is auto generated. Do not modify.");
         sourceText.AppendLine("using System;");
+        sourceText.AppendLine("using System.Collections;");
         sourceText.AppendLine("using System.Collections.Generic;");
         sourceText.AppendLine("using AtomUI.Controls;");
         sourceText.AppendLine("");
@@ -136,19 +202,77 @@ public abstract class DefaultIconPackageGenerator : AbstractIconPackageGenerator
         sourceText.AppendLine("");
         sourceText.AppendLine($"public static class {PackageName}IconCatalog");
         sourceText.AppendLine("{");
-        sourceText.AppendLine($"    private static readonly {PackageName}IconInfo[] Icons = [");
-        foreach (var info in IconFiles)
+        sourceText.AppendLine($"    private const int IconCount = {IconFiles.Count};");
+        sourceText.AppendLine($"    private const int IconChunkSize = {iconCatalogChunkSize};");
+        sourceText.AppendLine("");
+        for (var i = 0; i < chunkCount; i++)
         {
-            var iconClassName = $"{info.Name}{info.ThemeType}";
-            sourceText.AppendLine($"        new(\"{iconClassName}\", IconThemeType.{info.ThemeType}, {PackageName}IconKind.{iconClassName}, typeof({iconClassName}), static () => new {iconClassName}()),");
+            sourceText.AppendLine($"    private static readonly Lazy<{PackageName}IconInfo[]> IconChunk{i} = new(CreateIconChunk{i});");
         }
-
-        sourceText.AppendLine("    ];");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"    private static readonly IReadOnlyList<{PackageName}IconInfo> Icons = new IconCatalogList();");
         sourceText.AppendLine("");
         sourceText.AppendLine($"    public static IReadOnlyList<{PackageName}IconInfo> GetIcons()");
         sourceText.AppendLine("    {");
         sourceText.AppendLine("        return Icons;");
         sourceText.AppendLine("    }");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"    private sealed class IconCatalogList : IReadOnlyList<{PackageName}IconInfo>");
+        sourceText.AppendLine("    {");
+        sourceText.AppendLine("        public int Count => IconCount;");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"        public {PackageName}IconInfo this[int index]");
+        sourceText.AppendLine("        {");
+        sourceText.AppendLine("            get");
+        sourceText.AppendLine("            {");
+        sourceText.AppendLine("                if ((uint)index >= IconCount)");
+        sourceText.AppendLine("                {");
+        sourceText.AppendLine("                    throw new ArgumentOutOfRangeException(nameof(index));");
+        sourceText.AppendLine("                }");
+        sourceText.AppendLine("");
+        sourceText.AppendLine("                return GetIconChunk(index / IconChunkSize)[index % IconChunkSize];");
+        sourceText.AppendLine("            }");
+        sourceText.AppendLine("        }");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"        public IEnumerator<{PackageName}IconInfo> GetEnumerator()");
+        sourceText.AppendLine("        {");
+        sourceText.AppendLine("            for (var i = 0; i < Count; i++)");
+        sourceText.AppendLine("            {");
+        sourceText.AppendLine("                yield return this[i];");
+        sourceText.AppendLine("            }");
+        sourceText.AppendLine("        }");
+        sourceText.AppendLine("");
+        sourceText.AppendLine("        IEnumerator IEnumerable.GetEnumerator()");
+        sourceText.AppendLine("        {");
+        sourceText.AppendLine("            return GetEnumerator();");
+        sourceText.AppendLine("        }");
+        sourceText.AppendLine("    }");
+        sourceText.AppendLine("");
+        sourceText.AppendLine($"    private static {PackageName}IconInfo[] GetIconChunk(int chunkIndex)");
+        sourceText.AppendLine("    {");
+        sourceText.AppendLine("        return chunkIndex switch");
+        sourceText.AppendLine("        {");
+        for (var i = 0; i < chunkCount; i++)
+        {
+            sourceText.AppendLine($"            {i} => IconChunk{i}.Value,");
+        }
+        sourceText.AppendLine("            _ => throw new ArgumentOutOfRangeException(nameof(chunkIndex))");
+        sourceText.AppendLine("        };");
+        sourceText.AppendLine("    }");
+        for (var i = 0; i < chunkCount; i++)
+        {
+            sourceText.AppendLine("");
+            sourceText.AppendLine($"    private static {PackageName}IconInfo[] CreateIconChunk{i}()");
+            sourceText.AppendLine("    {");
+            sourceText.AppendLine("        return [");
+            foreach (var info in IconFiles.Skip(i * iconCatalogChunkSize).Take(iconCatalogChunkSize))
+            {
+                var iconClassName = $"{info.Name}{info.ThemeType}";
+                sourceText.AppendLine($"            new(\"{iconClassName}\", IconThemeType.{info.ThemeType}, {PackageName}IconKind.{iconClassName}, typeof({iconClassName}), static () => new {iconClassName}()),");
+            }
+            sourceText.AppendLine("        ];");
+            sourceText.AppendLine("    }");
+        }
         sourceText.AppendLine("}");
         await output.WriteAsync(Encoding.UTF8.GetBytes(sourceText.ToString()));
     }
