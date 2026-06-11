@@ -79,7 +79,8 @@
             <Setter Property="Template">
                 <ControlTemplate TargetType="atom:Window">
                     <Panel Container.Name="{x:Static atom:IMediaBreakAwareControl.GlobalQueryContainerName}"
-                           Container.Sizing="Width">
+                           Container.Sizing="Width"
+                           Background="{TemplateBinding Background}">
                         <atom:MediaBreakPointIndicator
                             Name="{x:Static atom:MediaBreakPointIndicator.MediaQueryIndicatorName}" />
                         <Border Name="PART_TransparencyFallback" IsHitTestVisible="False" />
@@ -263,6 +264,7 @@
         </Style>
 
         <Style Selector="^[OsType=Windows]">
+            <Setter Property="TransparencyLevelHint" Value="None" />
             <Setter Property="ExtendClientAreaToDecorationsHint" Value="False" />
         </Style>
 

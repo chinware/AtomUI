@@ -7,4 +7,8 @@
     <ControlTheme.BasedOn>
         <atom:WindowTitleBarTheme TargetType="atom:ImagePreviewerTitleBar" />
     </ControlTheme.BasedOn>
+
+    <Style Selector="^[OsType=macOS] /template/ ContentPresenter#PART_Logo">
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
 </ControlTheme>
