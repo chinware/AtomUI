@@ -10,9 +10,11 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-        <!--        <IsTrimmable>true</IsTrimmable>-->
-        <!--        <PublishTrimmed>true</PublishTrimmed>-->
-        <!--        <PublishAot>true</PublishAot>-->
+        <IsAotCompatible>true</IsAotCompatible>
+        <IsTrimmable>true</IsTrimmable>
+        <PublishTrimmed>true</PublishTrimmed>
+        <PublishAot>true</PublishAot>
+        <SelfContained>true</SelfContained>
         <UseAppHost>true</UseAppHost>
     </PropertyGroup>
 
