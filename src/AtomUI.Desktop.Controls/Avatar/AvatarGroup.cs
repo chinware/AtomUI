@@ -310,6 +310,7 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
         var foldCountAvatar = GetFoldCountAvatar();
         if (_foldCountFlyout != null && _foldCountStackPanel != null)
         {
+            ClearFoldInfo();
             if (MaxDisplayCount.HasValue && Children.Count > MaxDisplayCount.Value)
             {
                 foldCountAvatar.Text = $"+{Children.Count - MaxDisplayCount.Value}";
@@ -320,13 +321,17 @@ public class AvatarGroup : TemplatedControl, IMotionAwareControl
                     _foldCountStackPanel.Children.Add(Children[i]);
                 }
             }
-            else
-            {
-                LogicalChildren.Remove(_foldCountFlyout);
-                VisualChildren.Remove(_foldCountFlyout);
-                _foldCountStackPanel.Children.Clear();
-            }
         }
+    }
+
+    private void ClearFoldInfo()
+    {
+        if (_foldCountFlyout != null)
+        {
+            LogicalChildren.Remove(_foldCountFlyout);
+            VisualChildren.Remove(_foldCountFlyout);
+        }
+        _foldCountStackPanel?.Children.Clear();
     }
     
     private protected virtual void InvalidateMeasureOnChildrenChanged()

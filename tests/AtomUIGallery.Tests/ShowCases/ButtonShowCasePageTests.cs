@@ -110,6 +110,7 @@ public class ButtonShowCasePageTests
         apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
         apiSource.ShouldContain("PaginationVisibility=\"None\"");
         apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
+        apiSource.ShouldContain("Margin=\"28,10,28,0\"");
         apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
         apiSource.ShouldContain("VerticalAlignment=\"Top\"");
         apiSource.ShouldNotContain("Margin=\"0,20,0,0\"");
@@ -119,6 +120,7 @@ public class ButtonShowCasePageTests
         apiSource.ShouldContain("ButtonShowCaseLangResource ApiColumnDefault");
         apiSource.ShouldContain("Header=\"{gallery:ButtonShowCaseLangResource ApiColumnDescription}\"");
         apiSource.ShouldContain("MinWidth=\"520\"");
+        apiSource.ShouldContain("Width=\"*\"");
         apiCodeSource.ShouldContain("viewModel.EnsureApiRows()");
         apiCodeSource.ShouldContain("ApiDataGrid.ItemsSource = viewModel.ApiRows");
 
@@ -128,6 +130,7 @@ public class ButtonShowCasePageTests
         tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
         tokenSource.ShouldContain("PaginationVisibility=\"None\"");
         tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
+        tokenSource.ShouldContain("Margin=\"28,10,28,0\"");
         tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
         tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
         tokenSource.ShouldNotContain("Margin=\"0,20,0,0\"");
@@ -137,6 +140,7 @@ public class ButtonShowCasePageTests
         tokenSource.ShouldContain("ButtonShowCaseLangResource TokenColumnStatus");
         tokenSource.ShouldContain("Header=\"{gallery:ButtonShowCaseLangResource TokenColumnDescription}\"");
         tokenSource.ShouldContain("MinWidth=\"520\"");
+        tokenSource.ShouldContain("Width=\"*\"");
         tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
         tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
     }

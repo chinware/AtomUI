@@ -175,6 +175,7 @@ DataGrid 规则：
 - 创建后缓存，避免重复构建。
 - `DataContext` 变化时同步到已创建内容。
 - 第一列用于 key/name，应固定。
+- 描述列/说明列应使用 `Width="*"` 承接剩余宽度；只设置合理 `MinWidth`，不要为了当前窗口宽度写死大像素值。
 - 表格自身处理横向滚动，避免把横向滚动泄漏到页面底部。
 - 行线、hover、transition 等视觉表现应来自 DataGrid 控件能力或 token，不在 ShowCase 页里复制一套表格。
 
@@ -243,6 +244,7 @@ ButtonShowCase 当前采用：
 - 滚动条应属于最外层页面滚动，不应被内容 padding 推离窗口右边。
 - Tab 与下面内容的垂直间距要统一，不应该只在第一个 Tab 生效。
 - DataGrid 页和 Examples 页的内容容器应共享同一套外边距策略。
+- API 和 Design Token 的 lazy DataGrid 必须设置 `Margin="28,10,28,0"`，与 Examples 的 `ContentMargin="28,10,28,0"` 保持一致。
 
 ## ViewModel 与数据加载规则
 
