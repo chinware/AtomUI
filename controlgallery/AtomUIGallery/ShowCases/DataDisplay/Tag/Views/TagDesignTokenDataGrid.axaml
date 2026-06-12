@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Tag.TagDesignTokenDataGrid"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Tag">
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <atom:DataGrid x:Name="DesignTokenDataGrid"
+                       AutoGenerateColumns="False"
+                       LeftFrozenColumnCount="1"
+                       GridLinesVisibility="Horizontal"
+                       IsFrameBorderVisible="True"
+                       IsHideOnSinglePage="True"
+                       IsReadOnly="True"
+                       PaginationVisibility="None"
+                       HorizontalScrollBarVisibility="Auto"
+                       Margin="28,10,28,0"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Top"
+                       x:DataType="viewModels:TagDesignTokenRow">
+            <atom:DataGrid.Columns>
+                <atom:DataGridTemplateColumn Header="{gallery:TagShowCaseLangResource TokenColumnToken}"
+                                             Width="220">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:TagDesignTokenRow">
+                            <atom:TextBlock Text="{Binding Token}"
+                                            FontFamily="Consolas"
+                                            VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:TagShowCaseLangResource TokenColumnDescription}"
+                                             MinWidth="520"
+                                             Width="*">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:TagDesignTokenRow">
+                            <atom:TextBlock Text="{Binding Description}"
+                                            TextWrapping="Wrap"
+                                            VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:TagShowCaseLangResource TokenColumnScope}"
+                                             Width="160">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:TagDesignTokenRow">
+                            <atom:Tag Text="{Binding Scope}"
+                                      TagColor="{Binding ScopeTagColor}"
+                                      VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:TagShowCaseLangResource TokenColumnStatus}"
+                                             Width="160">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:TagDesignTokenRow">
+                            <atom:Tag Text="{Binding Status}"
+                                      TagColor="{Binding StatusTagColor}"
+                                      VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+            </atom:DataGrid.Columns>
+        </atom:DataGrid>
+    </Grid>
+</UserControl>
