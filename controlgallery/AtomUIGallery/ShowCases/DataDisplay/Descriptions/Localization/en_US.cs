@@ -6,6 +6,17 @@ namespace AtomUIGallery.ShowCases.Descriptions;
 [LanguageProvider(LanguageCode.en_US, DescriptionsShowCase.LanguageId)]
 internal partial class en_US : LanguageProvider
 {
+    public const string PageSubtitle = "Display grouped read-only details in a responsive layout.";
+    public const string PageDescription = "Descriptions presents related label-value pairs with optional borders, headers, extra actions, responsive columns, and vertical layouts.";
+    public const string ComponentCategory = "Data Display";
+    public const string ComponentStatusStable = "Stable";
+    public const string InfoNamespaceLabel = "Namespace";
+    public const string InfoPackageLabel = "Package";
+    public const string InfoBaseClassLabel = "Base class";
+    public const string ScenarioExamples = "Examples";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "Design Token";
+
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Simplest Usage.";
     public const string BorderTitle = "border";
@@ -62,6 +73,39 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentSmall = "Small";
     public const string P2ContentEdit = "Edit";
     public const string P2TextCpuN6CoreN3N5Ghz = "CPU: 6 Core 3.5 GHz";
+
+    public const string ApiColumnProperty = "Property";
+    public const string ApiColumnDescription = "Description";
+    public const string ApiColumnType = "Type";
+    public const string ApiColumnDefault = "Default";
+    public const string ApiPropertyIsBordered = "Controls whether the descriptions list is rendered with borders.";
+    public const string ApiPropertyIsShowColon = "Controls whether a colon is shown after each label.";
+    public const string ApiPropertyColumnInfo = "Sets the responsive column count for each breakpoint.";
+    public const string ApiPropertyHeader = "Sets the optional header content shown above the description items.";
+    public const string ApiPropertyHeaderTemplate = "Sets the template used to render the header content.";
+    public const string ApiPropertyExtra = "Sets extra content displayed in the header area.";
+    public const string ApiPropertyExtraTemplate = "Sets the template used to render extra header content.";
+    public const string ApiPropertyLayout = "Controls whether labels and values use horizontal or vertical layout.";
+    public const string ApiPropertySizeType = "Controls the spacing size applied to description items.";
+    public const string ApiPropertyItemsSource = "Sets an item source for data-driven description rows.";
+    public const string ApiPropertyItems = "Gets or sets the inline description item collection.";
+
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "Description";
+    public const string TokenColumnScope = "Scope";
+    public const string TokenColumnStatus = "Status";
+    public const string TokenNameLabelBg = "Background color used by labels in bordered mode.";
+    public const string TokenNameLabelColor = "Text color used by labels.";
+    public const string TokenNameTitleColor = "Text color used by the header title.";
+    public const string TokenNameHeaderMargin = "Margin below the header area.";
+    public const string TokenNameItemPaddingLG = "Item padding for large size.";
+    public const string TokenNameItemPadding = "Item padding for middle size.";
+    public const string TokenNameItemPaddingSM = "Item padding for small size.";
+    public const string TokenNameColonMargin = "Margin around the label colon.";
+    public const string TokenNameContentColor = "Text color used by item content.";
+    public const string TokenNameExtraColor = "Text color used by the extra area.";
+    public const string TokenScopeComponent = "Component";
+    public const string TokenStatusStable = "Stable";
 
     protected override Type GetResourceKindType() => typeof(DescriptionsShowCaseLangResourceKind);
 }
