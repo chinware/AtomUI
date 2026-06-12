@@ -1495,16 +1495,47 @@ namespace AtomUIGallery.Localization
 {
     public enum EmptyShowCaseLangResourceKind
     {
+        ApiColumnDefault,
+        ApiColumnDescription,
+        ApiColumnProperty,
+        ApiColumnType,
+        ApiPropertyDescription,
+        ApiPropertyImagePath,
+        ApiPropertyImageSource,
+        ApiPropertyIsDescriptionVisible,
+        ApiPropertyPresetImage,
+        ApiPropertySizeType,
         BasicDescription,
         BasicTitle,
+        ComponentCategory,
+        ComponentStatusStable,
         CustomizeDescription,
         CustomizeTitle,
+        InfoBaseClassLabel,
+        InfoNamespaceLabel,
+        InfoPackageLabel,
         NoDescriptionDescription,
         NoDescriptionTitle,
         P2ContentCreateNow,
         P2DescriptionCustomizeDescription,
+        PageDescription,
+        PageSubtitle,
+        ScenarioApi,
+        ScenarioDesignToken,
+        ScenarioExamples,
         SizeDescription,
-        SizeTitle
+        SizeTitle,
+        TokenColumnDescription,
+        TokenColumnScope,
+        TokenColumnStatus,
+        TokenColumnToken,
+        TokenNameDescriptionMargin,
+        TokenNameDescriptionMarginSM,
+        TokenNameEmptyImgHeight,
+        TokenNameEmptyImgHeightMD,
+        TokenNameEmptyImgHeightSM,
+        TokenScopeComponent,
+        TokenStatusStable
     }
 
     public class EmptyShowCaseLangResourceExtension : LanguageResourceExtension<EmptyShowCaseLangResourceKind>
