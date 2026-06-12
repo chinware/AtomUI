@@ -16,6 +16,41 @@ internal partial class zh_CN : LanguageProvider
     public const string HeaderIconDescription = "GroupBox 标题支持指定图标。";
     public const string P2HeaderTitleTitleInfo = "标题信息";
     public const string P2TextContentOfGroupBox = "分组框内容";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "设计 Token";
+    public const string PageSubtitle = "用带标题的边框容器组织相关内容。";
+    public const string PageDescription =
+        "GroupBox 通过带边框的容器包裹相关内容，并支持配置标题、位置、图标和字体样式。";
+    public const string ComponentCategory = "数据展示";
+    public const string ComponentStatusStable = "稳定";
+    public const string InfoNamespaceLabel = "命名空间";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基类";
+    public const string ApiColumnProperty = "属性";
+    public const string ApiColumnDescription = "说明";
+    public const string ApiColumnType = "类型";
+    public const string ApiColumnDefault = "默认值";
+    public const string ApiPropertyHeaderTitle = "显示在分组标题区域的文本。";
+    public const string ApiPropertyHeaderTitleColor = "标题文本使用的画刷。";
+    public const string ApiPropertyHeaderIcon = "显示在标题文本前的可选图标。";
+    public const string ApiPropertyHeaderTitlePosition = "控制标题左对齐、居中或右对齐。";
+    public const string ApiPropertyHeaderFontSize = "标题文本字号。";
+    public const string ApiPropertyHeaderFontStyle = "标题文本字体样式。";
+    public const string ApiPropertyHeaderFontWeight = "标题文本字重。";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "说明";
+    public const string TokenColumnScope = "作用域";
+    public const string TokenColumnStatus = "状态";
+    public const string TokenNameContentPadding = "内容区域内间距。";
+    public const string TokenNameHeaderContainerMargin = "标题容器外间距。";
+    public const string TokenNameHeaderContentPadding = "标题内容区域内间距。";
+    public const string TokenNameHeaderIconMargin = "标题图标外间距。";
+    public const string TokenNameOrientationMarginPercent = "标题定位时两侧偏移比例。";
+    public const string TokenNameTextPaddingInline = "以 em 为单位的文本横向内间距。";
+    public const string TokenNameVerticalMarginInline = "纵向分割线的横向外间距。";
+    public const string TokenScopeComponent = "组件";
+    public const string TokenStatusStable = "稳定";
 
     protected override Type GetResourceKindType() => typeof(GroupBoxShowCaseLangResourceKind);
 }
