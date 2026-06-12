@@ -32,7 +32,7 @@ public class DescriptionsShowCasePageTests
         source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
-        source.ShouldContain("ContentMargin=\"28,10,28,0\"");
+        source.ShouldContain("ContentMargin=\"28,10,28,28\"");
         source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
         source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
         CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
@@ -77,7 +77,7 @@ public class DescriptionsShowCasePageTests
         apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
         apiSource.ShouldContain("PaginationVisibility=\"None\"");
         apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,0\"");
+        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
         apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
         apiSource.ShouldContain("VerticalAlignment=\"Top\"");
         apiSource.ShouldContain("DescriptionsShowCaseLangResource ApiColumnProperty");
@@ -95,7 +95,7 @@ public class DescriptionsShowCasePageTests
         tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
         tokenSource.ShouldContain("PaginationVisibility=\"None\"");
         tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,0\"");
+        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
         tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
         tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
         tokenSource.ShouldContain("DescriptionsShowCaseLangResource TokenColumnToken");

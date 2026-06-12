@@ -14,7 +14,7 @@
                        IsReadOnly="True"
                        PaginationVisibility="None"
                        HorizontalScrollBarVisibility="Auto"
-                       Margin="28,10,28,0"
+                       Margin="28,10,28,28"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Top"
                        x:DataType="viewModels:GroupBoxDesignTokenRow">

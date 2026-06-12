@@ -127,7 +127,7 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
-                                       ContentMargin="28,28,28,0">
+                                       ContentMargin="28,28,28,28">
         <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource BasicTitle}"
                               Description="{gallery:BadgeShowCaseLangResource BasicDescription}">
             <StackPanel Orientation="Horizontal" Spacing="20">

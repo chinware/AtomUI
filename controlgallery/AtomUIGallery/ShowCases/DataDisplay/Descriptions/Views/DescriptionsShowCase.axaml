@@ -126,7 +126,7 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
-                                       ContentMargin="28,10,28,0">
+                                       ContentMargin="28,10,28,28">
                     <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource BasicTitle}" Description="{gallery:DescriptionsShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True">
                         <atom:Descriptions Header="{gallery:DescriptionsShowCaseLangResource P2HeaderUserInfo}">
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelUserName}" Content="{gallery:DescriptionsShowCaseLangResource P2ContentZhouMaomao}" />

@@ -33,6 +33,45 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentCreateAServicesSite = "Create a services site";
     public const string P2ContentQinwareWebsiteOnline = "Qinware website online";
     public const string P2ContentNetworkProblemsBeingSolved = "Network problems being solved";
+    public const string ScenarioExamples = "Examples";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "Design Token";
+    public const string PageSubtitle = "Display a sequence of events in chronological order.";
+    public const string PageDescription =
+        "Timeline is used to organize milestones, progress updates and historical events with optional labels, custom indicators and pending nodes.";
+    public const string ComponentCategory = "Data Display";
+    public const string ComponentStatusStable = "Stable";
+    public const string InfoNamespaceLabel = "Namespace";
+    public const string InfoPackageLabel = "Package";
+    public const string InfoBaseClassLabel = "Base class";
+    public const string ApiColumnProperty = "Property";
+    public const string ApiColumnDescription = "Description";
+    public const string ApiColumnType = "Type";
+    public const string ApiColumnDefault = "Default";
+    public const string ApiPropertyMode = "Sets the timeline layout mode: left, right or alternate.";
+    public const string ApiPropertyPending = "Adds a pending node at the end of the timeline when content is provided.";
+    public const string ApiPropertyPendingIcon = "Custom icon displayed by the pending node.";
+    public const string ApiPropertyIsReverse = "Reverses the visual order of timeline items.";
+    public const string ApiPropertyLabel = "Optional label displayed beside a timeline item.";
+    public const string ApiPropertyIndicatorIcon = "Custom icon used as the item indicator.";
+    public const string ApiPropertyIndicatorColor = "Custom brush used by the item indicator.";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "Description";
+    public const string TokenColumnScope = "Scope";
+    public const string TokenColumnStatus = "Status";
+    public const string TokenNameIndicatorTailColor = "Color of the connector line between timeline nodes.";
+    public const string TokenNameIndicatorTailWidth = "Width of the connector line.";
+    public const string TokenNameItemPaddingBottom = "Bottom padding used by a timeline item.";
+    public const string TokenNameItemPaddingBottomLG = "Large bottom padding used by a timeline item.";
+    public const string TokenNameLastItemContentMinHeight = "Minimum content height for the last timeline item.";
+    public const string TokenNameIndicatorSize = "Outer size of the timeline indicator.";
+    public const string TokenNameIndicatorDotSize = "Inner dot size of the timeline indicator.";
+    public const string TokenNameIndicatorLeftModeMargin = "Indicator margin used in left mode.";
+    public const string TokenNameIndicatorRightModeMargin = "Indicator margin used in right mode.";
+    public const string TokenNameIndicatorMiddleModeMargin = "Indicator margin used in alternate mode.";
+    public const string TokenNameIndicatorDotBorderWidth = "Border width of the indicator dot.";
+    public const string TokenScopeComponent = "Component";
+    public const string TokenStatusStable = "Stable";
 
     protected override Type GetResourceKindType() => typeof(TimelineShowCaseLangResourceKind);
 }
