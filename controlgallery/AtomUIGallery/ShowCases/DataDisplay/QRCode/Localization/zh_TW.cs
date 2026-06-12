@@ -29,7 +29,42 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentSmaller = "Smaller";
     public const string P2ContentLarger = "Larger";
     public const string P2ContentHoverMe = "Hover me";
+    public const string ScenarioExamples = "範例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計 Token";
+    public const string PageSubtitle = "渲染可掃描的二維碼，並支持狀態遮罩和品牌圖標。";
+    public const string PageDescription =
+        "QRCode 將文字或 URL 編碼成二維碼圖片，並支持配置尺寸、顏色、圖標、糾錯等級和狀態內容。";
+    public const string ComponentCategory = "資料展示";
+    public const string ComponentStatusStable = "穩定";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "預設值";
+    public const string ApiPropertyValue = "編碼到二維碼中的文字或 URL。";
+    public const string ApiPropertyIsBordered = "顯示或隱藏二維碼邊框。";
+    public const string ApiPropertyColor = "用於渲染二維碼模組的畫刷。";
+    public const string ApiPropertySize = "生成二維碼圖片的像素尺寸。";
+    public const string ApiPropertyEccLevel = "生成二維碼時使用的糾錯等級。";
+    public const string ApiPropertyIconSize = "中間可選圖標的像素尺寸。";
+    public const string ApiPropertyIcon = "顯示在二維碼中心的可選圖片。";
+    public const string ApiPropertyIconBgColor = "中心圖標背後的背景畫刷。";
+    public const string ApiPropertyStatus = "Active、Expired、Loading 或 Scanned 狀態下的視覺遮罩。";
+    public const string ApiPropertyLoadingContent = "二維碼載入中時顯示的自定義內容。";
+    public const string ApiPropertyExpiredContent = "二維碼過期時顯示的自定義內容。";
+    public const string ApiPropertyScannedContent = "二維碼掃描後顯示的自定義內容。";
+    public const string ApiEventRefreshRequested = "點擊內置刷新操作時觸發。";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "作用域";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenNameQRCodeTextColor = "繪製二維碼模組時使用的預設顏色。";
+    public const string TokenNameQRCodeMaskBackgroundColor = "非 Active 狀態遮罩使用的背景色。";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
 
     protected override Type GetResourceKindType() => typeof(QRCodeShowCaseLangResourceKind);
 }
-
