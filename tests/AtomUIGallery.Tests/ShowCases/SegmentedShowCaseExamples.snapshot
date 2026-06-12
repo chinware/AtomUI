@@ -1,0 +1,115 @@
+<gallery:ShowCaseItem
+            Title="{gallery:SegmentedShowCaseLangResource BasicTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource BasicDescription}">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentWeekly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentMonthly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
+                </atom:Segmented>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SegmentedShowCaseLangResource BlockSegmentedTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource BlockSegmentedDescription}">
+            <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
+                <atom:Segmented IsExpanding="True" Margin="20">
+                    <atom:SegmentedItem>123</atom:SegmentedItem>
+                    <atom:SegmentedItem>456</atom:SegmentedItem>
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentLongtextLongtextLongtextLongtext}" />
+                </atom:Segmented>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SegmentedShowCaseLangResource DisabledTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource DisabledDescription}">
+            <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Spacing="10">
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem IsEnabled="False" Content="{gallery:SegmentedShowCaseLangResource P2ContentMap}" />
+                    <atom:SegmentedItem IsEnabled="False" Content="{gallery:SegmentedShowCaseLangResource P2ContentTransit}" />
+                    <atom:SegmentedItem IsEnabled="False" Content="{gallery:SegmentedShowCaseLangResource P2ContentSatellite}" />
+                </atom:Segmented>
+                <atom:Segmented>
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
+                    <atom:SegmentedItem IsEnabled="False" Content="{gallery:SegmentedShowCaseLangResource P2ContentWeekly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentMonthly}" />
+                    <atom:SegmentedItem IsEnabled="False" Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
+                </atom:Segmented>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SegmentedShowCaseLangResource ThreeSizesTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource ThreeSizesDescription}">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
+                <atom:Segmented SizeType="Large" Margin="20">
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentWeekly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentMonthly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
+                </atom:Segmented>
+
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentWeekly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentMonthly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
+                </atom:Segmented>
+
+                <atom:Segmented SizeType="Small" Margin="20">
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentWeekly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentMonthly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
+                </atom:Segmented>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SegmentedShowCaseLangResource IconOnlyTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource IconOnlyDescription}">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" />
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}" />
+                </atom:Segmented>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SegmentedShowCaseLangResource WithIconTitle}"
+            Description="{gallery:SegmentedShowCaseLangResource WithIconDescription}">
+            <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" Content="{gallery:SegmentedShowCaseLangResource P2ContentList}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentKanban}" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}" />
+                </atom:Segmented>
+
+                <atom:Segmented Margin="20">
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" Content="{gallery:SegmentedShowCaseLangResource P2ContentAva}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentAtomUI}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" IsEnabled="False"/>
+
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentAtomUI}"
+                                        Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" />
+
+                </atom:Segmented>
+
+                <atom:Segmented SizeType="Large" Margin="20">
+                    <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" Content="{gallery:SegmentedShowCaseLangResource P2ContentAva}" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentAtomUI}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" />
+
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentAtomUI}"
+                                        Icon="{antdicons:AntDesignIconProvider Kind=WindowsOutlined}" />
+
+                </atom:Segmented>
+
+            </StackPanel>
+        </gallery:ShowCaseItem>
