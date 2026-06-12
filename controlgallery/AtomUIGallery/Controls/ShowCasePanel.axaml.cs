@@ -13,79 +13,77 @@ public class ShowCasePanel : TemplatedControl
     private const int BrowserInitialShowCaseItemCount = 4;
     private static readonly TimeSpan s_browserProgressiveMountInterval = TimeSpan.FromMilliseconds(650);
 
-    private bool _initialized;
-    private Grid? _layoutPanel;
+    public static readonly StyledProperty<double> MinItemWidthProperty =
+        AvaloniaProperty.Register<ShowCasePanel, double>(nameof(MinItemWidth), 320);
+
+    public static readonly StyledProperty<int> MaxColumnsProperty =
+        AvaloniaProperty.Register<ShowCasePanel, int>(nameof(MaxColumns), 2);
+
+    public static readonly StyledProperty<double> ColumnGapProperty =
+        AvaloniaProperty.Register<ShowCasePanel, double>(nameof(ColumnGap), 16);
+
+    public static readonly StyledProperty<double> RowGapProperty =
+        AvaloniaProperty.Register<ShowCasePanel, double>(nameof(RowGap), 16);
+
+    public static readonly StyledProperty<Thickness> ContentMarginProperty =
+        AvaloniaProperty.Register<ShowCasePanel, Thickness>(nameof(ContentMargin));
+
+    public static readonly StyledProperty<bool> IsScrollEnabledProperty =
+        AvaloniaProperty.Register<ShowCasePanel, bool>(nameof(IsScrollEnabled), true);
+
+    private ShowCaseMasonryPanel? _layoutPanel;
     private DispatcherTimer? _progressiveMountTimer;
     private int _nextProgressiveMountIndex;
 
     [Content]
     public AvaloniaControlList Children { get; } = new();
 
+    public double MinItemWidth
+    {
+        get => GetValue(MinItemWidthProperty);
+        set => SetValue(MinItemWidthProperty, value);
+    }
+
+    public int MaxColumns
+    {
+        get => GetValue(MaxColumnsProperty);
+        set => SetValue(MaxColumnsProperty, value);
+    }
+
+    public double ColumnGap
+    {
+        get => GetValue(ColumnGapProperty);
+        set => SetValue(ColumnGapProperty, value);
+    }
+
+    public double RowGap
+    {
+        get => GetValue(RowGapProperty);
+        set => SetValue(RowGapProperty, value);
+    }
+
+    public Thickness ContentMargin
+    {
+        get => GetValue(ContentMarginProperty);
+        set => SetValue(ContentMarginProperty, value);
+    }
+
+    public bool IsScrollEnabled
+    {
+        get => GetValue(IsScrollEnabledProperty);
+        set => SetValue(IsScrollEnabledProperty, value);
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        var effectCount = 0;
-        foreach (var child in Children)
-        {
-            if (child is ShowCaseItem showCaseItem)
-            {
-                effectCount++;
-                if (showCaseItem.IsOccupyEntireRow)
-                {
-                    effectCount++;
-                }
-            }
-        }
-        if (effectCount % 2 != 0)
-        {
-            var extra = new ShowCaseItem()
-            {
-                IsFake = true
-            };
-            Children.Add(extra);
-        }
+        StopProgressiveMountTimer();
+        _layoutPanel?.Children.Clear();
+
         base.OnApplyTemplate(e);
-        _layoutPanel = e.NameScope.Get<Grid>(MainPanelPart);
-        if (_layoutPanel != null && !_initialized)
+        _layoutPanel = e.NameScope.Get<ShowCaseMasonryPanel>(MainPanelPart);
+        if (_layoutPanel != null)
         {
-            var row = 0;
-            var column = 0;
-
-            for (var i = 0; i < Children.Count; ++i)
-            {
-                if (Children[i] is ShowCaseItem item)
-                {
-                    if (item.IsOccupyEntireRow)
-                    {
-                        if (column != 0)
-                        {
-                            row++;
-                        }
-                        Grid.SetRow(item, row++);
-
-                        Grid.SetColumn(item, 0);
-                        Grid.SetColumnSpan(item, 2);
-                    }
-                    else
-                    {
-                        Grid.SetRow(item, row);
-                        Grid.SetColumn(item, column++);
-                        if (column == 2)
-                        {
-                            row++;
-                            column = 0;
-                        }
-                    }
-                }
-            }
-
-            var rowDefinitions = new RowDefinitions();
-            for (var i = 0; i < row; ++i)
-            {
-                rowDefinitions.Add(new RowDefinition(GridLength.Auto));
-            }
-            _layoutPanel.RowDefinitions = rowDefinitions;
-            _initialized                = true;
-
+            _nextProgressiveMountIndex = 0;
             if (OperatingSystem.IsBrowser())
             {
                 _nextProgressiveMountIndex = MountShowCaseItems(0, BrowserInitialShowCaseItemCount);
@@ -107,7 +105,7 @@ public class ShowCasePanel : TemplatedControl
     protected override Size MeasureOverride(Size availableSize)
     {
         if (OperatingSystem.IsBrowser() &&
-            _initialized &&
+            _layoutPanel is not null &&
             _progressiveMountTimer is null &&
             _nextProgressiveMountIndex < Children.Count)
         {
@@ -131,7 +129,6 @@ public class ShowCasePanel : TemplatedControl
             if (Children[index] is ShowCaseItem item)
             {
                 _layoutPanel.Children.Add(item);
-                LogicalChildren.Add(item);
                 mountedCount++;
             }
 

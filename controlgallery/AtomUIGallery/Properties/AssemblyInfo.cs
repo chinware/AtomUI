@@ -3,10 +3,12 @@ using Avalonia.Metadata;
 
 [assembly: XmlnsPrefix("https://atomui.net/oss-controls/gallery", "gallery")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.Controls")]
+[assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.Controls.DesignTokens")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.Models")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases")]
-[assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.AboutUs")]
+[assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Community")]
+[assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Overview")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Alert")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.AutoComplete")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Avatar")]

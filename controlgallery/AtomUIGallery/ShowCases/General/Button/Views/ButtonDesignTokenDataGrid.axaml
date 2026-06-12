@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Button.ButtonDesignTokenDataGrid"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Button">
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <atom:DataGrid x:Name="DesignTokenDataGrid"
+                       AutoGenerateColumns="False"
+                       LeftFrozenColumnCount="1"
+                       GridLinesVisibility="Horizontal"
+                       IsFrameBorderVisible="True"
+                       IsHideOnSinglePage="True"
+                       IsReadOnly="True"
+                       PaginationVisibility="None"
+                       HorizontalScrollBarVisibility="Auto"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Top"
+                       x:DataType="viewModels:ButtonDesignTokenRow">
+            <atom:DataGrid.Columns>
+                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource TokenColumnToken}"
+                                             Width="220">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:ButtonDesignTokenRow">
+                            <atom:TextBlock Text="{Binding Token}"
+                                            FontFamily="Consolas"
+                                            VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource TokenColumnDescription}"
+                                             MinWidth="520"
+                                             Width="*">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:ButtonDesignTokenRow">
+                            <atom:TextBlock Text="{Binding Description}"
+                                            TextWrapping="Wrap"
+                                            VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource TokenColumnScope}"
+                                             Width="160">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:ButtonDesignTokenRow">
+                            <atom:Tag Text="{Binding Scope}"
+                                      TagColor="{Binding ScopeTagColor}"
+                                      VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource TokenColumnStatus}"
+                                             Width="160">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:ButtonDesignTokenRow">
+                            <atom:Tag Text="{Binding Status}"
+                                      TagColor="{Binding StatusTagColor}"
+                                      VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+            </atom:DataGrid.Columns>
+        </atom:DataGrid>
+    </Grid>
+</UserControl>

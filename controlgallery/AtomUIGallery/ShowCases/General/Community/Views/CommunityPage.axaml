@@ -1,0 +1,172 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Community.CommunityPage"
+             xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:views="clr-namespace:AtomUIGallery.ShowCases.Community">
+    <UserControl.Styles>
+        <Style Selector="Image#QinwareLogo">
+            <Setter Property="Source" Value="/Assets/qinware-logo.png" />
+        </Style>
+        <Style Selector="Image#TLAIC">
+            <Setter Property="Source" Value="/Assets/TLAIC.png" />
+        </Style>
+        <Style Selector="views|CommunityPage[IsDarkThemeMode=True]">
+            <Style Selector="^ Image#QinwareLogo">
+                <Setter Property="Source" Value="/Assets/qinware-logo-white.png" />
+            </Style>
+            <Style Selector="^ Image#TLAIC">
+                <Setter Property="Source" Value="/Assets/TLAIC-white.png" />
+            </Style>
+        </Style>
+    </UserControl.Styles>
+
+    <atom:ScrollViewer HorizontalScrollBarVisibility="Auto"
+                       VerticalScrollBarVisibility="Auto"
+                       AllowAutoHide="False">
+        <StackPanel MinWidth="800"
+                    Width="820"
+                    Margin="32"
+                    Spacing="18"
+                    HorizontalAlignment="Center">
+            <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                    BoxShadow="{atom:SharedTokenResource BoxShadowsTertiary}"
+                    CornerRadius="8"
+                    Padding="24">
+                <Grid ColumnDefinitions="Auto,*"
+                      ColumnSpacing="28">
+                    <StackPanel Width="250"
+                                Spacing="16"
+                                VerticalAlignment="Center">
+                        <Image Name="QinwareLogo"
+                               Width="220"
+                               HorizontalAlignment="Left" />
+                        <Image Name="TLAIC"
+                               Width="160"
+                               HorizontalAlignment="Left" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1"
+                                Spacing="14"
+                                VerticalAlignment="Center">
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource AboutAtomUI}"
+                                        FontSize="20"
+                                        FontWeight="Bold" />
+
+                        <StackPanel Spacing="8">
+                            <Border Background="{atom:SharedTokenResource ColorPrimaryBg}"
+                                    CornerRadius="6"
+                                    Padding="12,10">
+                                <Grid ColumnDefinitions="Auto,*"
+                                      ColumnSpacing="10">
+                                    <atom:TextBlock Text="{gallery:CommunityPageLangResource VisionLabel}"
+                                                    Foreground="{atom:SharedTokenResource ColorPrimary}"
+                                                    FontWeight="Bold" />
+                                    <atom:TextBlock Grid.Column="1"
+                                                    Text="{gallery:CommunityPageLangResource VisionText}"
+                                                    TextWrapping="Wrap"
+                                                    Foreground="{atom:SharedTokenResource ColorText}" />
+                                </Grid>
+                            </Border>
+
+                            <Border Background="{atom:SharedTokenResource ColorFillQuaternary}"
+                                    CornerRadius="6"
+                                    Padding="12,10">
+                                <Grid ColumnDefinitions="Auto,*"
+                                      ColumnSpacing="10">
+                                    <atom:TextBlock Text="{gallery:CommunityPageLangResource MissionLabel}"
+                                                    Foreground="{atom:SharedTokenResource ColorText}"
+                                                    FontWeight="Bold" />
+                                    <atom:TextBlock Grid.Column="1"
+                                                    Text="{gallery:CommunityPageLangResource MissionText}"
+                                                    TextWrapping="Wrap"
+                                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Spacing="6"
+                                    Orientation="Horizontal">
+                            <atom:HyperLinkButton Icon="{antdicons:AntDesignIconProvider Kind=GlobalOutlined}"
+                                                  IconWidth="18"
+                                                  IconHeight="18"
+                                                  NavigateUri="https://www.atomui.net"
+                                                  Content="{gallery:CommunityPageLangResource HomePage}" />
+                            <atom:HyperLinkButton Icon="{antdicons:AntDesignIconProvider Kind=GiteeOutlined}"
+                                                  IconWidth="18"
+                                                  IconHeight="18"
+                                                  NavigateUri="https://gitee.com/chinware/atomui"
+                                                  Content="Gitee" />
+                            <atom:HyperLinkButton Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}"
+                                                  IconWidth="18"
+                                                  IconHeight="18"
+                                                  NavigateUri="https://github.com/chinware/atomui"
+                                                  Content="Github" />
+                        </StackPanel>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <Grid ColumnDefinitions="*,*,*"
+                  ColumnSpacing="14"
+                  Margin="0,6,0,20">
+                <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                        BoxShadow="{atom:SharedTokenResource BoxShadowsTertiary}"
+                        CornerRadius="8"
+                        Padding="18">
+                    <StackPanel Spacing="10">
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatOfficial}"
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        HorizontalAlignment="Center" />
+                        <Image Source="/Assets/qinware-wechatpress.png"
+                               HorizontalAlignment="Center"
+                               Width="188" />
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatOfficialDescription}"
+                                        HorizontalAlignment="Center"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1"
+                        Background="{atom:SharedTokenResource ColorBgContainer}"
+                        BoxShadow="{atom:SharedTokenResource BoxShadowsTertiary}"
+                        CornerRadius="8"
+                        Padding="18">
+                    <StackPanel Spacing="10">
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatGroup}"
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        HorizontalAlignment="Center" />
+                        <Image Source="/Assets/atomui-wechat.png"
+                               HorizontalAlignment="Center"
+                               Width="188" />
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatGroupDescription}"
+                                        HorizontalAlignment="Center"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2"
+                        Background="{atom:SharedTokenResource ColorBgContainer}"
+                        BoxShadow="{atom:SharedTokenResource BoxShadowsTertiary}"
+                        CornerRadius="8"
+                        Padding="18">
+                    <StackPanel Spacing="10">
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource QQGroup}"
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        HorizontalAlignment="Center" />
+                        <Image Source="/Assets/atomui-qq.png"
+                               HorizontalAlignment="Center"
+                               Width="188" />
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource QQGroupDescription}"
+                                        HorizontalAlignment="Center"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </atom:ScrollViewer>
+</UserControl>

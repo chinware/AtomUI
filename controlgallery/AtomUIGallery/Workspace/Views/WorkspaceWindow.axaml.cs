@@ -3,7 +3,6 @@ using AtomUI.Desktop.Controls;
 using AtomUIGallery.Workspace.ViewModels;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using ReactiveUI;
 using MenuItem = AtomUI.Desktop.Controls.MenuItem;
 
 namespace AtomUIGallery.Workspace.Views;
@@ -28,6 +27,7 @@ internal enum WindowMenuItemKind
 public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
 {
     public const string LanguageId = nameof(WorkspaceWindow);
+    private const string TitleBarMenuResourceKey = "WorkspaceTitleBarMenu";
 
     public WorkspaceWindow()
     {
@@ -38,6 +38,24 @@ public partial class WorkspaceWindow : ReactiveWindow<WorkspaceWindowViewModel>
         {
             RoutedViewHost.Router       = ViewModel.Router;
             ShowCaseNavigation.ViewModel = ViewModel.CaseNavigation;
+        }
+    }
+
+    protected override WindowTitleBar? NotifyCreateTitleBar(WindowTitleBar? oldTitleBar)
+    {
+        return new GalleryWindowTitleBar
+        {
+            Name = "PART_TitleBar"
+        };
+    }
+
+    protected override void NotifyConfigureTitleBar(WindowTitleBar titleBar)
+    {
+        base.NotifyConfigureTitleBar(titleBar);
+        if (titleBar is GalleryWindowTitleBar galleryTitleBar &&
+            Resources.TryGetValue(TitleBarMenuResourceKey, out var titleBarMenu))
+        {
+            galleryTitleBar.Menu = titleBarMenu as Control;
         }
     }
 

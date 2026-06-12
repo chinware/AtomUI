@@ -34,6 +34,12 @@ public abstract class AbstractHyperLinkButton : AvaloniaButton,
     public static readonly StyledProperty<PathIcon?> IconProperty = 
         AvaloniaProperty.Register<AbstractHyperLinkButton, PathIcon?>(nameof(Icon));
 
+    public static readonly StyledProperty<double> IconWidthProperty =
+        AvaloniaProperty.Register<AbstractHyperLinkButton, double>(nameof(IconWidth));
+
+    public static readonly StyledProperty<double> IconHeightProperty =
+        AvaloniaProperty.Register<AbstractHyperLinkButton, double>(nameof(IconHeight));
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractHyperLinkButton>();
 
@@ -76,6 +82,18 @@ public abstract class AbstractHyperLinkButton : AvaloniaButton,
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
     }
+
+    public double IconWidth
+    {
+        get => GetValue(IconWidthProperty);
+        set => SetValue(IconWidthProperty, value);
+    }
+
+    public double IconHeight
+    {
+        get => GetValue(IconHeightProperty);
+        set => SetValue(IconHeightProperty, value);
+    }
     
     public bool IsMotionEnabled
     {
@@ -100,7 +118,9 @@ public abstract class AbstractHyperLinkButton : AvaloniaButton,
     static AbstractHyperLinkButton()
     {
         AffectsMeasure<AbstractHyperLinkButton>(SizeTypeProperty,
-            IconProperty);
+            IconProperty,
+            IconWidthProperty,
+            IconHeightProperty);
         AffectsRender<AbstractHyperLinkButton>(IsDangerProperty,
             IsGhostProperty);
     }

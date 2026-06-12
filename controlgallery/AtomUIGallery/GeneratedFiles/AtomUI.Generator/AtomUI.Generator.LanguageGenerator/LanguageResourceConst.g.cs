@@ -3,32 +3,6 @@ using AtomUI.Theme.Language;
 
 namespace AtomUIGallery.Localization
 {
-    public enum AboutUsPageLangResourceKind
-    {
-        HomePage,
-        MissionLabel,
-        MissionText,
-        QQGroup,
-        VisionLabel,
-        VisionText,
-        WeChatGroup,
-        WeChatOfficial
-    }
-
-    public class AboutUsPageLangResourceExtension : LanguageResourceExtension<AboutUsPageLangResourceKind>
-    {
-        public AboutUsPageLangResourceExtension()
-        {
-        }
-
-        public AboutUsPageLangResourceExtension(AboutUsPageLangResourceKind kind) : base(kind)
-        {
-        }
-    }
-}
-
-namespace AtomUIGallery.Localization
-{
     public enum AlertShowCaseLangResourceKind
     {
         BasicDescription,
@@ -278,18 +252,43 @@ namespace AtomUIGallery.Localization
 {
     public enum ButtonShowCaseLangResourceKind
     {
+        ApiColumnDefault,
+        ApiColumnDescription,
+        ApiColumnProperty,
+        ApiColumnType,
+        ApiDescription,
+        ApiPropertyButtonType,
+        ApiPropertyDanger,
+        ApiPropertyIcon,
+        ApiPropertyLoading,
+        ApiPropertyShape,
+        ApiPropertySizeType,
+        ApiTitle,
         BlockButtonDescription,
         BlockButtonTitle,
         ButtonShapeDescription,
         ButtonShapeTitle,
+        ComponentCategory,
+        ComponentStatusStable,
         DangerButtonsDescription,
         DangerButtonsTitle,
         DisabledDescription,
         DisabledTitle,
+        ExampleGroupBasicDescription,
+        ExampleGroupBasicTitle,
+        ExampleGroupShapeDescription,
+        ExampleGroupShapeTitle,
+        ExampleGroupSizeDescription,
+        ExampleGroupSizeTitle,
+        ExampleGroupStateDescription,
+        ExampleGroupStateTitle,
         GhostButtonDescription,
         GhostButtonTitle,
         IconDescription,
         IconTitle,
+        InfoBaseClassLabel,
+        InfoNamespaceLabel,
+        InfoPackageLabel,
         LoadingDescription,
         LoadingTitle,
         P2ContentAa,
@@ -325,8 +324,24 @@ namespace AtomUIGallery.Localization
         P2ContentTextButton,
         P2ContentTextDisabled,
         P2TextExpandDirection,
+        PageDescription,
+        PageSubtitle,
+        ScenarioApi,
+        ScenarioDesignToken,
+        ScenarioExamples,
         SizeDescription,
         SizeTitle,
+        TokenColumnDescription,
+        TokenColumnScope,
+        TokenColumnStatus,
+        TokenColumnToken,
+        TokenNameButtonToken,
+        TokenNameColorPrimary,
+        TokenNameControlHeight,
+        TokenScopeComponent,
+        TokenScopeShared,
+        TokenStatusMapped,
+        TokenStatusStable,
         TypeDescription,
         TypeTitle
     }
@@ -600,6 +615,8 @@ namespace AtomUIGallery.Localization
 {
     public enum CaseNavigationLangResourceKind
     {
+        Community,
+        Components,
         DataDisplay,
         DataDisplay_Avatar,
         DataDisplay_Badge,
@@ -677,7 +694,8 @@ namespace AtomUIGallery.Localization
         Navigation_Pagination,
         Navigation_Steps,
         Navigation_TabControl,
-        Navigation_TabStrip
+        Navigation_TabStrip,
+        Overview
     }
 
     public class CaseNavigationLangResourceExtension : LanguageResourceExtension<CaseNavigationLangResourceKind>
@@ -872,6 +890,36 @@ namespace AtomUIGallery.Localization
         }
 
         public ComboBoxShowCaseLangResourceExtension(ComboBoxShowCaseLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.Localization
+{
+    public enum CommunityPageLangResourceKind
+    {
+        AboutAtomUI,
+        HomePage,
+        MissionLabel,
+        MissionText,
+        QQGroup,
+        QQGroupDescription,
+        VisionLabel,
+        VisionText,
+        WeChatGroup,
+        WeChatGroupDescription,
+        WeChatOfficial,
+        WeChatOfficialDescription
+    }
+
+    public class CommunityPageLangResourceExtension : LanguageResourceExtension<CommunityPageLangResourceKind>
+    {
+        public CommunityPageLangResourceExtension()
+        {
+        }
+
+        public CommunityPageLangResourceExtension(CommunityPageLangResourceKind kind) : base(kind)
         {
         }
     }
@@ -2538,6 +2586,37 @@ namespace AtomUIGallery.Localization
         }
 
         public NumberUpDownShowCaseLangResourceExtension(NumberUpDownShowCaseLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.Localization
+{
+    public enum OverviewPageLangResourceKind
+    {
+        ApiDocsDescription,
+        ApiDocsTitle,
+        Copy,
+        DotNetCliTab,
+        InstallDescription,
+        InstallTitle,
+        LearningLinksDescription,
+        LearningLinksTitle,
+        OpenLearningLink,
+        PackageManagerTab,
+        PackageReferenceTab,
+        UserManualDescription,
+        UserManualTitle
+    }
+
+    public class OverviewPageLangResourceExtension : LanguageResourceExtension<OverviewPageLangResourceKind>
+    {
+        public OverviewPageLangResourceExtension()
+        {
+        }
+
+        public OverviewPageLangResourceExtension(OverviewPageLangResourceKind kind) : base(kind)
         {
         }
     }
