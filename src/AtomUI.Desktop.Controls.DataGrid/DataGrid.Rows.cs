@@ -54,7 +54,32 @@ public partial class DataGrid
             }
 
             _rowsPresenterAvailableSize = value;
+            EnsureStarColumnWidthsForAvailableCellsWidth();
         }
+    }
+
+    private void EnsureStarColumnWidthsForAvailableCellsWidth()
+    {
+        if (!RowsPresenterAvailableSize.HasValue ||
+            double.IsPositiveInfinity(RowsPresenterAvailableSize.Value.Width))
+        {
+            return;
+        }
+
+        ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
+        if (!UsesStarSizing || AutoSizingColumns)
+        {
+            return;
+        }
+
+        var adjustment = CellsWidth - ColumnsInternal.VisibleEdgedColumnsWidth;
+        if (MathUtils.IsZero(adjustment))
+        {
+            return;
+        }
+
+        AdjustColumnWidths(0, adjustment, false);
+        ColumnsInternal.EnsureVisibleEdgedColumnsWidth();
     }
 
     internal double ActualRowHeaderWidth

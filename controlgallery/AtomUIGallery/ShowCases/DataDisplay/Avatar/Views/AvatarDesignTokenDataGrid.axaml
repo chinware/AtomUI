@@ -1,9 +1,9 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="AtomUIGallery.ShowCases.Button.ButtonDesignTokenDataGrid"
+             x:Class="AtomUIGallery.ShowCases.Avatar.AvatarDesignTokenDataGrid"
              xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
-             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Button">
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Avatar">
     <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
         <atom:DataGrid x:Name="DesignTokenDataGrid"
                        AutoGenerateColumns="False"
@@ -17,43 +17,43 @@
                        Margin="28,10,28,0"
                        HorizontalAlignment="Stretch"
                        VerticalAlignment="Top"
-                       x:DataType="viewModels:ButtonDesignTokenRow">
+                       x:DataType="viewModels:AvatarDesignTokenRow">
             <atom:DataGrid.Columns>
-                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource TokenColumnToken}"
+                <atom:DataGridTemplateColumn Header="{gallery:AvatarShowCaseLangResource TokenColumnToken}"
                                              Width="220">
                     <atom:DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate x:DataType="viewModels:ButtonDesignTokenRow">
+                        <DataTemplate x:DataType="viewModels:AvatarDesignTokenRow">
                             <atom:TextBlock Text="{Binding Token}"
                                             FontFamily="Consolas"
                                             VerticalAlignment="Center" />
                         </DataTemplate>
                     </atom:DataGridTemplateColumn.CellTemplate>
                 </atom:DataGridTemplateColumn>
-                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource TokenColumnDescription}"
+                <atom:DataGridTemplateColumn Header="{gallery:AvatarShowCaseLangResource TokenColumnDescription}"
                                              MinWidth="520"
                                              Width="*">
                     <atom:DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate x:DataType="viewModels:ButtonDesignTokenRow">
+                        <DataTemplate x:DataType="viewModels:AvatarDesignTokenRow">
                             <atom:TextBlock Text="{Binding Description}"
                                             TextWrapping="Wrap"
                                             VerticalAlignment="Center" />
                         </DataTemplate>
                     </atom:DataGridTemplateColumn.CellTemplate>
                 </atom:DataGridTemplateColumn>
-                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource TokenColumnScope}"
+                <atom:DataGridTemplateColumn Header="{gallery:AvatarShowCaseLangResource TokenColumnScope}"
                                              Width="160">
                     <atom:DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate x:DataType="viewModels:ButtonDesignTokenRow">
+                        <DataTemplate x:DataType="viewModels:AvatarDesignTokenRow">
                             <atom:Tag Text="{Binding Scope}"
                                       TagColor="{Binding ScopeTagColor}"
                                       VerticalAlignment="Center" />
                         </DataTemplate>
                     </atom:DataGridTemplateColumn.CellTemplate>
                 </atom:DataGridTemplateColumn>
-                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource TokenColumnStatus}"
+                <atom:DataGridTemplateColumn Header="{gallery:AvatarShowCaseLangResource TokenColumnStatus}"
                                              Width="160">
                     <atom:DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate x:DataType="viewModels:ButtonDesignTokenRow">
+                        <DataTemplate x:DataType="viewModels:AvatarDesignTokenRow">
                             <atom:Tag Text="{Binding Status}"
                                       TagColor="{Binding StatusTagColor}"
                                       VerticalAlignment="Center" />

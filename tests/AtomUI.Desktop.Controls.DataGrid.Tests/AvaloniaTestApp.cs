@@ -1,0 +1,45 @@
+using System.Threading;
+using AtomUI;
+using AtomUI.Desktop.Controls;
+using Avalonia;
+using Avalonia.Headless;
+
+[assembly: AvaloniaTestApplication(typeof(AtomUI.Desktop.Controls.Tests.DataGrid.TestAppBuilder))]
+
+namespace AtomUI.Desktop.Controls.Tests.DataGrid;
+
+internal static class AvaloniaTestApp
+{
+    private static int _initialized;
+
+    public static void EnsureInitialized()
+    {
+        if (Interlocked.Exchange(ref _initialized, 1) == 1)
+        {
+            return;
+        }
+
+        TestAppBuilder.BuildAvaloniaApp().SetupWithoutStarting();
+    }
+}
+
+public static class TestAppBuilder
+{
+    public static AppBuilder BuildAvaloniaApp()
+    {
+        return AppBuilder.Configure<TestApplication>()
+                         .UseHeadless(new AvaloniaHeadlessPlatformOptions());
+    }
+}
+
+internal sealed class TestApplication : Application
+{
+    public override void Initialize()
+    {
+        this.UseAtomUI(builder =>
+        {
+            builder.UseDesktopControls();
+            builder.UseDesktopDataGrid();
+        });
+    }
+}
