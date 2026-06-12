@@ -1,4 +1,3 @@
-using AtomUIGallery.ShowCases.AboutUs;
 using AtomUIGallery.ShowCases.Alert;
 using AtomUIGallery.ShowCases.AutoComplete;
 using AtomUIGallery.ShowCases.Avatar;
@@ -13,6 +12,7 @@ using AtomUIGallery.ShowCases.Cascader;
 using AtomUIGallery.ShowCases.CheckBox;
 using AtomUIGallery.ShowCases.Collapse;
 using AtomUIGallery.ShowCases.ColorPicker;
+using AtomUIGallery.ShowCases.Community;
 using AtomUIGallery.ShowCases.ComboBox;
 using AtomUIGallery.ShowCases.CustomizeTheme;
 using AtomUIGallery.ShowCases.DataGrid;
@@ -38,6 +38,7 @@ using AtomUIGallery.ShowCases.Message;
 using AtomUIGallery.ShowCases.Modal;
 using AtomUIGallery.ShowCases.Notification;
 using AtomUIGallery.ShowCases.NumberUpDown;
+using AtomUIGallery.ShowCases.Overview;
 using AtomUIGallery.ShowCases.Pagination;
 using AtomUIGallery.ShowCases.Palette;
 using AtomUIGallery.ShowCases.PopupConfirm;
@@ -78,7 +79,8 @@ public sealed class ShowCaseViewModule : IViewModule
 {
     public void RegisterViews(DefaultViewLocator locator)
     {
-        locator.Map<AboutUsViewModel, AboutUsPage>(() => new AboutUsPage());
+        locator.Map<OverviewViewModel, OverviewPage>(() => new OverviewPage());
+        locator.Map<CommunityViewModel, CommunityPage>(() => new CommunityPage());
         locator.Map<PaletteViewModel, PaletteShowCase>(() => new PaletteShowCase());
         locator.Map<IconViewModel, IconShowCase>(() => new IconShowCase());
         locator.Map<CustomizeThemeViewModel, CustomizeThemeShowCase>(() => new CustomizeThemeShowCase());

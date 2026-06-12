@@ -7,6 +7,10 @@ namespace AtomUIGallery.Workspace.Localization.CaseNavigationLang;
 [LanguageProvider(LanguageCode.en_US, CaseNavigation.LanguageId)]
 internal partial class en_US : LanguageProvider
 {
+    public const string Overview = "Overview";
+    public const string Community = "Community";
+    public const string Components = "Components";
+
     public const string General = "General";
     public const string General_AboutUs = "AboutUS";
     public const string General_Palette = "Palette";

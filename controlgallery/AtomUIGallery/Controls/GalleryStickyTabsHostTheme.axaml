@@ -1,0 +1,36 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:gallery="https://atomui.net/oss-controls/gallery">
+    <ControlTheme x:Key="{x:Type gallery:GalleryStickyTabsHost}"
+                  TargetType="{x:Type gallery:GalleryStickyTabsHost}">
+        <Setter Property="StickyContentPadding"
+                Value="{gallery:GalleryStickyTabsHostTokenResource StickyContentPadding}" />
+        <Setter Property="StickyBackground"
+                Value="{gallery:GalleryStickyTabsHostTokenResource StickyBackground}" />
+        <Setter Property="StickyBorderBrush"
+                Value="{gallery:GalleryStickyTabsHostTokenResource StickyBorderBrush}" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="{x:Type gallery:GalleryStickyTabsHost}">
+                <atom:ScrollViewer Name="PART_ScrollViewer"
+                                   VerticalScrollBarVisibility="Auto"
+                                   AllowAutoHide="False"
+                                   BringIntoViewOnFocusChange="False"
+                                   IsLiteMode="False">
+                    <gallery:GalleryStickyTabsPanel>
+                        <ContentPresenter Content="{TemplateBinding Header}" />
+                        <Border Background="{TemplateBinding StickyBackground}"
+                                BorderBrush="{TemplateBinding StickyBorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Padding="{TemplateBinding StickyContentPadding}"
+                                ZIndex="1">
+                            <ContentPresenter Content="{TemplateBinding StickyContent}" />
+                        </Border>
+                        <ContentPresenter Content="{TemplateBinding Content}" />
+                    </gallery:GalleryStickyTabsPanel>
+                </atom:ScrollViewer>
+            </ControlTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

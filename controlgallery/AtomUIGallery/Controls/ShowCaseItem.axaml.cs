@@ -3,6 +3,12 @@ using Avalonia.Controls;
 
 namespace AtomUIGallery.Controls;
 
+public enum ShowCaseItemSpan
+{
+    Auto,
+    Full
+}
+
 public class ShowCaseItem : ContentControl
 {
     public static readonly StyledProperty<string> TitleProperty =
@@ -13,6 +19,9 @@ public class ShowCaseItem : ContentControl
 
     public static readonly StyledProperty<bool> IsOccupyEntireRowProperty =
         AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsOccupyEntireRow));
+
+    public static readonly StyledProperty<ShowCaseItemSpan> SpanProperty =
+        AvaloniaProperty.Register<ShowCaseItem, ShowCaseItemSpan>(nameof(Span));
 
     internal static readonly StyledProperty<bool> IsFakeProperty =
         AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsFake), false);
@@ -33,6 +42,12 @@ public class ShowCaseItem : ContentControl
     {
         get => GetValue(IsOccupyEntireRowProperty);
         set => SetValue(IsOccupyEntireRowProperty, value);
+    }
+
+    public ShowCaseItemSpan Span
+    {
+        get => GetValue(SpanProperty);
+        set => SetValue(SpanProperty, value);
     }
 
     public bool IsFake

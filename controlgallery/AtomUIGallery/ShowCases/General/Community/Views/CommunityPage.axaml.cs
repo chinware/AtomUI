@@ -3,14 +3,14 @@ using AtomUI.Data;
 using AtomUI.Theme;
 using Avalonia;
 
-namespace AtomUIGallery.ShowCases.AboutUs;
+namespace AtomUIGallery.ShowCases.Community;
 
-public partial class AboutUsPage : GalleryReactiveUserControl<AboutUsViewModel>
+public partial class CommunityPage : GalleryReactiveUserControl<CommunityViewModel>
 {
-    public const string LanguageId = nameof(AboutUsPage);
+    public const string LanguageId = nameof(CommunityPage);
 
     public static readonly StyledProperty<bool> IsDarkThemeModeProperty =
-        IThemeManager.IsDarkThemeModeProperty.AddOwner<AboutUsPage>();
+        IThemeManager.IsDarkThemeModeProperty.AddOwner<CommunityPage>();
 
     public bool IsDarkThemeMode
     {
@@ -18,7 +18,7 @@ public partial class AboutUsPage : GalleryReactiveUserControl<AboutUsViewModel>
         set => SetValue(IsDarkThemeModeProperty, value);
     }
 
-    public AboutUsPage()
+    public CommunityPage()
     {
         this.WhenActivated(disposables =>
         {

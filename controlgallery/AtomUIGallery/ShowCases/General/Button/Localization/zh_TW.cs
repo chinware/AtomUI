@@ -6,6 +6,47 @@ namespace AtomUIGallery.ShowCases.Button;
 [LanguageProvider(LanguageCode.zh_TW, ButtonShowCase.LanguageId)]
 internal partial class zh_TW : LanguageProvider
 {
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "Design Token";
+    public const string ComponentCategory = "通用";
+    public const string ComponentStatusStable = "穩定";
+    public const string PageSubtitle = "觸發操作，並通過清晰的視覺層級表達操作意圖。";
+    public const string PageDescription = "Button 是 AtomUI 中最基礎的動作控件。通過類型、形狀、尺寸、圖標和加載狀態，可以構建可預期的操作流程，同時保持 Ant Design 的交互模型。";
+    public const string InfoNamespaceLabel = "命名空間：";
+    public const string InfoPackageLabel = "包：";
+    public const string InfoBaseClassLabel = "基類：";
+    public const string ExampleGroupBasicTitle = "按鈕類型";
+    public const string ExampleGroupBasicDescription = "通過按鈕類型表達當前區域內操作的優先級。";
+    public const string ExampleGroupShapeTitle = "形狀與圖標";
+    public const string ExampleGroupShapeDescription = "圓角、圓形和圖標按鈕可以讓緊湊操作更容易識別。";
+    public const string ExampleGroupSizeTitle = "尺寸";
+    public const string ExampleGroupSizeDescription = "在大號、默認和小號之間切換，以匹配不同信息密度。";
+    public const string ExampleGroupStateTitle = "狀態";
+    public const string ExampleGroupStateDescription = "加載、禁用、危險和幽靈狀態用於表達可用性和風險。";
+    public const string ApiTitle = "API";
+    public const string ApiDescription = "這裡列出 Gallery 示例中最常用的 Button 屬性。完整繼承成員可以繼續參考 AtomUI 按鈕控件 API。";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyButtonType = "設置按鈕的視覺類型，例如主要、默認、虛線、文本或鏈接。";
+    public const string ApiPropertySizeType = "控制按鈕高度和內間距密度。";
+    public const string ApiPropertyShape = "設置按鈕形狀，可在默認、圓角和圓形之間切換。";
+    public const string ApiPropertyIcon = "在內容前顯示圖標，也可以作為純圖標按鈕使用。";
+    public const string ApiPropertyLoading = "顯示加載指示，表達當前操作正在執行。";
+    public const string ApiPropertyDanger = "為刪除或高風險動作應用危險樣式。";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "作用域";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenNameColorPrimary = "主要按鈕和聚焦交互狀態使用的主色。";
+    public const string TokenNameControlHeight = "大號、默認和小號按鈕共用的控件高度刻度。";
+    public const string TokenNameButtonToken = "從共享 Token 派生 Button 視覺值的組件 Token 映射。";
+    public const string TokenScopeShared = "共享";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
+    public const string TokenStatusMapped = "映射";
     public const string TypeTitle = "按鈕類型";
     public const string TypeDescription = "Ant Design 中包含主按鈕、默認按鈕、虛線按鈕、文本按鈕和鏈接按鈕。";
     public const string ButtonShapeTitle = "按鈕形狀";
@@ -60,4 +101,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(ButtonShowCaseLangResourceKind);
 }
-

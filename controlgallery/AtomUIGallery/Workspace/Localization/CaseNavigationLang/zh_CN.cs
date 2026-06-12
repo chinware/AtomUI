@@ -7,6 +7,10 @@ namespace AtomUIGallery.Workspace.Localization.CaseNavigationLang;
 [LanguageProvider(LanguageCode.zh_CN, CaseNavigation.LanguageId)]
 internal partial class zh_CN : LanguageProvider
 {
+    public const string Overview = "概览";
+    public const string Community = "社区";
+    public const string Components = "组件";
+
     public const string General = "通用";
     public const string General_AboutUs = "关于我们";
     public const string General_Palette = "调色板";

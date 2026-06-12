@@ -4,108 +4,6 @@ using Avalonia.Controls;
 
 namespace AtomUI.Theme.Language
 {
-    internal sealed class AboutUsPageEnUSLanguageProvider : LanguageProvider
-    {
-        public AboutUsPageEnUSLanguageProvider()
-            : base(LanguageCode.en_US, "AboutUsPage")
-        {
-        }
-
-        protected override System.Type GetResourceKindType()
-        {
-            return typeof(global::AtomUIGallery.Localization.AboutUsPageLangResourceKind);
-        }
-
-        public override void BuildResourceDictionary(IResourceDictionary dictionary)
-        {
-            var resourceKindType = GetResourceKindType();
-            try
-            {
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.HomePage] = global::AtomUIGallery.ShowCases.AboutUs.en_US.HomePage;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.MissionLabel] = global::AtomUIGallery.ShowCases.AboutUs.en_US.MissionLabel;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.AboutUs.en_US.MissionText;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.AboutUs.en_US.QQGroup;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.VisionLabel] = global::AtomUIGallery.ShowCases.AboutUs.en_US.VisionLabel;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.VisionText] = global::AtomUIGallery.ShowCases.AboutUs.en_US.VisionText;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.WeChatGroup] = global::AtomUIGallery.ShowCases.AboutUs.en_US.WeChatGroup;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.WeChatOfficial] = global::AtomUIGallery.ShowCases.AboutUs.en_US.WeChatOfficial;
-            }
-            catch (System.Exception)
-            {
-                LogBuildResourceDictionaryError(resourceKindType);
-                throw;
-            }
-        }
-    }
-
-    internal sealed class AboutUsPageZhCNLanguageProvider : LanguageProvider
-    {
-        public AboutUsPageZhCNLanguageProvider()
-            : base(LanguageCode.zh_CN, "AboutUsPage")
-        {
-        }
-
-        protected override System.Type GetResourceKindType()
-        {
-            return typeof(global::AtomUIGallery.Localization.AboutUsPageLangResourceKind);
-        }
-
-        public override void BuildResourceDictionary(IResourceDictionary dictionary)
-        {
-            var resourceKindType = GetResourceKindType();
-            try
-            {
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.HomePage] = global::AtomUIGallery.ShowCases.AboutUs.zh_CN.HomePage;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.MissionLabel] = global::AtomUIGallery.ShowCases.AboutUs.zh_CN.MissionLabel;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.AboutUs.zh_CN.MissionText;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.AboutUs.zh_CN.QQGroup;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.VisionLabel] = global::AtomUIGallery.ShowCases.AboutUs.zh_CN.VisionLabel;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.VisionText] = global::AtomUIGallery.ShowCases.AboutUs.zh_CN.VisionText;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.WeChatGroup] = global::AtomUIGallery.ShowCases.AboutUs.zh_CN.WeChatGroup;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.WeChatOfficial] = global::AtomUIGallery.ShowCases.AboutUs.zh_CN.WeChatOfficial;
-            }
-            catch (System.Exception)
-            {
-                LogBuildResourceDictionaryError(resourceKindType);
-                throw;
-            }
-        }
-    }
-
-    internal sealed class AboutUsPageZhTWLanguageProvider : LanguageProvider
-    {
-        public AboutUsPageZhTWLanguageProvider()
-            : base(LanguageCode.zh_TW, "AboutUsPage")
-        {
-        }
-
-        protected override System.Type GetResourceKindType()
-        {
-            return typeof(global::AtomUIGallery.Localization.AboutUsPageLangResourceKind);
-        }
-
-        public override void BuildResourceDictionary(IResourceDictionary dictionary)
-        {
-            var resourceKindType = GetResourceKindType();
-            try
-            {
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.HomePage] = global::AtomUIGallery.ShowCases.AboutUs.zh_TW.HomePage;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.MissionLabel] = global::AtomUIGallery.ShowCases.AboutUs.zh_TW.MissionLabel;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.AboutUs.zh_TW.MissionText;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.AboutUs.zh_TW.QQGroup;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.VisionLabel] = global::AtomUIGallery.ShowCases.AboutUs.zh_TW.VisionLabel;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.VisionText] = global::AtomUIGallery.ShowCases.AboutUs.zh_TW.VisionText;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.WeChatGroup] = global::AtomUIGallery.ShowCases.AboutUs.zh_TW.WeChatGroup;
-                dictionary[global::AtomUIGallery.Localization.AboutUsPageLangResourceKind.WeChatOfficial] = global::AtomUIGallery.ShowCases.AboutUs.zh_TW.WeChatOfficial;
-            }
-            catch (System.Exception)
-            {
-                LogBuildResourceDictionaryError(resourceKindType);
-                throw;
-            }
-        }
-    }
-
     internal sealed class AlertShowCaseEnUSLanguageProvider : LanguageProvider
     {
         public AlertShowCaseEnUSLanguageProvider()
@@ -984,18 +882,43 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Button.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Button.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Button.en_US.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Button.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiDescription] = global::AtomUIGallery.ShowCases.Button.en_US.ApiDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyButtonType] = global::AtomUIGallery.ShowCases.Button.en_US.ApiPropertyButtonType;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyDanger] = global::AtomUIGallery.ShowCases.Button.en_US.ApiPropertyDanger;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyIcon] = global::AtomUIGallery.ShowCases.Button.en_US.ApiPropertyIcon;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyLoading] = global::AtomUIGallery.ShowCases.Button.en_US.ApiPropertyLoading;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyShape] = global::AtomUIGallery.ShowCases.Button.en_US.ApiPropertyShape;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.Button.en_US.ApiPropertySizeType;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiTitle] = global::AtomUIGallery.ShowCases.Button.en_US.ApiTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.BlockButtonDescription] = global::AtomUIGallery.ShowCases.Button.en_US.BlockButtonDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.BlockButtonTitle] = global::AtomUIGallery.ShowCases.Button.en_US.BlockButtonTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ButtonShapeDescription] = global::AtomUIGallery.ShowCases.Button.en_US.ButtonShapeDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ButtonShapeTitle] = global::AtomUIGallery.ShowCases.Button.en_US.ButtonShapeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Button.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Button.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DangerButtonsDescription] = global::AtomUIGallery.ShowCases.Button.en_US.DangerButtonsDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DangerButtonsTitle] = global::AtomUIGallery.ShowCases.Button.en_US.DangerButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.Button.en_US.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.Button.en_US.DisabledTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupBasicDescription] = global::AtomUIGallery.ShowCases.Button.en_US.ExampleGroupBasicDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupBasicTitle] = global::AtomUIGallery.ShowCases.Button.en_US.ExampleGroupBasicTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupShapeDescription] = global::AtomUIGallery.ShowCases.Button.en_US.ExampleGroupShapeDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupShapeTitle] = global::AtomUIGallery.ShowCases.Button.en_US.ExampleGroupShapeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupSizeDescription] = global::AtomUIGallery.ShowCases.Button.en_US.ExampleGroupSizeDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupSizeTitle] = global::AtomUIGallery.ShowCases.Button.en_US.ExampleGroupSizeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupStateDescription] = global::AtomUIGallery.ShowCases.Button.en_US.ExampleGroupStateDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupStateTitle] = global::AtomUIGallery.ShowCases.Button.en_US.ExampleGroupStateTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.GhostButtonDescription] = global::AtomUIGallery.ShowCases.Button.en_US.GhostButtonDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.GhostButtonTitle] = global::AtomUIGallery.ShowCases.Button.en_US.GhostButtonTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconDescription] = global::AtomUIGallery.ShowCases.Button.en_US.IconDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Button.en_US.IconTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Button.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Button.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Button.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Button.en_US.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Button.en_US.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentAa] = global::AtomUIGallery.ShowCases.Button.en_US.P2ContentAa;
@@ -1031,8 +954,24 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentTextButton] = global::AtomUIGallery.ShowCases.Button.en_US.P2ContentTextButton;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentTextDisabled] = global::AtomUIGallery.ShowCases.Button.en_US.P2ContentTextDisabled;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2TextExpandDirection] = global::AtomUIGallery.ShowCases.Button.en_US.P2TextExpandDirection;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Button.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Button.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Button.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Button.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Button.en_US.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.SizeDescription] = global::AtomUIGallery.ShowCases.Button.en_US.SizeDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.SizeTitle] = global::AtomUIGallery.ShowCases.Button.en_US.SizeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Button.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Button.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Button.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Button.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenNameButtonToken] = global::AtomUIGallery.ShowCases.Button.en_US.TokenNameButtonToken;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenNameColorPrimary] = global::AtomUIGallery.ShowCases.Button.en_US.TokenNameColorPrimary;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenNameControlHeight] = global::AtomUIGallery.ShowCases.Button.en_US.TokenNameControlHeight;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Button.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenScopeShared] = global::AtomUIGallery.ShowCases.Button.en_US.TokenScopeShared;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenStatusMapped] = global::AtomUIGallery.ShowCases.Button.en_US.TokenStatusMapped;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Button.en_US.TokenStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TypeDescription] = global::AtomUIGallery.ShowCases.Button.en_US.TypeDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TypeTitle] = global::AtomUIGallery.ShowCases.Button.en_US.TypeTitle;
             }
@@ -1061,18 +1000,43 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyButtonType] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiPropertyButtonType;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyDanger] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiPropertyDanger;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyIcon] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiPropertyIcon;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyLoading] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiPropertyLoading;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyShape] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiPropertyShape;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiPropertySizeType;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.ApiTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.BlockButtonDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.BlockButtonDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.BlockButtonTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.BlockButtonTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ButtonShapeDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.ButtonShapeDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ButtonShapeTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.ButtonShapeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Button.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Button.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DangerButtonsDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.DangerButtonsDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DangerButtonsTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.DangerButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.DisabledTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupBasicDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.ExampleGroupBasicDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupBasicTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.ExampleGroupBasicTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupShapeDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.ExampleGroupShapeDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupShapeTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.ExampleGroupShapeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupSizeDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.ExampleGroupSizeDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupSizeTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.ExampleGroupSizeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupStateDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.ExampleGroupStateDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupStateTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.ExampleGroupStateTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.GhostButtonDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.GhostButtonDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.GhostButtonTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.GhostButtonTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.IconDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.IconTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Button.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Button.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Button.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentAa] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2ContentAa;
@@ -1108,8 +1072,24 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentTextButton] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2ContentTextButton;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentTextDisabled] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2ContentTextDisabled;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2TextExpandDirection] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2TextExpandDirection;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Button.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Button.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Button.zh_CN.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.SizeDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.SizeDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.SizeTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.SizeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Button.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Button.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Button.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenNameButtonToken] = global::AtomUIGallery.ShowCases.Button.zh_CN.TokenNameButtonToken;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenNameColorPrimary] = global::AtomUIGallery.ShowCases.Button.zh_CN.TokenNameColorPrimary;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenNameControlHeight] = global::AtomUIGallery.ShowCases.Button.zh_CN.TokenNameControlHeight;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Button.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenScopeShared] = global::AtomUIGallery.ShowCases.Button.zh_CN.TokenScopeShared;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenStatusMapped] = global::AtomUIGallery.ShowCases.Button.zh_CN.TokenStatusMapped;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Button.zh_CN.TokenStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TypeDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.TypeDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TypeTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.TypeTitle;
             }
@@ -1138,18 +1118,43 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyButtonType] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiPropertyButtonType;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyDanger] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiPropertyDanger;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyIcon] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiPropertyIcon;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyLoading] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiPropertyLoading;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertyShape] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiPropertyShape;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiPropertySizeType;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ApiTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.ApiTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.BlockButtonDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.BlockButtonDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.BlockButtonTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.BlockButtonTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ButtonShapeDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.ButtonShapeDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ButtonShapeTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.ButtonShapeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Button.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Button.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DangerButtonsDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.DangerButtonsDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DangerButtonsTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.DangerButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.DisabledTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupBasicDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.ExampleGroupBasicDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupBasicTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.ExampleGroupBasicTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupShapeDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.ExampleGroupShapeDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupShapeTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.ExampleGroupShapeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupSizeDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.ExampleGroupSizeDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupSizeTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.ExampleGroupSizeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupStateDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.ExampleGroupStateDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ExampleGroupStateTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.ExampleGroupStateTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.GhostButtonDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.GhostButtonDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.GhostButtonTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.GhostButtonTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.IconDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.IconTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Button.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Button.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Button.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentAa] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2ContentAa;
@@ -1185,8 +1190,24 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentTextButton] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2ContentTextButton;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentTextDisabled] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2ContentTextDisabled;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2TextExpandDirection] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2TextExpandDirection;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Button.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Button.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Button.zh_TW.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.SizeDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.SizeDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.SizeTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.SizeTitle;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Button.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Button.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Button.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenNameButtonToken] = global::AtomUIGallery.ShowCases.Button.zh_TW.TokenNameButtonToken;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenNameColorPrimary] = global::AtomUIGallery.ShowCases.Button.zh_TW.TokenNameColorPrimary;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenNameControlHeight] = global::AtomUIGallery.ShowCases.Button.zh_TW.TokenNameControlHeight;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Button.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenScopeShared] = global::AtomUIGallery.ShowCases.Button.zh_TW.TokenScopeShared;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenStatusMapped] = global::AtomUIGallery.ShowCases.Button.zh_TW.TokenStatusMapped;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Button.zh_TW.TokenStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TypeDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.TypeDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.TypeTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.TypeTitle;
             }
@@ -2719,6 +2740,120 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.ThreeSizesTitle] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.ThreeSizesTitle;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.VariantsDescription] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.VariantsDescription;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.VariantsTitle] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.VariantsTitle;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class CommunityPageEnUSLanguageProvider : LanguageProvider
+    {
+        public CommunityPageEnUSLanguageProvider()
+            : base(LanguageCode.en_US, "CommunityPage")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.CommunityPageLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.AboutAtomUI] = global::AtomUIGallery.ShowCases.Community.en_US.AboutAtomUI;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.HomePage] = global::AtomUIGallery.ShowCases.Community.en_US.HomePage;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionLabel] = global::AtomUIGallery.ShowCases.Community.en_US.MissionLabel;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.Community.en_US.MissionText;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.Community.en_US.QQGroup;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroupDescription] = global::AtomUIGallery.ShowCases.Community.en_US.QQGroupDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionLabel] = global::AtomUIGallery.ShowCases.Community.en_US.VisionLabel;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionText] = global::AtomUIGallery.ShowCases.Community.en_US.VisionText;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatGroup] = global::AtomUIGallery.ShowCases.Community.en_US.WeChatGroup;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatGroupDescription] = global::AtomUIGallery.ShowCases.Community.en_US.WeChatGroupDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatOfficial] = global::AtomUIGallery.ShowCases.Community.en_US.WeChatOfficial;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatOfficialDescription] = global::AtomUIGallery.ShowCases.Community.en_US.WeChatOfficialDescription;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class CommunityPageZhCNLanguageProvider : LanguageProvider
+    {
+        public CommunityPageZhCNLanguageProvider()
+            : base(LanguageCode.zh_CN, "CommunityPage")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.CommunityPageLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.AboutAtomUI] = global::AtomUIGallery.ShowCases.Community.zh_CN.AboutAtomUI;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.HomePage] = global::AtomUIGallery.ShowCases.Community.zh_CN.HomePage;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionLabel] = global::AtomUIGallery.ShowCases.Community.zh_CN.MissionLabel;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.Community.zh_CN.MissionText;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.Community.zh_CN.QQGroup;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroupDescription] = global::AtomUIGallery.ShowCases.Community.zh_CN.QQGroupDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionLabel] = global::AtomUIGallery.ShowCases.Community.zh_CN.VisionLabel;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionText] = global::AtomUIGallery.ShowCases.Community.zh_CN.VisionText;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatGroup] = global::AtomUIGallery.ShowCases.Community.zh_CN.WeChatGroup;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatGroupDescription] = global::AtomUIGallery.ShowCases.Community.zh_CN.WeChatGroupDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatOfficial] = global::AtomUIGallery.ShowCases.Community.zh_CN.WeChatOfficial;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatOfficialDescription] = global::AtomUIGallery.ShowCases.Community.zh_CN.WeChatOfficialDescription;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class CommunityPageZhTWLanguageProvider : LanguageProvider
+    {
+        public CommunityPageZhTWLanguageProvider()
+            : base(LanguageCode.zh_TW, "CommunityPage")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.CommunityPageLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.AboutAtomUI] = global::AtomUIGallery.ShowCases.Community.zh_TW.AboutAtomUI;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.HomePage] = global::AtomUIGallery.ShowCases.Community.zh_TW.HomePage;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionLabel] = global::AtomUIGallery.ShowCases.Community.zh_TW.MissionLabel;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.Community.zh_TW.MissionText;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.Community.zh_TW.QQGroup;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroupDescription] = global::AtomUIGallery.ShowCases.Community.zh_TW.QQGroupDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionLabel] = global::AtomUIGallery.ShowCases.Community.zh_TW.VisionLabel;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionText] = global::AtomUIGallery.ShowCases.Community.zh_TW.VisionText;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatGroup] = global::AtomUIGallery.ShowCases.Community.zh_TW.WeChatGroup;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatGroupDescription] = global::AtomUIGallery.ShowCases.Community.zh_TW.WeChatGroupDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatOfficial] = global::AtomUIGallery.ShowCases.Community.zh_TW.WeChatOfficial;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatOfficialDescription] = global::AtomUIGallery.ShowCases.Community.zh_TW.WeChatOfficialDescription;
             }
             catch (System.Exception)
             {
@@ -8293,6 +8428,123 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.VariantsTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.VariantsTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.WithClearIconDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.WithClearIconDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.WithClearIconTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.WithClearIconTitle;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class OverviewPageEnUSLanguageProvider : LanguageProvider
+    {
+        public OverviewPageEnUSLanguageProvider()
+            : base(LanguageCode.en_US, "OverviewPage")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.OverviewPageLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.ApiDocsDescription] = global::AtomUIGallery.ShowCases.Overview.en_US.ApiDocsDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.ApiDocsTitle] = global::AtomUIGallery.ShowCases.Overview.en_US.ApiDocsTitle;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.Copy] = global::AtomUIGallery.ShowCases.Overview.en_US.Copy;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.DotNetCliTab] = global::AtomUIGallery.ShowCases.Overview.en_US.DotNetCliTab;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.InstallDescription] = global::AtomUIGallery.ShowCases.Overview.en_US.InstallDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.InstallTitle] = global::AtomUIGallery.ShowCases.Overview.en_US.InstallTitle;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.LearningLinksDescription] = global::AtomUIGallery.ShowCases.Overview.en_US.LearningLinksDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.LearningLinksTitle] = global::AtomUIGallery.ShowCases.Overview.en_US.LearningLinksTitle;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.OpenLearningLink] = global::AtomUIGallery.ShowCases.Overview.en_US.OpenLearningLink;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.PackageManagerTab] = global::AtomUIGallery.ShowCases.Overview.en_US.PackageManagerTab;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.PackageReferenceTab] = global::AtomUIGallery.ShowCases.Overview.en_US.PackageReferenceTab;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.UserManualDescription] = global::AtomUIGallery.ShowCases.Overview.en_US.UserManualDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.UserManualTitle] = global::AtomUIGallery.ShowCases.Overview.en_US.UserManualTitle;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class OverviewPageZhCNLanguageProvider : LanguageProvider
+    {
+        public OverviewPageZhCNLanguageProvider()
+            : base(LanguageCode.zh_CN, "OverviewPage")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.OverviewPageLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.ApiDocsDescription] = global::AtomUIGallery.ShowCases.Overview.zh_CN.ApiDocsDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.ApiDocsTitle] = global::AtomUIGallery.ShowCases.Overview.zh_CN.ApiDocsTitle;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.Copy] = global::AtomUIGallery.ShowCases.Overview.zh_CN.Copy;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.DotNetCliTab] = global::AtomUIGallery.ShowCases.Overview.zh_CN.DotNetCliTab;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.InstallDescription] = global::AtomUIGallery.ShowCases.Overview.zh_CN.InstallDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.InstallTitle] = global::AtomUIGallery.ShowCases.Overview.zh_CN.InstallTitle;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.LearningLinksDescription] = global::AtomUIGallery.ShowCases.Overview.zh_CN.LearningLinksDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.LearningLinksTitle] = global::AtomUIGallery.ShowCases.Overview.zh_CN.LearningLinksTitle;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.OpenLearningLink] = global::AtomUIGallery.ShowCases.Overview.zh_CN.OpenLearningLink;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.PackageManagerTab] = global::AtomUIGallery.ShowCases.Overview.zh_CN.PackageManagerTab;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.PackageReferenceTab] = global::AtomUIGallery.ShowCases.Overview.zh_CN.PackageReferenceTab;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.UserManualDescription] = global::AtomUIGallery.ShowCases.Overview.zh_CN.UserManualDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.UserManualTitle] = global::AtomUIGallery.ShowCases.Overview.zh_CN.UserManualTitle;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class OverviewPageZhTWLanguageProvider : LanguageProvider
+    {
+        public OverviewPageZhTWLanguageProvider()
+            : base(LanguageCode.zh_TW, "OverviewPage")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.OverviewPageLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.ApiDocsDescription] = global::AtomUIGallery.ShowCases.Overview.zh_TW.ApiDocsDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.ApiDocsTitle] = global::AtomUIGallery.ShowCases.Overview.zh_TW.ApiDocsTitle;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.Copy] = global::AtomUIGallery.ShowCases.Overview.zh_TW.Copy;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.DotNetCliTab] = global::AtomUIGallery.ShowCases.Overview.zh_TW.DotNetCliTab;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.InstallDescription] = global::AtomUIGallery.ShowCases.Overview.zh_TW.InstallDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.InstallTitle] = global::AtomUIGallery.ShowCases.Overview.zh_TW.InstallTitle;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.LearningLinksDescription] = global::AtomUIGallery.ShowCases.Overview.zh_TW.LearningLinksDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.LearningLinksTitle] = global::AtomUIGallery.ShowCases.Overview.zh_TW.LearningLinksTitle;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.OpenLearningLink] = global::AtomUIGallery.ShowCases.Overview.zh_TW.OpenLearningLink;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.PackageManagerTab] = global::AtomUIGallery.ShowCases.Overview.zh_TW.PackageManagerTab;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.PackageReferenceTab] = global::AtomUIGallery.ShowCases.Overview.zh_TW.PackageReferenceTab;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.UserManualDescription] = global::AtomUIGallery.ShowCases.Overview.zh_TW.UserManualDescription;
+                dictionary[global::AtomUIGallery.Localization.OverviewPageLangResourceKind.UserManualTitle] = global::AtomUIGallery.ShowCases.Overview.zh_TW.UserManualTitle;
             }
             catch (System.Exception)
             {
@@ -14304,6 +14556,8 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Community] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Community;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Components] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Components;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.DataDisplay] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.DataDisplay;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.DataDisplay_Avatar] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.DataDisplay_Avatar;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.DataDisplay_Badge] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.DataDisplay_Badge;
@@ -14382,6 +14636,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_Steps] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Navigation_Steps;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabControl] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Navigation_TabControl;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabStrip] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Navigation_TabStrip;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Overview] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Overview;
             }
             catch (System.Exception)
             {
@@ -14408,6 +14663,8 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Community] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Community;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Components] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Components;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.DataDisplay] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.DataDisplay;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.DataDisplay_Avatar] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.DataDisplay_Avatar;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.DataDisplay_Badge] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.DataDisplay_Badge;
@@ -14486,6 +14743,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_Steps] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Navigation_Steps;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabControl] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Navigation_TabControl;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabStrip] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Navigation_TabStrip;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Overview] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Overview;
             }
             catch (System.Exception)
             {
@@ -14512,6 +14770,8 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Community] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Community;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Components] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Components;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.DataDisplay] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.DataDisplay;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.DataDisplay_Avatar] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.DataDisplay_Avatar;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.DataDisplay_Badge] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.DataDisplay_Badge;
@@ -14590,6 +14850,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_Steps] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Navigation_Steps;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabControl] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Navigation_TabControl;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabStrip] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Navigation_TabStrip;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Overview] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Overview;
             }
             catch (System.Exception)
             {
@@ -14726,10 +14987,7 @@ namespace AtomUI.Theme.Language
     {
         internal static IList<LanguageProvider> GetLanguageProviders()
         {
-            List<LanguageProvider> languageProviders = new List<LanguageProvider>(222);
-            languageProviders.Add(new AboutUsPageEnUSLanguageProvider());
-            languageProviders.Add(new AboutUsPageZhCNLanguageProvider());
-            languageProviders.Add(new AboutUsPageZhTWLanguageProvider());
+            List<LanguageProvider> languageProviders = new List<LanguageProvider>(225);
             languageProviders.Add(new AlertShowCaseEnUSLanguageProvider());
             languageProviders.Add(new AlertShowCaseZhCNLanguageProvider());
             languageProviders.Add(new AlertShowCaseZhTWLanguageProvider());
@@ -14775,6 +15033,9 @@ namespace AtomUI.Theme.Language
             languageProviders.Add(new ComboBoxShowCaseEnUSLanguageProvider());
             languageProviders.Add(new ComboBoxShowCaseZhCNLanguageProvider());
             languageProviders.Add(new ComboBoxShowCaseZhTWLanguageProvider());
+            languageProviders.Add(new CommunityPageEnUSLanguageProvider());
+            languageProviders.Add(new CommunityPageZhCNLanguageProvider());
+            languageProviders.Add(new CommunityPageZhTWLanguageProvider());
             languageProviders.Add(new CustomizeThemeShowCaseEnUSLanguageProvider());
             languageProviders.Add(new CustomizeThemeShowCaseZhCNLanguageProvider());
             languageProviders.Add(new CustomizeThemeShowCaseZhTWLanguageProvider());
@@ -14847,6 +15108,9 @@ namespace AtomUI.Theme.Language
             languageProviders.Add(new NumberUpDownShowCaseEnUSLanguageProvider());
             languageProviders.Add(new NumberUpDownShowCaseZhCNLanguageProvider());
             languageProviders.Add(new NumberUpDownShowCaseZhTWLanguageProvider());
+            languageProviders.Add(new OverviewPageEnUSLanguageProvider());
+            languageProviders.Add(new OverviewPageZhCNLanguageProvider());
+            languageProviders.Add(new OverviewPageZhTWLanguageProvider());
             languageProviders.Add(new PaginationShowCaseEnUSLanguageProvider());
             languageProviders.Add(new PaginationShowCaseZhCNLanguageProvider());
             languageProviders.Add(new PaginationShowCaseZhTWLanguageProvider());

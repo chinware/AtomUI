@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Button.ButtonApiDataGrid"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Button">
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <atom:DataGrid x:Name="ApiDataGrid"
+                       AutoGenerateColumns="False"
+                       LeftFrozenColumnCount="1"
+                       GridLinesVisibility="Horizontal"
+                       IsFrameBorderVisible="True"
+                       IsHideOnSinglePage="True"
+                       IsReadOnly="True"
+                       PaginationVisibility="None"
+                       HorizontalScrollBarVisibility="Auto"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Top"
+                       x:DataType="viewModels:ButtonApiRow">
+            <atom:DataGrid.Columns>
+                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource ApiColumnProperty}"
+                                             Width="160">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:ButtonApiRow">
+                            <atom:TextBlock Text="{Binding Property}"
+                                            FontFamily="Consolas"
+                                            VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource ApiColumnDescription}"
+                                             MinWidth="520"
+                                             Width="*">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:ButtonApiRow">
+                            <atom:TextBlock Text="{Binding Description}"
+                                            TextWrapping="Wrap"
+                                            VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource ApiColumnType}"
+                                             Width="160">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:ButtonApiRow">
+                            <atom:Tag Text="{Binding Type}"
+                                      TagColor="{Binding TypeTagColor}"
+                                      VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:ButtonShowCaseLangResource ApiColumnDefault}"
+                                             Width="120">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:ButtonApiRow">
+                            <atom:TextBlock Text="{Binding Default}"
+                                            FontFamily="Consolas"
+                                            VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+            </atom:DataGrid.Columns>
+        </atom:DataGrid>
+    </Grid>
+</UserControl>

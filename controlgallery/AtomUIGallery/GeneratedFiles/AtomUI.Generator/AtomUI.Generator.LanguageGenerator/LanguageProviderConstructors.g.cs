@@ -1,37 +1,4 @@
-﻿namespace AtomUIGallery.ShowCases.AboutUs
-{
-    internal partial class en_US
-    {
-        public en_US()
-            : base(global::AtomUI.Theme.Language.LanguageCode.en_US, "AboutUsPage")
-        {
-        }
-    }
-}
-
-namespace AtomUIGallery.ShowCases.AboutUs
-{
-    internal partial class zh_CN
-    {
-        public zh_CN()
-            : base(global::AtomUI.Theme.Language.LanguageCode.zh_CN, "AboutUsPage")
-        {
-        }
-    }
-}
-
-namespace AtomUIGallery.ShowCases.AboutUs
-{
-    internal partial class zh_TW
-    {
-        public zh_TW()
-            : base(global::AtomUI.Theme.Language.LanguageCode.zh_TW, "AboutUsPage")
-        {
-        }
-    }
-}
-
-namespace AtomUIGallery.ShowCases.Alert
+﻿namespace AtomUIGallery.ShowCases.Alert
 {
     internal partial class en_US
     {
@@ -521,6 +488,39 @@ namespace AtomUIGallery.ShowCases.ComboBox
     {
         public zh_TW()
             : base(global::AtomUI.Theme.Language.LanguageCode.zh_TW, "ComboBoxShowCase")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.Community
+{
+    internal partial class en_US
+    {
+        public en_US()
+            : base(global::AtomUI.Theme.Language.LanguageCode.en_US, "CommunityPage")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.Community
+{
+    internal partial class zh_CN
+    {
+        public zh_CN()
+            : base(global::AtomUI.Theme.Language.LanguageCode.zh_CN, "CommunityPage")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.Community
+{
+    internal partial class zh_TW
+    {
+        public zh_TW()
+            : base(global::AtomUI.Theme.Language.LanguageCode.zh_TW, "CommunityPage")
         {
         }
     }
@@ -1313,6 +1313,39 @@ namespace AtomUIGallery.ShowCases.NumberUpDown
     {
         public zh_TW()
             : base(global::AtomUI.Theme.Language.LanguageCode.zh_TW, "NumberUpDownShowCase")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.Overview
+{
+    internal partial class en_US
+    {
+        public en_US()
+            : base(global::AtomUI.Theme.Language.LanguageCode.en_US, "OverviewPage")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.Overview
+{
+    internal partial class zh_CN
+    {
+        public zh_CN()
+            : base(global::AtomUI.Theme.Language.LanguageCode.zh_CN, "OverviewPage")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.Overview
+{
+    internal partial class zh_TW
+    {
+        public zh_TW()
+            : base(global::AtomUI.Theme.Language.LanguageCode.zh_TW, "OverviewPage")
         {
         }
     }

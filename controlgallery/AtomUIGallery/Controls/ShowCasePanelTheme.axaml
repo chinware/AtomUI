@@ -5,20 +5,38 @@
     xmlns:gallery="https://atomui.net/oss-controls/gallery">
     <ControlTheme x:Key="{x:Type gallery:ShowCasePanel}"
                   TargetType="{x:Type gallery:ShowCasePanel}">
+        <Setter Property="MinItemWidth" Value="{gallery:ShowCasePanelTokenResource MinItemWidth}" />
+        <Setter Property="MaxColumns" Value="{gallery:ShowCasePanelTokenResource MaxColumns}" />
+        <Setter Property="ColumnGap" Value="{gallery:ShowCasePanelTokenResource ColumnGap}" />
+        <Setter Property="RowGap" Value="{gallery:ShowCasePanelTokenResource RowGap}" />
+        <Setter Property="ContentMargin" Value="{gallery:ShowCasePanelTokenResource ContentMargin}" />
+        <Setter Property="IsScrollEnabled" Value="True" />
         <Setter Property="Template">
             <ControlTemplate TargetType="{x:Type gallery:ShowCasePanel}">
                 <atom:ScrollViewer VerticalScrollBarVisibility="Auto"
                                    AllowAutoHide="False"
                                    BringIntoViewOnFocusChange="False"
                                    IsLiteMode="False">
-                    <Grid Margin="5" Name="PART_MainPanel" RowSpacing="15" ColumnSpacing="15">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-                    </Grid>
+                    <gallery:ShowCaseMasonryPanel Name="PART_MainPanel"
+                                                   Margin="{TemplateBinding ContentMargin}"
+                                                   MinItemWidth="{TemplateBinding MinItemWidth}"
+                                                   MaxColumns="{TemplateBinding MaxColumns}"
+                                                   ColumnGap="{TemplateBinding ColumnGap}"
+                                                   RowGap="{TemplateBinding RowGap}" />
                 </atom:ScrollViewer>
             </ControlTemplate>
         </Setter>
+        <Style Selector="^[IsScrollEnabled=False]">
+            <Setter Property="Template">
+                <ControlTemplate TargetType="{x:Type gallery:ShowCasePanel}">
+                    <gallery:ShowCaseMasonryPanel Name="PART_MainPanel"
+                                                   Margin="{TemplateBinding ContentMargin}"
+                                                   MinItemWidth="{TemplateBinding MinItemWidth}"
+                                                   MaxColumns="{TemplateBinding MaxColumns}"
+                                                   ColumnGap="{TemplateBinding ColumnGap}"
+                                                   RowGap="{TemplateBinding RowGap}" />
+                </ControlTemplate>
+            </Setter>
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

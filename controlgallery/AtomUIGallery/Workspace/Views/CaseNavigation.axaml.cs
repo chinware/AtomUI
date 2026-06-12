@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.Workspace.ViewModels;
 using Avalonia;
@@ -18,13 +19,19 @@ public partial class CaseNavigation : GalleryReactiveUserControl<CaseNavigationV
     public CaseNavigation()
     {
         InitializeComponent();
+        ShowCaseNavMenu.DefaultOpenPaths = new List<TreeNodePath>
+        {
+            new("Components")
+        };
 
         this.WhenActivated(disposables =>
         {
             void NavMenuItemClickHandler(object? sender, NavMenuItemClickEventArgs args)
             {
                 var key = args.NavMenuItem.ItemKey;
-                if (key.HasValue && ViewModel is not null)
+                if (key.HasValue &&
+                    ViewModel is not null &&
+                    ViewModel.CanNavigateTo(key.Value))
                 {
                     ViewModel.NavigateToCommand.Execute(key.Value)
                              .Subscribe()
