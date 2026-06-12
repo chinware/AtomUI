@@ -145,22 +145,6 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
-            Title="{gallery:SpinShowCaseLangResource CustomIndicatorTitle}"
-            Description="{gallery:SpinShowCaseLangResource CustomIndicatorDescription}">
-            <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:SpinIndicator SizeType="Small"
-                                    VerticalAlignment="Center"
-                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, StrokeBrush=#1677ff}" />
-                <atom:SpinIndicator SizeType="Middle"
-                                    VerticalAlignment="Center"
-                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, StrokeBrush=#1677ff}" />
-                <atom:SpinIndicator SizeType="Large"
-                                    VerticalAlignment="Center"
-                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, StrokeBrush=#1677ff}" />
-            </StackPanel>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
             Title="{gallery:SpinShowCaseLangResource CustomizedDescriptionTitle}"
             Description="{gallery:SpinShowCaseLangResource CustomizedDescriptionDescription}">
             <StackPanel Orientation="Vertical" Spacing="10">
@@ -188,6 +172,22 @@
                                 Description="{gallery:SpinShowCaseLangResource P2DescriptionFurtherDetailsAboutTheContextOfThisAlert}"
                                 Type="Info" />
                 </atom:Spin>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:SpinShowCaseLangResource CustomIndicatorTitle}"
+            Description="{gallery:SpinShowCaseLangResource CustomIndicatorDescription}">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:SpinIndicator SizeType="Small"
+                                    VerticalAlignment="Center"
+                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, StrokeBrush=#1677ff}" />
+                <atom:SpinIndicator SizeType="Middle"
+                                    VerticalAlignment="Center"
+                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, StrokeBrush=#1677ff}" />
+                <atom:SpinIndicator SizeType="Large"
+                                    VerticalAlignment="Center"
+                                    CustomIndicator="{antdicons:AntDesignIconProvider Kind=LoadingOutlined, StrokeBrush=#1677ff}" />
             </StackPanel>
         </gallery:ShowCaseItem>
 
