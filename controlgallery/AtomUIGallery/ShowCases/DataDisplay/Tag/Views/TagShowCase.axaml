@@ -127,7 +127,7 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
-                                       ContentMargin="28,10,28,0">
+                                       ContentMargin="28,10,28,28">
                     <gallery:ShowCasePanel.Styles>
                         <Style Selector="atom|Tag">
                             <Setter Property="Margin" Value="5" />

@@ -247,8 +247,10 @@ ButtonShowCase 当前采用：
 - 滚动条应属于最外层页面滚动，不应被内容 padding 推离窗口右边。
 - Tab 与下面内容的垂直间距要统一，不应该只在第一个 Tab 生效。
 - DataGrid 页和 Examples 页的内容容器应共享同一套外边距策略。
-- API 和 Design Token 的 lazy DataGrid 必须设置 `Margin="28,10,28,0"`，默认与 Examples 的 `ContentMargin="28,10,28,0"` 保持一致。
-- Badge、Ribbon 等示例控件会通过 adorner 向上溢出时，Examples 可单独增加顶部留白，例如 Badge 使用 `ContentMargin="28,28,28,0"`，但左右边界仍必须保持 `28px`。
+- 三个 Tab 的内容容器必须使用同一套底部间距规则：底部都保留 `28px`，避免某个 Tab 的内容或横向滚动条贴住页面底边。
+- Examples 必须使用 `ContentMargin="28,10,28,28"`。
+- API 和 Design Token 的 lazy DataGrid 必须设置 `Margin="28,10,28,28"`，左右与 Examples 对齐，底部间距一致；尤其是出现横向滚动条时，滚动条下方不能贴住容器底边。
+- Badge、Ribbon 等示例控件会通过 adorner 向上溢出时，Examples 可单独增加顶部留白，例如 Badge 使用 `ContentMargin="28,28,28,28"`，但左右边界和底部间距仍必须保持一致。
 
 ## ViewModel 与数据加载规则
 

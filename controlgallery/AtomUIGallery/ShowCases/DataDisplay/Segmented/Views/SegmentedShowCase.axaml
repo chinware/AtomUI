@@ -127,7 +127,7 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
-                                       ContentMargin="28,10,28,0">
+                                       ContentMargin="28,10,28,28">
                     <gallery:ShowCaseItem
                         Title="{gallery:SegmentedShowCaseLangResource BasicTitle}"
                         Description="{gallery:SegmentedShowCaseLangResource BasicDescription}">

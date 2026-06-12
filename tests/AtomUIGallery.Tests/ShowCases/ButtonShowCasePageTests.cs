@@ -51,7 +51,7 @@ public class ButtonShowCasePageTests
         source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
-        source.ShouldContain("ContentMargin=\"28,10,28,0\"");
+        source.ShouldContain("ContentMargin=\"28,10,28,28\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("ContentPadding=\"0,10,0,0\"");
         source.ShouldNotContain("Margin=\"28,0,12,24\"");
@@ -110,7 +110,7 @@ public class ButtonShowCasePageTests
         apiSource.ShouldContain("IsFrameBorderVisible=\"True\"");
         apiSource.ShouldContain("PaginationVisibility=\"None\"");
         apiSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        apiSource.ShouldContain("Margin=\"28,10,28,0\"");
+        apiSource.ShouldContain("Margin=\"28,10,28,28\"");
         apiSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
         apiSource.ShouldContain("VerticalAlignment=\"Top\"");
         apiSource.ShouldNotContain("Margin=\"0,20,0,0\"");
@@ -130,7 +130,7 @@ public class ButtonShowCasePageTests
         tokenSource.ShouldContain("IsFrameBorderVisible=\"True\"");
         tokenSource.ShouldContain("PaginationVisibility=\"None\"");
         tokenSource.ShouldContain("LeftFrozenColumnCount=\"1\"");
-        tokenSource.ShouldContain("Margin=\"28,10,28,0\"");
+        tokenSource.ShouldContain("Margin=\"28,10,28,28\"");
         tokenSource.ShouldContain("HorizontalAlignment=\"Stretch\"");
         tokenSource.ShouldContain("VerticalAlignment=\"Top\"");
         tokenSource.ShouldNotContain("Margin=\"0,20,0,0\"");
