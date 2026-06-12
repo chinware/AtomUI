@@ -1,0 +1,3 @@
+<gallery:ShowCaseItem Description="{gallery:CalendarShowCaseLangResource BasicDescription}" Title="{gallery:CalendarShowCaseLangResource BasicTitle}">
+<atom:Calendar />
+</gallery:ShowCaseItem>

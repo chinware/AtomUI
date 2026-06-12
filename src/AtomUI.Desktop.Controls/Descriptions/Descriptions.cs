@@ -236,6 +236,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         {
             var columns = GetColumnsForMediaBreak(_breakPoint.Value);
             UpdateGridColumns(columns, true);
+            InvalidateMeasure();
         }
     }
 
