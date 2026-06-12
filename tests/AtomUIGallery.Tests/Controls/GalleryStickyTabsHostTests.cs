@@ -3,7 +3,6 @@ using System.IO;
 using AtomUIGallery.Controls;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Media;
 using Shouldly;
 using Xunit;
 
@@ -58,18 +57,16 @@ public class GalleryStickyTabsHostTests
     }
 
     [Fact]
-    public void Sticky_Panel_Clips_Content_Behind_Sticky_Item_When_Pinned()
+    public void Sticky_Panel_Does_Not_Clip_Content_When_Pinned()
     {
         var panel = CreatePanel();
 
         panel.StickyOffsetY = 56;
         MeasureAndArrange(panel, 200);
 
-        var clip = panel.Children[2].Clip.ShouldBeOfType<RectangleGeometry>();
-        clip.Rect.X.ShouldBe(0);
-        clip.Rect.Y.ShouldBe(16);
-        clip.Rect.Width.ShouldBe(200);
-        clip.Rect.Height.ShouldBe(84);
+        panel.Children[1].Bounds.Y.ShouldBe(56);
+        panel.Children[2].Bounds.Y.ShouldBe(70);
+        panel.Children[2].Clip.ShouldBeNull();
     }
 
     [Fact]
@@ -96,6 +93,8 @@ public class GalleryStickyTabsHostTests
         panelSource.ShouldContain("StickyOffsetYProperty");
         panelSource.ShouldContain("IsStickyPinnedProperty");
         panelSource.ShouldContain("Math.Max(naturalY, StickyOffsetY)");
+        panelSource.ShouldNotContain("ApplyStickyClip");
+        panelSource.ShouldNotContain("StickyClipGeometry");
 
         tokenSource.ShouldContain("[ControlDesignToken]");
         tokenSource.ShouldContain("StickyContentPadding");
@@ -110,6 +109,7 @@ public class GalleryStickyTabsHostTests
         themeSource.ShouldContain("StickyContentPadding");
         themeSource.ShouldContain("StickyBackground");
         themeSource.ShouldContain("StickyBorderBrush");
+        themeSource.ShouldContain("ZIndex=\"1\"");
         themeSource.ShouldNotContain("<VisualLayerManager>");
         themeSource.ShouldContain("<ContentPresenter Content=\"{TemplateBinding Content}\" />");
         provider.ShouldContain("<ResourceInclude Source=\"GalleryStickyTabsHostTheme.axaml\" />");

@@ -205,7 +205,7 @@ DataGrid 规则：
 - Badge、Ribbon 等窗口级 Adorner 可能压过普通 sticky 内容时，只允许使用只读的 overlay mirror：在高层绘制 inline StickyContent 的视觉镜像，不能承载真实 TabStrip，且必须 `IsHitTestVisible=false`。
 - 不在滚动时创建或销毁真实 TabStrip 视觉树。
 - 不在 Content 外层包局部 `VisualLayerManager`，避免 Badge、Ribbon 等基于窗口级 `AdornerLayer` 的控件丢失装饰层。
-- sticky pinned 后，视觉镜像必须位于高于窗口级 `AdornerLayer` 的 overlay 层；`GalleryStickyTabsPanel` 仍可裁剪后续 Content，避免普通内容穿过 Tab 区域。
+- sticky pinned 后，视觉镜像必须位于高于窗口级 `AdornerLayer` 的 overlay 层；`GalleryStickyTabsPanel` 不允许裁剪后续 Content，避免深滚动、Tab 切换或重排后出现大面积空白。遮挡关系由真实 sticky 行的背景、ZIndex 和只读 overlay mirror 负责。
 - `ScrollChanged` 订阅必须在 detach 时释放。
 
 Token 规则：
