@@ -16317,16 +16317,51 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyFontSize] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyFontSize;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyForeground] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyForeground;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyGlyph] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyGlyph;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyHeight] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyHeight;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyHorizontalOffset] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyHorizontalOffset;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyHorizontalSpace] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyHorizontalSpace;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyIsCrossUsed] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyIsCrossUsed;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyIsMirrorUsed] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyIsMirrorUsed;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyOpacity] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyOpacity;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyRotate] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyRotate;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertySource] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertySource;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyText] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyText;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyVerticalOffset] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyVerticalOffset;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyVerticalSpace] = global::AtomUIGallery.ShowCases.Watermark.en_US.ApiPropertyVerticalSpace;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Watermark.en_US.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Watermark.en_US.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Watermark.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Watermark.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.CustomConfigurationDescription] = global::AtomUIGallery.ShowCases.Watermark.en_US.CustomConfigurationDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.CustomConfigurationTitle] = global::AtomUIGallery.ShowCases.Watermark.en_US.CustomConfigurationTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkDescription] = global::AtomUIGallery.ShowCases.Watermark.en_US.ImageWatermarkDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkTitle] = global::AtomUIGallery.ShowCases.Watermark.en_US.ImageWatermarkTitle;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Watermark.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Watermark.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Watermark.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineDescription] = global::AtomUIGallery.ShowCases.Watermark.en_US.MultiLineDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineTitle] = global::AtomUIGallery.ShowCases.Watermark.en_US.MultiLineTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.P2TextNaturalInteractionDescription] = global::AtomUIGallery.ShowCases.Watermark.en_US.P2TextNaturalInteractionDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.P2WatermarkMultiLineText] = global::AtomUIGallery.ShowCases.Watermark.en_US.P2WatermarkMultiLineText;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Watermark.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Watermark.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Watermark.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Watermark.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Watermark.en_US.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Watermark.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Watermark.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Watermark.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Watermark.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenNameNoComponentToken] = global::AtomUIGallery.ShowCases.Watermark.en_US.TokenNameNoComponentToken;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Watermark.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenStatusNotApplicable] = global::AtomUIGallery.ShowCases.Watermark.en_US.TokenStatusNotApplicable;
             }
             catch (System.Exception)
             {
@@ -16353,16 +16388,51 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyFontSize] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyFontSize;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyForeground] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyForeground;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyGlyph] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyGlyph;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyHeight] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyHeight;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyHorizontalOffset] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyHorizontalOffset;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyHorizontalSpace] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyHorizontalSpace;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyIsCrossUsed] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyIsCrossUsed;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyIsMirrorUsed] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyIsMirrorUsed;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyOpacity] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyOpacity;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyRotate] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyRotate;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertySource] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertySource;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyText] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyText;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyVerticalOffset] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyVerticalOffset;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyVerticalSpace] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ApiPropertyVerticalSpace;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.CustomConfigurationDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.CustomConfigurationDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.CustomConfigurationTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.CustomConfigurationTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ImageWatermarkDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ImageWatermarkTitle;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.MultiLineDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.MultiLineTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.P2TextNaturalInteractionDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.P2TextNaturalInteractionDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.P2WatermarkMultiLineText] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.P2WatermarkMultiLineText;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenNameNoComponentToken] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.TokenNameNoComponentToken;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenStatusNotApplicable] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.TokenStatusNotApplicable;
             }
             catch (System.Exception)
             {
@@ -16389,16 +16459,51 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyFontSize] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyFontSize;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyForeground] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyForeground;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyGlyph] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyGlyph;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyHeight] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyHeight;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyHorizontalOffset] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyHorizontalOffset;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyHorizontalSpace] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyHorizontalSpace;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyIsCrossUsed] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyIsCrossUsed;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyIsMirrorUsed] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyIsMirrorUsed;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyOpacity] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyOpacity;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyRotate] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyRotate;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertySource] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertySource;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyText] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyText;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyVerticalOffset] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyVerticalOffset;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ApiPropertyVerticalSpace] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ApiPropertyVerticalSpace;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.CustomConfigurationDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.CustomConfigurationDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.CustomConfigurationTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.CustomConfigurationTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ImageWatermarkDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ImageWatermarkTitle;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.MultiLineDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.MultiLineTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.P2TextNaturalInteractionDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.P2TextNaturalInteractionDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.P2WatermarkMultiLineText] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.P2WatermarkMultiLineText;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenNameNoComponentToken] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.TokenNameNoComponentToken;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.TokenStatusNotApplicable] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.TokenStatusNotApplicable;
             }
             catch (System.Exception)
             {
