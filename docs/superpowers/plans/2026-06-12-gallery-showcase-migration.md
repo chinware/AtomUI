@@ -159,7 +159,7 @@ If a selected root ShowCase folder contains sub-scenario files such as `CardBasi
 | ID | Status | ShowCase | Component Folder | Current Views | Verification |
 |---|---|---|---|---|---|
 | P1.1 | Accepted | Avatar | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Avatar` | `AvatarShowCase.axaml`; `AvatarApiDataGrid.axaml`; `AvatarDesignTokenDataGrid.axaml` | Accepted by user; API/Token DataGrid spacing and star description column fixed; `AtomUIGallery.Tests` passed; `AtomUI.Desktop.Controls.DataGrid.Tests` passed; `AtomUI.Desktop.Controls.Tests` passed; Gallery Desktop build passed; Desktop launch smoke check passed. |
-| P1.2 | Not Started | Badge | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge` | `BadgeShowCase.axaml` | Structure + snapshot + lazy tabs + Gallery build. |
+| P1.2 | Accepted | Badge | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Badge` | `BadgeShowCase.axaml`; `BadgeApiDataGrid.axaml`; `BadgeDesignTokenDataGrid.axaml` | Accepted by user; structure + snapshot + lazy tabs passed; sticky tabs keep the real TabStrip inline and draw a non-hit-test overlay mirror while pinned so Badge adorners cannot cover the TabStrip. |
 | P1.3 | Not Started | Calendar | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar` | `CalendarShowCase.axaml` | Structure + snapshot + lazy tabs + Gallery build. |
 | P1.4 | Not Started | Descriptions | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions` | `DescriptionsShowCase.axaml` | Structure + snapshot + lazy tabs + Gallery build. |
 | P1.5 | Not Started | Empty | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Empty` | `EmptyShowCase.axaml` | Structure + snapshot + lazy tabs + Gallery build. |

@@ -3,6 +3,7 @@ using System.IO;
 using AtomUIGallery.Controls;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Shouldly;
 using Xunit;
 
@@ -26,6 +27,7 @@ public class GalleryStickyTabsHostTests
         panel.Children[0].Bounds.Y.ShouldBe(0);
         panel.Children[1].Bounds.Y.ShouldBe(40);
         panel.Children[2].Bounds.Y.ShouldBe(70);
+        panel.Children[2].Clip.ShouldBeNull();
         panel.Bounds.Height.ShouldBe(170);
     }
 
@@ -40,7 +42,34 @@ public class GalleryStickyTabsHostTests
         panel.Children[0].Bounds.Y.ShouldBe(0);
         panel.Children[1].Bounds.Y.ShouldBe(56);
         panel.Children[2].Bounds.Y.ShouldBe(70);
+        panel.IsStickyPinned.ShouldBeTrue();
         panel.Bounds.Height.ShouldBe(170);
+    }
+
+    [Fact]
+    public void Sticky_Panel_Reports_Unpinned_State_Before_Threshold()
+    {
+        var panel = CreatePanel();
+
+        panel.StickyOffsetY = 20;
+        MeasureAndArrange(panel, 200);
+
+        panel.IsStickyPinned.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Sticky_Panel_Clips_Content_Behind_Sticky_Item_When_Pinned()
+    {
+        var panel = CreatePanel();
+
+        panel.StickyOffsetY = 56;
+        MeasureAndArrange(panel, 200);
+
+        var clip = panel.Children[2].Clip.ShouldBeOfType<RectangleGeometry>();
+        clip.Rect.X.ShouldBe(0);
+        clip.Rect.Y.ShouldBe(16);
+        clip.Rect.Width.ShouldBe(200);
+        clip.Rect.Height.ShouldBe(84);
     }
 
     [Fact]
@@ -57,10 +86,15 @@ public class GalleryStickyTabsHostTests
         hostSource.ShouldContain("ContentProperty");
         hostSource.ShouldContain("[Content]");
         hostSource.ShouldContain("RegisterTokenResourceScope(GalleryStickyTabsHostToken.ScopeProvider)");
+        hostSource.ShouldContain("OverlayLayer.GetOverlayLayer(this)");
+        hostSource.ShouldContain("VisualBrush");
+        hostSource.ShouldContain("IsHitTestVisible = false");
+        hostSource.ShouldNotContain("Popup");
 
         panelSource.ShouldContain("ScrollChanged += HandleScrollChanged");
         panelSource.ShouldContain("ScrollChanged -= HandleScrollChanged");
         panelSource.ShouldContain("StickyOffsetYProperty");
+        panelSource.ShouldContain("IsStickyPinnedProperty");
         panelSource.ShouldContain("Math.Max(naturalY, StickyOffsetY)");
 
         tokenSource.ShouldContain("[ControlDesignToken]");
@@ -69,12 +103,26 @@ public class GalleryStickyTabsHostTests
         tokenSource.ShouldContain("StickyBorderBrush");
 
         themeSource.ShouldContain("PART_ScrollViewer");
+        themeSource.ShouldContain("PART_StickyPanel");
+        themeSource.ShouldContain("PART_StickyContentHost");
         themeSource.ShouldContain("gallery:GalleryStickyTabsPanel");
         themeSource.ShouldContain("GalleryStickyTabsHostTokenResource");
         themeSource.ShouldContain("StickyContentPadding");
         themeSource.ShouldContain("StickyBackground");
         themeSource.ShouldContain("StickyBorderBrush");
+        themeSource.ShouldNotContain("<VisualLayerManager>");
+        themeSource.ShouldContain("<ContentPresenter Content=\"{TemplateBinding Content}\" />");
         provider.ShouldContain("<ResourceInclude Source=\"GalleryStickyTabsHostTheme.axaml\" />");
+    }
+
+    [Fact]
+    public void Sticky_Host_Keeps_Sticky_Content_In_Inline_Presenter_When_Pinned()
+    {
+        var hostSource = ReadRepoFile("controlgallery/AtomUIGallery/Controls/GalleryStickyTabsHost.cs");
+
+        hostSource.ShouldNotContain("MoveStickyContentToOverlay");
+        hostSource.ShouldNotContain("MoveStickyContentInline");
+        hostSource.ShouldNotContain("_inlineStickyContentPresenter.Content");
     }
 
     private static GalleryStickyTabsPanel CreatePanel()

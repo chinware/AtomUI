@@ -606,12 +606,33 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyBadgeColor] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertyBadgeColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyBadgeIsVisible] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertyBadgeIsVisible;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyCount] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertyCount;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyDotColor] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertyDotColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyIsZeroVisible] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertyIsZeroVisible;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyOffset] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertyOffset;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyOverflowCount] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertyOverflowCount;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyPlacement] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertyPlacement;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyRibbonColor] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertyRibbonColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertySize] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertySize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyStatus] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertyStatus;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyText] = global::AtomUIGallery.ShowCases.Badge.en_US.ApiPropertyText;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Badge.en_US.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ColorfulBadgeDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.ColorfulBadgeDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ColorfulBadgeTitle] = global::AtomUIGallery.ShowCases.Badge.en_US.ColorfulBadgeTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Badge.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Badge.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.DynamicDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Badge.en_US.DynamicTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Badge.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Badge.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Badge.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.OffsetDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetTitle] = global::AtomUIGallery.ShowCases.Badge.en_US.OffsetTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OverflowCountDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.OverflowCountDescription;
@@ -649,16 +670,33 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.P2TextYellow] = global::AtomUIGallery.ShowCases.Badge.en_US.P2TextYellow;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.P2TitleCustom] = global::AtomUIGallery.ShowCases.Badge.en_US.P2TitleCustom;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.P2TitlePresets] = global::AtomUIGallery.ShowCases.Badge.en_US.P2TitlePresets;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Badge.en_US.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RedBadgeDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.RedBadgeDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RedBadgeTitle] = global::AtomUIGallery.ShowCases.Badge.en_US.RedBadgeTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RibbonDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.RibbonDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RibbonTitle] = global::AtomUIGallery.ShowCases.Badge.en_US.RibbonTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Badge.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Badge.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Badge.en_US.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.SizeDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.SizeDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.SizeTitle] = global::AtomUIGallery.ShowCases.Badge.en_US.SizeTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StandaloneDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.StandaloneDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StandaloneTitle] = global::AtomUIGallery.ShowCases.Badge.en_US.StandaloneTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.StatusDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.Badge.en_US.StatusTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameBadgeColor] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenNameBadgeColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameDotSize] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenNameDotSize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameIndicatorHeight] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenNameIndicatorHeight;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameIndicatorHeightSM] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenNameIndicatorHeightSM;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameStatusSize] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenNameStatusSize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameTextFontSize] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenNameTextFontSize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Badge.en_US.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -685,12 +723,33 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyBadgeColor] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertyBadgeColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyBadgeIsVisible] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertyBadgeIsVisible;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyCount] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertyCount;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyDotColor] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertyDotColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyIsZeroVisible] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertyIsZeroVisible;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyOffset] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertyOffset;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyOverflowCount] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertyOverflowCount;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyPlacement] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertyPlacement;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyRibbonColor] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertyRibbonColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertySize] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertySize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyStatus] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertyStatus;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyText] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ApiPropertyText;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ColorfulBadgeDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ColorfulBadgeDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ColorfulBadgeTitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ColorfulBadgeTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.DynamicDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.DynamicTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Badge.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Badge.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Badge.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.OffsetDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetTitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.OffsetTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OverflowCountDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.OverflowCountDescription;
@@ -728,16 +787,33 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.P2TextYellow] = global::AtomUIGallery.ShowCases.Badge.zh_CN.P2TextYellow;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.P2TitleCustom] = global::AtomUIGallery.ShowCases.Badge.zh_CN.P2TitleCustom;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.P2TitlePresets] = global::AtomUIGallery.ShowCases.Badge.zh_CN.P2TitlePresets;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RedBadgeDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.RedBadgeDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RedBadgeTitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.RedBadgeTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RibbonDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.RibbonDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RibbonTitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.RibbonTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.SizeDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.SizeDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.SizeTitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.SizeTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StandaloneDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.StandaloneDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StandaloneTitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.StandaloneTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.StatusDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.StatusTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameBadgeColor] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenNameBadgeColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameDotSize] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenNameDotSize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameIndicatorHeight] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenNameIndicatorHeight;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameIndicatorHeightSM] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenNameIndicatorHeightSM;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameStatusSize] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenNameStatusSize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameTextFontSize] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenNameTextFontSize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Badge.zh_CN.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -764,12 +840,33 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyBadgeColor] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertyBadgeColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyBadgeIsVisible] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertyBadgeIsVisible;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyCount] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertyCount;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyDotColor] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertyDotColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyIsZeroVisible] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertyIsZeroVisible;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyOffset] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertyOffset;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyOverflowCount] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertyOverflowCount;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyPlacement] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertyPlacement;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyRibbonColor] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertyRibbonColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertySize] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertySize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyStatus] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertyStatus;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ApiPropertyText] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ApiPropertyText;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ColorfulBadgeDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ColorfulBadgeDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ColorfulBadgeTitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ColorfulBadgeTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.DynamicDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.DynamicTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Badge.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Badge.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Badge.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.OffsetDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetTitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.OffsetTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OverflowCountDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.OverflowCountDescription;
@@ -807,16 +904,33 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.P2TextYellow] = global::AtomUIGallery.ShowCases.Badge.zh_TW.P2TextYellow;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.P2TitleCustom] = global::AtomUIGallery.ShowCases.Badge.zh_TW.P2TitleCustom;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.P2TitlePresets] = global::AtomUIGallery.ShowCases.Badge.zh_TW.P2TitlePresets;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RedBadgeDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.RedBadgeDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RedBadgeTitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.RedBadgeTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RibbonDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.RibbonDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.RibbonTitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.RibbonTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.SizeDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.SizeDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.SizeTitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.SizeTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StandaloneDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.StandaloneDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StandaloneTitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.StandaloneTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.StatusDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.StatusTitle;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameBadgeColor] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenNameBadgeColor;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameDotSize] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenNameDotSize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameIndicatorHeight] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenNameIndicatorHeight;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameIndicatorHeightSM] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenNameIndicatorHeightSM;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameStatusSize] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenNameStatusSize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenNameTextFontSize] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenNameTextFontSize;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Badge.zh_TW.TokenStatusStable;
             }
             catch (System.Exception)
             {

@@ -18,9 +18,10 @@
                                    AllowAutoHide="False"
                                    BringIntoViewOnFocusChange="False"
                                    IsLiteMode="False">
-                    <gallery:GalleryStickyTabsPanel>
+                    <gallery:GalleryStickyTabsPanel Name="PART_StickyPanel">
                         <ContentPresenter Content="{TemplateBinding Header}" />
-                        <Border Background="{TemplateBinding StickyBackground}"
+                        <Border Name="PART_StickyContentHost"
+                                Background="{TemplateBinding StickyBackground}"
                                 BorderBrush="{TemplateBinding StickyBorderBrush}"
                                 BorderThickness="0,0,0,1"
                                 Padding="{TemplateBinding StickyContentPadding}"
