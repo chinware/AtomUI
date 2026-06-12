@@ -200,9 +200,12 @@ DataGrid 规则：
 实现边界：
 
 - sticky 行为由 `GalleryStickyTabsPanel` arrange 单个 sticky 子项实现。
-- 不复制两份 TabStrip。
-- 不把 TabStrip 从视觉树中动态移来移去。
-- 不在滚动时创建或销毁视觉树。
+- 真实 StickyContent 必须始终保留在模板里的 inline presenter，不允许移动到 Popup、OverlayLayer 或其他 presenter。
+- 不允许通过清空 inline presenter 再把同一个 TabStrip 交给 overlay 的方式实现吸顶；这会导致 Tabs 消失或视觉树父级冲突。
+- Badge、Ribbon 等窗口级 Adorner 可能压过普通 sticky 内容时，只允许使用只读的 overlay mirror：在高层绘制 inline StickyContent 的视觉镜像，不能承载真实 TabStrip，且必须 `IsHitTestVisible=false`。
+- 不在滚动时创建或销毁真实 TabStrip 视觉树。
+- 不在 Content 外层包局部 `VisualLayerManager`，避免 Badge、Ribbon 等基于窗口级 `AdornerLayer` 的控件丢失装饰层。
+- sticky pinned 后，视觉镜像必须位于高于窗口级 `AdornerLayer` 的 overlay 层；`GalleryStickyTabsPanel` 仍可裁剪后续 Content，避免普通内容穿过 Tab 区域。
 - `ScrollChanged` 订阅必须在 detach 时释放。
 
 Token 规则：
@@ -236,7 +239,7 @@ ButtonShowCase 当前采用：
 - Header 左右：`28px`。
 - Sticky Tab 左右：`28px`。
 - Examples content 左右：`28px`。
-- Examples content 顶部：`10px`。
+- Examples content 顶部：默认 `10px`。
 
 原则：
 
@@ -244,7 +247,8 @@ ButtonShowCase 当前采用：
 - 滚动条应属于最外层页面滚动，不应被内容 padding 推离窗口右边。
 - Tab 与下面内容的垂直间距要统一，不应该只在第一个 Tab 生效。
 - DataGrid 页和 Examples 页的内容容器应共享同一套外边距策略。
-- API 和 Design Token 的 lazy DataGrid 必须设置 `Margin="28,10,28,0"`，与 Examples 的 `ContentMargin="28,10,28,0"` 保持一致。
+- API 和 Design Token 的 lazy DataGrid 必须设置 `Margin="28,10,28,0"`，默认与 Examples 的 `ContentMargin="28,10,28,0"` 保持一致。
+- Badge、Ribbon 等示例控件会通过 adorner 向上溢出时，Examples 可单独增加顶部留白，例如 Badge 使用 `ContentMargin="28,28,28,0"`，但左右边界仍必须保持 `28px`。
 
 ## ViewModel 与数据加载规则
 

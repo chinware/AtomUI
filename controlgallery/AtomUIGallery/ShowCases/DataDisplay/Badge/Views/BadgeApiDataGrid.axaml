@@ -1,0 +1,66 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Badge.BadgeApiDataGrid"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Badge">
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <atom:DataGrid x:Name="ApiDataGrid"
+                       AutoGenerateColumns="False"
+                       LeftFrozenColumnCount="1"
+                       GridLinesVisibility="Horizontal"
+                       IsFrameBorderVisible="True"
+                       IsHideOnSinglePage="True"
+                       IsReadOnly="True"
+                       PaginationVisibility="None"
+                       HorizontalScrollBarVisibility="Auto"
+                       Margin="28,10,28,0"
+                       HorizontalAlignment="Stretch"
+                       VerticalAlignment="Top"
+                       x:DataType="viewModels:BadgeApiRow">
+            <atom:DataGrid.Columns>
+                <atom:DataGridTemplateColumn Header="{gallery:BadgeShowCaseLangResource ApiColumnProperty}"
+                                             Width="170">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:BadgeApiRow">
+                            <atom:TextBlock Text="{Binding Property}"
+                                            FontFamily="Consolas"
+                                            VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:BadgeShowCaseLangResource ApiColumnDescription}"
+                                             MinWidth="520"
+                                             Width="*">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:BadgeApiRow">
+                            <atom:TextBlock Text="{Binding Description}"
+                                            TextWrapping="Wrap"
+                                            VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:BadgeShowCaseLangResource ApiColumnType}"
+                                             Width="190">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:BadgeApiRow">
+                            <atom:Tag Text="{Binding Type}"
+                                      TagColor="{Binding TypeTagColor}"
+                                      VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+                <atom:DataGridTemplateColumn Header="{gallery:BadgeShowCaseLangResource ApiColumnDefault}"
+                                             Width="130">
+                    <atom:DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="viewModels:BadgeApiRow">
+                            <atom:TextBlock Text="{Binding Default}"
+                                            FontFamily="Consolas"
+                                            VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:DataGridTemplateColumn.CellTemplate>
+                </atom:DataGridTemplateColumn>
+            </atom:DataGrid.Columns>
+        </atom:DataGrid>
+    </Grid>
+</UserControl>

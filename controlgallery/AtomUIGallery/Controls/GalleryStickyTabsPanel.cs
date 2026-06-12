@@ -1,6 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
+using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace AtomUIGallery.Controls;
@@ -13,7 +13,16 @@ public class GalleryStickyTabsPanel : Panel
     public static readonly StyledProperty<double> StickyOffsetYProperty =
         AvaloniaProperty.Register<GalleryStickyTabsPanel, double>(nameof(StickyOffsetY));
 
+    public static readonly DirectProperty<GalleryStickyTabsPanel, bool> IsStickyPinnedProperty =
+        AvaloniaProperty.RegisterDirect<GalleryStickyTabsPanel, bool>(
+            nameof(IsStickyPinned),
+            o => o.IsStickyPinned);
+
+    private static readonly AttachedProperty<RectangleGeometry?> StickyClipGeometryProperty =
+        AvaloniaProperty.RegisterAttached<GalleryStickyTabsPanel, Visual, RectangleGeometry?>("StickyClipGeometry");
+
     private ScrollViewer? _scrollViewer;
+    private bool _isStickyPinned;
 
     public int StickyIndex
     {
@@ -25,6 +34,12 @@ public class GalleryStickyTabsPanel : Panel
     {
         get => GetValue(StickyOffsetYProperty);
         set => SetValue(StickyOffsetYProperty, value);
+    }
+
+    public bool IsStickyPinned
+    {
+        get => _isStickyPinned;
+        private set => SetAndRaise(IsStickyPinnedProperty, ref _isStickyPinned, value);
     }
 
     static GalleryStickyTabsPanel()
@@ -75,13 +90,16 @@ public class GalleryStickyTabsPanel : Panel
 
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var y = 0d;
+        var y            = 0d;
+        var stickyBottom = double.NegativeInfinity;
+        var isStickyPinned = false;
         for (var i = 0; i < Children.Count; i++)
         {
             var child = Children[i];
             if (!child.IsVisible)
             {
                 child.Arrange(default);
+                ClearStickyClip(child);
                 continue;
             }
 
@@ -92,10 +110,66 @@ public class GalleryStickyTabsPanel : Panel
                 : naturalY;
 
             child.Arrange(new Rect(0, arrangeY, finalSize.Width, height));
+            if (i == StickyIndex)
+            {
+                stickyBottom = arrangeY + height;
+                isStickyPinned = arrangeY > naturalY;
+                ClearStickyClip(child);
+            }
+            else if (i > StickyIndex)
+            {
+                ApplyStickyClip(child, stickyBottom, naturalY, finalSize.Width, height);
+            }
+            else
+            {
+                ClearStickyClip(child);
+            }
+
             y += height;
         }
 
+        IsStickyPinned = isStickyPinned;
         return finalSize;
+    }
+
+    private static void ApplyStickyClip(Control child,
+                                        double stickyBottom,
+                                        double naturalY,
+                                        double width,
+                                        double height)
+    {
+        var clipTop = Math.Max(0, stickyBottom - naturalY);
+        if (clipTop <= 0)
+        {
+            ClearStickyClip(child);
+            return;
+        }
+
+        var clip = child.GetValue(StickyClipGeometryProperty);
+        if (clip is null)
+        {
+            clip = new RectangleGeometry();
+            child.SetValue(StickyClipGeometryProperty, clip);
+        }
+
+        clip.Rect = new Rect(0, clipTop, width, Math.Max(0, height - clipTop));
+        child.Clip = clip;
+    }
+
+    private static void ClearStickyClip(Control child)
+    {
+        var clip = child.GetValue(StickyClipGeometryProperty);
+        if (clip is null)
+        {
+            return;
+        }
+
+        if (ReferenceEquals(child.Clip, clip))
+        {
+            child.Clip = null;
+        }
+
+        child.ClearValue(StickyClipGeometryProperty);
     }
 
     private void AttachScrollViewer()

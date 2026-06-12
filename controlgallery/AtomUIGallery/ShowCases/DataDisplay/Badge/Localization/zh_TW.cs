@@ -6,6 +6,44 @@ namespace AtomUIGallery.ShowCases.Badge;
 [LanguageProvider(LanguageCode.zh_TW, BadgeShowCase.LanguageId)]
 internal partial class zh_TW : LanguageProvider
 {
+    public const string ScenarioExamples = "範例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計 Token";
+    public const string ComponentCategory = "資料展示";
+    public const string ComponentStatusStable = "穩定";
+    public const string PageSubtitle = "在相關內容旁突出數量、狀態和上下文標籤。";
+    public const string PageDescription = "Badge 用於提示通知、計數、狀態點和緞帶標籤，在不打斷使用者流程的情況下強調需要關注的資訊。";
+    public const string InfoNamespaceLabel = "命名空間:";
+    public const string InfoPackageLabel = "套件:";
+    public const string InfoBaseClassLabel = "基類:";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "預設值";
+    public const string ApiPropertyCount = "在數字徽標中顯示數值。";
+    public const string ApiPropertyOverflowCount = "當 Count 大於配置上限時顯示封頂文字。";
+    public const string ApiPropertyBadgeColor = "使用預設色或 CSS 色彩字串覆蓋徽標色彩。";
+    public const string ApiPropertyIsZeroVisible = "Count 為 0 時仍保持數字徽標可見。";
+    public const string ApiPropertyOffset = "調整徽標相對預設錨點的位置。";
+    public const string ApiPropertySize = "在預設和小號數字徽標尺寸之間切換。";
+    public const string ApiPropertyBadgeIsVisible = "控制徽標指示器是否渲染。";
+    public const string ApiPropertyStatus = "為點狀徽標套用語意化狀態樣式。";
+    public const string ApiPropertyDotColor = "為獨立點狀徽標設定預設色或自訂色彩。";
+    public const string ApiPropertyText = "在點狀徽標旁或緞帶徽標中顯示文字。";
+    public const string ApiPropertyRibbonColor = "使用預設色或自訂值設定緞帶徽標色彩。";
+    public const string ApiPropertyPlacement = "將緞帶徽標放置在起始側或結束側。";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "範圍";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenNameBadgeColor = "數字和點狀徽標指示器的預設色彩。";
+    public const string TokenNameIndicatorHeight = "預設數字徽標指示器高度。";
+    public const string TokenNameIndicatorHeightSM = "小號數字徽標指示器高度。";
+    public const string TokenNameDotSize = "點狀和狀態徽標指示器尺寸。";
+    public const string TokenNameTextFontSize = "數字徽標文字字號。";
+    public const string TokenNameStatusSize = "獨立狀態點尺寸。";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最簡單的用法。count 為 0 時 Badge 會隱藏，但可以使用 showZero 顯示。";
     public const string OverflowCountTitle = "封頂數字";
@@ -63,4 +101,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(BadgeShowCaseLangResourceKind);
 }
-
