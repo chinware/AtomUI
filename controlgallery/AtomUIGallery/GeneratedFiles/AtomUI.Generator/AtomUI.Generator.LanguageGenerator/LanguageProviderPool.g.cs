@@ -14325,12 +14325,29 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyColor] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiPropertyColor;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyIsArrowVisible] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiPropertyIsArrowVisible;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyIsPointAtCenter] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiPropertyIsPointAtCenter;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyPlacement] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiPropertyPlacement;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyPresetColor] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiPropertyPresetColor;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyShowDelay] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiPropertyShowDelay;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyShowOnDisabled] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiPropertyShowOnDisabled;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyTip] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ApiPropertyTip;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ArrowDescription] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ArrowDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ArrowTitle] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ArrowTitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Tooltip.en_US.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Tooltip.en_US.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ColorfulTooltipDescription] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ColorfulTooltipDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ColorfulTooltipTitle] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ColorfulTooltipTitle;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tooltip.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tooltip.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tooltip.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBL] = global::AtomUIGallery.ShowCases.Tooltip.en_US.P2ContentBL;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBlue] = global::AtomUIGallery.ShowCases.Tooltip.en_US.P2ContentBlue;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Tooltip.en_US.P2ContentBottom;
@@ -14364,8 +14381,25 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2TextPresets] = global::AtomUIGallery.ShowCases.Tooltip.en_US.P2TextPresets;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2TextTooltipWillShowOnMouseEnter] = global::AtomUIGallery.ShowCases.Tooltip.en_US.P2TextTooltipWillShowOnMouseEnter;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ToolTipTipPromptText] = global::AtomUIGallery.ShowCases.Tooltip.en_US.P2ToolTipTipPromptText;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Tooltip.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Tooltip.en_US.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PlacementDescription] = global::AtomUIGallery.ShowCases.Tooltip.en_US.PlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PlacementTitle] = global::AtomUIGallery.ShowCases.Tooltip.en_US.PlacementTitle;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameBorderRadiusOuter] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenNameBorderRadiusOuter;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameMotionDuration] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenNameMotionDuration;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNamePadding] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenNamePadding;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameToolTipBackground] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenNameToolTipBackground;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameToolTipColor] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenNameToolTipColor;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameToolTipMaxWidth] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenNameToolTipMaxWidth;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Tooltip.en_US.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -14392,12 +14426,29 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyColor] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiPropertyColor;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyIsArrowVisible] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiPropertyIsArrowVisible;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyIsPointAtCenter] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiPropertyIsPointAtCenter;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyPlacement] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiPropertyPlacement;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyPresetColor] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiPropertyPresetColor;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyShowDelay] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiPropertyShowDelay;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyShowOnDisabled] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiPropertyShowOnDisabled;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyTip] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ApiPropertyTip;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ArrowDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ArrowDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ArrowTitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ArrowTitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ColorfulTooltipDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ColorfulTooltipDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ColorfulTooltipTitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ColorfulTooltipTitle;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBL] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.P2ContentBL;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBlue] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.P2ContentBlue;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.P2ContentBottom;
@@ -14431,8 +14482,25 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2TextPresets] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.P2TextPresets;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2TextTooltipWillShowOnMouseEnter] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.P2TextTooltipWillShowOnMouseEnter;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ToolTipTipPromptText] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.P2ToolTipTipPromptText;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PlacementDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.PlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PlacementTitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.PlacementTitle;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameBorderRadiusOuter] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenNameBorderRadiusOuter;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameMotionDuration] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenNameMotionDuration;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNamePadding] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenNamePadding;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameToolTipBackground] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenNameToolTipBackground;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameToolTipColor] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenNameToolTipColor;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameToolTipMaxWidth] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenNameToolTipMaxWidth;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -14459,12 +14527,29 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyColor] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiPropertyColor;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyIsArrowVisible] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiPropertyIsArrowVisible;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyIsPointAtCenter] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiPropertyIsPointAtCenter;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyPlacement] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiPropertyPlacement;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyPresetColor] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiPropertyPresetColor;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyShowDelay] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiPropertyShowDelay;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyShowOnDisabled] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiPropertyShowOnDisabled;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ApiPropertyTip] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ApiPropertyTip;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ArrowDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ArrowDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ArrowTitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ArrowTitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ColorfulTooltipDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ColorfulTooltipDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ColorfulTooltipTitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ColorfulTooltipTitle;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBL] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.P2ContentBL;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBlue] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.P2ContentBlue;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.P2ContentBottom;
@@ -14498,8 +14583,25 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2TextPresets] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.P2TextPresets;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2TextTooltipWillShowOnMouseEnter] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.P2TextTooltipWillShowOnMouseEnter;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ToolTipTipPromptText] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.P2ToolTipTipPromptText;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PlacementDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.PlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.PlacementTitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.PlacementTitle;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameBorderRadiusOuter] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenNameBorderRadiusOuter;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameMotionDuration] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenNameMotionDuration;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNamePadding] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenNamePadding;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameToolTipBackground] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenNameToolTipBackground;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameToolTipColor] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenNameToolTipColor;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenNameToolTipMaxWidth] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenNameToolTipMaxWidth;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.TokenStatusStable;
             }
             catch (System.Exception)
             {
