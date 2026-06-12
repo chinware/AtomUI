@@ -49,6 +49,43 @@ internal partial class zh_CN : LanguageProvider
     public const string P2ContentTag4 = "标签4";
 
     public const string P2TextMaterialIcon = "Material 图标";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "设计令牌";
+    public const string PageSubtitle = "用紧凑的彩色标签进行标记、分类和状态表达。";
+    public const string PageDescription =
+        "Tag 用于展示短标签，支持预设颜色、自定义颜色、图标、可关闭操作和无边框状态样式。";
+    public const string ComponentCategory = "数据展示";
+    public const string ComponentStatusStable = "稳定";
+    public const string InfoNamespaceLabel = "命名空间";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基类";
+    public const string ApiColumnProperty = "属性";
+    public const string ApiColumnDescription = "说明";
+    public const string ApiColumnType = "类型";
+    public const string ApiColumnDefault = "默认值";
+    public const string ApiPropertyText = "标签内部显示的文本。";
+    public const string ApiPropertyTagColor = "标签使用的预设色、状态色或十六进制颜色。";
+    public const string ApiPropertyIsClosable = "启用后显示关闭操作按钮。";
+    public const string ApiPropertyIsBordered = "显示或隐藏标签边框。";
+    public const string ApiPropertyIcon = "显示在标签文本前面的可选图标。";
+    public const string ApiPropertyCloseIcon = "关闭操作使用的可选图标。";
+    public const string ApiEventClosed = "点击关闭操作时触发。";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "说明";
+    public const string TokenColumnScope = "作用域";
+    public const string TokenColumnStatus = "状态";
+    public const string TokenNameDefaultBg = "标签默认背景色。";
+    public const string TokenNameDefaultColor = "标签默认文本颜色。";
+    public const string TokenNameTagFontSize = "标签文本字号。";
+    public const string TokenNameTagLineHeight = "标签文本行高。";
+    public const string TokenNameTagIconSize = "标签前置图标尺寸。";
+    public const string TokenNameTagCloseIconSize = "关闭图标尺寸。";
+    public const string TokenNameTagPadding = "标签内容周围的内边距。";
+    public const string TokenNameTagTextPaddingInline = "标签文本两侧的内边距。";
+    public const string TokenNameTagBorderlessBg = "无边框标签使用的背景色。";
+    public const string TokenScopeComponent = "组件";
+    public const string TokenStatusStable = "稳定";
 
     protected override Type GetResourceKindType() => typeof(TagShowCaseLangResourceKind);
 }
