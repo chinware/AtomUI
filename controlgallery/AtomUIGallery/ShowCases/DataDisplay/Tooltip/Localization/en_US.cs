@@ -74,6 +74,41 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentMagenta = "Magenta";
 
     public const string P2ContentGrey = "Grey";
+    public const string ScenarioExamples = "Examples";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "Design Token";
+    public const string PageSubtitle = "Display contextual hints when users hover or focus an element.";
+    public const string PageDescription =
+        "Tooltip provides concise helper text, placement control, arrow behavior and preset or custom colors for lightweight contextual guidance.";
+    public const string ComponentCategory = "Data Display";
+    public const string ComponentStatusStable = "Stable";
+    public const string InfoNamespaceLabel = "Namespace";
+    public const string InfoPackageLabel = "Package";
+    public const string InfoBaseClassLabel = "Base class";
+    public const string ApiColumnProperty = "Property";
+    public const string ApiColumnDescription = "Description";
+    public const string ApiColumnType = "Type";
+    public const string ApiColumnDefault = "Default";
+    public const string ApiPropertyTip = "Content displayed inside the tooltip.";
+    public const string ApiPropertyPlacement = "Preferred popup placement relative to the target control.";
+    public const string ApiPropertyIsArrowVisible = "Shows or hides the tooltip arrow when the placement supports it.";
+    public const string ApiPropertyIsPointAtCenter = "Points the arrow at the center of the target control.";
+    public const string ApiPropertyPresetColor = "Preset color used by the tooltip background.";
+    public const string ApiPropertyColor = "Custom background color used by the tooltip.";
+    public const string ApiPropertyShowDelay = "Delay in milliseconds before showing the tooltip.";
+    public const string ApiPropertyShowOnDisabled = "Allows tooltip display for disabled target controls.";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "Description";
+    public const string TokenColumnScope = "Scope";
+    public const string TokenColumnStatus = "Status";
+    public const string TokenNameToolTipBackground = "Default tooltip background color.";
+    public const string TokenNameToolTipColor = "Default tooltip foreground color.";
+    public const string TokenNameToolTipMaxWidth = "Maximum width before tooltip content wraps.";
+    public const string TokenNameBorderRadiusOuter = "Outer corner radius used by the tooltip surface.";
+    public const string TokenNamePadding = "Padding around tooltip content.";
+    public const string TokenNameMotionDuration = "Motion duration used by tooltip open and close animations.";
+    public const string TokenScopeComponent = "Component";
+    public const string TokenStatusStable = "Stable";
 
     protected override Type GetResourceKindType() => typeof(TooltipShowCaseLangResourceKind);
 }
