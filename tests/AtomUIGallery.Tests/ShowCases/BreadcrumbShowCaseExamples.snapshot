@@ -1,0 +1,75 @@
+<gallery:ShowCaseItem
+            Title="{gallery:BreadcrumbShowCaseLangResource BasicUsageTitle}"
+            Description="{gallery:BreadcrumbShowCaseLangResource BasicUsageDescription}">
+            <StackPanel>
+                <atom:Breadcrumb>
+                    <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentHome}" />
+                    <atom:BreadcrumbItem NavigateContext="#" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentApplicationCenter}" />
+                    <atom:BreadcrumbItem NavigateContext="#" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentApplicationList}" />
+                    <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentAnApplication}" />
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:BreadcrumbShowCaseLangResource WithIconTitle}"
+            Description="{gallery:BreadcrumbShowCaseLangResource WithIconDescription}">
+            <StackPanel>
+                <atom:Breadcrumb>
+                    <atom:BreadcrumbItem Icon="{antdicons:AntDesignIconProvider Kind=HomeOutlined}"></atom:BreadcrumbItem>
+                    <atom:BreadcrumbItem Icon="{antdicons:AntDesignIconProvider Kind=UserOutlined}" NavigateContext="#" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentApplicationList}" />
+                    <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentApplication}" />
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:BreadcrumbShowCaseLangResource WithParamsTitle}"
+            Description="{gallery:BreadcrumbShowCaseLangResource WithParamsDescription}">
+            <StackPanel>
+                <atom:Breadcrumb NavigateRequest="HandleNavigateRequest">
+                    <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentUsers}" />
+                    <atom:BreadcrumbItem NavigateContext="Param(1)" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentParam}" />
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorTitle}"
+            Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorDescription}">
+            <StackPanel>
+                <atom:Breadcrumb Separator=">">
+                    <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentHome}" />
+                    <atom:BreadcrumbItem NavigateContext="#" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentApplicationCenter}" />
+                    <atom:BreadcrumbItem NavigateContext="#" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentApplicationList}" />
+                    <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentAnApplication}" />
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyTitle}"
+            Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyDescription}">
+            <StackPanel>
+                <atom:Breadcrumb>
+                    <atom:BreadcrumbItem Separator=":" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentLocation}" />
+                    <atom:BreadcrumbItem NavigateContext="#" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentApplicationCenter}" />
+                    <atom:BreadcrumbItem NavigateContext="#" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentApplicationList}" />
+                    <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentAnApplication}" />
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateTitle}"
+            Description="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateDescription}">
+            <StackPanel>
+                <atom:Breadcrumb Name="TplBreadcrumb">
+                    <atom:Breadcrumb.ItemTemplate>
+                        <DataTemplate x:DataType="atom:BreadcrumbItemData">
+                            <TextBlock Text="{Binding Content}"/>
+                        </DataTemplate>
+                    </atom:Breadcrumb.ItemTemplate>
+                </atom:Breadcrumb>
+            </StackPanel>
+        </gallery:ShowCaseItem>
