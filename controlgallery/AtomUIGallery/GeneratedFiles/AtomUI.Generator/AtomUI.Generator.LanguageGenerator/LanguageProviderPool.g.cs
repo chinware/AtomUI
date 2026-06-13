@@ -2364,23 +2364,61 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyAutoPlaySpeed] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiPropertyAutoPlaySpeed;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsAutoPlay] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiPropertyIsAutoPlay;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsInfinite] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiPropertyIsInfinite;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsShowNavButtons] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiPropertyIsShowNavButtons;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsShowPagination] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiPropertyIsShowPagination;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsShowTransitionProgress] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiPropertyIsShowTransitionProgress;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsSwipeEnabled] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiPropertyIsSwipeEnabled;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyPageTransitionDuration] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiPropertyPageTransitionDuration;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyPaginationPosition] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiPropertyPaginationPosition;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyTransitionEffect] = global::AtomUIGallery.ShowCases.Carousel.en_US.ApiPropertyTransitionEffect;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.AutoScrollDescription] = global::AtomUIGallery.ShowCases.Carousel.en_US.AutoScrollDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.AutoScrollTitle] = global::AtomUIGallery.ShowCases.Carousel.en_US.AutoScrollTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Carousel.en_US.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Carousel.en_US.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.CardShapePositionDescription] = global::AtomUIGallery.ShowCases.Carousel.en_US.CardShapePositionDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.CardShapePositionTitle] = global::AtomUIGallery.ShowCases.Carousel.en_US.CardShapePositionTitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Carousel.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Carousel.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.DotsProgressDescription] = global::AtomUIGallery.ShowCases.Carousel.en_US.DotsProgressDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.DotsProgressTitle] = global::AtomUIGallery.ShowCases.Carousel.en_US.DotsProgressTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInDescription] = global::AtomUIGallery.ShowCases.Carousel.en_US.FadeInDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInTitle] = global::AtomUIGallery.ShowCases.Carousel.en_US.FadeInTitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Carousel.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Carousel.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Carousel.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Carousel.en_US.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentLeft] = global::AtomUIGallery.ShowCases.Carousel.en_US.P2ContentLeft;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentRight] = global::AtomUIGallery.ShowCases.Carousel.en_US.P2ContentRight;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentTop] = global::AtomUIGallery.ShowCases.Carousel.en_US.P2ContentTop;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2TextPaginationPosition] = global::AtomUIGallery.ShowCases.Carousel.en_US.P2TextPaginationPosition;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Carousel.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Carousel.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Carousel.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Carousel.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Carousel.en_US.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.SwitchArrowsDescription] = global::AtomUIGallery.ShowCases.Carousel.en_US.SwitchArrowsDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.SwitchArrowsTitle] = global::AtomUIGallery.ShowCases.Carousel.en_US.SwitchArrowsTitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameArrowOffset] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenNameArrowOffset;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameArrowSize] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenNameArrowSize;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorActiveWidth] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenNameIndicatorActiveWidth;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorGap] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenNameIndicatorGap;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorHeight] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenNameIndicatorHeight;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorWidth] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenNameIndicatorWidth;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNamePaginationOffset] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenNamePaginationOffset;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Carousel.en_US.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -2407,23 +2445,61 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyAutoPlaySpeed] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiPropertyAutoPlaySpeed;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsAutoPlay] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiPropertyIsAutoPlay;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsInfinite] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiPropertyIsInfinite;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsShowNavButtons] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiPropertyIsShowNavButtons;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsShowPagination] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiPropertyIsShowPagination;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsShowTransitionProgress] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiPropertyIsShowTransitionProgress;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsSwipeEnabled] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiPropertyIsSwipeEnabled;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyPageTransitionDuration] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiPropertyPageTransitionDuration;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyPaginationPosition] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiPropertyPaginationPosition;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyTransitionEffect] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ApiPropertyTransitionEffect;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.AutoScrollDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.AutoScrollDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.AutoScrollTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.AutoScrollTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.CardShapePositionDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.CardShapePositionDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.CardShapePositionTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.CardShapePositionTitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.DotsProgressDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.DotsProgressDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.DotsProgressTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.DotsProgressTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.FadeInDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.FadeInTitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentLeft] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.P2ContentLeft;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentRight] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.P2ContentRight;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentTop] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.P2ContentTop;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2TextPaginationPosition] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.P2TextPaginationPosition;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.SwitchArrowsDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.SwitchArrowsDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.SwitchArrowsTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.SwitchArrowsTitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameArrowOffset] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenNameArrowOffset;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameArrowSize] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenNameArrowSize;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorActiveWidth] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenNameIndicatorActiveWidth;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorGap] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenNameIndicatorGap;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorHeight] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenNameIndicatorHeight;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorWidth] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenNameIndicatorWidth;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNamePaginationOffset] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenNamePaginationOffset;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -2450,23 +2526,61 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyAutoPlaySpeed] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiPropertyAutoPlaySpeed;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsAutoPlay] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiPropertyIsAutoPlay;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsInfinite] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiPropertyIsInfinite;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsShowNavButtons] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiPropertyIsShowNavButtons;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsShowPagination] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiPropertyIsShowPagination;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsShowTransitionProgress] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiPropertyIsShowTransitionProgress;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyIsSwipeEnabled] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiPropertyIsSwipeEnabled;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyPageTransitionDuration] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiPropertyPageTransitionDuration;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyPaginationPosition] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiPropertyPaginationPosition;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ApiPropertyTransitionEffect] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ApiPropertyTransitionEffect;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.AutoScrollDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.AutoScrollDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.AutoScrollTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.AutoScrollTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.CardShapePositionDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.CardShapePositionDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.CardShapePositionTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.CardShapePositionTitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.DotsProgressDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.DotsProgressDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.DotsProgressTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.DotsProgressTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.FadeInDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.FadeInTitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentLeft] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.P2ContentLeft;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentRight] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.P2ContentRight;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentTop] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.P2ContentTop;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2TextPaginationPosition] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.P2TextPaginationPosition;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.SwitchArrowsDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.SwitchArrowsDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.SwitchArrowsTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.SwitchArrowsTitle;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameArrowOffset] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenNameArrowOffset;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameArrowSize] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenNameArrowSize;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorActiveWidth] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenNameIndicatorActiveWidth;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorGap] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenNameIndicatorGap;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorHeight] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenNameIndicatorHeight;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNameIndicatorWidth] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenNameIndicatorWidth;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenNamePaginationOffset] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenNamePaginationOffset;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.TokenStatusStable;
             }
             catch (System.Exception)
             {
