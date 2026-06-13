@@ -126,10 +126,16 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
         <gallery:ShowCaseItem
             Title="{gallery:SeparatorShowCaseLangResource HorizontalTitle}"
-            Description="{gallery:SeparatorShowCaseLangResource HorizontalDescription}">
+            Description="{gallery:SeparatorShowCaseLangResource HorizontalDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SeparatorViewModel">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
                 <atom:Separator/>
@@ -137,11 +143,16 @@
                 <atom:Separator/>
                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:SeparatorShowCaseLangResource DividerWithTitleTitle}"
-            Description="{gallery:SeparatorShowCaseLangResource DividerWithTitleDescription}">
+            Description="{gallery:SeparatorShowCaseLangResource DividerWithTitleDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SeparatorViewModel">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
                 <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleText}" FontStyle="Italic" IsVisible="False"/>
@@ -159,11 +170,16 @@
                                 OrientationMargin="50" />
                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:SeparatorShowCaseLangResource PlainTextTitle}"
-            Description="{gallery:SeparatorShowCaseLangResource PlainTextDescription}">
+            Description="{gallery:SeparatorShowCaseLangResource PlainTextDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SeparatorViewModel">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
                 <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleText}" IsPlain="True"/>
@@ -173,11 +189,16 @@
                 <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleRightText2}" TitlePosition="Right" IsPlain="True"/>
                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:SeparatorShowCaseLangResource SpacingSizeTitle}"
-            Description="{gallery:SeparatorShowCaseLangResource SpacingSizeDescription}">
+            Description="{gallery:SeparatorShowCaseLangResource SpacingSizeDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SeparatorViewModel">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
                 <atom:Separator SizeType="Small"/>
@@ -187,11 +208,16 @@
                 <atom:Separator SizeType="Large"/>
                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:SeparatorShowCaseLangResource VerticalTitle}"
-            Description="{gallery:SeparatorShowCaseLangResource VerticalDescription}">
+            Description="{gallery:SeparatorShowCaseLangResource VerticalDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SeparatorViewModel">
             <StackPanel Orientation="Horizontal">
                 <atom:TextBlock Text="{gallery:SeparatorShowCaseLangResource P2TextItem1}" />
                 <atom:VerticalSeparator Title="{gallery:SeparatorShowCaseLangResource P2TitleRightText}" />
@@ -199,11 +225,16 @@
                 <atom:VerticalSeparator />
                 <atom:TextBlock Text="{gallery:SeparatorShowCaseLangResource P2TextItem3}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:SeparatorShowCaseLangResource VariantTitle}"
-            Description="{gallery:SeparatorShowCaseLangResource VariantDescription}">
+            Description="{gallery:SeparatorShowCaseLangResource VariantDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SeparatorViewModel">
             <StackPanel Orientation="Vertical">
                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
                 <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleSolid}" LineColor="#7cb305"/>
@@ -213,6 +244,8 @@
                 <atom:Separator Title="{gallery:SeparatorShowCaseLangResource P2TitleDashed}" LineColor="#7cb305" Variant="Dashed"/>
                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SeparatorShowCaseLangResource P2TextLoremIpsumDolorSitAmetConsecteturAdipiscingElit}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

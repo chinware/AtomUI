@@ -72,11 +72,25 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
     }
 
     private SelectionMode _selectionMode;
+    private string? _searchFilterValue;
+    private IList<IListSortDescription>? _orderedSortDescriptions;
 
     public SelectionMode SelectionMode
     {
         get => _selectionMode;
         set => this.RaiseAndSetIfChanged(ref _selectionMode, value);
+    }
+
+    public string? SearchFilterValue
+    {
+        get => _searchFilterValue;
+        set => this.RaiseAndSetIfChanged(ref _searchFilterValue, value);
+    }
+
+    public IList<IListSortDescription>? OrderedSortDescriptions
+    {
+        get => _orderedSortDescriptions;
+        set => this.RaiseAndSetIfChanged(ref _orderedSortDescriptions, value);
     }
 
     private List<IListItemData>? _basicListBoxItems;

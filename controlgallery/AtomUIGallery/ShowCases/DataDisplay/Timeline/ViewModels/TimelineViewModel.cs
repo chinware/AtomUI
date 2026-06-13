@@ -18,6 +18,8 @@ public class TimelineViewModel : ReactiveObject, IRoutableViewModel
 
     private ObservableCollection<TimelineApiRow>? _apiRows;
     private ObservableCollection<TimelineDesignTokenRow>? _designTokenRows;
+    private bool _reverseTimelineIsReverse;
+    private TimelineMode _selectedTimelineMode = TimelineMode.Left;
 
     public ObservableCollection<TimelineApiRow>? ApiRows
     {
@@ -29,6 +31,18 @@ public class TimelineViewModel : ReactiveObject, IRoutableViewModel
     {
         get => _designTokenRows;
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
+    }
+
+    public bool ReverseTimelineIsReverse
+    {
+        get => _reverseTimelineIsReverse;
+        set => this.RaiseAndSetIfChanged(ref _reverseTimelineIsReverse, value);
+    }
+
+    public TimelineMode SelectedTimelineMode
+    {
+        get => _selectedTimelineMode;
+        set => this.RaiseAndSetIfChanged(ref _selectedTimelineMode, value);
     }
 
     public TimelineViewModel(IScreen screen)

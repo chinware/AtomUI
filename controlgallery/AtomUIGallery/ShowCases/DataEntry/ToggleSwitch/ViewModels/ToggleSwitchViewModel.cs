@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUIGallery.Localization;
@@ -18,6 +19,8 @@ public class ToggleSwitchViewModel : ReactiveObject, IRoutableViewModel
 
     private ObservableCollection<ToggleSwitchApiRow>? _apiRows;
     private ObservableCollection<ToggleSwitchDesignTokenRow>? _designTokenRows;
+    private bool _isDisabledDemoEnabled = true;
+    private bool _isLoadingDemoLoading  = true;
 
     public ObservableCollection<ToggleSwitchApiRow>? ApiRows
     {
@@ -31,9 +34,27 @@ public class ToggleSwitchViewModel : ReactiveObject, IRoutableViewModel
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
     }
 
+    public bool IsDisabledDemoEnabled
+    {
+        get => _isDisabledDemoEnabled;
+        set => this.RaiseAndSetIfChanged(ref _isDisabledDemoEnabled, value);
+    }
+
+    public bool IsLoadingDemoLoading
+    {
+        get => _isLoadingDemoLoading;
+        set => this.RaiseAndSetIfChanged(ref _isLoadingDemoLoading, value);
+    }
+
+    public ReactiveCommand<Unit, Unit> ToggleDisabledCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> ToggleLoadingCommand { get; }
+
     public ToggleSwitchViewModel(IScreen screen)
     {
-        HostScreen = screen;
+        HostScreen             = screen;
+        ToggleDisabledCommand  = ReactiveCommand.Create(() => { IsDisabledDemoEnabled = !IsDisabledDemoEnabled; });
+        ToggleLoadingCommand   = ReactiveCommand.Create(() => { IsLoadingDemoLoading = !IsLoadingDemoLoading; });
     }
 
     public void EnsureApiRows()

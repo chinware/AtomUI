@@ -38,9 +38,19 @@ IsOccupyEntireRow="True">
 IsOccupyEntireRow="True">
 <StackPanel Orientation="Vertical" Spacing="30">
 <StackPanel Orientation="Horizontal" Spacing="10">
-<atom:RadioButton Name="DefaultSizeRadioButton" IsChecked="True" Content="{gallery:DescriptionsShowCaseLangResource P2ContentLarge}" />
-<atom:RadioButton Name="MiddleSizeRadioButton" Content="{gallery:DescriptionsShowCaseLangResource P2ContentMiddle}" />
-<atom:RadioButton Name="SmallSizeRadioButton" Content="{gallery:DescriptionsShowCaseLangResource P2ContentSmall}" />
+<atom:RadioButton Name="DefaultSizeRadioButton"
+IsChecked="True"
+Tag="{x:Static atom:SizeType.Large}"
+IsCheckedChanged="SizeTypeCheckChanged"
+Content="{gallery:DescriptionsShowCaseLangResource P2ContentLarge}" />
+<atom:RadioButton Name="MiddleSizeRadioButton"
+Tag="{x:Static atom:SizeType.Middle}"
+IsCheckedChanged="SizeTypeCheckChanged"
+Content="{gallery:DescriptionsShowCaseLangResource P2ContentMiddle}" />
+<atom:RadioButton Name="SmallSizeRadioButton"
+Tag="{x:Static atom:SizeType.Small}"
+IsCheckedChanged="SizeTypeCheckChanged"
+Content="{gallery:DescriptionsShowCaseLangResource P2ContentSmall}" />
 </StackPanel>
 <atom:Descriptions IsBordered="True"
 SizeType="{Binding DescriptionsSizeType}"

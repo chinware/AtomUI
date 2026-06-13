@@ -127,20 +127,31 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
                     <gallery:ShowCaseItem
                         Title="{gallery:GroupBoxShowCaseLangResource BasicTitle}"
-                        Description="{gallery:GroupBoxShowCaseLangResource BasicDescription}">
+                        Description="{gallery:GroupBoxShowCaseLangResource BasicDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:GroupBoxViewModel">
                         <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}">
                             <Panel Height="100">
                                 <atom:TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:GroupBoxShowCaseLangResource P2TextContentOfGroupBox}" />
                             </Panel>
                         </atom:GroupBox>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:GroupBoxShowCaseLangResource HeaderPositionTitle}"
-                        Description="{gallery:GroupBoxShowCaseLangResource HeaderPositionDescription}">
+                        Description="{gallery:GroupBoxShowCaseLangResource HeaderPositionDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:GroupBoxViewModel">
                         <StackPanel Orientation="Vertical" Spacing="10">
                             <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}">
                                 <Panel Height="40">
@@ -158,11 +169,16 @@
                                 </Panel>
                             </atom:GroupBox>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:GroupBoxShowCaseLangResource HeaderStyleTitle}"
-                        Description="{gallery:GroupBoxShowCaseLangResource HeaderStyleDescription}">
+                        Description="{gallery:GroupBoxShowCaseLangResource HeaderStyleDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:GroupBoxViewModel">
                         <StackPanel Orientation="Vertical" Spacing="10">
                             <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}" HeaderFontStyle="Italic">
                                 <Panel Height="40">
@@ -186,16 +202,23 @@
                                 </Panel>
                             </atom:GroupBox>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:GroupBoxShowCaseLangResource HeaderIconTitle}"
-                        Description="{gallery:GroupBoxShowCaseLangResource HeaderIconDescription}">
+                        Description="{gallery:GroupBoxShowCaseLangResource HeaderIconDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:GroupBoxViewModel">
                         <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource P2HeaderTitleTitleInfo}" HeaderIcon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}">
                             <Panel Height="100">
                                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:GroupBoxShowCaseLangResource P2TextContentOfGroupBox}" />
                             </Panel>
                         </atom:GroupBox>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

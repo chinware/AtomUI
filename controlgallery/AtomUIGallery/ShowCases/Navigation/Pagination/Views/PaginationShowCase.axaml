@@ -126,52 +126,78 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
         <gallery:ShowCaseItem
             Title="{gallery:PaginationShowCaseLangResource BasicTitle}"
             Description="{gallery:PaginationShowCaseLangResource BasicDescription}"
             IsOccupyEntireRow="True"
-            MinHeight="200">
+            MinHeight="200"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:PaginationViewModel">
             <atom:Pagination Total="50" CurrentPage="1" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:PaginationShowCaseLangResource AlignTitle}"
             Description="{gallery:PaginationShowCaseLangResource AlignDescription}"
             IsOccupyEntireRow="True"
-            MinHeight="300">
+            MinHeight="300"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:PaginationViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Pagination Total="50" CurrentPage="1" Align="Start" />
                 <atom:Pagination Total="50" CurrentPage="1" Align="Center" />
                 <atom:Pagination Total="50" CurrentPage="1" Align="End" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:PaginationShowCaseLangResource MoreTitle}"
             Description="{gallery:PaginationShowCaseLangResource MoreDescription}"
             IsOccupyEntireRow="True"
-            MinHeight="300">
+            MinHeight="300"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:PaginationViewModel">
             <atom:Pagination Total="500" CurrentPage="6" IsShowSizeChanger="True" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:PaginationShowCaseLangResource MoreTitle}"
             Description="{gallery:PaginationShowCaseLangResource MoreDescription}"
             IsOccupyEntireRow="True"
-            MinHeight="300">
+            MinHeight="300"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:PaginationViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Pagination Total="500" CurrentPage="3" IsShowSizeChanger="True" IsShowQuickJumper="True" />
                 <atom:Pagination Total="500" CurrentPage="3" IsShowSizeChanger="True" IsEnabled="False"
                                  IsShowQuickJumper="True" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:PaginationShowCaseLangResource MiniSizeTitle}"
             Description="{gallery:PaginationShowCaseLangResource MiniSizeDescription}"
             IsOccupyEntireRow="True"
-            MinHeight="300">
+            MinHeight="300"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:PaginationViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Pagination Total="50" CurrentPage="1" SizeType="Small" />
                 <atom:Pagination Total="50" CurrentPage="1" SizeType="Small" IsShowSizeChanger="True"
@@ -181,13 +207,18 @@
                 <atom:Pagination Total="50" IsShowTotalInfo="True" CurrentPage="1" SizeType="Small"
                                  IsShowSizeChanger="True" IsShowQuickJumper="True" IsEnabled="False" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:PaginationShowCaseLangResource TotalNumberTitle}"
             Description="{gallery:PaginationShowCaseLangResource TotalNumberDescription}"
             IsOccupyEntireRow="True"
-            MinHeight="300">
+            MinHeight="300"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:PaginationViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Pagination Total="85" CurrentPage="1" PageSize="20" IsShowSizeChanger="True" IsShowTotalInfo="True" />
                 <atom:Pagination Total="85"
@@ -197,13 +228,18 @@
                                  IsShowTotalInfo="True"
                                  TotalInfoTemplate="${RangeStart}-${RangeEnd} of ${Total} items" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:PaginationShowCaseLangResource SimpleModeTitle}"
             Description="{gallery:PaginationShowCaseLangResource SimpleModeDescription}"
             IsOccupyEntireRow="False"
-            MinHeight="300">
+            MinHeight="300"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:PaginationViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:SimplePagination Total="50" CurrentPage="1"/>
                 <atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False"/>
@@ -214,6 +250,8 @@
                 <atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False" SizeType="Small"/>
                 <atom:SimplePagination Total="50" CurrentPage="1" IsReadOnly="False" IsEnabled="False" SizeType="Small"/>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

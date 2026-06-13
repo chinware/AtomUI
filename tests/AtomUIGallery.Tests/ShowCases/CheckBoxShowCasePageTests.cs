@@ -73,8 +73,13 @@ public class CheckBoxShowCasePageTests
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new CheckBoxApiDataGrid()");
         codeBehindSource.ShouldContain("new CheckBoxDesignTokenDataGrid()");
-        codeBehindSource.ShouldContain("BasicCheckBoxGroup");
-        codeBehindSource.ShouldContain("GalleryBindingUtils.OneWay");
+        pageSource.ShouldContain("ItemsSource=\"{Binding CheckBoxOptions}\"");
+        pageSource.ShouldContain("CheckedItems=\"{Binding DefaultCheckBoxOptions}\"");
+        pageSource.ShouldContain("Command=\"{Binding CheckBoxCommand}\"");
+        pageSource.ShouldContain("Command=\"{Binding CheckStatusCommand}\"");
+        pageSource.ShouldContain("Command=\"{Binding EnableStatusCommand}\"");
+        codeBehindSource.ShouldNotContain("BasicCheckBoxGroup");
+        codeBehindSource.ShouldNotContain("GalleryBindingUtils.OneWay");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:CheckBoxApiRow\"");
@@ -162,13 +167,7 @@ public class CheckBoxShowCasePageTests
 
     private static string NormalizeMarkup(string source)
     {
-        return string.Join(
-            "\n",
-            source
-                .Replace("\r\n", "\n")
-                .Split('\n')
-                .Select(line => line.Trim())
-                .Where(line => line.Length > 0));
+        return ShowCaseSnapshotMarkup.Normalize(source);
     }
 
     private static int CountOccurrences(string source, string value)

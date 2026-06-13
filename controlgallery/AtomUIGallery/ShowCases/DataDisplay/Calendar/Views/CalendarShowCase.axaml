@@ -2,7 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Calendar.CalendarShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Calendar"
+             x:DataType="vm:CalendarViewModel">
     <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
         <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
             <gallery:GalleryStickyTabsHost.Header>
@@ -124,9 +126,17 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
-                    <gallery:ShowCaseItem Description="{gallery:CalendarShowCaseLangResource BasicDescription}" Title="{gallery:CalendarShowCaseLangResource BasicTitle}">
+                    <gallery:ShowCaseItem Description="{gallery:CalendarShowCaseLangResource BasicDescription}" Title="{gallery:CalendarShowCaseLangResource BasicTitle}"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:CalendarViewModel">
                         <atom:Calendar />
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

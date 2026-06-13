@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reactive;
-using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
-using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.ToggleSwitch;
 
@@ -18,13 +15,8 @@ public partial class ToggleSwitchShowCase : GalleryReactiveUserControl<ToggleSwi
 
     private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
 
-    public ReactiveCommand<Unit, Unit> ToggleSwitchCommand { get; private set; }
-    public ReactiveCommand<Unit, Unit> ToggleLoadingStatus { get; private set; }
-
     public ToggleSwitchShowCase()
     {
-        ToggleSwitchCommand = ReactiveCommand.Create(HandleToggleDisabledStatus);
-        ToggleLoadingStatus = ReactiveCommand.Create(HandleToggleLoadingStatus);
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
     }
@@ -110,24 +102,4 @@ public partial class ToggleSwitchShowCase : GalleryReactiveUserControl<ToggleSwi
         };
     }
 
-    private void HandleToggleDisabledStatus()
-    {
-        if (ToggleDisabledSwitch != null)
-        {
-            ToggleDisabledSwitch.IsEnabled = !ToggleDisabledSwitch.IsEnabled;
-        }
-    }
-
-    private void HandleToggleLoadingStatus()
-    {
-        if (ToggleSwitchDefault != null)
-        {
-            ToggleSwitchDefault.IsLoading = !ToggleSwitchDefault.IsLoading;
-        }
-
-        if (ToggleSwitchSmall != null)
-        {
-            ToggleSwitchSmall.IsLoading = !ToggleSwitchSmall.IsLoading;
-        }
-    }
 }

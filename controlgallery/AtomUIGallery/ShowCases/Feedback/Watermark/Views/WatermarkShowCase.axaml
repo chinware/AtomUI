@@ -126,14 +126,25 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
 
-        <gallery:ShowCaseItem Title="{gallery:WatermarkShowCaseLangResource BasicTitle}" Description="{gallery:WatermarkShowCaseLangResource BasicDescription}">
+        <gallery:ShowCaseItem Title="{gallery:WatermarkShowCaseLangResource BasicTitle}" Description="{gallery:WatermarkShowCaseLangResource BasicDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:WatermarkViewModel">
             <Border Height="300" HorizontalAlignment="Stretch" atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="{gallery:WatermarkShowCaseLangResource MultiLineTitle}"
-                                      Description="{gallery:WatermarkShowCaseLangResource MultiLineDescription}">
+                                      Description="{gallery:WatermarkShowCaseLangResource MultiLineDescription}"
+                                      IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:WatermarkViewModel">
             <Border Height="200"
                     HorizontalAlignment="Stretch">
                 <atom:Watermark.Glyph>
@@ -142,24 +153,36 @@
                                     Foreground="Gray" />
                 </atom:Watermark.Glyph>
             </Border>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="{gallery:WatermarkShowCaseLangResource ImageWatermarkTitle}"
-                                      Description="{gallery:WatermarkShowCaseLangResource ImageWatermarkDescription}">
+                                      Description="{gallery:WatermarkShowCaseLangResource ImageWatermarkDescription}"
+                                      IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:WatermarkViewModel">
             <Border Height="400">
                 <atom:Watermark.Glyph>
                     <atom:ImageGlyph Source="/Assets/ATOMUI-LOGO.png" />
                 </atom:Watermark.Glyph>
             </Border>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="{gallery:WatermarkShowCaseLangResource CustomConfigurationTitle}"
-                                      Description="{gallery:WatermarkShowCaseLangResource CustomConfigurationDescription}">
+                                      Description="{gallery:WatermarkShowCaseLangResource CustomConfigurationDescription}"
+                                      IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:WatermarkViewModel">
             <StackPanel atom:Watermark.Glyph="{atom:TextGlyph 'AtomUI'}">
                 <atom:TextBlock TextWrapping="Wrap"
                                 Text="{gallery:WatermarkShowCaseLangResource P2TextNaturalInteractionDescription}" />
                 <Image Source="/Assets/watermark-sample.png" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
                 </gallery:ShowCasePanel>

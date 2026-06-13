@@ -127,6 +127,9 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
                     <gallery:ShowCasePanel.Styles>
                         <Style Selector="atom|Avatar">
@@ -134,7 +137,10 @@
                         </Style>
                     </gallery:ShowCasePanel.Styles>
         <gallery:ShowCaseItem Title="{gallery:AvatarShowCaseLangResource BasicTitle}"
-                                      Description="{gallery:AvatarShowCaseLangResource BasicDescription}">
+                                      Description="{gallery:AvatarShowCaseLangResource BasicDescription}"
+                                      IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AvatarViewModel">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Avatar Icon="{antdicons:AntDesignIconProvider UserOutlined}" Size="64" />
@@ -152,10 +158,15 @@
                     <atom:Avatar Shape="Square" Icon="{antdicons:AntDesignIconProvider UserOutlined}" Size="14" />
                 </StackPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="{gallery:AvatarShowCaseLangResource TypeTitle}"
-                                      Description="{gallery:AvatarShowCaseLangResource TypeDescription}">
+                                      Description="{gallery:AvatarShowCaseLangResource TypeDescription}"
+                                      IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AvatarViewModel">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:Avatar Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
@@ -166,10 +177,15 @@
                     <atom:Avatar Background="#87d068" Icon="{antdicons:AntDesignIconProvider UserOutlined}" />
                 </StackPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="{gallery:AvatarShowCaseLangResource AutoSetFontSizeTitle}"
-                                      Description="{gallery:AvatarShowCaseLangResource AutoSetFontSizeDescription}">
+                                      Description="{gallery:AvatarShowCaseLangResource AutoSetFontSizeDescription}"
+                                      IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AvatarViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:Avatar Background="{Binding AvatarBackground}"
                              Gap="{Binding AvatarGap}"
@@ -178,16 +194,23 @@
                 <atom:Button Name="ChangeUserButton"
                              ButtonType="Default"
                              SizeType="Small"
+                             Command="{Binding ChangeUserCommand}"
                              VerticalAlignment="Center" Content="{gallery:AvatarShowCaseLangResource P2ContentChangeuser}" />
                 <atom:Button Name="ChangeGapButton"
                              ButtonType="Default"
                              SizeType="Small"
+                             Command="{Binding ChangeGapCommand}"
                              VerticalAlignment="Center" Content="{gallery:AvatarShowCaseLangResource P2ContentChangegap}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="{gallery:AvatarShowCaseLangResource AvatarGroupTitle}"
-                                      Description="{gallery:AvatarShowCaseLangResource AvatarGroupDescription}">
+                                      Description="{gallery:AvatarShowCaseLangResource AvatarGroupDescription}"
+                                      IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AvatarViewModel">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:AvatarGroup>
                     <atom:Avatar Src="avares://AtomUIGallery/Assets/AvatarShowCase/PeopleAvatar1.svg"/>
@@ -233,6 +256,8 @@
                     <atom:Avatar Icon="{antdicons:AntDesignIconProvider AntDesignOutlined}" Background="#1677ff"/>
                 </atom:AvatarGroup>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

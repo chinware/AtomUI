@@ -75,10 +75,16 @@ public class TimelineShowCasePageTests
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new TimelineApiDataGrid()");
         codeBehindSource.ShouldContain("new TimelineDesignTokenDataGrid()");
-        codeBehindSource.ShouldContain("ModeLeft.IsCheckedChanged      += ModeChecked");
-        codeBehindSource.ShouldContain("ReverseButton.Click            += ReverseButtonClick");
-        codeBehindSource.ShouldContain("ReverseTimeline.IsReverse = !ReverseTimeline.IsReverse");
-        codeBehindSource.ShouldContain("LabelTimeline.Mode = TimelineMode.Alternate");
+        pageSource.ShouldContain("Click=\"ReverseButtonClick\"");
+        pageSource.ShouldContain("IsCheckedChanged=\"ModeChecked\"");
+        pageSource.ShouldContain("IsReverse=\"{Binding ReverseTimelineIsReverse}\"");
+        pageSource.ShouldContain("Mode=\"{Binding SelectedTimelineMode}\"");
+        codeBehindSource.ShouldContain("ReverseButtonClick");
+        codeBehindSource.ShouldContain("ModeChecked");
+        codeBehindSource.ShouldNotContain("ModeLeft.IsCheckedChanged      += ModeChecked");
+        codeBehindSource.ShouldNotContain("ReverseButton.Click            += ReverseButtonClick");
+        codeBehindSource.ShouldNotContain("ReverseTimeline.IsReverse = !ReverseTimeline.IsReverse");
+        codeBehindSource.ShouldNotContain("LabelTimeline.Mode = TimelineMode.Alternate");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:TimelineApiRow\"");
@@ -166,13 +172,7 @@ public class TimelineShowCasePageTests
 
     private static string NormalizeMarkup(string source)
     {
-        return string.Join(
-            "\n",
-            source
-                .Replace("\r\n", "\n")
-                .Split('\n')
-                .Select(line => line.Trim())
-                .Where(line => line.Length > 0));
+        return ShowCaseSnapshotMarkup.Normalize(source);
     }
 
     private static int CountOccurrences(string source, string value)

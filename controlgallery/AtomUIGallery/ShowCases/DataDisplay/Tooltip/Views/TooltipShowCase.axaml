@@ -127,20 +127,31 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
         <gallery:ShowCaseItem
             Title="{gallery:TooltipShowCaseLangResource BasicTitle}"
-            Description="{gallery:TooltipShowCaseLangResource BasicDescription}">
+            Description="{gallery:TooltipShowCaseLangResource BasicDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TooltipViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:TextBlock
                     HorizontalAlignment="Left"
                     atom:ToolTip.Tip="{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}" Text="{gallery:TooltipShowCaseLangResource P2TextTooltipWillShowOnMouseEnter}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TooltipShowCaseLangResource PlacementTitle}"
-            Description="{gallery:TooltipShowCaseLangResource PlacementDescription}">
+            Description="{gallery:TooltipShowCaseLangResource PlacementDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TooltipViewModel">
             <Grid>
                 <Grid.Styles>
                     <Style Selector="atom|Button">
@@ -205,13 +216,19 @@
                 </atom:Button>
 
             </Grid>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TooltipShowCaseLangResource ArrowTitle}"
-            Description="{gallery:TooltipShowCaseLangResource ArrowDescription}">
+            Description="{gallery:TooltipShowCaseLangResource ArrowDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TooltipViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Segmented x:Name="ArrowSegmented">
+                <atom:Segmented x:Name="ArrowSegmented"
+                                SelectionChanged="HandleArrowSegmentedSelectionChanged">
                     <atom:SegmentedItem Content="{gallery:TooltipShowCaseLangResource P2ContentShow}" />
                     <atom:SegmentedItem Content="{gallery:TooltipShowCaseLangResource P2ContentHide}" />
                     <atom:SegmentedItem Content="{gallery:TooltipShowCaseLangResource P2ContentCenter}" />
@@ -309,18 +326,23 @@
 
                 </Grid>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TooltipShowCaseLangResource ColorfulTooltipTitle}"
-            Description="{gallery:TooltipShowCaseLangResource ColorfulTooltipDescription}">
-            <gallery:ShowCaseItem.Styles>
-                <Style Selector="atom|Button">
-                    <Setter Property="Margin" Value="5" />
-                    <Setter Property="atom:ToolTip.Tip" Value="{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}" />
-                </Style>
-            </gallery:ShowCaseItem.Styles>
+            Description="{gallery:TooltipShowCaseLangResource ColorfulTooltipDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TooltipViewModel">
             <StackPanel Orientation="Vertical">
+                <StackPanel.Styles>
+                    <Style Selector="atom|Button">
+                        <Setter Property="Margin" Value="5" />
+                        <Setter Property="atom:ToolTip.Tip" Value="{gallery:TooltipShowCaseLangResource P2ToolTipTipPromptText}" />
+                    </Style>
+                </StackPanel.Styles>
                 <TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10" Text="{gallery:TooltipShowCaseLangResource P2TextPresets}" />
                 <WrapPanel HorizontalAlignment="Left">
                     <atom:Button Content="{gallery:TooltipShowCaseLangResource P2ContentBlue}" atom:ToolTip.PresetColor="Blue">
@@ -398,6 +420,8 @@
                     </atom:Button>
                 </WrapPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

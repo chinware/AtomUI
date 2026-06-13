@@ -127,32 +127,53 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
         <gallery:ShowCaseItem
             Title="{gallery:SkeletonShowCaseLangResource BasicTitle}"
             Description="{gallery:SkeletonShowCaseLangResource BasicDescription}"
-            IsOccupyEntireRow="True">
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SkeletonViewModel">
             <atom:Skeleton IsLoading="True"/>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:SkeletonShowCaseLangResource ComplexCombinationTitle}"
             Description="{gallery:SkeletonShowCaseLangResource ComplexCombinationDescription}"
-            IsOccupyEntireRow="True">
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SkeletonViewModel">
             <atom:Skeleton IsShowAvatar="True" ParagraphRows="4" IsLoading="True"/>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:SkeletonShowCaseLangResource ActiveAnimationTitle}"
             Description="{gallery:SkeletonShowCaseLangResource ActiveAnimationDescription}"
-            IsOccupyEntireRow="True">
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SkeletonViewModel">
             <atom:Skeleton IsActive="True" IsLoading="True"/>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:SkeletonShowCaseLangResource ButtonAvatarInputImageNodeTitle}"
             Description="{gallery:SkeletonShowCaseLangResource ButtonAvatarInputImageNodeDescription}"
-            IsOccupyEntireRow="True">
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SkeletonViewModel">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:SkeletonButton IsActive="{Binding IsSkeletonActive}" IsBlock="{Binding IsSkeletonBlock}"
@@ -216,12 +237,17 @@
                     </StackPanel>
                 </WrapPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:SkeletonShowCaseLangResource ContainsSubComponentTitle}"
             Description="{gallery:SkeletonShowCaseLangResource ContainsSubComponentDescription}"
-            IsOccupyEntireRow="True">
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SkeletonViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Skeleton IsLoading="{Binding SkeletonLoading}">
                     <StackPanel Orientation="Vertical" Spacing="20">
@@ -232,6 +258,8 @@
                 <atom:Button IsEnabled="{Binding SkeletonLoading, Converter={x:Static BoolConverters.Not}}"
                              Click="HandleLoadingButtonClicked" Content="{gallery:SkeletonShowCaseLangResource P2ContentShowSkeleton}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

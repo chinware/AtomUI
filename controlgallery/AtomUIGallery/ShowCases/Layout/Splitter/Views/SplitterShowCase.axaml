@@ -152,8 +152,14 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
-                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource BasicTitle}" Description="{gallery:SplitterShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource BasicTitle}" Description="{gallery:SplitterShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplitterViewModel">
                         <Border Classes="splitter-surface">
                             <atom:Splitter Orientation="Vertical" Height="220">
                                 <Border Classes="splitter-panel" atom:Splitter.Size="30%">
@@ -164,9 +170,14 @@
                                 </Border>
                             </atom:Splitter>
                         </Border>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource HorizontalTitle}" Description="{gallery:SplitterShowCaseLangResource HorizontalDescription}" IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource HorizontalTitle}" Description="{gallery:SplitterShowCaseLangResource HorizontalDescription}" IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplitterViewModel">
                         <Border Classes="splitter-surface">
                             <atom:Splitter Orientation="Horizontal" Height="220">
                                 <Border Classes="splitter-panel" atom:Splitter.Size="40%">
@@ -177,9 +188,14 @@
                                 </Border>
                             </atom:Splitter>
                         </Border>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource CompositeTitle}" Description="{gallery:SplitterShowCaseLangResource CompositeDescription}" IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource CompositeTitle}" Description="{gallery:SplitterShowCaseLangResource CompositeDescription}" IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplitterViewModel">
                         <Border Classes="splitter-surface">
                             <atom:Splitter Orientation="Vertical" Height="260">
                                 <Border Classes="splitter-panel" atom:Splitter.Size="40%">
@@ -195,9 +211,14 @@
                                 </atom:Splitter>
                             </atom:Splitter>
                         </Border>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource ResizableDisabledTitle}" Description="{gallery:SplitterShowCaseLangResource ResizableDisabledDescription}" IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource ResizableDisabledTitle}" Description="{gallery:SplitterShowCaseLangResource ResizableDisabledDescription}" IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplitterViewModel">
                         <Border Classes="splitter-surface">
                             <atom:Splitter Orientation="Vertical" Height="220">
                                 <Border Classes="splitter-panel" atom:Splitter.Size="35%">
@@ -211,11 +232,16 @@
                                 </Border>
                             </atom:Splitter>
                         </Border>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource ShowCollapsibleIconTitle}"
                                           Description="{gallery:SplitterShowCaseLangResource ShowCollapsibleIconDescription}"
-                                          IsOccupyEntireRow="True">
+                                          IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplitterViewModel">
                         <Border Classes="splitter-surface" Padding="16">
                             <StackPanel Spacing="12">
                                 <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
@@ -234,23 +260,31 @@
                                 <atom:Splitter Orientation="Vertical" Height="220">
                                     <Border Classes="splitter-panel"
                                             x:Name="ShowCollapsiblePanelFirst"
+                                            atom:Splitter.Collapsible="Always"
                                             atom:Splitter.DefaultSize="33%">
                                         <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextFirst}" />
                                     </Border>
                                     <Border Classes="splitter-panel alt" x:Name="ShowCollapsiblePanelSecond"
+                                            atom:Splitter.Collapsible="Always"
                                             atom:Splitter.DefaultSize="34%">
                                         <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextSecond}" />
                                     </Border>
                                     <Border Classes="splitter-panel"
+                                            atom:Splitter.Collapsible="Always"
                                             x:Name="ShowCollapsiblePanelThird">
                                         <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextThird}" />
                                     </Border>
                                 </atom:Splitter>
                             </StackPanel>
                         </Border>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource MultiPanelsTitle}" Description="{gallery:SplitterShowCaseLangResource MultiPanelsDescription}" IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource MultiPanelsTitle}" Description="{gallery:SplitterShowCaseLangResource MultiPanelsDescription}" IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplitterViewModel">
                         <Border Classes="splitter-surface">
                             <atom:Splitter Orientation="Vertical" Height="240">
                                 <Border Classes="splitter-panel" atom:Splitter.Size="20%">
@@ -267,11 +301,16 @@
                                 </Border>
                             </atom:Splitter>
                         </Border>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource LazyTitle}"
                                           Description="{gallery:SplitterShowCaseLangResource LazyDescription}"
-                                          IsOccupyEntireRow="True">
+                                          IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplitterViewModel">
                         <Border Classes="splitter-surface" Padding="16">
                             <StackPanel Spacing="12">
                                 <atom:Splitter Orientation="Vertical" Height="140" IsLazy="True">
@@ -292,6 +331,8 @@
                                 </atom:Splitter>
                             </StackPanel>
                         </Border>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

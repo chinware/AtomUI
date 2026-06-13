@@ -30,63 +30,6 @@ public partial class AutoCompleteShowCase : GalleryReactiveUserControl<AutoCompl
                 InitFilterCaseOptions(viewModel);
                 InitCityOptions(viewModel);
 
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.BasicOptionsAsyncLoader),
-                                           vm => vm.BasicOptionsAsyncLoader, BasicAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.CustomLabelOptionsAsyncLoader),
-                                           vm => vm.CustomLabelOptionsAsyncLoader, CustomizedAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.SearchEditOptionsAsyncLoader),
-                                           vm => vm.SearchEditOptionsAsyncLoader, SearchAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.BasicOptionsAsyncLoader),
-                                           vm => vm.BasicOptionsAsyncLoader, TextAreaAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.FilterCaseOptions),
-                                           vm => vm.FilterCaseOptions, FilterAutoComplete,
-                                           AbstractAutoComplete.OptionsSourceProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.CityOptions),
-                                           vm => vm.CityOptions, CityAutoComplete,
-                                           AbstractAutoComplete.OptionsSourceProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.BasicOptionsAsyncLoader),
-                                           vm => vm.BasicOptionsAsyncLoader, ErrorAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.BasicOptionsAsyncLoader),
-                                           vm => vm.BasicOptionsAsyncLoader, WarningAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.BasicOptionsAsyncLoader),
-                                           vm => vm.BasicOptionsAsyncLoader, OutlineAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.BasicOptionsAsyncLoader),
-                                           vm => vm.BasicOptionsAsyncLoader, FilledAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.BasicOptionsAsyncLoader),
-                                           vm => vm.BasicOptionsAsyncLoader, BorderlessAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.BasicOptionsAsyncLoader),
-                                           vm => vm.BasicOptionsAsyncLoader, UnderlinedAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.BasicOptionsAsyncLoader),
-                                           vm => vm.BasicOptionsAsyncLoader, UnClearableAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-                GalleryBindingUtils.OneWay(viewModel, nameof(AutoCompleteViewModel.BasicOptionsAsyncLoader),
-                                           vm => vm.BasicOptionsAsyncLoader, ClearableAutoComplete,
-                                           AbstractAutoComplete.OptionsAsyncLoaderProperty)
-                                   .DisposeWith(disposables);
-
                 Disposable.Create(() =>
                 {
                     viewModel.BasicOptionsAsyncLoader       = null;

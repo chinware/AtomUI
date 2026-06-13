@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia;
@@ -21,12 +20,6 @@ public partial class CarouselShowCase : GalleryReactiveUserControl<CarouselViewM
     {
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
-
-        this.WhenActivated(disposables =>
-        {
-            PositionOptionGroup.OptionCheckedChanged += HandlePositionOptionChanged;
-            disposables.Add(Disposable.Create(() => PositionOptionGroup.OptionCheckedChanged -= HandlePositionOptionChanged));
-        });
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

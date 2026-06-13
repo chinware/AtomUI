@@ -126,10 +126,16 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
         <gallery:ShowCaseItem
             Title="{gallery:InfoFlyoutShowCaseLangResource BasicTitle}"
-            Description="{gallery:InfoFlyoutShowCaseLangResource BasicDescription}">
+            Description="{gallery:InfoFlyoutShowCaseLangResource BasicDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:InfoFlyoutViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:FlyoutHost Trigger="Hover" ShouldUseOverlayPopup="False">
                     <atom:FlyoutHost.Flyout>
@@ -140,11 +146,16 @@
                     <atom:Button ButtonType="Primary" Content="{gallery:InfoFlyoutShowCaseLangResource P2ContentHoverMe}" />
                 </atom:FlyoutHost>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:InfoFlyoutShowCaseLangResource TriggerWaysTitle}"
-            Description="{gallery:InfoFlyoutShowCaseLangResource TriggerWaysDescription}">
+            Description="{gallery:InfoFlyoutShowCaseLangResource TriggerWaysDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:InfoFlyoutViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:FlyoutHost Trigger="Hover" ShouldUseOverlayPopup="False">
                     <atom:FlyoutHost.Flyout>
@@ -171,11 +182,16 @@
                     <atom:Button Content="{gallery:InfoFlyoutShowCaseLangResource P2ContentClickMe}" />
                 </atom:FlyoutHost>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:InfoFlyoutShowCaseLangResource PlacementTitle}"
-            Description="{gallery:InfoFlyoutShowCaseLangResource PlacementDescription}">
+            Description="{gallery:InfoFlyoutShowCaseLangResource PlacementDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:InfoFlyoutViewModel">
             <Grid>
                 <Grid.Styles>
                     <Style Selector="atom|Button">
@@ -307,13 +323,19 @@
                 </atom:FlyoutHost>
 
             </Grid>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:InfoFlyoutShowCaseLangResource ArrowTitle}"
-            Description="{gallery:InfoFlyoutShowCaseLangResource ArrowDescription}">
+            Description="{gallery:InfoFlyoutShowCaseLangResource ArrowDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:InfoFlyoutViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Segmented x:Name="ArrowSegmented">
+                <atom:Segmented x:Name="ArrowSegmented"
+                                SelectionChanged="HandleArrowSegmentedSelectionChanged">
                     <atom:SegmentedItem Content="{gallery:InfoFlyoutShowCaseLangResource P2ContentShow}" />
                     <atom:SegmentedItem Content="{gallery:InfoFlyoutShowCaseLangResource P2ContentHide}" />
                     <atom:SegmentedItem Content="{gallery:InfoFlyoutShowCaseLangResource P2ContentCenter}" />
@@ -498,6 +520,8 @@
 
                 </Grid>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
                 </gallery:ShowCasePanel>

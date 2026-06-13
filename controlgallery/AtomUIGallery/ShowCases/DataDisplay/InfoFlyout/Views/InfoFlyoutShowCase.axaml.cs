@@ -1,5 +1,3 @@
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
@@ -19,18 +17,6 @@ public partial class InfoFlyoutShowCase : GalleryReactiveUserControl<InfoFlyoutV
     {
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
-
-        this.WhenActivated(disposables =>
-        {
-            if (DataContext is InfoFlyoutViewModel viewModel)
-            {
-                ArrowSegmented.SelectionChanged += viewModel.HandleSelectionChanged;
-                Disposable.Create(() =>
-                {
-                    ArrowSegmented.SelectionChanged -= viewModel.HandleSelectionChanged;
-                }).DisposeWith(disposables);
-            }
-        });
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -112,5 +98,13 @@ public partial class InfoFlyoutShowCase : GalleryReactiveUserControl<InfoFlyoutV
             DesignTokenScenario => new InfoFlyoutDesignTokenDataGrid(),
             _                   => throw new InvalidOperationException($"Unknown InfoFlyout scenario: {scenario}")
         };
+    }
+
+    private void HandleArrowSegmentedSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        if (DataContext is InfoFlyoutViewModel viewModel)
+        {
+            viewModel.HandleSelectionChanged(sender, args);
+        }
     }
 }

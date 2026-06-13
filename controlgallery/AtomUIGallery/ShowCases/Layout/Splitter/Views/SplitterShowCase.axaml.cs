@@ -5,6 +5,7 @@ using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using RadioButton = AtomUI.Desktop.Controls.RadioButton;
 
 namespace AtomUIGallery.ShowCases.Splitter;
@@ -22,7 +23,6 @@ public partial class SplitterShowCase : GalleryReactiveUserControl<SplitterViewM
     {
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
-        UpdateShowCollapsibleIconMode(SplitterCollapsibleIconDisplayMode.Always);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -140,9 +140,13 @@ public partial class SplitterShowCase : GalleryReactiveUserControl<SplitterViewM
 
     private void UpdateShowCollapsibleIconMode(SplitterCollapsibleIconDisplayMode mode)
     {
-        ApplyShowMode(ShowCollapsiblePanelFirst, mode);
-        ApplyShowMode(ShowCollapsiblePanelSecond, mode);
-        ApplyShowMode(ShowCollapsiblePanelThird, mode);
+        foreach (var panel in ExamplesContent.GetVisualDescendants().OfType<Control>())
+        {
+            if (panel.Name is "ShowCollapsiblePanelFirst" or "ShowCollapsiblePanelSecond" or "ShowCollapsiblePanelThird")
+            {
+                ApplyShowMode(panel, mode);
+            }
+        }
     }
 
     private static void ApplyShowMode(Control panel, SplitterCollapsibleIconDisplayMode mode)

@@ -168,32 +168,12 @@ public class LineEditShowCasePageTests
 
     private static string StripDeferredLoadingMarkup(string source)
     {
-        return string.Join(
-            "\n",
-            source
-                .Replace("\r\n", "\n")
-                .Split('\n')
-                .Where(line =>
-                {
-                    var trimmed = line.Trim();
-                    return trimmed is not "<gallery:ShowCaseItem.DeferredContentTemplate>" &&
-                           trimmed is not "<DataTemplate>" &&
-                           trimmed is not "</DataTemplate>" &&
-                           trimmed is not "</gallery:ShowCaseItem.DeferredContentTemplate>" &&
-                           !trimmed.StartsWith("IsDeferredContentEnabled=", StringComparison.Ordinal) &&
-                           !trimmed.StartsWith("DeferredPlaceholderHeight=", StringComparison.Ordinal);
-                }));
+        return ShowCaseSnapshotMarkup.StripDeferredLoadingMarkup(source);
     }
 
     private static string NormalizeMarkup(string source)
     {
-        return string.Join(
-            "\n",
-            source
-                .Replace("\r\n", "\n")
-                .Split('\n')
-                .Select(line => line.Trim())
-                .Where(line => line.Length > 0));
+        return ShowCaseSnapshotMarkup.Normalize(source);
     }
 
     private static string ComputeSha256(string source)

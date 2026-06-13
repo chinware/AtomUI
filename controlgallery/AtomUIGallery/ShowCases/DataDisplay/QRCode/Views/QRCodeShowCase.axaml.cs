@@ -32,13 +32,6 @@ public partial class QRCodeShowCase : GalleryReactiveUserControl<QRCodeViewModel
                     nameof(QRCodeEccLevel.Q),
                     nameof(QRCodeEccLevel.H)
                 };
-                GalleryBindingUtils.BindCommand(SmallerBtn, viewModel.SmallerCommand).DisposeWith(disposables);
-                GalleryBindingUtils.BindCommand(LargerBtn, viewModel.LargerCommand).DisposeWith(disposables);
-                
-                GalleryBindingUtils.OneWay(viewModel, nameof(QRCodeViewModel.EccLevels), vm => vm.EccLevels,
-                                           EccLevelSegmented, Avalonia.Controls.ItemsControl.ItemsSourceProperty)
-                                   .DisposeWith(disposables);
-
                 Disposable.Create(() =>
                 {
                     viewModel.EccLevels = null;

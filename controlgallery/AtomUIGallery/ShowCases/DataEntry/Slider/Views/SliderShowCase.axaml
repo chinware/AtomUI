@@ -126,10 +126,16 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
                     <gallery:ShowCaseItem
                         Title="{gallery:SliderShowCaseLangResource BasicTitle}"
-                        Description="{gallery:SliderShowCaseLangResource BasicDescription}">
+                        Description="{gallery:SliderShowCaseLangResource BasicDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SliderViewModel">
                         <StackPanel Orientation="Vertical" Spacing="20">
                             <atom:Slider
                                 Maximum="100"
@@ -147,6 +153,7 @@
                                 RangeValue="20, 80" />
                             <atom:Slider
                                 Name="Slider1"
+                                Marks="{Binding SliderMarks}"
                                 Maximum="100"
                                 Minimum="0"
                                 IsEnabled="{Binding NormalEnabled}"
@@ -159,11 +166,16 @@
                                 <atom:ToggleSwitch VerticalAlignment="Center" SizeType="Small" IsChecked="{Binding NormalEnabled, Mode=TwoWay}" />
                             </StackPanel>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:SliderShowCaseLangResource CustomizeTooltipTitle}"
-                        Description="{gallery:SliderShowCaseLangResource CustomizeTooltipDescription}">
+                        Description="{gallery:SliderShowCaseLangResource CustomizeTooltipDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SliderViewModel">
                         <StackPanel Orientation="Vertical" Spacing="20">
                             <atom:Slider
                                 Maximum="100"
@@ -173,11 +185,16 @@
                                 ValueFormatTemplate="\{0\}%"
                                 Value="20" />
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:SliderShowCaseLangResource VerticalTitle}"
-                        Description="{gallery:SliderShowCaseLangResource VerticalDescription}">
+                        Description="{gallery:SliderShowCaseLangResource VerticalDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SliderViewModel">
                         <StackPanel Orientation="Horizontal" Spacing="20" Height="300">
                             <atom:Slider
                                 Maximum="100"
@@ -197,6 +214,7 @@
 
                             <atom:Slider
                                 Name="Slider2"
+                                Marks="{Binding SliderMarks}"
                                 Maximum="100"
                                 Minimum="0"
                                 Orientation="Vertical"
@@ -205,6 +223,7 @@
 
                             <atom:Slider
                                 Name="Slider3"
+                                Marks="{Binding SliderMarks}"
                                 Maximum="100"
                                 Minimum="0"
                                 IsRangeMode="True"
@@ -213,15 +232,21 @@
                                 RangeValue="20, 80" />
 
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:SliderShowCaseLangResource GraduatedSliderTitle}"
-                        Description="{gallery:SliderShowCaseLangResource GraduatedSliderDescription}">
+                        Description="{gallery:SliderShowCaseLangResource GraduatedSliderDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SliderViewModel">
                         <StackPanel Orientation="Vertical" Spacing="20">
                             <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedTrue}" />
                             <atom:Slider
                                 Name="Slider4"
+                                Marks="{Binding SliderMarks}"
                                 Maximum="100"
                                 Minimum="0"
                                 TickFrequency="1"
@@ -229,6 +254,7 @@
 
                             <atom:Slider
                                 Name="Slider5"
+                                Marks="{Binding SliderMarks}"
                                 Maximum="100"
                                 Minimum="0"
                                 IsRangeMode="True"
@@ -238,6 +264,7 @@
                             <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedFalse}" />
                             <atom:Slider
                                 Name="Slider6"
+                                Marks="{Binding SliderMarks}"
                                 Maximum="100"
                                 Minimum="0"
                                 TickFrequency="1"
@@ -246,6 +273,7 @@
 
                             <atom:Slider
                                 Name="Slider7"
+                                Marks="{Binding SliderMarks}"
                                 Maximum="100"
                                 Minimum="0"
                                 IsRangeMode="True"
@@ -254,6 +282,8 @@
                                 RangeValue="20, 80" />
 
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

@@ -127,18 +127,29 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
                     <gallery:ShowCaseItem
                         Title="{gallery:ExpanderShowCaseLangResource ExpanderTitle}"
-                        Description="{gallery:ExpanderShowCaseLangResource ExpanderDescription}">
+                        Description="{gallery:ExpanderShowCaseLangResource ExpanderDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ExpanderViewModel">
                         <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
                             <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                         </atom:Expander>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ExpanderShowCaseLangResource SizeTitle}"
-                        Description="{gallery:ExpanderShowCaseLangResource SizeDescription}">
+                        Description="{gallery:ExpanderShowCaseLangResource SizeDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ExpanderViewModel">
                         <StackPanel Orientation="Vertical" Spacing="20" Margin="0, 0, 10, 0">
                             <atom:Separator Title="{gallery:ExpanderShowCaseLangResource P2TitleDefaultSize}" TitlePosition="Left" FontWeight="Bold" />
                             <atom:Expander SizeType="Middle" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsDefaultSizePanelHeader}">
@@ -153,27 +164,42 @@
                                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                             </atom:Expander>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ExpanderShowCaseLangResource BorderlessTitle}"
-                        Description="{gallery:ExpanderShowCaseLangResource BorderlessDescription}">
+                        Description="{gallery:ExpanderShowCaseLangResource BorderlessDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ExpanderViewModel">
                         <atom:Expander IsBorderless="True" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
                             <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                         </atom:Expander>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ExpanderShowCaseLangResource GhostCollapseTitle}"
-                        Description="{gallery:ExpanderShowCaseLangResource GhostCollapseDescription}">
+                        Description="{gallery:ExpanderShowCaseLangResource GhostCollapseDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ExpanderViewModel">
                         <atom:Expander IsGhostStyle="True" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
                             <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                         </atom:Expander>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ExpanderShowCaseLangResource CustomPaddingTitle}"
-                        Description="{gallery:ExpanderShowCaseLangResource CustomPaddingDescription}">
+                        Description="{gallery:ExpanderShowCaseLangResource CustomPaddingDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ExpanderViewModel">
                         <StackPanel Orientation="Vertical" Spacing="20">
                             <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}" HeaderPadding="5" ContentPadding="5">
                                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
@@ -183,11 +209,16 @@
                                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                             </atom:Expander>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ExpanderShowCaseLangResource ExpandingDirectionTitle}"
-                        Description="{gallery:ExpanderShowCaseLangResource ExpandingDirectionDescription}">
+                        Description="{gallery:ExpanderShowCaseLangResource ExpandingDirectionDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ExpanderViewModel">
                         <DockPanel Margin="0, 0, 0, 0" Height="300">
                             <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
                                 <atom:TextBlock VerticalAlignment="Center" Text="{gallery:ExpanderShowCaseLangResource P2TextExpandDirection}" />
@@ -208,29 +239,44 @@
                                 </atom:Expander>
                             </Panel>
                         </DockPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ExpanderShowCaseLangResource NestedPanelTitle}"
-                        Description="{gallery:ExpanderShowCaseLangResource NestedPanelDescription}">
+                        Description="{gallery:ExpanderShowCaseLangResource NestedPanelDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ExpanderViewModel">
                         <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
                             <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsNestedPanelHeader}">
                                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                             </atom:Expander>
                         </atom:Expander>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ExpanderShowCaseLangResource NoArrowTitle}"
-                        Description="{gallery:ExpanderShowCaseLangResource NoArrowDescription}">
+                        Description="{gallery:ExpanderShowCaseLangResource NoArrowDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ExpanderViewModel">
                         <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}" IsShowExpandIcon="False">
                             <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                         </atom:Expander>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ExpanderShowCaseLangResource ExpandIconLocationTitle}"
-                        Description="{gallery:ExpanderShowCaseLangResource ExpandIconLocationDescription}">
+                        Description="{gallery:ExpanderShowCaseLangResource ExpandIconLocationDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ExpanderViewModel">
                         <StackPanel Orientation="Vertical" Spacing="20">
                             <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}"
                                            AddOnContent="{antdicons:AntDesignIconProvider Kind=SettingOutlined}"
@@ -247,11 +293,16 @@
                                 </atom:OptionButtonGroup>
                             </StackPanel>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ExpanderShowCaseLangResource CollapsibleTitle}"
-                        Description="{gallery:ExpanderShowCaseLangResource CollapsibleDescription}">
+                        Description="{gallery:ExpanderShowCaseLangResource CollapsibleDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ExpanderViewModel">
                         <StackPanel Orientation="Vertical" Spacing="10">
                             <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisPanelCanOnlyBeCollapsedByClicking}">
                                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
@@ -268,6 +319,8 @@
                                 <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
                             </atom:Expander>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

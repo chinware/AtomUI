@@ -73,8 +73,13 @@ public class AutoCompleteShowCasePageTests
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new AutoCompleteApiDataGrid()");
         codeBehindSource.ShouldContain("new AutoCompleteDesignTokenDataGrid()");
-        codeBehindSource.ShouldContain("BasicAutoComplete");
-        codeBehindSource.ShouldContain("GalleryBindingUtils.OneWay");
+        codeBehindSource.ShouldNotContain("GalleryBindingUtils.OneWay");
+        pageSource.ShouldContain("Name=\"BasicAutoComplete\"");
+        pageSource.ShouldContain("OptionsAsyncLoader=\"{Binding BasicOptionsAsyncLoader}\"");
+        pageSource.ShouldContain("OptionsAsyncLoader=\"{Binding CustomLabelOptionsAsyncLoader}\"");
+        pageSource.ShouldContain("OptionsAsyncLoader=\"{Binding SearchEditOptionsAsyncLoader}\"");
+        pageSource.ShouldContain("OptionsSource=\"{Binding FilterCaseOptions}\"");
+        pageSource.ShouldContain("OptionsSource=\"{Binding CityOptions}\"");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:AutoCompleteApiRow\"");
@@ -163,13 +168,7 @@ public class AutoCompleteShowCasePageTests
 
     private static string NormalizeMarkup(string source)
     {
-        return string.Join(
-            "\n",
-            source
-                .Replace("\r\n", "\n")
-                .Split('\n')
-                .Select(line => line.Trim())
-                .Where(line => line.Length > 0));
+        return ShowCaseSnapshotMarkup.Normalize(source);
     }
 
     private static int CountOccurrences(string source, string value)
