@@ -6,6 +6,54 @@ namespace AtomUIGallery.ShowCases.Card;
 [LanguageProvider(LanguageCode.zh_TW, CardShowCase.LanguageId)]
 internal partial class zh_TW : LanguageProvider
 {
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計變量";
+    public const string ComponentCategory = "數據展示";
+    public const string ComponentStatusStable = ".NET 10";
+    public const string PageSubtitle = "用緊湊容器組織相關內容與操作。";
+    public const string PageDescription = "Card 用於在獨立的內容面板中呈現信息，支持標題、額外操作、封面媒體、元信息、柵格區域、標籤頁、加載佔位、懸停反饋和無邊框樣式。";
+    public const string InfoNamespaceLabel = "命名空間:";
+    public const string InfoPackageLabel = "包:";
+    public const string InfoBaseClassLabel = "基類:";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyExtra = "渲染在卡片標題操作區的額外內容。";
+    public const string ApiPropertyExtraTemplate = "用於渲染標題額外內容的模板。";
+    public const string ApiPropertyStyleVariant = "控制卡片為描邊樣式或無邊框樣式。";
+    public const string ApiPropertySizeType = "控制卡片標題和內容區域的密度。";
+    public const string ApiPropertyIsLoading = "在卡片內容不可用時顯示加載佔位。";
+    public const string ApiPropertyIsInnerMode = "將卡片渲染為嵌套在另一個卡片中的內部卡片。";
+    public const string ApiPropertyIsHoverable = "為可點擊或可選擇的卡片啟用懸停反饋。";
+    public const string ApiPropertyCover = "渲染在卡片內容上方的封面區域。";
+    public const string ApiPropertyCoverTemplate = "用於渲染封面內容的模板。";
+    public const string ApiPropertyActions = "渲染在卡片底部操作區的操作按鈕集合。";
+    public const string ApiPropertyBoxShadow = "懸停或浮層卡片表面使用的陰影。";
+    public const string ApiPropertyIsMotionEnabled = "控制卡片支持的交互動效。";
+    public const string TokenColumnToken = "變量";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "作用域";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenNameHeaderBg = "卡片標題背景色。";
+    public const string TokenNameHeaderFontSizeLG = "大尺寸卡片標題字號。";
+    public const string TokenNameHeaderFontSize = "默認尺寸卡片標題字號。";
+    public const string TokenNameHeaderFontSizeSM = "小尺寸卡片標題字號。";
+    public const string TokenNameHeaderHeightLG = "大尺寸卡片標題高度。";
+    public const string TokenNameHeaderHeight = "默認尺寸卡片標題高度。";
+    public const string TokenNameHeaderHeightSM = "小尺寸卡片標題高度。";
+    public const string TokenNameBodyPadding = "卡片內容區域默認內邊距。";
+    public const string TokenNameHeaderPadding = "卡片標題區域默認內邊距。";
+    public const string TokenNameActionsBg = "卡片操作區背景色。";
+    public const string TokenNameActionsSpacing = "卡片操作項之間的間距。";
+    public const string TokenNameTabsMarginBottom = "卡片內嵌標籤頁的底部外邊距。";
+    public const string TokenNameExtraColor = "標題額外區域文字顏色。";
+    public const string TokenNameCardShadows = "卡片表面的默認陰影。";
+    public const string TokenNameCardActionsIconSize = "卡片操作按鈕圖標尺寸。";
+    public const string TokenNameCardGridItemShadows = "柵格卡片項之間的邊線陰影。";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
     public const string BasicTitle = "基礎卡片";
     public const string BasicDescription = "包含標題、內容和右上角額外內容的基礎卡片。支持默認和小號兩種尺寸。";
     public const string ScenarioBasic = "基礎";
@@ -54,4 +102,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(CardShowCaseLangResourceKind);
 }
-
