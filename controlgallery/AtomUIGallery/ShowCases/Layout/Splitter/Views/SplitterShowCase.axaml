@@ -3,7 +3,8 @@
              x:Class="AtomUIGallery.ShowCases.Splitter.SplitterShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
-           >
+             xmlns:vm="using:AtomUIGallery.ShowCases.Splitter"
+             x:DataType="vm:SplitterViewModel">
     <UserControl.Styles>
         <Style Selector="Border.splitter-surface">
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
@@ -30,146 +31,270 @@
         </Style>
     </UserControl.Styles>
 
-    <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource BasicTitle}" Description="{gallery:SplitterShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True">
-            <Border Classes="splitter-surface">
-                <atom:Splitter Orientation="Vertical" Height="220">
-                    <Border Classes="splitter-panel" atom:Splitter.Size="30%">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextFirst}" />
-                    </Border>
-                    <Border Classes="splitter-panel" atom:Splitter.DefaultSize="100" atom:Splitter.MinSize="60">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextSecond}" />
-                    </Border>
-                </atom:Splitter>
-            </Border>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource HorizontalTitle}" Description="{gallery:SplitterShowCaseLangResource HorizontalDescription}" IsOccupyEntireRow="True">
-            <Border Classes="splitter-surface">
-                <atom:Splitter Orientation="Horizontal" Height="220">
-                    <Border Classes="splitter-panel" atom:Splitter.Size="40%">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextTop}" />
-                    </Border>
-                    <Border Classes="splitter-panel alt">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextBottom}" />
-                    </Border>
-                </atom:Splitter>
-            </Border>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource CompositeTitle}" Description="{gallery:SplitterShowCaseLangResource CompositeDescription}" IsOccupyEntireRow="True">
-            <Border Classes="splitter-surface">
-                <atom:Splitter Orientation="Vertical" Height="260">
-                    <Border Classes="splitter-panel" atom:Splitter.Size="40%">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextLeft}" />
-                    </Border>
-                    <atom:Splitter Orientation="Horizontal">
-                        <Border Classes="splitter-panel">
-                            <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextTop}" />
-                        </Border>
-                        <Border Classes="splitter-panel alt">
-                            <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextBottom}" />
-                        </Border>
-                    </atom:Splitter>
-                </atom:Splitter>
-            </Border>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource ResizableDisabledTitle}" Description="{gallery:SplitterShowCaseLangResource ResizableDisabledDescription}" IsOccupyEntireRow="True">
-            <Border Classes="splitter-surface">
-                <atom:Splitter Orientation="Vertical" Height="220">
-                    <Border Classes="splitter-panel" atom:Splitter.Size="35%">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextResizable}" />
-                    </Border>
-                    <Border Classes="splitter-panel alt" atom:Splitter.DefaultSize="120" atom:Splitter.IsResizable="False">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextNotResizable}" />
-                    </Border>
-                    <Border Classes="splitter-panel" atom:Splitter.DefaultSize="120">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextResizable}" />
-                    </Border>
-                </atom:Splitter>
-            </Border>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource ShowCollapsibleIconTitle}"
-                              Description="{gallery:SplitterShowCaseLangResource ShowCollapsibleIconDescription}"
-                              IsOccupyEntireRow="True">
-            <Border Classes="splitter-surface" Padding="16">
-                <StackPanel Spacing="12">
-                    <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                        <TextBlock VerticalAlignment="Center" Text="{gallery:SplitterShowCaseLangResource P2TextShowcollapsibleicon}" />
-                        <atom:RadioButton GroupName="ShowCollapsibleIconMode"
-                                          Tag="Hover"
-                                          IsCheckedChanged="HandleShowCollapsibleIconChanged" Content="{gallery:SplitterShowCaseLangResource P2ContentHover}" />
-                        <atom:RadioButton GroupName="ShowCollapsibleIconMode"
-                                          Tag="True"
-                                          IsChecked="True"
-                                          IsCheckedChanged="HandleShowCollapsibleIconChanged" Content="{gallery:SplitterShowCaseLangResource P2ContentTrue}" />
-                        <atom:RadioButton GroupName="ShowCollapsibleIconMode"
-                                          Tag="False"
-                                          IsCheckedChanged="HandleShowCollapsibleIconChanged" Content="{gallery:SplitterShowCaseLangResource P2ContentFalse}" />
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="Splitter"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:SplitterShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:SplitterShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:SplitterShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:SplitterShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
                     </StackPanel>
-                    <atom:Splitter Orientation="Vertical" Height="220">
-                        <Border Classes="splitter-panel"
-                                x:Name="ShowCollapsiblePanelFirst"
-                                atom:Splitter.DefaultSize="33%">
-                            <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextFirst}" />
-                        </Border>
-                        <Border Classes="splitter-panel alt" x:Name="ShowCollapsiblePanelSecond"
-                                atom:Splitter.DefaultSize="34%">
-                            <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextSecond}" />
-                        </Border>
-                        <Border Classes="splitter-panel"
-                                x:Name="ShowCollapsiblePanelThird">
-                            <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextThird}" />
-                        </Border>
-                    </atom:Splitter>
-                </StackPanel>
-            </Border>
-        </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource MultiPanelsTitle}" Description="{gallery:SplitterShowCaseLangResource MultiPanelsDescription}" IsOccupyEntireRow="True">
-            <Border Classes="splitter-surface">
-                <atom:Splitter Orientation="Vertical" Height="240">
-                    <Border Classes="splitter-panel" atom:Splitter.Size="20%">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextA}" />
-                    </Border>
-                    <Border Classes="splitter-panel alt" atom:Splitter.Size="20%">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextB}" />
-                    </Border>
-                    <Border Classes="splitter-panel">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextC}" />
-                    </Border>
-                    <Border Classes="splitter-panel alt">
-                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextD}" />
-                    </Border>
-                </atom:Splitter>
-            </Border>
-        </gallery:ShowCaseItem>
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="200" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SplitterShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
 
-        <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource LazyTitle}"
-                              Description="{gallery:SplitterShowCaseLangResource LazyDescription}"
-                              IsOccupyEntireRow="True">
-            <Border Classes="splitter-surface" Padding="16">
-                <StackPanel Spacing="12">
-                    <atom:Splitter Orientation="Vertical" Height="140" IsLazy="True">
-                        <Border Classes="splitter-panel" atom:Splitter.Size="50%">
-                            <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextFirst}" />
-                        </Border>
-                        <Border Classes="splitter-panel alt">
-                            <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextSecond}" />
-                        </Border>
-                    </atom:Splitter>
-                    <atom:Splitter Orientation="Horizontal" Height="140" IsLazy="True">
-                        <Border Classes="splitter-panel" atom:Splitter.Size="50%">
-                            <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextFirst}" />
-                        </Border>
-                        <Border Classes="splitter-panel alt">
-                            <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextSecond}" />
-                        </Border>
-                    </atom:Splitter>
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SplitterShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SplitterShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="TemplatedControl"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
                 </StackPanel>
-            </Border>
-        </gallery:ShowCaseItem>
-    </gallery:ShowCasePanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:SplitterShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:SplitterShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:SplitterShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       ContentMargin="28,10,28,28">
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource BasicTitle}" Description="{gallery:SplitterShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True">
+                        <Border Classes="splitter-surface">
+                            <atom:Splitter Orientation="Vertical" Height="220">
+                                <Border Classes="splitter-panel" atom:Splitter.Size="30%">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextFirst}" />
+                                </Border>
+                                <Border Classes="splitter-panel" atom:Splitter.DefaultSize="100" atom:Splitter.MinSize="60">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextSecond}" />
+                                </Border>
+                            </atom:Splitter>
+                        </Border>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource HorizontalTitle}" Description="{gallery:SplitterShowCaseLangResource HorizontalDescription}" IsOccupyEntireRow="True">
+                        <Border Classes="splitter-surface">
+                            <atom:Splitter Orientation="Horizontal" Height="220">
+                                <Border Classes="splitter-panel" atom:Splitter.Size="40%">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextTop}" />
+                                </Border>
+                                <Border Classes="splitter-panel alt">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextBottom}" />
+                                </Border>
+                            </atom:Splitter>
+                        </Border>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource CompositeTitle}" Description="{gallery:SplitterShowCaseLangResource CompositeDescription}" IsOccupyEntireRow="True">
+                        <Border Classes="splitter-surface">
+                            <atom:Splitter Orientation="Vertical" Height="260">
+                                <Border Classes="splitter-panel" atom:Splitter.Size="40%">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextLeft}" />
+                                </Border>
+                                <atom:Splitter Orientation="Horizontal">
+                                    <Border Classes="splitter-panel">
+                                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextTop}" />
+                                    </Border>
+                                    <Border Classes="splitter-panel alt">
+                                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextBottom}" />
+                                    </Border>
+                                </atom:Splitter>
+                            </atom:Splitter>
+                        </Border>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource ResizableDisabledTitle}" Description="{gallery:SplitterShowCaseLangResource ResizableDisabledDescription}" IsOccupyEntireRow="True">
+                        <Border Classes="splitter-surface">
+                            <atom:Splitter Orientation="Vertical" Height="220">
+                                <Border Classes="splitter-panel" atom:Splitter.Size="35%">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextResizable}" />
+                                </Border>
+                                <Border Classes="splitter-panel alt" atom:Splitter.DefaultSize="120" atom:Splitter.IsResizable="False">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextNotResizable}" />
+                                </Border>
+                                <Border Classes="splitter-panel" atom:Splitter.DefaultSize="120">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextResizable}" />
+                                </Border>
+                            </atom:Splitter>
+                        </Border>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource ShowCollapsibleIconTitle}"
+                                          Description="{gallery:SplitterShowCaseLangResource ShowCollapsibleIconDescription}"
+                                          IsOccupyEntireRow="True">
+                        <Border Classes="splitter-surface" Padding="16">
+                            <StackPanel Spacing="12">
+                                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                    <TextBlock VerticalAlignment="Center" Text="{gallery:SplitterShowCaseLangResource P2TextShowcollapsibleicon}" />
+                                    <atom:RadioButton GroupName="ShowCollapsibleIconMode"
+                                                      Tag="Hover"
+                                                      IsCheckedChanged="HandleShowCollapsibleIconChanged" Content="{gallery:SplitterShowCaseLangResource P2ContentHover}" />
+                                    <atom:RadioButton GroupName="ShowCollapsibleIconMode"
+                                                      Tag="True"
+                                                      IsChecked="True"
+                                                      IsCheckedChanged="HandleShowCollapsibleIconChanged" Content="{gallery:SplitterShowCaseLangResource P2ContentTrue}" />
+                                    <atom:RadioButton GroupName="ShowCollapsibleIconMode"
+                                                      Tag="False"
+                                                      IsCheckedChanged="HandleShowCollapsibleIconChanged" Content="{gallery:SplitterShowCaseLangResource P2ContentFalse}" />
+                                </StackPanel>
+                                <atom:Splitter Orientation="Vertical" Height="220">
+                                    <Border Classes="splitter-panel"
+                                            x:Name="ShowCollapsiblePanelFirst"
+                                            atom:Splitter.DefaultSize="33%">
+                                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextFirst}" />
+                                    </Border>
+                                    <Border Classes="splitter-panel alt" x:Name="ShowCollapsiblePanelSecond"
+                                            atom:Splitter.DefaultSize="34%">
+                                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextSecond}" />
+                                    </Border>
+                                    <Border Classes="splitter-panel"
+                                            x:Name="ShowCollapsiblePanelThird">
+                                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextThird}" />
+                                    </Border>
+                                </atom:Splitter>
+                            </StackPanel>
+                        </Border>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource MultiPanelsTitle}" Description="{gallery:SplitterShowCaseLangResource MultiPanelsDescription}" IsOccupyEntireRow="True">
+                        <Border Classes="splitter-surface">
+                            <atom:Splitter Orientation="Vertical" Height="240">
+                                <Border Classes="splitter-panel" atom:Splitter.Size="20%">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextA}" />
+                                </Border>
+                                <Border Classes="splitter-panel alt" atom:Splitter.Size="20%">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextB}" />
+                                </Border>
+                                <Border Classes="splitter-panel">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextC}" />
+                                </Border>
+                                <Border Classes="splitter-panel alt">
+                                    <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextD}" />
+                                </Border>
+                            </atom:Splitter>
+                        </Border>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource LazyTitle}"
+                                          Description="{gallery:SplitterShowCaseLangResource LazyDescription}"
+                                          IsOccupyEntireRow="True">
+                        <Border Classes="splitter-surface" Padding="16">
+                            <StackPanel Spacing="12">
+                                <atom:Splitter Orientation="Vertical" Height="140" IsLazy="True">
+                                    <Border Classes="splitter-panel" atom:Splitter.Size="50%">
+                                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextFirst}" />
+                                    </Border>
+                                    <Border Classes="splitter-panel alt">
+                                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextSecond}" />
+                                    </Border>
+                                </atom:Splitter>
+                                <atom:Splitter Orientation="Horizontal" Height="140" IsLazy="True">
+                                    <Border Classes="splitter-panel" atom:Splitter.Size="50%">
+                                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextFirst}" />
+                                    </Border>
+                                    <Border Classes="splitter-panel alt">
+                                        <TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextSecond}" />
+                                    </Border>
+                                </atom:Splitter>
+                            </StackPanel>
+                        </Border>
+                    </gallery:ShowCaseItem>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>
