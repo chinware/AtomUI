@@ -11,6 +11,10 @@
         <Setter Property="RowGap" Value="{gallery:ShowCasePanelTokenResource RowGap}" />
         <Setter Property="ContentMargin" Value="{gallery:ShowCasePanelTokenResource ContentMargin}" />
         <Setter Property="IsScrollEnabled" Value="True" />
+        <Setter Property="IsDeferredLoadingEnabled" Value="False" />
+        <Setter Property="InitialDeferredLoadItemCount" Value="4" />
+        <Setter Property="DeferredLoadBatchSize" Value="2" />
+        <Setter Property="DeferredLoadViewportBuffer" Value="600" />
         <Setter Property="Template">
             <ControlTemplate TargetType="{x:Type gallery:ShowCasePanel}">
                 <atom:ScrollViewer VerticalScrollBarVisibility="Auto"

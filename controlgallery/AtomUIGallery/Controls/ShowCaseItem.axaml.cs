@@ -1,5 +1,7 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 
 namespace AtomUIGallery.Controls;
 
@@ -25,6 +27,24 @@ public class ShowCaseItem : ContentControl
 
     internal static readonly StyledProperty<bool> IsFakeProperty =
         AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsFake), false);
+
+    public static readonly StyledProperty<bool> IsDeferredContentEnabledProperty =
+        AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsDeferredContentEnabled), false);
+
+    public static readonly StyledProperty<IDataTemplate?> DeferredContentTemplateProperty =
+        AvaloniaProperty.Register<ShowCaseItem, IDataTemplate?>(nameof(DeferredContentTemplate));
+
+    public static readonly StyledProperty<object?> DeferredContentProperty =
+        AvaloniaProperty.Register<ShowCaseItem, object?>(nameof(DeferredContent));
+
+    public static readonly StyledProperty<double> DeferredPlaceholderHeightProperty =
+        AvaloniaProperty.Register<ShowCaseItem, double>(nameof(DeferredPlaceholderHeight), 160);
+
+    public static readonly StyledProperty<bool> IsDeferredContentMaterializedProperty =
+        AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsDeferredContentMaterialized), false);
+
+    internal static readonly StyledProperty<bool> IsDeferredPlaceholderVisibleProperty =
+        AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsDeferredPlaceholderVisible), false);
 
     public string Title
     {
@@ -54,5 +74,91 @@ public class ShowCaseItem : ContentControl
     {
         get => GetValue(IsFakeProperty);
         set => SetValue(IsFakeProperty, value);
+    }
+
+    public bool IsDeferredContentEnabled
+    {
+        get => GetValue(IsDeferredContentEnabledProperty);
+        set => SetValue(IsDeferredContentEnabledProperty, value);
+    }
+
+    public IDataTemplate? DeferredContentTemplate
+    {
+        get => GetValue(DeferredContentTemplateProperty);
+        set => SetValue(DeferredContentTemplateProperty, value);
+    }
+
+    public object? DeferredContent
+    {
+        get => GetValue(DeferredContentProperty);
+        set => SetValue(DeferredContentProperty, value);
+    }
+
+    public double DeferredPlaceholderHeight
+    {
+        get => GetValue(DeferredPlaceholderHeightProperty);
+        set => SetValue(DeferredPlaceholderHeightProperty, value);
+    }
+
+    public bool IsDeferredContentMaterialized
+    {
+        get => GetValue(IsDeferredContentMaterializedProperty);
+        private set => SetValue(IsDeferredContentMaterializedProperty, value);
+    }
+
+    internal bool IsDeferredPlaceholderVisible
+    {
+        get => GetValue(IsDeferredPlaceholderVisibleProperty);
+        set => SetValue(IsDeferredPlaceholderVisibleProperty, value);
+    }
+
+    public void MaterializeDeferredContent()
+    {
+        if (IsDeferredContentMaterialized ||
+            !IsDeferredContentEnabled ||
+            DeferredContentTemplate is null)
+        {
+            return;
+        }
+
+        var data    = DeferredContent ?? DataContext;
+        var content = DeferredContentTemplate.Build(data);
+        if (content is StyledElement styledElement)
+        {
+            styledElement.DataContext = data;
+        }
+
+        SetCurrentValue(ContentProperty, content);
+        IsDeferredContentMaterialized = true;
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        if (IsDeferredContentMaterialized &&
+            DeferredContent is null &&
+            Content is StyledElement styledElement)
+        {
+            styledElement.DataContext = DataContext;
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsDeferredContentEnabledProperty ||
+            change.Property == DeferredContentTemplateProperty ||
+            change.Property == IsDeferredContentMaterializedProperty)
+        {
+            UpdateDeferredPlaceholderVisibility();
+        }
+    }
+
+    private void UpdateDeferredPlaceholderVisibility()
+    {
+        IsDeferredPlaceholderVisible =
+            IsDeferredContentEnabled &&
+            DeferredContentTemplate is not null &&
+            !IsDeferredContentMaterialized;
     }
 }
