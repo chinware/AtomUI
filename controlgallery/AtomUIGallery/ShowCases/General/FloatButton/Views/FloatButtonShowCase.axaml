@@ -6,10 +6,137 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.FloatButton"
              x:DataType="vm:FloatButtonViewModel">
-    <gallery:ShowCasePanel>
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="FloatButton"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:FloatButtonShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:FloatButtonShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:FloatButtonShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:FloatButtonShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
+
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="200" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:FloatButtonShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:FloatButtonShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:FloatButtonShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AbstractFloatButton"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:FloatButtonShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:FloatButtonShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:FloatButtonShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
+                                       ContentMargin="28,10,28,28">
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource BasicTitle}"
-            Description="{gallery:FloatButtonShowCaseLangResource BasicDescription}">
+            Description="{gallery:FloatButtonShowCaseLangResource BasicDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:FloatButtonViewModel">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -17,11 +144,17 @@
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-        
+
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource TypeTitle}"
-            Description="{gallery:FloatButtonShowCaseLangResource TypeDescription}">
+            Description="{gallery:FloatButtonShowCaseLangResource TypeDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:FloatButtonViewModel">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -33,11 +166,17 @@
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-        
+
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource ShapeTitle}"
-            Description="{gallery:FloatButtonShowCaseLangResource ShapeDescription}">
+            Description="{gallery:FloatButtonShowCaseLangResource ShapeDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:FloatButtonViewModel">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -51,12 +190,18 @@
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
-        
+
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-        
+
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource TooltipTitle}"
-            Description="{gallery:FloatButtonShowCaseLangResource TooltipDescription}">
+            Description="{gallery:FloatButtonShowCaseLangResource TooltipDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:FloatButtonViewModel">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -66,11 +211,17 @@
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-        
+
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource DescriptionTitle}"
-            Description="{gallery:FloatButtonShowCaseLangResource DescriptionDescription}">
+            Description="{gallery:FloatButtonShowCaseLangResource DescriptionDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:FloatButtonViewModel">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -87,12 +238,18 @@
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-        
+
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource GroupTitle}"
-            Description="{gallery:FloatButtonShowCaseLangResource GroupDescription}">
-        
+            Description="{gallery:FloatButtonShowCaseLangResource GroupDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:FloatButtonViewModel">
+
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -111,11 +268,17 @@
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-        
+
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource MenuModeTitle}"
-            Description="{gallery:FloatButtonShowCaseLangResource MenuModeDescription}">
+            Description="{gallery:FloatButtonShowCaseLangResource MenuModeDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:FloatButtonViewModel">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -127,7 +290,7 @@
                             <atom:FloatButton />
                             <atom:FloatButton Icon="{antdicons:AntDesignIconProvider CommentOutlined}" />
                         </atom:FloatButtonGroupHost>
-        
+
                         <atom:FloatButtonGroupHost Shape="Circle"
                                                    Trigger="Click"
                                                    Icon="{antdicons:AntDesignIconProvider CustomerServiceOutlined}"
@@ -138,11 +301,17 @@
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-        
+
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource ControlledModeTitle}"
-            Description="{gallery:FloatButtonShowCaseLangResource ControlledModeDescription}">
+            Description="{gallery:FloatButtonShowCaseLangResource ControlledModeDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:FloatButtonViewModel">
             <StackPanel Spacing="10">
                 <atom:ToggleSwitch HorizontalContentAlignment="Left"
                                    VerticalAlignment="Top"
@@ -159,7 +328,7 @@
                                 <atom:FloatButton Icon="{antdicons:AntDesignIconProvider QqOutlined}" />
                                 <atom:FloatButton Icon="{antdicons:AntDesignIconProvider TwitterOutlined}" />
                             </atom:FloatButtonGroupHost>
-        
+
                             <atom:FloatButtonGroupHost Shape="Circle"
                                                        Trigger="Click"
                                                        Icon="{antdicons:AntDesignIconProvider CustomerServiceOutlined}"
@@ -171,15 +340,21 @@
                         </Panel>
                     </Border>
                 </atom:ScrollViewer>
-        
+
             </StackPanel>
-        
+
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-        
+
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource PlacementTitle}"
             IsOccupyEntireRow="True"
-            Description="{gallery:FloatButtonShowCaseLangResource PlacementDescription}">
+            Description="{gallery:FloatButtonShowCaseLangResource PlacementDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:FloatButtonViewModel">
             <atom:ScrollViewer Height="400">
                 <Border Background="White">
                     <Panel Height="600">
@@ -222,11 +397,17 @@
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-        
+
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource BadgeTitle}"
-            Description="{gallery:FloatButtonShowCaseLangResource BadgeDescription}">
+            Description="{gallery:FloatButtonShowCaseLangResource BadgeDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:FloatButtonViewModel">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="500">
@@ -239,7 +420,7 @@
                             <atom:FloatButton Icon="{antdicons:AntDesignIconProvider CommentOutlined}"
                                               IsBadgeEnabled="True" IsDotBadge="False" BadgeCount="5" />
                         </atom:FloatButtonGroupHost>
-        
+
                         <atom:FloatButtonGroupHost Shape="Circle"
                                                    Icon="{antdicons:AntDesignIconProvider CustomerServiceOutlined}"
                                                    ButtonType="Primary">
@@ -253,11 +434,17 @@
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-        
+
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource BackTopTitle}"
-            Description="{gallery:FloatButtonShowCaseLangResource BackTopDescription}">
+            Description="{gallery:FloatButtonShowCaseLangResource BackTopDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:FloatButtonViewModel">
             <atom:ScrollViewer Height="300">
                 <Border Background="White">
                     <Panel Height="1000">
@@ -275,6 +462,12 @@
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-    </gallery:ShowCasePanel>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>
