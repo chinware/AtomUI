@@ -1,57 +1,208 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:AtomUIGallery.ShowCases.TimePicker"
              x:Class="AtomUIGallery.ShowCases.TimePicker.TimePickerShowCase"
-             x:DataType="vm:TimePickerViewModel"
              xmlns:atom="https://atomui.net"
-             xmlns:gallery="https://atomui.net/oss-controls/gallery">
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.TimePicker"
+             x:DataType="vm:TimePickerViewModel">
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="TimePicker"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:TimePickerShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:TimePickerShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:TimePickerShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:TimePickerShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
 
-    <gallery:ShowCasePanel>
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="200" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:TimePickerShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:TimePickerShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:TimePickerShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="InfoPickerInput"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:TimePickerShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:TimePickerShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:TimePickerShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
+                                       ContentMargin="28,10,28,28">
         <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource BasicTitle}"
+            IsDeferredContentEnabled="True"
             Description="{gallery:TimePickerShowCaseLangResource BasicDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TimePickerViewModel">
             <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" IsNeedConfirm="False" IsShowNow="True" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource HourFormatsTitle}"
+            IsDeferredContentEnabled="True"
             Description="{gallery:TimePickerShowCaseLangResource HourFormatsDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TimePickerViewModel">
             <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" IsNeedConfirm="True" IsShowNow="True"
                              ClockIdentifier="HourClock24" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource ThreeSizesTitle}"
+            IsDeferredContentEnabled="True"
             Description="{gallery:TimePickerShowCaseLangResource ThreeSizesDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TimePickerViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" SizeType="Large" DefaultTime="12:08:23" />
                 <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" SizeType="Middle" DefaultTime="12:08:23" />
                 <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" SizeType="Small" DefaultTime="12:08:23" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource DisabledTitle}"
+            IsDeferredContentEnabled="True"
             Description="{gallery:TimePickerShowCaseLangResource DisabledDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TimePickerViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" IsEnabled="False" DefaultTime="12:08:23" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource IntervalOptionTitle}"
+            IsDeferredContentEnabled="True"
             Description="{gallery:TimePickerShowCaseLangResource IntervalOptionDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TimePickerViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}"
                                  DefaultTime="12:08:23"
                                  MinuteIncrement="15"
                                  SecondIncrement="10" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource TwelveHoursTitle}"
+            IsDeferredContentEnabled="True"
             Description="{gallery:TimePickerShowCaseLangResource TwelveHoursDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TimePickerViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}"
                                  DefaultTime="12:08:23"
@@ -60,11 +211,16 @@
                                  DefaultTime="12:08:23"
                                  ClockIdentifier="HourClock24" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource VariantsTitle}"
+            IsDeferredContentEnabled="True"
             Description="{gallery:TimePickerShowCaseLangResource VariantsDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TimePickerViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextOutline}"
@@ -85,11 +241,16 @@
                                           PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextBorderless}" />
                 </StackPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource StatusTitle}"
+            IsDeferredContentEnabled="True"
             Description="{gallery:TimePickerShowCaseLangResource StatusDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TimePickerViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:TimePicker Status="Default"
@@ -122,11 +283,16 @@
                                           ClockIdentifier="HourClock24" />
                 </StackPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource TimeRangePickerTitle}"
+            IsDeferredContentEnabled="True"
             Description="{gallery:TimePickerShowCaseLangResource TimeRangePickerDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TimePickerViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:RangeTimePicker Status="Default"
                                       PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextStartTime}"
@@ -134,6 +300,11 @@
                                       RangeStartDefaultTime="10:09:20"
                                       RangeEndDefaultTime="12:12:20" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-    </gallery:ShowCasePanel>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>
