@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
@@ -5,9 +7,9 @@ using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Theme.Language;
+using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
-using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.Upload;
 
@@ -15,25 +17,28 @@ public partial class UploadShowCase : GalleryReactiveUserControl<UploadViewModel
 {
     public const string LanguageId = nameof(UploadShowCase);
 
-    private const string BasicScenario       = "Basic";
-    private const string PicturesScenario    = "Pictures";
-    private const string ConstraintsScenario = "Constraints";
+    private const string ExamplesScenario    = "Examples";
+    private const string ApiScenario         = "Api";
+    private const string DesignTokenScenario = "DesignToken";
 
-    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
+    private WindowMessageManager? _messageManager;
 
     public UploadShowCase()
     {
         InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+
         this.WhenActivated(disposables =>
         {
-            if (DataContext is UploadViewModel vm)
+            if (DataContext is UploadViewModel viewModel)
             {
-                RefreshLocalizedTaskLists(vm);
+                RefreshLocalizedTaskLists(viewModel);
 
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)
                 {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedTaskLists(vm);
+                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshLocalizedTaskLists(viewModel);
                     themeManager.LanguageVariantChanged += handler;
                     Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
                               .DisposeWith(disposables);
@@ -41,23 +46,37 @@ public partial class UploadShowCase : GalleryReactiveUserControl<UploadViewModel
 
                 Disposable.Create(() =>
                 {
-                    vm.DefaultTaskList                 = null;
-                    vm.PicturesWallDefaultTaskList     = null;
-                    vm.PictureListStyleDefaultTaskList = null;
+                    viewModel.DefaultTaskList                 = null;
+                    viewModel.PicturesWallDefaultTaskList     = null;
+                    viewModel.PictureListStyleDefaultTaskList = null;
                 }).DisposeWith(disposables);
             }
         });
-        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
         EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ClearLazyScenarioContent();
+        _messageManager?.Dispose();
+        _messageManager = null;
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        foreach (var content in _scenarioCache.Values)
+        ExamplesContent.DataContext = DataContext;
+        foreach (var content in _lazyScenarioContentCache.Values)
         {
             content.DataContext = DataContext;
         }
+        EnsureSelectedScenarioContent();
     }
 
     private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -67,46 +86,67 @@ public partial class UploadShowCase : GalleryReactiveUserControl<UploadViewModel
 
     private void EnsureSelectedScenarioContent()
     {
-        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
-            tabItem.Tag is not string scenario)
+        if (ScenarioTabs.SelectedItem is not TabStripItem tabStripItem ||
+            tabStripItem.Tag is not string scenario)
         {
             return;
         }
 
-        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        var content = ResolveScenarioContent(scenario);
+        if (!ReferenceEquals(ScenarioContentHost.Content, content))
+        {
+            ScenarioContentHost.Content = content;
+        }
+    }
+
+    private void ClearLazyScenarioContent()
+    {
+        if (ScenarioContentHost.Content is not null &&
+            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
+        {
+            ScenarioContentHost.Content = null;
+        }
+        _lazyScenarioContentCache.Clear();
+    }
+
+    private Control ResolveScenarioContent(string scenario)
+    {
+        if (scenario == ExamplesScenario)
+        {
+            ExamplesContent.DataContext = DataContext;
+            return ExamplesContent;
+        }
+
+        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
         {
             content             = CreateScenarioContent(scenario);
             content.DataContext = DataContext;
-            _scenarioCache.Add(scenario, content);
+            _lazyScenarioContentCache.Add(scenario, content);
         }
 
-        if (tabItem.Content != content)
-        {
-            tabItem.Content = content;
-        }
+        return content;
     }
 
     private static Control CreateScenarioContent(string scenario)
     {
         return scenario switch
         {
-            BasicScenario       => new UploadBasicShowCase(),
-            PicturesScenario    => new UploadPicturesShowCase(),
-            ConstraintsScenario => new UploadConstraintsShowCase(),
+            ApiScenario         => new UploadApiDataGrid(),
+            DesignTokenScenario => new UploadDesignTokenDataGrid(),
             _                   => throw new InvalidOperationException($"Unknown Upload scenario: {scenario}")
         };
     }
 
-    private void RefreshLocalizedTaskLists(UploadViewModel vm)
+    private void RefreshLocalizedTaskLists(UploadViewModel viewModel)
     {
-        InitDefaultTaskList(vm);
-        InitPictureWallTaskList(vm);
-        InitPictureListTaskList(vm);
+        InitDefaultTaskList(viewModel);
+        InitPictureWallTaskList(viewModel);
+        InitPictureListTaskList(viewModel);
     }
 
-    private void InitDefaultTaskList(UploadViewModel vm)
+    private void InitDefaultTaskList(UploadViewModel viewModel)
     {
-        vm.DefaultTaskList =
+        viewModel.DefaultTaskList =
         [
             new UploadTaskInfo()
             {
@@ -225,37 +265,8 @@ public partial class UploadShowCase : GalleryReactiveUserControl<UploadViewModel
             },
         ];
     }
-}
 
-public abstract class UploadScenarioShowCase : GalleryReactiveUserControl<UploadViewModel>
-{
-    private WindowMessageManager? _messageManager;
-
-    protected IDisposable AttachUpload(
-        AtomUI.Desktop.Controls.Upload upload,
-        EventHandler<UploadTaskAboutToSchedulingEventArgs>? aboutToScheduling = null)
-    {
-        upload.UploadTransport     = new UploadMockTransport();
-        upload.UploadTaskFailed    += HandleUploadFailed;
-        upload.UploadTaskCompleted += HandleUploadCompleted;
-        if (aboutToScheduling is not null)
-        {
-            upload.UploadTaskAboutToScheduling += aboutToScheduling;
-        }
-
-        return Disposable.Create(() =>
-        {
-            upload.UploadTransport     = null;
-            upload.UploadTaskFailed    -= HandleUploadFailed;
-            upload.UploadTaskCompleted -= HandleUploadCompleted;
-            if (aboutToScheduling is not null)
-            {
-                upload.UploadTaskAboutToScheduling -= aboutToScheduling;
-            }
-        });
-    }
-
-    protected void HandleImageUploadAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)
+    private void HandleImageUploadAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)
     {
         var fileInfo          = e.UploadFileInfo;
         var ext               = Path.GetExtension(fileInfo.FilePath.LocalPath);
@@ -279,7 +290,7 @@ public abstract class UploadScenarioShowCase : GalleryReactiveUserControl<Upload
         }
     }
 
-    protected void HandlePngUploadAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)
+    private void HandlePngUploadAboutToScheduling(object? sender, UploadTaskAboutToSchedulingEventArgs e)
     {
         var fileInfo = e.UploadFileInfo;
         var ext      = Path.GetExtension(fileInfo.FilePath.LocalPath);
@@ -290,13 +301,6 @@ public abstract class UploadScenarioShowCase : GalleryReactiveUserControl<Upload
                 UploadShowCaseLangResourceKind.P2CancelPngOnly,
                 "You can only upload PNG file!");
         }
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _messageManager?.Dispose();
-        _messageManager = null;
     }
 
     private void HandleUploadFailed(object? sender, UploadTaskFailedEventArgs e)
