@@ -40,7 +40,46 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentTopright = "右上";
     public const string P2ContentBottomleft = "左下";
     public const string P2ContentBottomright = "右下";
+    public const string PageSubtitle = "從日曆面板中選擇日期、日期範圍和可選時間。";
+    public const string PageDescription = "DatePicker 支援單選與範圍選擇、確認流程、時間選擇、禁用狀態、尺寸變體、校驗狀態、視覺變體和自定義彈出位置。";
+    public const string ComponentCategory = "資料錄入";
+    public const string ComponentStatusStable = "穩定";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計變量";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertySelectedDateTime = "DatePicker 當前選中的日期和可選時間。";
+    public const string ApiPropertyDefaultDateTime = "DatePicker 重置行為使用的初始日期和可選時間。";
+    public const string ApiPropertyRangeStartSelectedDate = "RangeDatePicker 當前選中的開始日期。";
+    public const string ApiPropertyRangeEndSelectedDate = "RangeDatePicker 當前選中的結束日期。";
+    public const string ApiPropertyFormat = "自定義日期/時間格式字符串。";
+    public const string ApiPropertyIsShowTime = "啟用時間選擇面板。";
+    public const string ApiPropertyIsNeedConfirm = "要求用戶確認選中值後再提交。";
+    public const string ApiPropertyClockIdentifier = "啟用時間選擇時，選擇 12 小時制或 24 小時制顯示。";
+    public const string ApiPropertyPickerPlacement = "控制彈出層相對於輸入框的位置。";
+    public const string ApiPropertySecondaryPlaceholderText = "範圍選擇器結束輸入框的佔位文本。";
+    public const string TokenColumnToken = "變量";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "作用域";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
+    public const string TokenNameCellHoverBg = "日期單元格懸浮態背景色。";
+    public const string TokenNameCellActiveWithRangeBg = "選中範圍內單元格的背景色。";
+    public const string TokenNameCellHoverWithRangeBg = "選中範圍內單元格的懸浮態背景色。";
+    public const string TokenNameCellBgDisabled = "禁用日期單元格背景色。";
+    public const string TokenNameCellRangeBorderColor = "選擇日期範圍時使用的邊框色。";
+    public const string TokenNameCellWidth = "每個日期單元格寬度。";
+    public const string TokenNameCellHeight = "每個日期單元格高度。";
+    public const string TokenNamePanelContentPadding = "日曆面板內容內邊距。";
+    public const string TokenNameItemPanelMinWidth = "日曆項面板最小寬度。";
+    public const string TokenNameRangeCalendarSpacing = "範圍日曆面板之間的間距。";
 
     protected override Type GetResourceKindType() => typeof(DatePickerShowCaseLangResourceKind);
 }
-
