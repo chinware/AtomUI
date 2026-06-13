@@ -1,58 +1,217 @@
 using System.Globalization;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Theme.Language;
-using Avalonia;
-using Avalonia.Interactivity;
 using AtomUIGallery.Localization;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Interactivity;
+using AtomTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
+using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.TabStrip;
 
 public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewModel>
 {
     public const string LanguageId = nameof(TabStripShowCase);
+    private const string ExamplesScenario    = "Examples";
+    private const string ApiScenario         = "Api";
+    private const string DesignTokenScenario = "DesignToken";
+
+    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
+    private readonly List<WeakReference<CardTabStrip>> _dynamicAddTabStrips = [];
+    private EventHandler<LanguageVariantChangedEventArgs>? _languageVariantChangedHandler;
 
     public TabStripShowCase()
     {
-        this.WhenActivated(disposables =>
-        {
-            if (DataContext is TabStripViewModel viewModel)
-            {
-                RefreshItemsSourceData(viewModel);
-
-                PositionTabStripOptionGroup.OptionCheckedChanged     += viewModel.HandleTabStripPlacementOptionCheckedChanged;
-                PositionCardTabStripOptionGroup.OptionCheckedChanged += viewModel.HandleCardTabStripPlacementOptionCheckedChanged;
-                SizeTypeTabStripOptionGroup.OptionCheckedChanged     += viewModel.HandleTabStripSizeTypeOptionCheckedChanged;
-                AddTabDemoStrip.AddTabRequest                        += HandleTabStripAddTabRequest;
-
-                var themeManager = Application.Current?.GetThemeManager();
-                if (themeManager != null)
-                {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) =>
-                    {
-                        RefreshItemsSourceData(viewModel);
-                        RefreshDynamicAddedTabs();
-                    };
-                    themeManager.LanguageVariantChanged += handler;
-                    Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
-                        .DisposeWith(disposables);
-                }
-
-                Disposable.Create(() =>
-                {
-                    PositionTabStripOptionGroup.OptionCheckedChanged     -= viewModel.HandleTabStripPlacementOptionCheckedChanged;
-                    PositionCardTabStripOptionGroup.OptionCheckedChanged -= viewModel.HandleCardTabStripPlacementOptionCheckedChanged;
-                    SizeTypeTabStripOptionGroup.OptionCheckedChanged     -= viewModel.HandleTabStripSizeTypeOptionCheckedChanged;
-                    AddTabDemoStrip.AddTabRequest                        -= HandleTabStripAddTabRequest;
-
-                    viewModel.TabStripItemDataSource = new();
-                }).DisposeWith(disposables);
-            }
-        });
         InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        RefreshViewModelData();
+        SubscribeLanguageVariantChanged();
+        EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        UnsubscribeLanguageVariantChanged();
+        ClearLazyScenarioContent();
+        _dynamicAddTabStrips.Clear();
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        ExamplesContent.DataContext = DataContext;
+        foreach (var content in _lazyScenarioContentCache.Values)
+        {
+            content.DataContext = DataContext;
+        }
+        RefreshViewModelData();
+        EnsureSelectedScenarioContent();
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not ScenarioTabStripItem tabStripItem ||
+            tabStripItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        var content = ResolveScenarioContent(scenario);
+        if (!ReferenceEquals(ScenarioContentHost.Content, content))
+        {
+            ScenarioContentHost.Content = content;
+        }
+    }
+
+    private void ClearLazyScenarioContent()
+    {
+        if (ScenarioContentHost.Content is not null &&
+            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
+        {
+            ScenarioContentHost.Content = null;
+        }
+        _lazyScenarioContentCache.Clear();
+    }
+
+    private Control ResolveScenarioContent(string scenario)
+    {
+        if (scenario == ExamplesScenario)
+        {
+            ExamplesContent.DataContext = DataContext;
+            return ExamplesContent;
+        }
+
+        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _lazyScenarioContentCache.Add(scenario, content);
+        }
+
+        return content;
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            ApiScenario         => new TabStripApiDataGrid(),
+            DesignTokenScenario => new TabStripDesignTokenDataGrid(),
+            _                   => throw new InvalidOperationException($"Unknown TabStrip scenario: {scenario}")
+        };
+    }
+
+    private void HandleTabStripPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is TabStripViewModel viewModel)
+        {
+            viewModel.HandleTabStripPlacementOptionCheckedChanged(sender, args);
+        }
+    }
+
+    private void HandleCardTabStripPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is TabStripViewModel viewModel)
+        {
+            viewModel.HandleCardTabStripPlacementOptionCheckedChanged(sender, args);
+        }
+    }
+
+    private void HandleTabStripSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is TabStripViewModel viewModel)
+        {
+            viewModel.HandleTabStripSizeTypeOptionCheckedChanged(sender, args);
+        }
+    }
+
+    private void HandleTabStripAddTabRequest(object? sender, RoutedEventArgs args)
+    {
+        if (sender is not CardTabStrip tabStrip)
+        {
+            return;
+        }
+
+        TrackDynamicAddTabStrip(tabStrip);
+        var index = tabStrip.ItemCount;
+        tabStrip.Items.Add(new AtomTabStripItem
+        {
+            Content    = Format(TabStripShowCaseLangResourceKind.P2ContentNewTabFormat, "new tab {0}", index),
+            IsClosable = true,
+            Tag        = index
+        });
+    }
+
+    private void TrackDynamicAddTabStrip(CardTabStrip tabStrip)
+    {
+        foreach (var reference in _dynamicAddTabStrips)
+        {
+            if (reference.TryGetTarget(out var tracked) &&
+                ReferenceEquals(tracked, tabStrip))
+            {
+                return;
+            }
+        }
+
+        _dynamicAddTabStrips.Add(new WeakReference<CardTabStrip>(tabStrip));
+    }
+
+    private void RefreshViewModelData()
+    {
+        if (DataContext is TabStripViewModel viewModel)
+        {
+            RefreshItemsSourceData(viewModel);
+        }
+    }
+
+    private void SubscribeLanguageVariantChanged()
+    {
+        if (_languageVariantChangedHandler is not null)
+        {
+            return;
+        }
+
+        var themeManager = Application.Current?.GetThemeManager();
+        if (themeManager is null)
+        {
+            return;
+        }
+
+        _languageVariantChangedHandler = (_, _) =>
+        {
+            RefreshViewModelData();
+            RefreshDynamicAddedTabs();
+        };
+        themeManager.LanguageVariantChanged += _languageVariantChangedHandler;
+    }
+
+    private void UnsubscribeLanguageVariantChanged()
+    {
+        if (_languageVariantChangedHandler is null)
+        {
+            return;
+        }
+
+        var themeManager = Application.Current?.GetThemeManager();
+        if (themeManager is not null)
+        {
+            themeManager.LanguageVariantChanged -= _languageVariantChangedHandler;
+        }
+        _languageVariantChangedHandler = null;
     }
 
     private static void RefreshItemsSourceData(TabStripViewModel viewModel)
@@ -68,24 +227,22 @@ public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewM
         });
     }
 
-    private void HandleTabStripAddTabRequest(object? sender, RoutedEventArgs args)
-    {
-        var index = AddTabDemoStrip.ItemCount;
-        AddTabDemoStrip.Items.Add(new TabStripItem
-        {
-            Content    = Format(TabStripShowCaseLangResourceKind.P2ContentNewTabFormat, "new tab {0}", index),
-            IsClosable = true,
-            Tag        = index
-        });
-    }
-
     private void RefreshDynamicAddedTabs()
     {
-        foreach (var item in AddTabDemoStrip.Items)
+        for (var i = _dynamicAddTabStrips.Count - 1; i >= 0; i--)
         {
-            if (item is TabStripItem { Tag: int index } tabStripItem)
+            if (!_dynamicAddTabStrips[i].TryGetTarget(out var tabStrip))
             {
-                tabStripItem.Content = Format(TabStripShowCaseLangResourceKind.P2ContentNewTabFormat, "new tab {0}", index);
+                _dynamicAddTabStrips.RemoveAt(i);
+                continue;
+            }
+
+            foreach (var item in tabStrip.Items)
+            {
+                if (item is AtomTabStripItem { Tag: int index } tabStripItem)
+                {
+                    tabStripItem.Content = Format(TabStripShowCaseLangResourceKind.P2ContentNewTabFormat, "new tab {0}", index);
+                }
             }
         }
     }
