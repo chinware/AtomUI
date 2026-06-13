@@ -16,6 +16,7 @@
                         CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         Background="{TemplateBinding Background}"
+                        BoxShadow="{TemplateBinding BoxShadow}"
                         BackgroundSizing="InnerBorderEdge">
                     <Border Name="TextAreaContentFrame"
                             Padding="{TemplateBinding TextAreaFramePadding, Converter={StaticResource TextAreaFramePaddingConverter}}">

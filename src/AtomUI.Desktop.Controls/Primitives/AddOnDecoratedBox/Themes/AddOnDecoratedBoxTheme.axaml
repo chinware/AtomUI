@@ -38,6 +38,7 @@
                         CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         Background="{TemplateBinding Background}"
+                        BoxShadow="{TemplateBinding BoxShadow}"
                         BackgroundSizing="InnerBorderEdge">
                     <atom:AdaptiveSpacingDockPanel Name="ContentLayout" LastChildFill="True">
                         <ContentPresenter
@@ -194,10 +195,14 @@
         <Style Selector="^:outline:focus-within">
             <Setter Property="BorderBrush"
                     Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
         </Style>
         <Style Selector="^:outline:pressed">
             <Setter Property="BorderBrush"
                     Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
         </Style>
 
         <!-- Outline + Error -->
@@ -217,10 +222,14 @@
         <Style Selector="^:outline[Status=Error]:focus-within">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
         </Style>
         <Style Selector="^:outline[Status=Error]:pressed">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
         </Style>
 
         <!-- Outline + Warning -->
@@ -240,10 +249,14 @@
         <Style Selector="^:outline[Status=Warning]:focus-within">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
         </Style>
         <Style Selector="^:outline[Status=Warning]:pressed">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
         </Style>
 
         <!-- Filled -->
@@ -265,10 +278,14 @@
             <Setter Property="BorderBrush"
                     Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
             <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
         </Style>
         <Style Selector="^:filled:pressed">
             <Setter Property="BorderBrush"
                     Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
         </Style>
 
         <!-- Filled + Error -->
@@ -291,10 +308,14 @@
                     Value="{atom:SharedTokenResource ColorError}" />
             <Setter Property="Background"
                     Value="{atom:AddOnDecoratedBoxTokenResource ActiveBg}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
         </Style>
         <Style Selector="^:filled[Status=Error]:pressed">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
         </Style>
 
         <!-- Filled + Warning -->
@@ -317,10 +338,14 @@
                     Value="{atom:SharedTokenResource ColorWarning}" />
             <Setter Property="Background"
                     Value="{atom:AddOnDecoratedBoxTokenResource ActiveBg}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
         </Style>
         <Style Selector="^:filled[Status=Warning]:pressed">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
         </Style>
 
         <!-- Borderless -->
@@ -344,10 +369,14 @@
         <Style Selector="^:underlined:focus-within">
             <Setter Property="BorderBrush"
                     Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
         </Style>
         <Style Selector="^:underlined:pressed">
             <Setter Property="BorderBrush"
                     Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
         </Style>
 
         <!-- Underlined + Error -->
@@ -362,10 +391,14 @@
         <Style Selector="^:underlined[Status=Error]:focus-within">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
         </Style>
         <Style Selector="^:underlined[Status=Error]:pressed">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
         </Style>
 
         <!-- Underlined + Warning -->
@@ -380,10 +413,14 @@
         <Style Selector="^:underlined[Status=Warning]:focus-within">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
         </Style>
         <Style Selector="^:underlined[Status=Warning]:pressed">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
+            <Setter Property="BoxShadow"
+                    Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
         </Style>
 
         <!-- Disabled -->
@@ -418,6 +455,7 @@
                 <Transitions>
                     <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                     <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:BoxShadowsTransition Property="BoxShadow" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                     <atom:SolidColorBrushTransition Property="AddOnStatusForeground" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                     <atom:SolidColorBrushTransition Property="AddOnStatusIconBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
                 </Transitions>

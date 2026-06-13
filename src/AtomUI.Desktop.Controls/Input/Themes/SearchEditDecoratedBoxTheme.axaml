@@ -42,6 +42,7 @@
                             CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             Background="{TemplateBinding Background}"
+                            BoxShadow="{TemplateBinding BoxShadow}"
                             BackgroundSizing="OuterBorderEdge">
                         <DockPanel Name="ContentLayout" LastChildFill="True">
                             <ContentPresenter

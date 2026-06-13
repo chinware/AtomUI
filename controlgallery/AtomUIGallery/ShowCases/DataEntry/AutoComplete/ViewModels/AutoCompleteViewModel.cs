@@ -1,5 +1,10 @@
+using System.Collections.ObjectModel;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using AtomUIGallery.Localization;
+using Avalonia;
+using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.AutoComplete;
@@ -11,6 +16,21 @@ public class AutoCompleteViewModel : ReactiveObject, IRoutableViewModel
     public IScreen HostScreen { get; }
 
     public string? UrlPathSegment => ID.ToString();
+
+    private ObservableCollection<AutoCompleteApiRow>? _apiRows;
+    private ObservableCollection<AutoCompleteDesignTokenRow>? _designTokenRows;
+
+    public ObservableCollection<AutoCompleteApiRow>? ApiRows
+    {
+        get => _apiRows;
+        private set => this.RaiseAndSetIfChanged(ref _apiRows, value);
+    }
+
+    public ObservableCollection<AutoCompleteDesignTokenRow>? DesignTokenRows
+    {
+        get => _designTokenRows;
+        private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
+    }
 
     private ICompleteOptionsAsyncLoader? _basicOptionsAsyncLoader;
 
@@ -56,7 +76,110 @@ public class AutoCompleteViewModel : ReactiveObject, IRoutableViewModel
     {
         HostScreen = screen;
     }
+
+    public void EnsureApiRows()
+    {
+        if (ApiRows is not null)
+        {
+            return;
+        }
+
+        ApiRows =
+        [
+            new AutoCompleteApiRow("Value", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyValue), "string?", "cyan", "null"),
+            new AutoCompleteApiRow("OptionsSource", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyOptionsSource), "IEnumerable<IAutoCompleteOption>?", "cyan", "null"),
+            new AutoCompleteApiRow("OptionsAsyncLoader", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyOptionsAsyncLoader), "ICompleteOptionsAsyncLoader?", "cyan", "null"),
+            new AutoCompleteApiRow("OptionTemplate", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyOptionTemplate), "IDataTemplate?", "cyan", "null"),
+            new AutoCompleteApiRow("Filter", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyFilter), "IValueFilter?", "cyan", "StartsWith"),
+            new AutoCompleteApiRow("FilterValueSelector", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyFilterValueSelector), "DefaultFilterValueSelector?", "cyan", "null"),
+            new AutoCompleteApiRow("IsAllowClear", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyIsAllowClear), "bool", "green", "false"),
+            new AutoCompleteApiRow("ClearIcon", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyClearIcon), "PathIcon?", "cyan", "null"),
+            new AutoCompleteApiRow("StyleVariant", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyStyleVariant), "InputControlStyleVariant", "purple", "Outlined"),
+            new AutoCompleteApiRow("Status", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyStatus), "InputControlStatus", "purple", "Default"),
+            new AutoCompleteApiRow("Placement", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyPlacement), "AutoCompletePlacementMode", "purple", "Bottom"),
+            new AutoCompleteApiRow("MinimumPrefixLength", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyMinimumPrefixLength), "int", "green", "1"),
+            new AutoCompleteApiRow("DisplayCandidateCount", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyDisplayCandidateCount), "int", "green", "10"),
+            new AutoCompleteApiRow("MaxDropDownHeight", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyMaxDropDownHeight), "double", "green", "Infinity"),
+            new AutoCompleteApiRow("IsPopupMatchSelectWidth", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyIsPopupMatchSelectWidth), "bool", "green", "true"),
+            new AutoCompleteApiRow("ShouldUseOverlayPopup", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyShouldUseOverlayPopup), "bool", "green", "true"),
+            new AutoCompleteApiRow("AutoCompleteSearchEdit.SearchButtonStyle", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyAutoCompleteSearchButtonStyle), "SearchEditButtonStyle", "purple", "Default"),
+            new AutoCompleteApiRow("AutoCompleteTextArea.Lines", Lang(AutoCompleteShowCaseLangResourceKind.ApiPropertyAutoCompleteTextAreaLines), "int", "green", "1")
+        ];
+    }
+
+    public void EnsureDesignTokenRows()
+    {
+        if (DesignTokenRows is not null)
+        {
+            return;
+        }
+
+        DesignTokenRows =
+        [
+            new AutoCompleteDesignTokenRow("PopupContentPadding", Lang(AutoCompleteShowCaseLangResourceKind.TokenNamePopupContentPadding), Lang(AutoCompleteShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(AutoCompleteShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new AutoCompleteDesignTokenRow("OptionHeight", Lang(AutoCompleteShowCaseLangResourceKind.TokenNameOptionHeight), Lang(AutoCompleteShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(AutoCompleteShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new AutoCompleteDesignTokenRow("MinPopupWidth", Lang(AutoCompleteShowCaseLangResourceKind.TokenNameMinPopupWidth), Lang(AutoCompleteShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(AutoCompleteShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new AutoCompleteDesignTokenRow("MaxPopupWidth", Lang(AutoCompleteShowCaseLangResourceKind.TokenNameMaxPopupWidth), Lang(AutoCompleteShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(AutoCompleteShowCaseLangResourceKind.TokenStatusStable), "success")
+        ];
+    }
+
+    private static string Lang(AutoCompleteShowCaseLangResourceKind kind)
+    {
+        if (Application.Current is not null && Dispatcher.UIThread.CheckAccess())
+        {
+            return LanguageResourceBinder.GetLangResource(kind) ?? FallbackLang(kind);
+        }
+
+        return FallbackLang(kind);
+    }
+
+    private static string FallbackLang(AutoCompleteShowCaseLangResourceKind kind)
+    {
+        return kind switch
+        {
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyValue                         => en_US.ApiPropertyValue,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyOptionsSource                 => en_US.ApiPropertyOptionsSource,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyOptionsAsyncLoader            => en_US.ApiPropertyOptionsAsyncLoader,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyOptionTemplate                => en_US.ApiPropertyOptionTemplate,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyFilter                        => en_US.ApiPropertyFilter,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyFilterValueSelector           => en_US.ApiPropertyFilterValueSelector,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyIsAllowClear                  => en_US.ApiPropertyIsAllowClear,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyClearIcon                     => en_US.ApiPropertyClearIcon,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyStyleVariant                  => en_US.ApiPropertyStyleVariant,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyStatus                        => en_US.ApiPropertyStatus,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyPlacement                     => en_US.ApiPropertyPlacement,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyMinimumPrefixLength           => en_US.ApiPropertyMinimumPrefixLength,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyDisplayCandidateCount         => en_US.ApiPropertyDisplayCandidateCount,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyMaxDropDownHeight             => en_US.ApiPropertyMaxDropDownHeight,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyIsPopupMatchSelectWidth       => en_US.ApiPropertyIsPopupMatchSelectWidth,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyShouldUseOverlayPopup         => en_US.ApiPropertyShouldUseOverlayPopup,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyAutoCompleteSearchButtonStyle => en_US.ApiPropertyAutoCompleteSearchButtonStyle,
+            AutoCompleteShowCaseLangResourceKind.ApiPropertyAutoCompleteTextAreaLines     => en_US.ApiPropertyAutoCompleteTextAreaLines,
+            AutoCompleteShowCaseLangResourceKind.TokenNamePopupContentPadding             => en_US.TokenNamePopupContentPadding,
+            AutoCompleteShowCaseLangResourceKind.TokenNameOptionHeight                    => en_US.TokenNameOptionHeight,
+            AutoCompleteShowCaseLangResourceKind.TokenNameMinPopupWidth                   => en_US.TokenNameMinPopupWidth,
+            AutoCompleteShowCaseLangResourceKind.TokenNameMaxPopupWidth                   => en_US.TokenNameMaxPopupWidth,
+            AutoCompleteShowCaseLangResourceKind.TokenScopeComponent                      => en_US.TokenScopeComponent,
+            AutoCompleteShowCaseLangResourceKind.TokenStatusStable                        => en_US.TokenStatusStable,
+            _                                                                             => kind.ToString()
+        };
+    }
 }
+
+public sealed record AutoCompleteApiRow(
+    string Property,
+    string Description,
+    string Type,
+    string TypeTagColor,
+    string Default);
+
+public sealed record AutoCompleteDesignTokenRow(
+    string Token,
+    string Description,
+    string Scope,
+    string ScopeTagColor,
+    string Status,
+    string StatusTagColor);
 
 public class BasicOptionsAsyncLoader : ICompleteOptionsAsyncLoader
 {
