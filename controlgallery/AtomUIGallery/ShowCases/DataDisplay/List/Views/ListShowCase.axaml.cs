@@ -12,6 +12,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using IListItemData = AtomUI.Controls.Data.IListItemData;
 using ListItemData = AtomUI.Controls.Data.ListItemData;
+using TabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.List;
 
@@ -19,10 +20,11 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
 {
     public const string LanguageId = nameof(ListShowCase);
 
-    private const string BasicScenario    = "Basic";
-    private const string AdvancedScenario = "Advanced";
+    private const string ExamplesScenario    = "Examples";
+    private const string ApiScenario         = "Api";
+    private const string DesignTokenScenario = "DesignToken";
 
-    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
 
     public ListShowCase()
     {
@@ -57,17 +59,31 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
             }
         });
         InitializeComponent();
+        OrderedList.SortDescriptions = [ListSortDescription.FromPath("Content")];
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
         EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ClearLazyScenarioContent();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        foreach (var content in _scenarioCache.Values)
+        ExamplesContent.DataContext = DataContext;
+        foreach (var content in _lazyScenarioContentCache.Values)
         {
             content.DataContext = DataContext;
         }
+        EnsureSelectedScenarioContent();
     }
 
     private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -77,33 +93,106 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
 
     private void EnsureSelectedScenarioContent()
     {
-        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
-            tabItem.Tag is not string scenario)
+        if (ScenarioTabs.SelectedItem is not TabStripItem tabStripItem ||
+            tabStripItem.Tag is not string scenario)
         {
             return;
         }
 
-        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        var content = ResolveScenarioContent(scenario);
+        if (!ReferenceEquals(ScenarioContentHost.Content, content))
+        {
+            ScenarioContentHost.Content = content;
+        }
+    }
+
+    private void ClearLazyScenarioContent()
+    {
+        if (ScenarioContentHost.Content is not null &&
+            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
+        {
+            ScenarioContentHost.Content = null;
+        }
+        _lazyScenarioContentCache.Clear();
+    }
+
+    private Control ResolveScenarioContent(string scenario)
+    {
+        if (scenario == ExamplesScenario)
+        {
+            ExamplesContent.DataContext = DataContext;
+            return ExamplesContent;
+        }
+
+        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
         {
             content             = CreateScenarioContent(scenario);
             content.DataContext = DataContext;
-            _scenarioCache.Add(scenario, content);
+            _lazyScenarioContentCache.Add(scenario, content);
         }
 
-        if (tabItem.Content != content)
-        {
-            tabItem.Content = content;
-        }
+        return content;
     }
 
     private static Control CreateScenarioContent(string scenario)
     {
         return scenario switch
         {
-            BasicScenario    => new ListBasicShowCase(),
-            AdvancedScenario => new ListAdvancedShowCase(),
-            _                => throw new InvalidOperationException($"Unknown List scenario: {scenario}")
+            ApiScenario         => new ListApiDataGrid(),
+            DesignTokenScenario => new ListDesignTokenDataGrid(),
+            _                   => throw new InvalidOperationException($"Unknown List scenario: {scenario}")
         };
+    }
+
+    private void HandleSelectionModeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs e)
+    {
+        if (DataContext is ListViewModel viewModel &&
+            e.CheckedOption.IsChecked == true &&
+            e.CheckedOption.Tag is SelectionMode selectionMode)
+        {
+            viewModel.SelectionMode = selectionMode;
+        }
+    }
+
+    private void HandleAddEmptyItemClicked(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ListViewModel viewModel)
+        {
+            return;
+        }
+
+        var items = viewModel.EmptyDemoItems != null
+            ? new List<IListItemData>(viewModel.EmptyDemoItems)
+            : new List<IListItemData>();
+
+        items.Add(CreateDynamicItem());
+        viewModel.EmptyDemoItems = items;
+    }
+
+    private void HandleRemoveEmptyItemClicked(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is not ListViewModel viewModel)
+        {
+            return;
+        }
+
+        if (viewModel.EmptyDemoItems is null || viewModel.EmptyDemoItems.Count <= 1)
+        {
+            viewModel.EmptyDemoItems = [];
+            return;
+        }
+
+        var items = new List<IListItemData>(viewModel.EmptyDemoItems);
+        items.RemoveAt(items.Count - 1);
+        viewModel.EmptyDemoItems = items;
+    }
+
+    private void HandleFilterListBoxClicked(object? sender, RoutedEventArgs e)
+    {
+        if (sender is SearchEdit searchEdit)
+        {
+            SearchListBox.FilterValue = searchEdit.Text?.Trim();
+        }
     }
 
     private void RefreshLocalizedListItems(ListViewModel viewModel)
