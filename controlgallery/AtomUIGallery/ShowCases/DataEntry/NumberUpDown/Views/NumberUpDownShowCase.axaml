@@ -4,13 +4,373 @@
              x:Class="AtomUIGallery.ShowCases.NumberUpDown.NumberUpDownShowCase"
              x:DataType="vm:NumberUpDownViewModel"
              xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
-    <atom:TabControl Name="ScenarioTabs"
-                     SizeType="Large"
-                     SelectedIndex="0">
-        <atom:TabItem Header="{gallery:NumberUpDownShowCaseLangResource ScenarioBasic}" Tag="Basic" />
-        <atom:TabItem Header="{gallery:NumberUpDownShowCaseLangResource ScenarioRange}" Tag="Range" />
-        <atom:TabItem Header="{gallery:NumberUpDownShowCaseLangResource ScenarioStyle}" Tag="Style" />
-        <atom:TabItem Header="{gallery:NumberUpDownShowCaseLangResource ScenarioAddon}" Tag="Addon" />
-    </atom:TabControl>
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="NumberUpDown"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:NumberUpDownShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:NumberUpDownShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:NumberUpDownShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:NumberUpDownShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
+
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="200" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:NumberUpDownShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:NumberUpDownShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:NumberUpDownShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="Avalonia.Controls.NumericUpDown"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:NumberUpDownShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:NumberUpDownShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:NumberUpDownShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
+                                       ContentMargin="28,10,28,28">
+        <gallery:ShowCasePanel.Styles>
+            <Style Selector="atom|NumericUpDown">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+        </gallery:ShowCasePanel.Styles>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource BasicUsageTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource BasicUsageDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <atom:NumericUpDown Value="3"
+                                HorizontalAlignment="Stretch" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource StringModeTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource StringModeDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown IsStringMode="True"
+                                    StringValue="{Binding StringModeValue, Mode=TwoWay}"
+                                    Increment="0.0001"
+                                    Minimum="0"
+                                    Maximum="100"
+                                    PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextInputWeight}" />
+                <TextBlock>
+                    <Run Text="{gallery:NumberUpDownShowCaseLangResource P2TextRawValuePrefix}" />
+                    <Run Text="{Binding StringModeValue}" />
+                </TextBlock>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource KeyboardBehaviorTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource KeyboardBehaviorDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:CheckBox Content="{gallery:NumberUpDownShowCaseLangResource P2ContentKeyboardEnabled}"
+                               IsChecked="{Binding KeyboardEnabled}" />
+                <atom:NumericUpDown Value="1.2"
+                                    Increment="0.1"
+                                    IsKeyboardEnabled="{Binding KeyboardEnabled}"
+                                    PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextKeyboardDisabled}" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource MouseWheelBehaviorTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource MouseWheelBehaviorDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <atom:NumericUpDown Value="2.5"
+                                Increment="0.5"
+                                PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextFocusAndScrollWheel}" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource MinMaxTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource MinMaxDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <atom:NumericUpDown Minimum="0"
+                                Maximum="10"
+                                Value="3"
+                                Increment="1" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource DecimalStepTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource DecimalStepDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <atom:NumericUpDown Value="1.2"
+                                Increment="0.25"
+                                Minimum="0"
+                                Maximum="2" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource SizesTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource SizesDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:NumericUpDown SizeType="Large" Value="3" />
+                <atom:NumericUpDown SizeType="Middle" Value="3" />
+                <atom:NumericUpDown SizeType="Small" Value="3" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource VariantsTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource VariantsDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown Value="3" StyleVariant="Outlined" />
+                <atom:NumericUpDown Value="3" StyleVariant="Filled" />
+                <atom:NumericUpDown Value="3" StyleVariant="Borderless" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource DisabledTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource DisabledDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown Value="3" StyleVariant="Outlined" IsEnabled="False" />
+                <atom:NumericUpDown Value="3" StyleVariant="Filled" IsEnabled="False" />
+                <atom:NumericUpDown Value="3" StyleVariant="Borderless" IsEnabled="False" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource PrePostTabTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource PrePostTabDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown LeftAddOn="http://"
+                                    RightAddOn=".com"
+                                    HorizontalAlignment="Left"
+                                    Width="400"
+                                    Value="3" />
+                <atom:NumericUpDown RightAddOn="{antdicons:AntDesignIconProvider Kind=SettingOutlined}"
+                                    HorizontalAlignment="Left"
+                                    Width="400"
+                                    Value="3" />
+                <atom:NumericUpDown LeftAddOn="http://"
+                                    InnerRightContent=".com"
+                                    HorizontalAlignment="Left"
+                                    Width="400"
+                                    Value="3" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource WithClearIconTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource WithClearIconDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextInputWithClearIcon}"
+                                Width="400"
+                                HorizontalAlignment="Left"
+                                IsAllowClear="True" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource PrefixAndSuffixTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource PrefixAndSuffixDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextEnterYourValue}"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
+                                    InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, FillBrush=#8C8C8C}" />
+                <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" />
+                <atom:NumericUpDown InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource StatusTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource StatusDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextError}" Status="Error" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarning}" Status="Warning" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextErrorWithPrefix}"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    Status="Error" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarningWithPrefix}"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    Status="Warning" />
+
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextError}"
+                                    Status="Error"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Filled" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarning}"
+                                    Status="Warning"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Filled" />
+
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextError}"
+                                    Status="Error"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Borderless" />
+                <atom:NumericUpDown PlaceholderText="{gallery:NumberUpDownShowCaseLangResource P2PlaceholderTextWarning}"
+                                    Status="Warning"
+                                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                                    StyleVariant="Borderless" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>
