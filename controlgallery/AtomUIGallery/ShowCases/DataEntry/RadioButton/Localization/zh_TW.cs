@@ -54,7 +54,54 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentShanghai = "上海";
     public const string P2ContentBeijing = "北京";
     public const string P2ContentChengdu = "成都";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計 Token";
+    public const string PageSubtitle = "在一組互斥選項中選擇一個值。";
+    public const string PageDescription =
+        "RadioButton 覆蓋單個選擇、分組選項、數據驅動選項、選項按鈕樣式、圖標、禁用狀態和尺寸變體。";
+    public const string ComponentCategory = "數據錄入";
+    public const string ComponentStatusStable = "穩定";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyIsChecked = "單選項是否被選中。";
+    public const string ApiPropertyContent = "單選項顯示的內容。";
+    public const string ApiPropertyIsEnabled = "選項是否可交互。";
+    public const string ApiPropertyIsMotionEnabled = "啟用單選交互的動效。";
+    public const string ApiPropertyIsWaveSpiritEnabled = "啟用點擊波紋反饋效果。";
+    public const string ApiPropertyCheckedItem = "單選框組當前選中的項。";
+    public const string ApiPropertyItemsSource = "用於生成單選框組條目的數據源。";
+    public const string ApiPropertyItemTemplate = "用於渲染生成條目的模板。";
+    public const string ApiPropertyOrientation = "單選框組條目的排列方向。";
+    public const string ApiPropertyItemSpacing = "單選框組條目之間的水平間距。";
+    public const string ApiPropertyLineSpacing = "單選框組換行後的垂直間距。";
+    public const string ApiPropertyButtonStyle = "選項按鈕視覺樣式。";
+    public const string ApiPropertySizeType = "選項按鈕組尺寸。";
+    public const string ApiPropertySelectedItem = "選項按鈕組當前選中的項。";
+    public const string ApiPropertyIcon = "選項按鈕內部顯示的圖標。";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "作用域";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenNameRadioSize = "單選指示器尺寸。";
+    public const string TokenNameDotSize = "單選指示器內選中圓點尺寸。";
+    public const string TokenNameDotColorDisabled = "禁用狀態下選中圓點顏色。";
+    public const string TokenNameTextMargin = "單選指示器與文本內容之間的間距。";
+    public const string TokenNameButtonBackground = "選項按鈕默認背景色。";
+    public const string TokenNameButtonCheckedBackground = "選中選項按鈕背景色。";
+    public const string TokenNameButtonColor = "選項按鈕默認文本顏色。";
+    public const string TokenNameButtonPadding = "選項按鈕內部邊距。";
+    public const string TokenNameButtonSolidCheckedBackground = "實色選項按鈕選中背景色。";
+    public const string TokenNameContentFontSize = "選項按鈕內容默認字號。";
+    public const string TokenNamePadding = "選項按鈕默認框架內邊距。";
+    public const string TokenScopeRadioButton = "RadioButton";
+    public const string TokenScopeOptionButton = "OptionButton";
+    public const string TokenStatusStable = "穩定";
 
     protected override Type GetResourceKindType() => typeof(RadioButtonShowCaseLangResourceKind);
 }
-
