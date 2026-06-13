@@ -79,7 +79,55 @@ internal partial class zh_TW : LanguageProvider
     public const string P2SearchButtonTextSearch = "搜索";
 
     public const string P2SearchButtonTextText = "搜索一下";
+    public const string PageSubtitle = "采集單行文本、搜索輸入、密碼和多行文本。";
+    public const string PageDescription = "LineEdit 覆蓋標準輸入框、前後置附加、清除操作、密碼顯示、前綴後綴、校驗狀態、SearchEdit 和 TextArea 場景。";
+    public const string ComponentCategory = "數據錄入";
+    public const string ComponentStatusStable = "穩定";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計變量";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyPlaceholderText = "輸入為空時顯示的占位文本。";
+    public const string ApiPropertyText = "當前可編輯文本值。";
+    public const string ApiPropertyIsAllowClear = "文本可清除時顯示清除按鈕。";
+    public const string ApiPropertySizeType = "設置輸入框尺寸。";
+    public const string ApiPropertyStyleVariant = "選擇線框、填充、無邊框或下划線表現。";
+    public const string ApiPropertyStatus = "應用錯誤或警告等校驗狀態樣式。";
+    public const string ApiPropertyLeftAddOn = "輸入框外框前置附加內容。";
+    public const string ApiPropertyRightAddOn = "輸入框外框後置附加內容。";
+    public const string ApiPropertyInnerLeftContent = "輸入框內部、文本區域之前渲染的內容。";
+    public const string ApiPropertyInnerRightContent = "輸入框內部、文本區域之後渲染的內容。";
+    public const string ApiPropertyRevealPassword = "控制密碼顯示狀態。";
+    public const string ApiPropertySearchButtonStyle = "設置 SearchEdit 按鈕樣式。";
+    public const string ApiPropertySearchButtonText = "SearchEdit 按鈕顯示文本。";
+    public const string ApiPropertyIsOperating = "顯示 SearchEdit 加載狀態並防止重複搜索點擊。";
+    public const string ApiPropertyLines = "TextArea 初始可見行數。";
+    public const string ApiPropertyIsAutoSize = "允許 TextArea 高度隨內容增長。";
+    public const string ApiPropertyIsShowCount = "顯示當前字符數。";
+    public const string ApiPropertyIsResizable = "允許 TextArea 手動調整大小。";
+    public const string TokenColumnToken = "變量";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "作用域";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
+    public const string TokenNameInputFontSize = "LineEdit 默認字體大小。";
+    public const string TokenNameInputFontSizeLG = "LineEdit 大號字體大小。";
+    public const string TokenNameInputFontSizeSM = "LineEdit 小號字體大小。";
+    public const string TokenNameFontSize = "TextArea 默認字體大小。";
+    public const string TokenNameFontSizeLG = "TextArea 大號字體大小。";
+    public const string TokenNameFontSizeSM = "TextArea 小號字體大小。";
+    public const string TokenNameResizeHandleSize = "TextArea 調整大小手柄尺寸。";
+    public const string TokenNameResizeIndicatorLineColor = "TextArea 調整大小指示線顏色。";
+    public const string TokenNameRightAddOnPadding = "TextArea 默認右側附加內邊距。";
+    public const string TokenNameRightAddOnPaddingSM = "TextArea 小號右側附加內邊距。";
+    public const string TokenNameRightAddOnPaddingLG = "TextArea 大號右側附加內邊距。";
 
     protected override Type GetResourceKindType() => typeof(LineEditShowCaseLangResourceKind);
 }
-

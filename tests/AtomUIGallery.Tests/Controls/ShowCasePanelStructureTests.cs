@@ -1,5 +1,8 @@
 using System;
 using System.IO;
+using AtomUIGallery.Controls;
+using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Shouldly;
 using Xunit;
 
@@ -49,6 +52,67 @@ public class ShowCasePanelStructureTests
         itemTheme.ShouldNotContain("Margin=\"0, 0, 0, 40\"");
     }
 
+    [Fact]
+    public void ShowCaseItem_Deferred_Content_Template_Builds_Only_When_Materialized()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+        var buildCount = 0;
+        var item = new ShowCaseItem
+        {
+            IsDeferredContentEnabled = true,
+            DataContext              = "demo data",
+            DeferredContentTemplate  = new FuncDataTemplate<object?>((data, _) =>
+            {
+                buildCount++;
+                return new TextBlock
+                {
+                    Text = data?.ToString()
+                };
+            }, true)
+        };
+
+        buildCount.ShouldBe(0);
+        item.IsDeferredContentMaterialized.ShouldBeFalse();
+
+        item.MaterializeDeferredContent();
+
+        buildCount.ShouldBe(1);
+        item.IsDeferredContentMaterialized.ShouldBeTrue();
+        item.Content.ShouldBeOfType<TextBlock>().Text.ShouldBe("demo data");
+
+        item.MaterializeDeferredContent();
+        buildCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public void ShowCasePanel_Supports_Opt_In_Viewport_Driven_Deferred_Loading()
+    {
+        var panelSource = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCasePanel.axaml.cs");
+        var itemSource  = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItem.axaml.cs");
+        var itemTheme   = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItemTheme.axaml");
+        var itemToken   = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItemToken.cs");
+
+        panelSource.ShouldContain("IsDeferredLoadingEnabledProperty");
+        panelSource.ShouldContain("InitialDeferredLoadItemCountProperty");
+        panelSource.ShouldContain("DeferredLoadBatchSizeProperty");
+        panelSource.ShouldContain("DeferredLoadViewportBufferProperty");
+        panelSource.ShouldContain("EffectiveViewportChanged += HandleEffectiveViewportChanged");
+        panelSource.ShouldContain("EffectiveViewportChanged -= HandleEffectiveViewportChanged");
+        CountOccurrences(panelSource, "EffectiveViewportChanged +=").ShouldBe(1);
+        panelSource.ShouldContain("MaterializeDeferredContentInViewport");
+        panelSource.ShouldContain("MaterializeAllDeferredContent");
+
+        itemSource.ShouldContain("IsDeferredContentEnabledProperty");
+        itemSource.ShouldContain("DeferredContentTemplateProperty");
+        itemSource.ShouldContain("DeferredContentProperty");
+        itemSource.ShouldContain("DeferredPlaceholderHeightProperty");
+        itemSource.ShouldContain("public void MaterializeDeferredContent()");
+        itemTheme.ShouldContain("PART_DeferredPlaceholder");
+        itemTheme.ShouldContain("DeferredPlaceholderHeight");
+        itemTheme.ShouldContain("ShowCaseItemTokenResource DeferredPlaceholderHeight");
+        itemToken.ShouldContain("DeferredPlaceholderHeight");
+    }
+
     private static string ReadRepoFile(string relativePath)
     {
         var path = GetRepoFile(relativePath);
@@ -71,5 +135,22 @@ public class ShowCasePanelStructureTests
         }
 
         return Path.Combine(AppContext.BaseDirectory, relativePath);
+    }
+
+    private static int CountOccurrences(string source, string value)
+    {
+        var count      = 0;
+        var startIndex = 0;
+        while (true)
+        {
+            var matchIndex = source.IndexOf(value, startIndex, StringComparison.Ordinal);
+            if (matchIndex < 0)
+            {
+                return count;
+            }
+
+            count++;
+            startIndex = matchIndex + value.Length;
+        }
     }
 }

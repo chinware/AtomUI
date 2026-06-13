@@ -232,6 +232,46 @@ Token 规则：
 - `ContentMargin` 由页面根据 Header/Tab 对齐关系设置，但左右应与 sticky Tab 主体一致。
 - Masonry 布局参数使用 ShowCasePanel token，不在每个页面重复写死。
 
+### Deferred Loading
+
+示例数量较多或单个示例创建成本较高时，可以在 `ShowCasePanel` 上手动开启延迟加载：
+
+```xml
+<gallery:ShowCasePanel IsDeferredLoadingEnabled="True"
+                       InitialDeferredLoadItemCount="4"
+                       DeferredLoadBatchSize="2">
+```
+
+规则：
+
+- 默认保持 `IsDeferredLoadingEnabled="False"`，未迁移页面和简单页面不受影响。
+- `ShowCasePanel` 只允许使用一个 panel 级 `EffectiveViewportChanged` 监听来判断 viewport，不允许给每个 `ShowCaseItem` 单独挂监听。
+- `InitialDeferredLoadItemCount` 控制首屏预先 materialize 的 item 数量。
+- `DeferredLoadBatchSize` 控制每次滚动到 viewport 附近后 materialize 的批大小，避免一次性卡顿。
+- `DeferredLoadViewportBuffer` 控制提前加载距离，保证用户滚到附近前内容已经准备好。
+- 已 materialize 的内容不回收。ShowCase 是文档式页面，不做无限列表虚拟化，避免状态、焦点、Popup/Flyout 生命周期被破坏。
+- 如果 `ShowCaseItem` 仍然直接写普通 Content，Avalonia 会在页面初始化时创建这些控件；这种情况下只能减少部分挂载/布局成本。要真正延迟创建演示控件，必须把演示内容放到 `DeferredContentTemplate` 中。
+
+推荐写法：
+
+```xml
+<gallery:ShowCaseItem Title="..."
+                      Description="..."
+                      IsDeferredContentEnabled="True">
+    <gallery:ShowCaseItem.DeferredContentTemplate>
+        <DataTemplate>
+            <!-- 原 ShowCaseItem 演示内容 -->
+        </DataTemplate>
+    </gallery:ShowCaseItem.DeferredContentTemplate>
+</gallery:ShowCaseItem>
+```
+
+硬边界：
+
+- 移入 `DeferredContentTemplate` 只能改变创建时机，不能改变演示控件内容。
+- 已迁移页面必须保留 snapshot 测试，测试应剥离 deferred wrapper 后继续比对原始演示内容。
+- placeholder 的高度和圆角走 `ShowCaseItemToken`，不在页面里写私有视觉值。
+
 ## Spacing 与对齐规则
 
 ButtonShowCase 当前采用：

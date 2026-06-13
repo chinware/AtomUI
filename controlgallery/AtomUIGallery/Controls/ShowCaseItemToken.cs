@@ -18,6 +18,8 @@ internal class ShowCaseItemToken : AbstractControlDesignToken
     public Thickness PreviewMargin { get; set; }
     public Thickness DescriptionMargin { get; set; }
     public FontWeight TitleFontWeight { get; set; }
+    public double DeferredPlaceholderHeight { get; set; }
+    public CornerRadius DeferredPlaceholderCornerRadius { get; set; }
 
     public ShowCaseItemToken()
         : base(ID)
@@ -33,6 +35,8 @@ internal class ShowCaseItemToken : AbstractControlDesignToken
         PreviewMargin     = new Thickness(0, 0, 0, SharedToken.SizeUnit * 8);
         DescriptionMargin = new Thickness(0, SharedToken.SizeUnit * 2 + 2, 0, 0);
         TitleFontWeight   = SharedToken.FontWeightStrong;
+        DeferredPlaceholderHeight       = SharedToken.SizeUnit * 40;
+        DeferredPlaceholderCornerRadius = SharedToken.BorderRadius;
     }
 
     protected override Type GetTokenKindType() => typeof(ShowCaseItemTokenKind);

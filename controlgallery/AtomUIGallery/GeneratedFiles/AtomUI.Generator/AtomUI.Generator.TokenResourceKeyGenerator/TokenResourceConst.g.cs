@@ -21,6 +21,8 @@ namespace AtomUIGallery.Controls.DesignTokens
         CardCornerRadius,
         CardPadding,
         CardShadow,
+        DeferredPlaceholderCornerRadius,
+        DeferredPlaceholderHeight,
         DescriptionMargin,
         PreviewMargin,
         TitleFontWeight
