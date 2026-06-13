@@ -61,6 +61,9 @@ internal class AddOnDecoratedBox : ContentControl,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AddOnDecoratedBox>();
 
+    public static readonly StyledProperty<BoxShadows> BoxShadowProperty =
+        Border.BoxShadowProperty.AddOwner<AddOnDecoratedBox>();
+
     [DependsOn(nameof(LeftAddOnTemplate))]
     public object? LeftAddOn
     {
@@ -135,6 +138,12 @@ internal class AddOnDecoratedBox : ContentControl,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public BoxShadows BoxShadow
+    {
+        get => GetValue(BoxShadowProperty);
+        set => SetValue(BoxShadowProperty, value);
     }
 
     #endregion
