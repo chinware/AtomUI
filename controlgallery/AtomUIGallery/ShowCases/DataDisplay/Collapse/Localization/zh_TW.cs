@@ -6,6 +6,53 @@ namespace AtomUIGallery.ShowCases.Collapse;
 [LanguageProvider(LanguageCode.zh_TW, CollapseShowCase.LanguageId)]
 internal partial class zh_TW : LanguageProvider
 {
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計變量";
+    public const string ComponentCategory = "數據展示";
+    public const string ComponentStatusStable = ".NET 10";
+    public const string PageSubtitle = "將相關內容組織成可獨立展開和收起的面板。";
+    public const string PageDescription = "Collapse 用於把密集信息分組到多個面板中，支持手風琴、嵌套面板、無邊框與幽靈樣式、自定義間距、圖標位置和僅圖標觸發展開。";
+    public const string InfoNamespaceLabel = "命名空間:";
+    public const string InfoPackageLabel = "包:";
+    public const string InfoBaseClassLabel = "基類:";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertySizeType = "控制標題和內容區域的密度。";
+    public const string ApiPropertyIsGhostStyle = "移除面板表面背景，呈現幽靈樣式。";
+    public const string ApiPropertyIsBorderless = "移除外邊框，同時保留面板結構。";
+    public const string ApiPropertyIsAccordion = "同一時間只允許展開一個面板。";
+    public const string ApiPropertyTriggerType = "控制點擊標題區域或僅點擊圖標觸發展開。";
+    public const string ApiPropertyExpandIconPosition = "將展開圖標放在標題內容前方或後方。";
+    public const string ApiPropertyIsMotionEnabled = "控制展開和收起動效。";
+    public const string ApiPropertyItemHeaderPadding = "應用到生成的折疊項標題內邊距。";
+    public const string ApiPropertyItemContentPadding = "應用到生成的折疊項內容內邊距。";
+    public const string ApiPropertyIsSelected = "控制折疊項是否展開。";
+    public const string ApiPropertyIsShowExpandIcon = "控制折疊項是否顯示展開圖標。";
+    public const string ApiPropertyExpandIcon = "單個折疊項的自定義展開圖標。";
+    public const string ApiPropertyAddOnContent = "渲染在折疊項標題中的額外內容。";
+    public const string ApiPropertyAddOnContentTemplate = "用於渲染折疊項額外內容的模板。";
+    public const string ApiPropertyHeaderPadding = "覆蓋單個折疊項的標題內邊距。";
+    public const string ApiPropertyContentPadding = "覆蓋單個折疊項的內容內邊距。";
+    public const string TokenColumnToken = "變量";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "作用域";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenNameHeaderPadding = "折疊面板標題默認內邊距。";
+    public const string TokenNameHeaderBg = "折疊面板標題默認背景。";
+    public const string TokenNameContentPadding = "折疊面板內容默認內邊距。";
+    public const string TokenNameContentBg = "折疊面板內容默認背景。";
+    public const string TokenNameCollapseHeaderPaddingSM = "小尺寸折疊面板標題內邊距。";
+    public const string TokenNameCollapseHeaderPaddingLG = "大尺寸折疊面板標題內邊距。";
+    public const string TokenNameCollapseContentPaddingSM = "小尺寸折疊面板內容內邊距。";
+    public const string TokenNameCollapseContentPaddingLG = "大尺寸折疊面板內容內邊距。";
+    public const string TokenNameCollapsePanelBorderRadius = "面板圓角。";
+    public const string TokenNameLeftExpandButtonMargin = "展開圖標位於左側時的外邊距。";
+    public const string TokenNameRightExpandButtonMargin = "展開圖標位於右側時的外邊距。";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
     public const string ScenarioBasic = "基礎";
     public const string ScenarioAppearance = "外觀";
     public const string ScenarioBehavior = "行為";
@@ -48,4 +95,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(CollapseShowCaseLangResourceKind);
 }
-

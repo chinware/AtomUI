@@ -1,31 +1,49 @@
+using System;
+using System.Collections.Generic;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls;
+using Avalonia;
 using Avalonia.Controls;
+using TabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.Expander;
 
 public partial class ExpanderShowCase : GalleryReactiveUserControl<ExpanderViewModel>
 {
     public const string LanguageId = nameof(ExpanderShowCase);
+    private const string ExamplesScenario    = "Examples";
+    private const string ApiScenario         = "Api";
+    private const string DesignTokenScenario = "DesignToken";
 
-    private const string BasicScenario      = "Basic";
-    private const string AppearanceScenario = "Appearance";
-    private const string BehaviorScenario   = "Behavior";
-
-    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
 
     public ExpanderShowCase()
     {
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
         EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ClearLazyScenarioContent();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        foreach (var content in _scenarioCache.Values)
+        ExamplesContent.DataContext = DataContext;
+        foreach (var content in _lazyScenarioContentCache.Values)
         {
             content.DataContext = DataContext;
         }
+        EnsureSelectedScenarioContent();
     }
 
     private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -35,33 +53,70 @@ public partial class ExpanderShowCase : GalleryReactiveUserControl<ExpanderViewM
 
     private void EnsureSelectedScenarioContent()
     {
-        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
-            tabItem.Tag is not string scenario)
+        if (ScenarioTabs.SelectedItem is not TabStripItem tabStripItem ||
+            tabStripItem.Tag is not string scenario)
         {
             return;
         }
 
-        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        var content = ResolveScenarioContent(scenario);
+        if (!ReferenceEquals(ScenarioContentHost.Content, content))
+        {
+            ScenarioContentHost.Content = content;
+        }
+    }
+
+    private void ClearLazyScenarioContent()
+    {
+        if (ScenarioContentHost.Content is not null &&
+            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
+        {
+            ScenarioContentHost.Content = null;
+        }
+        _lazyScenarioContentCache.Clear();
+    }
+
+    private Control ResolveScenarioContent(string scenario)
+    {
+        if (scenario == ExamplesScenario)
+        {
+            ExamplesContent.DataContext = DataContext;
+            return ExamplesContent;
+        }
+
+        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
         {
             content             = CreateScenarioContent(scenario);
             content.DataContext = DataContext;
-            _scenarioCache.Add(scenario, content);
+            _lazyScenarioContentCache.Add(scenario, content);
         }
 
-        if (tabItem.Content != content)
-        {
-            tabItem.Content = content;
-        }
+        return content;
     }
 
     private static Control CreateScenarioContent(string scenario)
     {
         return scenario switch
         {
-            BasicScenario      => new ExpanderBasicShowCase(),
-            AppearanceScenario => new ExpanderAppearanceShowCase(),
-            BehaviorScenario   => new ExpanderBehaviorShowCase(),
-            _                  => throw new InvalidOperationException($"Unknown Expander scenario: {scenario}")
+            ApiScenario         => new ExpanderApiDataGrid(),
+            DesignTokenScenario => new ExpanderDesignTokenDataGrid(),
+            _                   => throw new InvalidOperationException($"Unknown Expander scenario: {scenario}")
         };
+    }
+
+    private void HandleExpandButtonPosOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is ExpanderViewModel viewModel)
+        {
+            viewModel.HandleExpandButtonPosOptionCheckedChanged(sender, args);
+        }
+    }
+
+    private void HandleExpandDirectionOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is ExpanderViewModel viewModel)
+        {
+            viewModel.HandleExpandDirectionOptionCheckedChanged(sender, args);
+        }
     }
 }
