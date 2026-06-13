@@ -2,14 +2,275 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Expander.ExpanderShowCase"
              xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.Expander"
              x:DataType="vm:ExpanderViewModel">
-    <atom:TabControl Name="ScenarioTabs"
-                     SizeType="Large"
-                     SelectedIndex="0">
-        <atom:TabItem Header="{gallery:ExpanderShowCaseLangResource ScenarioBasic}" Tag="Basic" />
-        <atom:TabItem Header="{gallery:ExpanderShowCaseLangResource ScenarioAppearance}" Tag="Appearance" />
-        <atom:TabItem Header="{gallery:ExpanderShowCaseLangResource ScenarioBehavior}" Tag="Behavior" />
-    </atom:TabControl>
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="Expander"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:ExpanderShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:ExpanderShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:ExpanderShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:ExpanderShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
+
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="200" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:ExpanderShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:ExpanderShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:ExpanderShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="Avalonia.Controls.Expander"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:ExpanderShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:ExpanderShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:ExpanderShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       ContentMargin="28,10,28,28">
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ExpanderShowCaseLangResource ExpanderTitle}"
+                        Description="{gallery:ExpanderShowCaseLangResource ExpanderDescription}">
+                        <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
+                            <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                        </atom:Expander>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ExpanderShowCaseLangResource SizeTitle}"
+                        Description="{gallery:ExpanderShowCaseLangResource SizeDescription}">
+                        <StackPanel Orientation="Vertical" Spacing="20" Margin="0, 0, 10, 0">
+                            <atom:Separator Title="{gallery:ExpanderShowCaseLangResource P2TitleDefaultSize}" TitlePosition="Left" FontWeight="Bold" />
+                            <atom:Expander SizeType="Middle" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsDefaultSizePanelHeader}">
+                                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                            </atom:Expander>
+                            <atom:Separator Title="{gallery:ExpanderShowCaseLangResource P2TitleSmallSize}" TitlePosition="Left" FontWeight="Bold" />
+                            <atom:Expander SizeType="Small" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsSmallSizePanelHeader}">
+                                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                            </atom:Expander>
+                            <atom:Separator Title="{gallery:ExpanderShowCaseLangResource P2TitleLargeSize}" TitlePosition="Left" FontWeight="Bold" />
+                            <atom:Expander SizeType="Large" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsLargeSizePanelHeader}">
+                                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                            </atom:Expander>
+                        </StackPanel>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ExpanderShowCaseLangResource BorderlessTitle}"
+                        Description="{gallery:ExpanderShowCaseLangResource BorderlessDescription}">
+                        <atom:Expander IsBorderless="True" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
+                            <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                        </atom:Expander>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ExpanderShowCaseLangResource GhostCollapseTitle}"
+                        Description="{gallery:ExpanderShowCaseLangResource GhostCollapseDescription}">
+                        <atom:Expander IsGhostStyle="True" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
+                            <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                        </atom:Expander>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ExpanderShowCaseLangResource CustomPaddingTitle}"
+                        Description="{gallery:ExpanderShowCaseLangResource CustomPaddingDescription}">
+                        <StackPanel Orientation="Vertical" Spacing="20">
+                            <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}" HeaderPadding="5" ContentPadding="5">
+                                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                            </atom:Expander>
+
+                            <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}" IsGhostStyle="True" HeaderPadding="5" ContentPadding="5">
+                                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                            </atom:Expander>
+                        </StackPanel>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ExpanderShowCaseLangResource ExpandingDirectionTitle}"
+                        Description="{gallery:ExpanderShowCaseLangResource ExpandingDirectionDescription}">
+                        <DockPanel Margin="0, 0, 0, 0" Height="300">
+                            <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+                                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:ExpanderShowCaseLangResource P2TextExpandDirection}" />
+                                <atom:OptionButtonGroup ButtonStyle="Outline"
+                                                        OptionCheckedChanged="HandleExpandDirectionOptionCheckedChanged">
+                                    <atom:OptionButton IsChecked="True" Content="{gallery:ExpanderShowCaseLangResource P2ContentDown}" />
+                                    <atom:OptionButton Content="{gallery:ExpanderShowCaseLangResource P2ContentUp}" />
+                                    <atom:OptionButton Content="{gallery:ExpanderShowCaseLangResource P2ContentLeft}" />
+                                    <atom:OptionButton Content="{gallery:ExpanderShowCaseLangResource P2ContentRight}" />
+                                </atom:OptionButtonGroup>
+                            </StackPanel>
+
+                            <Panel Margin="0, 20, 0, 0">
+                                <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeader}"
+                                               ExpandDirection="{Binding ExpandDirection}"
+                                               Name="DirectionDemoExpander">
+                                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                                </atom:Expander>
+                            </Panel>
+                        </DockPanel>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ExpanderShowCaseLangResource NestedPanelTitle}"
+                        Description="{gallery:ExpanderShowCaseLangResource NestedPanelDescription}">
+                        <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}">
+                            <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsNestedPanelHeader}">
+                                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                            </atom:Expander>
+                        </atom:Expander>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ExpanderShowCaseLangResource NoArrowTitle}"
+                        Description="{gallery:ExpanderShowCaseLangResource NoArrowDescription}">
+                        <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}" IsShowExpandIcon="False">
+                            <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                        </atom:Expander>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ExpanderShowCaseLangResource ExpandIconLocationTitle}"
+                        Description="{gallery:ExpanderShowCaseLangResource ExpandIconLocationDescription}">
+                        <StackPanel Orientation="Vertical" Spacing="20">
+                            <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisIsPanelHeaderN1}"
+                                           AddOnContent="{antdicons:AntDesignIconProvider Kind=SettingOutlined}"
+                                           ExpandIconPosition="{Binding ToggleIconPosition}">
+                                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                            </atom:Expander>
+
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:ExpanderShowCaseLangResource P2TextExpandIconPosition}" />
+                                <atom:OptionButtonGroup ButtonStyle="Outline"
+                                                        OptionCheckedChanged="HandleExpandButtonPosOptionCheckedChanged">
+                                    <atom:OptionButton IsChecked="True" Content="{gallery:ExpanderShowCaseLangResource P2ContentStart}" />
+                                    <atom:OptionButton Content="{gallery:ExpanderShowCaseLangResource P2ContentEnd}" />
+                                </atom:OptionButtonGroup>
+                            </StackPanel>
+                        </StackPanel>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ExpanderShowCaseLangResource CollapsibleTitle}"
+                        Description="{gallery:ExpanderShowCaseLangResource CollapsibleDescription}">
+                        <StackPanel Orientation="Vertical" Spacing="10">
+                            <atom:Expander Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisPanelCanOnlyBeCollapsedByClicking}">
+                                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                            </atom:Expander>
+                            <atom:Expander TriggerType="Icon" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisPanelCanOnlyBeCollapsedByClicking2}">
+                                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                            </atom:Expander>
+
+                            <atom:Expander IsEnabled="False" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisPanelCanTBeCollapsed}">
+                                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                            </atom:Expander>
+
+                            <atom:Expander IsEnabled="False" Header="{gallery:ExpanderShowCaseLangResource P2HeaderThisPanelCanTBeCollapsed}" IsExpanded="True">
+                                <atom:TextBlock TextWrapping="Wrap" Text="{gallery:ExpanderShowCaseLangResource P2TextADogIsATypeOfDomesticatedAnimal}" />
+                            </atom:Expander>
+                        </StackPanel>
+                    </gallery:ShowCaseItem>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>
