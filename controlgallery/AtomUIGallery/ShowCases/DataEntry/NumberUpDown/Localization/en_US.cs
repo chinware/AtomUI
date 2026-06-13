@@ -49,6 +49,52 @@ internal partial class en_US : LanguageProvider
     public const string P2TextRawValuePrefix = "Raw: ";
 
     public const string P2ContentKeyboardEnabled = "Keyboard enabled";
+    public const string ScenarioExamples = "Examples";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "Design Token";
+    public const string PageSubtitle = "Enter and adjust numeric values with keyboard, wheel and step controls.";
+    public const string PageDescription =
+        "NumberUpDown combines numeric input, precision string mode, min/max constraints, decimal steps, input variants, add-ons, clear affordances and validation status.";
+    public const string ComponentCategory = "Data Entry";
+    public const string ComponentStatusStable = "Stable";
+    public const string InfoNamespaceLabel = "Namespace";
+    public const string InfoPackageLabel = "Package";
+    public const string InfoBaseClassLabel = "Base class";
+    public const string ApiColumnProperty = "Property";
+    public const string ApiColumnDescription = "Description";
+    public const string ApiColumnType = "Type";
+    public const string ApiColumnDefault = "Default";
+    public const string ApiPropertyValue = "Current numeric value.";
+    public const string ApiPropertyMinimum = "Lowest accepted numeric value.";
+    public const string ApiPropertyMaximum = "Highest accepted numeric value.";
+    public const string ApiPropertyIncrement = "Amount added or subtracted by spin buttons, keyboard or wheel actions.";
+    public const string ApiPropertyFormatString = "Format string used to display the numeric value.";
+    public const string ApiPropertyIsStringMode = "Keeps high-precision input as text while preserving numeric editing behavior.";
+    public const string ApiPropertyStringValue = "String value used by high-precision string mode.";
+    public const string ApiPropertyIsKeyboardEnabled = "Allows keyboard spin shortcuts such as Up, Down, PageUp and PageDown.";
+    public const string ApiPropertyIsAllowClear = "Shows a clear affordance when the input has content.";
+    public const string ApiPropertyClearIcon = "Custom icon used by the clear affordance.";
+    public const string ApiPropertySizeType = "Input size variant.";
+    public const string ApiPropertyStyleVariant = "Visual input variant such as outlined, filled or borderless.";
+    public const string ApiPropertyStatus = "Validation status displayed by the input surface.";
+    public const string ApiPropertyLeftAddOn = "Content attached before the input frame.";
+    public const string ApiPropertyRightAddOn = "Content attached after the input frame.";
+    public const string ApiPropertyInnerLeftContent = "Content rendered inside the input on the left.";
+    public const string ApiPropertyInnerRightContent = "Content rendered inside the input on the right.";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "Description";
+    public const string TokenColumnScope = "Scope";
+    public const string TokenColumnStatus = "Status";
+    public const string TokenNameControlWidth = "Default width of the numeric input.";
+    public const string TokenNameHandleWidth = "Width of the spin button area.";
+    public const string TokenNameHandleIconSize = "Icon size used by the spin buttons.";
+    public const string TokenNameHandleBg = "Background color of the spin button area.";
+    public const string TokenNameHandleActiveBg = "Active background color of the spin button area.";
+    public const string TokenNameHandleHoverColor = "Foreground color used by the spin buttons on hover.";
+    public const string TokenNameHandleBorderColor = "Border color around the spin button area.";
+    public const string TokenNameFilledHandleBg = "Spin button background used by the filled variant.";
+    public const string TokenScopeComponent = "NumericUpDown";
+    public const string TokenStatusStable = "Stable";
 
     protected override Type GetResourceKindType() => typeof(NumberUpDownShowCaseLangResourceKind);
 }
