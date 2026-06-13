@@ -1,51 +1,102 @@
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
+using Avalonia;
+using Avalonia.Controls;
+using TabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.ComboBox;
 
 public partial class ComboBoxShowCase : GalleryReactiveUserControl<ComboBoxViewModel>
 {
     public const string LanguageId = nameof(ComboBoxShowCase);
+    private const string ExamplesScenario    = "Examples";
+    private const string ApiScenario         = "Api";
+    private const string DesignTokenScenario = "DesignToken";
+
+    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
 
     public ComboBoxShowCase()
     {
-        this.WhenActivated(disposables =>
-        {
-            if (DataContext is ComboBoxViewModel viewModel)
-            {
-                InitComboBoxItems(viewModel);
-                GalleryBindingUtils.OneWay(viewModel, nameof(ComboBoxViewModel.ComboBoxItems),
-                                           vm => vm.ComboBoxItems, TplComboBox,
-                                           Avalonia.Controls.ItemsControl.ItemsSourceProperty)
-                                   .DisposeWith(disposables);
-                Disposable.Create(() =>
-                {
-                    viewModel.ComboBoxItems = null;
-                }).DisposeWith(disposables);
-            }
-        });
         InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
     }
 
-    private void InitComboBoxItems(ComboBoxViewModel viewModel)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        var items = new List<ComboBoxItemData>();
-        items.Add(new ComboBoxItemData()
+        base.OnAttachedToVisualTree(e);
+        EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ClearLazyScenarioContent();
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        ExamplesContent.DataContext = DataContext;
+        foreach (var content in _lazyScenarioContentCache.Values)
         {
-            Text = "床前明月光"
-        });
-        items.Add(new ComboBoxItemData()
+            content.DataContext = DataContext;
+        }
+        EnsureSelectedScenarioContent();
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not TabStripItem tabStripItem ||
+            tabStripItem.Tag is not string scenario)
         {
-            Text = "疑是地上霜"
-        });
-        items.Add(new ComboBoxItemData()
+            return;
+        }
+
+        var content = ResolveScenarioContent(scenario);
+        if (!ReferenceEquals(ScenarioContentHost.Content, content))
         {
-            Text = "举头望明月"
-        });
-        items.Add(new ComboBoxItemData()
+            ScenarioContentHost.Content = content;
+        }
+    }
+
+    private void ClearLazyScenarioContent()
+    {
+        if (ScenarioContentHost.Content is not null &&
+            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
         {
-            Text = "低头思故乡"
-        });
-        viewModel.ComboBoxItems = items;
+            ScenarioContentHost.Content = null;
+        }
+        _lazyScenarioContentCache.Clear();
+    }
+
+    private Control ResolveScenarioContent(string scenario)
+    {
+        if (scenario == ExamplesScenario)
+        {
+            ExamplesContent.DataContext = DataContext;
+            return ExamplesContent;
+        }
+
+        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _lazyScenarioContentCache.Add(scenario, content);
+        }
+
+        return content;
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            ApiScenario         => new ComboBoxApiDataGrid(),
+            DesignTokenScenario => new ComboBoxDesignTokenDataGrid(),
+            _                   => throw new InvalidOperationException($"Unknown ComboBox scenario: {scenario}")
+        };
     }
 }
