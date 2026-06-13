@@ -15408,14 +15408,43 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyCommand] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyCommand;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyCommandParameter] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyCommandParameter;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyContent] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyContent;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyFlyout] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyFlyout;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyGutterToFlyout] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyGutterToFlyout;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyHotKey] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyHotKey;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIcon] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyIcon;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsDanger] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyIsDanger;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsPrimaryButtonType] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyIsPrimaryButtonType;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsWaveSpiritEnabled] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyIsWaveSpiritEnabled;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyMouseEnterDelay] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyMouseEnterDelay;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyMouseLeaveDelay] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyMouseLeaveDelay;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyOpenIndicator] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyOpenIndicator;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyPlacement] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyPlacement;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyPlacementAnchor] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyPlacementAnchor;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyPlacementGravity] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyPlacementGravity;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyShouldUseOverlayPopup] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyShouldUseOverlayPopup;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertySizeType;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyTriggerType] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ApiPropertyTriggerType;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.SplitButton.en_US.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.SplitButton.en_US.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.CustomIconDescription] = global::AtomUIGallery.ShowCases.SplitButton.en_US.CustomIconDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.CustomIconTitle] = global::AtomUIGallery.ShowCases.SplitButton.en_US.CustomIconTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.DangerButtonsDescription] = global::AtomUIGallery.ShowCases.SplitButton.en_US.DangerButtonsDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.DangerButtonsTitle] = global::AtomUIGallery.ShowCases.SplitButton.en_US.DangerButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeDescription] = global::AtomUIGallery.ShowCases.SplitButton.en_US.FlyoutTriggerTypeDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeTitle] = global::AtomUIGallery.ShowCases.SplitButton.en_US.FlyoutTriggerTypeTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.SplitButton.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.SplitButton.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.SplitButton.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2ContentClickMe;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentHoverMe] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2ContentHoverMe;
@@ -15426,8 +15455,27 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2HeaderCopy] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2HeaderCopy;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2HeaderCut] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2HeaderCut;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2HeaderDelete] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2HeaderDelete;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.SplitButton.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.SplitButton.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.SplitButton.en_US.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.SizeDescription] = global::AtomUIGallery.ShowCases.SplitButton.en_US.SizeDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.SizeTitle] = global::AtomUIGallery.ShowCases.SplitButton.en_US.SizeTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameGroupBorderColor] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenNameGroupBorderColor;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameGutterToFlyout] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenNameGutterToFlyout;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameIconSize] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenNameIconSize;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameIconSizeLG] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenNameIconSizeLG;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameIconSizeSM] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenNameIconSizeSM;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNamePadding] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenNamePadding;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNamePaddingLG] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenNamePaddingLG;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNamePaddingSM] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenNamePaddingSM;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.SplitButton.en_US.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -15454,14 +15502,43 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyCommand] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyCommand;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyCommandParameter] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyCommandParameter;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyContent] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyContent;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyFlyout] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyFlyout;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyGutterToFlyout] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyGutterToFlyout;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyHotKey] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyHotKey;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIcon] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyIcon;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsDanger] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyIsDanger;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsPrimaryButtonType] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyIsPrimaryButtonType;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsWaveSpiritEnabled] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyIsWaveSpiritEnabled;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyMouseEnterDelay] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyMouseEnterDelay;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyMouseLeaveDelay] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyMouseLeaveDelay;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyOpenIndicator] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyOpenIndicator;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyPlacement] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyPlacement;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyPlacementAnchor] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyPlacementAnchor;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyPlacementGravity] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyPlacementGravity;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyShouldUseOverlayPopup] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyShouldUseOverlayPopup;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertySizeType;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyTriggerType] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ApiPropertyTriggerType;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.CustomIconDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.CustomIconDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.CustomIconTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.CustomIconTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.DangerButtonsDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.DangerButtonsDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.DangerButtonsTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.DangerButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.FlyoutTriggerTypeDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.FlyoutTriggerTypeTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2ContentClickMe;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentHoverMe] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2ContentHoverMe;
@@ -15472,8 +15549,27 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2HeaderCopy] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2HeaderCopy;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2HeaderCut] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2HeaderCut;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2HeaderDelete] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2HeaderDelete;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.SizeDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.SizeDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.SizeTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.SizeTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameGroupBorderColor] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenNameGroupBorderColor;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameGutterToFlyout] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenNameGutterToFlyout;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameIconSize] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenNameIconSize;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameIconSizeLG] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenNameIconSizeLG;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameIconSizeSM] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenNameIconSizeSM;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNamePadding] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenNamePadding;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNamePaddingLG] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenNamePaddingLG;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNamePaddingSM] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenNamePaddingSM;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -15500,14 +15596,43 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyCommand] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyCommand;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyCommandParameter] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyCommandParameter;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyContent] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyContent;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyFlyout] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyFlyout;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyGutterToFlyout] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyGutterToFlyout;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyHotKey] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyHotKey;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIcon] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyIcon;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsDanger] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyIsDanger;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsPrimaryButtonType] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyIsPrimaryButtonType;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyIsWaveSpiritEnabled] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyIsWaveSpiritEnabled;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyMouseEnterDelay] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyMouseEnterDelay;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyMouseLeaveDelay] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyMouseLeaveDelay;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyOpenIndicator] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyOpenIndicator;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyPlacement] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyPlacement;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyPlacementAnchor] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyPlacementAnchor;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyPlacementGravity] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyPlacementGravity;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyShouldUseOverlayPopup] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyShouldUseOverlayPopup;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertySizeType;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ApiPropertyTriggerType] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ApiPropertyTriggerType;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.CustomIconDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.CustomIconDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.CustomIconTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.CustomIconTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.DangerButtonsDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.DangerButtonsDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.DangerButtonsTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.DangerButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.FlyoutTriggerTypeDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.FlyoutTriggerTypeTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2ContentClickMe;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentHoverMe] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2ContentHoverMe;
@@ -15518,8 +15643,27 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2HeaderCopy] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2HeaderCopy;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2HeaderCut] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2HeaderCut;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2HeaderDelete] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2HeaderDelete;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.SizeDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.SizeDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.SizeTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.SizeTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameGroupBorderColor] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenNameGroupBorderColor;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameGutterToFlyout] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenNameGutterToFlyout;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameIconSize] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenNameIconSize;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameIconSizeLG] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenNameIconSizeLG;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNameIconSizeSM] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenNameIconSizeSM;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNamePadding] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenNamePadding;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNamePaddingLG] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenNamePaddingLG;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenNamePaddingSM] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenNamePaddingSM;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.TokenStatusStable;
             }
             catch (System.Exception)
             {
