@@ -1,65 +1,111 @@
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
+using Avalonia;
 using Avalonia.Controls;
-using Avalonia.VisualTree;
-using ButtonSpinner = AtomUI.Desktop.Controls.ButtonSpinner;
+using TabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.ButtonSpinner;
 
 public partial class ButtonSpinnerShowCase : GalleryReactiveUserControl<ButtonSpinnerViewModel>
 {
     public const string LanguageId = nameof(ButtonSpinnerShowCase);
+    private const string ExamplesScenario    = "Examples";
+    private const string ApiScenario         = "Api";
+    private const string DesignTokenScenario = "DesignToken";
+
+    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
 
     public ButtonSpinnerShowCase()
     {
-        this.WhenActivated(disposables =>
-        {
-            BindSpinHandleRecursively(this);
-            Disposable.Create(() => UnBindSpinHandleRecursively(this))
-                      .DisposeWith(disposables);
-        });
         InitializeComponent();
+        AddHandler(Spinner.SpinEvent, HandleSpin);
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
     }
 
-    private void BindSpinHandleRecursively(Control control)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        if (control is AtomUIButtonSpinner spinner)
+        base.OnAttachedToVisualTree(e);
+        EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ClearLazyScenarioContent();
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        ExamplesContent.DataContext = DataContext;
+        foreach (var content in _lazyScenarioContentCache.Values)
         {
-            if (DataContext is ButtonSpinnerViewModel viewModel)
-            {
-                spinner.Spin += viewModel.HandleSpin;
-            }
+            content.DataContext = DataContext;
         }
-        else
+        EnsureSelectedScenarioContent();
+    }
+
+    private void HandleSpin(object? sender, SpinEventArgs args)
+    {
+        if (DataContext is ButtonSpinnerViewModel viewModel)
         {
-            foreach (var item in control.GetVisualChildren())
-            {
-                if (item is Control childControl)
-                {
-                    BindSpinHandleRecursively(childControl);
-                }
-            }
+            viewModel.HandleSpin(args.Source, args);
         }
     }
 
-    private void UnBindSpinHandleRecursively(Control control)
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
     {
-        if (control is AtomUIButtonSpinner spinner)
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not TabStripItem tabStripItem ||
+            tabStripItem.Tag is not string scenario)
         {
-            if (DataContext is ButtonSpinnerViewModel viewModel)
-            {
-                spinner.Spin -= viewModel.HandleSpin;
-            }
+            return;
         }
-        else
+
+        var content = ResolveScenarioContent(scenario);
+        if (!ReferenceEquals(ScenarioContentHost.Content, content))
         {
-            foreach (var item in control.GetVisualChildren())
-            {
-                if (item is Control childControl)
-                {
-                    UnBindSpinHandleRecursively(childControl);
-                }
-            }
+            ScenarioContentHost.Content = content;
         }
+    }
+
+    private void ClearLazyScenarioContent()
+    {
+        if (ScenarioContentHost.Content is not null &&
+            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
+        {
+            ScenarioContentHost.Content = null;
+        }
+        _lazyScenarioContentCache.Clear();
+    }
+
+    private Control ResolveScenarioContent(string scenario)
+    {
+        if (scenario == ExamplesScenario)
+        {
+            ExamplesContent.DataContext = DataContext;
+            return ExamplesContent;
+        }
+
+        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _lazyScenarioContentCache.Add(scenario, content);
+        }
+
+        return content;
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            ApiScenario         => new ButtonSpinnerApiDataGrid(),
+            DesignTokenScenario => new ButtonSpinnerDesignTokenDataGrid(),
+            _                   => throw new InvalidOperationException($"Unknown ButtonSpinner scenario: {scenario}")
+        };
     }
 }
