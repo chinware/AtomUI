@@ -17016,6 +17016,28 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyAddTabRequest] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertyAddTabRequest;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyHeaderEndExtraContent] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertyHeaderEndExtraContent;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyHeaderStartExtraContent] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertyHeaderStartExtraContent;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyIsShowAddTabButton] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertyIsShowAddTabButton;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyIsTabAutoHideCloseButton] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertyIsTabAutoHideCloseButton;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyIsTabClosable] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertyIsTabClosable;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyItemsSource] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertyItemsSource;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyItemTemplate] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertyItemTemplate;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertySelectedIndex] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertySelectedIndex;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertySelectedItem] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertySelectedItem;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertySizeType;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyTabAlignmentCenter] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertyTabAlignmentCenter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyTabStripPlacement] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertyTabStripPlacement;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.TabControl.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TabControl.en_US.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TabControl.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TabControl.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TabControl.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.TabControl.en_US.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN1] = global::AtomUIGallery.ShowCases.TabControl.en_US.P2ContentContentOfTabPaneN1;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN10] = global::AtomUIGallery.ShowCases.TabControl.en_US.P2ContentContentOfTabPaneN10;
@@ -17070,6 +17092,11 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2HeaderTabN8] = global::AtomUIGallery.ShowCases.TabControl.en_US.P2HeaderTabN8;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2HeaderTabN9] = global::AtomUIGallery.ShowCases.TabControl.en_US.P2HeaderTabN9;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2TextTabPosition] = global::AtomUIGallery.ShowCases.TabControl.en_US.P2TextTabPosition;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.TabControl.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.TabControl.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.TabControl.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.TabControl.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.TabControl.en_US.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlAddCloseDescription] = global::AtomUIGallery.ShowCases.TabControl.en_US.TabControlAddCloseDescription;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlAddCloseTitle] = global::AtomUIGallery.ShowCases.TabControl.en_US.TabControlAddCloseTitle;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlBasicDescription] = global::AtomUIGallery.ShowCases.TabControl.en_US.TabControlBasicDescription;
@@ -17096,6 +17123,26 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlSizeTitle] = global::AtomUIGallery.ShowCases.TabControl.en_US.TabControlSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlSlideDescription] = global::AtomUIGallery.ShowCases.TabControl.en_US.TabControlSlideDescription;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlSlideTitle] = global::AtomUIGallery.ShowCases.TabControl.en_US.TabControlSlideTitle;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameAddTabButtonMarginHorizontal] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameAddTabButtonMarginHorizontal;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardBg] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameCardBg;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardGutter] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameCardGutter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardPadding] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameCardPadding;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardSize] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameCardSize;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCloseIconMargin] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameCloseIconMargin;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameHorizontalItemGutter] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameHorizontalItemGutter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameHorizontalItemPadding] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameHorizontalItemPadding;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameInkBarColor] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameInkBarColor;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameItemColor] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameItemColor;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameItemSelectedColor] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameItemSelectedColor;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameTabAndContentGutter] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameTabAndContentGutter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameTitleFontSize] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameTitleFontSize;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameVerticalItemPadding] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenNameVerticalItemPadding;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.TabControl.en_US.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -17122,6 +17169,28 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyAddTabRequest] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertyAddTabRequest;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyHeaderEndExtraContent] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertyHeaderEndExtraContent;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyHeaderStartExtraContent] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertyHeaderStartExtraContent;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyIsShowAddTabButton] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertyIsShowAddTabButton;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyIsTabAutoHideCloseButton] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertyIsTabAutoHideCloseButton;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyIsTabClosable] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertyIsTabClosable;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyItemsSource] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertyItemsSource;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyItemTemplate] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertyItemTemplate;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertySelectedIndex] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertySelectedIndex;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertySelectedItem] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertySelectedItem;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertySizeType;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyTabAlignmentCenter] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertyTabAlignmentCenter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyTabStripPlacement] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertyTabStripPlacement;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN1] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.P2ContentContentOfTabPaneN1;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN10] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.P2ContentContentOfTabPaneN10;
@@ -17176,6 +17245,11 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2HeaderTabN8] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.P2HeaderTabN8;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2HeaderTabN9] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.P2HeaderTabN9;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2TextTabPosition] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.P2TextTabPosition;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlAddCloseDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TabControlAddCloseDescription;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlAddCloseTitle] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TabControlAddCloseTitle;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlBasicDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TabControlBasicDescription;
@@ -17202,6 +17276,26 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlSizeTitle] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TabControlSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlSlideDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TabControlSlideDescription;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlSlideTitle] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TabControlSlideTitle;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameAddTabButtonMarginHorizontal] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameAddTabButtonMarginHorizontal;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardBg] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameCardBg;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardGutter] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameCardGutter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardPadding] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameCardPadding;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardSize] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameCardSize;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCloseIconMargin] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameCloseIconMargin;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameHorizontalItemGutter] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameHorizontalItemGutter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameHorizontalItemPadding] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameHorizontalItemPadding;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameInkBarColor] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameInkBarColor;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameItemColor] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameItemColor;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameItemSelectedColor] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameItemSelectedColor;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameTabAndContentGutter] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameTabAndContentGutter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameTitleFontSize] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameTitleFontSize;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameVerticalItemPadding] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenNameVerticalItemPadding;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -17228,6 +17322,28 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyAddTabRequest] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertyAddTabRequest;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyHeaderEndExtraContent] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertyHeaderEndExtraContent;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyHeaderStartExtraContent] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertyHeaderStartExtraContent;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyIsShowAddTabButton] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertyIsShowAddTabButton;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyIsTabAutoHideCloseButton] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertyIsTabAutoHideCloseButton;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyIsTabClosable] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertyIsTabClosable;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyItemsSource] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertyItemsSource;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyItemTemplate] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertyItemTemplate;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertySelectedIndex] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertySelectedIndex;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertySelectedItem] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertySelectedItem;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertySizeType;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyTabAlignmentCenter] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertyTabAlignmentCenter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyTabStripPlacement] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertyTabStripPlacement;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN1] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.P2ContentContentOfTabPaneN1;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN10] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.P2ContentContentOfTabPaneN10;
@@ -17282,6 +17398,11 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2HeaderTabN8] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.P2HeaderTabN8;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2HeaderTabN9] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.P2HeaderTabN9;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2TextTabPosition] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.P2TextTabPosition;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlAddCloseDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TabControlAddCloseDescription;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlAddCloseTitle] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TabControlAddCloseTitle;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlBasicDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TabControlBasicDescription;
@@ -17308,6 +17429,26 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlSizeTitle] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TabControlSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlSlideDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TabControlSlideDescription;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TabControlSlideTitle] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TabControlSlideTitle;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameAddTabButtonMarginHorizontal] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameAddTabButtonMarginHorizontal;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardBg] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameCardBg;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardGutter] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameCardGutter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardPadding] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameCardPadding;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCardSize] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameCardSize;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameCloseIconMargin] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameCloseIconMargin;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameHorizontalItemGutter] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameHorizontalItemGutter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameHorizontalItemPadding] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameHorizontalItemPadding;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameInkBarColor] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameInkBarColor;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameItemColor] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameItemColor;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameItemSelectedColor] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameItemSelectedColor;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameTabAndContentGutter] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameTabAndContentGutter;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameTitleFontSize] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameTitleFontSize;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenNameVerticalItemPadding] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenNameVerticalItemPadding;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.TokenStatusStable;
             }
             catch (System.Exception)
             {
