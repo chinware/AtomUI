@@ -6,6 +6,67 @@ namespace AtomUIGallery.ShowCases.Slider;
 [LanguageProvider(LanguageCode.zh_TW, SliderShowCase.LanguageId)]
 internal partial class zh_TW : LanguageProvider
 {
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計變數";
+    public const string ComponentCategory = "數據錄入";
+    public const string ComponentStatusStable = ".NET 10";
+    public const string PageSubtitle = "從連續或帶刻度的軌道中選擇數值或範圍。";
+    public const string PageDescription = "Slider 支持單值和範圍選擇、水平或垂直方向、按刻度吸附、格式化提示、刻度標記、包含軌道、禁用狀態和鍵盤交互。";
+    public const string InfoNamespaceLabel = "命名空間：";
+    public const string InfoPackageLabel = "包：";
+    public const string InfoBaseClassLabel = "基類：";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyMinimum = "滑塊允許的最小值。";
+    public const string ApiPropertyMaximum = "滑塊允許的最大值。";
+    public const string ApiPropertyValue = "當前單滑塊數值。";
+    public const string ApiPropertySmallChange = "方向鍵導航使用的小步進值。";
+    public const string ApiPropertyLargeChange = "PageUp 和 PageDown 使用的大步進值。";
+    public const string ApiPropertyOrientation = "控制滑塊為水平或垂直方向。";
+    public const string ApiPropertyIsDirectionReversed = "反轉數值增長的視覺方向。";
+    public const string ApiPropertyIsSnapToTickEnabled = "將滑塊移動吸附到刻度值。";
+    public const string ApiPropertyTickFrequency = "刻度值之間的間距。";
+    public const string ApiPropertyRangeValue = "範圍模式下選中的開始值和結束值。";
+    public const string ApiPropertyIsRangeMode = "啟用雙滑塊範圍選擇。";
+    public const string ApiPropertyMarks = "沿軌道顯示的刻度標記文本。";
+    public const string ApiPropertyValueFormatTemplate = "用於提示值的格式化字符串。";
+    public const string ApiPropertyIsIncluded = "控制選中軌道是否在數值之間視覺填充。";
+    public const string ApiPropertyIsMotionEnabled = "啟用或禁用滑塊動效。";
+    public const string ApiPropertyIsWaveSpiritEnabled = "啟用或禁用滑塊上的波紋反饋。";
+    public const string TokenColumnToken = "變數";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "範圍";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenNameSliderTrackSize = "用於布局的滑塊軌道預留厚度。";
+    public const string TokenNameRailSize = "基礎軌道厚度。";
+    public const string TokenNameMarkSize = "刻度點尺寸。";
+    public const string TokenNameThumbSize = "推薦的滑塊布局尺寸。";
+    public const string TokenNameThumbCircleSize = "滑塊圓點尺寸。";
+    public const string TokenNameThumbCircleSizeHover = "懸浮時的滑塊圓點尺寸。";
+    public const string TokenNameThumbCircleBorderThickness = "滑塊圓點邊框厚度。";
+    public const string TokenNameThumbCircleBorderThicknessHover = "懸浮時的滑塊圓點邊框厚度。";
+    public const string TokenNameRailBg = "軌道背景色。";
+    public const string TokenNameRailHoverBg = "懸浮時的軌道背景色。";
+    public const string TokenNameTrackBg = "已選軌道背景色。";
+    public const string TokenNameTrackHoverBg = "懸浮時的已選軌道背景色。";
+    public const string TokenNameMarkBorderColor = "未激活刻度的邊框色。";
+    public const string TokenNameMarkBorderColorHover = "懸浮時刻度的邊框色。";
+    public const string TokenNameMarkBorderColorActive = "激活刻度的邊框色。";
+    public const string TokenNameThumbCircleBorderColor = "滑塊邊框色。";
+    public const string TokenNameThumbCircleBorderHoverColor = "懸浮時的滑塊邊框色。";
+    public const string TokenNameThumbCircleBorderActiveColor = "激活時的滑塊邊框色。";
+    public const string TokenNameThumbCircleBorderColorDisabled = "禁用時的滑塊邊框色。";
+    public const string TokenNameThumbOutlineColor = "滑塊外輪廓環顏色。";
+    public const string TokenNameThumbOutlineThickness = "滑塊外輪廓環厚度。";
+    public const string TokenNameTrackBgDisabled = "禁用時已選軌道背景色。";
+    public const string TokenNameSliderPaddingHorizontal = "水平滑塊布局使用的內邊距。";
+    public const string TokenNameSliderPaddingVertical = "垂直滑塊布局使用的內邊距。";
+    public const string TokenNameMarginPartWithMark = "顯示刻度標記時預留的額外外邊距。";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "基礎滑塊。range 為 true 時顯示為雙滑塊模式；disable 為 true 時滑塊不可交互。";
     public const string CustomizeTooltipTitle = "自定義提示";
@@ -20,4 +81,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(SliderShowCaseLangResourceKind);
 }
-

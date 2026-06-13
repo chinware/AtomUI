@@ -5,134 +5,258 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.Slider"
              x:DataType="vm:SliderViewModel">
-    <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem
-            Title="{gallery:SliderShowCaseLangResource BasicTitle}"
-            Description="{gallery:SliderShowCaseLangResource BasicDescription}">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:Slider
-                    Maximum="100"
-                    Minimum="0"
-                    TickFrequency="5"
-                    IsEnabled="{Binding NormalEnabled}"
-                    Value="50" />
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="Slider"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:SliderShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:SliderShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:SliderShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:SliderShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
 
-                <atom:Slider
-                    Maximum="100"
-                    Minimum="0"
-                    IsRangeMode="True"
-                    TickFrequency="5"
-                    IsEnabled="{Binding NormalEnabled}"
-                    RangeValue="20, 80" />
-                <atom:Slider
-                    Name="Slider1"
-                    Maximum="100"
-                    Minimum="0"
-                    IsEnabled="{Binding NormalEnabled}"
-                    IsRangeMode="True"
-                    TickFrequency="5"
-                    RangeValue="20, 80" />
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="200" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SliderShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
 
-                <StackPanel Orientation="Horizontal" Spacing="2">
-                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SliderShowCaseLangResource P2TextEnabled}" />
-                    <atom:ToggleSwitch VerticalAlignment="Center" SizeType="Small" IsChecked="{Binding NormalEnabled, Mode=TwoWay}" />
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SliderShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SliderShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="RangeBase"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
                 </StackPanel>
-            </StackPanel>
-        </gallery:ShowCaseItem>
+            </gallery:GalleryStickyTabsHost.Header>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:SliderShowCaseLangResource CustomizeTooltipTitle}"
-            Description="{gallery:SliderShowCaseLangResource CustomizeTooltipDescription}">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:Slider
-                    Maximum="100"
-                    Minimum="0"
-                    TickFrequency="1"
-                    IsSnapToTickEnabled="True"
-                    ValueFormatTemplate="\{0\}%"
-                    Value="20" />
-            </StackPanel>
-        </gallery:ShowCaseItem>
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:SliderShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:SliderShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:SliderShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:SliderShowCaseLangResource VerticalTitle}"
-            Description="{gallery:SliderShowCaseLangResource VerticalDescription}">
-            <StackPanel Orientation="Horizontal" Spacing="20" Height="300">
-                <atom:Slider
-                    Maximum="100"
-                    Minimum="0"
-                    Orientation="Vertical"
-                    TickFrequency="1"
-                    Value="20" />
-                <atom:Slider
-                    Maximum="100"
-                    Minimum="0"
-                    Orientation="Vertical"
-                    TickFrequency="5"
-                    IsRangeMode="True"
-                    RangeValue="20, 80"
-                    IsSnapToTickEnabled="True"
-                    Value="20" />
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       ContentMargin="28,10,28,28">
+                    <gallery:ShowCaseItem
+                        Title="{gallery:SliderShowCaseLangResource BasicTitle}"
+                        Description="{gallery:SliderShowCaseLangResource BasicDescription}">
+                        <StackPanel Orientation="Vertical" Spacing="20">
+                            <atom:Slider
+                                Maximum="100"
+                                Minimum="0"
+                                TickFrequency="5"
+                                IsEnabled="{Binding NormalEnabled}"
+                                Value="50" />
 
-                <atom:Slider
-                    Name="Slider2"
-                    Maximum="100"
-                    Minimum="0"
-                    Orientation="Vertical"
-                    TickFrequency="1"
-                    Value="20" />
+                            <atom:Slider
+                                Maximum="100"
+                                Minimum="0"
+                                IsRangeMode="True"
+                                TickFrequency="5"
+                                IsEnabled="{Binding NormalEnabled}"
+                                RangeValue="20, 80" />
+                            <atom:Slider
+                                Name="Slider1"
+                                Maximum="100"
+                                Minimum="0"
+                                IsEnabled="{Binding NormalEnabled}"
+                                IsRangeMode="True"
+                                TickFrequency="5"
+                                RangeValue="20, 80" />
 
-                <atom:Slider
-                    Name="Slider3"
-                    Maximum="100"
-                    Minimum="0"
-                    IsRangeMode="True"
-                    Orientation="Vertical"
-                    TickFrequency="5"
-                    RangeValue="20, 80" />
+                            <StackPanel Orientation="Horizontal" Spacing="2">
+                                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SliderShowCaseLangResource P2TextEnabled}" />
+                                <atom:ToggleSwitch VerticalAlignment="Center" SizeType="Small" IsChecked="{Binding NormalEnabled, Mode=TwoWay}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </gallery:ShowCaseItem>
 
-            </StackPanel>
-        </gallery:ShowCaseItem>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:SliderShowCaseLangResource CustomizeTooltipTitle}"
+                        Description="{gallery:SliderShowCaseLangResource CustomizeTooltipDescription}">
+                        <StackPanel Orientation="Vertical" Spacing="20">
+                            <atom:Slider
+                                Maximum="100"
+                                Minimum="0"
+                                TickFrequency="1"
+                                IsSnapToTickEnabled="True"
+                                ValueFormatTemplate="\{0\}%"
+                                Value="20" />
+                        </StackPanel>
+                    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:SliderShowCaseLangResource GraduatedSliderTitle}"
-            Description="{gallery:SliderShowCaseLangResource GraduatedSliderDescription}">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedTrue}" />
-                <atom:Slider
-                    Name="Slider4"
-                    Maximum="100"
-                    Minimum="0"
-                    TickFrequency="1"
-                    Value="20" />
+                    <gallery:ShowCaseItem
+                        Title="{gallery:SliderShowCaseLangResource VerticalTitle}"
+                        Description="{gallery:SliderShowCaseLangResource VerticalDescription}">
+                        <StackPanel Orientation="Horizontal" Spacing="20" Height="300">
+                            <atom:Slider
+                                Maximum="100"
+                                Minimum="0"
+                                Orientation="Vertical"
+                                TickFrequency="1"
+                                Value="20" />
+                            <atom:Slider
+                                Maximum="100"
+                                Minimum="0"
+                                Orientation="Vertical"
+                                TickFrequency="5"
+                                IsRangeMode="True"
+                                RangeValue="20, 80"
+                                IsSnapToTickEnabled="True"
+                                Value="20" />
 
-                <atom:Slider
-                    Name="Slider5"
-                    Maximum="100"
-                    Minimum="0"
-                    IsRangeMode="True"
-                    TickFrequency="5"
-                    RangeValue="20, 80" />
+                            <atom:Slider
+                                Name="Slider2"
+                                Maximum="100"
+                                Minimum="0"
+                                Orientation="Vertical"
+                                TickFrequency="1"
+                                Value="20" />
 
-                <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedFalse}" />
-                <atom:Slider
-                    Name="Slider6"
-                    Maximum="100"
-                    Minimum="0"
-                    TickFrequency="1"
-                    IsIncluded="False"
-                    Value="20" />
+                            <atom:Slider
+                                Name="Slider3"
+                                Maximum="100"
+                                Minimum="0"
+                                IsRangeMode="True"
+                                Orientation="Vertical"
+                                TickFrequency="5"
+                                RangeValue="20, 80" />
 
-                <atom:Slider
-                    Name="Slider7"
-                    Maximum="100"
-                    Minimum="0"
-                    IsRangeMode="True"
-                    TickFrequency="5"
-                    IsIncluded="False"
-                    RangeValue="20, 80" />
+                        </StackPanel>
+                    </gallery:ShowCaseItem>
 
-            </StackPanel>
-        </gallery:ShowCaseItem>
-    </gallery:ShowCasePanel>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:SliderShowCaseLangResource GraduatedSliderTitle}"
+                        Description="{gallery:SliderShowCaseLangResource GraduatedSliderDescription}">
+                        <StackPanel Orientation="Vertical" Spacing="20">
+                            <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedTrue}" />
+                            <atom:Slider
+                                Name="Slider4"
+                                Maximum="100"
+                                Minimum="0"
+                                TickFrequency="1"
+                                Value="20" />
+
+                            <atom:Slider
+                                Name="Slider5"
+                                Maximum="100"
+                                Minimum="0"
+                                IsRangeMode="True"
+                                TickFrequency="5"
+                                RangeValue="20, 80" />
+
+                            <atom:TextBlock FontWeight="Bold" Text="{gallery:SliderShowCaseLangResource P2TextIncludedFalse}" />
+                            <atom:Slider
+                                Name="Slider6"
+                                Maximum="100"
+                                Minimum="0"
+                                TickFrequency="1"
+                                IsIncluded="False"
+                                Value="20" />
+
+                            <atom:Slider
+                                Name="Slider7"
+                                Maximum="100"
+                                Minimum="0"
+                                IsRangeMode="True"
+                                TickFrequency="5"
+                                IsIncluded="False"
+                                RangeValue="20, 80" />
+
+                        </StackPanel>
+                    </gallery:ShowCaseItem>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>
