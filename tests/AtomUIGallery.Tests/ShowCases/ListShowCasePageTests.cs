@@ -74,7 +74,11 @@ public class ListShowCasePageTests
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new ListApiDataGrid()");
         codeBehindSource.ShouldContain("new ListDesignTokenDataGrid()");
-        codeBehindSource.ShouldContain("OrderedList.SortDescriptions");
+        pageSource.ShouldContain("SortDescriptions=\"{Binding OrderedSortDescriptions}\"");
+        pageSource.ShouldContain("FilterValue=\"{Binding SearchFilterValue}\"");
+        codeBehindSource.ShouldContain("viewModel.OrderedSortDescriptions");
+        codeBehindSource.ShouldContain("viewModel.SearchFilterValue");
+        codeBehindSource.ShouldNotContain("OrderedList.SortDescriptions");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:ListApiRow\"");
@@ -161,13 +165,7 @@ public class ListShowCasePageTests
 
     private static string NormalizeMarkup(string source)
     {
-        return string.Join(
-            "\n",
-            source
-                .Replace("\r\n", "\n")
-                .Split('\n')
-                .Select(line => line.Trim())
-                .Where(line => line.Length > 0));
+        return ShowCaseSnapshotMarkup.Normalize(source);
     }
 
     private static int CountOccurrences(string source, string value)

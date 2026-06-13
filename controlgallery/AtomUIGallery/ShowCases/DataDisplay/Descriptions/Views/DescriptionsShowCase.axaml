@@ -126,8 +126,14 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
-                    <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource BasicTitle}" Description="{gallery:DescriptionsShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource BasicTitle}" Description="{gallery:DescriptionsShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:DescriptionsViewModel">
                         <atom:Descriptions Header="{gallery:DescriptionsShowCaseLangResource P2HeaderUserInfo}">
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelUserName}" Content="{gallery:DescriptionsShowCaseLangResource P2ContentZhouMaomao}" />
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelTelephone}" Content="1810000000" />
@@ -136,10 +142,15 @@
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelAddress}"
                                                   Content="{gallery:DescriptionsShowCaseLangResource P2ContentAddress}" />
                         </atom:Descriptions>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource BorderTitle}" Description="{gallery:DescriptionsShowCaseLangResource BorderDescription}"
-                                          IsOccupyEntireRow="True">
+                                          IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:DescriptionsViewModel">
                         <atom:Descriptions IsBordered="True">
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelProduct}" Content="{gallery:DescriptionsShowCaseLangResource P2ContentCloudDatabase}" />
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelBillingMode}" Content="{gallery:DescriptionsShowCaseLangResource P2ContentPrepaid}" />
@@ -163,15 +174,30 @@
                                 </atom:DescriptionItem.Content>
                             </atom:DescriptionItem>
                         </atom:Descriptions>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource CustomSizeTitle}" Description="{gallery:DescriptionsShowCaseLangResource CustomSizeDescription}"
-                                          IsOccupyEntireRow="True">
+                                          IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:DescriptionsViewModel">
                         <StackPanel Orientation="Vertical" Spacing="30">
                             <StackPanel Orientation="Horizontal" Spacing="10">
-                                <atom:RadioButton Name="DefaultSizeRadioButton" IsChecked="True" Content="{gallery:DescriptionsShowCaseLangResource P2ContentLarge}" />
-                                <atom:RadioButton Name="MiddleSizeRadioButton" Content="{gallery:DescriptionsShowCaseLangResource P2ContentMiddle}" />
-                                <atom:RadioButton Name="SmallSizeRadioButton" Content="{gallery:DescriptionsShowCaseLangResource P2ContentSmall}" />
+                                <atom:RadioButton Name="DefaultSizeRadioButton"
+                                                  IsChecked="True"
+                                                  Tag="{x:Static atom:SizeType.Large}"
+                                                  IsCheckedChanged="SizeTypeCheckChanged"
+                                                  Content="{gallery:DescriptionsShowCaseLangResource P2ContentLarge}" />
+                                <atom:RadioButton Name="MiddleSizeRadioButton"
+                                                  Tag="{x:Static atom:SizeType.Middle}"
+                                                  IsCheckedChanged="SizeTypeCheckChanged"
+                                                  Content="{gallery:DescriptionsShowCaseLangResource P2ContentMiddle}" />
+                                <atom:RadioButton Name="SmallSizeRadioButton"
+                                                  Tag="{x:Static atom:SizeType.Small}"
+                                                  IsCheckedChanged="SizeTypeCheckChanged"
+                                                  Content="{gallery:DescriptionsShowCaseLangResource P2ContentSmall}" />
                             </StackPanel>
                             <atom:Descriptions IsBordered="True"
                                                SizeType="{Binding DescriptionsSizeType}"
@@ -215,11 +241,16 @@
                                                       Content="{gallery:DescriptionsShowCaseLangResource P2ContentAddress}" />
                             </atom:Descriptions>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource ResponsiveTitle}"
                                           Description="{gallery:DescriptionsShowCaseLangResource ResponsiveDescription}"
-                                          IsOccupyEntireRow="True">
+                                          IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:DescriptionsViewModel">
                         <atom:Descriptions IsBordered="True"
                                            SizeType="{Binding DescriptionsSizeType}"
                                            Header="{gallery:DescriptionsShowCaseLangResource P2HeaderResponsiveDescriptions}"
@@ -249,9 +280,14 @@
                                 </atom:DescriptionItem.Content>
                             </atom:DescriptionItem>
                         </atom:Descriptions>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource VerticalTitle}" Description="{gallery:DescriptionsShowCaseLangResource VerticalDescription}" IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource VerticalTitle}" Description="{gallery:DescriptionsShowCaseLangResource VerticalDescription}" IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:DescriptionsViewModel">
                         <atom:Descriptions Header="{gallery:DescriptionsShowCaseLangResource P2HeaderUserInfo}" Layout="Vertical">
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelUserName}" Content="{gallery:DescriptionsShowCaseLangResource P2ContentZhouMaomao}" />
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelTelephone}" Content="1810000000" />
@@ -260,11 +296,16 @@
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelAddress}"
                                                   Content="{gallery:DescriptionsShowCaseLangResource P2ContentAddress}" />
                         </atom:Descriptions>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource VerticalBorderTitle}"
                                           Description="{gallery:DescriptionsShowCaseLangResource VerticalBorderDescription}"
-                                          IsOccupyEntireRow="True">
+                                          IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:DescriptionsViewModel">
                         <atom:Descriptions IsBordered="True" Layout="Vertical">
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelProduct}" Content="{gallery:DescriptionsShowCaseLangResource P2ContentCloudDatabase}" />
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelBillingMode}" Content="{gallery:DescriptionsShowCaseLangResource P2ContentPrepaid}" />
@@ -288,9 +329,14 @@
                                 </atom:DescriptionItem.Content>
                             </atom:DescriptionItem>
                         </atom:Descriptions>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource RowTitle}" Description="{gallery:DescriptionsShowCaseLangResource RowDescription}" IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem Title="{gallery:DescriptionsShowCaseLangResource RowTitle}" Description="{gallery:DescriptionsShowCaseLangResource RowDescription}" IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:DescriptionsViewModel">
                         <atom:Descriptions Header="{gallery:DescriptionsShowCaseLangResource P2HeaderUserInfo}" IsBordered="True">
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelUserName}" Content="{gallery:DescriptionsShowCaseLangResource P2ContentZhouMaomao}" />
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelLive}" Content="{gallery:DescriptionsShowCaseLangResource P2ContentHangzhouZhejiang}" IsFilled="True" />
@@ -298,6 +344,8 @@
                             <atom:DescriptionItem Label="{gallery:DescriptionsShowCaseLangResource P2LabelAddress}"
                                                   Content="{gallery:DescriptionsShowCaseLangResource P2ContentAddress}" />
                         </atom:Descriptions>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                 </gallery:ShowCasePanel>

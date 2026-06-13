@@ -31,10 +31,6 @@ public partial class RateShowCase : GalleryReactiveUserControl<RateViewModel>
             {
                 ConfigureLocalizedTooltips(viewModel);
 
-                GalleryBindingUtils.OneWay(viewModel, nameof(RateViewModel.Tooltips), vm => vm.Tooltips,
-                                           ToolTipRate, AtomUI.Controls.Commons.AbstractRate.ToolTipsProperty)
-                                   .DisposeWith(disposables);
-
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)
                 {
@@ -143,7 +139,7 @@ public partial class RateShowCase : GalleryReactiveUserControl<RateViewModel>
             RateShowCaseLanguage.Get(RateShowCaseLangResourceKind.P2TooltipGood, "good"),
             RateShowCaseLanguage.Get(RateShowCaseLangResourceKind.P2TooltipWonderful, "wonderful"),
         };
-        SyncActiveTooltip(viewModel, ToolTipRate.Value);
+        SyncActiveTooltip(viewModel, 0);
     }
 
     private void HandleValueChanged(object? sender, RateValueChangedEventArgs e)

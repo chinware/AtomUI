@@ -73,8 +73,12 @@ public class DatePickerShowCasePageTests
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new DatePickerApiDataGrid()");
         codeBehindSource.ShouldContain("new DatePickerDesignTokenDataGrid()");
-        codeBehindSource.ShouldContain("PickerSizeTypeOptionGroup.OptionCheckedChanged");
-        codeBehindSource.ShouldContain("PickerPlacementOptionGroup.OptionCheckedChanged");
+        pageSource.ShouldContain("OptionCheckedChanged=\"HandlePickerSizeTypeOptionCheckedChanged\"");
+        pageSource.ShouldContain("OptionCheckedChanged=\"HandlePickerPlacementCheckedChanged\"");
+        codeBehindSource.ShouldContain("HandlePickerSizeTypeOptionCheckedChanged");
+        codeBehindSource.ShouldContain("HandlePickerPlacementCheckedChanged");
+        codeBehindSource.ShouldNotContain("PickerSizeTypeOptionGroup.OptionCheckedChanged");
+        codeBehindSource.ShouldNotContain("PickerPlacementOptionGroup.OptionCheckedChanged");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:DatePickerApiRow\"");
@@ -161,13 +165,7 @@ public class DatePickerShowCasePageTests
 
     private static string NormalizeMarkup(string source)
     {
-        return string.Join(
-            "\n",
-            source
-                .Replace("\r\n", "\n")
-                .Split('\n')
-                .Select(line => line.Trim())
-                .Where(line => line.Length > 0));
+        return ShowCaseSnapshotMarkup.Normalize(source);
     }
 
     private static int CountOccurrences(string source, string value)

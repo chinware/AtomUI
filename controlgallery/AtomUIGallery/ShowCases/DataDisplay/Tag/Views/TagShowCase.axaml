@@ -127,6 +127,9 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
                     <gallery:ShowCasePanel.Styles>
                         <Style Selector="atom|Tag">
@@ -135,7 +138,10 @@
                     </gallery:ShowCasePanel.Styles>
                     <gallery:ShowCaseItem
                         Title="{gallery:TagShowCaseLangResource BasicTitle}"
-                        Description="{gallery:TagShowCaseLangResource BasicDescription}">
+                        Description="{gallery:TagShowCaseLangResource BasicDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:TagViewModel">
                         <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                             <atom:Tag Text="{gallery:TagShowCaseLangResource P2ContentTagN1}" />
                             <atom:Tag Text="{gallery:TagShowCaseLangResource P2ContentLink}" />
@@ -143,11 +149,16 @@
                             <atom:Tag IsClosable="True"
                                       CloseIcon="{antdicons:AntDesignIconProvider Kind=CloseCircleOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentTagN2}" />
                         </WrapPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:TagShowCaseLangResource ColorfulTagTitle}"
-                        Description="{gallery:TagShowCaseLangResource ColorfulTagDescription}">
+                        Description="{gallery:TagShowCaseLangResource ColorfulTagDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:TagViewModel">
                         <StackPanel Orientation="Vertical">
                             <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10" Text="{gallery:TagShowCaseLangResource P2TextPresets}" />
                             <WrapPanel HorizontalAlignment="Left">
@@ -173,11 +184,16 @@
                             </WrapPanel>
                         </StackPanel>
 
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:TagShowCaseLangResource StatusTagTitle}"
-                        Description="{gallery:TagShowCaseLangResource StatusTagDescription}">
+                        Description="{gallery:TagShowCaseLangResource StatusTagDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:TagViewModel">
                         <StackPanel Orientation="Vertical">
                             <atom:TextBlock FontWeight="Bold" FontSize="14" Margin="0, 0, 0, 10" Text="{gallery:TagShowCaseLangResource P2TextWithoutIcon}" />
                             <WrapPanel HorizontalAlignment="Left">
@@ -205,11 +221,16 @@
                             </WrapPanel>
                         </StackPanel>
 
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:TagShowCaseLangResource IconTitle}"
-                        Description="{gallery:TagShowCaseLangResource IconDescription}">
+                        Description="{gallery:TagShowCaseLangResource IconDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:TagViewModel">
                         <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                             <atom:Tag TagColor="#55acee"
                                       Icon="{antdicons:AntDesignIconProvider Kind=TwitterOutlined}" Text="{gallery:TagShowCaseLangResource P2ContentTwitter}" />
@@ -224,11 +245,16 @@
                                     <PathIcon Data="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/>
                                 </atom:Tag.Icon></atom:Tag>
                         </WrapPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:TagShowCaseLangResource BorderlessTitle}"
-                        Description="{gallery:TagShowCaseLangResource BorderlessDescription}">
+                        Description="{gallery:TagShowCaseLangResource BorderlessDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:TagViewModel">
                         <StackPanel Orientation="Vertical">
                             <WrapPanel HorizontalAlignment="Left">
                                 <atom:Tag IsBordered="False" Text="{gallery:TagShowCaseLangResource P2ContentTag1}" />
@@ -258,6 +284,8 @@
                             </WrapPanel>
                         </StackPanel>
 
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                 </gallery:ShowCasePanel>

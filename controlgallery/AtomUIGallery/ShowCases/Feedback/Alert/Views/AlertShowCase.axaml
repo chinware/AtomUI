@@ -127,29 +127,45 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
         <gallery:ShowCaseItem
             Title="{gallery:AlertShowCaseLangResource BasicTitle}"
-            Description="{gallery:AlertShowCaseLangResource BasicDescription}">
+            Description="{gallery:AlertShowCaseLangResource BasicDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AlertViewModel">
             <StackPanel Orientation="Vertical">
                 <atom:Alert Type="Success" Message="{gallery:AlertShowCaseLangResource P2ContentSuccessText}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:AlertShowCaseLangResource MoreTypesTitle}"
-            Description="{gallery:AlertShowCaseLangResource MoreTypesDescription}">
+            Description="{gallery:AlertShowCaseLangResource MoreTypesDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AlertViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Success" Message="{gallery:AlertShowCaseLangResource P2ContentSuccessText}" />
                 <atom:Alert Type="Info" Message="{gallery:AlertShowCaseLangResource P2ContentInfoText}" />
                 <atom:Alert Type="Warning" Message="{gallery:AlertShowCaseLangResource P2ContentWarningText}" />
                 <atom:Alert Type="Error" Message="{gallery:AlertShowCaseLangResource P2ContentErrorText}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:AlertShowCaseLangResource ClosableTitle}"
-            Description="{gallery:AlertShowCaseLangResource ClosableDescription}">
+            Description="{gallery:AlertShowCaseLangResource ClosableDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AlertViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Warning" IsClosable="True" Message="{gallery:AlertShowCaseLangResource P2ContentWarningTextWarningTextWarningTextWarningText}" />
                 <atom:Alert Type="Error" IsClosable="True"
@@ -158,11 +174,16 @@
                             Description="{gallery:AlertShowCaseLangResource P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc}"
                             CloseIcon="{antdicons:AntDesignIconProvider CloseSquareFilled}" Message="{gallery:AlertShowCaseLangResource P2ContentErrorText}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:AlertShowCaseLangResource DescriptionTitle}"
-            Description="{gallery:AlertShowCaseLangResource DescriptionDescription}">
+            Description="{gallery:AlertShowCaseLangResource DescriptionDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AlertViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Success"
                             Message="{gallery:AlertShowCaseLangResource P2MessageSuccessText}"
@@ -177,12 +198,17 @@
                             Message="{gallery:AlertShowCaseLangResource P2MessageErrorText}"
                             Description="{gallery:AlertShowCaseLangResource P2DescriptionErrorDescriptionErrorDescriptionErrorDescriptionErrorDesc2}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
 
         <gallery:ShowCaseItem
             Title="{gallery:AlertShowCaseLangResource IconTitle}"
-            Description="{gallery:AlertShowCaseLangResource IconDescription}">
+            Description="{gallery:AlertShowCaseLangResource IconDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AlertViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Type="Success"
                             Message="{gallery:AlertShowCaseLangResource P2MessageSuccessTips}"
@@ -216,11 +242,16 @@
                             IsShowIcon="True"
                             Description="{gallery:AlertShowCaseLangResource P2DescriptionThisIsAnErrorMessageAboutCopywriting}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:AlertShowCaseLangResource CustomActionTitle}"
-            Description="{gallery:AlertShowCaseLangResource CustomActionDescription}">
+            Description="{gallery:AlertShowCaseLangResource CustomActionDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AlertViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:Alert Message="{gallery:AlertShowCaseLangResource P2MessageSuccessTips}" Type="Success"
                             IsShowIcon="True"
@@ -253,12 +284,19 @@
                         </StackPanel>
                     </atom:Alert.ExtraAction></atom:Alert>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:AlertShowCaseLangResource LoopBannerTitle}"
-            Description="{gallery:AlertShowCaseLangResource LoopBannerDescription}">
+            Description="{gallery:AlertShowCaseLangResource LoopBannerDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AlertViewModel">
             <atom:Alert Type="Warning" IsShowIcon="True" IsMessageMarqueeEnabled="True" Message="{gallery:AlertShowCaseLangResource P2ContentICanBeAReactComponentMultipleReact}" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

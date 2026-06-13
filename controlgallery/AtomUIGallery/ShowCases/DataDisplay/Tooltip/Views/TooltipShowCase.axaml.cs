@@ -1,5 +1,3 @@
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
@@ -19,18 +17,6 @@ public partial class TooltipShowCase : GalleryReactiveUserControl<TooltipViewMod
     {
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
-
-        this.WhenActivated(disposables =>
-        {
-            if (DataContext is TooltipViewModel viewModel)
-            {
-                ArrowSegmented.SelectionChanged += viewModel.HandleSelectionChanged;
-                Disposable.Create(() =>
-                {
-                    ArrowSegmented.SelectionChanged -= viewModel.HandleSelectionChanged;
-                }).DisposeWith(disposables);
-            }
-        });
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -112,5 +98,13 @@ public partial class TooltipShowCase : GalleryReactiveUserControl<TooltipViewMod
             DesignTokenScenario => new TooltipDesignTokenDataGrid(),
             _                   => throw new InvalidOperationException($"Unknown Tooltip scenario: {scenario}")
         };
+    }
+
+    private void HandleArrowSegmentedSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        if (DataContext is TooltipViewModel viewModel)
+        {
+            viewModel.HandleSelectionChanged(sender, args);
+        }
     }
 }

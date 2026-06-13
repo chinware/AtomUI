@@ -127,6 +127,9 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
                     <gallery:ShowCasePanel.Styles>
                         <Style Selector="atom|Button">
@@ -136,7 +139,10 @@
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ButtonShowCaseLangResource TypeTitle}"
-                        Description="{gallery:ButtonShowCaseLangResource TypeDescription}">
+                        Description="{gallery:ButtonShowCaseLangResource TypeDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="viewModels:ButtonViewModel">
                         <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                             <atom:Button ButtonType="Primary" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimaryButton}" />
                             <atom:Button Content="{gallery:ButtonShowCaseLangResource P2ContentDefaultButton}" />
@@ -144,11 +150,16 @@
                             <atom:Button ButtonType="Text" Content="{gallery:ButtonShowCaseLangResource P2ContentTextButton}" />
                             <atom:Button ButtonType="Link" Content="{gallery:ButtonShowCaseLangResource P2ContentLinkButton}" />
                         </WrapPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ButtonShowCaseLangResource ButtonShapeTitle}"
-                        Description="{gallery:ButtonShowCaseLangResource ButtonShapeDescription}">
+                        Description="{gallery:ButtonShowCaseLangResource ButtonShapeDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="viewModels:ButtonViewModel">
                         <StackPanel Orientation="Vertical">
                             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="0, 0, 0, 20">
                                 <atom:Button ButtonType="Primary" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
@@ -171,11 +182,16 @@
                             </StackPanel>
                         </StackPanel>
 
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ButtonShowCaseLangResource SizeTitle}"
-                        Description="{gallery:ButtonShowCaseLangResource SizeDescription}">
+                        Description="{gallery:ButtonShowCaseLangResource SizeDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="viewModels:ButtonViewModel">
                         <DockPanel Margin="0, 0, 0, 0">
                             <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
                                 <atom:TextBlock VerticalAlignment="Center" Text="{gallery:ButtonShowCaseLangResource P2TextExpandDirection}" />
@@ -216,11 +232,16 @@
                                 </WrapPanel>
                             </StackPanel>
                         </DockPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ButtonShowCaseLangResource IconTitle}"
-                        Description="{gallery:ButtonShowCaseLangResource IconDescription}">
+                        Description="{gallery:ButtonShowCaseLangResource IconDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="viewModels:ButtonViewModel">
                         <StackPanel Orientation="Vertical">
                             <WrapPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                 <atom:Button ButtonType="Primary" Shape="Circle"
@@ -265,11 +286,16 @@
                             </WrapPanel>
                         </StackPanel>
 
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ButtonShowCaseLangResource LoadingTitle}"
-                        Description="{gallery:ButtonShowCaseLangResource LoadingDescription}">
+                        Description="{gallery:ButtonShowCaseLangResource LoadingDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="viewModels:ButtonViewModel">
                         <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
                             <atom:Button ButtonType="Primary"
                                          Click="HandleLoadingBtnClick"
@@ -291,11 +317,16 @@
                             </WrapPanel>
 
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ButtonShowCaseLangResource BlockButtonTitle}"
-                        Description="{gallery:ButtonShowCaseLangResource BlockButtonDescription}">
+                        Description="{gallery:ButtonShowCaseLangResource BlockButtonDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="viewModels:ButtonViewModel">
                         <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">
                             <atom:Button ButtonType="Primary" HorizontalAlignment="Stretch" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
                             <atom:Button ButtonType="Default" HorizontalAlignment="Stretch" Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
@@ -303,11 +334,16 @@
                             <atom:Button ButtonType="Text" HorizontalAlignment="Stretch" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
                             <atom:Button ButtonType="Link" HorizontalAlignment="Stretch" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ButtonShowCaseLangResource DangerButtonsTitle}"
-                        Description="{gallery:ButtonShowCaseLangResource DangerButtonsDescription}">
+                        Description="{gallery:ButtonShowCaseLangResource DangerButtonsDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="viewModels:ButtonViewModel">
                         <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
                             <atom:Button ButtonType="Primary" IsDanger="True" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
                             <atom:Button ButtonType="Default" IsDanger="True" Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
@@ -315,11 +351,16 @@
                             <atom:Button ButtonType="Text" IsDanger="True" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
                             <atom:Button ButtonType="Link" IsDanger="True" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
                         </WrapPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ButtonShowCaseLangResource GhostButtonTitle}"
-                        Description="{gallery:ButtonShowCaseLangResource GhostButtonDescription}">
+                        Description="{gallery:ButtonShowCaseLangResource GhostButtonDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="viewModels:ButtonViewModel">
                         <Border Background="rgb(190, 200, 200)"
                                 Margin="10"
                                 Padding="10">
@@ -346,11 +387,16 @@
                                 </WrapPanel>
                             </StackPanel>
                         </Border>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ButtonShowCaseLangResource DisabledTitle}"
-                        Description="{gallery:ButtonShowCaseLangResource DisabledDescription}">
+                        Description="{gallery:ButtonShowCaseLangResource DisabledDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="viewModels:ButtonViewModel">
                         <WrapPanel HorizontalAlignment="Stretch" Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
                                 <atom:Button ButtonType="Primary" Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
@@ -411,6 +457,8 @@
                             </Border>
 
                         </WrapPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

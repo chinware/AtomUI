@@ -127,8 +127,14 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
-                    <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource BasicTitle}" Description="{gallery:StatisticShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource BasicTitle}" Description="{gallery:StatisticShowCaseLangResource BasicDescription}" IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:StatisticViewModel">
                         <UniformGrid Columns="2" Rows="2">
                             <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderActiveUsers}" Value="112893" />
                             <StackPanel Orientation="Vertical" Spacing="16">
@@ -137,20 +143,30 @@
                             </StackPanel>
                             <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderActiveUsers}" Value="112893" IsLoading="True" />
                         </UniformGrid>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource UnitTitle}"
                                           Description="{gallery:StatisticShowCaseLangResource UnitDescription}"
-                                          IsOccupyEntireRow="True">
+                                          IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:StatisticViewModel">
                         <UniformGrid Columns="2" Rows="1">
                             <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderFeedback}" Value="1128" ValuePrefixAddOn="{antdicons:AntDesignIconProvider LikeOutlined}" />
                             <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderUnmerged}" Value="93" ValueSuffixAddOn="/ 100" />
                         </UniformGrid>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource InCardTitle}"
                                           Description="{gallery:StatisticShowCaseLangResource InCardDescription}"
-                                          IsOccupyEntireRow="True">
+                                          IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:StatisticViewModel">
                         <Border Background="#F0F2F5" Padding="20, 30">
                             <UniformGrid Columns="2" Rows="1" ColumnSpacing="20">
                                 <atom:Card SizeType="Large">
@@ -171,9 +187,14 @@
                                 </atom:Card>
                             </UniformGrid>
                         </Border>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource AnimatedNumberTitle}" Description="{gallery:StatisticShowCaseLangResource AnimatedNumberDescription}" IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource AnimatedNumberTitle}" Description="{gallery:StatisticShowCaseLangResource AnimatedNumberDescription}" IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:StatisticViewModel">
                         <UniformGrid Columns="2" Rows="2">
                             <atom:Statistic Header="{gallery:StatisticShowCaseLangResource P2HeaderActiveUsers}" Value="112893">
                                 <atom:Statistic.Content>
@@ -186,9 +207,14 @@
                                 </atom:Statistic.Content>
                             </atom:Statistic>
                         </UniformGrid>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource TimerTitle}" Description="{gallery:StatisticShowCaseLangResource TimerDescription}" IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem Title="{gallery:StatisticShowCaseLangResource TimerTitle}" Description="{gallery:StatisticShowCaseLangResource TimerDescription}" IsOccupyEntireRow="True"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:StatisticViewModel">
                         <UniformGrid Columns="2" Rows="3" RowSpacing="10">
                             <atom:TimerStatistic Value="{Binding Deadline}" />
                             <atom:TimerStatistic Header="{gallery:StatisticShowCaseLangResource P2HeaderMillionSeconds}" Value="{Binding Deadline}" Format="hh\:mm\:ss\.fff" />
@@ -197,6 +223,8 @@
                             <atom:TimerStatistic Header="{gallery:StatisticShowCaseLangResource P2HeaderDayLevelCountdown}" Value="{Binding Deadline}" Format="{gallery:StatisticShowCaseLangResource P2DayLevelFormat}" />
                             <atom:TimerStatistic Header="{gallery:StatisticShowCaseLangResource P2HeaderDayLevelCountup}" Value="{Binding Before}" Format="{gallery:StatisticShowCaseLangResource P2DayLevelFormat}" />
                         </UniformGrid>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

@@ -33,7 +33,8 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
             if (DataContext is ListViewModel viewModel)
             {
                 RefreshLocalizedListItems(viewModel);
-                viewModel.SelectionMode = SelectionMode.Single;
+                viewModel.SelectionMode            = SelectionMode.Single;
+                viewModel.OrderedSortDescriptions  = [ListSortDescription.FromPath("Content")];
 
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)
@@ -55,11 +56,12 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
                     viewModel.OrderedGroupListItems  = null;
                     viewModel.BasicListBoxItems      = null;
                     viewModel.PaginationListItems    = null;
+                    viewModel.OrderedSortDescriptions = null;
+                    viewModel.SearchFilterValue       = null;
                 }).DisposeWith(disposables);
             }
         });
         InitializeComponent();
-        OrderedList.SortDescriptions = [ListSortDescription.FromPath("Content")];
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
     }
 
@@ -189,9 +191,10 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
 
     private void HandleFilterListBoxClicked(object? sender, RoutedEventArgs e)
     {
-        if (sender is SearchEdit searchEdit)
+        if (sender is SearchEdit searchEdit &&
+            DataContext is ListViewModel viewModel)
         {
-            SearchListBox.FilterValue = searchEdit.Text?.Trim();
+            viewModel.SearchFilterValue = searchEdit.Text?.Trim();
         }
     }
 

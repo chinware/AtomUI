@@ -127,9 +127,15 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
                     <gallery:ShowCaseItem Title="{gallery:QRCodeShowCaseLangResource BasicUsageTitle}"
-                                          Description="{gallery:QRCodeShowCaseLangResource BasicUsageDescription}">
+                                          Description="{gallery:QRCodeShowCaseLangResource BasicUsageDescription}"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:QRCodeViewModel">
                         <StackPanel Orientation="Vertical">
                             <atom:QRCode Value="{Binding QRCodeInput}" />
                             <atom:LineEdit Text="{Binding QRCodeInput}" Margin="0,20,0,0" />
@@ -137,25 +143,40 @@
                                 <ListBox.ItemTemplate></ListBox.ItemTemplate>
                             </ListBox>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                     <gallery:ShowCaseItem Title="{gallery:QRCodeShowCaseLangResource WithIconTitle}"
-                                          Description="{gallery:QRCodeShowCaseLangResource WithIconDescription}">
+                                          Description="{gallery:QRCodeShowCaseLangResource WithIconDescription}"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:QRCodeViewModel">
                         <StackPanel Orientation="Vertical">
                             <atom:QRCode Value="https://atomui.net" Icon="avares://AtomUIGallery/Assets/ATOMUI-LOGO.png" />
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem Title="{gallery:QRCodeShowCaseLangResource DifferentStatusTitle}"
-                                          Description="{gallery:QRCodeShowCaseLangResource DifferentStatusDescription}">
+                                          Description="{gallery:QRCodeShowCaseLangResource DifferentStatusDescription}"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:QRCodeViewModel">
                         <WrapPanel ItemSpacing="20" LineSpacing="20" Orientation="Horizontal">
                             <atom:QRCode Value="https://atomui.net" Status="Loading" />
                             <atom:QRCode Value="https://atomui.net" Status="Expired" />
                             <atom:QRCode Value="https://atomui.net" Status="Scanned" />
                         </WrapPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem Title="{gallery:QRCodeShowCaseLangResource CustomStatusRendererTitle}"
-                                          Description="{gallery:QRCodeShowCaseLangResource CustomStatusRendererDescription}">
+                                          Description="{gallery:QRCodeShowCaseLangResource CustomStatusRendererDescription}"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:QRCodeViewModel">
                         <WrapPanel ItemSpacing="20" LineSpacing="20" Orientation="Horizontal">
                             <atom:QRCode Value="https://atomui.net" Status="Loading">
                                 <atom:QRCode.LoadingContent>
@@ -189,22 +210,34 @@
                                 </atom:QRCode.ScannedContent>
                             </atom:QRCode>
                         </WrapPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                     <gallery:ShowCaseItem Title="{gallery:QRCodeShowCaseLangResource CustomSizeTitle}"
-                                          Description="{gallery:QRCodeShowCaseLangResource CustomSizeDescription}">
+                                          Description="{gallery:QRCodeShowCaseLangResource CustomSizeDescription}"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:QRCodeViewModel">
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,16">
                                 <atom:Button Name="SmallerBtn"
+                                             Command="{Binding SmallerCommand}"
                                              Icon="{antdicons:AntDesignIconProvider Kind=MinusOutlined}" Content="{gallery:QRCodeShowCaseLangResource P2ContentSmaller}" />
                                 <atom:Button Name="LargerBtn"
+                                             Command="{Binding LargerCommand}"
                                              Icon="{antdicons:AntDesignIconProvider Kind=PlusOutlined}" Content="{gallery:QRCodeShowCaseLangResource P2ContentLarger}" />
                             </StackPanel>
                             <atom:QRCode Value="https://atomui.net" Icon="avares://AtomUIGallery/Assets/ATOMUI-LOGO.png"
                                          Size="{Binding Size}" IconSize="{Binding IconSize}" />
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                     <gallery:ShowCaseItem Title="{gallery:QRCodeShowCaseLangResource CustomColorTitle}"
-                                          Description="{gallery:QRCodeShowCaseLangResource CustomColorDescription}">
+                                          Description="{gallery:QRCodeShowCaseLangResource CustomColorDescription}"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:QRCodeViewModel">
                         <StackPanel Orientation="Horizontal" Spacing="10">
                             <atom:QRCode Value="https://atomui.net"
                                          Color="{atom:SharedTokenResource ColorSuccessText}" />
@@ -212,17 +245,28 @@
                                          Color="{atom:SharedTokenResource ColorInfoText}"
                                          Background="{atom:SharedTokenResource ColorBgLayout}" />
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                     <gallery:ShowCaseItem Title="{gallery:QRCodeShowCaseLangResource ErrorLevelTitle}"
-                                          Description="{gallery:QRCodeShowCaseLangResource ErrorLevelDescription}">
+                                          Description="{gallery:QRCodeShowCaseLangResource ErrorLevelDescription}"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:QRCodeViewModel">
                         <StackPanel Orientation="Vertical" Spacing="10">
                             <atom:QRCode Value="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
                                          EccLevel="{Binding #EccLevelSegmented.SelectedItem}" />
-                            <atom:Segmented Name="EccLevelSegmented" />
+                            <atom:Segmented Name="EccLevelSegmented"
+                                            ItemsSource="{Binding EccLevels}" />
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                     <gallery:ShowCaseItem Title="{gallery:QRCodeShowCaseLangResource AdvancedUsageTitle}"
-                                          Description="{gallery:QRCodeShowCaseLangResource AdvancedUsageDescription}">
+                                          Description="{gallery:QRCodeShowCaseLangResource AdvancedUsageDescription}"
+                                          IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:QRCodeViewModel">
                         <atom:FlyoutHost Trigger="Hover">
                             <atom:FlyoutHost.Flyout>
                                 <atom:Flyout>
@@ -231,6 +275,8 @@
                             </atom:FlyoutHost.Flyout>
                             <atom:Button ButtonType="Primary" Content="{gallery:QRCodeShowCaseLangResource P2ContentHoverMe}" />
                         </atom:FlyoutHost>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

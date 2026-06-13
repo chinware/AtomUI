@@ -4,7 +4,7 @@
 
 ## ButtonShowCase 改造总结
 
-ButtonShowCase 从“单一 ShowCasePanel 承载全部内容”升级为“文档页头 + sticky 场景导航 + 延迟加载内容”的结构。
+ButtonShowCase 从“单一 ShowCasePanel 承载全部内容”升级为“文档页头 + sticky 场景导航 + 延迟加载内容”的结构。LineEditShowCase 在此基础上补充了 `ShowCaseItem` 级别的延迟创建机制，这一机制从现在起升级为全局 ShowCase 创建规范。
 
 当前页面主体由三段组成：
 
@@ -30,8 +30,19 @@ ButtonShowCase 从“单一 ShowCasePanel 承载全部内容”升级为“文�
 
     <ContentControl Name="ScenarioContentHost">
         <gallery:ShowCasePanel Name="ExamplesContent"
-                               IsScrollEnabled="False">
-            <!-- ShowCaseItem demo content -->
+                               IsScrollEnabled="False"
+                               IsDeferredLoadingEnabled="True"
+                               InitialDeferredLoadItemCount="4"
+                               DeferredLoadBatchSize="2">
+            <gallery:ShowCaseItem Title="..."
+                                  Description="..."
+                                  IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate>
+                        <!-- 原 ShowCaseItem demo content -->
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
         </gallery:ShowCasePanel>
     </ContentControl>
 </gallery:GalleryStickyTabsHost>
@@ -42,6 +53,7 @@ ButtonShowCase 从“单一 ShowCasePanel 承载全部内容”升级为“文�
 - Header 不再固定占用视口，用户向下滚动时 Header 会自然离开。
 - Tab 到达顶部后固定，用户在长示例页、API 页、Token 页之间切换时不会丢失导航。
 - Examples 继续使用卡片瀑布流，保留控件示例的浏览节奏。
+- Examples 的 `ShowCaseItem` 采用延迟创建，首屏只创建必要示例，滚动接近后再创建后续示例。
 - API 和 Design Token 改为独立 DataGrid，并保持首次切换时延迟加载。
 - Button 的具体演示内容被测试快照保护，改造只允许移动容器，不允许改变 `ShowCaseItem` 内部控件演示。
 
@@ -129,7 +141,10 @@ Examples 仍然使用 `ShowCasePanel + ShowCaseItem`。
 页面级滚动场景下，Examples 的 `ShowCasePanel` 必须设置：
 
 ```xml
-<gallery:ShowCasePanel IsScrollEnabled="False">
+<gallery:ShowCasePanel IsScrollEnabled="False"
+                       IsDeferredLoadingEnabled="True"
+                       InitialDeferredLoadItemCount="4"
+                       DeferredLoadBatchSize="2">
 ```
 
 这样滚动权交给 `GalleryStickyTabsHost`，避免 Header 固定、内外滚动条冲突、滚动条位置异常。
@@ -139,6 +154,7 @@ Examples 内容组织规则：
 - 使用瀑布流卡片承载独立示例。
 - 每个 `ShowCaseItem` 只说明一个明确能力。
 - 卡片内演示内容必须保持真实控件形态，不为了版式重写示例。
+- 每个有演示内容的 `ShowCaseItem` 必须使用 `IsDeferredContentEnabled="True"` 和 `DeferredContentTemplate`。
 - 如果某个示例需要占满整行，使用 `ShowCaseItem` 的整行能力，而不是在页面层硬编码特殊布局。
 - 不把多个不相关能力合并进一个大卡片。
 - 不把 Examples 改成固定的四大区块，除非控件本身确实只有四个线性主题。
@@ -146,6 +162,8 @@ Examples 内容组织规则：
 硬边界：
 
 - 改造页面结构时，不允许改动 `ShowCaseItem` 内部演示内容。
+- 移入 `DeferredContentTemplate` 只能改变创建时机，不能改变演示控件树。
+- 迁移后的 ShowCase 不允许把演示控件直接写成 `ShowCaseItem.Content`。
 - 控件演示内容变更必须是独立需求，并有单独 review。
 - 对已整理过的页面，应保留或新增 snapshot 测试，确保示例内容不会被布局改造误改。
 
@@ -232,9 +250,11 @@ Token 规则：
 - `ContentMargin` 由页面根据 Header/Tab 对齐关系设置，但左右应与 sticky Tab 主体一致。
 - Masonry 布局参数使用 ShowCasePanel token，不在每个页面重复写死。
 
-### Deferred Loading
+### ShowCaseItem 延迟创建规范
 
-示例数量较多或单个示例创建成本较高时，可以在 `ShowCasePanel` 上手动开启延迟加载：
+所有新建或迁移后的 ShowCase 都必须采用 `ShowCasePanel + ShowCaseItem` 双层延迟创建。这个规则不是性能优化选项，而是 ShowCase 创建规范的一部分；旧页面未迁移前只是暂存状态，不能作为新实现参考。
+
+Panel 层负责控制一批 `ShowCaseItem` 何时 materialize：
 
 ```xml
 <gallery:ShowCasePanel IsDeferredLoadingEnabled="True"
@@ -244,33 +264,52 @@ Token 规则：
 
 规则：
 
-- 默认保持 `IsDeferredLoadingEnabled="False"`，未迁移页面和简单页面不受影响。
+- 迁移后的 Examples `ShowCasePanel` 必须设置 `IsDeferredLoadingEnabled="True"`。
+- `InitialDeferredLoadItemCount` 默认使用 `4`，保证首屏内容可见。
+- `DeferredLoadBatchSize` 默认使用 `2`，避免滚动时一次创建过多复杂示例。
+- `DeferredLoadViewportBuffer` 默认使用控件 token/theme 中的值；只有出现明确的提前加载不足或过早加载问题时才在页面层覆盖。
 - `ShowCasePanel` 只允许使用一个 panel 级 `EffectiveViewportChanged` 监听来判断 viewport，不允许给每个 `ShowCaseItem` 单独挂监听。
-- `InitialDeferredLoadItemCount` 控制首屏预先 materialize 的 item 数量。
-- `DeferredLoadBatchSize` 控制每次滚动到 viewport 附近后 materialize 的批大小，避免一次性卡顿。
-- `DeferredLoadViewportBuffer` 控制提前加载距离，保证用户滚到附近前内容已经准备好。
 - 已 materialize 的内容不回收。ShowCase 是文档式页面，不做无限列表虚拟化，避免状态、焦点、Popup/Flyout 生命周期被破坏。
-- 如果 `ShowCaseItem` 仍然直接写普通 Content，Avalonia 会在页面初始化时创建这些控件；这种情况下只能减少部分挂载/布局成本。要真正延迟创建演示控件，必须把演示内容放到 `DeferredContentTemplate` 中。
+- 旧页面在未迁移前可以保留默认 `IsDeferredLoadingEnabled="False"`；一旦纳入本轮 ShowCase 迁移，或后续新增 ShowCase，就必须开启。
 
-推荐写法：
+Item 层负责真正延迟创建演示控件。所有有演示内容的 `ShowCaseItem` 必须使用下面的写法：
 
 ```xml
 <gallery:ShowCaseItem Title="..."
                       Description="..."
                       IsDeferredContentEnabled="True">
     <gallery:ShowCaseItem.DeferredContentTemplate>
-        <DataTemplate>
+        <DataTemplate x:DataType="vm:CurrentShowCaseViewModel">
             <!-- 原 ShowCaseItem 演示内容 -->
         </DataTemplate>
     </gallery:ShowCaseItem.DeferredContentTemplate>
 </gallery:ShowCaseItem>
 ```
 
+禁止写法：
+
+```xml
+<gallery:ShowCaseItem Title="..."
+                      Description="...">
+    <!-- 演示控件不能直接写在这里 -->
+</gallery:ShowCaseItem>
+```
+
 硬边界：
 
 - 移入 `DeferredContentTemplate` 只能改变创建时机，不能改变演示控件内容。
-- 已迁移页面必须保留 snapshot 测试，测试应剥离 deferred wrapper 后继续比对原始演示内容。
+- 已迁移页面必须保留 snapshot 测试，测试应剥离 `IsDeferredContentEnabled`、`DeferredContentTemplate`、`DataTemplate` 等 deferred wrapper 后继续比对原始演示内容。
+- 结构测试必须校验 `ShowCaseItem` 数量与 `DeferredContentTemplate` 数量一致。
+- 结构测试必须校验 Examples `ShowCasePanel` 开启 `IsDeferredLoadingEnabled="True"`。
 - placeholder 的高度和圆角走 `ShowCaseItemToken`，不在页面里写私有视觉值。
+- 除非用户明确批准，不允许因为某个示例“很简单”而跳过 deferred wrapper。简单示例也要遵守统一创建模型。
+
+NameScope 与绑定规则：
+
+- `DeferredContentTemplate` 必须声明 `x:DataType`，通常使用当前 ShowCase 的 ViewModel 类型，避免模板内部 `{Binding ...}` 退化为无法编译的伪类型。
+- `DeferredContentTemplate` 会创建独立 NameScope，code-behind 不允许再直接访问模板内部的 `Name` 字段。
+- 原先通过 code-behind 给示例控件设置的 `ItemsSource`、`Command`、`Marks`、`ToolTips`、状态属性等行为连接，迁移后必须改为 ViewModel 绑定，或在模板内声明事件并由根控件 handler 转发给 ViewModel。
+- 这类迁移只能还原原有运行时行为，不允许顺手调整示例控件的数量、层级、默认值、文案或视觉布局；对应快照需要记录迁移后的显式等价结构。
 
 ## Spacing 与对齐规则
 
@@ -336,6 +375,9 @@ private Control ResolveScenarioContent(string scenario)
 - 页面使用 `TabStrip`，不使用 `TabControl`。
 - 存在 `ScenarioContentHost`。
 - Examples 的 `ShowCasePanel` 设置 `IsScrollEnabled=False`。
+- Examples 的 `ShowCasePanel` 设置 `IsDeferredLoadingEnabled=True`。
+- 每个有演示内容的 `ShowCaseItem` 设置 `IsDeferredContentEnabled=True`。
+- `ShowCaseItem` 数量与 `DeferredContentTemplate` 数量一致。
 - API 和 Design Token 不在主 XAML 中直接声明 DataGrid。
 
 延迟加载测试：
@@ -343,6 +385,7 @@ private Control ResolveScenarioContent(string scenario)
 - code-behind 存在场景切换处理。
 - API 和 Design Token 的 UserControl 在切换时 `new`。
 - API 和 Design Token DataGrid 自己绑定数据源。
+- Examples 的演示控件放在 `DeferredContentTemplate` 中，不在页面初始化时直接作为 `ShowCaseItem.Content` 创建。
 
 演示内容保护测试：
 
@@ -359,17 +402,20 @@ private Control ResolveScenarioContent(string scenario)
 3. 用 `GalleryStickyTabsHost` 包裹页面主体。
 4. 用 `TabStrip` 替代 `TabControl`。
 5. 新增 `ScenarioContentHost`。
-6. Examples 放入 `ShowCasePanel IsScrollEnabled=False`。
-7. API 和 Design Token 拆成独立 UserControl。
-8. code-behind 实现场景切换和 lazy cache。
-9. 统一 Header、Tab、Content 左右边距。
-10. 跑结构测试、snapshot 测试、Gallery Desktop 构建。
+6. Examples 放入 `ShowCasePanel IsScrollEnabled=False IsDeferredLoadingEnabled=True`。
+7. 每个有演示内容的 `ShowCaseItem` 增加 `IsDeferredContentEnabled=True`，并把原演示控件原样移入 `DeferredContentTemplate`。
+8. API 和 Design Token 拆成独立 UserControl。
+9. code-behind 实现场景切换和 lazy cache。
+10. 统一 Header、Tab、Content 左右边距。
+11. 跑结构测试、deferred 创建测试、snapshot 测试、Gallery Desktop 构建。
 
 ## 不做事项
 
 为了避免再次把页面结构和示例内容耦合在一起，下面这些行为应避免：
 
 - 在页面改造时顺手改控件演示内容。
+- 迁移后仍把演示控件直接写在 `ShowCaseItem` 内容区。
+- 只开启 `ShowCasePanel.IsDeferredLoadingEnabled`，但不把 item 演示控件移入 `DeferredContentTemplate`。
 - 修改全局 Window 或 NavMenu 来解决单个 ShowCase 页面布局问题。
 - 为 sticky tabs 复制一份隐藏 TabStrip。
 - 在 ShowCase 页面里手写模拟 DataGrid。

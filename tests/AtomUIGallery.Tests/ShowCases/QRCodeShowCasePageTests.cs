@@ -73,9 +73,12 @@ public class QRCodeShowCasePageTests
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new QRCodeApiDataGrid()");
         codeBehindSource.ShouldContain("new QRCodeDesignTokenDataGrid()");
-        codeBehindSource.ShouldContain("GalleryBindingUtils.BindCommand(SmallerBtn");
-        codeBehindSource.ShouldContain("GalleryBindingUtils.BindCommand(LargerBtn");
-        codeBehindSource.ShouldContain("EccLevelSegmented");
+        pageSource.ShouldContain("Command=\"{Binding SmallerCommand}\"");
+        pageSource.ShouldContain("Command=\"{Binding LargerCommand}\"");
+        pageSource.ShouldContain("ItemsSource=\"{Binding EccLevels}\"");
+        codeBehindSource.ShouldNotContain("GalleryBindingUtils.BindCommand(SmallerBtn");
+        codeBehindSource.ShouldNotContain("GalleryBindingUtils.BindCommand(LargerBtn");
+        codeBehindSource.ShouldNotContain("EccLevelSegmented");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:QRCodeApiRow\"");
@@ -162,13 +165,7 @@ public class QRCodeShowCasePageTests
 
     private static string NormalizeMarkup(string source)
     {
-        return string.Join(
-            "\n",
-            source
-                .Replace("\r\n", "\n")
-                .Split('\n')
-                .Select(line => line.Trim())
-                .Where(line => line.Length > 0));
+        return ShowCaseSnapshotMarkup.Normalize(source);
     }
 
     private static int CountOccurrences(string source, string value)

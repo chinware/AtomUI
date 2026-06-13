@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
+using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
@@ -22,20 +21,11 @@ public partial class DatePickerShowCase : GalleryReactiveUserControl<DatePickerV
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
 
-        this.WhenActivated(disposables =>
+        this.WhenActivated(_ =>
         {
             if (DataContext is DatePickerViewModel viewModel)
             {
-                PickerSizeTypeOptionGroup.OptionCheckedChanged  += viewModel.HandlePickerSizeTypeOptionCheckedChanged;
-                PickerPlacementOptionGroup.OptionCheckedChanged += viewModel.HandlePickerPlacementCheckedChanged;
-                viewModel.PickerPlacement                       =  PlacementMode.BottomEdgeAlignedLeft;
-
-                Disposable.Create(() =>
-                {
-                    PickerSizeTypeOptionGroup.OptionCheckedChanged -=
-                        viewModel.HandlePickerSizeTypeOptionCheckedChanged;
-                    PickerPlacementOptionGroup.OptionCheckedChanged -= viewModel.HandlePickerPlacementCheckedChanged;
-                }).DisposeWith(disposables);
+                viewModel.PickerPlacement = PlacementMode.BottomEdgeAlignedLeft;
             }
         });
     }
@@ -119,5 +109,21 @@ public partial class DatePickerShowCase : GalleryReactiveUserControl<DatePickerV
             DesignTokenScenario => new DatePickerDesignTokenDataGrid(),
             _                   => throw new InvalidOperationException($"Unknown DatePicker scenario: {scenario}")
         };
+    }
+
+    private void HandlePickerSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is DatePickerViewModel viewModel)
+        {
+            viewModel.HandlePickerSizeTypeOptionCheckedChanged(sender, args);
+        }
+    }
+
+    private void HandlePickerPlacementCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is DatePickerViewModel viewModel)
+        {
+            viewModel.HandlePickerPlacementCheckedChanged(sender, args);
+        }
     }
 }

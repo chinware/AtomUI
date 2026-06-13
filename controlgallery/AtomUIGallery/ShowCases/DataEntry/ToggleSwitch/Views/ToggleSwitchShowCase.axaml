@@ -128,28 +128,45 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
                     <gallery:ShowCaseItem
                         Title="{gallery:ToggleSwitchShowCaseLangResource BasicTitle}"
-                        Description="{gallery:ToggleSwitchShowCaseLangResource BasicDescription}">
+                        Description="{gallery:ToggleSwitchShowCaseLangResource BasicDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ToggleSwitchViewModel">
                         <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Horizontal">
                             <atom:ToggleSwitch />
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
         
                     <gallery:ShowCaseItem
                         Title="{gallery:ToggleSwitchShowCaseLangResource DisabledTitle}"
-                        Description="{gallery:ToggleSwitchShowCaseLangResource DisabledDescription}">
+                        Description="{gallery:ToggleSwitchShowCaseLangResource DisabledDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ToggleSwitchViewModel">
                         <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
-                            <atom:ToggleSwitch x:Name="ToggleDisabledSwitch" />
+                            <atom:ToggleSwitch x:Name="ToggleDisabledSwitch"
+                                               IsEnabled="{Binding IsDisabledDemoEnabled}" />
                             <atom:Button ButtonType="Primary"
-                                         Command="{Binding $parent[showCase:ToggleSwitchShowCase].ToggleSwitchCommand}" Content="{gallery:ToggleSwitchShowCaseLangResource P2ContentToggleDisabled}" />
+                                         Command="{Binding ToggleDisabledCommand}" Content="{gallery:ToggleSwitchShowCaseLangResource P2ContentToggleDisabled}" />
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ToggleSwitchShowCaseLangResource TextAndIconTitle}"
-                        Description="{gallery:ToggleSwitchShowCaseLangResource TextAndIconDescription}">
+                        Description="{gallery:ToggleSwitchShowCaseLangResource TextAndIconDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ToggleSwitchViewModel">
                         <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                             <atom:ToggleSwitch
                                 OnContent="{gallery:ToggleSwitchShowCaseLangResource P2OnContentOn}"
@@ -174,26 +191,38 @@
                                 </atom:ToggleSwitch.OffContent>
                             </atom:ToggleSwitch>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:ToggleSwitchShowCaseLangResource TwoSizesTitle}"
-                        Description="{gallery:ToggleSwitchShowCaseLangResource TwoSizesDescription}">
+                        Description="{gallery:ToggleSwitchShowCaseLangResource TwoSizesDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ToggleSwitchViewModel">
                         <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                             <atom:ToggleSwitch />
                             <atom:ToggleSwitch SizeType="Small" />
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
         
                     <gallery:ShowCaseItem
                         Title="{gallery:ToggleSwitchShowCaseLangResource LoadingTitle}"
-                        Description="{gallery:ToggleSwitchShowCaseLangResource LoadingDescription}">
+                        Description="{gallery:ToggleSwitchShowCaseLangResource LoadingDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ToggleSwitchViewModel">
                         <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
-                            <atom:ToggleSwitch IsLoading="True" IsChecked="true" x:Name="ToggleSwitchDefault" />
-                            <atom:ToggleSwitch SizeType="Small" IsLoading="True" x:Name="ToggleSwitchSmall" />
+                            <atom:ToggleSwitch IsLoading="{Binding IsLoadingDemoLoading}" IsChecked="true" x:Name="ToggleSwitchDefault" />
+                            <atom:ToggleSwitch SizeType="Small" IsLoading="{Binding IsLoadingDemoLoading}" x:Name="ToggleSwitchSmall" />
                             <atom:Button ButtonType="Primary"
-                                         Command="{Binding $parent[showCase:ToggleSwitchShowCase].ToggleLoadingStatus}" Content="{gallery:ToggleSwitchShowCaseLangResource P2ContentToggleLoading}" />
+                                         Command="{Binding ToggleLoadingCommand}" Content="{gallery:ToggleSwitchShowCaseLangResource P2ContentToggleLoading}" />
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

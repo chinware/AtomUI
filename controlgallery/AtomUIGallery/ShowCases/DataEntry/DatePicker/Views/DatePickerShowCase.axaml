@@ -126,43 +126,69 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource BasicTitle}"
-            Description="{gallery:DatePickerShowCaseLangResource BasicDescription}">
+            Description="{gallery:DatePickerShowCaseLangResource BasicDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:DatePickerViewModel">
             <atom:DatePicker PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}"/>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource RangePickerTitle}"
-            Description="{gallery:DatePickerShowCaseLangResource RangePickerDescription}">
+            Description="{gallery:DatePickerShowCaseLangResource RangePickerDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:DatePickerViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <!-- <atom:RangeDatePicker IsShowTime="true" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"/> -->
                 <atom:RangeDatePicker IsShowTime="False" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource NeedConfirmTitle}"
-            Description="{gallery:DatePickerShowCaseLangResource NeedConfirmDescription}">
+            Description="{gallery:DatePickerShowCaseLangResource NeedConfirmDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:DatePickerViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:DatePicker IsNeedConfirm="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" />
                 <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="False" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource ChooseTimeTitle}"
-            Description="{gallery:DatePickerShowCaseLangResource ChooseTimeDescription}">
+            Description="{gallery:DatePickerShowCaseLangResource ChooseTimeDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:DatePickerViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:DatePicker IsNeedConfirm="True" IsShowTime="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" />
                 <atom:RangeDatePicker IsNeedConfirm="True" IsShowTime="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource DisabledTitle}"
-            Description="{gallery:DatePickerShowCaseLangResource DisabledDescription}">
+            Description="{gallery:DatePickerShowCaseLangResource DisabledDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:DatePickerViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:DatePicker IsNeedConfirm="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SelectedDateTime="2024-01-20"
                                  IsEnabled="False" />
@@ -189,16 +215,23 @@
                                       RangeEndDefaultDate="2024-02-20 07:22:23 AM" />
                 <atom:DatePicker IsNeedConfirm="True" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SelectedDateTime="2024-01-20" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource ThreeSizesTitle}"
-            Description="{gallery:DatePickerShowCaseLangResource ThreeSizesDescription}">
+            Description="{gallery:DatePickerShowCaseLangResource ThreeSizesDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:DatePickerViewModel">
 
             <DockPanel Margin="0, 0, 0, 0">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
                     <atom:TextBlock VerticalAlignment="Center" Text="{gallery:DatePickerShowCaseLangResource P2TextExpandDirection}" />
-                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="PickerSizeTypeOptionGroup">
+                    <atom:OptionButtonGroup ButtonStyle="Outline"
+                                            Name="PickerSizeTypeOptionGroup"
+                                            OptionCheckedChanged="HandlePickerSizeTypeOptionCheckedChanged">
                         <atom:OptionButton Content="{gallery:DatePickerShowCaseLangResource P2ContentLarge}" />
                         <atom:OptionButton IsChecked="True" Content="{gallery:DatePickerShowCaseLangResource P2ContentDefault}" />
                         <atom:OptionButton Content="{gallery:DatePickerShowCaseLangResource P2ContentSmall}" />
@@ -217,11 +250,16 @@
                                           SizeType="{Binding PickerSizeType}" />
                 </StackPanel>
             </DockPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource StatusTitle}"
-            Description="{gallery:DatePickerShowCaseLangResource StatusDescription}">
+            Description="{gallery:DatePickerShowCaseLangResource StatusDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:DatePickerViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:DatePicker Status="Default"
@@ -254,11 +292,16 @@
                                           ClockIdentifier="HourClock24" />
                 </StackPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource VariantsTitle}"
-            Description="{gallery:DatePickerShowCaseLangResource VariantsDescription}">
+            Description="{gallery:DatePickerShowCaseLangResource VariantsDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:DatePickerViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="5">
                     <atom:DatePicker StyleVariant="Outlined"
@@ -299,16 +342,23 @@
                                           PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextBorderless}" />
                 </StackPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource PlacementTitle}"
-            Description="{gallery:DatePickerShowCaseLangResource PlacementDescription}">
+            Description="{gallery:DatePickerShowCaseLangResource PlacementDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:DatePickerViewModel">
 
             <DockPanel Margin="0, 0, 0, 0">
                 <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
                     <atom:TextBlock VerticalAlignment="Center" Text="{gallery:DatePickerShowCaseLangResource P2TextPlacement}" />
-                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="PickerPlacementOptionGroup">
+                    <atom:OptionButtonGroup ButtonStyle="Outline"
+                                            Name="PickerPlacementOptionGroup"
+                                            OptionCheckedChanged="HandlePickerPlacementCheckedChanged">
                         <atom:OptionButton Content="{gallery:DatePickerShowCaseLangResource P2ContentTopleft}" />
                         <atom:OptionButton Content="{gallery:DatePickerShowCaseLangResource P2ContentTopright}" />
                         <atom:OptionButton IsChecked="true" Content="{gallery:DatePickerShowCaseLangResource P2ContentBottomleft}" />
@@ -325,6 +375,8 @@
                                           PickerPlacement="{Binding PickerPlacement}" />
                 </StackPanel>
             </DockPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
                 </gallery:ShowCasePanel>

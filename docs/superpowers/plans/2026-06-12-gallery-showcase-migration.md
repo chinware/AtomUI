@@ -4,7 +4,7 @@
 
 **Goal:** Refactor every control ShowCase page to follow the new Gallery ShowCase design pattern, with exactly one ShowCase migrated, verified, and accepted at a time.
 
-**Architecture:** ButtonShowCase is the reference implementation. Each migrated control page uses `GalleryStickyTabsHost` for page-level scrolling and sticky scenario navigation, `TabStrip + ContentControl` for scenarios, `ShowCasePanel` masonry cards for examples, and lazily loaded `DataGrid` UserControls for API and Design Token reference tabs. The migration must preserve existing demo content inside every `ShowCaseItem`.
+**Architecture:** ButtonShowCase is the reference implementation. Each migrated control page uses `GalleryStickyTabsHost` for page-level scrolling and sticky scenario navigation, `TabStrip + ContentControl` for scenarios, `ShowCasePanel` masonry cards for examples, deferred `ShowCaseItem` demo content creation, and lazily loaded `DataGrid` UserControls for API and Design Token reference tabs. The migration must preserve existing demo content inside every `ShowCaseItem`.
 
 **Tech Stack:** .NET 10, Avalonia, AtomUI Desktop controls, AtomUIGallery, xUnit, Gallery custom controls and token-based themes.
 
@@ -20,6 +20,7 @@ This file is the progress source of truth for the all-ShowCase migration.
 - Do not migrate multiple ShowCases in one implementation pass.
 - Do not mark the next ShowCase `In Progress` until the current ShowCase is accepted by the user.
 - Every migration must keep `ShowCaseItem` internal demo content unchanged.
+- Every migrated ShowCase must use deferred `ShowCaseItem` demo content creation; enabling only `ShowCasePanel.IsDeferredLoadingEnabled` is not enough.
 - Any requested change to actual demo content must be handled as a separate task outside this migration plan.
 - Do not modify `Window`, `NavMenu`, or global shell behavior to solve a ShowCase layout problem.
 - Do not add private per-page visual systems when the behavior belongs in Gallery controls or Gallery tokens.
@@ -41,7 +42,8 @@ Every ShowCase must pass this gate before its progress row can become `Implement
 | Gate | Required Evidence |
 |---|---|
 | Structure | Root page uses `GalleryStickyTabsHost`; scenarios use `TabStrip + ContentControl`; Examples use `ShowCasePanel IsScrollEnabled="False"`. |
-| Demo preservation | Snapshot confirms `ShowCaseItem` internal demo content did not change during layout migration. |
+| Deferred item creation | Examples use `ShowCasePanel IsDeferredLoadingEnabled="True"`; every demo `ShowCaseItem` uses `IsDeferredContentEnabled="True"` and `DeferredContentTemplate`; each deferred `DataTemplate` declares the current ShowCase ViewModel `x:DataType`; no migrated demo content remains as direct `ShowCaseItem.Content`. |
+| Demo preservation | Snapshot confirms `ShowCaseItem` internal demo content did not change during layout migration; any former code-behind-only behavior wiring moved into explicit VM binding/event forwarding is recorded in the snapshot as the equivalent runtime structure. |
 | Lazy reference tabs | API and Design Token are separate UserControls and are created only when their tabs are selected. |
 | DataGrid behavior | API and Design Token use DataGrid, keep the first key/name column fixed when needed, and own their horizontal scrolling. |
 | Spacing and scrolling | Header, TabStrip, and content left/right edges align; page scrollbar stays at the far right; no nested page scrollbar appears in Examples. |
@@ -103,11 +105,11 @@ Use this exact sequence for each ShowCase row.
 
 - [ ] **Step 3: Add failing structure tests**
 
-  Add tests for the selected ShowCase under `tests/AtomUIGallery.Tests/ShowCases/`. The tests must assert `GalleryStickyTabsHost`, `TabStrip`, `ScenarioContentHost`, `ShowCasePanel IsScrollEnabled=False`, and lazy API/Design Token creation.
+  Add tests for the selected ShowCase under `tests/AtomUIGallery.Tests/ShowCases/`. The tests must assert `GalleryStickyTabsHost`, `TabStrip`, `ScenarioContentHost`, `ShowCasePanel IsScrollEnabled=False`, `ShowCasePanel IsDeferredLoadingEnabled=True`, every demo `ShowCaseItem` uses `IsDeferredContentEnabled=True`, `DeferredContentTemplate`, typed deferred `DataTemplate`, no code-behind dependency on template-internal `Name` fields, and lazy API/Design Token creation.
 
 - [ ] **Step 4: Migrate the root page**
 
-  Wrap the root ShowCase in `GalleryStickyTabsHost`, add Header, move existing examples into the Examples scenario, and keep all original `ShowCaseItem` demo content unchanged.
+  Wrap the root ShowCase in `GalleryStickyTabsHost`, add Header, move existing examples into the Examples scenario, enable deferred loading on `ShowCasePanel`, move each original demo subtree into typed `ShowCaseItem.DeferredContentTemplate`, and keep all original `ShowCaseItem` demo content behavior unchanged. Former code-behind field wiring must become VM binding or template-local event forwarding because deferred templates have their own NameScope.
 
 - [ ] **Step 5: Add lazy DataGrid views**
 

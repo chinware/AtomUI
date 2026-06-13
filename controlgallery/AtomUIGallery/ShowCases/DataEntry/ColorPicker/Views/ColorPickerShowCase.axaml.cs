@@ -4,7 +4,6 @@ using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Converters;
-using ColorPicker = AtomUI.Desktop.Controls.ColorPicker;
 
 namespace AtomUIGallery.ShowCases.ColorPicker;
 
@@ -21,15 +20,6 @@ public partial class ColorPickerShowCase : GalleryReactiveUserControl<ColorPicke
     {
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
-
-        this.WhenActivated(disposables =>
-        {
-            AtomUIColorPicker.SetColorTextFormatter(CustomRenderText, (color, format) =>
-            {
-                var colorText = ColorToHexConverter.ToHexString(color, AlphaComponentPosition.Leading, false, true);
-                return $"Custom Text ({colorText})";
-            });
-        });
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -111,5 +101,17 @@ public partial class ColorPickerShowCase : GalleryReactiveUserControl<ColorPicke
             DesignTokenScenario => new ColorPickerDesignTokenDataGrid(),
             _                   => throw new InvalidOperationException($"Unknown ColorPicker scenario: {scenario}")
         };
+    }
+
+    private void HandleCustomRenderTextAttached(object? sender, VisualTreeAttachmentEventArgs args)
+    {
+        if (sender is AtomUI.Desktop.Controls.ColorPicker colorPicker)
+        {
+            AtomUIColorPicker.SetColorTextFormatter(colorPicker, (color, _) =>
+            {
+                var colorText = ColorToHexConverter.ToHexString(color, AlphaComponentPosition.Leading, false, true);
+                return $"Custom Text ({colorText})";
+            });
+        }
     }
 }

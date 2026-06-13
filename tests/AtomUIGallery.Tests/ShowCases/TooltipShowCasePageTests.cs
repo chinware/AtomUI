@@ -73,8 +73,11 @@ public class TooltipShowCasePageTests
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new TooltipApiDataGrid()");
         codeBehindSource.ShouldContain("new TooltipDesignTokenDataGrid()");
-        codeBehindSource.ShouldContain("ArrowSegmented.SelectionChanged += viewModel.HandleSelectionChanged");
-        codeBehindSource.ShouldContain("ArrowSegmented.SelectionChanged -= viewModel.HandleSelectionChanged");
+        pageSource.ShouldContain("SelectionChanged=\"HandleArrowSegmentedSelectionChanged\"");
+        codeBehindSource.ShouldContain("HandleArrowSegmentedSelectionChanged");
+        codeBehindSource.ShouldContain("viewModel.HandleSelectionChanged(sender, args)");
+        codeBehindSource.ShouldNotContain("ArrowSegmented.SelectionChanged += viewModel.HandleSelectionChanged");
+        codeBehindSource.ShouldNotContain("ArrowSegmented.SelectionChanged -= viewModel.HandleSelectionChanged");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:TooltipApiRow\"");
@@ -162,13 +165,7 @@ public class TooltipShowCasePageTests
 
     private static string NormalizeMarkup(string source)
     {
-        return string.Join(
-            "\n",
-            source
-                .Replace("\r\n", "\n")
-                .Split('\n')
-                .Select(line => line.Trim())
-                .Where(line => line.Length > 0));
+        return ShowCaseSnapshotMarkup.Normalize(source);
     }
 
     private static int CountOccurrences(string source, string value)

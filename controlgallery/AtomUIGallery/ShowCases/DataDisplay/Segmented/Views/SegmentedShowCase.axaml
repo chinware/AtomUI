@@ -127,10 +127,16 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
                     <gallery:ShowCaseItem
                         Title="{gallery:SegmentedShowCaseLangResource BasicTitle}"
-                        Description="{gallery:SegmentedShowCaseLangResource BasicDescription}">
+                        Description="{gallery:SegmentedShowCaseLangResource BasicDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SegmentedViewModel">
                         <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                             <atom:Segmented Margin="20">
                                 <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
@@ -140,11 +146,16 @@
                                 <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
                             </atom:Segmented>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:SegmentedShowCaseLangResource BlockSegmentedTitle}"
-                        Description="{gallery:SegmentedShowCaseLangResource BlockSegmentedDescription}">
+                        Description="{gallery:SegmentedShowCaseLangResource BlockSegmentedDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SegmentedViewModel">
                         <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical">
                             <atom:Segmented IsExpanding="True" Margin="20">
                                 <atom:SegmentedItem>123</atom:SegmentedItem>
@@ -152,11 +163,16 @@
                                 <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentLongtextLongtextLongtextLongtext}" />
                             </atom:Segmented>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:SegmentedShowCaseLangResource DisabledTitle}"
-                        Description="{gallery:SegmentedShowCaseLangResource DisabledDescription}">
+                        Description="{gallery:SegmentedShowCaseLangResource DisabledDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SegmentedViewModel">
                         <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Spacing="10">
                             <atom:Segmented Margin="20">
                                 <atom:SegmentedItem IsEnabled="False" Content="{gallery:SegmentedShowCaseLangResource P2ContentMap}" />
@@ -171,11 +187,16 @@
                                 <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
                             </atom:Segmented>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:SegmentedShowCaseLangResource ThreeSizesTitle}"
-                        Description="{gallery:SegmentedShowCaseLangResource ThreeSizesDescription}">
+                        Description="{gallery:SegmentedShowCaseLangResource ThreeSizesDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SegmentedViewModel">
                         <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                             <atom:Segmented SizeType="Large" Margin="20">
                                 <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}" />
@@ -201,22 +222,32 @@
                                 <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
                             </atom:Segmented>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:SegmentedShowCaseLangResource IconOnlyTitle}"
-                        Description="{gallery:SegmentedShowCaseLangResource IconOnlyDescription}">
+                        Description="{gallery:SegmentedShowCaseLangResource IconOnlyDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SegmentedViewModel">
                         <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                             <atom:Segmented Margin="20">
                                 <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" />
                                 <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}" />
                             </atom:Segmented>
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
                         Title="{gallery:SegmentedShowCaseLangResource WithIconTitle}"
-                        Description="{gallery:SegmentedShowCaseLangResource WithIconDescription}">
+                        Description="{gallery:SegmentedShowCaseLangResource WithIconDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SegmentedViewModel">
                         <StackPanel HorizontalAlignment="Left" Orientation="Vertical" Spacing="10">
                             <atom:Segmented Margin="20">
                                 <atom:SegmentedItem Icon="{antdicons:AntDesignIconProvider Kind=BarsOutlined}" Content="{gallery:SegmentedShowCaseLangResource P2ContentList}" />
@@ -242,6 +273,8 @@
                             </atom:Segmented>
 
                         </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

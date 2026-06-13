@@ -46,11 +46,6 @@ public partial class BreadcrumbShowCase : GalleryReactiveUserControl<BreadcrumbV
                     }
                 ];
 
-                GalleryBindingUtils.OneWay(viewModel, nameof(BreadcrumbViewModel.BreadcrumbItems),
-                                           vm => vm.BreadcrumbItems, TplBreadcrumb,
-                                           ItemsControl.ItemsSourceProperty)
-                                   .DisposeWith(disposables);
-
                 Disposable.Create(() =>
                 {
                     viewModel.BreadcrumbItems = null;

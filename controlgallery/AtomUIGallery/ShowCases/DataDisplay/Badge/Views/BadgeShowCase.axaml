@@ -127,9 +127,15 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,28,28,28">
         <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource BasicTitle}"
-                              Description="{gallery:BadgeShowCaseLangResource BasicDescription}">
+                              Description="{gallery:BadgeShowCaseLangResource BasicDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BadgeViewModel">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5">
                     <Border Width="40"
@@ -144,10 +150,15 @@
                             CornerRadius="8" />
                 </atom:CountBadge>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource OverflowCountTitle}"
-                              Description="{gallery:BadgeShowCaseLangResource OverflowCountDescription}">
+                              Description="{gallery:BadgeShowCaseLangResource OverflowCountDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BadgeViewModel">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="99">
                     <Border Width="40"
@@ -174,10 +185,15 @@
                             CornerRadius="8" />
                 </atom:CountBadge>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource OffsetTitle}"
-                              Description="{gallery:BadgeShowCaseLangResource OffsetDescription}">
+                              Description="{gallery:BadgeShowCaseLangResource OffsetDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BadgeViewModel">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5" Offset="10, 10">
                     <Border Width="40"
@@ -186,9 +202,14 @@
                             CornerRadius="8" />
                 </atom:CountBadge>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource SizeTitle}" Description="{gallery:BadgeShowCaseLangResource SizeDescription}">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource SizeTitle}" Description="{gallery:BadgeShowCaseLangResource SizeDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BadgeViewModel">
             <StackPanel Orientation="Horizontal" Spacing="20">
                 <atom:CountBadge Count="5">
                     <Border Width="40"
@@ -203,9 +224,14 @@
                             CornerRadius="8" />
                 </atom:CountBadge>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource StandaloneTitle}" Description="{gallery:BadgeShowCaseLangResource StandaloneDescription}">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource StandaloneTitle}" Description="{gallery:BadgeShowCaseLangResource StandaloneDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BadgeViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:ToggleSwitch IsChecked="{Binding StandaloneSwitchChecked}" />
                 <atom:CountBadge BadgeColor="#faad14"
@@ -214,9 +240,14 @@
                 <atom:CountBadge Count="{Binding StandaloneBadgeCount2}" />
                 <atom:CountBadge BadgeColor="#52c41a" Count="{Binding StandaloneBadgeCount3}" />
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource DynamicTitle}" Description="{gallery:BadgeShowCaseLangResource DynamicDescription}">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource DynamicTitle}" Description="{gallery:BadgeShowCaseLangResource DynamicDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BadgeViewModel">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="20">
                     <atom:CountBadge Count="{Binding DynamicBadgeCount}" OverflowCount="99">
@@ -250,10 +281,15 @@
                                        IsChecked="{Binding DynamicDotBadgeVisible, Mode=TwoWay}" />
                 </StackPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource RedBadgeTitle}"
-                              Description="{gallery:BadgeShowCaseLangResource RedBadgeDescription}">
+                              Description="{gallery:BadgeShowCaseLangResource RedBadgeDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BadgeViewModel">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal">
                     <atom:DotBadge Offset="-7,8">
@@ -265,9 +301,14 @@
                     <atom:Button ButtonType="Link" Content="{gallery:BadgeShowCaseLangResource P2ContentLinkSomething}" />
                 </StackPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource StatusTitle}" Description="{gallery:BadgeShowCaseLangResource StatusDescription}">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource StatusTitle}" Description="{gallery:BadgeShowCaseLangResource StatusDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BadgeViewModel">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:DotBadge Status="Success" />
@@ -284,9 +325,14 @@
                     <atom:DotBadge Status="Warning" Text="{gallery:BadgeShowCaseLangResource P2TextWarning}" />
                 </StackPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource RibbonTitle}" Description="{gallery:BadgeShowCaseLangResource RibbonDescription}">
+        <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource RibbonTitle}" Description="{gallery:BadgeShowCaseLangResource RibbonDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BadgeViewModel">
             <StackPanel Margin="20,0,20,0"
                         Orientation="Vertical"
                         Spacing="20">
@@ -406,10 +452,15 @@
                 </atom:RibbonBadge>
 
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem Title="{gallery:BadgeShowCaseLangResource ColorfulBadgeTitle}"
-                              Description="{gallery:BadgeShowCaseLangResource ColorfulBadgeDescription}">
+                              Description="{gallery:BadgeShowCaseLangResource ColorfulBadgeDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BadgeViewModel">
             <StackPanel Orientation="Vertical" Spacing="20">
                 <atom:Separator Title="{gallery:BadgeShowCaseLangResource P2TitlePresets}"
                                 FontWeight="SemiBold"
@@ -439,6 +490,8 @@
                     <atom:DotBadge DotColor="rgb(15, 141, 230)" Text="{gallery:BadgeShowCaseLangResource P2TextRgbN15N141N230}" />
                 </StackPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>

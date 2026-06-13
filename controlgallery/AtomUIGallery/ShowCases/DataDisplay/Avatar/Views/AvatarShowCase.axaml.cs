@@ -1,5 +1,3 @@
-using System.Reactive.Disposables.Fluent;
-using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
@@ -19,14 +17,6 @@ public partial class AvatarShowCase : GalleryReactiveUserControl<AvatarViewModel
     {
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
-        this.WhenActivated(disposables =>
-        {
-            if (DataContext is AvatarViewModel viewModel)
-            {
-                GalleryBindingUtils.BindCommand(ChangeUserButton, viewModel.ChangeUserCommand).DisposeWith(disposables);
-                GalleryBindingUtils.BindCommand(ChangeGapButton, viewModel.ChangeGapCommand).DisposeWith(disposables);
-            }
-        });
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

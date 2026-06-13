@@ -127,10 +127,16 @@
             <ContentControl Name="ScenarioContentHost">
                 <gallery:ShowCasePanel Name="ExamplesContent"
                                        IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
         <gallery:ShowCaseItem
             Title="{gallery:BreadcrumbShowCaseLangResource BasicUsageTitle}"
-            Description="{gallery:BreadcrumbShowCaseLangResource BasicUsageDescription}">
+            Description="{gallery:BreadcrumbShowCaseLangResource BasicUsageDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BreadcrumbViewModel">
             <StackPanel>
                 <atom:Breadcrumb>
                     <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentHome}" />
@@ -139,11 +145,16 @@
                     <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentAnApplication}" />
                 </atom:Breadcrumb>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:BreadcrumbShowCaseLangResource WithIconTitle}"
-            Description="{gallery:BreadcrumbShowCaseLangResource WithIconDescription}">
+            Description="{gallery:BreadcrumbShowCaseLangResource WithIconDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BreadcrumbViewModel">
             <StackPanel>
                 <atom:Breadcrumb>
                     <atom:BreadcrumbItem Icon="{antdicons:AntDesignIconProvider Kind=HomeOutlined}"></atom:BreadcrumbItem>
@@ -151,22 +162,32 @@
                     <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentApplication}" />
                 </atom:Breadcrumb>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:BreadcrumbShowCaseLangResource WithParamsTitle}"
-            Description="{gallery:BreadcrumbShowCaseLangResource WithParamsDescription}">
+            Description="{gallery:BreadcrumbShowCaseLangResource WithParamsDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BreadcrumbViewModel">
             <StackPanel>
                 <atom:Breadcrumb NavigateRequest="HandleNavigateRequest">
                     <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentUsers}" />
                     <atom:BreadcrumbItem NavigateContext="Param(1)" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentParam}" />
                 </atom:Breadcrumb>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorTitle}"
-            Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorDescription}">
+            Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BreadcrumbViewModel">
             <StackPanel>
                 <atom:Breadcrumb Separator=">">
                     <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentHome}" />
@@ -175,11 +196,16 @@
                     <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentAnApplication}" />
                 </atom:Breadcrumb>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyTitle}"
-            Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyDescription}">
+            Description="{gallery:BreadcrumbShowCaseLangResource ConfiguringSeparatorIndependentlyDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BreadcrumbViewModel">
             <StackPanel>
                 <atom:Breadcrumb>
                     <atom:BreadcrumbItem Separator=":" Content="{gallery:BreadcrumbShowCaseLangResource P2ContentLocation}" />
@@ -188,13 +214,19 @@
                     <atom:BreadcrumbItem Content="{gallery:BreadcrumbShowCaseLangResource P2ContentAnApplication}" />
                 </atom:Breadcrumb>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateTitle}"
-            Description="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateDescription}">
+            Description="{gallery:BreadcrumbShowCaseLangResource GenerateByTemplateDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:BreadcrumbViewModel">
             <StackPanel>
-                <atom:Breadcrumb Name="TplBreadcrumb">
+                <atom:Breadcrumb Name="TplBreadcrumb"
+                                 ItemsSource="{Binding BreadcrumbItems}">
                     <atom:Breadcrumb.ItemTemplate>
                         <DataTemplate x:DataType="atom:BreadcrumbItemData">
                             <TextBlock Text="{Binding Content}"/>
@@ -202,6 +234,8 @@
                     </atom:Breadcrumb.ItemTemplate>
                 </atom:Breadcrumb>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>
