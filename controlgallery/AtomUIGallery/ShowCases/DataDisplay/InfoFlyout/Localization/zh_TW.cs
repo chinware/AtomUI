@@ -45,7 +45,43 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentBottom = "下方";
 
     public const string P2ContentBR = "下右";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計 Token";
+    public const string PageSubtitle = "在浮層中展示更豐富的上下文內容。";
+    public const string PageDescription =
+        "InfoFlyout 可以把自定義浮層錨定到目標控件上，並支持配置觸發方式、彈出位置和箭頭行為。";
+    public const string ComponentCategory = "數據展示";
+    public const string ComponentStatusStable = "穩定";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyFlyout = "由宿主顯示的 Flyout 實例。";
+    public const string ApiPropertyTrigger = "打開浮層的交互方式。";
+    public const string ApiPropertyPlacement = "相對目標控件的首選彈出位置。";
+    public const string ApiPropertyIsArrowVisible = "顯示或隱藏浮層箭頭。";
+    public const string ApiPropertyIsPointAtCenter = "讓箭頭指向目標控件中心。";
+    public const string ApiPropertyShouldUseOverlayPopup = "打開浮層時使用 overlay popup 宿主。";
+    public const string ApiPropertyMarginToAnchor = "浮層表面與錨點之間的距離。";
+    public const string ApiPropertyMouseEnterDelay = "懸停打開浮層前的延遲，單位毫秒。";
+    public const string ApiPropertyMouseLeaveDelay = "懸停關閉浮層前的延遲，單位毫秒。";
+    public const string ApiPropertyContent = "顯示在浮層表面內的內容。";
+    public const string ApiPropertyIsLightDismissEnabled = "允許點擊或聚焦到浮層外部時關閉浮層。";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "作用域";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenNameMarginToAnchor = "浮層和錨點之間的默認距離。";
+    public const string TokenNameOverlayHostShadow = "浮層由 overlay 層承載時使用的陰影。";
+    public const string TokenNamePopupRootShadow = "popup 根表面使用的陰影。";
+    public const string TokenNameHorizontalOffset = "浮層定位的默認水平偏移。";
+    public const string TokenNameVerticalOffset = "浮層定位的默認垂直偏移。";
+    public const string TokenScopeComponent = "FlyoutHost";
+    public const string TokenStatusStable = "穩定";
 
     protected override Type GetResourceKindType() => typeof(InfoFlyoutShowCaseLangResourceKind);
 }
-
