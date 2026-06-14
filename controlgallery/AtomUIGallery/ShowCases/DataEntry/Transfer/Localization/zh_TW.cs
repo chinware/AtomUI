@@ -11,6 +11,47 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioBasic = "基礎";
     public const string ScenarioAdvanced = "高級";
     public const string ScenarioTreeStatus = "樹與狀態";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計 Token";
+    public const string PageSubtitle = "在兩個集合之間移動條目，支持搜索、分頁和樹形數據。";
+    public const string PageDescription = "Transfer 在左側展示候選條目，在右側展示已選條目。它支持單向移動、篩選、分頁、自定義條目模板和基於樹的數據源。";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ComponentCategory = "數據錄入";
+    public const string ComponentStatusStable = "穩定";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyItemsSource = "穿梭列表展示的數據集合。";
+    public const string ApiPropertyTargetKeys = "當前位於目標列表中的條目 key。";
+    public const string ApiPropertySourceTitle = "源列表上方顯示的標題。";
+    public const string ApiPropertyTargetTitle = "目標列表上方顯示的標題。";
+    public const string ApiPropertyIsOneWay = "僅允許條目從源列表移動到目標列表。";
+    public const string ApiPropertyIsFilterEnabled = "顯示用於篩選穿梭條目的搜索框。";
+    public const string ApiPropertyFilterPlaceholderText = "篩選輸入框中顯示的佔位文本。";
+    public const string ApiPropertyFilterValueSelector = "選擇默認篩選邏輯使用的文本。";
+    public const string ApiPropertyListWidth = "每個穿梭列表的寬度。";
+    public const string ApiPropertyListHeight = "每個穿梭列表的高度。";
+    public const string ApiPropertyPageSize = "每頁展示的穿梭條目數量。";
+    public const string ApiPropertyStatus = "穿梭框表面的校驗狀態樣式。";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "範圍";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
+    public const string TokenNameListWidth = "穿梭列表默認寬度。";
+    public const string TokenNameListWidthLG = "大尺寸穿梭列表寬度。";
+    public const string TokenNameListHeight = "穿梭列表默認高度。";
+    public const string TokenNameItemHeight = "每個穿梭條目行的高度。";
+    public const string TokenNameItemPadding = "每個穿梭條目行的垂直內邊距。";
+    public const string TokenNameHeaderHeight = "穿梭列表頭部高度。";
+    public const string TokenNameHeaderPadding = "穿梭列表頭部內邊距。";
+    public const string TokenNamePaginationMargin = "穿梭分頁區域外邊距。";
+    public const string TokenNameDataGridSelectionHeaderMargin = "DataGrid 穿梭選擇頭部使用的外邊距。";
     public const string OneWayTitle = "單向模式";
     public const string OneWayDescription = "使用 oneWay 讓 Transfer 呈現單向樣式。";
     public const string SearchTitle = "搜索";
@@ -53,4 +94,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(TransferShowCaseLangResourceKind);
 }
-
