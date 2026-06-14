@@ -9,7 +9,9 @@ using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using AtomUIGallery.Localization;
+using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.Menu;
 
@@ -17,63 +19,73 @@ public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
 {
     public const string LanguageId = nameof(MenuShowCase);
 
-    private const string BasicScenario       = "Basic";
-    private const string FeaturesScenario    = "Features";
-    private const string ItemsSourceScenario = "ItemsSource";
-    private const string ContextScenario     = "Context";
-    private const string NavMenuScenario     = "NavMenu";
+    private const string ExamplesScenario    = "Examples";
+    private const string ApiScenario         = "Api";
+    private const string DesignTokenScenario = "DesignToken";
 
-    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
     private NavMenuNode? _navMenuDefaultSelectedItem;
 
     public MenuShowCase()
     {
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
-        EnsureSelectedScenarioContent();
 
         this.WhenActivated(disposables =>
         {
-            if (DataContext is MenuViewModel viewModel)
+            RefreshCurrentViewModelData();
+
+            var themeManager = Application.Current?.GetThemeManager();
+            if (themeManager != null)
             {
-                viewModel.DefaultOpenPaths = new List<TreeNodePath>
-                {
-                    new("/3/SubGroup2")
-                };
-                viewModel.DefaultSelectedPath = new TreeNodePath("/3/SubGroup1/Option1");
-
-                RefreshMenuSources(viewModel);
-
-                var themeManager = Application.Current?.GetThemeManager();
-                if (themeManager != null)
-                {
-                    EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshMenuSources(viewModel);
-                    themeManager.LanguageVariantChanged += handler;
-                    Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
-                        .DisposeWith(disposables);
-                }
-
-                Disposable.Create(() =>
-                {
-                    viewModel.MenuItems                   = null;
-                    viewModel.InlineNavMenuNodes          = null;
-                    viewModel.ItemsSourceDemoNavMenuNodes = null;
-                    viewModel.MenuFlyoutItems             = null;
-                    viewModel.ContextMenuItems            = null;
-                    viewModel.DefaultOpenPaths            = null;
-                    viewModel.DefaultSelectedPath         = null;
-                    viewModel.DefaultSelectedNode         = null;
-                }).DisposeWith(disposables);
+                EventHandler<LanguageVariantChangedEventArgs> handler = (_, _) => RefreshCurrentViewModelData();
+                themeManager.LanguageVariantChanged += handler;
+                Disposable.Create(() => themeManager.LanguageVariantChanged -= handler)
+                          .DisposeWith(disposables);
             }
+
+            Disposable.Create(ClearCurrentViewModelData).DisposeWith(disposables);
         });
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ClearLazyScenarioContent();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        foreach (var content in _scenarioCache.Values)
+        ExamplesContent.DataContext = DataContext;
+        foreach (var content in _lazyScenarioContentCache.Values)
         {
             content.DataContext = DataContext;
+        }
+
+        RefreshCurrentViewModelData();
+        EnsureSelectedScenarioContent();
+    }
+
+    public void HandleChangeModeCheckChanged(object? sender, RoutedEventArgs? args)
+    {
+        if (DataContext is MenuViewModel viewModel)
+        {
+            viewModel.HandleChangeModeCheckChanged(sender, args);
+        }
+    }
+
+    public void HandleChangeStyleCheckChanged(object? sender, RoutedEventArgs? args)
+    {
+        if (DataContext is MenuViewModel viewModel)
+        {
+            viewModel.HandleChangeStyleCheckChanged(sender, args);
         }
     }
 
@@ -84,36 +96,86 @@ public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
 
     private void EnsureSelectedScenarioContent()
     {
-        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
-            tabItem.Tag is not string scenario)
+        if (ScenarioTabs.SelectedItem is not ScenarioTabStripItem tabStripItem ||
+            tabStripItem.Tag is not string scenario)
         {
             return;
         }
 
-        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        var content = ResolveScenarioContent(scenario);
+        if (!ReferenceEquals(ScenarioContentHost.Content, content))
+        {
+            ScenarioContentHost.Content = content;
+        }
+    }
+
+    private void ClearLazyScenarioContent()
+    {
+        if (ScenarioContentHost.Content is not null &&
+            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
+        {
+            ScenarioContentHost.Content = null;
+        }
+
+        _lazyScenarioContentCache.Clear();
+    }
+
+    private Control ResolveScenarioContent(string scenario)
+    {
+        if (scenario == ExamplesScenario)
+        {
+            ExamplesContent.DataContext = DataContext;
+            return ExamplesContent;
+        }
+
+        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
         {
             content             = CreateScenarioContent(scenario);
             content.DataContext = DataContext;
-            _scenarioCache.Add(scenario, content);
+            _lazyScenarioContentCache.Add(scenario, content);
         }
 
-        if (tabItem.Content != content)
-        {
-            tabItem.Content = content;
-        }
+        return content;
     }
 
     private static Control CreateScenarioContent(string scenario)
     {
         return scenario switch
         {
-            BasicScenario       => new MenuBasicShowCase(),
-            FeaturesScenario    => new MenuFeaturesShowCase(),
-            ItemsSourceScenario => new MenuItemsSourceShowCase(),
-            ContextScenario     => new MenuContextShowCase(),
-            NavMenuScenario     => new MenuNavigationShowCase(),
+            ApiScenario         => new MenuApiDataGrid(),
+            DesignTokenScenario => new MenuDesignTokenDataGrid(),
             _                   => throw new InvalidOperationException($"Unknown Menu scenario: {scenario}")
         };
+    }
+
+    private void RefreshCurrentViewModelData()
+    {
+        if (DataContext is MenuViewModel viewModel)
+        {
+            viewModel.DefaultOpenPaths =
+            [
+                new TreeNodePath("/3/SubGroup2")
+            ];
+            viewModel.DefaultSelectedPath = new TreeNodePath("/3/SubGroup1/Option1");
+            RefreshMenuSources(viewModel);
+        }
+    }
+
+    private void ClearCurrentViewModelData()
+    {
+        if (DataContext is not MenuViewModel viewModel)
+        {
+            return;
+        }
+
+        viewModel.MenuItems                   = null;
+        viewModel.InlineNavMenuNodes          = null;
+        viewModel.ItemsSourceDemoNavMenuNodes = null;
+        viewModel.MenuFlyoutItems             = null;
+        viewModel.ContextMenuItems            = null;
+        viewModel.DefaultOpenPaths            = null;
+        viewModel.DefaultSelectedPath         = null;
+        viewModel.DefaultSelectedNode         = null;
     }
 
     private void RefreshMenuSources(MenuViewModel viewModel)

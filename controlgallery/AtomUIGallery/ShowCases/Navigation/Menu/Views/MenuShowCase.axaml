@@ -2,16 +2,620 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Menu.MenuShowCase"
              xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Menu"
-             x:DataType="viewModels:MenuViewModel">
-    <atom:TabControl Name="ScenarioTabs"
-                     SizeType="Large"
-                     SelectedIndex="0">
-        <atom:TabItem Header="{gallery:MenuShowCaseLangResource ScenarioBasic}" Tag="Basic" />
-        <atom:TabItem Header="{gallery:MenuShowCaseLangResource ScenarioFeatures}" Tag="Features" />
-        <atom:TabItem Header="{gallery:MenuShowCaseLangResource ScenarioItemsSource}" Tag="ItemsSource" />
-        <atom:TabItem Header="{gallery:MenuShowCaseLangResource ScenarioContext}" Tag="Context" />
-        <atom:TabItem Header="{gallery:MenuShowCaseLangResource ScenarioNavMenu}" Tag="NavMenu" />
-    </atom:TabControl>
+             x:DataType="viewModels:MenuViewModel"
+             x:CompileBindings="True">
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="Menu"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:MenuShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:MenuShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:MenuShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:MenuShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
+
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="200" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:MenuShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:MenuShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:MenuShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="ItemsControl"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:MenuShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:MenuShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:MenuShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
+                                       ContentMargin="28,10,28,28">
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource BasicTitle}"
+            Description="{gallery:MenuShowCaseLangResource BasicDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <atom:Menu>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderFile}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewTextFile}" InputGesture="Ctrl+N" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewFile}" InputGesture="Ctrl+Alt+N" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewWindow}" InputGesture="Ctrl+Shift+N" />
+                </atom:MenuItem>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderEdit}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderUndo}" InputGesture="Ctrl+Shift+Z" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X" />
+                </atom:MenuItem>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderDisabledItem}" IsEnabled="False" />
+            </atom:Menu>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource IconAndSubmenuTitle}"
+            Description="{gallery:MenuShowCaseLangResource IconAndSubmenuDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <atom:Menu>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderFile}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewTextFile}" InputGesture="Ctrl+N" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewFile}" InputGesture="Ctrl+Alt+N" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewWindow}" InputGesture="Ctrl+Shift+N" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSave}" InputGesture="Ctrl+S" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSaveAs}" InputGesture="Ctrl+Shift+S" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSaveAll}" InputGesture="Ctrl+K" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderExit}" />
+                </atom:MenuItem>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderEdit}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderUndo}" InputGesture="Ctrl+Shift+Z" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X" Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C" Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D" Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPaste}">
+                        <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPaste}" InputGesture="Ctrl+P"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=FileDoneOutlined}" />
+                        <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPasteFromHistory}" InputGesture="Ctrl+Shift+V" />
+                    </atom:MenuItem>
+                </atom:MenuItem>
+            </atom:Menu>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource ToggleTypeTitle}"
+            Description="{gallery:MenuShowCaseLangResource ToggleTypeDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <atom:Menu>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuA}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewTextFile}" InputGesture="Ctrl+N" ToggleType="Radio" GroupName="Group1" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewFile}" InputGesture="Ctrl+Alt+N" ToggleType="Radio" GroupName="Group1" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderNewWindow}" InputGesture="Ctrl+Shift+N" ToggleType="Radio"
+                                   GroupName="Group1" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSave}" InputGesture="Ctrl+S" ToggleType="CheckBox" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSaveAs}" InputGesture="Ctrl+Shift+S" ToggleType="CheckBox"
+                                   Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderSaveAll}" InputGesture="Ctrl+K" ToggleType="CheckBox"
+                                   Icon="{antdicons:AntDesignIconProvider Kind=CheckOutlined}" />
+                    <atom:MenuSeparator />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderExit}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderDisabled}" IsEnabled="False" Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                </atom:MenuItem>
+            </atom:Menu>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource ScrollableTitle}"
+            Description="{gallery:MenuShowCaseLangResource ScrollableDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <atom:Menu>
+                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenu}">
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                    <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderMenuItem}" />
+                </atom:MenuItem>
+            </atom:Menu>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource MenuItemItemsSourceTitle}"
+            Description="{gallery:MenuShowCaseLangResource MenuItemItemsSourceDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <atom:Menu Name="BasicItemsSourceMenu"
+                       ItemsSource="{Binding MenuItems}">
+                <atom:Menu.ItemTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:IMenuItemData">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Menu.ItemTemplate>
+            </atom:Menu>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource InlineNavMenuItemsSourceTitle}"
+            Description="{gallery:MenuShowCaseLangResource InlineNavMenuItemsSourceDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <atom:NavMenu Mode="Inline" Name="InlineModeMenu"
+                          ItemsSource="{Binding InlineNavMenuNodes}">
+                <atom:NavMenu.ItemTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:INavMenuNode">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:NavMenu.ItemTemplate>
+            </atom:NavMenu>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource NavMenuItemItemsSourceTitle}"
+            Description="{gallery:MenuShowCaseLangResource NavMenuItemItemsSourceDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <atom:NavMenu Name="ItemsSourceDemoNavMenu"
+                          Mode="Inline"
+                          ItemsSource="{Binding ItemsSourceDemoNavMenuNodes}"
+                          SelectedItem="{Binding DefaultSelectedNode}"
+                          DefaultSelectedPath="{Binding DefaultSelectedPath}" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource ContextMenuTitle}"
+            Description="{gallery:MenuShowCaseLangResource ContextMenuDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.Styles>
+                <Style Selector="Border#ContextMenuContainer">
+                    <Setter Property="BorderBrush" Value="Gray" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="CornerRadius" Value="6" />
+                    <Setter Property="Padding" Value="10" />
+                    <Setter Property="Margin" Value="10" />
+                </Style>
+            </gallery:ShowCaseItem.Styles>
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <Border Name="ContextMenuContainer">
+                <Border.ContextMenu>
+                    <atom:ContextMenu>
+                        <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                        <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C" Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                        <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPaste}">
+                            <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPaste}" InputGesture="Ctrl+P"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=FileDoneOutlined}" />
+                            <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPasteFromHistory}" InputGesture="Ctrl+Shift+V" />
+                        </atom:MenuItem>
+                    </atom:ContextMenu>
+                </Border.ContextMenu>
+                <atom:TextBlock Text="{gallery:MenuShowCaseLangResource P2TextRightClickToShowContextMenu}" />
+            </Border>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource ContextMenuItemsSourceTitle}"
+            Description="{gallery:MenuShowCaseLangResource ContextMenuItemsSourceDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.Styles>
+                <Style Selector="Border#ItemSourcesContextMenuContainer">
+                    <Setter Property="BorderBrush" Value="Gray" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="CornerRadius" Value="6" />
+                    <Setter Property="Padding" Value="10" />
+                    <Setter Property="Margin" Value="10" />
+                </Style>
+            </gallery:ShowCaseItem.Styles>
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <Border Name="ItemSourcesContextMenuContainer">
+                <Border.ContextMenu>
+                    <atom:ContextMenu Name="BasicContextMenu"
+                                      ItemsSource="{Binding ContextMenuItems}">
+                        <atom:ContextMenu.ItemTemplate>
+                            <TreeDataTemplate ItemsSource="{Binding Children}" x:DataType="atom:IMenuItemData">
+                                <atom:TextBlock Text="{Binding Header}" />
+                            </TreeDataTemplate>
+                        </atom:ContextMenu.ItemTemplate>
+                    </atom:ContextMenu>
+                </Border.ContextMenu>
+                <atom:TextBlock Text="{gallery:MenuShowCaseLangResource P2TextRightClickToShowContextMenu}" />
+            </Border>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource MenuFlyoutTitle}"
+            Description="{gallery:MenuShowCaseLangResource MenuFlyoutDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.Styles>
+                <Style Selector="Border.ContextFlyoutContainer">
+                    <Setter Property="BorderBrush" Value="Gray" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="CornerRadius" Value="6" />
+                    <Setter Property="Padding" Value="10" />
+                    <Setter Property="Margin" Value="10" />
+                </Style>
+            </gallery:ShowCaseItem.Styles>
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <StackPanel>
+                <atom:Separator Title="{gallery:MenuShowCaseLangResource P2TitleNormal}" />
+                <Border Classes="ContextFlyoutContainer">
+                    <Border.ContextFlyout>
+                        <atom:MenuFlyout IsMotionEnabled="True">
+                            <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C" Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                            <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPaste}">
+                                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPaste}" InputGesture="Ctrl+P"
+                                               Icon="{antdicons:AntDesignIconProvider Kind=FileDoneOutlined}" />
+                                <atom:MenuItem Header="{gallery:MenuShowCaseLangResource P2HeaderPasteFromHistory}" InputGesture="Ctrl+Shift+V" />
+                            </atom:MenuItem>
+                        </atom:MenuFlyout>
+                    </Border.ContextFlyout>
+                    <atom:TextBlock Text="{gallery:MenuShowCaseLangResource P2TextRightClickToShowContextFlyout}" />
+                </Border>
+
+                <atom:Separator Title="{gallery:MenuShowCaseLangResource P2TitleGeneratedByTemplate}" />
+                <Border Classes="ContextFlyoutContainer">
+                    <Border.ContextFlyout>
+                        <atom:MenuFlyout IsMotionEnabled="True"
+                                         ItemsSource="{Binding MenuFlyoutItems}">
+                            <atom:MenuFlyout.ItemTemplate>
+                                <TreeDataTemplate ItemsSource="{Binding Children}" x:DataType="atom:IMenuItemData">
+                                    <atom:TextBlock Text="{Binding Header}" />
+                                </TreeDataTemplate>
+                            </atom:MenuFlyout.ItemTemplate>
+                        </atom:MenuFlyout>
+                    </Border.ContextFlyout>
+                    <atom:TextBlock Text="{gallery:MenuShowCaseLangResource P2TextRightClickToShowContextFlyout}" />
+                </Border>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource VerticalNavMenuTitle}"
+            Description="{gallery:MenuShowCaseLangResource VerticalNavMenuDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <atom:NavMenu Mode="Vertical" Width="300" Margin="0, 0, 0, 20">
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationOne}" Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationTwo}" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
+                                  IsEnabled="False" />
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationThreeSubmenu}" Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN1}">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}" />
+                    </atom:NavMenuNode>
+
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN2}">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN4}" />
+                    </atom:NavMenuNode>
+                </atom:NavMenuNode>
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationFour}" />
+            </atom:NavMenu>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource InlineMenuTitle}"
+            Description="{gallery:MenuShowCaseLangResource InlineMenuDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <atom:NavMenu Mode="Inline" Width="300" Margin="0, 0, 0, 20">
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationOne}" Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationTwo}" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
+                                  IsEnabled="False" />
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationThreeSubmenu}" Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN1}">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}" />
+                    </atom:NavMenuNode>
+
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN2}">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN4}" />
+                    </atom:NavMenuNode>
+                </atom:NavMenuNode>
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationFour}" />
+            </atom:NavMenu>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource TopNavigationTitle}"
+            Description="{gallery:MenuShowCaseLangResource TopNavigationDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <StackPanel>
+                <atom:NavMenu Mode="Horizontal">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationOne}" Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationTwo}" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
+                                      IsEnabled="False" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationThreeSubmenu}"
+                                      Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN1}">
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}" />
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}" />
+                        </atom:NavMenuNode>
+
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN2}">
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}" />
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN4}" />
+                        </atom:NavMenuNode>
+                    </atom:NavMenuNode>
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationFour}" />
+                </atom:NavMenu>
+                <atom:Separator />
+                <atom:NavMenu IsDarkStyle="True" Mode="Horizontal">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationOne}" Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationTwo}" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
+                                      IsEnabled="False" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationThreeSubmenu}"
+                                      Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN1}">
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}" />
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}" />
+                        </atom:NavMenuNode>
+
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN2}">
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}" />
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN4}" />
+                        </atom:NavMenuNode>
+                    </atom:NavMenuNode>
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationFour}" />
+                </atom:NavMenu>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource SwitchMenuTypeTitle}"
+            Description="{gallery:MenuShowCaseLangResource SwitchMenuTypeDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:ToggleSwitch Name="ChangeModeSwitch" IsCheckedChanged="HandleChangeModeCheckChanged" />
+                    <atom:TextBlock Text="{gallery:MenuShowCaseLangResource P2TextChangeMode}" />
+                    <atom:ToggleSwitch Margin="10, 0, 0, 0" Name="ChangeStyleSwitch" IsCheckedChanged="HandleChangeStyleCheckChanged" />
+                    <atom:TextBlock Text="{gallery:MenuShowCaseLangResource P2TextChangeStyle}" />
+                </StackPanel>
+                <atom:NavMenu Mode="{Binding Mode}" Width="300"
+                              Margin="0, 0, 0, 20"
+                              IsDarkStyle="{Binding IsDark}">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationOne}" Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationTwo}" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
+                                      IsEnabled="False" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationThreeSubmenu}"
+                                      Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN1}">
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}" />
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}" />
+                        </atom:NavMenuNode>
+
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN2}">
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}" />
+                            <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN4}" />
+                        </atom:NavMenuNode>
+                    </atom:NavMenuNode>
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationFour}" />
+                </atom:NavMenu>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource DefaultOpenedPathsTitle}"
+            Description="{gallery:MenuShowCaseLangResource DefaultOpenedPathsDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <atom:NavMenu Mode="Inline" Margin="0, 0, 0, 20"
+                          DefaultOpenPaths="{Binding DefaultOpenPaths}"
+                          DefaultSelectedPath="{Binding DefaultSelectedPath}">
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationOne}" Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" ItemKey="1" />
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationTwo}" Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
+                                  IsEnabled="False"
+                                  ItemKey="2" />
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationThreeSubmenu}" Icon="{antdicons:AntDesignIconProvider Kind=SettingOutlined}"
+                                  ItemKey="3">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN1}" ItemKey="SubGroup1">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}" ItemKey="Option1" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}" ItemKey="Option2" />
+                    </atom:NavMenuNode>
+
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderItemN2}" ItemKey="SubGroup2">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}" ItemKey="Option3" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN4}" ItemKey="Option4" />
+                    </atom:NavMenuNode>
+                </atom:NavMenuNode>
+                <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationFour}" ItemKey="4" />
+            </atom:NavMenu>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>
