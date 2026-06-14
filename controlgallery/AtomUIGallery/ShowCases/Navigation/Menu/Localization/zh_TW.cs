@@ -11,6 +11,16 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioItemsSource = "數據源";
     public const string ScenarioContext = "上下文";
     public const string ScenarioNavMenu = "導航菜單";
+    public const string ComponentCategory = "導航";
+    public const string ComponentStatusStable = "穩定";
+    public const string PageSubtitle = "用於組織命令與導航動作的菜單控件。";
+    public const string PageDescription = "Menu、ContextMenu、MenuFlyout 和 NavMenu 覆蓋命令列表、上下文操作、嵌套導航、數據驅動生成，以及垂直、內聯、水平導航佈局。";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計變量";
 
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最簡單的用法。";
@@ -78,7 +88,46 @@ internal partial class zh_TW : LanguageProvider
     public const string P2HeaderNavigationFour = "導航四";
     public const string P2TextChangeMode = "切換模式";
     public const string P2TextChangeStyle = "切換樣式";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyMenuSizeType = "控制菜單項的視覺尺寸。";
+    public const string ApiPropertyMenuIsMotionEnabled = "在主題允許時啟用菜單彈出動效。";
+    public const string ApiPropertyMenuDisplayPageSize = "限制滾動前可見的菜單項數量。";
+    public const string ApiPropertyMenuShouldUseOverlayPopup = "控制菜單彈出層是否使用 overlay popup host。";
+    public const string ApiPropertyMenuItemIcon = "顯示在菜單項文本前的圖標。";
+    public const string ApiPropertyMenuItemToggleType = "將菜單項渲染為複選或單選項。";
+    public const string ApiPropertyContextMenuSizeType = "控制上下文菜單項的視覺尺寸。";
+    public const string ApiPropertyContextMenuItemsSource = "用於生成上下文菜單項的數據源。";
+    public const string ApiPropertyMenuFlyoutItemsSource = "用於生成菜單浮出層條目的數據源。";
+    public const string ApiPropertyNavMenuMode = "控制 NavMenu 使用內聯、垂直或水平模式。";
+    public const string ApiPropertyNavMenuIsDarkStyle = "應用暗色導航菜單樣式。";
+    public const string ApiPropertyNavMenuDefaultOpenPaths = "導航菜單初始化時默認展開的路徑。";
+    public const string ApiPropertyNavMenuDefaultSelectedPath = "導航菜單初始化時默認選中的路徑。";
+    public const string ApiPropertyNavMenuSelectedItem = "當前選中的導航節點。";
+    public const string ApiPropertyNavMenuIsAccordionMode = "只允許一個子菜單分支保持展開。";
+    public const string ApiPropertyNavMenuShouldUseOverlayPopup = "控制 NavMenu 彈出層是否使用 overlay popup host。";
+    public const string TokenColumnToken = "變量";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "範圍";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenNameMenuItemHeight = "默認菜單項高度。";
+    public const string TokenNameMenuItemIconSize = "默認菜單項圖標尺寸。";
+    public const string TokenNameMenuItemHoverBg = "菜單項懸浮背景。";
+    public const string TokenNameMenuPopupContentPadding = "菜單彈出內容內邊距。";
+    public const string TokenNameMenuPopupMinWidth = "菜單彈出層最小寬度。";
+    public const string TokenNameMenuSeparatorItemHeight = "菜單分割項佔用高度。";
+    public const string TokenNameMenuContextMenuOffsetX = "上下文菜單水平偏移。";
+    public const string TokenNameNavMenuItemHeight = "默認導航菜單項高度。";
+    public const string TokenNameNavMenuItemContentPadding = "導航菜單項內容內邊距。";
+    public const string TokenNameNavMenuInlineItemIndentUnit = "內聯導航層級縮進單位。";
+    public const string TokenNameNavMenuCollapsedWidth = "收起狀態的導航菜單寬度。";
+    public const string TokenNameNavMenuMenuHorizontalHeight = "水平導航菜單高度。";
+    public const string TokenNameNavMenuDarkMenuBg = "暗色導航菜單背景。";
+    public const string TokenNameNavMenuMenuPopupMaxHeight = "導航彈出菜單最大高度。";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
 
     protected override Type GetResourceKindType() => typeof(MenuShowCaseLangResourceKind);
 }
-
