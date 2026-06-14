@@ -4243,8 +4243,15 @@ namespace AtomUIGallery.Localization
 {
     public enum PaletteShowCaseLangResourceKind
     {
+        ComponentCategory,
+        ComponentStatusStable,
+        InfoBaseClassLabel,
+        InfoNamespaceLabel,
+        InfoPackageLabel,
         P2HeaderDark,
-        P2HeaderLight
+        P2HeaderLight,
+        PageDescription,
+        PageSubtitle
     }
 
     public class PaletteShowCaseLangResourceExtension : LanguageResourceExtension<PaletteShowCaseLangResourceKind>
