@@ -24,6 +24,7 @@
         <Setter Property="Background" Value="{atom:ComboBoxTokenResource ItemBgColor}" />
         <Setter Property="Padding" Value="{atom:ComboBoxTokenResource ItemPadding}" />
         <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
 
         <Style Selector="^:pointerover">
             <Setter Property="Foreground" Value="{atom:ComboBoxTokenResource ItemHoverColor}" />

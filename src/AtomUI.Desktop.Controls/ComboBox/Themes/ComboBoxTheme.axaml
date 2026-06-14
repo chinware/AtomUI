@@ -47,7 +47,7 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Content="{TemplateBinding SelectionBoxItem}"
-                                ContentTemplate="{TemplateBinding ItemTemplate}" />
+                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" />
                         </Panel>
                     </atom:AddOnDecoratedBox>
 
