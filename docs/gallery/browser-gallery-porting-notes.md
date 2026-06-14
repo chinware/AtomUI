@@ -6,7 +6,7 @@
 
 - 新增 Browser Gallery 项目并跑通空壳应用。
 - Browser 启动阶段使用 AtomUI 红色 SVG logo。
-- Browser Gallery 不复制 `AboutUsPage` / `ButtonShowCase` / `FloatButtonShowCase` / `PaletteShowCase` / `IconShowCase`，只做一层薄的宿主封装。
+- Browser Gallery 不复制 Desktop `WorkspaceWindow`，但复用共享 `CaseNavigation`、`CaseNavigationViewModel`、`RoutedViewHost` 和 `ShowCaseViewModule`，只做一层 Browser 单视图宿主封装。
 - Browser 可以引用 `AtomUI.Desktop.Controls`，用户侧继续调用 `UseDesktopControls()`，控件库内部按平台自动降级。
 - 不改变公开 API，不影响 Desktop Gallery 原有行为。
 
@@ -30,7 +30,7 @@
 | Browser FloatButton Placement 展开缺子按钮 | Placement 示例中点击左侧展开组后，trigger 变为 X，但 X 左侧两个子按钮没有显示 | Browser 分支此前完全跳过 Desktop initialized handler，导致 `MotionTransformOptionsAnimator` 没有注册；`MoveRightInMotion` / `MoveLeftInMotion` 的 `TransformOperations` keyframe 动画停留在隐藏起始态 | initialized handler 所有平台都注册 `TransformOperations` animator；`ToolTipService` 和 `MediaBreakPointThemeBootstrapper` 继续只在 native window 下启用 |
 | FloatButton Tooltip 暂未打开 Browser 完整链路 | Tooltip 属性在 Browser 下不会导致页面崩溃，但本轮不验证 tooltip 弹层 | AtomUI Tooltip 会继续牵出 `Popup`、`PopupRoot`、`OverlayPopupHost`、`ArrowDecoratedBox`、`PopupHostToken`、`ToolTipService` 等一组资源，超出 FloatButton ShowCase 首轮接入范围 | 本轮先保证 FloatButton 主体、Badge、BackTop、Group 可用；Tooltip/Popup Browser 降级后续单独拆分验证 |
 | Browser shell 字体未继承 AtomUI 字体 | Browser Gallery 外壳文字看起来没有使用 AtomUI 的 AlibabaSans | Browser 根是 `UserControl`，没有 Desktop `atom:Window` theme 里的 `FontFamily="{atom:SharedTokenResource FontFamily}"` 继承入口 | `BrowserGalleryView` 根设置 `fonts:AlibabaSans#Alibaba Sans, $Default`，由 Avalonia 可继承 `FontFamily` 向导航外壳和共享 ShowCase 传递 |
-| Browser 导航切页卡顿明显 | AboutUs / Button / Palette / Icons 之间切换时，新页面出来有明显停顿 | Browser 宿主原先每次点击都 `new` 页面和 ViewModel，并替换 `ContentControl.Content`，导致 ShowCase XAML、控件模板、主题匹配、首次布局和绘制全部冷启动 | `BrowserGalleryView` 改为 lazy page cache，首次进入页面后保留在同一个 `Grid` 中，切换只调整 `IsVisible`；首屏加载后再按 idle 顺序预热 Button / Palette / Icons，降低用户首次点击重页面时的冷启动体感 |
+| Browser 宿主和 Desktop 信息架构分叉 | Browser 旧宿主有独立标题栏、独立导航分组、手写 `CreatePage` switch、页面缓存和 idle 预热 | Browser 自己维护一套页面创建和导航结构，容易和 Desktop 最新 Showcase 规范、默认 Overview/Community、Components 分组以及延迟创建策略脱节 | `BrowserGalleryView` 改为复用 `CaseNavigation` + `CaseNavigationViewModel` + `RoutedViewHost`，删除手写页面工厂和主动预热逻辑；页面创建交给共享 `ShowCaseViewModule`，默认页和导航结构跟 Desktop 同源 |
 
 ## 当前实现要点
 
@@ -63,40 +63,26 @@ this.UseAtomUI(builder =>
 });
 ```
 
-`BrowserGalleryView` 只负责 Browser 单视图宿主、导航外壳和当前 ShowCase 切换，内容直接创建共享页面，并按页面类型 lazy cache：
+`BrowserGalleryView` 只负责 Browser 单视图宿主和 Desktop 风格外壳：
 
 ```csharp
-var aboutUsPage = new AboutUsPage
+_caseNavigationViewModel = new CaseNavigationViewModel(this);
+
+var showCaseNavigation = new CaseNavigation
 {
-    DataContext = new AboutUsViewModel(this)
+    ViewModel = _caseNavigationViewModel
 };
 
-var buttonShowCase = new ButtonShowCase
+var routedViewHost = new RoutedViewHost
 {
-    DataContext = new ButtonViewModel(this)
-};
-
-var floatButtonShowCase = new FloatButtonShowCase
-{
-    DataContext = new FloatButtonViewModel(this)
-};
-
-var paletteShowCase = new PaletteShowCase
-{
-    DataContext = new PaletteViewModel(this)
-};
-
-var iconShowCase = new IconShowCase
-{
-    DataContext = new IconViewModel(this)
+    Router = Router,
+    PageTransition = null
 };
 ```
 
-页面首次打开后会保留在 Browser 宿主的内容 `Grid` 中，非当前页通过 `IsVisible = false` 隐藏。这样可以保留 ViewModel、控件树、滚动位置和 Icons 已加载内容，避免切回时再次触发 XAML inflate / template / layout 冷启动。
+Browser 左侧外壳和 Desktop `WorkspaceWindow` 对齐：280px 导航列、顶部 `atomui-oss.svg`、中间共享 `CaseNavigation`、底部官网 / Gitee / GitHub 链接和绿色版本 `Tag`。右侧内容区使用 `ColorBgLayout`，具体 Showcase 页面继续遵守 Desktop 的 `GalleryStickyTabsHost`、`ShowCasePanel`、延迟 `ShowCaseItem` 和 API / Design Token 延迟加载规范。
 
-首屏 `AboutUsPage` 加载完成后，Browser 宿主会用 `DispatcherPriority.ApplicationIdle` 依次预热 `ButtonShowCase`、`FloatButtonShowCase`、`PaletteShowCase` 和 `IconShowCase`。预热页面先以 `Opacity = 0`、`IsHitTestVisible = false` 放入内容 `Grid`，让模板和布局在用户空闲时完成一轮，再隐藏回缓存；如果用户在预热期间点击该页面，正常导航会接管可见性。
-
-当前 Browser 已接入页面没有后台定时任务；后续迁移有持续订阅或异步任务的 ShowCase 时，需要单独评估隐藏页保持 attached 的成本。
+Browser 宿主不再缓存、预热或手动创建各个 Showcase 页面。默认页、导航合法性和页面创建由 `CaseNavigationViewModel`、ReactiveUI 路由和 `ShowCaseViewModule` 统一承担。这样 Browser 不会绕开 Desktop 最新 Showcase 规范，也不会因为后台预热提前创建大量 `ShowCaseItem`。
 
 ### Common 控件降级
 
@@ -193,6 +179,7 @@ Desktop 下仍然使用完整 `ControlTokenTypePool` 和 `DesktopControlThemesPr
 dotnet build controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj -c Debug
 dotnet build controlgallery/AtomUIGallery.Browser/AtomUIGallery.Browser.csproj -c Release
 dotnet build controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj -c Debug
+dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --filter BrowserGalleryConventionsTests
 ```
 
 结果：
@@ -200,13 +187,9 @@ dotnet build controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj -
 - Browser Debug build 通过。
 - Browser Release build 通过。
 - Desktop Gallery Debug build 通过。
-- Browser 实跑 `AboutUsPage` / `ButtonShowCase` / `FloatButtonShowCase` / `PaletteShowCase` / `IconShowCase` 渲染成功，无 `.splash-error`。
-- `ButtonShowCase` 在 Release host 中验证首屏渲染成功，Button hover 状态可见，点击 smoke test 无当前端口错误日志；最终代码仍默认进入 `AboutUsPage`。
-- `FloatButtonShowCase` 在 Release host 中验证首屏渲染成功；切到 Button 后再切回 FloatButton 仍正常渲染；向下滚动到 Placement / Badge / BackTop 区域后渲染正常；点击 Placement click group 后无当前端口错误日志。
-- Browser 修复 `MotionTransformOptionsAnimator` 注册后，Release host 中复测 Placement 左侧展开组，X 左侧两个子按钮正常显示，无当前端口错误日志。
-- `IconShowCase` 的 `Outlined` / `Filled` / `Two Tone` tab 均已在 Browser 中切换并渲染图标网格。
-- Browser 导航 lazy cache 后，Release host 中执行 Button / Icons / Button / Icons 切换 smoke test，Icons 二次切回仍正常渲染，无当前端口错误日志。
-- Browser 导航 idle 预热后，Release host 中等待首屏预热并执行 Button / Palette / Icons 切换 smoke test，最终 Icons 正常渲染，无当前端口错误日志。
+- Browser 规范测试覆盖：宿主必须复用 `CaseNavigation` / `CaseNavigationViewModel` / `RoutedViewHost`，不得保留旧标题栏、手写页面工厂、主动预热和 `AboutUsPage` 默认入口。
+- Browser 宿主改为共享导航 / 路由后，Debug build 通过；默认入口改为 Desktop 同源的 `Overview`。
+- 旧宿主阶段曾实跑 `ButtonShowCase`、`FloatButtonShowCase`、`PaletteShowCase`、`IconShowCase` 等页面 smoke；共享导航改造后，后续视觉验收应以 `Overview` 默认入口和 Components 分组为准重新走 Browser smoke。
 
 Browser 运行验证时不要只依赖 DOM 文本，因为 Avalonia Browser 页面内容主要在 canvas 中绘制；需要结合 splash error 和截图。
 
@@ -224,7 +207,7 @@ Browser 运行验证时不要只依赖 DOM 文本，因为 Avalonia Browser 页�
 ## 待继续处理
 
 - `UseDesktopColorPicker()` 和 `UseDesktopDataGrid()` 尚未接入 Browser 降级路径。
-- Browser Gallery 当前只接入 `AboutUsPage`、`ButtonShowCase`、`FloatButtonShowCase`、`PaletteShowCase` 和 `IconShowCase`，完整 Workspace / AppView / AppShell 还未实现。
+- Browser Gallery 当前已使用共享 `CaseNavigation` 暴露全量 Showcase 入口；后续新增导航和 ShowCase 页面必须先进入 Desktop 共享导航 / `ShowCaseViewModule`，Browser 不再维护独立页面列表。
 - Tooltip / Popup 的 Browser 降级链路尚未打开；`FloatButtonShowCase` 中 Tooltip 属性本轮只保证不阻塞页面渲染。
 - `BrowserDesktopControlThemesProvider` 的范围后续应随着 ShowCase 迁移逐步扩大，并保持最小可用集合。
 - `EmbeddableControlRootTheme` 在 Browser 下的精确不兼容点后续可以进一步拆解；当前先通过 Browser provider 排除该资源，保证启动路径稳定。

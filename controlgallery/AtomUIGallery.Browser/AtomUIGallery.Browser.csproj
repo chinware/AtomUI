@@ -18,10 +18,6 @@
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <AvaloniaResource Include="../AtomUIGallery/Assets/gallery-logo.png" Link="Assets/gallery-logo.png"/>
-    </ItemGroup>
-
     <ItemGroup Condition="'$(RunAOTCompilation)' == 'true' and '$(BrowserAotForceInterpretAssemblies)' != ''">
         <_AOT_InternalForceInterpretAssemblies Include="$(BrowserAotForceInterpretAssemblies)"/>
     </ItemGroup>
