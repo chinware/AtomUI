@@ -13446,8 +13446,15 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Palette.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Palette.en_US.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Palette.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Palette.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Palette.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderDark] = global::AtomUIGallery.ShowCases.Palette.en_US.P2HeaderDark;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderLight] = global::AtomUIGallery.ShowCases.Palette.en_US.P2HeaderLight;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Palette.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Palette.en_US.PageSubtitle;
             }
             catch (System.Exception)
             {
@@ -13474,8 +13481,15 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Palette.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Palette.zh_CN.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Palette.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Palette.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Palette.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderDark] = global::AtomUIGallery.ShowCases.Palette.zh_CN.P2HeaderDark;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderLight] = global::AtomUIGallery.ShowCases.Palette.zh_CN.P2HeaderLight;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Palette.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Palette.zh_CN.PageSubtitle;
             }
             catch (System.Exception)
             {
@@ -13502,8 +13516,15 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Palette.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Palette.zh_TW.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Palette.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Palette.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Palette.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderDark] = global::AtomUIGallery.ShowCases.Palette.zh_TW.P2HeaderDark;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderLight] = global::AtomUIGallery.ShowCases.Palette.zh_TW.P2HeaderLight;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Palette.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Palette.zh_TW.PageSubtitle;
             }
             catch (System.Exception)
             {
