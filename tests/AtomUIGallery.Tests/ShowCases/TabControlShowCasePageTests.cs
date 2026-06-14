@@ -79,9 +79,9 @@ public class TabControlShowCasePageTests
         pageSource.ShouldContain("OptionCheckedChanged=\"HandleTabControlSizeTypeOptionCheckedChanged\"");
         pageSource.ShouldContain("AddTabRequest=\"HandleTabControlAddTabRequest\"");
 
-        codeBehindSource.ShouldContain("ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged");
-        codeBehindSource.ShouldContain("EnsureSelectedScenarioContent");
-        codeBehindSource.ShouldContain("ScenarioContentHost.Content = content");
+        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new TabControlApiDataGrid()");
         codeBehindSource.ShouldContain("new TabControlDesignTokenDataGrid()");

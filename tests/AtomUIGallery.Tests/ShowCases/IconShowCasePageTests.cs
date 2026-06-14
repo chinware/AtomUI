@@ -56,17 +56,17 @@ public class IconShowCasePageTests
     {
         var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Icon/Views/IconShowCase.axaml.cs");
 
-        codeBehindSource.ShouldContain("ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged");
-        codeBehindSource.ShouldContain("EnsureSelectedScenarioContent");
-        codeBehindSource.ShouldContain("ScenarioContentHost.Content = content");
+        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
         codeBehindSource.ShouldContain("new IconGallery()");
         codeBehindSource.ShouldContain("IconThemeType = IconThemeType.Outlined");
         codeBehindSource.ShouldContain("IconThemeType = IconThemeType.Filled");
         codeBehindSource.ShouldContain("IconThemeType = IconThemeType.TwoTone");
         codeBehindSource.ShouldContain("VerticalAlignment = Avalonia.Layout.VerticalAlignment.Stretch");
         codeBehindSource.ShouldNotContain("Height        = 640");
-        codeBehindSource.ShouldContain("_lazyScenarioContentCache");
-        codeBehindSource.ShouldContain("ClearLazyScenarioContent");
+        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldContain("_scenarioController.Detach()");
     }
 
     [Fact]

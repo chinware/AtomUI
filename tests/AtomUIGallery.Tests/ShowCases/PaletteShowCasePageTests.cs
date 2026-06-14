@@ -55,14 +55,14 @@ public class PaletteShowCasePageTests
     {
         var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Palette/Views/PaletteShowCase.axaml.cs");
 
-        codeBehindSource.ShouldContain("ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged");
-        codeBehindSource.ShouldContain("EnsureSelectedScenarioContent");
-        codeBehindSource.ShouldContain("ScenarioContentHost.Content = content");
+        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
         codeBehindSource.ShouldContain("LightPaletteContentTemplate");
         codeBehindSource.ShouldContain("DarkPaletteContentTemplate");
         codeBehindSource.ShouldContain("ContentTemplate = template");
-        codeBehindSource.ShouldContain("_lazyScenarioContentCache");
-        codeBehindSource.ShouldContain("ClearLazyScenarioContent");
+        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldContain("_scenarioController.Detach()");
         codeBehindSource.ShouldNotContain("new ColorListControl");
     }
 

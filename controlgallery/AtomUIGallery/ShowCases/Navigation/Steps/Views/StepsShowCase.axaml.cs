@@ -17,11 +17,10 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
     public static readonly StyledProperty<double[]> DashedArrayProperty =
         AvaloniaProperty.Register<StepsShowCase, double[]>(nameof(DashedArray));
 
-    private const string ExamplesScenario    = "Examples";
     private const string ApiScenario         = "Api";
     private const string DesignTokenScenario = "DesignToken";
 
-    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
+    private readonly GalleryShowCaseScenarioController _scenarioController;
 
     public double[] DashedArray
     {
@@ -33,7 +32,7 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
     {
         InitializeComponent();
         DashedArray = [4d, 3d];
-        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
 
         this.WhenActivated(disposables =>
         {
@@ -53,26 +52,21 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        EnsureSelectedScenarioContent();
+        _scenarioController.Attach(DataContext);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        ClearLazyScenarioContent();
+        _scenarioController.Detach();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        ExamplesContent.DataContext = DataContext;
-        foreach (var content in _lazyScenarioContentCache.Values)
-        {
-            content.DataContext = DataContext;
-        }
 
         ResetInteractiveState();
-        EnsureSelectedScenarioContent();
+        _scenarioController.UpdateDataContext(DataContext);
     }
 
     public void HandleNextButtonClick(object? sender, RoutedEventArgs args)
@@ -89,55 +83,6 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
         {
             viewModel.MoveToPreviousInteractiveStep();
         }
-    }
-
-    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
-    {
-        EnsureSelectedScenarioContent();
-    }
-
-    private void EnsureSelectedScenarioContent()
-    {
-        if (ScenarioTabs.SelectedItem is not ScenarioTabStripItem tabStripItem ||
-            tabStripItem.Tag is not string scenario)
-        {
-            return;
-        }
-
-        var content = ResolveScenarioContent(scenario);
-        if (!ReferenceEquals(ScenarioContentHost.Content, content))
-        {
-            ScenarioContentHost.Content = content;
-        }
-    }
-
-    private void ClearLazyScenarioContent()
-    {
-        if (ScenarioContentHost.Content is not null &&
-            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
-        {
-            ScenarioContentHost.Content = null;
-        }
-
-        _lazyScenarioContentCache.Clear();
-    }
-
-    private Control ResolveScenarioContent(string scenario)
-    {
-        if (scenario == ExamplesScenario)
-        {
-            ExamplesContent.DataContext = DataContext;
-            return ExamplesContent;
-        }
-
-        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
-        {
-            content             = CreateScenarioContent(scenario);
-            content.DataContext = DataContext;
-            _lazyScenarioContentCache.Add(scenario, content);
-        }
-
-        return content;
     }
 
     private static Control CreateScenarioContent(string scenario)

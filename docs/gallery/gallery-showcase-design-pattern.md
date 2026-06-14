@@ -5,6 +5,7 @@
 ## ButtonShowCase 改造总结
 
 ButtonShowCase 从“单一 ShowCasePanel 承载全部内容”升级为“文档页头 + sticky 场景导航 + 延迟加载内容”的结构。LineEditShowCase 在此基础上补充了 `ShowCaseItem` 级别的延迟创建机制，这一机制从现在起升级为全局 ShowCase 创建规范。
+全部控件 ShowCase 迁移完成后，场景切换和 API/Design Token lazy content 缓存统一由 `GalleryShowCaseScenarioController` 管理，页面 code-behind 只保留当前控件自己的示例事件处理和 `CreateScenarioContent` 工厂。
 
 当前页面主体由三段组成：
 
@@ -178,8 +179,9 @@ ButtonShowCase.axaml
   ScenarioContentHost
 
 ButtonShowCase.axaml.cs
-  ResolveScenarioContent("Api") -> new ButtonApiDataGrid()
-  ResolveScenarioContent("DesignToken") -> new ButtonDesignTokenDataGrid()
+  GalleryShowCaseScenarioController
+  CreateScenarioContent("Api") -> new ButtonApiDataGrid()
+  CreateScenarioContent("DesignToken") -> new ButtonDesignTokenDataGrid()
 
 ButtonApiDataGrid.axaml
 ButtonApiDataGrid.axaml.cs
@@ -331,30 +333,51 @@ ButtonShowCase 当前采用：
 - API 和 Design Token 的 lazy DataGrid 必须设置 `Margin="28,10,28,28"`，左右与 Examples 对齐，底部间距一致；尤其是出现横向滚动条时，滚动条下方不能贴住容器底边。
 - Badge、Ribbon 等示例控件会通过 adorner 向上溢出时，Examples 可单独增加顶部留白，例如 Badge 使用 `ContentMargin="28,28,28,28"`，但左右边界和底部间距仍必须保持一致。
 
-## ViewModel 与数据加载规则
+## 场景切换与数据加载规则
 
-ShowCase 主页面负责场景切换，不负责填满所有场景数据。
+ShowCase 主页面负责声明场景内容工厂，不再每页手写场景切换、缓存和 `DataContext` 同步代码。
 
 推荐模式：
 
 ```csharp
-private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
+private readonly GalleryShowCaseScenarioController _scenarioController;
 
-private Control ResolveScenarioContent(string scenario)
+public ButtonShowCase()
 {
-    if (scenario == ExamplesScenario)
-    {
-        return ExamplesContent;
-    }
+    InitializeComponent();
+    _scenarioController = new GalleryShowCaseScenarioController(
+        ScenarioTabs,
+        ScenarioContentHost,
+        CreateScenarioContent,
+        ExamplesContent);
+}
 
-    if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
-    {
-        content = CreateScenarioContent(scenario);
-        content.DataContext = DataContext;
-        _lazyScenarioContentCache.Add(scenario, content);
-    }
+protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+{
+    base.OnAttachedToVisualTree(e);
+    _scenarioController.Attach(DataContext);
+}
 
-    return content;
+protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+{
+    base.OnDetachedFromVisualTree(e);
+    _scenarioController.Detach();
+}
+
+protected override void OnDataContextChanged(EventArgs e)
+{
+    base.OnDataContextChanged(e);
+    _scenarioController.UpdateDataContext(DataContext);
+}
+
+private static Control CreateScenarioContent(string scenario)
+{
+    return scenario switch
+    {
+        "Api"         => new ButtonApiDataGrid(),
+        "DesignToken" => new ButtonDesignTokenDataGrid(),
+        _             => throw new InvalidOperationException($"Unknown Button scenario: {scenario}")
+    };
 }
 ```
 
@@ -362,8 +385,11 @@ private Control ResolveScenarioContent(string scenario)
 
 - Examples 可以在 XAML 中声明，因为它是默认首屏内容。
 - API 和 Design Token 使用 lazy UserControl。
-- `OnDataContextChanged` 必须同步已创建 lazy content。
-- detach 时清理 lazy cache，避免持有旧视觉树和旧 DataContext。
+- 标准 ShowCase 必须使用 `GalleryShowCaseScenarioController`，不再私有维护 `_lazyScenarioContentCache`。
+- 页面只保留 `CreateScenarioContent`，用于创建当前控件对应的 API/Design Token UserControl。
+- `OnDataContextChanged` 必须调用 `_scenarioController.UpdateDataContext(DataContext)`，由 controller 同步 Examples 和已创建 lazy content。
+- detach 时必须调用 `_scenarioController.Detach()`，由 controller 清理 lazy cache，避免持有旧视觉树和旧 DataContext。
+- Icon、Palette 这类特殊页面也使用同一个 controller；没有 Examples 的页面不传 `ExamplesContent`，需要同步 `ContentControl.Content` 的页面通过 `synchronizeScenarioContent` 委托接入。
 
 ## 测试范式
 
@@ -382,7 +408,7 @@ private Control ResolveScenarioContent(string scenario)
 
 延迟加载测试：
 
-- code-behind 存在场景切换处理。
+- code-behind 使用 `GalleryShowCaseScenarioController`。
 - API 和 Design Token 的 UserControl 在切换时 `new`。
 - API 和 Design Token DataGrid 自己绑定数据源。
 - Examples 的演示控件放在 `DeferredContentTemplate` 中，不在页面初始化时直接作为 `ShowCaseItem.Content` 创建。
@@ -405,7 +431,7 @@ private Control ResolveScenarioContent(string scenario)
 6. Examples 放入 `ShowCasePanel IsScrollEnabled=False IsDeferredLoadingEnabled=True`。
 7. 每个有演示内容的 `ShowCaseItem` 增加 `IsDeferredContentEnabled=True`，并把原演示控件原样移入 `DeferredContentTemplate`。
 8. API 和 Design Token 拆成独立 UserControl。
-9. code-behind 实现场景切换和 lazy cache。
+9. code-behind 使用 `GalleryShowCaseScenarioController`，只保留当前控件的 `CreateScenarioContent` 工厂。
 10. 统一 Header、Tab、Content 左右边距。
 11. 跑结构测试、deferred 创建测试、snapshot 测试、Gallery Desktop 构建。
 
@@ -419,18 +445,9 @@ private Control ResolveScenarioContent(string scenario)
 - 修改全局 Window 或 NavMenu 来解决单个 ShowCase 页面布局问题。
 - 为 sticky tabs 复制一份隐藏 TabStrip。
 - 在 ShowCase 页面里手写模拟 DataGrid。
-- 每个页面私有一套 sticky 或表格样式。
+- 每个页面私有一套 sticky、表格或场景 lazy cache 逻辑。
 - 让 Header、Examples、API、Token 分别拥有不同滚动上下文。
 
-## Button 之后的推广策略
+## 推广结果
 
-Button 是范式样板，不建议一次性批量改所有控件。
-
-推荐推广顺序：
-
-1. 选择 1 个简单控件，验证范式可迁移性。
-2. 选择 1 个复杂控件，验证 API/Token 和 Examples 的布局稳定性。
-3. 把重复代码提炼成更明确的 Gallery 页面基类或辅助控件。
-4. 再制定批量迁移清单。
-
-只有当至少两个控件迁移后仍然保持结构稳定，才考虑进一步抽象，例如 `GalleryShowCaseDocumentPage`。
+全部控件 ShowCase 已按此范式完成迁移。重复的场景切换逻辑已经提炼为 `GalleryShowCaseScenarioController`，暂不引入 `GalleryShowCaseDocumentPage` 基类；现阶段组合式 controller 更适合保留各页面自己的演示事件、ViewModel 初始化和特殊资源同步逻辑。

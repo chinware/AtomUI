@@ -76,9 +76,9 @@ public class UploadShowCasePageTests
         pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
 
-        codeBehindSource.ShouldContain("ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged");
-        codeBehindSource.ShouldContain("EnsureSelectedScenarioContent");
-        codeBehindSource.ShouldContain("ScenarioContentHost.Content = content");
+        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new UploadApiDataGrid()");
         codeBehindSource.ShouldContain("new UploadDesignTokenDataGrid()");

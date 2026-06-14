@@ -14,73 +14,31 @@ public partial class PaletteShowCase : GalleryReactiveUserControl<PaletteViewMod
     private const string LightPaletteContentTemplateKey = "LightPaletteContentTemplate";
     private const string DarkPaletteContentTemplateKey  = "DarkPaletteContentTemplate";
 
-    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
+    private readonly GalleryShowCaseScenarioController _scenarioController;
 
     public PaletteShowCase()
     {
         InitializeComponent();
-        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, synchronizeScenarioContent: SynchronizeScenarioContent);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        EnsureSelectedScenarioContent();
+        _scenarioController.Attach(DataContext);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        ClearLazyScenarioContent();
+        _scenarioController.Detach();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        foreach (var content in _lazyScenarioContentCache.Values)
-        {
-            SynchronizeScenarioContent(content);
-        }
 
-        EnsureSelectedScenarioContent();
-    }
-
-    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
-    {
-        EnsureSelectedScenarioContent();
-    }
-
-    private void EnsureSelectedScenarioContent()
-    {
-        if (ScenarioTabs.SelectedItem is not TabStripItem tabStripItem ||
-            tabStripItem.Tag is not string scenario)
-        {
-            return;
-        }
-
-        var content = ResolveScenarioContent(scenario);
-        if (!ReferenceEquals(ScenarioContentHost.Content, content))
-        {
-            ScenarioContentHost.Content = content;
-        }
-    }
-
-    private void ClearLazyScenarioContent()
-    {
-        ScenarioContentHost.Content = null;
-        _lazyScenarioContentCache.Clear();
-    }
-
-    private Control ResolveScenarioContent(string scenario)
-    {
-        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
-        {
-            content = CreateScenarioContent(scenario);
-            _lazyScenarioContentCache.Add(scenario, content);
-        }
-
-        SynchronizeScenarioContent(content);
-        return content;
+        _scenarioController.UpdateDataContext(DataContext);
     }
 
     private Control CreateScenarioContent(string scenario)
@@ -111,12 +69,12 @@ public partial class PaletteShowCase : GalleryReactiveUserControl<PaletteViewMod
         return template;
     }
 
-    private void SynchronizeScenarioContent(Control content)
+    private static void SynchronizeScenarioContent(Control content, object? dataContext)
     {
-        content.DataContext = DataContext;
+        content.DataContext = dataContext;
         if (content is ContentControl contentControl)
         {
-            contentControl.Content = DataContext;
+            contentControl.Content = dataContext;
         }
     }
 }

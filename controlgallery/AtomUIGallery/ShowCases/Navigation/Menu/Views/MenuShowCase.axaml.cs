@@ -19,17 +19,16 @@ public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
 {
     public const string LanguageId = nameof(MenuShowCase);
 
-    private const string ExamplesScenario    = "Examples";
     private const string ApiScenario         = "Api";
     private const string DesignTokenScenario = "DesignToken";
 
-    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
+    private readonly GalleryShowCaseScenarioController _scenarioController;
     private NavMenuNode? _navMenuDefaultSelectedItem;
 
     public MenuShowCase()
     {
         InitializeComponent();
-        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
 
         this.WhenActivated(disposables =>
         {
@@ -51,26 +50,21 @@ public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        EnsureSelectedScenarioContent();
+        _scenarioController.Attach(DataContext);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        ClearLazyScenarioContent();
+        _scenarioController.Detach();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        ExamplesContent.DataContext = DataContext;
-        foreach (var content in _lazyScenarioContentCache.Values)
-        {
-            content.DataContext = DataContext;
-        }
 
         RefreshCurrentViewModelData();
-        EnsureSelectedScenarioContent();
+        _scenarioController.UpdateDataContext(DataContext);
     }
 
     public void HandleChangeModeCheckChanged(object? sender, RoutedEventArgs? args)
@@ -87,55 +81,6 @@ public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
         {
             viewModel.HandleChangeStyleCheckChanged(sender, args);
         }
-    }
-
-    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
-    {
-        EnsureSelectedScenarioContent();
-    }
-
-    private void EnsureSelectedScenarioContent()
-    {
-        if (ScenarioTabs.SelectedItem is not ScenarioTabStripItem tabStripItem ||
-            tabStripItem.Tag is not string scenario)
-        {
-            return;
-        }
-
-        var content = ResolveScenarioContent(scenario);
-        if (!ReferenceEquals(ScenarioContentHost.Content, content))
-        {
-            ScenarioContentHost.Content = content;
-        }
-    }
-
-    private void ClearLazyScenarioContent()
-    {
-        if (ScenarioContentHost.Content is not null &&
-            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
-        {
-            ScenarioContentHost.Content = null;
-        }
-
-        _lazyScenarioContentCache.Clear();
-    }
-
-    private Control ResolveScenarioContent(string scenario)
-    {
-        if (scenario == ExamplesScenario)
-        {
-            ExamplesContent.DataContext = DataContext;
-            return ExamplesContent;
-        }
-
-        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
-        {
-            content             = CreateScenarioContent(scenario);
-            content.DataContext = DataContext;
-            _lazyScenarioContentCache.Add(scenario, content);
-        }
-
-        return content;
     }
 
     private static Control CreateScenarioContent(string scenario)

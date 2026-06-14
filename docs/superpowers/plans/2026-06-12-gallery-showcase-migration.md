@@ -87,6 +87,7 @@ git diff --check
 | `controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonDesignTokenDataGrid.axaml` | Reference lazy Design Token DataGrid view. |
 | `tests/AtomUIGallery.Tests/ShowCases/ButtonShowCasePageTests.cs` | Reference structure and lazy loading tests. |
 | `tests/AtomUIGallery.Tests/ShowCases/ButtonShowCaseExamples.snapshot` | Reference demo content snapshot. |
+| `controlgallery/AtomUIGallery/Controls/GalleryShowCaseScenarioController.cs` | Shared scenario switching and lazy content cache controller for migrated ShowCases. |
 | `controlgallery/AtomUIGallery/Controls/GalleryStickyTabsHost.cs` | Page host that owns document scrolling and sticky tabs. |
 | `controlgallery/AtomUIGallery/Controls/ShowCasePanel.cs` | Examples host; migrated pages set `IsScrollEnabled="False"`. |
 | `controlgallery/AtomUIGallery/Controls/ShowCaseMasonryPanel.cs` | Masonry layout implementation for ShowCase examples. |
@@ -244,15 +245,15 @@ If a selected root ShowCase folder contains sub-scenario files such as `CardBasi
 | P4.2 | Accepted | Icon | `controlgallery/AtomUIGallery/ShowCases/General/Icon` | `IconShowCase.axaml` | Special full-viewport layout keeps Header/TabStrip outside scroll and lets IconGallery own the only vertical scrollbar; structure + icon theme snapshot + lazy IconGallery creation passed; accepted by user request to start the next ShowCase. |
 | P4.3 | Accepted | Palette | `controlgallery/AtomUIGallery/ShowCases/General/Palette` | `PaletteShowCase.axaml` | Special palette page uses GalleryStickyTabsHost page scrolling with lazy Light/Dark palette content templates; Palette structure + snapshot tests passed; Gallery tests passed; Gallery Desktop build passed; `git diff --check` passed; accepted by user request to start the next ShowCase. |
 | P4.4 | Accepted | ImagePreviewer | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer` | `ImagePreviewerShowCase.axaml`; `ImagePreviewerApiDataGrid.axaml`; `ImagePreviewerDesignTokenDataGrid.axaml` | Structure + snapshot + lazy tabs passed; Gallery tests passed; Gallery Desktop build passed; desktop controls tests passed; `git diff --check` passed; accepted by user request to start the next ShowCase. |
-| P4.5 | Implemented | Tour | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tour` | `TourShowCase.axaml`; `TourApiDataGrid.axaml`; `TourDesignTokenDataGrid.axaml` | Structure + snapshot + lazy tabs passed; Gallery tests passed; Gallery Desktop build passed; desktop controls tests passed; `git diff --check` passed; awaiting user acceptance. |
+| P4.5 | Accepted | Tour | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tour` | `TourShowCase.axaml`; `TourApiDataGrid.axaml`; `TourDesignTokenDataGrid.axaml` | Accepted by user request to finish remaining work; structure + snapshot + lazy tabs passed; Gallery tests passed; Gallery Desktop build passed; desktop controls tests passed; `git diff --check` passed; sticky mirror disabled for Tour so mask overlays sticky tabs correctly. |
 
 ### P5 Cleanup And Final Verification
 
 | ID | Status | Scope | Files | Acceptance |
 |---|---|---|---|---|
-| P5.1 | Not Started | Remove duplicated per-page migration code if a shared helper is justified | `controlgallery/AtomUIGallery/ShowCases/**/Views/*ShowCase.axaml.cs`; `tests/AtomUIGallery.Tests/ShowCases/` | Only extract after repeated code appears in at least three migrated ShowCases. |
-| P5.2 | Not Started | Update Gallery design docs | `docs/gallery/gallery-showcase-design-pattern.md`; `docs/superpowers/plans/2026-06-12-gallery-showcase-migration.md` | Docs match final implementation and list all accepted ShowCases. |
-| P5.3 | Not Started | Full verification | Entire Gallery and desktop controls test scope | `AtomUIGallery.Tests`, `AtomUI.Desktop.Controls.Tests`, Gallery Desktop build, and `git diff --check` all pass. |
+| P5.1 | Accepted | Remove duplicated per-page migration code if a shared helper is justified | `controlgallery/AtomUIGallery/Controls/GalleryShowCaseScenarioController.cs`; `controlgallery/AtomUIGallery/ShowCases/**/Views/*ShowCase.axaml.cs`; `tests/AtomUIGallery.Tests/ShowCases/ShowCaseScenarioControllerConventionsTests.cs` | Shared controller extracted; migrated ShowCases keep only `CreateScenarioContent` factory plus page-specific demo handlers; focused P5 tests passed. |
+| P5.2 | Accepted | Update Gallery design docs | `docs/gallery/gallery-showcase-design-pattern.md`; `docs/superpowers/plans/2026-06-12-gallery-showcase-migration.md` | Docs updated to describe `GalleryShowCaseScenarioController` and final migration state. |
+| P5.3 | Accepted | Full verification | Entire Gallery and desktop controls test scope | `AtomUIGallery.Tests` passed 335/335; `AtomUI.Desktop.Controls.Tests` passed 26/26; Gallery Desktop build passed with 0 warnings and 0 errors; `git diff --check` passed. |
 
 ## Non-Component Pages
 
