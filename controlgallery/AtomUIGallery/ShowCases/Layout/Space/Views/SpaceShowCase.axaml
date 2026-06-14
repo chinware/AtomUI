@@ -2,16 +2,564 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Space.SpaceShowCase"
              xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Space"
              x:DataType="viewModels:SpaceViewModel">
-    <atom:TabControl Name="ScenarioTabs"
-                     SizeType="Large"
-                     SelectedIndex="0">
-        <atom:TabItem Header="{gallery:SpaceShowCaseLangResource ScenarioBasic}" Tag="Basic" />
-        <atom:TabItem Header="{gallery:SpaceShowCaseLangResource ScenarioSize}" Tag="Size" />
-        <atom:TabItem Header="{gallery:SpaceShowCaseLangResource ScenarioAlign}" Tag="Align" />
-        <atom:TabItem Header="{gallery:SpaceShowCaseLangResource ScenarioCompactForm}" Tag="CompactForm" />
-        <atom:TabItem Header="{gallery:SpaceShowCaseLangResource ScenarioCompactButton}" Tag="CompactButton" />
-    </atom:TabControl>
+    <UserControl.Styles>
+        <Style Selector="Border.align-box">
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="#1677FF" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingXXS}" />
+        </Style>
+        <Style Selector="Border.align-block-item">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgLayout}" />
+            <Setter Property="Padding" Value="{atom:SharedTokenResource PaddingXXS}" />
+            <Setter Property="Height" Value="70" />
+            <Setter Property="Width" Value="50" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="Space"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:SpaceShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:SpaceShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
+
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="220" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SpaceShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SpaceShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SpaceShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="Control"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:SpaceShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:SpaceShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:SpaceShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
+                                       ContentMargin="28,10,28,28">
+        <gallery:ShowCaseItem Description="{gallery:SpaceShowCaseLangResource BasicDescription}"
+                              Title="{gallery:SpaceShowCaseLangResource BasicTitle}" IsOccupyEntireRow="True" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:SpaceViewModel">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SpaceShowCaseLangResource P2TextSpace}" />
+                <atom:Space>
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:SpaceShowCaseLangResource P2ContentClickToUpload}" />
+                    <atom:PopupConfirm
+                        Title="{gallery:SpaceShowCaseLangResource P2TitleDeleteTheTask}"
+                        ConfirmContent="{gallery:SpaceShowCaseLangResource P2ConfirmContentAreYouSureToDeleteThisTask}"
+                        OkText="{gallery:SpaceShowCaseLangResource P2OkTextOk}"
+                        CancelText="{gallery:SpaceShowCaseLangResource P2CancelTextCancel}"
+                        Placement="Top"
+                        IsArrowVisible="True">
+                        <atom:Button ButtonType="Default" IsDanger="True" Content="{gallery:SpaceShowCaseLangResource P2ContentConfirm}" />
+                    </atom:PopupConfirm>
+                </atom:Space>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem Description="{gallery:SpaceShowCaseLangResource VerticalSpaceDescription}"
+                              Title="{gallery:SpaceShowCaseLangResource VerticalSpaceTitle}" IsOccupyEntireRow="True" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:SpaceViewModel">
+            <atom:Space Orientation="Vertical" HorizontalAlignment="Stretch" Height="300">
+                <atom:Card Header="{gallery:SpaceShowCaseLangResource P2HeaderCard}" SizeType="Middle" HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical" Spacing="10">
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
+                    </StackPanel>
+                </atom:Card>
+
+                <atom:Card Header="{gallery:SpaceShowCaseLangResource P2HeaderCard}" SizeType="Middle" HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical" Spacing="10">
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
+                    </StackPanel>
+                </atom:Card>
+
+                <atom:Card Header="{gallery:SpaceShowCaseLangResource P2HeaderCard}" SizeType="Middle" HorizontalAlignment="Stretch">
+                    <StackPanel Orientation="Vertical" Spacing="10">
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCardContent}" />
+                    </StackPanel>
+                </atom:Card>
+            </atom:Space>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource SizeTitle}"
+                              IsOccupyEntireRow="True"
+                              Description="{gallery:SpaceShowCaseLangResource SizeDescription}"  IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:SpaceViewModel">
+            <StackPanel Orientation="Vertical" Spacing="15">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Small}"
+                                      IsCheckedChanged="HandleSizeTypeChanged"
+                                      IsChecked="True" Content="{gallery:SpaceShowCaseLangResource P2ContentSmall}" />
+                    <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Middle}"
+                                      IsCheckedChanged="HandleSizeTypeChanged" Content="{gallery:SpaceShowCaseLangResource P2ContentMiddle}" />
+                    <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Large}"
+                                      IsCheckedChanged="HandleSizeTypeChanged" Content="{gallery:SpaceShowCaseLangResource P2ContentLarge}" />
+                    <atom:RadioButton Tag="{x:Static atom:CustomizableSizeType.Custom}"
+                                      IsCheckedChanged="HandleSizeTypeChanged" Content="{gallery:SpaceShowCaseLangResource P2ContentCustom}" />
+                </StackPanel>
+                <atom:Slider Name="CustomSizeSlider"
+                             Minimum="0" Maximum="100"
+                             Value="{Binding CustomSpacingValue, Mode=TwoWay}"
+                             IsVisible="False"/>
+                <atom:Space Orientation="Horizontal" SizeType="{Binding SizeType}"
+                            LineSpacing="{Binding #CustomSizeSlider.Value, Priority=Template}"
+                            ItemSpacing="{Binding #CustomSizeSlider.Value, Priority=Template}">
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentPrimary}" />
+                    <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentDefault}" />
+                    <atom:Button ButtonType="Dashed" Content="{gallery:SpaceShowCaseLangResource P2ContentDashed}" />
+                    <atom:Button ButtonType="Link" Content="{gallery:SpaceShowCaseLangResource P2ContentLink}" />
+                </atom:Space>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource AlignTitle}"
+                              Description="{gallery:SpaceShowCaseLangResource AlignDescription}"
+                              IsOccupyEntireRow="True" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:SpaceViewModel">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Border Classes="align-box">
+                    <atom:Space ItemsAlignment="Start" Orientation="Horizontal">
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCenter}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentPrimary}" />
+                        <Border Classes="align-block-item">
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SpaceShowCaseLangResource P2TextBlock}" />
+                        </Border>
+                    </atom:Space>
+                </Border>
+
+                <Border Classes="align-box">
+                    <atom:Space ItemsAlignment="Center" Orientation="Horizontal">
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCenter}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentPrimary}" />
+                        <Border Classes="align-block-item">
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SpaceShowCaseLangResource P2TextBlock}" />
+                        </Border>
+                    </atom:Space>
+                </Border>
+
+                <Border Classes="align-box">
+                    <atom:Space ItemsAlignment="End" Orientation="Horizontal">
+                        <atom:TextBlock Text="{gallery:SpaceShowCaseLangResource P2TextCenter}" />
+                        <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentPrimary}" />
+                        <Border Classes="align-block-item">
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SpaceShowCaseLangResource P2TextBlock}" />
+                        </Border>
+                    </atom:Space>
+                </Border>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource WrapTitle}"
+                              Description="{gallery:SpaceShowCaseLangResource WrapDescription}"
+                              IsOccupyEntireRow="True" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:SpaceViewModel">
+            <atom:Space Orientation="Horizontal" ItemSpacing="8" LineSpacing="16">
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+            </atom:Space>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource SplitTitle}"
+                              Description="{gallery:SpaceShowCaseLangResource SplitDescription}"
+                              IsOccupyEntireRow="True" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:SpaceViewModel">
+            <atom:Space Orientation="Horizontal" ItemsAlignment="Center">
+                <atom:Space.SplitTemplate>
+                    <Template>
+                        <atom:Separator Orientation="Vertical"/>
+                    </Template>
+                </atom:Space.SplitTemplate>
+                <atom:HyperLinkTextBlock Text="{gallery:SpaceShowCaseLangResource P2ContentLink}" />
+                <atom:HyperLinkTextBlock Text="{gallery:SpaceShowCaseLangResource P2ContentLink}" />
+                <atom:HyperLinkTextBlock Text="{gallery:SpaceShowCaseLangResource P2ContentLink}" />
+            </atom:Space>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource CompactFormTitle}"
+                              Description="{gallery:SpaceShowCaseLangResource CompactFormDescription}"
+                              IsOccupyEntireRow="True" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:SpaceViewModel">
+            <StackPanel Spacing="10">
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:LineEdit Text="0571" atom:CompactSpace.ItemSize="2*"/>
+                    <atom:LineEdit Text="26888888" atom:CompactSpace.ItemSize="3*"/>
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch" SizeType="Small">
+                    <atom:LineEdit Text="https://atomui.net" atom:CompactSpace.ItemSize="4*"/>
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentSubmit}" />
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:LineEdit Text="https://atomui.net" atom:CompactSpace.ItemSize="4*"/>
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentSubmit}" />
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:LineEdit Text="git@github.com:AtomUI/AtomUI.git" atom:CompactSpace.ItemSize="4*"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider CopyOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipCopyGitUrl}"/>
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Select IsAllowClear="True"
+                                 DefaultValues="Zhejiang"
+                                 OptionsSource="{Binding ProvinceOptions}" />
+                    <atom:LineEdit Text="{gallery:SpaceShowCaseLangResource P2TextXihuDistrictHangzhou}" atom:CompactSpace.ItemSize="4*"/>
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="4*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Select IsAllowClear="True"
+                                 DefaultValues="Zhejiang"
+                                 Mode="Multiple"
+                                 atom:CompactSpace.ItemSize="4*"
+                                 OptionsSource="{Binding ProvinceOptions}" />
+                    <atom:LineEdit Text="{gallery:SpaceShowCaseLangResource P2TextXihuDistrictHangzhou}" atom:CompactSpace.ItemSize="4*"/>
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="4*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:SearchEdit Text="0571" atom:CompactSpace.ItemSize="3*"/>
+                    <atom:SearchEdit Text="26888888" atom:CompactSpace.ItemSize="5*"/>
+                    <atom:SearchEdit Text="{gallery:SpaceShowCaseLangResource P2TextN1}" atom:CompactSpace.ItemSize="2*"/>
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="4*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Select DefaultValues="Option1"
+                                 OptionsSource="{Binding BasicOptions}" />
+                    <atom:LineEdit Text="{gallery:SpaceShowCaseLangResource P2TextInputContent}" atom:CompactSpace.ItemSize="5*"/>
+                    <atom:NumericUpDown Value="12" atom:CompactSpace.ItemSize="80"/>
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:LineEdit Text="{gallery:SpaceShowCaseLangResource P2TextInputContent}" atom:CompactSpace.ItemSize="5*"/>
+                    <atom:DatePicker atom:CompactSpace.ItemSize="5*"/>
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:RangeDatePicker atom:CompactSpace.ItemSize="7*"/>
+                    <atom:LineEdit Text="{gallery:SpaceShowCaseLangResource P2TextInputContent}" atom:CompactSpace.ItemSize="3*"/>
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentSearch}" />
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Select DefaultValues="Option1-1"
+                                 OptionsSource="{Binding FirstNestedOptions}" />
+                    <atom:Select DefaultValues="Option2-1"
+                                 OptionsSource="{Binding SecondNestedOptions}" />
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Select DefaultValues="1"
+                                 OptionsSource="{Binding ConditionOptions}" />
+                    <atom:LineEdit atom:CompactSpace.ItemSize="100" PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextMinimum}"/>
+                    <atom:LineEdit PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextText}" IsEnabled="False"/>
+                    <atom:LineEdit atom:CompactSpace.ItemSize="100" PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextMaximum}"/>
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Select DefaultValues="Sign Up"
+                                 OptionsSource="{Binding AuthActionOptions}" />
+                    <atom:AutoComplete PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextEmail}"
+                                       OptionsSource="{Binding AutoCompleteTextOptions}" />
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:TimePicker atom:CompactSpace.ItemSize="7*" PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextSelectTime}"/>
+                    <atom:Cascader atom:CompactSpace.ItemSize="7*"
+                                   PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextSelectAddress}"
+                                   OptionsSource="{Binding AddressCascaderOptions}" />
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:RangeTimePicker PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextStartTime}" SecondaryPlaceholderText="{gallery:SpaceShowCaseLangResource P2SecondaryPlaceholderTextEndTime}" />
+                    <atom:TreeSelect atom:CompactSpace.ItemSize="7*"
+                                     IsAllowClear="True"
+                                     IsFilterEnabled="True"
+                                     IsDefaultExpandAll="True"
+                                     PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                     ItemsSource="{Binding TreeSelectNodes}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentSubmit}" />
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="5*" />
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:LineEdit PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextInputHere}"/>
+                    <atom:CompactSpaceAddOn Content="$"/>
+                    <atom:NumericUpDown PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextAnotherInput}" atom:CompactSpace.ItemSize="1*"/>
+                    <atom:NumericUpDown PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextAnotherInput}" atom:CompactSpace.ItemSize="1*"/>
+                    <atom:CompactSpaceAddOn Content="$"/>
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="*" />
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:LineEdit PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextInputHere}"/>
+                    <atom:ColorPicker DefaultValue="#1677ff"/>
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="*" />
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButton}" />
+                    <atom:LineEdit PlaceholderText="{gallery:SpaceShowCaseLangResource P2PlaceholderTextInputHere}"/>
+                    <atom:CompactSpaceAddOn Content="$"/>
+                    <atom:CompactSpaceFiller atom:CompactSpace.ItemSize="*" />
+                </atom:CompactSpace>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource CompactButtonTitle}"
+                              Description="{gallery:SpaceShowCaseLangResource CompactButtonDescription}"
+                              IsOccupyEntireRow="True" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:SpaceViewModel">
+            <StackPanel Spacing="10">
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider LikeOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipLike}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider CommentOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipComment}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider StarOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipStar}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider HeartOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipHeart}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider ShareAltOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipShare}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipDownload}"/>
+                    <atom:DropdownButton TriggerType="Click"
+                                         Placement="BottomEdgeAlignedRight"
+                                         IsShowOpenIndicator="False"
+                                         Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}">
+                        <atom:DropdownButton.DropdownFlyout>
+                            <atom:MenuFlyout>
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderReport}"
+                                               Icon="{antdicons:AntDesignIconProvider Kind=WarningOutlined}" />
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderMail}"
+                                               Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}" />
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderMobile}"
+                                               Icon="{antdicons:AntDesignIconProvider Kind=MobileOutlined}" />
+                            </atom:MenuFlyout>
+                        </atom:DropdownButton.DropdownFlyout>
+                    </atom:DropdownButton>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN1}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN2}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN3}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN4}" />
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" IsEnabled="False" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipTooltip}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipTooltip}"/>
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Horizontal" HorizontalAlignment="Stretch">
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN1}" />
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN2}" />
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN3}" />
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" IsEnabled="False" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipTooltip}"/>
+                    <atom:Button Icon="{antdicons:AntDesignIconProvider DownloadOutlined}" atom:ToolTip.Tip="{gallery:SpaceShowCaseLangResource P2ToolTipTipTooltip}"/>
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN4}" />
+                    <atom:DropdownButton TriggerType="Click"
+                                         Placement="BottomEdgeAlignedRight"
+                                         IsShowOpenIndicator="False"
+                                         ButtonType="Primary"
+                                         Icon="{antdicons:AntDesignIconProvider EllipsisOutlined}">
+                        <atom:DropdownButton.DropdownFlyout>
+                            <atom:MenuFlyout>
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderN1stItem}"/>
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderN2ndItem}"/>
+                                <atom:MenuItem Header="{gallery:SpaceShowCaseLangResource P2HeaderN3rdItem}"/>
+                            </atom:MenuFlyout>
+                        </atom:DropdownButton.DropdownFlyout>
+                    </atom:DropdownButton>
+                </atom:CompactSpace>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem Title="{gallery:SpaceShowCaseLangResource VerticalCompactTitle}"
+                              Description="{gallery:SpaceShowCaseLangResource VerticalCompactDescription}"
+                              IsOccupyEntireRow="True" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:SpaceViewModel">
+            <StackPanel Spacing="10" Orientation="Horizontal">
+                <atom:CompactSpace Orientation="Vertical">
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN1}" />
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN2}" />
+                    <atom:Button ButtonType="Default" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN3}" />
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Vertical">
+                    <atom:Button ButtonType="Dashed" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN1}" />
+                    <atom:Button ButtonType="Dashed" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN2}" />
+                    <atom:Button ButtonType="Dashed" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN3}" />
+                </atom:CompactSpace>
+
+                <atom:CompactSpace Orientation="Vertical">
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN1}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN2}" />
+                    <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentButtonN3}" />
+                </atom:CompactSpace>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>
