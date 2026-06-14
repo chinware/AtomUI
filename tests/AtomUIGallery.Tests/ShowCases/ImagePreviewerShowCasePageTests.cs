@@ -81,9 +81,9 @@ public class ImagePreviewerShowCasePageTests
         pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
 
-        codeBehindSource.ShouldContain("ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged");
-        codeBehindSource.ShouldContain("EnsureSelectedScenarioContent");
-        codeBehindSource.ShouldContain("ScenarioContentHost.Content = content");
+        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("EnsurePreviewAssets()");
         codeBehindSource.ShouldContain("ClearPreviewAssets()");

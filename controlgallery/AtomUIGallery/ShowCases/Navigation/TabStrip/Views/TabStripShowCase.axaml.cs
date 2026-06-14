@@ -15,18 +15,17 @@ namespace AtomUIGallery.ShowCases.TabStrip;
 public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewModel>
 {
     public const string LanguageId = nameof(TabStripShowCase);
-    private const string ExamplesScenario    = "Examples";
     private const string ApiScenario         = "Api";
     private const string DesignTokenScenario = "DesignToken";
 
-    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
+    private readonly GalleryShowCaseScenarioController _scenarioController;
     private readonly List<WeakReference<CardTabStrip>> _dynamicAddTabStrips = [];
     private EventHandler<LanguageVariantChangedEventArgs>? _languageVariantChangedHandler;
 
     public TabStripShowCase()
     {
         InitializeComponent();
-        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -34,75 +33,22 @@ public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewM
         base.OnAttachedToVisualTree(e);
         RefreshViewModelData();
         SubscribeLanguageVariantChanged();
-        EnsureSelectedScenarioContent();
+        _scenarioController.Attach(DataContext);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         UnsubscribeLanguageVariantChanged();
-        ClearLazyScenarioContent();
+        _scenarioController.Detach();
         _dynamicAddTabStrips.Clear();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        ExamplesContent.DataContext = DataContext;
-        foreach (var content in _lazyScenarioContentCache.Values)
-        {
-            content.DataContext = DataContext;
-        }
         RefreshViewModelData();
-        EnsureSelectedScenarioContent();
-    }
-
-    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
-    {
-        EnsureSelectedScenarioContent();
-    }
-
-    private void EnsureSelectedScenarioContent()
-    {
-        if (ScenarioTabs.SelectedItem is not ScenarioTabStripItem tabStripItem ||
-            tabStripItem.Tag is not string scenario)
-        {
-            return;
-        }
-
-        var content = ResolveScenarioContent(scenario);
-        if (!ReferenceEquals(ScenarioContentHost.Content, content))
-        {
-            ScenarioContentHost.Content = content;
-        }
-    }
-
-    private void ClearLazyScenarioContent()
-    {
-        if (ScenarioContentHost.Content is not null &&
-            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
-        {
-            ScenarioContentHost.Content = null;
-        }
-        _lazyScenarioContentCache.Clear();
-    }
-
-    private Control ResolveScenarioContent(string scenario)
-    {
-        if (scenario == ExamplesScenario)
-        {
-            ExamplesContent.DataContext = DataContext;
-            return ExamplesContent;
-        }
-
-        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
-        {
-            content             = CreateScenarioContent(scenario);
-            content.DataContext = DataContext;
-            _lazyScenarioContentCache.Add(scenario, content);
-        }
-
-        return content;
+        _scenarioController.UpdateDataContext(DataContext);
     }
 
     private static Control CreateScenarioContent(string scenario)

@@ -14,73 +14,31 @@ public partial class IconShowCase : GalleryReactiveUserControl<IconViewModel>
     private const string FilledScenario   = "Filled";
     private const string TwoToneScenario  = "TwoTone";
 
-    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
+    private readonly GalleryShowCaseScenarioController _scenarioController;
 
     public IconShowCase()
     {
         InitializeComponent();
-        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        EnsureSelectedScenarioContent();
+        _scenarioController.Attach(DataContext);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        ClearLazyScenarioContent();
+        _scenarioController.Detach();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        foreach (var content in _lazyScenarioContentCache.Values)
-        {
-            content.DataContext = DataContext;
-        }
 
-        EnsureSelectedScenarioContent();
-    }
-
-    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
-    {
-        EnsureSelectedScenarioContent();
-    }
-
-    private void EnsureSelectedScenarioContent()
-    {
-        if (ScenarioTabs.SelectedItem is not TabStripItem tabStripItem ||
-            tabStripItem.Tag is not string scenario)
-        {
-            return;
-        }
-
-        var content = ResolveScenarioContent(scenario);
-        if (!ReferenceEquals(ScenarioContentHost.Content, content))
-        {
-            ScenarioContentHost.Content = content;
-        }
-    }
-
-    private void ClearLazyScenarioContent()
-    {
-        ScenarioContentHost.Content = null;
-        _lazyScenarioContentCache.Clear();
-    }
-
-    private Control ResolveScenarioContent(string scenario)
-    {
-        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
-        {
-            content             = CreateScenarioContent(scenario);
-            content.DataContext = DataContext;
-            _lazyScenarioContentCache.Add(scenario, content);
-        }
-
-        return content;
+        _scenarioController.UpdateDataContext(DataContext);
     }
 
     private static Control CreateScenarioContent(string scenario)
