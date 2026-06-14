@@ -2,14 +2,544 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Select.SelectShowCase"
              xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.Select"
+             xmlns:views="using:AtomUIGallery.ShowCases.Select"
              x:DataType="vm:SelectViewModel">
-    <atom:TabControl Name="ScenarioTabs"
-                     SizeType="Large"
-                     SelectedIndex="0">
-        <atom:TabItem Header="{gallery:SelectShowCaseLangResource ScenarioBasic}" Tag="Basic" />
-        <atom:TabItem Header="{gallery:SelectShowCaseLangResource ScenarioOptions}" Tag="Options" />
-        <atom:TabItem Header="{gallery:SelectShowCaseLangResource ScenarioAppearance}" Tag="Appearance" />
-    </atom:TabControl>
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="Select"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:SelectShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:SelectShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:SelectShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:SelectShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
+
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="220" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SelectShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SelectShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SelectShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="Select"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:SelectShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:SelectShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:SelectShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
+                                       ContentMargin="28,10,28,28">
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource BasicTitle}"
+            Description="{gallery:SelectShowCaseLangResource BasicDescription}" IsOccupyEntireRow="False"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <WrapPanel ItemSpacing="10" LineSpacing="10">
+                <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="120"
+                             DefaultValues="lucy"
+                             OptionsSource="{Binding BasicSelectedOptions}" />
+
+                <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" IsEnabled="False" Width="120"
+                             DefaultValues="lucy"
+                             OptionsSource="{Binding SingleLucyOptions}" />
+
+                <atom:Select Name="AsyncLoadSelect"
+                             Mode="Single"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             Width="120"
+                             DefaultValues="lucy"
+                             OptionsSource="{Binding SingleLucyOptions}"
+                             OptionsLoader="{Binding SelectOptionsAsyncLoader}" />
+
+                <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" IsAllowClear="True" Width="120"
+                             OptionsSource="{Binding SingleLucyOptions}" />
+
+                <atom:Select Name="DefaultSelectedSelect"
+                             Mode="Single"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             IsAllowClear="True"
+                             Width="120"
+                             OptionsSource="{Binding BasicSelectedOptions}"
+                             SelectedOptions="{Binding DefaultSelectedOptions}" />
+
+            </WrapPanel>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource SearchFieldTitle}"
+            Description="{gallery:SelectShowCaseLangResource SearchFieldDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <atom:Select Mode="Single"
+                         PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                         IsFilterEnabled="True"
+                         OptionsSource="{Binding SearchOptions}" />
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource CustomSearchTitle}"
+            Description="{gallery:SelectShowCaseLangResource CustomSearchDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <atom:Select Name="CustomSearchSelect"
+                         AttachedToVisualTree="HandleCustomSearchSelectAttached"
+                         Mode="Single"
+                         PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
+                         IsFilterEnabled="True"
+                         Filter="{atom:ValueFilterProvider Contains}"
+                         OptionsSource="{Binding SearchOptions}" />
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource MultipleSelectionTitle}"
+            Description="{gallery:SelectShowCaseLangResource MultipleSelectionDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Select Name="MultiSelect1"
+                             Mode="Multiple"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
+                             IsAllowClear="True"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="True"
+                             DefaultValues="a10, c12"
+                             OptionsSource="{Binding RandomOptions}" />
+                <atom:Select Name="MultiSelect2"
+                             Mode="Multiple"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
+                             IsAllowClear="True"
+                             HorizontalAlignment="Stretch"
+                             DefaultValues="a10, c12"
+                             IsEnabled="False"
+                             OptionsSource="{Binding RandomOptions}" />
+            </StackPanel>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource TagsTitle}"
+            Description="{gallery:SelectShowCaseLangResource TagsDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Select Name="TagsModeSelect"
+                             Mode="Tags"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextTagsMode}"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="True"
+                             Filter="{atom:ValueFilterProvider Contains}"
+                             OptionsSource="{Binding RandomOptions}" />
+            </StackPanel>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource CustomDropdownOptionsTitle}"
+            Description="{gallery:SelectShowCaseLangResource CustomDropdownOptionsDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                         IsFilterEnabled="True"
+                         HorizontalAlignment="Stretch"
+                         IsAllowClear="True"
+                         OptionsSource="{Binding CustomCountryOptions}">
+                <atom:Select.OptionTemplate>
+                    <DataTemplate x:DataType="views:CustomOption">
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <TextBlock Text="{Binding Emoji}" />
+                            <TextBlock Text="{Binding Description}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </atom:Select.OptionTemplate>
+            </atom:Select>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource OptionGroupTitle}"
+            Description="{gallery:SelectShowCaseLangResource OptionGroupDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                         DefaultValues="lucy"
+                         Width="200"
+                         IsGroupEnabled="True"
+                         IsFilterEnabled="True"
+                         OptionsSource="{Binding GroupedPersonOptions}" />
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource HideAlreadySelectedTitle}"
+            Description="{gallery:SelectShowCaseLangResource HideAlreadySelectedDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <atom:Select Mode="Multiple"
+                         PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextInsertedAreRemoved}"
+                         IsHideSelectedOptions="True"
+                         IsFilterEnabled="True"
+                         HorizontalAlignment="Stretch"
+                         OptionsSource="{Binding HideSelectedOptions}" />
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource MaxCountTitle}"
+            Description="{gallery:SelectShowCaseLangResource MaxCountDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Select Mode="Multiple"
+                             HorizontalAlignment="Stretch"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             MaxCount="3"
+                             IsShowMaxCountIndicator="True"
+                             OptionsSource="{Binding MaxCountLimitedOptions}" />
+            </StackPanel>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource ResponsiveMaxTagCountTitle}"
+            Description="{gallery:SelectShowCaseLangResource ResponsiveMaxTagCountDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Select Name="MaxTagSelect1"
+                             Mode="Multiple"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectItem}"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="True"
+                             IsResponsiveTagMode="True"
+                             OptionsSource="{Binding MaxTagCountOptions}" />
+
+                <atom:Select Name="MaxTagSelect2"
+                             Mode="Multiple"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectItem}"
+                             IsEnabled="False"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="True"
+                             IsResponsiveTagMode="True"
+                             OptionsSource="{Binding MaxTagCountOptions}" />
+
+                <atom:Select Name="MaxTagSelect3"
+                             Mode="Multiple"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectItem}"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="True"
+                             MaxTagCount="5"
+                             OptionsSource="{Binding MaxTagCountOptions}" />
+            </StackPanel>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource SizesTitle}"
+            Description="{gallery:SelectShowCaseLangResource SizesDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleSizeTypeChanged">
+                    <atom:OptionButton Tag="{x:Static atom:SizeType.Large}" Content="{gallery:SelectShowCaseLangResource P2ContentLarge}" />
+                    <atom:OptionButton IsChecked="True" Tag="{x:Static atom:SizeType.Middle}" Content="{gallery:SelectShowCaseLangResource P2ContentDefault}" />
+                    <atom:OptionButton Tag="{x:Static atom:SizeType.Small}" Content="{gallery:SelectShowCaseLangResource P2ContentSmall}" />
+                </atom:OptionButtonGroup>
+
+                <atom:Select Name="SizeSelect1"
+                             Mode="Single"
+                             SizeType="{Binding SelectSizeType}"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
+                             IsFilterEnabled="False"
+                             DefaultValues="a10"
+                             Width="200"
+                             OptionsSource="{Binding RandomOptions}" />
+
+                <atom:Select Mode="Multiple"
+                             Name="SizeSelect2"
+                             SizeType="{Binding SelectSizeType}"
+                             PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
+                             IsAllowClear="True"
+                             HorizontalAlignment="Stretch"
+                             IsFilterEnabled="False"
+                             DefaultValues="a10, c12"
+                             OptionsSource="{Binding RandomOptions}" />
+            </StackPanel>
+
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource VariantsTitle}"
+            Description="{gallery:SelectShowCaseLangResource VariantsDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <UniformGrid Columns="2" ColumnSpacing="10">
+                    <atom:Select Mode="Single"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextOutline}"
+                                 HorizontalAlignment="Stretch"
+                                 OptionsSource="{Binding VariantOptions}" />
+                    <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 DefaultValues="lucy"
+                                 IsFilterEnabled="True"
+                                 OptionsSource="{Binding VariantOptions}" />
+                </UniformGrid>
+
+                <UniformGrid Columns="2" ColumnSpacing="10">
+                    <atom:Select Mode="Single"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextFilled}"
+                                 HorizontalAlignment="Stretch"
+                                 StyleVariant="Filled"
+                                 OptionsSource="{Binding VariantOptions}" />
+                    <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 StyleVariant="Filled"
+                                 IsFilterEnabled="True"
+                                 DefaultValues="lucy"
+                                 OptionsSource="{Binding VariantOptions}" />
+                </UniformGrid>
+
+                <UniformGrid Columns="2" ColumnSpacing="10">
+                    <atom:Select Mode="Single"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextBorderless}"
+                                 HorizontalAlignment="Stretch"
+                                 StyleVariant="Borderless"
+                                 OptionsSource="{Binding VariantOptions}" />
+                    <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 StyleVariant="Borderless"
+                                 IsFilterEnabled="True"
+                                 DefaultValues="lucy"
+                                 OptionsSource="{Binding VariantOptions}" />
+                </UniformGrid>
+            </StackPanel>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource StatusTitle}"
+            Description="{gallery:SelectShowCaseLangResource StatusDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <atom:Select Mode="Single" HorizontalAlignment="Stretch" Status="Error" />
+                <atom:Select Mode="Single" HorizontalAlignment="Stretch" Status="Warning" />
+            </StackPanel>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource PrefixAndSuffixTitle}"
+            Description="{gallery:SelectShowCaseLangResource PrefixAndSuffixDescription}" IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Select Mode="Single"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextOutline}"
+                                 DefaultValues="lucy"
+                                 HorizontalAlignment="Stretch"
+                                 Width="200"
+                                 ContentLeftAddOn="{gallery:SelectShowCaseLangResource P2ContentUser}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+                    <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 DefaultValues="lucy"
+                                 IsFilterEnabled="True"
+                                 Width="200"
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+
+                    <atom:Select Mode="Single" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 DefaultValues="lucy"
+                                 IsFilterEnabled="True"
+                                 Width="200"
+                                 IsEnabled="False"
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Select Mode="Multiple"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextOutline}"
+                                 DefaultValues="lucy"
+                                 HorizontalAlignment="Stretch"
+                                 Width="200"
+                                 ContentLeftAddOn="{gallery:SelectShowCaseLangResource P2ContentUser}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+                    <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 DefaultValues="lucy"
+                                 IsFilterEnabled="True"
+                                 Width="200"
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+
+                    <atom:Select Mode="Multiple" PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 HorizontalAlignment="Stretch"
+                                 DefaultValues="lucy"
+                                 IsFilterEnabled="True"
+                                 Width="200"
+                                 IsEnabled="False"
+                                 ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=SmileOutlined}"
+                                 OptionsSource="{Binding PrefixSuffixOptions}" />
+                </StackPanel>
+            </StackPanel>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>
