@@ -827,6 +827,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             {
                 if (item is INavMenuNode menuNode)
                 {
+                    if (menuNode is NavMenuNode navMenuNode)
+                    {
+                        IResourceHost resourceHost = OwnerMenu is not null ? OwnerMenu : this;
+                        nodeBindingDisposables.Add(navMenuNode.AttachResourceHost(resourceHost));
+                    }
+
                     menuItem.SetCurrentValue(NavMenuItem.HeaderProperty, menuNode);
                     nodeBindingDisposables.Add(BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Icon),
                         node => node.Icon, menuItem, NavMenuItem.IconProperty));

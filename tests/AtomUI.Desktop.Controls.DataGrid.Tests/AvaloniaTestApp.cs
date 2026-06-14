@@ -3,8 +3,10 @@ using AtomUI;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Headless;
+using Xunit;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUI.Desktop.Controls.Tests.DataGrid.TestAppBuilder))]
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace AtomUI.Desktop.Controls.Tests.DataGrid;
 

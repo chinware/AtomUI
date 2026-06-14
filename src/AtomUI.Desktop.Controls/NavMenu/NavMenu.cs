@@ -298,6 +298,11 @@ public class NavMenu : ItemsControl,
             {
                 if (item is INavMenuNode menuNode)
                 {
+                    if (menuNode is NavMenuNode navMenuNode)
+                    {
+                        nodeBindingDisposables.Add(navMenuNode.AttachResourceHost(this));
+                    }
+
                     menuItem.SetCurrentValue(NavMenuItem.HeaderProperty, menuNode);
                     nodeBindingDisposables.Add(BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Icon),
                         node => node.Icon, menuItem, NavMenuItem.IconProperty));
