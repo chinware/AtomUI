@@ -2,18 +2,1739 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Form.FormShowCase"
              xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Form"
              x:DataType="viewModels:FormViewModel">
-    <atom:TabControl Name="ScenarioTabs"
-                     SizeType="Large"
-                     SelectedIndex="0">
-        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioBasic}" Tag="Basic" />
-        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioLayout}" Tag="Layout" />
-        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioStates}" Tag="States" />
-        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioValidation}" Tag="Validation" />
-        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioDynamic}" Tag="Dynamic" />
-        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioPresets}" Tag="Presets" />
-        <atom:TabItem Header="{gallery:FormShowCaseLangResource ScenarioControls}" Tag="Controls" />
-    </atom:TabControl>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://AtomUIGallery/ShowCases/DataEntry/Form/ShowCaseControls/FormThemes.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="Form"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:FormShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:FormShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:FormShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:FormShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
+
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="220" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:FormShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:FormShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:FormShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="Form"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:FormShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:FormShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:FormShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
+                                       ContentMargin="28,10,28,28">
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource BasicUsageTitle}"
+            Description="{gallery:FormShowCaseLangResource BasicUsageDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="8*"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left"
+                       Name="BasicForm"
+                       AttachedToVisualTree="HandleBasicFormAttached">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextUsername}"
+                               FieldName="username"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourUsername}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </atom:FormItem>
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPassword}"
+                               FieldName="password"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourPassword}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit RevealPassword="False"
+                                   PasswordChar="•"
+                                   IsEnableRevealButton="True" />
+                </atom:FormItem>
+                <atom:FormItem FieldName="remember">
+                    <atom:CheckBox Content="{gallery:FormShowCaseLangResource P2ContentRememberMe}" />
+                </atom:FormItem>
+
+                <atom:FormActionsItem>
+                    <atom:SubmitButton />
+                </atom:FormActionsItem>
+            </atom:Form>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource FormMethodsTitle}"
+            Description="{gallery:FormShowCaseLangResource FormMethodsDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="8*"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left">
+                <gallery:NoteFormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextNote}"
+                                      FieldName="note"
+                                      IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseEnterNote}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </gallery:NoteFormItem>
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextGender}"
+                               FieldName="gender"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseEnterGender}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:Select IsAllowClear="True"
+                                 PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectAOptionAndChangeInputTextAbove}"
+                                 HorizontalAlignment="Stretch"
+                                 OptionsSource="{Binding GenderOptions}" />
+                </atom:FormItem>
+                <gallery:CustomizeGenderFormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCustomizeGender}"
+                                                 FieldName="customizeGender"
+                                                 IsRequired="True"
+                                                 IsVisible="False">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseEnterCustomizeGender}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </gallery:CustomizeGenderFormItem>
+
+                <atom:FormActionsItem>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <atom:SubmitButton />
+                        <atom:ResetButton />
+                    </StackPanel>
+                </atom:FormActionsItem>
+            </atom:Form>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource FormLayoutTitle}"
+            Description="{gallery:FormShowCaseLangResource FormLayoutDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FormShowCaseLangResource P2TextFormLayout}" />
+                    <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleFormLayoutOptionCheckedChanged">
+                        <atom:OptionButton  Tag="{x:Static atom:FormLayout.Horizontal}" Content="{gallery:FormShowCaseLangResource P2ContentHorizontal}" />
+                        <atom:OptionButton Tag="{x:Static atom:FormLayout.Vertical}" Content="{gallery:FormShowCaseLangResource P2ContentVertical}" />
+                        <atom:OptionButton IsChecked="True" Tag="{x:Static atom:FormLayout.Inline}" Content="{gallery:FormShowCaseLangResource P2ContentInline}" />
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+
+                <atom:Form LabelColInfo="8*"
+                           WrapperColInfo="16*"
+                           Name="LayoutCaseForm"
+                           AttachedToVisualTree="HandleLayoutCaseFormAttached"
+                           DetachedFromVisualTree="HandleLayoutCaseFormDetached"
+                           FormLayout="{Binding FormLayout}"
+                           HorizontalAlignment="Left"
+                           MinWidth="600">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldA}" FieldName="FieldA">
+                        <atom:LineEdit MinWidth="160"/>
+                    </atom:FormItem>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldB}" FieldName="Field B">
+                        <atom:LineEdit MinWidth="160"/>
+                    </atom:FormItem>
+
+                    <atom:FormActionsItem>
+                        <atom:SubmitButton />
+                    </atom:FormActionsItem>
+                </atom:Form>
+            </StackPanel>
+
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource FormLayoutTitle}"
+            Description="{gallery:FormShowCaseLangResource FormLayoutDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <atom:Form FormLayout="Horizontal">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextHorizontal}" FieldName="horizontal"
+                                   LabelColInfo="4*"
+                                   WrapperColInfo="20*"
+                                   IsRequired="True"
+                                   Layout="Horizontal">
+                        <atom:LineEdit/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextVertical}"
+                                   FieldName="vertical"
+                                   IsRequired="True"
+                                   Layout="Vertical">
+                        <atom:LineEdit/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextVertical2}"
+                                   FieldName="vertical2"
+                                   IsRequired="True"
+                                   Layout="Vertical">
+                        <atom:LineEdit/>
+                    </atom:FormItem>
+                </atom:Form>
+
+                <atom:Separator/>
+
+                <atom:Form FormLayout="Vertical">
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextVertical}"
+                                   FieldName="vertical"
+                                   IsRequired="True"
+                                   Layout="Vertical">
+                        <atom:LineEdit/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextVertical2}"
+                                   FieldName="vertical2"
+                                   IsRequired="True"
+                                   Layout="Vertical">
+                        <atom:LineEdit/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextHorizontal}" FieldName="horizontal"
+                                   LabelColInfo="4*"
+                                   WrapperColInfo="20*"
+                                   IsRequired="True"
+                                   Layout="Horizontal">
+                        <atom:LineEdit/>
+                    </atom:FormItem>
+                </atom:Form>
+            </StackPanel>
+
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource LabelCanWrapTitle}"
+            Description="{gallery:FormShowCaseLangResource LabelCanWrapDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="120"
+                       WrapperColInfo="*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left"
+                       LabelWrapping="Wrap">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextNormalLabel}"
+                               FieldName="username"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourUsername}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </atom:FormItem>
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextASuperLongLabelText}"
+                               FieldName="password"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourUsername}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </atom:FormItem>
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextASuperLongLabelText}"
+                               FieldName="password1">
+                    <atom:LineEdit />
+                </atom:FormItem>
+
+                <atom:FormActionsItem>
+                    <atom:SubmitButton />
+                </atom:FormActionsItem>
+            </atom:Form>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource FormLayoutTitle}"
+            Description="{gallery:FormShowCaseLangResource FormLayoutDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <StackPanel Orientation="Vertical" Spacing="5">
+                <atom:CheckBox IsChecked="{Binding IsFormDisabled, Mode=TwoWay}" Content="{gallery:FormShowCaseLangResource P2ContentFormDisabled}" />
+                <atom:Form LabelColInfo="8*"
+                           WrapperColInfo="16*"
+                           MinWidth="600"
+                           HorizontalAlignment="Left"
+                           IsEnabled="{Binding IsFormDisabled, Converter={x:Static BoolConverters.Not}}">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCheckbox}" FieldName="checkbox">
+                        <atom:CheckBox Content="{gallery:FormShowCaseLangResource P2ContentCheckbox}" />
+                    </atom:FormItem>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRadio}" FieldName="radio">
+                        <atom:RadioButtonGroup>
+                            <atom:RadioButton Content="{gallery:FormShowCaseLangResource P2ContentApple}" />
+                            <atom:RadioButton Content="{gallery:FormShowCaseLangResource P2ContentPear}" />
+                        </atom:RadioButtonGroup>
+                    </atom:FormItem>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInput}" FieldName="input">
+                        <atom:LineEdit/>
+                    </atom:FormItem>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelect}" FieldName="select">
+                        <atom:Select HorizontalAlignment="Stretch"
+                                     OptionsSource="{Binding DemoSelectOptions}" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTreeSelect}" FieldName="treeSelect">
+                        <atom:TreeSelect HorizontalAlignment="Stretch"
+                                         ItemsSource="{Binding DemoTreeNodes}" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCascader}" FieldName="cascader">
+                        <atom:Cascader HorizontalAlignment="Stretch"
+                                       OptionsSource="{Binding DemoCascaderOptions}" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDatePicker}" FieldName="datePicker">
+                        <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectDate}"/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRangePicker}" FieldName="rangePicker">
+                        <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                              SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInputNumber}" FieldName="inputNumber">
+                        <atom:NumericUpDown Width="80"/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTextArea}" FieldName="textArea">
+                        <atom:TextArea Lines="4"/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSwitch}" FieldName="switch">
+                        <atom:ToggleSwitch/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextUpload}" FieldName="upload">
+                        <atom:Upload Name="AvatarDemoPictureCardUpload" ListType="PictureCard">
+                            <StackPanel Orientation="Vertical">
+                                <Panel>
+                                    <antdicons:PlusOutlined IsVisible="{Binding IsTaskRunning ,RelativeSource={RelativeSource AncestorType=atom:Upload}, Converter={x:Static BoolConverters.Not}}"
+                                                            StrokeBrush="{Binding Foreground ,RelativeSource={RelativeSource AncestorType=atom:Upload}}"/>
+                                    <antdicons:LoadingOutlined IsVisible="{Binding IsTaskRunning ,RelativeSource={RelativeSource AncestorType=atom:Upload}}"
+                                                               StrokeBrush="{Binding Foreground ,RelativeSource={RelativeSource AncestorType=atom:Upload}}"
+                                                               LoadingAnimation="Spin"/>
+                                </Panel>
+                                <TextBlock Margin="0, 8, 0, 0" Text="{gallery:FormShowCaseLangResource P2TextUpload}" />
+                            </StackPanel>
+                        </atom:Upload>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextButton}" FieldName="button">
+                        <atom:Button Content="{gallery:FormShowCaseLangResource P2ContentButton}" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSlider}" FieldName="slider">
+                        <atom:Slider/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextColorPicker}" FieldName="colorPicker">
+                        <atom:ColorPicker/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRate}" FieldName="rate">
+                        <atom:Rate/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextMentions}" FieldName="mentions">
+                        <atom:Mentions DefaultValue="@afc163"/>
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTree}" FieldName="tree">
+                        <atom:TreeView>
+                            <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderParentN1}" ItemKey="0-0">
+                                <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderChildN1N1}" ItemKey="0-0-0">
+                                    <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderGrandchildN1N1N1}" ItemKey="0-0-0-0"/>
+                                </atom:TreeViewItem>
+                                <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderChildN1N2}" ItemKey="0-0-1"/>
+                            </atom:TreeViewItem>
+                            <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderParentN2}" ItemKey="0-1">
+                                <atom:TreeViewItem Header="{gallery:FormShowCaseLangResource P2HeaderChildN2N1}" ItemKey="0-1-0"/>
+                            </atom:TreeViewItem>
+                        </atom:TreeView>
+                    </atom:FormItem>
+                </atom:Form>
+            </StackPanel>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource FormVariantsTitle}"
+            Description="{gallery:FormShowCaseLangResource FormVariantsDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FormShowCaseLangResource P2TextFormVariant}" />
+                    <atom:Segmented SelectionChanged="HandleFormStyleVariantChanged">
+                        <atom:SegmentedItem IsSelected="True" Tag="{x:Static atom:InputControlStyleVariant.Outlined}" Content="{gallery:FormShowCaseLangResource P2ContentOutlined}" />
+                        <atom:SegmentedItem Tag="{x:Static atom:InputControlStyleVariant.Filled}" Content="{gallery:FormShowCaseLangResource P2ContentFilled}" />
+                        <atom:SegmentedItem Tag="{x:Static atom:InputControlStyleVariant.Borderless}" Content="{gallery:FormShowCaseLangResource P2ContentBorderless}" />
+                        <atom:SegmentedItem Tag="{x:Static atom:InputControlStyleVariant.Underlined}" Content="{gallery:FormShowCaseLangResource P2ContentUnderlined}" />
+                    </atom:Segmented>
+                </StackPanel>
+
+                <atom:Form LabelColInfo="8*"
+                           WrapperColInfo="16*"
+                           MinWidth="600"
+                           HorizontalAlignment="Left"
+                           StyleVariant="{Binding FormStyleVariant}">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInput}"
+                                   FieldName="input"
+                                   IsRequired="True">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
+                        <atom:LineEdit />
+                    </atom:FormItem>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInputNumber}"
+                                   FieldName="inputNumber"
+                                   IsRequired="True">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
+                        <atom:NumericUpDown Width="200" />
+                    </atom:FormItem>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTextArea}"
+                                   FieldName="textArea"
+                                   IsRequired="True">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
+                        <atom:TextArea Lines="4" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextMentions}"
+                                   FieldName="mentions"
+                                   IsRequired="True">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
+                        <atom:Mentions />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelect}"
+                                   FieldName="select"
+                                   IsRequired="True">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
+                        <atom:Select HorizontalAlignment="Stretch" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCascader}"
+                                   FieldName="cascader"
+                                   IsRequired="True">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
+                        <atom:Cascader HorizontalAlignment="Stretch" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTreeSelect}"
+                                   FieldName="treeSelect"
+                                   IsRequired="True">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
+                        <atom:TreeSelect HorizontalAlignment="Stretch" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDatePicker}"
+                                   FieldName="datePicker"
+                                   IsRequired="True">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
+                        <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRangePicker}"
+                                   FieldName="rangePicker"
+                                   IsRequired="True">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
+                        <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                              SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
+                    </atom:FormItem>
+
+                    <atom:FormActionsItem>
+                        <atom:SubmitButton />
+                    </atom:FormActionsItem>
+                </atom:Form>
+            </StackPanel>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource RequiredStyleTitle}"
+            Description="{gallery:FormShowCaseLangResource RequiredStyleDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FormShowCaseLangResource P2TextRequiredMark}" />
+                    <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleFormRequiredMarkChanged">
+                        <atom:OptionButton IsChecked="True" Tag="{x:Static atom:FormRequiredMark.Default}" Content="{gallery:FormShowCaseLangResource P2ContentDefault}" />
+                        <atom:OptionButton Tag="{x:Static atom:FormRequiredMark.Optional}" Content="{gallery:FormShowCaseLangResource P2ContentOptional}" />
+                        <atom:OptionButton Tag="{x:Static atom:FormRequiredMark.Hidden}" Content="{gallery:FormShowCaseLangResource P2ContentHidden}" />
+                        <atom:OptionButton Tag="{x:Static atom:FormRequiredMark.Customize}" Content="{gallery:FormShowCaseLangResource P2ContentCustomize}" />
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+
+                <atom:Form LabelColInfo="8*"
+                           WrapperColInfo="16*"
+                           HorizontalAlignment="Left"
+                           MinWidth="600"
+                           FormLayout="Horizontal"
+                           RequiredMark="{Binding FormRequiredMark}">
+                    <atom:Form.CustomRequireMark>
+                        <atom:Tag TagColor="Error" Text="{gallery:FormShowCaseLangResource P2ContentRequired}" />
+                    </atom:Form.CustomRequireMark>
+                    <atom:Form.CustomOptionalMark>
+                        <atom:Tag TagColor="Warning" Text="{gallery:FormShowCaseLangResource P2ContentOptional2}" />
+                    </atom:Form.CustomOptionalMark>
+                    <atom:FormItem IsRequired="True" LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldA}" FieldName="FieldA" Tooltip="{gallery:FormShowCaseLangResource P2TooltipThisIsARequiredField}">
+                        <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextInputPlaceholder}"/>
+                    </atom:FormItem>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldB}" FieldName="Field B" Tooltip="{gallery:FormShowCaseLangResource P2TooltipTooltipWithCustomizeIcon}"
+                                   TooltipIcon="{antdicons:AntDesignIconProvider InfoCircleOutlined}">
+                        <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextInputPlaceholder}"/>
+                    </atom:FormItem>
+                    <atom:FormActionsItem>
+                        <atom:SubmitButton/>
+                    </atom:FormActionsItem>
+                </atom:Form>
+            </StackPanel>
+
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource RequiredStyleTitle}"
+            Description="{gallery:FormShowCaseLangResource RequiredStyleDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <StackPanel Orientation="Vertical" Spacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FormShowCaseLangResource P2TextRequiredMark}" />
+                    <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleFormSizeTypeChanged">
+                        <atom:OptionButton Tag="{x:Static atom:SizeType.Small}" Content="{gallery:FormShowCaseLangResource P2ContentSmall}" />
+                        <atom:OptionButton Tag="{x:Static atom:SizeType.Middle}" IsChecked="True" Content="{gallery:FormShowCaseLangResource P2ContentMiddle}" />
+                        <atom:OptionButton Tag="{x:Static atom:SizeType.Large}" Content="{gallery:FormShowCaseLangResource P2ContentLarge}" />
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+
+                <atom:Form LabelColInfo="8*"
+                           WrapperColInfo="16*"
+                           MinWidth="600"
+                           HorizontalAlignment="Left"
+                           SizeType="{Binding FormSizeType}">
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInput}"
+                                   FieldName="input">
+                        <atom:LineEdit />
+                    </atom:FormItem>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInputNumber}"
+                                   FieldName="inputNumber">
+                        <atom:NumericUpDown Width="200" />
+                    </atom:FormItem>
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSwitch}"
+                                   FieldName="switch">
+                        <atom:ToggleSwitch />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextMentions}"
+                                   FieldName="mentions">
+                        <atom:Mentions />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelect}"
+                                   FieldName="select">
+                        <atom:Select HorizontalAlignment="Stretch"
+                                     Mode="Multiple"
+                                     OptionsSource="{Binding RequiredStyleSelectOptions}" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCascader}"
+                                   FieldName="cascader">
+                        <atom:Cascader HorizontalAlignment="Stretch" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTreeSelect}"
+                                   FieldName="treeSelect">
+                        <atom:TreeSelect HorizontalAlignment="Stretch" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDatePicker}"
+                                   FieldName="datePicker">
+                        <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+                    </atom:FormItem>
+
+                    <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRangePicker}"
+                                   FieldName="rangePicker">
+                        <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                              SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
+                    </atom:FormItem>
+
+                    <atom:FormActionsItem>
+                        <atom:SubmitButton />
+                    </atom:FormActionsItem>
+                </atom:Form>
+            </StackPanel>
+
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource NoBlockRuleTitle}"
+            Description="{gallery:FormShowCaseLangResource NoBlockRuleDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="8*"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left"
+                       Name="NoBlockRuleForm"
+                       Submitted="HandleNoBlockFormSubmitted"
+                       Validated="HandleNoBlockFormValidated">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextUrl}"
+                               FieldName="url"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseEnterURL}" />
+                            <atom:FormUrlValidator Message="{gallery:FormShowCaseLangResource P2MessageURLIsNotAValidUrl}" WarningOnly="True" />
+                            <atom:FormStringLengthValidator Message="{gallery:FormShowCaseLangResource P2MessageURLMustBeAtLeastN6Characters}"
+                                                            MinimumLength="6"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </atom:FormItem>
+
+                <atom:FormActionsItem>
+                   <StackPanel Orientation="Horizontal" Spacing="10">
+                       <atom:SubmitButton />
+                       <atom:Button ButtonType="Default" Click="HandleFillClicked" Content="{gallery:FormShowCaseLangResource P2ContentFill}" />
+                   </StackPanel>
+                </atom:FormActionsItem>
+            </atom:Form>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource ValidateTriggerTitle}"
+            Description="{gallery:FormShowCaseLangResource ValidateTriggerDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="8*"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left"
+                       IsValidateFeedbackEnabled="True">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldA}"
+                               FieldName="fieldA"
+                               ValidateTrigger="OnBlur">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringLengthValidator Message="{gallery:FormShowCaseLangResource P2MessageFieldAMustBeUpToN3Characters}"
+                                                            MaximumLength="3"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextValidateRequiredOnblur}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldB}"
+                               FieldName="fieldB"
+                               ValidateDebounce="00:00:01">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringLengthValidator Message="{gallery:FormShowCaseLangResource P2MessageFieldAMustBeUpToN3Characters}"
+                                                            MaximumLength="3"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextValidateRequiredDebounceAfterN1s}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFieldC}"
+                               FieldName="fieldC"
+                               ValidateStrategy="StopWhenFirstFailed">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringLengthValidator Message="{gallery:FormShowCaseLangResource P2MessageFieldAMustBeUpToN6Characters}"
+                                                            MaximumLength="6"/>
+                            <atom:FormStringLengthValidator Message="{gallery:FormShowCaseLangResource P2MessageContinueInputToExceedN6Chars}"
+                                                            MaximumLength="3"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextValidateOneByOne}"/>
+                </atom:FormItem>
+            </atom:Form>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource ValidateOnlyTitle}"
+            Description="{gallery:FormShowCaseLangResource ValidateOnlyDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="8*"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left"
+                       FormLayout="Vertical">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextName}"
+                               FieldName="name"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseEnterName}"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextAge}"
+                               FieldName="age"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseEnterAge}"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </atom:FormItem>
+
+                <atom:FormActionsItem>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <atom:SubmitButton IsWatchValidateResult="True"/>
+                        <atom:ResetButton />
+                    </StackPanel>
+                </atom:FormActionsItem>
+            </atom:Form>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource TimeRelatedControlsTitle}"
+            Description="{gallery:FormShowCaseLangResource TimeRelatedControlsDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="200"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDatePicker}"
+                               FieldName="datePicker"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectTime}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectDate2}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDatePickerShowTime}"
+                               FieldName="datePickerShowTime"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectTime}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectDate2}" IsShowTime="True"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRangePicker}"
+                               FieldName="rangePicker"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectTime}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                          SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRangePickerShowTime}"
+                               FieldName="rangePickerShowTime"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectTime}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                          SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"
+                                          IsShowTime="True"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextTimePicker}"
+                               FieldName="timePicker"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectTime}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:TimePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartTime}"/>
+                </atom:FormItem>
+
+                <atom:FormActionsItem>
+                    <atom:SubmitButton/>
+                </atom:FormActionsItem>
+            </atom:Form>
+
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource CustomizedValidationTitle}"
+            Description="{gallery:FormShowCaseLangResource CustomizedValidationDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="200"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFail}"
+                               FieldName="fail"
+                               Help="{gallery:FormShowCaseLangResource P2HelpShouldBeCombinationOfNumbersAndAlphabets}">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextUnavailableChoice}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
+                               FieldName="warning">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextWarning}" InnerLeftContent="{antdicons:AntDesignIconProvider SmileOutlined}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextValidating}"
+                               FieldName="validating"
+                               Help="{gallery:FormShowCaseLangResource P2HelpTheInformationIsBeingValidated}"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="True" Delay="00:01:00"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMTheContentIsBeingValidated}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSuccess}"
+                               FieldName="success"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="True"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMTheContent}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
+                               FieldName="warning"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMTheContent}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFail}"
+                               FieldName="fail"
+                               IsValidateFeedbackEnabled="True"
+                               Help="{gallery:FormShowCaseLangResource P2HelpShouldBeCombinationOfNumbersAndAlphabets}">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextUnavailableChoice}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSuccess}"
+                               FieldName="success"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectDate}" HorizontalAlignment="Stretch"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
+                               FieldName="warning"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:TimePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectTime}" HorizontalAlignment="Stretch"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFail}"
+                               FieldName="fail"
+                               IsValidateFeedbackEnabled="True"
+                               Help="{gallery:FormShowCaseLangResource P2HelpShouldBeCombinationOfNumbersAndAlphabets}">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextUnavailableChoice}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSuccess}"
+                               FieldName="success"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="True"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:DatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectDate}" HorizontalAlignment="Stretch"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
+                               FieldName="Warning"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:TimePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextSelectTime}" HorizontalAlignment="Stretch"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextError}"
+                               FieldName="error"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:RangeDatePicker PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextStartDate}"
+                                          SecondaryPlaceholderText="{gallery:FormShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"
+                                          HorizontalAlignment="Stretch"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextError}"
+                               FieldName="error"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:Select IsAllowClear="True"
+                                 PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMSelect}"
+                                 DefaultValues="1"
+                                 HorizontalAlignment="Stretch"
+                                 OptionsSource="{Binding ValidationSelectOptions}" />
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextValidating}"
+                               FieldName="validating"
+                               IsValidateFeedbackEnabled="True"
+                               Help="{gallery:FormShowCaseLangResource P2HelpSomethingBreaksTheRule}">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:Cascader IsAllowClear="True"
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMSelect}"
+                                   HorizontalAlignment="Stretch"
+                                   IsPopupMatchSelectWidth="False"
+                                   OptionsSource="{Binding ValidationCascaderOptions}" />
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
+                               FieldName="warning"
+                               IsValidateFeedbackEnabled="True"
+                               Help="{gallery:FormShowCaseLangResource P2HelpNeedToBeChecked}">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:TreeSelect IsAllowClear="True"
+                                     PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextIMTreeselect}"
+                                     HorizontalAlignment="Stretch"
+                                     IsPopupMatchSelectWidth="False"
+                                     ItemsSource="{Binding ValidationTreeNodes}" />
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSuccess}"
+                               FieldName="success"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="True"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:NumericUpDown IsAllowClear="True" HorizontalAlignment="Stretch"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSuccess}"
+                               FieldName="success"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="True"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit IsAllowClear="True" PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextWithAllowclear}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWarning}"
+                               FieldName="warning"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False" WarningOnly="True"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit RevealPassword="False"
+                                   PasswordChar="•"
+                                   IsEnableRevealButton="True"
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextWithInputPassword}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextError}"
+                               FieldName="error"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit RevealPassword="False"
+                                   PasswordChar="•"
+                                   IsAllowClear="True"
+                                   IsEnableRevealButton="True"
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextWithInputPasswordAndAllowclear}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFail}"
+                               FieldName="fail"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:Mentions/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextFail}"
+                               FieldName="fail"
+                               Help="{gallery:FormShowCaseLangResource P2HelpShouldHaveSomething}"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:TextArea IsShowCount="True"
+                                   IsAllowClear="True"/>
+                </atom:FormItem>
+
+                <atom:FormActionsItem>
+                    <atom:SubmitButton/>
+                </atom:FormActionsItem>
+            </atom:Form>
+
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource DynamicFormItemTitle}"
+            Description="{gallery:FormShowCaseLangResource DynamicFormItemDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="8*"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left"
+                       Name="DynamicForm">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPassengers}"
+                               FieldName="passengers">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputPassengerSNameOrDeleteThisField}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </atom:FormItem>
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPassengers1}"
+                               FieldName="passengers1">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputPassengerSNameOrDeleteThisField}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </atom:FormItem>
+
+                <atom:FormActionsItem>
+                    <atom:Button ButtonType="Dashed" HorizontalAlignment="Stretch" Icon="{antdicons:AntDesignIconProvider PlusOutlined}"
+                                 Click="HandleAddFormItem" Content="{gallery:FormShowCaseLangResource P2ContentAddField}" />
+                </atom:FormActionsItem>
+                <atom:FormActionsItem>
+                    <atom:Button ButtonType="Dashed" HorizontalAlignment="Stretch" Icon="{antdicons:AntDesignIconProvider PlusOutlined}"
+                                 Click="HandleAddFormItemAtHead" Content="{gallery:FormShowCaseLangResource P2ContentAddFieldAtHead}" />
+                </atom:FormActionsItem>
+                <atom:FormActionsItem>
+                    <atom:SubmitButton />
+                </atom:FormActionsItem>
+            </atom:Form>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource InlineLoginFormTitle}"
+            Description="{gallery:FormShowCaseLangResource InlineLoginFormDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="8*"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left"
+                       FormLayout="Inline">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextUsername}"
+                               FieldName="username">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourUsername}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit InnerLeftContent="{antdicons:AntDesignIconProvider UserOutlined}"
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextUsername}"
+                                   Width="200"/>
+                </atom:FormItem>
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPassword}"
+                               FieldName="password">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourPassword}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit InnerLeftContent="{antdicons:AntDesignIconProvider LockOutlined}"
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPassword}"
+                                   Width="200"/>
+                </atom:FormItem>
+                <atom:FormActionsItem>
+                    <atom:SubmitButton IsWatchValidateResult="True" Content="{gallery:FormShowCaseLangResource P2ContentLogIn}"/>
+                </atom:FormActionsItem>
+            </atom:Form>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource LoginFormTitle}"
+            Description="{gallery:FormShowCaseLangResource LoginFormDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="8*"
+                       WrapperColInfo="16*"
+                       MinWidth="400"
+                       HorizontalAlignment="Left"
+                       IsHideItemLabel="True">
+                <atom:FormItem FieldName="username">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourUsername}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit InnerLeftContent="{antdicons:AntDesignIconProvider UserOutlined}"
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextUsername}"/>
+                </atom:FormItem>
+                <atom:FormItem FieldName="password">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourPassword}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit InnerLeftContent="{antdicons:AntDesignIconProvider LockOutlined}"
+                                   PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPassword}"/>
+                </atom:FormItem>
+                <atom:FormItem FieldName="remember">
+                    <atom:CheckBox IsChecked="True" Content="{gallery:FormShowCaseLangResource P2ContentRememberMe}" />
+                    <atom:FormItem.Extra>
+                        <atom:HyperLinkButton Content="{gallery:FormShowCaseLangResource P2ContentForgotPassword}" />
+                    </atom:FormItem.Extra>
+                </atom:FormItem>
+                <atom:FormActionsItem>
+                    <StackPanel>
+                        <atom:SubmitButton Content="{gallery:FormShowCaseLangResource P2ContentLogIn}" HorizontalAlignment="Stretch"/>
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <TextBlock Text="{gallery:FormShowCaseLangResource P2TextOr}" />
+                            <atom:HyperLinkTextBlock Text="{gallery:FormShowCaseLangResource P2ContentRegisterNow}" />
+                        </StackPanel>
+                    </StackPanel>
+                </atom:FormActionsItem>
+            </atom:Form>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource RegistrationTitle}"
+            Description="{gallery:FormShowCaseLangResource RegistrationDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="8*"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextEmail}"
+                               FieldName="email"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourEMail}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </atom:FormItem>
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPassword}"
+                               FieldName="password"
+                               IsRequired="True"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourPassword}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit RevealPassword="False"
+                                   PasswordChar="•"
+                                   IsEnableRevealButton="True" />
+                </atom:FormItem>
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextConfirmPassword}"
+                               FieldName="confirm"
+                               IsRequired="True"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseConfirmYourPassword}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit RevealPassword="False"
+                                   PasswordChar="•"
+                                   IsEnableRevealButton="True" />
+                </atom:FormItem>
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextNickname}"
+                               FieldName="nickname"
+                               IsRequired="True"
+                               Tooltip="{gallery:FormShowCaseLangResource P2TooltipWhatDoYouWantOthersToCallYou}">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourNickname}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit />
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextHabitualResidence}"
+                               FieldName="residence"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectYourHabitualResidence}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:Cascader HorizontalAlignment="Stretch"
+                                   IsAllowClear="True"
+                                   OptionsSource="{Binding PresetCascaderOptions}" />
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPhoneNumber}"
+                               FieldName="phone"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputYourPhoneNumber}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <gallery:PhoneNumber/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDonation}"
+                               FieldName="donation"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputDonationAmount}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <gallery:Donation/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextWebsite}"
+                               FieldName="website"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputWebsite}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:LineEdit PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextWebsite}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextIntro}"
+                               FieldName="intro"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputIntro}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:TextArea IsShowCount="True" MaxLength="100"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextGender}"
+                               FieldName="gender"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectGender}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:Select DefaultValues="male"
+                                 HorizontalAlignment="Stretch"
+                                 OptionsSource="{Binding PresetGenderOptions}" />
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCaptcha}"
+                               FieldName="captcha"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInputTheCaptchaYouGot}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <gallery:Captcha/>
+                </atom:FormItem>
+
+                <atom:FormItem FieldName="agreement"
+                               IsRequired="True">
+                    <atom:CheckBox IsChecked="True">
+                       <StackPanel Orientation="Horizontal" Spacing="5">
+                           <TextBlock Text="{gallery:FormShowCaseLangResource P2TextIHaveReadThe}" />
+                           <atom:HyperLinkTextBlock Text="{gallery:FormShowCaseLangResource P2ContentAgreement}" />
+                       </StackPanel>
+                    </atom:CheckBox>
+                </atom:FormItem>
+                <atom:FormActionsItem>
+                    <atom:SubmitButton Content="{gallery:FormShowCaseLangResource P2ContentRegister}"/>
+                </atom:FormActionsItem>
+            </atom:Form>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource CustomizedFormControlsTitle}"
+            Description="{gallery:FormShowCaseLangResource CustomizedFormControlsDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="8*"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left"
+                       FormLayout="Inline">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPrice}"
+                               FieldName="price"
+                               Width="350">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <gallery:PriceValidator Message="{gallery:FormShowCaseLangResource P2MessagePriceMustBeGreaterThanZero}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <gallery:PriceInput />
+                </atom:FormItem>
+                <atom:FormActionsItem>
+                    <atom:SubmitButton />
+                </atom:FormActionsItem>
+            </atom:Form>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:FormShowCaseLangResource OtherFormControlsTitle}"
+            Description="{gallery:FormShowCaseLangResource OtherFormControlsDescription}"
+            IsOccupyEntireRow="True"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:FormViewModel">
+            <atom:Form LabelColInfo="200"
+                       WrapperColInfo="16*"
+                       MinWidth="600"
+                       HorizontalAlignment="Left">
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextPlainText}"
+                               FieldName="plainText">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormAssertValidator AssertResult="False" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:TextBlock Text="{gallery:FormShowCaseLangResource P2TextChina}"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelect}"
+                               FieldName="select"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectYourCountry}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:Select PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPleaseSelectACountry}"
+                                 HorizontalAlignment="Stretch"
+                                 OptionsSource="{Binding CountryOptions}" />
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSelectMultiple}"
+                               FieldName="select-multiple"
+                               IsValidateFeedbackEnabled="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseSelectYourFavouriteColors}" />
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:Select PlaceholderText="{gallery:FormShowCaseLangResource P2PlaceholderTextPleaseSelectFavouriteColors}"
+                                 HorizontalAlignment="Stretch"
+                                 Mode="Multiple"
+                                 IsAllowClear="True"
+                                 OptionsSource="{Binding ColorOptions}" />
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextInputNumber}" FieldName="inputNumber">
+                   <atom:FormItemDecorator>
+                       <atom:NumericUpDown Minimum="1" Maximum="10" Width="120"/>
+                       <atom:FormItemDecorator.Extra>
+                           machines
+                       </atom:FormItemDecorator.Extra>
+                   </atom:FormItemDecorator>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSwitch}" FieldName="switch">
+                    <atom:ToggleSwitch/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextSlider}" FieldName="slider">
+                    <atom:Slider Name="FormSliderItem" AttachedToVisualTree="HandleFormSliderItemAttached" Minimum="0" Maximum="100"/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRadioGroup}" FieldName="radioGroup">
+                    <atom:RadioButtonGroup>
+                        <atom:RadioButton Tag="a" Content="{gallery:FormShowCaseLangResource P2ContentItemN1}" />
+                        <atom:RadioButton Tag="b" Content="{gallery:FormShowCaseLangResource P2ContentItemN2}" />
+                        <atom:RadioButton Tag="c" Content="{gallery:FormShowCaseLangResource P2ContentItemN3}" />
+                    </atom:RadioButtonGroup>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextOptionButtonGroup}" FieldName="optionButtonGroup">
+                    <atom:OptionButtonGroup>
+                        <atom:OptionButton Tag="a" Content="{gallery:FormShowCaseLangResource P2ContentItemN1}" />
+                        <atom:OptionButton Tag="b" Content="{gallery:FormShowCaseLangResource P2ContentItemN2}" />
+                        <atom:OptionButton Tag="c" Content="{gallery:FormShowCaseLangResource P2ContentItemN3}" />
+                    </atom:OptionButtonGroup>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextCheckboxGroup}" FieldName="checkboxGroup">
+                    <atom:CheckBoxGroup Width="150" HorizontalAlignment="Left">
+                        <atom:CheckBox Tag="a" Content="{gallery:FormShowCaseLangResource P2ContentA}" />
+                        <atom:CheckBox Tag="b" IsChecked="True" IsEnabled="False" Content="{gallery:FormShowCaseLangResource P2ContentB}" />
+                        <atom:CheckBox Tag="c" Content="{gallery:FormShowCaseLangResource P2ContentC}" />
+                        <atom:CheckBox Tag="d" Content="{gallery:FormShowCaseLangResource P2ContentD}" />
+                        <atom:CheckBox Tag="e" Content="{gallery:FormShowCaseLangResource P2ContentE}" />
+                        <atom:CheckBox Tag="f" Content="{gallery:FormShowCaseLangResource P2ContentF}" />
+                    </atom:CheckBoxGroup>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextRate}" FieldName="rate">
+                    <atom:Rate/>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextUpload}" FieldName="upload"
+                               Help="{gallery:FormShowCaseLangResource P2HelpLongUpload}">
+                    <atom:Upload>
+                        <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:FormShowCaseLangResource P2ContentClickToUpload}" />
+                    </atom:Upload>
+                </atom:FormItem>
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextDragger}" FieldName="dragger"
+                               Margin="0, 10, 0, 0">
+                    <atom:Upload Name="DragAndDropUpload">
+                        <atom:UploadDefaultDropArea/>
+                    </atom:Upload>
+                </atom:FormItem>
+
+                <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextColorPicker}" FieldName="colorPicker"
+                               IsRequired="True">
+                    <atom:FormItem.Validators>
+                        <atom:FormValidatorProvider>
+                            <atom:FormNotNullValidator Message="{gallery:FormShowCaseLangResource P2MessageColorIsRequired}"/>
+                        </atom:FormValidatorProvider>
+                    </atom:FormItem.Validators>
+                    <atom:ColorPicker/>
+                </atom:FormItem>
+
+                <atom:FormActionsItem>
+                    <atom:SubmitButton/>
+                </atom:FormActionsItem>
+            </atom:Form>
+
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>

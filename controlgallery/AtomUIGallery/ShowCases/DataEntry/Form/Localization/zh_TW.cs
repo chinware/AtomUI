@@ -47,6 +47,48 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioDynamic = "動態";
     public const string ScenarioPresets = "預設";
     public const string ScenarioControls = "控件";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計 Token";
+    public const string PageSubtitle = "支持校驗、佈局和表單項協同的高效數據錄入。";
+    public const string PageDescription = "Form 用於協調字段、校驗規則、提交/重置動作以及可複用表單項控件，適合結構化數據錄入場景。";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ComponentCategory = "數據錄入";
+    public const string ComponentStatusStable = "穩定";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyFormLayout = "控制表單及表單項的佈局模式。";
+    public const string ApiPropertyLabelColInfo = "水平佈局中標籤區域的柵格列尺寸。";
+    public const string ApiPropertyWrapperColInfo = "水平佈局中字段包裹區域的柵格列尺寸。";
+    public const string ApiPropertyRequiredMark = "控制必填和可選標記的展示方式。";
+    public const string ApiPropertyValidateTrigger = "表單項的默認校驗觸發時機。";
+    public const string ApiPropertyIsValidateFeedbackEnabled = "為表單項顯示校驗反饋圖標和狀態。";
+    public const string ApiPropertyInitialValues = "表單創建時應用的初始值。";
+    public const string ApiPropertyValues = "表單收集到的當前字段值。";
+    public const string ApiPropertyFormItemFieldName = "用於將表單項綁定到表單值的字段鍵。";
+    public const string ApiPropertyFormItemValidators = "綁定到表單項的校驗規則。";
+    public const string ApiPropertyFormItemValidateTrigger = "覆蓋單個表單項的校驗觸發時機。";
+    public const string ApiPropertyFormItemHelp = "顯示在表單項下方的校驗或輔助文本。";
+    public const string ApiEventSubmitted = "表單提交動作觸發時拋出。";
+    public const string ApiEventValidated = "表單校驗完成後拋出。";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "範圍";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
+    public const string TokenNameLabelRequiredMarkColor = "必填標記顏色。";
+    public const string TokenNameLabelColor = "表單標籤文本顏色。";
+    public const string TokenNameLabelFontSize = "表單標籤字號。";
+    public const string TokenNameLabelColonMargin = "標籤冒號的水平外邊距。";
+    public const string TokenNameFormItemSpacing = "表單項之間的垂直間距。";
+    public const string TokenNameInlineItemSpacing = "行內佈局中表單項之間的間距。";
+    public const string TokenNameVerticalLabelPadding = "垂直佈局中標籤下方內邊距。";
+    public const string TokenNameVerticalLabelMargin = "垂直佈局中標籤外邊距。";
     public const string P2PlaceholderTextSelectAOptionAndChangeInputTextAbove = "請選擇一個選項並修改上方輸入內容";
     public const string P2HeaderMale = "男";
     public const string P2HeaderFemale = "女";
@@ -360,4 +402,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(FormShowCaseLangResourceKind);
 }
-
