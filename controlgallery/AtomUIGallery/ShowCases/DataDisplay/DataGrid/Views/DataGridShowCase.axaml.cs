@@ -1,7 +1,14 @@
+using System.ComponentModel;
 using AtomUI.Controls;
+using AtomUI.Desktop.Controls;
+using AtomUIGallery.Controls;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using DynamicData;
+using AtomDataGrid = AtomUI.Desktop.Controls.DataGrid;
+using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.DataGrid;
 
@@ -9,22 +16,17 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
 {
     public const string LanguageId = nameof(DataGridShowCase);
 
-    private const string BasicScenario       = "Basic";
-    private const string InteractionScenario = "Interaction";
-    private const string FilteringScenario   = "Filtering";
-    private const string StructureScenario   = "Structure";
-    private const string FixedScenario       = "Fixed";
-    private const string DragScenario        = "Drag";
-    private const string EditingScenario     = "Editing";
-    private const string PagingScenario      = "Paging";
+    private const string ExamplesScenario    = "Examples";
+    private const string ApiScenario         = "Api";
+    private const string DesignTokenScenario = "DesignToken";
 
-    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
+    private static int s_cellsEditableNewRowIndex = 1;
 
     public DataGridShowCase()
     {
         InitializeComponent();
         ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
-        EnsureSelectedScenarioContent();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -36,7 +38,7 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        ClearScenarioContent();
+        ClearLazyScenarioContent();
         if (DataContext is DataGridViewModel viewModel)
         {
             DataGridShowCaseDataSources.ClearAll(viewModel);
@@ -46,10 +48,13 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        foreach (var content in _scenarioCache.Values)
+        ExamplesContent.DataContext = DataContext;
+        foreach (var content in _lazyScenarioContentCache.Values)
         {
             content.DataContext = DataContext;
         }
+        RefreshMaterializedExampleDataGrids();
+        EnsureSelectedScenarioContent();
     }
 
     private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -59,63 +64,355 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
 
     private void EnsureSelectedScenarioContent()
     {
-        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
-            tabItem.Tag is not string scenario)
+        if (ScenarioTabs.SelectedItem is not ScenarioTabStripItem tabStripItem ||
+            tabStripItem.Tag is not string scenario)
         {
             return;
         }
 
-        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        var content = ResolveScenarioContent(scenario);
+        if (!ReferenceEquals(ScenarioContentHost.Content, content))
         {
-            content             = CreateScenarioContent(scenario);
-            content.DataContext = DataContext;
-            _scenarioCache.Add(scenario, content);
-        }
-
-        if (tabItem.Content != content)
-        {
-            tabItem.Content = content;
+            ScenarioContentHost.Content = content;
         }
     }
 
-    private void ClearScenarioContent()
+    private void ClearLazyScenarioContent()
     {
-        foreach (var item in ScenarioTabs.Items.OfType<AtomUI.Desktop.Controls.TabItem>())
+        if (ScenarioContentHost.Content is not null &&
+            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
         {
-            item.Content = null;
+            ScenarioContentHost.Content = null;
         }
-        _scenarioCache.Clear();
+        _lazyScenarioContentCache.Clear();
+    }
+
+    private Control ResolveScenarioContent(string scenario)
+    {
+        if (scenario == ExamplesScenario)
+        {
+            ExamplesContent.DataContext = DataContext;
+            return ExamplesContent;
+        }
+
+        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _lazyScenarioContentCache.Add(scenario, content);
+        }
+
+        return content;
     }
 
     private static Control CreateScenarioContent(string scenario)
     {
         return scenario switch
         {
-            BasicScenario       => new DataGridBasicShowCase(),
-            InteractionScenario => new DataGridInteractionShowCase(),
-            FilteringScenario   => new DataGridFilteringShowCase(),
-            StructureScenario   => new DataGridStructureShowCase(),
-            FixedScenario       => new DataGridFixedShowCase(),
-            DragScenario        => new DataGridDragShowCase(),
-            EditingScenario     => new DataGridEditingShowCase(),
-            PagingScenario      => new DataGridPagingShowCase(),
+            ApiScenario         => new DataGridApiDataGrid(),
+            DesignTokenScenario => new DataGridDesignTokenDataGrid(),
             _                   => throw new InvalidOperationException($"Unknown DataGrid scenario: {scenario}")
         };
     }
-}
 
-public abstract class DataGridScenarioShowCase : GalleryReactiveUserControl<DataGridViewModel>
-{
-    protected override void OnDataContextChanged(EventArgs e)
+    private void HandleExampleDataGridAttached(object? sender, VisualTreeAttachmentEventArgs args)
     {
-        base.OnDataContextChanged(e);
-        if (DataContext is DataGridViewModel viewModel)
+        if (sender is AtomDataGrid dataGrid)
         {
-            InitializeScenario(viewModel);
+            SetExampleDataGridItemsSource(dataGrid);
         }
     }
 
-    protected abstract void InitializeScenario(DataGridViewModel viewModel);
+    private void RefreshMaterializedExampleDataGrids()
+    {
+        foreach (var dataGrid in ExamplesContent.GetVisualDescendants().OfType<AtomDataGrid>())
+        {
+            SetExampleDataGridItemsSource(dataGrid);
+        }
+    }
+
+    private void SetExampleDataGridItemsSource(AtomDataGrid dataGrid)
+    {
+        if (DataContext is not DataGridViewModel viewModel)
+        {
+            dataGrid.ItemsSource = null;
+            return;
+        }
+
+        switch (dataGrid.Name)
+        {
+            case "BasicCaseGrid":
+            case "SelectionDataGrid":
+            case "DragResizeColumn":
+            case "LargeSizeDataGrid":
+            case "MiddleSizeDataGrid":
+            case "SmallSizeDataGrid":
+            case "CustomHeaderAndFooterDataGrid":
+            case "ResetFilterAndSortGrid":
+            case "HideColumnDataGrid":
+                DataGridShowCaseDataSources.EnsureBasicDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.BasicCaseDataSource;
+                break;
+            case "FilterAndSortGrid":
+            case "FilterInTreeGrid":
+                DataGridShowCaseDataSources.EnsureFilterAndSorterDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.FilterAndSorterDataSource;
+                break;
+            case "MultiSorterDataGrid":
+                DataGridShowCaseDataSources.EnsureMultiSorterDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.MultiSorterDataSource;
+                break;
+            case "ExpandableDataGrid":
+            case "OrderSpecificColumnDataGrid":
+            case "RowAndColumnHeaderDataGrid":
+                DataGridShowCaseDataSources.EnsureExpandableRowDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.ExpandableRowDataSource;
+                break;
+            case "GroupHeaderDataGrid":
+                DataGridShowCaseDataSources.EnsureGroupHeaderDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.GroupHeaderDataSource;
+                break;
+            case "FixedHeaderDataGrid":
+                DataGridShowCaseDataSources.EnsureFixedHeaderDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.FixedHeaderDataSource;
+                break;
+            case "FixedColumnsDataGrid1":
+            case "FixedColumnsDataGrid2":
+                DataGridShowCaseDataSources.EnsureFixedColumnsDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.FixedColumnsDataSource;
+                break;
+            case "FixedColumnsAndHeadersDataGrid":
+                DataGridShowCaseDataSources.EnsureFixedColumnsAndHeadersDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.FixedColumnsAndHeadersDataSource;
+                break;
+            case "DragColumnDataGrid1":
+            case "DragColumnDataGrid2":
+            case "DragColumnDataGrid3":
+                DataGridShowCaseDataSources.EnsureDragColumnDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.DragColumnDataSource;
+                break;
+            case "DragRowDataGrid1":
+                DataGridShowCaseDataSources.EnsureDragRowDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.DragRowDataSource;
+                break;
+            case "DragRowDataGrid2":
+                DataGridShowCaseDataSources.EnsureDragRowDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.DragRowManyDataSource;
+                break;
+            case "CustomEmptyDataGrid":
+                DataGridShowCaseDataSources.EnsureCustomEmptyDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.CustomEmptyDataSource;
+                break;
+            case "EditableCellsDataGrid":
+                DataGridShowCaseDataSources.EnsureEditableCellsDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.EditableCellsDataSource;
+                break;
+            case "BasicPagingCaseGrid":
+                DataGridShowCaseDataSources.EnsurePagingGridDataSource(viewModel);
+                dataGrid.ItemsSource = viewModel.PagingGridDataSource;
+                break;
+        }
+    }
+
+    private void HandleSelectionModeCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not AtomUIRadioButton radioButton ||
+            radioButton.IsChecked != true)
+        {
+            return;
+        }
+
+        var selectionDataGrid = FindNamedControlNearSender<AtomDataGrid>(sender, "SelectionDataGrid");
+        if (selectionDataGrid is null)
+        {
+            return;
+        }
+
+        selectionDataGrid.SelectionMode = radioButton.Name == "ExtendedSelection"
+            ? DataGridSelectionMode.Extended
+            : DataGridSelectionMode.Single;
+    }
+
+    private void HandleSortAgeBtnClick(object? sender, RoutedEventArgs? eventArgs)
+    {
+        FindNamedControlNearSender<AtomDataGrid>(sender, "ResetFilterAndSortGrid")
+            ?.Sort(1, ListSortDirection.Descending);
+    }
+
+    private void HandleClearFiltersBtnClick(object? sender, RoutedEventArgs? eventArgs)
+    {
+        FindNamedControlNearSender<AtomDataGrid>(sender, "ResetFilterAndSortGrid")
+            ?.ClearFilters();
+    }
+
+    private void HandleClearFiltersAndSortersBtnClick(object? sender, RoutedEventArgs? eventArgs)
+    {
+        var dataGrid = FindNamedControlNearSender<AtomDataGrid>(sender, "ResetFilterAndSortGrid");
+        dataGrid?.ClearFilters();
+        dataGrid?.ClearSort();
+    }
+
+    private void HandleColumnVisibleChanged(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not AtomUICheckBox checkBox)
+        {
+            return;
+        }
+
+        var dataGrid = FindNamedControlNearSender<AtomDataGrid>(sender, "HideColumnDataGrid");
+        if (dataGrid is null)
+        {
+            return;
+        }
+
+        var columnIndex = checkBox.Name switch
+        {
+            "ColumnCheckBox1" => 0,
+            "ColumnCheckBox2" => 1,
+            "ColumnCheckBox3" => 2,
+            "ColumnCheckBox4" => 3,
+            "ColumnCheckBox5" => 4,
+            "ColumnCheckBox6" => 5,
+            _                 => -1
+        };
+
+        if (columnIndex >= 0 && columnIndex < dataGrid.Columns.Count)
+        {
+            dataGrid.Columns[columnIndex].IsVisible = checkBox.IsChecked == true;
+        }
+    }
+
+    private void HandleToggleEmptyGridItemsSource(object? sender, RoutedEventArgs? eventArgs)
+    {
+        var dataGrid = FindNamedControlNearSender<AtomDataGrid>(sender, "CustomEmptyDataGrid");
+        if (dataGrid is null)
+        {
+            return;
+        }
+
+        if (dataGrid.ItemsSource is not null)
+        {
+            dataGrid.ItemsSource = null;
+        }
+        else if (DataContext is DataGridViewModel viewModel)
+        {
+            DataGridShowCaseDataSources.EnsureCustomEmptyDataSource(viewModel);
+            dataGrid.ItemsSource = viewModel.CustomEmptyDataSource;
+        }
+    }
+
+    private void HandleToggleLoadingState(object? sender, RoutedEventArgs? eventArgs)
+    {
+        var dataGrid = FindNamedControlNearSender<AtomDataGrid>(sender, "CustomEmptyDataGrid");
+        if (dataGrid is not null)
+        {
+            dataGrid.IsOperating = !dataGrid.IsOperating;
+        }
+    }
+
+    private void HandleAddARowToCellsEditableGrid(object? sender, RoutedEventArgs? eventArgs)
+    {
+        if (DataContext is not DataGridViewModel viewModel)
+        {
+            return;
+        }
+
+        DataGridShowCaseDataSources.EnsureEditableCellsDataSource(viewModel);
+        viewModel.EditableCellsDataSource?.Add(new DataGridBaseInfo
+        {
+            Address = $"London, Park Lane no. {s_cellsEditableNewRowIndex}",
+            Name    = $"Edward King {s_cellsEditableNewRowIndex}",
+            Age     = 32
+        });
+        s_cellsEditableNewRowIndex++;
+    }
+
+    private void HandleRemoveRowCellsEditableGrid(object? sender, RoutedEventArgs? eventArgs)
+    {
+        if (sender is not AtomUIPopupConfirm { DataContext: int index })
+        {
+            return;
+        }
+
+        FindNamedControlNearSender<AtomDataGrid>(sender, "EditableCellsDataGrid")
+            ?.CollectionView
+            ?.RemoveAt(index);
+    }
+
+    private void HandleTopPaginationAlignChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        var dataGrid = FindNamedControlNearSender<AtomDataGrid>(sender, "BasicPagingCaseGrid");
+        if (dataGrid is not null)
+        {
+            dataGrid.TopPaginationAlign = ToPaginationAlign(args.Index);
+        }
+    }
+
+    private void HandleBottomPaginationAlignChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        var dataGrid = FindNamedControlNearSender<AtomDataGrid>(sender, "BasicPagingCaseGrid");
+        if (dataGrid is not null)
+        {
+            dataGrid.BottomPaginationAlign = ToPaginationAlign(args.Index);
+        }
+    }
+
+    private void HandleShowTopPaginationCheckBoxChanged(object? sender, RoutedEventArgs args)
+    {
+        UpdatePaginationVisibility(sender, DataGridPaginationVisibility.Top);
+    }
+
+    private void HandleShowBottomPaginationCheckBoxChanged(object? sender, RoutedEventArgs args)
+    {
+        UpdatePaginationVisibility(sender, DataGridPaginationVisibility.Bottom);
+    }
+
+    private static PaginationAlign ToPaginationAlign(int index)
+    {
+        return index switch
+        {
+            0 => PaginationAlign.Start,
+            1 => PaginationAlign.Center,
+            _ => PaginationAlign.End
+        };
+    }
+
+    private static T? FindNamedControlNearSender<T>(object? sender, string name)
+        where T : Control
+    {
+        if (sender is not Visual visual)
+        {
+            return null;
+        }
+
+        var showCaseItem = visual.FindAncestorOfType<ShowCaseItem>(includeSelf: true);
+        return showCaseItem?.GetVisualDescendants()
+                            .OfType<T>()
+                            .FirstOrDefault(control => control.Name == name);
+    }
+
+    private void UpdatePaginationVisibility(object? sender, DataGridPaginationVisibility position)
+    {
+        if (sender is not AtomUICheckBox checkBox)
+        {
+            return;
+        }
+
+        var dataGrid = FindNamedControlNearSender<AtomDataGrid>(sender, "BasicPagingCaseGrid");
+        if (dataGrid is null)
+        {
+            return;
+        }
+
+        if (checkBox.IsChecked == true)
+        {
+            dataGrid.PaginationVisibility |= position;
+        }
+        else
+        {
+            dataGrid.PaginationVisibility &= ~position;
+        }
+    }
 }
 
 internal static class DataGridShowCaseDataSources
