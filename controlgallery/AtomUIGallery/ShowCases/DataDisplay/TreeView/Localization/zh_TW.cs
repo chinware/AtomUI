@@ -6,8 +6,53 @@ namespace AtomUIGallery.ShowCases.TreeView;
 [LanguageProvider(LanguageCode.zh_TW, TreeViewShowCase.LanguageId)]
 internal partial class zh_TW : LanguageProvider
 {
-    public const string ScenarioBasic = "基礎";
-    public const string ScenarioAdvanced = "進階";
+    public const string ComponentCategory = "數據展示";
+    public const string ComponentStatusStable = "穩定";
+    public const string PageSubtitle = "展示層級數據，支持選擇、勾選、搜索、拖拽和異步加載節點。";
+    public const string PageDescription = "TreeView 將嵌套數據組織爲可展開節點，並支持模板化數據源、複選選擇、過濾、自定義展開圖標、上下文菜單和懶加載子節點。";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計 Token";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "範圍";
+    public const string TokenColumnStatus = "狀態";
+    public const string ApiPropertyItemsSource = "配合 TreeDataTemplate 使用的樹節點數據源。";
+    public const string ApiPropertyItemTemplate = "從數據渲染每個樹節點的模板。";
+    public const string ApiPropertyToggleType = "控制節點是否顯示切換控件、單選或複選框。";
+    public const string ApiPropertyDefaultExpandedPaths = "TreeView 首次創建時默認展開的節點路徑。";
+    public const string ApiPropertyDefaultSelectedPaths = "TreeView 首次創建時默認選中的節點路徑。";
+    public const string ApiPropertyDefaultCheckedPaths = "啓用複選框模式時默認勾選的節點路徑。";
+    public const string ApiPropertyIsShowLine = "顯示父子節點之間的連接線。";
+    public const string ApiPropertyIsShowIcon = "顯示節點圖標。";
+    public const string ApiPropertyIsShowLeafIcon = "顯示葉子節點圖標。";
+    public const string ApiPropertyNodeHoverMode = "控制懸浮反饋覆蓋節點內容、塊級區域或整行。";
+    public const string ApiPropertyIsDraggable = "允許通過拖拽重新排序節點。";
+    public const string ApiPropertyDataLoader = "節點展開時異步加載子節點。";
+    public const string ApiPropertyFilterValue = "應用到可搜索樹的過濾值。";
+    public const string ApiPropertyFilterStrategy = "控制過濾匹配完整樹還是直接節點。";
+    public const string ApiPropertyIsSelectOnRightClick = "右鍵打開上下文菜單時選中對應節點。";
+    public const string TokenNameHeaderHeight = "節點標題高度。";
+    public const string TokenNameNodeHoverBg = "節點懸浮背景色。";
+    public const string TokenNameNodeSelectedBg = "節點選中背景色。";
+    public const string TokenNameDirectoryNodeSelectedColor = "目錄節點選中態文字色。";
+    public const string TokenNameDirectoryNodeSelectedBg = "目錄節點選中態背景色。";
+    public const string TokenNameTreeItemMargin = "樹節點外邊距。";
+    public const string TokenNameTreeItemHeaderPadding = "樹節點標題內邊距。";
+    public const string TokenNameTreeItemHeaderMargin = "樹節點標題外邊距。";
+    public const string TokenNameTreeNodeSwitcherMargin = "樹節點展開按鈕外邊距。";
+    public const string TokenNameTreeNodeIconMargin = "樹節點圖標外邊距。";
+    public const string TokenNameDragIndicatorLineWidth = "拖拽指示線寬度。";
+    public const string TokenNameFilterHighlightColor = "過濾高亮顏色。";
+    public const string TokenScopeComponent = "TreeView";
+    public const string TokenStatusStable = "穩定";
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最基礎的用法，展示如何使用 checkable、selectable、disabled、defaultExpandKeys 等屬性。";
     public const string GenerateByTemplateTitle = "使用模板生成";
@@ -86,4 +131,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(TreeViewShowCaseLangResourceKind);
 }
-
