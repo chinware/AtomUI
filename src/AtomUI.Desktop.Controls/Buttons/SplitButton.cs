@@ -440,6 +440,7 @@ public class SplitButton : ContentControl,
             flyout.Hide();
         }
 
+        flyout.ReleaseGlobalResourceBindings();
         _registeredFlyout = null;
         _isFlyoutOpen     = false;
         _flyoutBindingDisposables?.Dispose();

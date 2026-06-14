@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.DesignTokens;
@@ -205,6 +206,7 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
     
     private object? _pointerHorizontalOffsetTokenKey;
     private object? _pointerVerticalOffsetTokenKey;
+    private CompositeDisposable? _globalResourceBindingDisposables;
     private IDisposable? _pointerHorizontalOffsetBinding;
     private IDisposable? _pointerVerticalOffsetBinding;
 
@@ -216,10 +218,34 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
 
     public Flyout()
     {
-        TokenResourceBinder.CreateGlobalTokenBinding(this, PopupRootShadowProperty, FlyoutHostTokenKind.PopupRootShadow);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, OverlayHostShadowProperty, FlyoutHostTokenKind.OverlayHostShadow);
-        TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationProperty, SharedTokenKind.MotionDurationMid);
         this.SetPopupLazy(new Lazy<AvaloniaPopup>(CreatePopup));
+    }
+
+    internal void EnsureGlobalResourceBindings()
+    {
+        if (_globalResourceBindingDisposables is not null)
+        {
+            return;
+        }
+
+        _globalResourceBindingDisposables = new CompositeDisposable(3)
+        {
+            TokenResourceBinder.CreateGlobalTokenBinding(this, PopupRootShadowProperty, FlyoutHostTokenKind.PopupRootShadow),
+            TokenResourceBinder.CreateGlobalTokenBinding(this, OverlayHostShadowProperty, FlyoutHostTokenKind.OverlayHostShadow),
+            TokenResourceBinder.CreateGlobalTokenBinding(this, MotionDurationProperty, SharedTokenKind.MotionDurationMid)
+        };
+        ConfigurePointerPlacementOffsets();
+    }
+
+    internal void ReleaseGlobalResourceBindings()
+    {
+        _pointerHorizontalOffsetBinding?.Dispose();
+        _pointerVerticalOffsetBinding?.Dispose();
+        _pointerHorizontalOffsetBinding = null;
+        _pointerVerticalOffsetBinding   = null;
+
+        _globalResourceBindingDisposables?.Dispose();
+        _globalResourceBindingDisposables = null;
     }
     
     private Popup CreatePopup()
@@ -298,6 +324,18 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         }
 
         return base.HideCore(canCancel);
+    }
+
+    protected override bool ShowAtCore(Control placementTarget, bool showAtPointer = false)
+    {
+        EnsureGlobalResourceBindings();
+        return base.ShowAtCore(placementTarget, showAtPointer);
+    }
+
+    protected override void OnClosed()
+    {
+        base.OnClosed();
+        ReleaseGlobalResourceBindings();
     }
 
     protected override Control CreatePresenter()
@@ -382,6 +420,11 @@ public class Flyout : PopupFlyoutBase, IMotionAwareControl
         _pointerVerticalOffsetBinding?.Dispose();
         _pointerHorizontalOffsetBinding = null;
         _pointerVerticalOffsetBinding   = null;
+
+        if (_globalResourceBindingDisposables is null)
+        {
+            return;
+        }
 
         if (RequestedPlacement == PlacementMode.Pointer &&
             _pointerHorizontalOffsetTokenKey != null &&

@@ -242,6 +242,12 @@ public class DropdownButton : Button
         }
 
         menuFlyout.MenuItemClicked -= HandleMenuItemClicked;
+        if (menuFlyout.IsOpen)
+        {
+            menuFlyout.Hide();
+        }
+
+        menuFlyout.ReleaseGlobalResourceBindings();
         _registeredDropdownFlyout = null;
         _flyoutBindingDisposables?.Dispose();
         _flyoutBindingDisposables = null;

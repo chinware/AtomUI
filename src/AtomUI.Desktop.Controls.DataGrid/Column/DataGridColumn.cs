@@ -20,7 +20,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-public abstract partial class DataGridColumn : AvaloniaObject
+public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IThemeVariantHost
 {
     #region 公共属性定义
 
@@ -561,10 +561,97 @@ public abstract partial class DataGridColumn : AvaloniaObject
         get => _owningGrid;
         internal set
         {
+            if (ReferenceEquals(_owningGrid, value))
+            {
+                NotifyOwningGridAttached(_owningGrid);
+                return;
+            }
+
+            UnregisterOwningGridResourceHost();
             _owningGrid = value;
+            RegisterOwningGridResourceHost(_owningGrid);
             NotifyOwningGridAttached(_owningGrid);
         }
     }
+    #endregion
+
+    #region 资源宿主定义
+
+    public event EventHandler<ResourcesChangedEventArgs>? ResourcesChanged;
+    public event EventHandler? ActualThemeVariantChanged;
+
+    private DataGrid? _subscribedResourceHostGrid;
+
+    public bool HasResources => true;
+
+    public ThemeVariant ActualThemeVariant =>
+        _owningGrid?.ActualThemeVariant ??
+        Application.Current?.ActualThemeVariant ??
+        ThemeVariant.Default;
+
+    public bool TryGetResource(object key, ThemeVariant? theme, out object? value)
+    {
+        if (_owningGrid?.TryFindResource(key, theme, out value) == true)
+        {
+            return true;
+        }
+
+        if (Application.Current?.TryGetResource(key, theme, out value) == true)
+        {
+            return true;
+        }
+
+        value = null;
+        return false;
+    }
+
+    void IResourceHost.NotifyHostedResourcesChanged(ResourcesChangedEventArgs e)
+    {
+        ResourcesChanged?.Invoke(this, e);
+    }
+
+    private void RegisterOwningGridResourceHost(DataGrid? owningGrid)
+    {
+        if (owningGrid is null)
+        {
+            RaiseResourcesChanged();
+            return;
+        }
+
+        _subscribedResourceHostGrid = owningGrid;
+        _subscribedResourceHostGrid.ResourcesChanged += HandleOwningGridResourcesChanged;
+        _subscribedResourceHostGrid.ActualThemeVariantChanged += HandleOwningGridActualThemeVariantChanged;
+        RaiseResourcesChanged();
+        ActualThemeVariantChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void UnregisterOwningGridResourceHost()
+    {
+        if (_subscribedResourceHostGrid is null)
+        {
+            return;
+        }
+
+        _subscribedResourceHostGrid.ResourcesChanged -= HandleOwningGridResourcesChanged;
+        _subscribedResourceHostGrid.ActualThemeVariantChanged -= HandleOwningGridActualThemeVariantChanged;
+        _subscribedResourceHostGrid = null;
+    }
+
+    private void HandleOwningGridResourcesChanged(object? sender, ResourcesChangedEventArgs e)
+    {
+        ResourcesChanged?.Invoke(this, e);
+    }
+
+    private void HandleOwningGridActualThemeVariantChanged(object? sender, EventArgs e)
+    {
+        ActualThemeVariantChanged?.Invoke(this, e);
+    }
+
+    private void RaiseResourcesChanged()
+    {
+        ResourcesChanged?.Invoke(this, ResourcesChangedEventArgs.Create());
+    }
+
     #endregion
     
     /// <summary>

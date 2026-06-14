@@ -2,16 +2,20 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Metadata;
+using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
 
 public class DataGridColumnGroupItem : AvaloniaObject,
                                        IDataGridColumnGroupItemInternal, 
-                                       IDataGridColumnGroupChanged
+                                       IDataGridColumnGroupChanged,
+                                       IResourceHost,
+                                       IThemeVariantHost
 {
     #region 公共属性定义
 
@@ -90,14 +94,26 @@ public class DataGridColumnGroupItem : AvaloniaObject,
     
     protected internal DataGrid? OwningGrid
     {
-        get;
-        internal set;
+        get => _owningGrid;
+        internal set
+        {
+            if (ReferenceEquals(_owningGrid, value))
+            {
+                return;
+            }
+
+            UnregisterOwningGridResourceHost();
+            _owningGrid = value;
+            RegisterOwningGridResourceHost(_owningGrid);
+        }
     }
 
     internal bool IsFrozen { get; set; } = false;
     #endregion
     
     private DataGridColumnGroupHeader? _headerCell;
+    private DataGrid? _owningGrid;
+    private DataGrid? _subscribedResourceHostGrid;
 
     static DataGridColumnGroupItem()
     {
@@ -110,6 +126,83 @@ public class DataGridColumnGroupItem : AvaloniaObject,
         GroupChildren                   =  new ObservableCollection<IDataGridColumnGroupItem>();
         GroupChildren.CollectionChanged += HandleCollectionChanged;
     }
+
+    #region 资源宿主定义
+
+    public event EventHandler<ResourcesChangedEventArgs>? ResourcesChanged;
+    public event EventHandler? ActualThemeVariantChanged;
+
+    public bool HasResources => true;
+
+    public ThemeVariant ActualThemeVariant =>
+        _owningGrid?.ActualThemeVariant ??
+        Application.Current?.ActualThemeVariant ??
+        ThemeVariant.Default;
+
+    public bool TryGetResource(object key, ThemeVariant? theme, out object? value)
+    {
+        if (_owningGrid?.TryFindResource(key, theme, out value) == true)
+        {
+            return true;
+        }
+
+        if (Application.Current?.TryGetResource(key, theme, out value) == true)
+        {
+            return true;
+        }
+
+        value = null;
+        return false;
+    }
+
+    void IResourceHost.NotifyHostedResourcesChanged(ResourcesChangedEventArgs e)
+    {
+        ResourcesChanged?.Invoke(this, e);
+    }
+
+    private void RegisterOwningGridResourceHost(DataGrid? owningGrid)
+    {
+        if (owningGrid is null)
+        {
+            RaiseResourcesChanged();
+            return;
+        }
+
+        _subscribedResourceHostGrid = owningGrid;
+        _subscribedResourceHostGrid.ResourcesChanged += HandleOwningGridResourcesChanged;
+        _subscribedResourceHostGrid.ActualThemeVariantChanged += HandleOwningGridActualThemeVariantChanged;
+        RaiseResourcesChanged();
+        ActualThemeVariantChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void UnregisterOwningGridResourceHost()
+    {
+        if (_subscribedResourceHostGrid is null)
+        {
+            return;
+        }
+
+        _subscribedResourceHostGrid.ResourcesChanged -= HandleOwningGridResourcesChanged;
+        _subscribedResourceHostGrid.ActualThemeVariantChanged -= HandleOwningGridActualThemeVariantChanged;
+        _subscribedResourceHostGrid = null;
+    }
+
+    private void HandleOwningGridResourcesChanged(object? sender, ResourcesChangedEventArgs e)
+    {
+        ResourcesChanged?.Invoke(this, e);
+    }
+
+    private void HandleOwningGridActualThemeVariantChanged(object? sender, EventArgs e)
+    {
+        ActualThemeVariantChanged?.Invoke(this, e);
+    }
+
+    private void RaiseResourcesChanged()
+    {
+        ResourcesChanged?.Invoke(this, ResourcesChangedEventArgs.Create());
+    }
+
+    #endregion
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
