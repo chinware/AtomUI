@@ -5,10 +5,14 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.DataLoad;
+using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using AtomUIGallery.Localization;
+using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.Cascader;
 
@@ -16,19 +20,14 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
 {
     public const string LanguageId = nameof(CascaderShowCase);
 
-    private const string BasicScenario        = "Basic";
-    private const string MultipleScenario     = "Multiple";
-    private const string AdvancedScenario     = "Advanced";
-    private const string CascaderViewScenario = "CascaderView";
+    private const string ExamplesScenario    = "Examples";
+    private const string ApiScenario         = "Api";
+    private const string DesignTokenScenario = "DesignToken";
 
-    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
 
     public CascaderShowCase()
     {
-        InitializeComponent();
-        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
-        EnsureSelectedScenarioContent();
-
         this.WhenActivated(disposables =>
         {
             if (DataContext is CascaderViewModel viewModel)
@@ -42,17 +41,55 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
                     themeManager.LanguageVariantChanged += handler;
                     disposables.Add(Disposable.Create(() => themeManager.LanguageVariantChanged -= handler));
                 }
+
+                disposables.Add(Disposable.Create(() =>
+                {
+                    viewModel.BasicCascaderViewNodes             = null;
+                    viewModel.DefaultSelectOptionPath            = null;
+                    viewModel.BasicCheckableCascaderViewNodes    = null;
+                    viewModel.HoverCascaderNodes                 = null;
+                    viewModel.DisabledCascaderNodes              = null;
+                    viewModel.SelectParentCascaderNodes          = null;
+                    viewModel.MultipleSelectCascaderNodes        = null;
+                    viewModel.CheckStrategyShowParentCascaderNodes = null;
+                    viewModel.CheckStrategyShowAllCascaderNodes  = null;
+                    viewModel.PrefixAndSuffixCascaderNodes       = null;
+                    viewModel.PlacementCascaderNodes             = null;
+                    viewModel.SearchCascaderNodes                = null;
+                    viewModel.SizeCascaderNodes                  = null;
+                    viewModel.AsyncLoadCascaderViewNodes         = null;
+                    viewModel.SearchCascaderViewNodes            = null;
+                    viewModel.AsyncCascaderNodeLoader            = null;
+                    viewModel.DefaultExpandCascaderViewNodes     = null;
+                    viewModel.DefaultExpandPath                  = null;
+                }));
             }
         });
+        InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ClearLazyScenarioContent();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        foreach (var content in _scenarioCache.Values)
+        ExamplesContent.DataContext = DataContext;
+        foreach (var content in _lazyScenarioContentCache.Values)
         {
             content.DataContext = DataContext;
         }
+        EnsureSelectedScenarioContent();
     }
 
     private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -62,35 +99,117 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
 
     private void EnsureSelectedScenarioContent()
     {
-        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
-            tabItem.Tag is not string scenario)
+        if (ScenarioTabs.SelectedItem is not ScenarioTabStripItem tabStripItem ||
+            tabStripItem.Tag is not string scenario)
         {
             return;
         }
 
-        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        var content = ResolveScenarioContent(scenario);
+        if (!ReferenceEquals(ScenarioContentHost.Content, content))
+        {
+            ScenarioContentHost.Content = content;
+        }
+    }
+
+    private void ClearLazyScenarioContent()
+    {
+        if (ScenarioContentHost.Content is not null &&
+            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
+        {
+            ScenarioContentHost.Content = null;
+        }
+        _lazyScenarioContentCache.Clear();
+    }
+
+    private Control ResolveScenarioContent(string scenario)
+    {
+        if (scenario == ExamplesScenario)
+        {
+            ExamplesContent.DataContext = DataContext;
+            return ExamplesContent;
+        }
+
+        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
         {
             content             = CreateScenarioContent(scenario);
             content.DataContext = DataContext;
-            _scenarioCache.Add(scenario, content);
+            _lazyScenarioContentCache.Add(scenario, content);
         }
 
-        if (tabItem.Content != content)
-        {
-            tabItem.Content = content;
-        }
+        return content;
     }
 
     private static Control CreateScenarioContent(string scenario)
     {
         return scenario switch
         {
-            BasicScenario        => new CascaderBasicShowCase(),
-            MultipleScenario     => new CascaderMultipleShowCase(),
-            AdvancedScenario     => new CascaderAdvancedShowCase(),
-            CascaderViewScenario => new CascaderViewShowCase(),
-            _                    => throw new InvalidOperationException($"Unknown Cascader scenario: {scenario}")
+            ApiScenario         => new CascaderApiDataGrid(),
+            DesignTokenScenario => new CascaderDesignTokenDataGrid(),
+            _                   => throw new InvalidOperationException($"Unknown Cascader scenario: {scenario}")
         };
+    }
+
+    private void HandlePlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is not CascaderViewModel viewModel)
+        {
+            return;
+        }
+
+        viewModel.Placement = args.Index switch
+        {
+            0 => SelectPopupPlacement.TopEdgeAlignedLeft,
+            1 => SelectPopupPlacement.TopEdgeAlignedRight,
+            2 => SelectPopupPlacement.BottomEdgeAlignedLeft,
+            _ => SelectPopupPlacement.BottomEdgeAlignedRight
+        };
+    }
+
+    private void HandleFilterCascaderViewClicked(object? sender, RoutedEventArgs args)
+    {
+        if (sender is SearchEdit searchEdit &&
+            TryFindTemplateCascaderView(searchEdit, "SearchCascaderView", out var cascaderView))
+        {
+            cascaderView.FilterValue = searchEdit.Text?.Trim();
+        }
+    }
+
+    private void HandleFilterCascaderViewItemsSourceClicked(object? sender, RoutedEventArgs args)
+    {
+        if (sender is SearchEdit searchEdit &&
+            TryFindTemplateCascaderView(searchEdit, "SearchCascaderViewItemsSource", out var cascaderView))
+        {
+            cascaderView.FilterValue = searchEdit.Text?.Trim();
+        }
+    }
+
+    private static bool TryFindTemplateCascaderView(Control source, string cascaderViewName, out CascaderView cascaderView)
+    {
+        var parent = source.Parent as Control;
+        while (parent is not null)
+        {
+            if (parent is CascaderView directCascaderView &&
+                directCascaderView.Name == cascaderViewName)
+            {
+                cascaderView = directCascaderView;
+                return true;
+            }
+
+            var descendantCascaderView = parent.GetVisualDescendants()
+                                                .OfType<CascaderView>()
+                                                .FirstOrDefault(candidate => candidate.Name == cascaderViewName);
+            if (descendantCascaderView is not null)
+            {
+                cascaderView = descendantCascaderView;
+                return true;
+            }
+
+            parent = parent.Parent as Control;
+        }
+
+        cascaderView = null!;
+        return false;
     }
 
     private void RefreshCascaderData(CascaderViewModel viewModel)
