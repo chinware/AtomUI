@@ -4,7 +4,7 @@
 
 **Goal:** Refactor every control ShowCase page to follow the new Gallery ShowCase design pattern, with exactly one ShowCase migrated, verified, and accepted at a time.
 
-**Architecture:** ButtonShowCase is the reference implementation. Each migrated control page uses `GalleryStickyTabsHost` for page-level scrolling and sticky scenario navigation, `TabStrip + ContentControl` for scenarios, `ShowCasePanel` masonry cards for examples, deferred `ShowCaseItem` demo content creation, and lazily loaded `DataGrid` UserControls for API and Design Token reference tabs. The migration must preserve existing demo content inside every `ShowCaseItem`.
+**Architecture:** ButtonShowCase is the reference implementation. Each standard migrated control page uses `GalleryStickyTabsHost` for page-level scrolling and sticky scenario navigation, `TabStrip + ContentControl` for scenarios, `ShowCasePanel` masonry cards for examples, deferred `ShowCaseItem` demo content creation, and lazily loaded `DataGrid` UserControls for API and Design Token reference tabs. Special pages that own their own large internal viewport, such as Icon, must avoid a nested page scroll host and let the inner content control own scrolling. The migration must preserve existing demo content inside every `ShowCaseItem`.
 
 **Tech Stack:** .NET 10, Avalonia, AtomUI Desktop controls, AtomUIGallery, xUnit, Gallery custom controls and token-based themes.
 
@@ -46,7 +46,7 @@ Every ShowCase must pass this gate before its progress row can become `Implement
 | Demo preservation | Snapshot confirms `ShowCaseItem` internal demo content did not change during layout migration; any former code-behind-only behavior wiring moved into explicit VM binding/event forwarding is recorded in the snapshot as the equivalent runtime structure. |
 | Lazy reference tabs | API and Design Token are separate UserControls and are created only when their tabs are selected. |
 | DataGrid behavior | API and Design Token use DataGrid, keep the first key/name column fixed when needed, and own their horizontal scrolling. |
-| Spacing and scrolling | Header, TabStrip, and content left/right edges align; page scrollbar stays at the far right; no nested page scrollbar appears in Examples. |
+| Spacing and scrolling | Header, TabStrip, and content left/right edges align; page scrollbar stays at the far right; no nested page scrollbar appears in Examples. Special full-viewport pages must have exactly one vertical scrollbar, owned by the control that actually scrolls the large content. |
 | Build and tests | Focused Gallery tests pass, then Gallery Desktop builds. |
 | User review | A screenshot or live app check is reviewed before marking `Accepted`. |
 
@@ -234,14 +234,14 @@ If a selected root ShowCase folder contains sub-scenario files such as `CardBasi
 | P3.14 | Accepted | Message | `controlgallery/AtomUIGallery/ShowCases/Feedback/Message` | `MessageShowCase.axaml`; `MessageApiDataGrid.axaml`; `MessageDesignTokenDataGrid.axaml` | Accepted by user request to start the next ShowCase; structure + snapshot + lazy tabs passed; Gallery tests passed; Gallery Desktop build passed; desktop controls tests passed; `git diff --check` passed. |
 | P3.15 | Accepted | Modal | `controlgallery/AtomUIGallery/ShowCases/Feedback/Modal` | `ModalShowCase.axaml`; `ModalApiDataGrid.axaml`; `ModalDesignTokenDataGrid.axaml` | Accepted by user request to start the next ShowCase; structure + snapshot + lazy tabs passed; Gallery tests passed; Gallery Desktop build passed; desktop controls tests passed; `git diff --check` passed. |
 | P3.16 | Accepted | Notification | `controlgallery/AtomUIGallery/ShowCases/Feedback/Notification` | `NotificationShowCase.axaml`; `NotificationApiDataGrid.axaml`; `NotificationDesignTokenDataGrid.axaml` | Accepted by user request to start the next ShowCase; structure + snapshot + lazy tabs passed; Gallery tests passed; Gallery Desktop build passed; desktop controls tests passed; `git diff --check` passed. |
-| P3.17 | Implemented | PopupConfirm | `controlgallery/AtomUIGallery/ShowCases/Feedback/PopupConfirm` | `PopupConfirmShowCase.axaml`; `PopupConfirmApiDataGrid.axaml`; `PopupConfirmDesignTokenDataGrid.axaml` | Structure + snapshot + lazy tabs passed; Gallery tests passed; Gallery Desktop build passed; desktop controls tests passed; `git diff --check` passed. |
+| P3.17 | Accepted | PopupConfirm | `controlgallery/AtomUIGallery/ShowCases/Feedback/PopupConfirm` | `PopupConfirmShowCase.axaml`; `PopupConfirmApiDataGrid.axaml`; `PopupConfirmDesignTokenDataGrid.axaml` | Structure + snapshot + lazy tabs passed; Gallery tests passed; Gallery Desktop build passed; desktop controls tests passed; `git diff --check` passed; accepted by user request to start the next ShowCase. |
 
 ### P4 Special Pages
 
 | ID | Status | ShowCase | Component Folder | Current Views | Verification |
 |---|---|---|---|---|---|
-| P4.1 | Not Started | CustomizeTheme | `controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme` | `CustomizeThemeShowCase.axaml` | Page-specific design review + Gallery build. |
-| P4.2 | Not Started | Icon | `controlgallery/AtomUIGallery/ShowCases/General/Icon` | `IconShowCase.axaml` | Page-specific design review + search/grid interaction check + Gallery build. |
+| P4.1 | Accepted | CustomizeTheme | `controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme` | `CustomizeThemeShowCase.axaml`; `CustomizeThemeApiDataGrid.axaml`; `CustomizeThemeDesignTokenDataGrid.axaml` | Structure + snapshot + lazy tabs passed; Gallery tests passed; Gallery Desktop build passed; `git diff --check` passed; accepted by user request to start the next ShowCase. |
+| P4.2 | Implemented | Icon | `controlgallery/AtomUIGallery/ShowCases/General/Icon` | `IconShowCase.axaml` | Special full-viewport layout keeps Header/TabStrip outside scroll and lets IconGallery own the only vertical scrollbar; structure + icon theme snapshot + lazy IconGallery creation passed. |
 | P4.3 | Not Started | Palette | `controlgallery/AtomUIGallery/ShowCases/General/Palette` | `PaletteShowCase.axaml` | Page-specific design review + theme/token check + Gallery build. |
 | P4.4 | Not Started | ImagePreviewer | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer` | `ImagePreviewerShowCase.axaml` | Page-specific design review + popup/preview interaction check + Gallery build. |
 | P4.5 | Not Started | Tour | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Tour` | `TourShowCase.axaml` | Page-specific design review + overlay interaction check + Gallery build. |

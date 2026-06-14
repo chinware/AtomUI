@@ -64,7 +64,12 @@ public class MigratedShowCaseDeferredCreationTests
                .EnumerateFiles(Path.Combine(GetRepoRoot(), "controlgallery/AtomUIGallery/ShowCases"),
                                 "*ShowCase.axaml",
                                 SearchOption.AllDirectories)
-               .Where(path => File.ReadAllText(path).Contains("<gallery:GalleryStickyTabsHost", StringComparison.Ordinal))
+               .Where(path =>
+               {
+                   var source = File.ReadAllText(path);
+                   return source.Contains("<gallery:GalleryStickyTabsHost", StringComparison.Ordinal) &&
+                          source.Contains("<gallery:ShowCaseItem", StringComparison.Ordinal);
+               })
                .Order(StringComparer.Ordinal)
                .ToArray();
     }
