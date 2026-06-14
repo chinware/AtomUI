@@ -11,6 +11,39 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioBasic = "基礎";
     public const string ScenarioBehavior = "行為";
     public const string ScenarioAppearance = "外觀";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計 Token";
+    public const string PageSubtitle = "在緊湊輸入框中從層級數據裡選擇值。";
+    public const string PageDescription = "TreeSelect 將輸入選擇器與樹形導航結合，適用於層級分類、組織節點、權限和其他嵌套選項集合。";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ComponentCategory = "數據錄入";
+    public const string ComponentStatusStable = "穩定";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyItemsSource = "選擇器展示的層級選項。";
+    public const string ApiPropertySelectedItems = "當前選中的樹節點。";
+    public const string ApiPropertyIsMultiple = "允許選擇多個樹節點。";
+    public const string ApiPropertyIsTreeCheckable = "在樹形彈出層中顯示複選框。";
+    public const string ApiPropertyIsDefaultExpandAll = "彈出層打開時默認展開樹節點。";
+    public const string ApiPropertyIsAllowClear = "選中值後顯示清除入口。";
+    public const string ApiPropertyIsFilterEnabled = "允許從輸入框篩選樹節點。";
+    public const string ApiPropertyDataLoader = "樹節點展開時異步加載子節點。";
+    public const string ApiPropertyPlacement = "控制彈出層相對於輸入框的位置。";
+    public const string ApiPropertyMaxCount = "選中值的最大數量，超過限制後更多選項會被禁用。";
+    public const string ApiPropertyStyleVariant = "輸入框視覺變體。";
+    public const string ApiPropertyStatus = "選擇器的校驗狀態樣式。";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "範圍";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
+    public const string TokenNameMinPopupWidth = "TreeSelect 使用的最小彈出層寬度。";
     public const string MultipleSelectionTitle = "多選";
     public const string MultipleSelectionDescription = "多選用法。";
     public const string GenerateFromTreeDataTitle = "由樹數據生成";
@@ -78,4 +111,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(TreeSelectShowCaseLangResourceKind);
 }
-
