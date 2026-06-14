@@ -5,10 +5,137 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Modal"
              x:DataType="viewModels:ModalViewModel">
-    <gallery:ShowCasePanel>
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="Modal"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:ModalShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:ModalShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:ModalShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:ModalShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
+
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="200" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:ModalShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:ModalShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:ModalShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="Dialog"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:ModalShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:ModalShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:ModalShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
+                                       ContentMargin="28,10,28,28">
         <gallery:ShowCaseItem
             Title="{gallery:ModalShowCaseLangResource BasicTitle}"
-            Description="{gallery:ModalShowCaseLangResource BasicDescription}">
+            Description="{gallery:ModalShowCaseLangResource BasicDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:ModalViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="BasicOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalOverlay}" />
@@ -55,11 +182,16 @@
                     </atom:Dialog>
                 </Panel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:ModalShowCaseLangResource AsynchronouslyCloseTitle}"
-            Description="{gallery:ModalShowCaseLangResource AsynchronouslyCloseDescription}">
+            Description="{gallery:ModalShowCaseLangResource AsynchronouslyCloseDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:ModalViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="AsyncDialogOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalWithAsyncLogic}" />
@@ -82,11 +214,16 @@
                     </atom:Dialog>
                 </Panel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:ModalShowCaseLangResource MessageBoxStyleTitle}"
-            Description="{gallery:ModalShowCaseLangResource MessageBoxStyleDescription}">
+            Description="{gallery:ModalShowCaseLangResource MessageBoxStyleDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:ModalViewModel">
 
             <StackPanel Orientation="Vertical" Spacing="20">
                 <StackPanel Orientation="Horizontal" Spacing="5">
@@ -170,11 +307,16 @@
                     <atom:Button Click="HandleCreateWarningMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentWarning}" />
                 </WrapPanel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:ModalShowCaseLangResource LoadingTitle}"
-            Description="{gallery:ModalShowCaseLangResource LoadingDescription}">
+            Description="{gallery:ModalShowCaseLangResource LoadingDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:ModalViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="LoadingDialogOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
@@ -201,11 +343,16 @@
                     </atom:Dialog>
                 </Panel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:ModalShowCaseLangResource CustomFooterButtonsTitle}"
-            Description="{gallery:ModalShowCaseLangResource CustomFooterButtonsDescription}">
+            Description="{gallery:ModalShowCaseLangResource CustomFooterButtonsDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:ModalViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="CustomFooterDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
@@ -249,11 +396,16 @@
                     </atom:MessageBox>
                 </Panel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:ModalShowCaseLangResource OpenDraggableModalTitle}"
-            Description="{gallery:ModalShowCaseLangResource OpenDraggableModalDescription}">
+            Description="{gallery:ModalShowCaseLangResource OpenDraggableModalDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:ModalViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="DraggableDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
@@ -274,11 +426,16 @@
                     </atom:Dialog>
                 </Panel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:ModalShowCaseLangResource ManualUpdateDestroyTitle}"
-            Description="{gallery:ModalShowCaseLangResource ManualUpdateDestroyDescription}">
+            Description="{gallery:ModalShowCaseLangResource ManualUpdateDestroyDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:ModalViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button Name="DelayedCloseMsgBoxOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalToCloseInN5s}" />
@@ -301,11 +458,16 @@
                     </atom:MessageBox>
                 </Panel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:ModalShowCaseLangResource CustomizeFooterButtonPropsTitle}"
-            Description="{gallery:ModalShowCaseLangResource CustomizeFooterButtonPropsDescription}">
+            Description="{gallery:ModalShowCaseLangResource CustomizeFooterButtonPropsDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:ModalViewModel">
             <StackPanel Orientation="Horizontal" Spacing="10">
                 <Panel>
                     <atom:Button ButtonType="Primary" Name="ConfigureButtonsDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalWithCustomizedButtonProps}" />
@@ -328,11 +490,16 @@
                     </atom:Dialog>
                 </Panel>
             </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
             Title="{gallery:ModalShowCaseLangResource StaticDialogApiTitle}"
-            Description="{gallery:ModalShowCaseLangResource StaticDialogApiDescription}">
+            Description="{gallery:ModalShowCaseLangResource StaticDialogApiDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:ModalViewModel">
             <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
                 <atom:Button Name="OpenOverlayDialogAPIButton" ButtonType="Primary" Click="HandleOpenOverlayDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenOverlayDialog}" />
 
@@ -340,6 +507,12 @@
 
                 <atom:Button ButtonType="Primary" Click="HandleOpenCustomViewDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenCustomviewDialog}" />
             </WrapPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
-    </gallery:ShowCasePanel>
+
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>

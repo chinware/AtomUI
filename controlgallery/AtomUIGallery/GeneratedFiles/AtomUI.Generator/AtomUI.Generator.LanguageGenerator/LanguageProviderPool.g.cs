@@ -11910,14 +11910,35 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiMethodDialogShowDialogModalAsync] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiMethodDialogShowDialogModalAsync;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogContent] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogContent;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogDefaultStandardButton] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogDefaultStandardButton;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogDialogHostType] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogDialogHostType;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogHostWidth] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogHostWidth;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsConfirmLoading] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogIsConfirmLoading;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsLoading] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogIsLoading;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsModal] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogIsModal;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsOpen] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogIsOpen;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogStandardButtons] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogStandardButtons;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxOkButtonStyle] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyMessageBoxOkButtonStyle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxStyle] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyMessageBoxStyle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.AsynchronouslyCloseDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.AsynchronouslyCloseDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.AsynchronouslyCloseTitle] = global::AtomUIGallery.ShowCases.Modal.en_US.AsynchronouslyCloseTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Modal.en_US.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Modal.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Modal.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomFooterButtonsDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.CustomFooterButtonsDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomFooterButtonsTitle] = global::AtomUIGallery.ShowCases.Modal.en_US.CustomFooterButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.CustomizeFooterButtonPropsDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsTitle] = global::AtomUIGallery.ShowCases.Modal.en_US.CustomizeFooterButtonPropsTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Modal.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Modal.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Modal.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Modal.en_US.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ManualUpdateDestroyDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.ManualUpdateDestroyDescription;
@@ -11967,8 +11988,28 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2TitleThisIsANotificationMessage] = global::AtomUIGallery.ShowCases.Modal.en_US.P2TitleThisIsANotificationMessage;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2TitleThisIsAWarningMessage] = global::AtomUIGallery.ShowCases.Modal.en_US.P2TitleThisIsAWarningMessage;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2TitleTitle] = global::AtomUIGallery.ShowCases.Modal.en_US.P2TitleTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Modal.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Modal.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Modal.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Modal.en_US.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.StaticDialogApiDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.StaticDialogApiDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.StaticDialogApiTitle] = global::AtomUIGallery.ShowCases.Modal.en_US.StaticDialogApiTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogButtonGroupSpacing] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenNameDialogButtonGroupSpacing;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogCloseBtnSize] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenNameDialogCloseBtnSize;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogContentBg] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenNameDialogContentBg;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogContentPadding] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenNameDialogContentPadding;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogFooterPadding] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenNameDialogFooterPadding;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogHeaderBg] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenNameDialogHeaderBg;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogHeaderPadding] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenNameDialogHeaderPadding;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameMessageBoxMinWidth] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenNameMessageBoxMinWidth;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameMessageBoxStyleIconSize] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenNameMessageBoxStyleIconSize;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Modal.en_US.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -11995,14 +12036,35 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiMethodDialogShowDialogModalAsync] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiMethodDialogShowDialogModalAsync;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogContent] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogContent;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogDefaultStandardButton] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogDefaultStandardButton;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogDialogHostType] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogDialogHostType;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogHostWidth] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogHostWidth;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsConfirmLoading] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogIsConfirmLoading;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsLoading] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogIsLoading;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsModal] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogIsModal;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsOpen] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogIsOpen;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogStandardButtons] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogStandardButtons;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxOkButtonStyle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyMessageBoxOkButtonStyle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxStyle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyMessageBoxStyle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.AsynchronouslyCloseDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.AsynchronouslyCloseDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.AsynchronouslyCloseTitle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.AsynchronouslyCloseTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomFooterButtonsDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.CustomFooterButtonsDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomFooterButtonsTitle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.CustomFooterButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.CustomizeFooterButtonPropsDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsTitle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.CustomizeFooterButtonPropsTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Modal.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Modal.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Modal.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ManualUpdateDestroyDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ManualUpdateDestroyDescription;
@@ -12052,8 +12114,28 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2TitleThisIsANotificationMessage] = global::AtomUIGallery.ShowCases.Modal.zh_CN.P2TitleThisIsANotificationMessage;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2TitleThisIsAWarningMessage] = global::AtomUIGallery.ShowCases.Modal.zh_CN.P2TitleThisIsAWarningMessage;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2TitleTitle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.P2TitleTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.StaticDialogApiDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.StaticDialogApiDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.StaticDialogApiTitle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.StaticDialogApiTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogButtonGroupSpacing] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenNameDialogButtonGroupSpacing;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogCloseBtnSize] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenNameDialogCloseBtnSize;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogContentBg] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenNameDialogContentBg;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogContentPadding] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenNameDialogContentPadding;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogFooterPadding] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenNameDialogFooterPadding;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogHeaderBg] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenNameDialogHeaderBg;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogHeaderPadding] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenNameDialogHeaderPadding;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameMessageBoxMinWidth] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenNameMessageBoxMinWidth;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameMessageBoxStyleIconSize] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenNameMessageBoxStyleIconSize;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Modal.zh_CN.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -12080,14 +12162,35 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiMethodDialogShowDialogModalAsync] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiMethodDialogShowDialogModalAsync;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogContent] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogContent;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogDefaultStandardButton] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogDefaultStandardButton;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogDialogHostType] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogDialogHostType;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogHostWidth] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogHostWidth;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsConfirmLoading] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogIsConfirmLoading;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsLoading] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogIsLoading;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsModal] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogIsModal;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsOpen] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogIsOpen;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogStandardButtons] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogStandardButtons;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxOkButtonStyle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyMessageBoxOkButtonStyle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxStyle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyMessageBoxStyle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.AsynchronouslyCloseDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.AsynchronouslyCloseDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.AsynchronouslyCloseTitle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.AsynchronouslyCloseTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomFooterButtonsDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.CustomFooterButtonsDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomFooterButtonsTitle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.CustomFooterButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.CustomizeFooterButtonPropsDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsTitle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.CustomizeFooterButtonPropsTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Modal.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Modal.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Modal.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ManualUpdateDestroyDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ManualUpdateDestroyDescription;
@@ -12137,8 +12240,28 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2TitleThisIsANotificationMessage] = global::AtomUIGallery.ShowCases.Modal.zh_TW.P2TitleThisIsANotificationMessage;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2TitleThisIsAWarningMessage] = global::AtomUIGallery.ShowCases.Modal.zh_TW.P2TitleThisIsAWarningMessage;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2TitleTitle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.P2TitleTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.StaticDialogApiDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.StaticDialogApiDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.StaticDialogApiTitle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.StaticDialogApiTitle;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogButtonGroupSpacing] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenNameDialogButtonGroupSpacing;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogCloseBtnSize] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenNameDialogCloseBtnSize;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogContentBg] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenNameDialogContentBg;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogContentPadding] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenNameDialogContentPadding;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogFooterPadding] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenNameDialogFooterPadding;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogHeaderBg] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenNameDialogHeaderBg;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameDialogHeaderPadding] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenNameDialogHeaderPadding;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameMessageBoxMinWidth] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenNameMessageBoxMinWidth;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenNameMessageBoxStyleIconSize] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenNameMessageBoxStyleIconSize;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Modal.zh_TW.TokenStatusStable;
             }
             catch (System.Exception)
             {

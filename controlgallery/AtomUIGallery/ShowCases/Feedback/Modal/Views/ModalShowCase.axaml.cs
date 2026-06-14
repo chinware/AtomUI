@@ -1,12 +1,14 @@
-using System.Reactive.Disposables;
 using AtomUI;
 using AtomUI.Desktop.Controls;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
+using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 using TextBlock = AtomUI.Desktop.Controls.TextBlock;
-using ToggleSwitch = AtomUI.Desktop.Controls.ToggleSwitch;
 
 namespace AtomUIGallery.ShowCases.Modal;
 
@@ -14,52 +16,172 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
 {
     public const string LanguageId = nameof(ModalShowCase);
 
+    private const string ExamplesScenario    = "Examples";
+    private const string ApiScenario         = "Api";
+    private const string DesignTokenScenario = "DesignToken";
+
+    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
+    private IDisposable? _delayedCloseDialogDisposal;
+
     public ModalShowCase()
     {
-        this.WhenActivated(disposables =>
-        {
-            BasicOpenModalButton.Click       += HandleBasicModalButtonClick;
-            BasicWindowOpenModalButton.Click += HandleBasicWindowModalButtonClick;
-
-            ConfirmMsgBoxBtn.Click                   += HandleConfirmMsgBoxBtnClick;
-            InformationMsgBoxBtn.Click               += HandleInformationMsgBoxBtnClick;
-            SuccessMsgBoxBtn.Click                   += HandleSuccessMsgBoxBtnClick;
-            ErrorMsgBoxBtn.Click                     += HandleErrorMsgBoxBtnClick;
-            WarningMsgBoxBtn.Click                   += HandleWarningMsgBoxBtnClick;
-            StyleCaseHostTypeSwitch.IsCheckedChanged += HandleStyleCaseHostTypeSwitchChanged;
-
-            LoadingDialogOpenModalButton.Click     += HandleLoadingDialogOpenModalButtonClick;
-            AsyncDialogOpenModalButton.Click       += HandleAsyncDialogOpenModalButtonClick;
-            CustomFooterDialogOpenButton.Click     += HandleCustomFooterDialogOpenButtonClick;
-            CustomFooterMsgBoxOpenButton.Click     += HandleCustomFooterMsgBoxOpenButtonClick;
-            DraggableDialogOpenButton.Click        += HandleDraggableMsgBoxOpenButtonClick;
-            DelayedCloseMsgBoxOpenButton.Click     += HandleDelayedCloseMsgBoxOpenButtonClick;
-            ConfigureButtonsDialogOpenButton.Click += HandleConfigureButtonsDialogButtonClick;
-
-            disposables.Add(Disposable.Create(() => BasicOpenModalButton.Click -= HandleBasicModalButtonClick));
-            disposables.Add(Disposable.Create(() => BasicWindowOpenModalButton.Click -= HandleBasicWindowModalButtonClick));
-            disposables.Add(Disposable.Create(() => ConfirmMsgBoxBtn.Click -= HandleConfirmMsgBoxBtnClick));
-            disposables.Add(Disposable.Create(() => InformationMsgBoxBtn.Click -= HandleInformationMsgBoxBtnClick));
-            disposables.Add(Disposable.Create(() => SuccessMsgBoxBtn.Click -= HandleSuccessMsgBoxBtnClick));
-            disposables.Add(Disposable.Create(() => ErrorMsgBoxBtn.Click -= HandleErrorMsgBoxBtnClick));
-            disposables.Add(Disposable.Create(() => WarningMsgBoxBtn.Click -= HandleWarningMsgBoxBtnClick));
-            disposables.Add(Disposable.Create(() => StyleCaseHostTypeSwitch.IsCheckedChanged -= HandleStyleCaseHostTypeSwitchChanged));
-            disposables.Add(Disposable.Create(() => LoadingDialogOpenModalButton.Click -= HandleLoadingDialogOpenModalButtonClick));
-            disposables.Add(Disposable.Create(() => CustomFooterDialogOpenButton.Click -= HandleCustomFooterDialogOpenButtonClick));
-            disposables.Add(Disposable.Create(() => CustomFooterMsgBoxOpenButton.Click -= HandleCustomFooterMsgBoxOpenButtonClick));
-            disposables.Add(Disposable.Create(() => DraggableDialogOpenButton.Click -= HandleDraggableMsgBoxOpenButtonClick));
-            disposables.Add(Disposable.Create(() => DelayedCloseMsgBoxOpenButton.Click -= HandleDelayedCloseMsgBoxOpenButtonClick));
-            disposables.Add(Disposable.Create(() => ConfigureButtonsDialogOpenButton.Click -= HandleConfigureButtonsDialogButtonClick));
-
-            ConfigureButtonPropertiesDialog.ButtonsConfigure = ConfigureButtonProperties;
-
-            if (DataContext is ModalViewModel viewModel)
-            {
-                viewModel.MessageBoxStyleCaseHostType = DialogHostType.Overlay;
-                viewModel.CountdownSeconds            = 5;
-            }
-        });
         InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+        AddHandler(AtomUIButton.ClickEvent, HandleDemoButtonClick);
+        AddHandler(Avalonia.Controls.Primitives.ToggleButton.IsCheckedChangedEvent, HandleDemoToggleSwitchCheckedChanged);
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ClearLazyScenarioContent();
+        _delayedCloseDialogDisposal?.Dispose();
+        _delayedCloseDialogDisposal = null;
+    }
+
+    protected override void OnDataContextChanged(EventArgs e)
+    {
+        base.OnDataContextChanged(e);
+        ExamplesContent.DataContext = DataContext;
+        foreach (var content in _lazyScenarioContentCache.Values)
+        {
+            content.DataContext = DataContext;
+        }
+
+        if (DataContext is ModalViewModel viewModel)
+        {
+            viewModel.MessageBoxStyleCaseHostType = DialogHostType.Overlay;
+            viewModel.CountdownSeconds            = 5;
+        }
+
+        EnsureSelectedScenarioContent();
+    }
+
+    private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        EnsureSelectedScenarioContent();
+    }
+
+    private void EnsureSelectedScenarioContent()
+    {
+        if (ScenarioTabs.SelectedItem is not ScenarioTabStripItem tabStripItem ||
+            tabStripItem.Tag is not string scenario)
+        {
+            return;
+        }
+
+        var content = ResolveScenarioContent(scenario);
+        if (!ReferenceEquals(ScenarioContentHost.Content, content))
+        {
+            ScenarioContentHost.Content = content;
+        }
+    }
+
+    private void ClearLazyScenarioContent()
+    {
+        if (ScenarioContentHost.Content is not null &&
+            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
+        {
+            ScenarioContentHost.Content = null;
+        }
+
+        _lazyScenarioContentCache.Clear();
+    }
+
+    private Control ResolveScenarioContent(string scenario)
+    {
+        if (scenario == ExamplesScenario)
+        {
+            ExamplesContent.DataContext = DataContext;
+            return ExamplesContent;
+        }
+
+        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
+        {
+            content             = CreateScenarioContent(scenario);
+            content.DataContext = DataContext;
+            _lazyScenarioContentCache.Add(scenario, content);
+        }
+
+        return content;
+    }
+
+    private static Control CreateScenarioContent(string scenario)
+    {
+        return scenario switch
+        {
+            ApiScenario         => new ModalApiDataGrid(),
+            DesignTokenScenario => new ModalDesignTokenDataGrid(),
+            _                   => throw new InvalidOperationException($"Unknown Modal scenario: {scenario}")
+        };
+    }
+
+    private void HandleDemoButtonClick(object? sender, RoutedEventArgs e)
+    {
+        if (e.Source is not AtomUIButton button)
+        {
+            return;
+        }
+
+        switch (button.Name)
+        {
+            case "BasicOpenModalButton":
+                HandleBasicModalButtonClick(button, e);
+                break;
+            case "BasicWindowOpenModalButton":
+                HandleBasicWindowModalButtonClick(button, e);
+                break;
+            case "ConfirmMsgBoxBtn":
+                HandleConfirmMsgBoxBtnClick(button, e);
+                break;
+            case "InformationMsgBoxBtn":
+                HandleInformationMsgBoxBtnClick(button, e);
+                break;
+            case "SuccessMsgBoxBtn":
+                HandleSuccessMsgBoxBtnClick(button, e);
+                break;
+            case "ErrorMsgBoxBtn":
+                HandleErrorMsgBoxBtnClick(button, e);
+                break;
+            case "WarningMsgBoxBtn":
+                HandleWarningMsgBoxBtnClick(button, e);
+                break;
+            case "LoadingDialogOpenModalButton":
+                HandleLoadingDialogOpenModalButtonClick(button, e);
+                break;
+            case "AsyncDialogOpenModalButton":
+                HandleAsyncDialogOpenModalButtonClick(button, e);
+                break;
+            case "CustomFooterDialogOpenButton":
+                HandleCustomFooterDialogOpenButtonClick(button, e);
+                break;
+            case "CustomFooterMsgBoxOpenButton":
+                HandleCustomFooterMsgBoxOpenButtonClick(button, e);
+                break;
+            case "DraggableDialogOpenButton":
+                HandleDraggableMsgBoxOpenButtonClick(button, e);
+                break;
+            case "DelayedCloseMsgBoxOpenButton":
+                HandleDelayedCloseMsgBoxOpenButtonClick(button, e);
+                break;
+            case "ConfigureButtonsDialogOpenButton":
+                HandleConfigureButtonsDialogButtonClick(button, e);
+                break;
+        }
+    }
+
+    private void HandleDemoToggleSwitchCheckedChanged(object? sender, RoutedEventArgs e)
+    {
+        if (e.Source is AtomUIToggleSwitch { Name: "StyleCaseHostTypeSwitch" } toggleSwitch)
+        {
+            HandleStyleCaseHostTypeSwitchChanged(toggleSwitch, e);
+        }
     }
 
     private void HandleBasicModalButtonClick(object? sender, RoutedEventArgs e)
@@ -214,8 +336,6 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
         }
     }
 
-    private IDisposable? _delayedCloseDialogDisposal;
-
     private void HandleDelayedCloseMsgBoxOpened(object? sender, EventArgs e)
     {
         if (sender is MessageBox messageBox)
@@ -240,6 +360,11 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
 
     private void HandleConfigureButtonsDialogButtonClick(object? sender, EventArgs e)
     {
+        if (TryFindTemplateControl(sender, "ConfigureButtonPropertiesDialog", out Dialog dialog))
+        {
+            dialog.ButtonsConfigure = ConfigureButtonProperties;
+        }
+
         if (DataContext is ModalViewModel viewModel)
         {
             viewModel.IsConfigureButtonsDialogOpened = true;
@@ -272,7 +397,7 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
                 HorizontalStartupLocation = DialogHorizontalAnchor.Center,
                 VerticalOffset            = new Dimension(30, DimensionUnitType.Percentage),
                 HostMinWidth              = 400,
-                PlacementTarget           = OpenOverlayDialogAPIButton
+                PlacementTarget           = sender as Control
             };
             await Dialog.ShowDialogModalAsync(content, null, options);
         }
@@ -461,5 +586,44 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
             Text = "some messages...some messages..."
         });
         return stackPanel;
+    }
+
+    private static bool TryFindTemplateControl<T>(object? source, string name, out T control)
+        where T : Control
+    {
+        var current = source as Control;
+        while (current is not null)
+        {
+            if (current is T directControl &&
+                directControl.Name == name)
+            {
+                control = directControl;
+                return true;
+            }
+
+            var descendantControl = FindDescendantByName<T>(current, name);
+            if (descendantControl is not null)
+            {
+                control = descendantControl;
+                return true;
+            }
+
+            current = current.Parent as Control;
+        }
+
+        control = null!;
+        return false;
+    }
+
+    private static T? FindDescendantByName<T>(Control root, string name)
+        where T : Control
+    {
+        if (root is T typedRoot && typedRoot.Name == name)
+        {
+            return typedRoot;
+        }
+
+        return root.GetVisualDescendants().OfType<T>().FirstOrDefault(control => control.Name == name)
+               ?? root.GetLogicalDescendants().OfType<T>().FirstOrDefault(control => control.Name == name);
     }
 }
