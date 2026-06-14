@@ -6,6 +6,16 @@ namespace AtomUIGallery.ShowCases.Tour;
 [LanguageProvider(LanguageCode.zh_TW, TourShowCase.LanguageId)]
 internal partial class zh_TW : LanguageProvider
 {
+    public const string PageSubtitle = "透過上下文浮層引導使用者完成關鍵流程。";
+    public const string PageDescription = "Tour 組合步驟目標、遮罩、彈出位置、指示器和自定義操作，在不離開當前頁面的情況下構建輕量級產品引導。";
+    public const string ComponentCategory = "資料展示";
+    public const string ComponentStatusStable = ".NET 10";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計變量";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最基礎的用法。";
     public const string NonModalTitle = "非模態";
@@ -42,7 +52,44 @@ internal partial class zh_TW : LanguageProvider
     public const string P2TextRadius = "圓角半徑：";
     public const string P2TextHorizontalOffset = "水平偏移：";
     public const string P2TextVerticalOffset = "垂直偏移：";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyStepsSource = "透過集合資料生成引導步驟。";
+    public const string ApiPropertyItemTemplate = "定義 StepsSource 中每一項的渲染模板。";
+    public const string ApiPropertyIsOpen = "控制引導浮層是否打開。";
+    public const string ApiPropertyCurrentIndex = "獲取或設定當前步驟索引。";
+    public const string ApiPropertyStepCount = "獲取當前可用步驟總數。";
+    public const string ApiPropertyPlacement = "設定相對目標控件的默認彈出位置。";
+    public const string ApiPropertyIsShowMask = "控制是否顯示頁面遮罩。";
+    public const string ApiPropertyMaskColor = "設定 Tour 或單個步驟使用的遮罩畫刷。";
+    public const string ApiPropertyStyleType = "在默認和 Primary 兩種視覺樣式之間切換。";
+    public const string ApiPropertyIsArrowVisible = "控制彈出層箭頭是否可見。";
+    public const string ApiPropertyIsPointAtCenter = "啟用後箭頭指向目標控件中心。";
+    public const string ApiPropertyCloseIcon = "自定義關閉圖標模板。";
+    public const string ApiPropertyIndicator = "替換默認步驟指示器。";
+    public const string ApiPropertyIsDisabledInteraction = "禁用與高亮目標區域的交互。";
+    public const string ApiPropertyIsScrollIntoView = "步驟切換時將目標滾動到可視區域。";
+    public const string ApiPropertyGapOffsetX = "設定高亮區域的水平外擴偏移。";
+    public const string ApiPropertyGapOffsetY = "設定高亮區域的垂直外擴偏移。";
+    public const string ApiPropertyGapRadius = "設定高亮目標區域的圓角半徑。";
+    public const string ApiPropertyStepTarget = "設定當前步驟高亮的控件。";
+    public const string ApiPropertyStepTitle = "設定步驟標題內容。";
+    public const string ApiPropertyStepDescription = "設定步驟正文內容。";
+    public const string ApiPropertyStepCover = "設定展示在步驟正文上方的可選封面內容。";
+    public const string TokenColumnToken = "變量";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "範圍";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenNameCloseBtnSize = "關閉按鈕尺寸。";
+    public const string TokenNamePrimaryPrevBtnBg = "Primary 模式下上一步按鈕的背景色。";
+    public const string TokenNamePrimaryNextBtnHoverBg = "Primary 模式下下一步按鈕的懸浮背景色。";
+    public const string TokenNameTourViewMinWidth = "Tour 彈出視圖的最小寬度。";
+    public const string TokenNameTourViewMinHeight = "Tour 彈出視圖的最小高度。";
+    public const string TokenNameHeaderColor = "步驟標題文本顏色。";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
 
     protected override Type GetResourceKindType() => typeof(TourShowCaseLangResourceKind);
 }
-

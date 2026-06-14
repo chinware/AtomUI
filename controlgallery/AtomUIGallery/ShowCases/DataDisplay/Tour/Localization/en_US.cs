@@ -6,6 +6,16 @@ namespace AtomUIGallery.ShowCases.Tour;
 [LanguageProvider(LanguageCode.en_US, TourShowCase.LanguageId)]
 internal partial class en_US : LanguageProvider
 {
+    public const string PageSubtitle = "Guide users through important workflows with contextual overlays.";
+    public const string PageDescription = "Tour combines step targets, masks, placement, indicators, and custom actions to build lightweight product guidance without leaving the current page.";
+    public const string ComponentCategory = "Data Display";
+    public const string ComponentStatusStable = ".NET 10";
+    public const string ScenarioExamples = "Examples";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "Design Token";
+    public const string InfoNamespaceLabel = "Namespace";
+    public const string InfoPackageLabel = "Package";
+    public const string InfoBaseClassLabel = "Base class";
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The most basic usage.";
     public const string NonModalTitle = "Non-modal";
@@ -42,6 +52,44 @@ internal partial class en_US : LanguageProvider
     public const string P2TextRadius = "Radius:";
     public const string P2TextHorizontalOffset = "Horizontal offset:";
     public const string P2TextVerticalOffset = "Vertical offset:";
+    public const string ApiColumnProperty = "Property";
+    public const string ApiColumnDescription = "Description";
+    public const string ApiColumnType = "Type";
+    public const string ApiColumnDefault = "Default";
+    public const string ApiPropertyStepsSource = "Provides step data when steps are generated from a collection.";
+    public const string ApiPropertyItemTemplate = "Defines the template used to render each item from StepsSource.";
+    public const string ApiPropertyIsOpen = "Controls whether the tour popup is open.";
+    public const string ApiPropertyCurrentIndex = "Gets or sets the current step index.";
+    public const string ApiPropertyStepCount = "Gets the total number of steps currently available.";
+    public const string ApiPropertyPlacement = "Sets the default popup placement relative to the target.";
+    public const string ApiPropertyIsShowMask = "Controls whether the page mask is shown.";
+    public const string ApiPropertyMaskColor = "Sets the mask brush used by the tour or an individual step.";
+    public const string ApiPropertyStyleType = "Switches the tour visual style between default and primary.";
+    public const string ApiPropertyIsArrowVisible = "Controls whether the popup arrow is visible.";
+    public const string ApiPropertyIsPointAtCenter = "Places the arrow at the target center when enabled.";
+    public const string ApiPropertyCloseIcon = "Customizes the close icon template.";
+    public const string ApiPropertyIndicator = "Replaces the default step indicator.";
+    public const string ApiPropertyIsDisabledInteraction = "Prevents interaction with the highlighted target area.";
+    public const string ApiPropertyIsScrollIntoView = "Scrolls the target into view when the step changes.";
+    public const string ApiPropertyGapOffsetX = "Sets the horizontal offset around the highlighted target.";
+    public const string ApiPropertyGapOffsetY = "Sets the vertical offset around the highlighted target.";
+    public const string ApiPropertyGapRadius = "Sets the corner radius of the highlighted target area.";
+    public const string ApiPropertyStepTarget = "Sets the control highlighted by this step.";
+    public const string ApiPropertyStepTitle = "Sets the step title content.";
+    public const string ApiPropertyStepDescription = "Sets the step body content.";
+    public const string ApiPropertyStepCover = "Sets optional cover content above the step body.";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "Description";
+    public const string TokenColumnScope = "Scope";
+    public const string TokenColumnStatus = "Status";
+    public const string TokenNameCloseBtnSize = "Close button size.";
+    public const string TokenNamePrimaryPrevBtnBg = "Background color for the previous button in primary mode.";
+    public const string TokenNamePrimaryNextBtnHoverBg = "Hover background color for the next button in primary mode.";
+    public const string TokenNameTourViewMinWidth = "Minimum width of the tour popup view.";
+    public const string TokenNameTourViewMinHeight = "Minimum height of the tour popup view.";
+    public const string TokenNameHeaderColor = "Text color of the step title.";
+    public const string TokenScopeComponent = "Component";
+    public const string TokenStatusStable = "Stable";
 
     protected override Type GetResourceKindType() => typeof(TourShowCaseLangResourceKind);
 }
