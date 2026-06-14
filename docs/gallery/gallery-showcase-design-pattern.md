@@ -273,6 +273,7 @@ Panel 层负责控制一批 `ShowCaseItem` 何时 materialize：
 - `ShowCasePanel` 只允许使用一个 panel 级 `EffectiveViewportChanged` 监听来判断 viewport，不允许给每个 `ShowCaseItem` 单独挂监听。
 - 已 materialize 的内容不回收。ShowCase 是文档式页面，不做无限列表虚拟化，避免状态、焦点、Popup/Flyout 生命周期被破坏。
 - 旧页面在未迁移前可以保留默认 `IsDeferredLoadingEnabled="False"`；一旦纳入本轮 ShowCase 迁移，或后续新增 ShowCase，就必须开启。
+- 内存泄漏或全量创建压测不能修改单个 ShowCase 的 XAML。使用 `GalleryShowCaseRuntimeOptions` 统一关闭延迟创建：`F5` 启动自动切页压测时会设置 `IsDeferredLoadingDisabled=True`，`F6` 停止压测时恢复运行时开关。命令行全程压测可设置 `ATOMUI_GALLERY_DISABLE_SHOWCASE_DEFERRED=1`，该环境变量优先于 `F6` 的运行时恢复。
 
 Item 层负责真正延迟创建演示控件。所有有演示内容的 `ShowCaseItem` 必须使用下面的写法：
 

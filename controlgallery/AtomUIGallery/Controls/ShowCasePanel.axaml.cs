@@ -125,7 +125,8 @@ public class ShowCasePanel : TemplatedControl
         if (_layoutPanel != null)
         {
             _nextProgressiveMountIndex = 0;
-            if (OperatingSystem.IsBrowser())
+            if (OperatingSystem.IsBrowser() &&
+                !GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled)
             {
                 _nextProgressiveMountIndex = MountShowCaseItems(0, BrowserInitialShowCaseItemCount);
                 StartProgressiveMountTimer();
@@ -135,7 +136,7 @@ public class ShowCasePanel : TemplatedControl
                 MountShowCaseItems(0, Children.Count);
             }
 
-            if (IsDeferredLoadingEnabled)
+            if (IsDeferredLoadingEffectivelyEnabled)
             {
                 MaterializeInitialDeferredContent();
                 QueueDeferredViewportMaterialization();
@@ -151,12 +152,18 @@ public class ShowCasePanel : TemplatedControl
     {
         base.OnAttachedToVisualTree(e);
         _isAttachedToVisualTree = true;
+        GalleryShowCaseRuntimeOptions.DeferredLoadingDisabledChanged += HandleDeferredLoadingDisabledChanged;
         UpdateEffectiveViewportSubscription();
+        if (GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled)
+        {
+            MaterializeAllDeferredContent();
+        }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         _isAttachedToVisualTree = false;
+        GalleryShowCaseRuntimeOptions.DeferredLoadingDisabledChanged -= HandleDeferredLoadingDisabledChanged;
         UpdateEffectiveViewportSubscription(false);
         StopProgressiveMountTimer();
         _lastEffectiveViewport                  = null;
@@ -170,7 +177,7 @@ public class ShowCasePanel : TemplatedControl
         if (change.Property == IsDeferredLoadingEnabledProperty)
         {
             UpdateEffectiveViewportSubscription();
-            if (IsDeferredLoadingEnabled)
+            if (IsDeferredLoadingEffectivelyEnabled)
             {
                 MaterializeInitialDeferredContent();
                 QueueDeferredViewportMaterialization();
@@ -218,7 +225,7 @@ public class ShowCasePanel : TemplatedControl
             if (Children[index] is ShowCaseItem item)
             {
                 _layoutPanel.Children.Add(item);
-                if (!IsDeferredLoadingEnabled)
+                if (!IsDeferredLoadingEffectivelyEnabled)
                 {
                     item.MaterializeDeferredContent();
                 }
@@ -275,7 +282,7 @@ public class ShowCasePanel : TemplatedControl
 
     private void UpdateEffectiveViewportSubscription(bool? shouldSubscribe = null)
     {
-        var subscribe = shouldSubscribe ?? (IsDeferredLoadingEnabled && _isAttachedToVisualTree);
+        var subscribe = shouldSubscribe ?? (IsDeferredLoadingEffectivelyEnabled && _isAttachedToVisualTree);
         if (subscribe == _isEffectiveViewportSubscribed)
         {
             return;
@@ -312,7 +319,7 @@ public class ShowCasePanel : TemplatedControl
 
     private void MaterializeInitialDeferredContent()
     {
-        if (!IsDeferredLoadingEnabled)
+        if (!IsDeferredLoadingEffectivelyEnabled)
         {
             return;
         }
@@ -335,7 +342,7 @@ public class ShowCasePanel : TemplatedControl
 
     private void QueueDeferredViewportMaterialization()
     {
-        if (!IsDeferredLoadingEnabled ||
+        if (!IsDeferredLoadingEffectivelyEnabled ||
             _deferredViewportMaterializationQueued ||
             !_isAttachedToVisualTree)
         {
@@ -352,7 +359,7 @@ public class ShowCasePanel : TemplatedControl
 
     private void MaterializeDeferredContentInViewport()
     {
-        if (!IsDeferredLoadingEnabled ||
+        if (!IsDeferredLoadingEffectivelyEnabled ||
             _layoutPanel is null ||
             _lastEffectiveViewport is not { } viewport)
         {
@@ -408,6 +415,25 @@ public class ShowCasePanel : TemplatedControl
 
         var itemBounds = new Rect(item.Bounds.Size).TransformToAABB(transform.Value);
         return viewport.Intersects(itemBounds);
+    }
+
+    private bool IsDeferredLoadingEffectivelyEnabled =>
+        IsDeferredLoadingEnabled && !GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled;
+
+    private void HandleDeferredLoadingDisabledChanged(object? sender, EventArgs e)
+    {
+        UpdateEffectiveViewportSubscription();
+        if (IsDeferredLoadingEffectivelyEnabled)
+        {
+            MaterializeInitialDeferredContent();
+            QueueDeferredViewportMaterialization();
+        }
+        else
+        {
+            StopProgressiveMountTimer();
+            _nextProgressiveMountIndex = MountShowCaseItems(_nextProgressiveMountIndex, Children.Count);
+            MaterializeAllDeferredContent();
+        }
     }
 
     internal virtual void NotifyAboutToActive()
