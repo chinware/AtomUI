@@ -2,37 +2,198 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.ImagePreviewer.ImagePreviewerShowCase"
              xmlns:atom="https://atomui.net"
-             xmlns:gallery="https://atomui.net/oss-controls/gallery">
-    <gallery:ShowCasePanel>
-        <gallery:ShowCaseItem
-            Title="{gallery:ImagePreviewerShowCaseLangResource BasicUsageTitle}"
-            Description="{gallery:ImagePreviewerShowCaseLangResource BasicUsageDescription}">
-            <atom:ImagePreviewer Name="BasicPreviewer" Width="200"/>
-        </gallery:ShowCaseItem>
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.ImagePreviewer"
+             x:DataType="vm:ImagePreviewerViewModel">
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="ImagePreviewer"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:ImagePreviewerShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:ImagePreviewerShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:ImagePreviewerShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:ImagePreviewerShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ImagePreviewerShowCaseLangResource FaultTolerantTitle}"
-            Description="{gallery:ImagePreviewerShowCaseLangResource FaultTolerantDescription}">
-            <atom:ImagePreviewer Name="FaultTolerantPreviewer" Width="200"/>
-        </gallery:ShowCaseItem>
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="220" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:ImagePreviewerShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageTitle}"
-            Description="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageDescription}">
-            <atom:ImagePreviewer Name="FromOnImagePreviewer" Width="200"/>
-        </gallery:ShowCaseItem>
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:ImagePreviewerShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ImagePreviewerShowCaseLangResource CustomPreviewImageTitle}"
-            Description="{gallery:ImagePreviewerShowCaseLangResource CustomPreviewImageDescription}">
-            <atom:ImagePreviewer Name="CustomImagePreviewer" Width="200"/>
-        </gallery:ShowCaseItem>
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:ImagePreviewerShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AbstractImagePreviewer"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewTitle}"
-            Description="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewDescription}"
-            IsOccupyEntireRow="True">
-            <atom:ImageGroupPreviewer Name="MultiImagesPreviewer" CoverWidth="200" CoverHeight="200"/>
-        </gallery:ShowCaseItem>
-    </gallery:ShowCasePanel>
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:ImagePreviewerShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:ImagePreviewerShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:ImagePreviewerShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
+                                       ContentMargin="28,10,28,28">
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ImagePreviewerShowCaseLangResource BasicUsageTitle}"
+                        Description="{gallery:ImagePreviewerShowCaseLangResource BasicUsageDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                                <atom:ImagePreviewer Width="200"
+                                                     ItemsSource="{Binding DefaultImages}" />
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ImagePreviewerShowCaseLangResource FaultTolerantTitle}"
+                        Description="{gallery:ImagePreviewerShowCaseLangResource FaultTolerantDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                                <atom:ImagePreviewer Width="200"
+                                                     FallbackImageSrc="{Binding FallbackImage}" />
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageTitle}"
+                        Description="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                                <atom:ImagePreviewer Width="200"
+                                                     ItemsSource="{Binding ThreeImages}" />
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ImagePreviewerShowCaseLangResource CustomPreviewImageTitle}"
+                        Description="{gallery:ImagePreviewerShowCaseLangResource CustomPreviewImageDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                                <atom:ImagePreviewer Width="200"
+                                                     ItemsSource="{Binding DefaultImages}"
+                                                     CoverImageSrc="{Binding BlurImage}" />
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewTitle}"
+                        Description="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewDescription}"
+                        IsOccupyEntireRow="True"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                                <atom:ImageGroupPreviewer CoverWidth="200"
+                                                          CoverHeight="200"
+                                                          ItemsSource="{Binding TwoImages}" />
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>

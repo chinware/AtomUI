@@ -6,6 +6,16 @@ namespace AtomUIGallery.ShowCases.ImagePreviewer;
 [LanguageProvider(LanguageCode.zh_CN, ImagePreviewerShowCase.LanguageId)]
 internal partial class zh_CN : LanguageProvider
 {
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "设计令牌";
+    public const string ComponentCategory = "数据展示";
+    public const string ComponentStatusStable = "稳定";
+    public const string PageSubtitle = "在覆盖层中预览单张或多张图片，并支持缩放、移动和切换。";
+    public const string PageDescription = "ImagePreviewer 展示图片封面，点击后打开预览界面。它支持容错图片、自定义封面、多图预览、缩放范围和预览窗口生命周期事件。";
+    public const string InfoNamespaceLabel = "命名空间";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基础类";
     public const string BasicUsageTitle = "基础用法";
     public const string BasicUsageDescription = "点击图片放大预览。";
     public const string FaultTolerantTitle = "容错";
@@ -16,6 +26,38 @@ internal partial class zh_CN : LanguageProvider
     public const string CustomPreviewImageDescription = "可以设置不同的预览图片。";
     public const string MultipleImagePreviewTitle = "多图预览";
     public const string MultipleImagePreviewDescription = "点击左右切换按钮预览多张图片。";
+    public const string ApiColumnProperty = "属性";
+    public const string ApiColumnDescription = "说明";
+    public const string ApiColumnType = "类型";
+    public const string ApiColumnDefault = "默认值";
+    public const string ApiPropertyItemsSource = "ImagePreviewer 和 ImageGroupPreviewer 使用的图片源 URI 列表。";
+    public const string ApiPropertyFallbackImageSrc = "配置图片加载失败时显示的容错图片。";
+    public const string ApiPropertyIsOpen = "控制预览覆盖层或预览窗口是否打开。";
+    public const string ApiPropertyCoverWidth = "图片封面的宽度。";
+    public const string ApiPropertyCoverHeight = "图片封面的高度。";
+    public const string ApiPropertyCurrentIndex = "多图预览中的当前图片索引。";
+    public const string ApiPropertyCoverImageSrc = "ImagePreviewer 的自定义封面图片源。";
+    public const string ApiPropertyIsShowCoverMask = "是否显示封面遮罩和预览提示。";
+    public const string ApiPropertyImageScaleStep = "放大和缩小时应用的缩放步长。";
+    public const string ApiPropertyImageMinScale = "预览界面中的最小图片缩放比例。";
+    public const string ApiPropertyImageMaxScale = "预览界面中的最大图片缩放比例。";
+    public const string ApiEventDialogOpened = "预览窗口打开后触发。";
+    public const string ApiEventDialogClosing = "预览窗口关闭前触发。";
+    public const string ApiEventDialogClosed = "预览窗口关闭后触发。";
+    public const string TokenColumnToken = "令牌";
+    public const string TokenColumnDescription = "说明";
+    public const string TokenColumnScope = "范围";
+    public const string TokenColumnStatus = "状态";
+    public const string TokenNamePreviewOperationSize = "预览操作图标尺寸。";
+    public const string TokenNamePreviewOperationColor = "预览操作图标颜色。";
+    public const string TokenNamePreviewOperationHoverColor = "预览操作图标悬浮颜色。";
+    public const string TokenNameImagePreviewSwitchSize = "图片切换按钮尺寸。";
+    public const string TokenNameMaskBgColor = "封面遮罩背景色。";
+    public const string TokenNameDialogMinWidth = "预览窗口最小宽度。";
+    public const string TokenNameDialogMinHeight = "预览窗口最小高度。";
+    public const string TokenNameCoverImageWidth = "默认封面图片宽度。";
+    public const string TokenScopeComponent = "组件";
+    public const string TokenStatusStable = "稳定";
 
     protected override Type GetResourceKindType() => typeof(ImagePreviewerShowCaseLangResourceKind);
 }
