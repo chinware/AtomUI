@@ -6,6 +6,16 @@ namespace AtomUIGallery.ShowCases.ImagePreviewer;
 [LanguageProvider(LanguageCode.en_US, ImagePreviewerShowCase.LanguageId)]
 internal partial class en_US : LanguageProvider
 {
+    public const string ScenarioExamples = "Examples";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "Design Token";
+    public const string ComponentCategory = "Data Display";
+    public const string ComponentStatusStable = "Stable";
+    public const string PageSubtitle = "Preview single or multiple images in an overlay with zooming, moving, and switching controls.";
+    public const string PageDescription = "ImagePreviewer displays an image cover that opens a preview surface. It supports fallback images, custom covers, image groups, scaling limits, and dialog lifecycle events.";
+    public const string InfoNamespaceLabel = "Namespace";
+    public const string InfoPackageLabel = "Package";
+    public const string InfoBaseClassLabel = "Base class";
     public const string BasicUsageTitle = "Basic Usage";
     public const string BasicUsageDescription = "Click the image to zoom in.";
     public const string FaultTolerantTitle = "Fault tolerant";
@@ -16,6 +26,38 @@ internal partial class en_US : LanguageProvider
     public const string CustomPreviewImageDescription = "You can set different preview image.";
     public const string MultipleImagePreviewTitle = "Multiple image preview";
     public const string MultipleImagePreviewDescription = "Click the left and right switch buttons to preview multiple images.";
+    public const string ApiColumnProperty = "Property";
+    public const string ApiColumnDescription = "Description";
+    public const string ApiColumnType = "Type";
+    public const string ApiColumnDefault = "Default";
+    public const string ApiPropertyItemsSource = "Image source URI list used by ImagePreviewer and ImageGroupPreviewer.";
+    public const string ApiPropertyFallbackImageSrc = "Fallback image shown when the configured image cannot be loaded.";
+    public const string ApiPropertyIsOpen = "Controls whether the preview overlay or dialog is open.";
+    public const string ApiPropertyCoverWidth = "Width of the image cover.";
+    public const string ApiPropertyCoverHeight = "Height of the image cover.";
+    public const string ApiPropertyCurrentIndex = "Current preview image index in a group.";
+    public const string ApiPropertyCoverImageSrc = "Custom cover image source for ImagePreviewer.";
+    public const string ApiPropertyIsShowCoverMask = "Shows or hides the cover mask and preview indicator.";
+    public const string ApiPropertyImageScaleStep = "Scale step applied by zoom-in and zoom-out actions.";
+    public const string ApiPropertyImageMinScale = "Minimum image scale in the preview surface.";
+    public const string ApiPropertyImageMaxScale = "Maximum image scale in the preview surface.";
+    public const string ApiEventDialogOpened = "Raised after the preview dialog opens.";
+    public const string ApiEventDialogClosing = "Raised before the preview dialog closes.";
+    public const string ApiEventDialogClosed = "Raised after the preview dialog closes.";
+    public const string TokenColumnToken = "Token";
+    public const string TokenColumnDescription = "Description";
+    public const string TokenColumnScope = "Scope";
+    public const string TokenColumnStatus = "Status";
+    public const string TokenNamePreviewOperationSize = "Size of preview operation icons.";
+    public const string TokenNamePreviewOperationColor = "Color of preview operation icons.";
+    public const string TokenNamePreviewOperationHoverColor = "Hover color of preview operation icons.";
+    public const string TokenNameImagePreviewSwitchSize = "Size of image switch buttons.";
+    public const string TokenNameMaskBgColor = "Mask background color over the cover.";
+    public const string TokenNameDialogMinWidth = "Minimum width of the preview dialog.";
+    public const string TokenNameDialogMinHeight = "Minimum height of the preview dialog.";
+    public const string TokenNameCoverImageWidth = "Default cover image width.";
+    public const string TokenScopeComponent = "Component";
+    public const string TokenStatusStable = "Stable";
 
     protected override Type GetResourceKindType() => typeof(ImagePreviewerShowCaseLangResourceKind);
 }
