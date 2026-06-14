@@ -3,13 +3,276 @@
              x:Class="AtomUIGallery.ShowCases.Transfer.TransferShowCase"
              xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Transfer"
              xmlns:viewModels="clr-namespace:AtomUIGallery.ShowCases.Transfer"
-             x:DataType="viewModels:TransferViewModel">
-    <atom:TabControl Name="ScenarioTabs"
-                     SizeType="Large"
-                     SelectedIndex="0">
-        <atom:TabItem Header="{gallery:TransferShowCaseLangResource ScenarioBasic}" Tag="Basic" />
-        <atom:TabItem Header="{gallery:TransferShowCaseLangResource ScenarioAdvanced}" Tag="Advanced" />
-        <atom:TabItem Header="{gallery:TransferShowCaseLangResource ScenarioTreeStatus}" Tag="TreeStatus" />
-    </atom:TabControl>
+             x:DataType="vm:TransferViewModel">
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="Transfer"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:TransferShowCaseLangResource ComponentCategory}"
+                                      TagColor="blue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:TransferShowCaseLangResource ComponentStatusStable}"
+                                      TagColor="success"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:TransferShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:TransferShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
+
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="220" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:TransferShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:TransferShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:TransferShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="ListTransfer / TreeTransfer"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:TransferShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:TransferShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:TransferShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
+                                       ContentMargin="28,10,28,28">
+                    <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource BasicTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource BasicDescription}" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TransferViewModel">
+            <atom:ListTransfer Name="BasicListTransfer"
+                               SourceTitle="{gallery:TransferShowCaseLangResource P2SourceTitle}"
+                               TargetTitle="{gallery:TransferShowCaseLangResource P2TargetTitle}"
+                               ItemsSource="{Binding BasicTransferItems}" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource OneWayTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource OneWayDescription}" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TransferViewModel">
+            <StackPanel Spacing="20">
+                <atom:ListTransfer Name="OneWayTransferList"
+                                   SourceTitle="{gallery:TransferShowCaseLangResource P2SourceTitle}"
+                                   TargetTitle="{gallery:TransferShowCaseLangResource P2TargetTitle}"
+                                   IsOneWay="True"
+                                   IsEnabled="{Binding OneWayTransferEnabled}"
+                                   ItemsSource="{Binding OneWayTransferItems}" />
+                <atom:ToggleSwitch IsChecked="{Binding OneWayTransferEnabled, Mode=TwoWay}"
+                                   OnContent="{gallery:TransferShowCaseLangResource P2OnContentDisable}"
+                                   OffContent="{gallery:TransferShowCaseLangResource P2OffContentEnable}" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource SearchTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource SearchDescription}" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TransferViewModel">
+            <StackPanel Spacing="20">
+                <atom:ListTransfer Name="SearchTransferList"
+                                   IsFilterEnabled="True"
+                                   FilterPlaceholderText="{gallery:TransferShowCaseLangResource P2FilterPlaceholderTextSearchHere}"
+                                   FilterValueSelector="{Binding TransferFilterValueSelector}"
+                                   ItemsSource="{Binding SearchTransferItems}" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource AdvancedTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource AdvancedDescription}" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TransferViewModel">
+            <atom:ListTransfer ToTargetButtonText="{gallery:TransferShowCaseLangResource P2ToTargetButtonTextToRight}"
+                               ToSourceButtonText="{gallery:TransferShowCaseLangResource P2ToSourceButtonTextToLeft}"
+                               ListWidth="300"
+                               Name="AdvanceTransfer"
+                               ItemsSource="{Binding AdvanceTransferItems}"
+                               TargetKeys="{Binding AdvanceTransferDefaultTargetKeys, Mode=OneWay}">
+                <atom:ListTransfer.SourceViewFooter>
+                    <atom:Button SizeType="Small" Click="ReloadAdvancedTransferItems" Content="{gallery:TransferShowCaseLangResource P2ContentLeftButtonReload}" />
+                </atom:ListTransfer.SourceViewFooter>
+                <atom:ListTransfer.TargetViewFooter>
+                    <atom:Button SizeType="Small" Click="ReloadAdvancedTransferItems" Content="{gallery:TransferShowCaseLangResource P2ContentRightButtonReload}" />
+                </atom:ListTransfer.TargetViewFooter>
+                <atom:ListTransfer.ItemTemplate>
+                    <DataTemplate x:DataType="viewModels:SearchCaseItemData">
+                        <TextBlock TextTrimming="CharacterEllipsis">
+                            <Run Text="{Binding Content}" />
+                            <Run Text="{gallery:TransferShowCaseLangResource P2TextText}" />
+                            <Run Text="{Binding Description}" />
+                        </TextBlock>
+                    </DataTemplate>
+                </atom:ListTransfer.ItemTemplate>
+            </atom:ListTransfer>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource PaginationTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource PaginationDescription}" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TransferViewModel">
+            <StackPanel Spacing="20">
+                <atom:ListTransfer Name="PaginationTransferList"
+                                   IsOneWay="{Binding PaginationIsOneWay}"
+                                   PageSize="10"
+                                   ListHeight="370"
+                                   ItemsSource="{Binding PaginationTransferItems}" />
+                <atom:ToggleSwitch IsChecked="{Binding PaginationIsOneWay, Mode=TwoWay}"
+                                   OnContent="{gallery:TransferShowCaseLangResource P2OnContentOnyWay}"
+                                   OffContent="{gallery:TransferShowCaseLangResource P2OffContentOnyWay}" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource TreeTransferTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource TreeTransferDescription}" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TransferViewModel">
+            <StackPanel Spacing="20">
+                <atom:TreeTransfer Name="TreeTransfer"
+                                   IsStretchView="True"
+                                   IsOneWay="{Binding TreeTransferIsOneWay}"
+                                   ItemsSource="{Binding TransferTreeNodes}">
+                    <atom:TreeTransfer.SourceView>
+                        <atom:TransferTreeView IsDefaultExpandAll="True" />
+                    </atom:TreeTransfer.SourceView>
+                </atom:TreeTransfer>
+                <atom:ToggleSwitch IsChecked="{Binding TreeTransferIsOneWay, Mode=TwoWay}"
+                                   OnContent="{gallery:TransferShowCaseLangResource P2OnContentOnyWay}"
+                                   OffContent="{gallery:TransferShowCaseLangResource P2OffContentOnyWay}" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource StatusTitle}"
+            IsOccupyEntireRow="True"
+            Description="{gallery:TransferShowCaseLangResource StatusDescription}" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TransferViewModel">
+            <StackPanel Spacing="20">
+                <atom:ListTransfer Status="Error"/>
+                <atom:ListTransfer Status="Warning"/>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
 </UserControl>

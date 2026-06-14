@@ -1,8 +1,14 @@
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
+using AtomUI.Data;
 using AtomUI.Desktop.Controls;
+using AtomUI.Theme.Language;
+using AtomUIGallery.Localization;
+using Avalonia;
+using Avalonia.Threading;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Transfer;
@@ -14,6 +20,22 @@ public class TransferViewModel : ReactiveObject, IRoutableViewModel
     public IScreen HostScreen { get; }
 
     public string? UrlPathSegment => ID.ToString();
+
+    private ObservableCollection<TransferApiRow>? _apiRows;
+
+    public ObservableCollection<TransferApiRow>? ApiRows
+    {
+        get => _apiRows;
+        private set => this.RaiseAndSetIfChanged(ref _apiRows, value);
+    }
+
+    private ObservableCollection<TransferDesignTokenRow>? _designTokenRows;
+
+    public ObservableCollection<TransferDesignTokenRow>? DesignTokenRows
+    {
+        get => _designTokenRows;
+        private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
+    }
 
     private List<IListItemData>? _basicTransferItems;
 
@@ -123,7 +145,108 @@ public class TransferViewModel : ReactiveObject, IRoutableViewModel
     {
         HostScreen = screen;
     }
+
+    public void EnsureApiRows()
+    {
+        if (ApiRows is not null)
+        {
+            return;
+        }
+
+        ApiRows =
+        [
+            new TransferApiRow("ItemsSource", Lang(TransferShowCaseLangResourceKind.ApiPropertyItemsSource), "IEnumerable<IListItemData>?", "cyan", "null"),
+            new TransferApiRow("TargetKeys", Lang(TransferShowCaseLangResourceKind.ApiPropertyTargetKeys), "IList<EntityKey>?", "cyan", "null"),
+            new TransferApiRow("SourceTitle", Lang(TransferShowCaseLangResourceKind.ApiPropertySourceTitle), "string?", "cyan", "null"),
+            new TransferApiRow("TargetTitle", Lang(TransferShowCaseLangResourceKind.ApiPropertyTargetTitle), "string?", "cyan", "null"),
+            new TransferApiRow("IsOneWay", Lang(TransferShowCaseLangResourceKind.ApiPropertyIsOneWay), "bool", "green", "false"),
+            new TransferApiRow("IsFilterEnabled", Lang(TransferShowCaseLangResourceKind.ApiPropertyIsFilterEnabled), "bool", "green", "false"),
+            new TransferApiRow("FilterPlaceholderText", Lang(TransferShowCaseLangResourceKind.ApiPropertyFilterPlaceholderText), "string?", "cyan", "null"),
+            new TransferApiRow("FilterValueSelector", Lang(TransferShowCaseLangResourceKind.ApiPropertyFilterValueSelector), "DefaultFilterValueSelector?", "cyan", "null"),
+            new TransferApiRow("ListWidth", Lang(TransferShowCaseLangResourceKind.ApiPropertyListWidth), "double", "green", "TransferToken.ListWidth"),
+            new TransferApiRow("ListHeight", Lang(TransferShowCaseLangResourceKind.ApiPropertyListHeight), "double", "green", "TransferToken.ListHeight"),
+            new TransferApiRow("PageSize", Lang(TransferShowCaseLangResourceKind.ApiPropertyPageSize), "int", "green", "0"),
+            new TransferApiRow("Status", Lang(TransferShowCaseLangResourceKind.ApiPropertyStatus), "InputControlStatus", "purple", "Default")
+        ];
+    }
+
+    public void EnsureDesignTokenRows()
+    {
+        if (DesignTokenRows is not null)
+        {
+            return;
+        }
+
+        DesignTokenRows =
+        [
+            new TransferDesignTokenRow("ListWidth", Lang(TransferShowCaseLangResourceKind.TokenNameListWidth), Lang(TransferShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TransferShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new TransferDesignTokenRow("ListWidthLG", Lang(TransferShowCaseLangResourceKind.TokenNameListWidthLG), Lang(TransferShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TransferShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new TransferDesignTokenRow("ListHeight", Lang(TransferShowCaseLangResourceKind.TokenNameListHeight), Lang(TransferShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TransferShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new TransferDesignTokenRow("ItemHeight", Lang(TransferShowCaseLangResourceKind.TokenNameItemHeight), Lang(TransferShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TransferShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new TransferDesignTokenRow("ItemPadding", Lang(TransferShowCaseLangResourceKind.TokenNameItemPadding), Lang(TransferShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TransferShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new TransferDesignTokenRow("HeaderHeight", Lang(TransferShowCaseLangResourceKind.TokenNameHeaderHeight), Lang(TransferShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TransferShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new TransferDesignTokenRow("HeaderPadding", Lang(TransferShowCaseLangResourceKind.TokenNameHeaderPadding), Lang(TransferShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TransferShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new TransferDesignTokenRow("PaginationMargin", Lang(TransferShowCaseLangResourceKind.TokenNamePaginationMargin), Lang(TransferShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TransferShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new TransferDesignTokenRow("DataGridSelectionHeaderMargin", Lang(TransferShowCaseLangResourceKind.TokenNameDataGridSelectionHeaderMargin), Lang(TransferShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(TransferShowCaseLangResourceKind.TokenStatusStable), "success")
+        ];
+    }
+
+    private static string Lang(TransferShowCaseLangResourceKind kind)
+    {
+        if (Application.Current is not null && Dispatcher.UIThread.CheckAccess())
+        {
+            return LanguageResourceBinder.GetLangResource(kind) ?? FallbackLang(kind);
+        }
+
+        return FallbackLang(kind);
+    }
+
+    private static string FallbackLang(TransferShowCaseLangResourceKind kind)
+    {
+        return kind switch
+        {
+            TransferShowCaseLangResourceKind.ApiPropertyItemsSource                   => en_US.ApiPropertyItemsSource,
+            TransferShowCaseLangResourceKind.ApiPropertyTargetKeys                    => en_US.ApiPropertyTargetKeys,
+            TransferShowCaseLangResourceKind.ApiPropertySourceTitle                   => en_US.ApiPropertySourceTitle,
+            TransferShowCaseLangResourceKind.ApiPropertyTargetTitle                   => en_US.ApiPropertyTargetTitle,
+            TransferShowCaseLangResourceKind.ApiPropertyIsOneWay                      => en_US.ApiPropertyIsOneWay,
+            TransferShowCaseLangResourceKind.ApiPropertyIsFilterEnabled               => en_US.ApiPropertyIsFilterEnabled,
+            TransferShowCaseLangResourceKind.ApiPropertyFilterPlaceholderText         => en_US.ApiPropertyFilterPlaceholderText,
+            TransferShowCaseLangResourceKind.ApiPropertyFilterValueSelector           => en_US.ApiPropertyFilterValueSelector,
+            TransferShowCaseLangResourceKind.ApiPropertyListWidth                     => en_US.ApiPropertyListWidth,
+            TransferShowCaseLangResourceKind.ApiPropertyListHeight                    => en_US.ApiPropertyListHeight,
+            TransferShowCaseLangResourceKind.ApiPropertyPageSize                      => en_US.ApiPropertyPageSize,
+            TransferShowCaseLangResourceKind.ApiPropertyStatus                        => en_US.ApiPropertyStatus,
+            TransferShowCaseLangResourceKind.TokenNameListWidth                       => en_US.TokenNameListWidth,
+            TransferShowCaseLangResourceKind.TokenNameListWidthLG                     => en_US.TokenNameListWidthLG,
+            TransferShowCaseLangResourceKind.TokenNameListHeight                      => en_US.TokenNameListHeight,
+            TransferShowCaseLangResourceKind.TokenNameItemHeight                      => en_US.TokenNameItemHeight,
+            TransferShowCaseLangResourceKind.TokenNameItemPadding                     => en_US.TokenNameItemPadding,
+            TransferShowCaseLangResourceKind.TokenNameHeaderHeight                    => en_US.TokenNameHeaderHeight,
+            TransferShowCaseLangResourceKind.TokenNameHeaderPadding                   => en_US.TokenNameHeaderPadding,
+            TransferShowCaseLangResourceKind.TokenNamePaginationMargin                => en_US.TokenNamePaginationMargin,
+            TransferShowCaseLangResourceKind.TokenNameDataGridSelectionHeaderMargin   => en_US.TokenNameDataGridSelectionHeaderMargin,
+            TransferShowCaseLangResourceKind.TokenScopeComponent                      => en_US.TokenScopeComponent,
+            TransferShowCaseLangResourceKind.TokenStatusStable                        => en_US.TokenStatusStable,
+            _                                                                         => kind.ToString()
+        };
+    }
 }
+
+public sealed record TransferApiRow(
+    string Property,
+    string Description,
+    string Type,
+    string TypeTagColor,
+    string Default);
+
+public sealed record TransferDesignTokenRow(
+    string Token,
+    string Description,
+    string Scope,
+    string ScopeTagColor,
+    string Status,
+    string StatusTagColor);
 
 public record SearchCaseItemData : ListItemData
 {
