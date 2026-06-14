@@ -13404,10 +13404,31 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiEventPopupConfirmCancelled] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiEventPopupConfirmCancelled;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiEventPopupConfirmConfirmed] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiEventPopupConfirmConfirmed;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiEventPopupConfirmPopupClick] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiEventPopupConfirmPopupClick;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmCancelText] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiPropertyPopupConfirmCancelText;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmConfirmContent] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiPropertyPopupConfirmConfirmContent;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmConfirmContentTemplate] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiPropertyPopupConfirmConfirmContentTemplate;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmConfirmStatus] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiPropertyPopupConfirmConfirmStatus;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmIcon] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiPropertyPopupConfirmIcon;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmIsShowCancelButton] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiPropertyPopupConfirmIsShowCancelButton;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmOkButtonType] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiPropertyPopupConfirmOkButtonType;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmOkText] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiPropertyPopupConfirmOkText;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ApiPropertyPopupConfirmTitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.BasicUsageDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.BasicUsageDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.BasicUsageTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.BasicUsageTitle;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.CustomizeIconDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.CustomizeIconTitle;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.LocaleTextDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.LocaleTextTitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2CancelTextCancel] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.P2CancelTextCancel;
@@ -13427,8 +13448,26 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2ContentTr] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.P2ContentTr;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2OkTextOk] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.P2OkTextOk;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2TitleDeleteTheTask] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.P2TitleDeleteTheTask;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PlacementDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.PlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PlacementTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.PlacementTitle;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameButtonContainerMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenNameButtonContainerMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameButtonSpacing] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenNameButtonSpacing;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameContentContainerMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenNameContentContainerMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameIconMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenNameIconMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNamePopupMinHeight] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenNamePopupMinHeight;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNamePopupMinWidth] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenNamePopupMinWidth;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameTitleMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenNameTitleMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -13455,10 +13494,31 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiEventPopupConfirmCancelled] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiEventPopupConfirmCancelled;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiEventPopupConfirmConfirmed] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiEventPopupConfirmConfirmed;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiEventPopupConfirmPopupClick] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiEventPopupConfirmPopupClick;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmCancelText] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiPropertyPopupConfirmCancelText;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmConfirmContent] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiPropertyPopupConfirmConfirmContent;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmConfirmContentTemplate] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiPropertyPopupConfirmConfirmContentTemplate;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmConfirmStatus] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiPropertyPopupConfirmConfirmStatus;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmIcon] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiPropertyPopupConfirmIcon;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmIsShowCancelButton] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiPropertyPopupConfirmIsShowCancelButton;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmOkButtonType] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiPropertyPopupConfirmOkButtonType;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmOkText] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiPropertyPopupConfirmOkText;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ApiPropertyPopupConfirmTitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.BasicUsageDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.BasicUsageDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.BasicUsageTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.BasicUsageTitle;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.CustomizeIconDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.CustomizeIconTitle;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.LocaleTextDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.LocaleTextTitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2CancelTextCancel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.P2CancelTextCancel;
@@ -13478,8 +13538,26 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2ContentTr] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.P2ContentTr;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2OkTextOk] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.P2OkTextOk;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2TitleDeleteTheTask] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.P2TitleDeleteTheTask;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PlacementDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.PlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PlacementTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.PlacementTitle;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameButtonContainerMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenNameButtonContainerMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameButtonSpacing] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenNameButtonSpacing;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameContentContainerMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenNameContentContainerMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameIconMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenNameIconMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNamePopupMinHeight] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenNamePopupMinHeight;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNamePopupMinWidth] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenNamePopupMinWidth;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameTitleMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenNameTitleMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -13506,10 +13584,31 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiEventPopupConfirmCancelled] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiEventPopupConfirmCancelled;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiEventPopupConfirmConfirmed] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiEventPopupConfirmConfirmed;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiEventPopupConfirmPopupClick] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiEventPopupConfirmPopupClick;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmCancelText] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiPropertyPopupConfirmCancelText;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmConfirmContent] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiPropertyPopupConfirmConfirmContent;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmConfirmContentTemplate] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiPropertyPopupConfirmConfirmContentTemplate;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmConfirmStatus] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiPropertyPopupConfirmConfirmStatus;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmIcon] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiPropertyPopupConfirmIcon;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmIsShowCancelButton] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiPropertyPopupConfirmIsShowCancelButton;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmOkButtonType] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiPropertyPopupConfirmOkButtonType;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmOkText] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiPropertyPopupConfirmOkText;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ApiPropertyPopupConfirmTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ApiPropertyPopupConfirmTitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.BasicUsageDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.BasicUsageDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.BasicUsageTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.BasicUsageTitle;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.CustomizeIconDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.CustomizeIconTitle;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.LocaleTextDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.LocaleTextTitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2CancelTextCancel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.P2CancelTextCancel;
@@ -13529,8 +13628,26 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2ContentTr] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.P2ContentTr;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2OkTextOk] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.P2OkTextOk;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2TitleDeleteTheTask] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.P2TitleDeleteTheTask;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PlacementDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.PlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.PlacementTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.PlacementTitle;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameButtonContainerMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenNameButtonContainerMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameButtonSpacing] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenNameButtonSpacing;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameContentContainerMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenNameContentContainerMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameIconMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenNameIconMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNamePopupMinHeight] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenNamePopupMinHeight;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNamePopupMinWidth] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenNamePopupMinWidth;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenNameTitleMargin] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenNameTitleMargin;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.TokenStatusStable;
             }
             catch (System.Exception)
             {
