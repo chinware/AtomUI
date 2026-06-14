@@ -11,6 +11,38 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioAlignment = "對齊";
     public const string ScenarioOrder = "排序";
     public const string ScenarioColInfo = "ColInfo";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計變量";
+    public const string PageSubtitle = "使用行和列構建響應式 24 柵格佈局。";
+    public const string PageDescription = "Grid 提供行間距、對齊、偏移、排序和斷點級列尺寸控制，適合應用佈局。";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ComponentCategory = "佈局";
+    public const string ComponentStatusStable = "穩定";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyRowGutter = "設置柵格列和換行行之間的水平、垂直間距。";
+    public const string ApiPropertyRowJustify = "控制列在行主軸上的分佈方式。";
+    public const string ApiPropertyRowAlign = "控制列在行交叉軸上的對齊方式。";
+    public const string ApiPropertyRowIsWrapped = "控制行空間不足時列是否換到下一行。";
+    public const string ApiPropertyColSpan = "設置列在 24 柵格中佔用的單位數。";
+    public const string ApiPropertyColOffset = "按柵格單位將列向右偏移。";
+    public const string ApiPropertyColPush = "按柵格單位將列向前推移顯示。";
+    public const string ApiPropertyColPull = "按柵格單位將列向後拉回顯示。";
+    public const string ApiPropertyColOrder = "控制列在行內的視覺順序。";
+    public const string ApiPropertyColBreakpoints = "為不同斷點提供 span、offset、push、pull 和 order 覆蓋。";
+    public const string ApiPropertyColInfo = "可復用的響應式列配置對象。";
+    public const string TokenColumnToken = "變量";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "範圍";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusNotApplicable = "不適用";
+    public const string TokenNameNoComponentToken = "Grid 沒有組件級設計變量；它通過子內容使用共享佈局、間距和邊框變量。";
 
     public const string BasicGridTitle = "基礎柵格";
     public const string BasicGridDescription = "基礎的 24 柵格佈局。";
@@ -74,4 +106,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(GridShowCaseLangResourceKind);
 }
-

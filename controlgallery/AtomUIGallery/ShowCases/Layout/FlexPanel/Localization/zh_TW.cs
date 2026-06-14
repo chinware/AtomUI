@@ -11,6 +11,39 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioItem = "項目";
     public const string ScenarioCombination = "組合";
     public const string ScenarioPlayground = "演練場";
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計變量";
+    public const string PageSubtitle = "使用類似 CSS Flexbox 的佈局規則排列子控件。";
+    public const string PageDescription = "FlexPanel 提供方向、換行、對齊、間距和單項 flex 尺寸控制，適合響應式佈局。";
+    public const string InfoNamespaceLabel = "命名空間";
+    public const string InfoPackageLabel = "包";
+    public const string InfoBaseClassLabel = "基類";
+    public const string ComponentCategory = "佈局";
+    public const string ComponentStatusStable = "穩定";
+    public const string ApiColumnProperty = "屬性";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiPropertyDirection = "控制子項排列的主軸方向。";
+    public const string ApiPropertyWrap = "控制 flex 項目保持單行還是換到多行。";
+    public const string ApiPropertyJustifyContent = "沿主軸分配剩餘空間。";
+    public const string ApiPropertyAlignItems = "控制每一行內項目在交叉軸上的對齊方式。";
+    public const string ApiPropertyAlignContent = "當換行內容在交叉軸有額外空間時，控制多行整體對齊。";
+    public const string ApiPropertyColumnSpacing = "設置項目或行之間的水平間距。";
+    public const string ApiPropertyRowSpacing = "設置項目或行之間的垂直間距。";
+    public const string ApiPropertyFlexGrow = "控制項目佔用剩餘空間時的增長比例。";
+    public const string ApiPropertyFlexShrink = "控制可用空間不足時項目的收縮比例。";
+    public const string ApiPropertyFlexBasis = "設置 grow 和 shrink 生效前的主軸初始尺寸。";
+    public const string ApiPropertyFlexOrder = "控制項目在 flex 容器中的視覺順序。";
+    public const string ApiPropertyFlexAlignSelf = "為單個項目覆蓋容器的交叉軸對齊方式。";
+    public const string TokenColumnToken = "變量";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "範圍";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusNotApplicable = "不適用";
+    public const string TokenNameNoComponentToken = "FlexPanel 沒有組件級設計變量；它通過子控件使用共享佈局、間距和邊框變量。";
 
     public const string BasicLayoutTitle = "基礎佈局";
     public const string BasicLayoutDescription = "基礎用法。";
@@ -108,4 +141,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(FlexPanelShowCaseLangResourceKind);
 }
-
