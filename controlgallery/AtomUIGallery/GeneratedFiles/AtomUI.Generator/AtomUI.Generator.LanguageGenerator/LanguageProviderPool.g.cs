@@ -6135,12 +6135,36 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContent] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerContent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentTemplate] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerContentTemplate;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerDialogSize] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerDialogSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerExtra] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerExtra;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerFooter] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerFooter;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsCloseOnMaskClick] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerIsCloseOnMaskClick;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsMotionEnabled] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsOpen] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerIsOpen;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsShowCloseButton] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerIsShowCloseButton;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsShowMask] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerIsShowMask;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerOpenOn] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerOpenOn;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerPlacement] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerPlacement;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerPushOffsetPercent] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerPushOffsetPercent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerSizeType] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerSizeType;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerTitle] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Drawer.en_US.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Drawer.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Drawer.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.CustomPlacementDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.CustomPlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.CustomPlacementTitle] = global::AtomUIGallery.ShowCases.Drawer.en_US.CustomPlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.ExtraAndFooterDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterTitle] = global::AtomUIGallery.ShowCases.Drawer.en_US.ExtraAndFooterTitle;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Drawer.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Drawer.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Drawer.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.MultiLevelDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelTitle] = global::AtomUIGallery.ShowCases.Drawer.en_US.MultiLevelTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.NoMaskDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.NoMaskDescription;
@@ -6166,10 +6190,34 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.P2TitleBasicDrawer] = global::AtomUIGallery.ShowCases.Drawer.en_US.P2TitleBasicDrawer;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.P2TitleFirstLevelDrawer] = global::AtomUIGallery.ShowCases.Drawer.en_US.P2TitleFirstLevelDrawer;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.P2TitleTwoLevelDrawer] = global::AtomUIGallery.ShowCases.Drawer.en_US.P2TitleTwoLevelDrawer;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Drawer.en_US.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PresetSizeDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.PresetSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PresetSizeTitle] = global::AtomUIGallery.ShowCases.Drawer.en_US.PresetSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.RenderInCurrentAreaDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.RenderInCurrentAreaDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.RenderInCurrentAreaTitle] = global::AtomUIGallery.ShowCases.Drawer.en_US.RenderInCurrentAreaTitle;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Drawer.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Drawer.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Drawer.en_US.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBodyPadding] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerBodyPadding;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowDown] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerBoxShadowDown;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowLeft] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerBoxShadowLeft;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowRight] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerBoxShadowRight;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowUp] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerBoxShadowUp;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerCloseIconMargin] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerCloseIconMargin;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerCloseIconPadding] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerCloseIconPadding;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerFooterPadding] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerFooterPadding;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerHeaderMargin] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerHeaderMargin;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerLargeSize] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerLargeSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerMiddleSize] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerMiddleSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerPushOffsetPercent] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerPushOffsetPercent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerSmallSize] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenNameDrawerSmallSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Drawer.en_US.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -6196,12 +6244,36 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContent] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerContent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentTemplate] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerContentTemplate;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerDialogSize] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerDialogSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerExtra] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerExtra;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerFooter] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerFooter;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsCloseOnMaskClick] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerIsCloseOnMaskClick;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsMotionEnabled] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsOpen] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerIsOpen;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsShowCloseButton] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerIsShowCloseButton;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsShowMask] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerIsShowMask;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerOpenOn] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerOpenOn;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerPlacement] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerPlacement;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerPushOffsetPercent] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerPushOffsetPercent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerSizeType] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerSizeType;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.CustomPlacementDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.CustomPlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.CustomPlacementTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.CustomPlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ExtraAndFooterDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ExtraAndFooterTitle;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.MultiLevelDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.MultiLevelTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.NoMaskDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.NoMaskDescription;
@@ -6227,10 +6299,34 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.P2TitleBasicDrawer] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.P2TitleBasicDrawer;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.P2TitleFirstLevelDrawer] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.P2TitleFirstLevelDrawer;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.P2TitleTwoLevelDrawer] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.P2TitleTwoLevelDrawer;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PresetSizeDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.PresetSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PresetSizeTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.PresetSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.RenderInCurrentAreaDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.RenderInCurrentAreaDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.RenderInCurrentAreaTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.RenderInCurrentAreaTitle;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBodyPadding] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerBodyPadding;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowDown] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerBoxShadowDown;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowLeft] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerBoxShadowLeft;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowRight] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerBoxShadowRight;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowUp] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerBoxShadowUp;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerCloseIconMargin] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerCloseIconMargin;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerCloseIconPadding] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerCloseIconPadding;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerFooterPadding] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerFooterPadding;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerHeaderMargin] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerHeaderMargin;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerLargeSize] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerLargeSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerMiddleSize] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerMiddleSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerPushOffsetPercent] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerPushOffsetPercent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerSmallSize] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenNameDrawerSmallSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -6257,12 +6353,36 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContent] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerContent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentTemplate] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerContentTemplate;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerDialogSize] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerDialogSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerExtra] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerExtra;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerFooter] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerFooter;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsCloseOnMaskClick] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerIsCloseOnMaskClick;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsMotionEnabled] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsOpen] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerIsOpen;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsShowCloseButton] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerIsShowCloseButton;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsShowMask] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerIsShowMask;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerOpenOn] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerOpenOn;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerPlacement] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerPlacement;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerPushOffsetPercent] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerPushOffsetPercent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerSizeType] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerSizeType;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.CustomPlacementDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.CustomPlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.CustomPlacementTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.CustomPlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ExtraAndFooterDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ExtraAndFooterTitle;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.MultiLevelDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.MultiLevelTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.NoMaskDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.NoMaskDescription;
@@ -6288,10 +6408,34 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.P2TitleBasicDrawer] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.P2TitleBasicDrawer;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.P2TitleFirstLevelDrawer] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.P2TitleFirstLevelDrawer;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.P2TitleTwoLevelDrawer] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.P2TitleTwoLevelDrawer;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PresetSizeDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.PresetSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.PresetSizeTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.PresetSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.RenderInCurrentAreaDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.RenderInCurrentAreaDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.RenderInCurrentAreaTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.RenderInCurrentAreaTitle;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBodyPadding] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerBodyPadding;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowDown] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerBoxShadowDown;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowLeft] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerBoxShadowLeft;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowRight] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerBoxShadowRight;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerBoxShadowUp] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerBoxShadowUp;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerCloseIconMargin] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerCloseIconMargin;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerCloseIconPadding] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerCloseIconPadding;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerFooterPadding] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerFooterPadding;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerHeaderMargin] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerHeaderMargin;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerLargeSize] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerLargeSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerMiddleSize] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerMiddleSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerPushOffsetPercent] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerPushOffsetPercent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenNameDrawerSmallSize] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenNameDrawerSmallSize;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -11520,10 +11664,28 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Message.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Message.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.Message.en_US.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Message.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiMethodManagerShow] = global::AtomUIGallery.ShowCases.Message.en_US.ApiMethodManagerShow;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyManagerIsMotionEnabled] = global::AtomUIGallery.ShowCases.Message.en_US.ApiPropertyManagerIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyManagerMaxItems] = global::AtomUIGallery.ShowCases.Message.en_US.ApiPropertyManagerMaxItems;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyManagerPosition] = global::AtomUIGallery.ShowCases.Message.en_US.ApiPropertyManagerPosition;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageContent] = global::AtomUIGallery.ShowCases.Message.en_US.ApiPropertyMessageContent;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageExpiration] = global::AtomUIGallery.ShowCases.Message.en_US.ApiPropertyMessageExpiration;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageIcon] = global::AtomUIGallery.ShowCases.Message.en_US.ApiPropertyMessageIcon;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageOnClose] = global::AtomUIGallery.ShowCases.Message.en_US.ApiPropertyMessageOnClose;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageType] = global::AtomUIGallery.ShowCases.Message.en_US.ApiPropertyMessageType;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Message.en_US.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Message.en_US.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.CallbackDescription] = global::AtomUIGallery.ShowCases.Message.en_US.CallbackDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.CallbackTitle] = global::AtomUIGallery.ShowCases.Message.en_US.CallbackTitle;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Message.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Message.en_US.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Message.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Message.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Message.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorDescription] = global::AtomUIGallery.ShowCases.Message.en_US.LoadingIndicatorDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorTitle] = global::AtomUIGallery.ShowCases.Message.en_US.LoadingIndicatorTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.OtherTypesDescription] = global::AtomUIGallery.ShowCases.Message.en_US.OtherTypesDescription;
@@ -11541,6 +11703,23 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.P2MessageLoadingFinished] = global::AtomUIGallery.ShowCases.Message.en_US.P2MessageLoadingFinished;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.P2MessageSuccess] = global::AtomUIGallery.ShowCases.Message.en_US.P2MessageSuccess;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.P2MessageWarning] = global::AtomUIGallery.ShowCases.Message.en_US.P2MessageWarning;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Message.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Message.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Message.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Message.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Message.en_US.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Message.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Message.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Message.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Message.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageCardHeight] = global::AtomUIGallery.ShowCases.Message.en_US.TokenNameMessageCardHeight;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageContentBg] = global::AtomUIGallery.ShowCases.Message.en_US.TokenNameMessageContentBg;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageContentPadding] = global::AtomUIGallery.ShowCases.Message.en_US.TokenNameMessageContentPadding;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageIconMargin] = global::AtomUIGallery.ShowCases.Message.en_US.TokenNameMessageIconMargin;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageIconSize] = global::AtomUIGallery.ShowCases.Message.en_US.TokenNameMessageIconSize;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageTopMargin] = global::AtomUIGallery.ShowCases.Message.en_US.TokenNameMessageTopMargin;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Message.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Message.en_US.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -11567,10 +11746,28 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiMethodManagerShow] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiMethodManagerShow;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyManagerIsMotionEnabled] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiPropertyManagerIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyManagerMaxItems] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiPropertyManagerMaxItems;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyManagerPosition] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiPropertyManagerPosition;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageContent] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiPropertyMessageContent;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageExpiration] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiPropertyMessageExpiration;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageIcon] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiPropertyMessageIcon;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageOnClose] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiPropertyMessageOnClose;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageType] = global::AtomUIGallery.ShowCases.Message.zh_CN.ApiPropertyMessageType;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Message.zh_CN.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Message.zh_CN.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.CallbackDescription] = global::AtomUIGallery.ShowCases.Message.zh_CN.CallbackDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.CallbackTitle] = global::AtomUIGallery.ShowCases.Message.zh_CN.CallbackTitle;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Message.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Message.zh_CN.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Message.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Message.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Message.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorDescription] = global::AtomUIGallery.ShowCases.Message.zh_CN.LoadingIndicatorDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorTitle] = global::AtomUIGallery.ShowCases.Message.zh_CN.LoadingIndicatorTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.OtherTypesDescription] = global::AtomUIGallery.ShowCases.Message.zh_CN.OtherTypesDescription;
@@ -11588,6 +11785,23 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.P2MessageLoadingFinished] = global::AtomUIGallery.ShowCases.Message.zh_CN.P2MessageLoadingFinished;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.P2MessageSuccess] = global::AtomUIGallery.ShowCases.Message.zh_CN.P2MessageSuccess;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.P2MessageWarning] = global::AtomUIGallery.ShowCases.Message.zh_CN.P2MessageWarning;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Message.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Message.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Message.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Message.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Message.zh_CN.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageCardHeight] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenNameMessageCardHeight;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageContentBg] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenNameMessageContentBg;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageContentPadding] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenNameMessageContentPadding;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageIconMargin] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenNameMessageIconMargin;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageIconSize] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenNameMessageIconSize;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageTopMargin] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenNameMessageTopMargin;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Message.zh_CN.TokenStatusStable;
             }
             catch (System.Exception)
             {
@@ -11614,10 +11828,28 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiMethodManagerShow] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiMethodManagerShow;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyManagerIsMotionEnabled] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiPropertyManagerIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyManagerMaxItems] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiPropertyManagerMaxItems;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyManagerPosition] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiPropertyManagerPosition;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageContent] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiPropertyMessageContent;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageExpiration] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiPropertyMessageExpiration;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageIcon] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiPropertyMessageIcon;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageOnClose] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiPropertyMessageOnClose;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ApiPropertyMessageType] = global::AtomUIGallery.ShowCases.Message.zh_TW.ApiPropertyMessageType;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Message.zh_TW.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Message.zh_TW.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.CallbackDescription] = global::AtomUIGallery.ShowCases.Message.zh_TW.CallbackDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.CallbackTitle] = global::AtomUIGallery.ShowCases.Message.zh_TW.CallbackTitle;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Message.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Message.zh_TW.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Message.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Message.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Message.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorDescription] = global::AtomUIGallery.ShowCases.Message.zh_TW.LoadingIndicatorDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorTitle] = global::AtomUIGallery.ShowCases.Message.zh_TW.LoadingIndicatorTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.OtherTypesDescription] = global::AtomUIGallery.ShowCases.Message.zh_TW.OtherTypesDescription;
@@ -11635,6 +11867,23 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.P2MessageLoadingFinished] = global::AtomUIGallery.ShowCases.Message.zh_TW.P2MessageLoadingFinished;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.P2MessageSuccess] = global::AtomUIGallery.ShowCases.Message.zh_TW.P2MessageSuccess;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.P2MessageWarning] = global::AtomUIGallery.ShowCases.Message.zh_TW.P2MessageWarning;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Message.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Message.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Message.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Message.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Message.zh_TW.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageCardHeight] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenNameMessageCardHeight;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageContentBg] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenNameMessageContentBg;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageContentPadding] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenNameMessageContentPadding;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageIconMargin] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenNameMessageIconMargin;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageIconSize] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenNameMessageIconSize;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenNameMessageTopMargin] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenNameMessageTopMargin;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Message.zh_TW.TokenStatusStable;
             }
             catch (System.Exception)
             {

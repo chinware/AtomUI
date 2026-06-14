@@ -381,6 +381,7 @@ public class Drawer : Control,
         DetachOpenOnSizeChanged();
         var layer = ScopeAwareAdornerLayer.GetLayer(this);
         Debug.Assert(layer != null);
+        _container?.CloseActiveChildDrawer();
         NotifyBeforeClose(layer);
         _container?.Close(layer);
     }

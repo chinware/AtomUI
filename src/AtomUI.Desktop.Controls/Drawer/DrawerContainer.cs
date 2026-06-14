@@ -241,9 +241,11 @@ internal class DrawerContainer : ContentControl
         {
             var lifecycleVersion = ++_lifecycleVersion;
             _closeAnimating = false;
+            PrepareOpenVisualState(drawer.IsMotionEnabled);
             ScopeAwareAdornerLayer.SetAdornedElement(this, drawer.OpenOn);
             AttachToLayer(layer);
             ApplyTemplate();
+            PrepareOpenVisualState(drawer.IsMotionEnabled);
             Dispatcher.InvokeAsync(async () =>
             {
                 if (lifecycleVersion != _lifecycleVersion)
@@ -280,6 +282,15 @@ internal class DrawerContainer : ContentControl
                 drawer.NotifyOpened();
             });
 
+        }
+    }
+
+    private void PrepareOpenVisualState(bool isMotionEnabled)
+    {
+        ClearValue(BackgroundProperty);
+        if (_motionActor is not null)
+        {
+            _motionActor.Opacity = isMotionEnabled ? 0.0 : 1.0;
         }
     }
 
@@ -512,6 +523,28 @@ internal class DrawerContainer : ContentControl
     {
         _activeChildDrawer = new WeakReference<Drawer>(childDrawer);
         RefreshActiveChildDrawerPushTransform();
+    }
+
+    internal void CloseActiveChildDrawer()
+    {
+        if (_activeChildDrawer == null)
+        {
+            return;
+        }
+
+        if (!_activeChildDrawer.TryGetTarget(out var childDrawer) || !childDrawer.IsOpen)
+        {
+            _activeChildDrawer = null;
+            RestoreChildDrawerPushTransform();
+            return;
+        }
+
+        childDrawer.IsOpen = false;
+        if (IsActiveChildDrawer(childDrawer))
+        {
+            _activeChildDrawer = null;
+            RestoreChildDrawerPushTransform();
+        }
     }
 
     internal void NotifyChildDrawerAboutToClose(Drawer childDrawer)
