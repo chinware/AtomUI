@@ -2,6 +2,7 @@ using System.Reactive;
 using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
+using AtomUIGallery.Controls;
 using AtomUIGallery.ShowCases.Alert;
 using AtomUIGallery.ShowCases.AutoComplete;
 using AtomUIGallery.ShowCases.Avatar;
@@ -234,6 +235,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
 
     private void DoTestNavigatePages(TimeSpan interval)
     {
+        GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled = true;
         _dispatcherTimer.Stop();
         _dispatcherTimer.Interval = interval;
         _dispatcherTimer.Start();
@@ -242,5 +244,6 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
     private void DoStopTestNavigatePages()
     {
         _dispatcherTimer.Stop();
+        GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled = false;
     }
 }

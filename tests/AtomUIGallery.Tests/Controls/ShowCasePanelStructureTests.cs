@@ -56,32 +56,98 @@ public class ShowCasePanelStructureTests
     public void ShowCaseItem_Deferred_Content_Template_Builds_Only_When_Materialized()
     {
         AvaloniaTestApp.EnsureInitialized();
-        var buildCount = 0;
-        var item = new ShowCaseItem
+        var oldValue = SetDeferredLoadingEnvironment(null);
+        GalleryShowCaseRuntimeOptions.ResetDeferredLoadingDisabledOverride();
+        try
         {
-            IsDeferredContentEnabled = true,
-            DataContext              = "demo data",
-            DeferredContentTemplate  = new FuncDataTemplate<object?>((data, _) =>
+            var buildCount = 0;
+            var item = new ShowCaseItem
             {
-                buildCount++;
-                return new TextBlock
+                IsDeferredContentEnabled = true,
+                DataContext              = "demo data",
+                DeferredContentTemplate  = new FuncDataTemplate<object?>((data, _) =>
                 {
-                    Text = data?.ToString()
-                };
-            }, true)
-        };
+                    buildCount++;
+                    return new TextBlock
+                    {
+                        Text = data?.ToString()
+                    };
+                }, true)
+            };
 
-        buildCount.ShouldBe(0);
-        item.IsDeferredContentMaterialized.ShouldBeFalse();
+            buildCount.ShouldBe(0);
+            item.IsDeferredContentMaterialized.ShouldBeFalse();
 
-        item.MaterializeDeferredContent();
+            item.MaterializeDeferredContent();
 
-        buildCount.ShouldBe(1);
-        item.IsDeferredContentMaterialized.ShouldBeTrue();
-        item.Content.ShouldBeOfType<TextBlock>().Text.ShouldBe("demo data");
+            buildCount.ShouldBe(1);
+            item.IsDeferredContentMaterialized.ShouldBeTrue();
+            item.Content.ShouldBeOfType<TextBlock>().Text.ShouldBe("demo data");
 
-        item.MaterializeDeferredContent();
-        buildCount.ShouldBe(1);
+            item.MaterializeDeferredContent();
+            buildCount.ShouldBe(1);
+        }
+        finally
+        {
+            SetDeferredLoadingEnvironment(oldValue);
+            GalleryShowCaseRuntimeOptions.ResetDeferredLoadingDisabledOverride();
+        }
+    }
+
+    [Fact]
+    public void ShowCaseItem_Materializes_Deferred_Template_Immediately_When_Diagnostics_Disables_Defer()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+        var oldValue = SetDeferredLoadingEnvironment(null);
+        GalleryShowCaseRuntimeOptions.ResetDeferredLoadingDisabledOverride();
+        try
+        {
+            GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled = true;
+
+            var buildCount = 0;
+            var item = new ShowCaseItem
+            {
+                IsDeferredContentEnabled = true,
+                DataContext              = "diagnostic data",
+                DeferredContentTemplate  = new FuncDataTemplate<object?>((data, _) =>
+                {
+                    buildCount++;
+                    return new TextBlock
+                    {
+                        Text = data?.ToString()
+                    };
+                }, true)
+            };
+
+            buildCount.ShouldBe(1);
+            item.IsDeferredContentMaterialized.ShouldBeTrue();
+            item.Content.ShouldBeOfType<TextBlock>().Text.ShouldBe("diagnostic data");
+        }
+        finally
+        {
+            SetDeferredLoadingEnvironment(oldValue);
+            GalleryShowCaseRuntimeOptions.ResetDeferredLoadingDisabledOverride();
+        }
+    }
+
+    [Fact]
+    public void ShowCase_Runtime_Options_Do_Not_Let_Runtime_Stop_Override_Environment_Disable()
+    {
+        GalleryShowCaseRuntimeOptions.ResetDeferredLoadingDisabledOverride();
+        var oldValue = SetDeferredLoadingEnvironment("1");
+        try
+        {
+            GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled.ShouldBeTrue();
+
+            GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled = false;
+
+            GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled.ShouldBeTrue();
+        }
+        finally
+        {
+            SetDeferredLoadingEnvironment(oldValue);
+            GalleryShowCaseRuntimeOptions.ResetDeferredLoadingDisabledOverride();
+        }
     }
 
     [Fact]
@@ -101,12 +167,17 @@ public class ShowCasePanelStructureTests
         CountOccurrences(panelSource, "EffectiveViewportChanged +=").ShouldBe(1);
         panelSource.ShouldContain("MaterializeDeferredContentInViewport");
         panelSource.ShouldContain("MaterializeAllDeferredContent");
+        panelSource.ShouldContain("GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled");
+        panelSource.ShouldContain("!GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled");
+        panelSource.ShouldContain("GalleryShowCaseRuntimeOptions.DeferredLoadingDisabledChanged += HandleDeferredLoadingDisabledChanged");
+        panelSource.ShouldContain("GalleryShowCaseRuntimeOptions.DeferredLoadingDisabledChanged -= HandleDeferredLoadingDisabledChanged");
 
         itemSource.ShouldContain("IsDeferredContentEnabledProperty");
         itemSource.ShouldContain("DeferredContentTemplateProperty");
         itemSource.ShouldContain("DeferredContentProperty");
         itemSource.ShouldContain("DeferredPlaceholderHeightProperty");
         itemSource.ShouldContain("public void MaterializeDeferredContent()");
+        itemSource.ShouldContain("GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled");
         itemTheme.ShouldContain("PART_DeferredPlaceholder");
         itemTheme.ShouldContain("DeferredPlaceholderHeight");
         itemTheme.ShouldContain("ShowCaseItemTokenResource DeferredPlaceholderHeight");
@@ -152,5 +223,15 @@ public class ShowCasePanelStructureTests
             count++;
             startIndex = matchIndex + value.Length;
         }
+    }
+
+    private static string? SetDeferredLoadingEnvironment(string? value)
+    {
+        var oldValue = Environment.GetEnvironmentVariable(
+            GalleryShowCaseRuntimeOptions.DisableDeferredLoadingEnvironmentVariable);
+        Environment.SetEnvironmentVariable(
+            GalleryShowCaseRuntimeOptions.DisableDeferredLoadingEnvironmentVariable,
+            value);
+        return oldValue;
     }
 }

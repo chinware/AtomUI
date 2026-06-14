@@ -150,7 +150,16 @@ public class ShowCaseItem : ContentControl
             change.Property == DeferredContentTemplateProperty ||
             change.Property == IsDeferredContentMaterializedProperty)
         {
+            MaterializeDeferredContentIfDiagnosticsDisabled();
             UpdateDeferredPlaceholderVisibility();
+        }
+    }
+
+    private void MaterializeDeferredContentIfDiagnosticsDisabled()
+    {
+        if (GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled)
+        {
+            MaterializeDeferredContent();
         }
     }
 
@@ -158,6 +167,7 @@ public class ShowCaseItem : ContentControl
     {
         IsDeferredPlaceholderVisible =
             IsDeferredContentEnabled &&
+            !GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled &&
             DeferredContentTemplate is not null &&
             !IsDeferredContentMaterialized;
     }
