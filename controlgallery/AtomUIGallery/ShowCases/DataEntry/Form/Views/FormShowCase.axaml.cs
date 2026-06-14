@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.Reactive.Disposables;
+using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
@@ -7,7 +8,12 @@ using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Interactivity;
+using Avalonia.Layout;
+using Avalonia.VisualTree;
 using AtomUIGallery.Localization;
+using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.Form;
 
@@ -15,22 +21,17 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
 {
     public const string LanguageId = nameof(FormShowCase);
 
-    private const string BasicScenario      = "Basic";
-    private const string LayoutScenario     = "Layout";
-    private const string StatesScenario     = "States";
-    private const string ValidationScenario = "Validation";
-    private const string DynamicScenario    = "Dynamic";
-    private const string PresetsScenario    = "Presets";
-    private const string ControlsScenario   = "Controls";
+    private const string ExamplesScenario    = "Examples";
+    private const string ApiScenario         = "Api";
+    private const string DesignTokenScenario = "DesignToken";
 
-    private readonly Dictionary<string, Control> _scenarioCache = new(StringComparer.Ordinal);
+    private static int s_formGid = 3;
+
+    private readonly Dictionary<string, Control> _lazyScenarioContentCache = new(StringComparer.Ordinal);
+    private WindowMessageManager? _messageManager;
 
     public FormShowCase()
     {
-        InitializeComponent();
-        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
-        EnsureSelectedScenarioContent();
-
         this.WhenActivated(disposables =>
         {
             if (DataContext is FormViewModel viewModel)
@@ -45,15 +46,34 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
                 }
             }
         });
+
+        InitializeComponent();
+        ScenarioTabs.SelectionChanged += HandleScenarioSelectionChanged;
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        EnsureSelectedScenarioContent();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ClearLazyScenarioContent();
+        _messageManager?.Dispose();
+        _messageManager = null;
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
-        foreach (var content in _scenarioCache.Values)
+        ExamplesContent.DataContext = DataContext;
+        foreach (var content in _lazyScenarioContentCache.Values)
         {
             content.DataContext = DataContext;
         }
+        EnsureSelectedScenarioContent();
     }
 
     private void HandleScenarioSelectionChanged(object? sender, SelectionChangedEventArgs args)
@@ -63,38 +83,317 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
 
     private void EnsureSelectedScenarioContent()
     {
-        if (ScenarioTabs.SelectedItem is not AtomUI.Desktop.Controls.TabItem tabItem ||
-            tabItem.Tag is not string scenario)
+        if (ScenarioTabs.SelectedItem is not ScenarioTabStripItem tabStripItem ||
+            tabStripItem.Tag is not string scenario)
         {
             return;
         }
 
-        if (!_scenarioCache.TryGetValue(scenario, out var content))
+        var content = ResolveScenarioContent(scenario);
+        if (!ReferenceEquals(ScenarioContentHost.Content, content))
+        {
+            ScenarioContentHost.Content = content;
+        }
+    }
+
+    private void ClearLazyScenarioContent()
+    {
+        if (ScenarioContentHost.Content is not null &&
+            !ReferenceEquals(ScenarioContentHost.Content, ExamplesContent))
+        {
+            ScenarioContentHost.Content = null;
+        }
+        _lazyScenarioContentCache.Clear();
+    }
+
+    private Control ResolveScenarioContent(string scenario)
+    {
+        if (scenario == ExamplesScenario)
+        {
+            ExamplesContent.DataContext = DataContext;
+            return ExamplesContent;
+        }
+
+        if (!_lazyScenarioContentCache.TryGetValue(scenario, out var content))
         {
             content             = CreateScenarioContent(scenario);
             content.DataContext = DataContext;
-            _scenarioCache.Add(scenario, content);
+            _lazyScenarioContentCache.Add(scenario, content);
         }
 
-        if (tabItem.Content != content)
-        {
-            tabItem.Content = content;
-        }
+        return content;
     }
 
     private static Control CreateScenarioContent(string scenario)
     {
         return scenario switch
         {
-            BasicScenario      => new FormBasicShowCase(),
-            LayoutScenario     => new FormLayoutShowCase(),
-            StatesScenario     => new FormStateShowCase(),
-            ValidationScenario => new FormValidationShowCase(),
-            DynamicScenario    => new FormDynamicShowCase(),
-            PresetsScenario    => new FormPresetShowCase(),
-            ControlsScenario   => new FormControlsShowCase(),
-            _                  => throw new InvalidOperationException($"Unknown form scenario: {scenario}")
+            ApiScenario         => new FormApiDataGrid(),
+            DesignTokenScenario => new FormDesignTokenDataGrid(),
+            _                   => throw new InvalidOperationException($"Unknown Form scenario: {scenario}")
         };
+    }
+
+    private void HandleBasicFormAttached(object? sender, VisualTreeAttachmentEventArgs args)
+    {
+        if (sender is AtomUIForm BasicForm)
+        {
+            BasicForm.InitialValues = CreateBasicFormInitialValues();
+        }
+    }
+
+    private static FormValues CreateBasicFormInitialValues()
+    {
+        var values = new FormValues();
+        values.Add("remember", true);
+        return values;
+    }
+
+    private void HandleLayoutCaseFormAttached(object? sender, VisualTreeAttachmentEventArgs args)
+    {
+        if (sender is AtomUIForm LayoutCaseForm)
+        {
+            LayoutCaseForm.PropertyChanged -= HandleLayoutCaseFormPropertyChanged;
+            LayoutCaseForm.PropertyChanged += HandleLayoutCaseFormPropertyChanged;
+            UpdateLayoutCaseFormBounds(LayoutCaseForm, LayoutCaseForm.FormLayout);
+        }
+    }
+
+    private void HandleLayoutCaseFormDetached(object? sender, VisualTreeAttachmentEventArgs args)
+    {
+        if (sender is AtomUIForm LayoutCaseForm)
+        {
+            LayoutCaseForm.PropertyChanged -= HandleLayoutCaseFormPropertyChanged;
+        }
+    }
+
+    private void HandleLayoutCaseFormPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs args)
+    {
+        if (sender is AtomUIForm LayoutCaseForm &&
+            args.Property == AtomUIForm.FormLayoutProperty &&
+            args.NewValue is FormLayout layout)
+        {
+            UpdateLayoutCaseFormBounds(LayoutCaseForm, layout);
+        }
+    }
+
+    private static void UpdateLayoutCaseFormBounds(AtomUIForm LayoutCaseForm, FormLayout layout)
+    {
+        if (layout == FormLayout.Inline)
+        {
+            LayoutCaseForm.MinWidth            = 0;
+            LayoutCaseForm.HorizontalAlignment = HorizontalAlignment.Stretch;
+        }
+        else
+        {
+            LayoutCaseForm.MinWidth            = 600;
+            LayoutCaseForm.HorizontalAlignment = HorizontalAlignment.Left;
+        }
+    }
+
+    private void HandleFormLayoutOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is FormViewModel vm &&
+            args.CheckedOption.Tag is FormLayout formLayout)
+        {
+            vm.FormLayout = formLayout;
+        }
+    }
+
+    private void HandleFormStyleVariantChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        if (sender is AtomUISegmented segmented &&
+            segmented.SelectedItem is SegmentedItem segmentedItem &&
+            segmentedItem.Tag is InputControlStyleVariant styleVariant &&
+            DataContext is FormViewModel vm)
+        {
+            vm.FormStyleVariant = styleVariant;
+        }
+    }
+
+    private void HandleFormRequiredMarkChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is FormViewModel vm &&
+            args.CheckedOption.Tag is FormRequiredMark requiredMark)
+        {
+            vm.FormRequiredMark = requiredMark;
+        }
+    }
+
+    private void HandleFormSizeTypeChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is FormViewModel vm &&
+            args.CheckedOption.Tag is SizeType sizeType)
+        {
+            vm.FormSizeType = sizeType;
+        }
+    }
+
+    private void HandleFillClicked(object? sender, RoutedEventArgs args)
+    {
+        if (sender is not Control source ||
+            !TryFindTemplateControl<AtomUIForm>(source, "NoBlockRuleForm", out var NoBlockRuleForm))
+        {
+            return;
+        }
+
+        var formValues = new FormValues();
+        formValues.Add("url", "https://taobao.com/");
+        NoBlockRuleForm.SetFormValues(formValues);
+    }
+
+    private void HandleNoBlockFormSubmitted(object? sender, FormSubmittedEventArgs args)
+    {
+        GetMessageManager()?.Show(new AtomUIMessage(
+            type: MessageType.Success,
+            content: FormShowCaseLanguage.Get(FormShowCaseLangResourceKind.P3SubmitSuccessMessage,
+                "Submit success!")
+        ));
+    }
+
+    private void HandleNoBlockFormValidated(object? sender, FormValidatedEventArgs args)
+    {
+        if (args.Result == FormValidateResult.Error)
+        {
+            GetMessageManager()?.Show(new AtomUIMessage(
+                type: MessageType.Error,
+                content: FormShowCaseLanguage.Get(FormShowCaseLangResourceKind.P3SubmitFailedMessage,
+                    "Submit failed!")
+            ));
+        }
+    }
+
+    private WindowMessageManager? GetMessageManager()
+    {
+        if (_messageManager is not null)
+        {
+            return _messageManager;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null)
+        {
+            return null;
+        }
+
+        _messageManager = new WindowMessageManager(topLevel)
+        {
+            MaxItems = 10
+        };
+        return _messageManager;
+    }
+
+    private void HandleAddFormItem(object? sender, RoutedEventArgs args)
+    {
+        if (sender is not Control source ||
+            !TryFindTemplateControl<AtomUIForm>(source, "DynamicForm", out var DynamicForm))
+        {
+            return;
+        }
+
+        var formItem    = CreatePassengerFormItem();
+        var insertIndex = 0;
+        for (var i = 0; i < DynamicForm.Items.Count; ++i)
+        {
+            var item = DynamicForm.Items[i];
+            if (item is FormActionsItem)
+            {
+                insertIndex = i;
+                break;
+            }
+        }
+
+        insertIndex = Math.Max(0, insertIndex);
+        DynamicForm.Items.Insert(insertIndex, formItem);
+    }
+
+    private void HandleAddFormItemAtHead(object? sender, RoutedEventArgs args)
+    {
+        if (sender is Control source &&
+            TryFindTemplateControl<AtomUIForm>(source, "DynamicForm", out var DynamicForm))
+        {
+            DynamicForm.Items.Insert(0, CreatePassengerFormItem());
+        }
+    }
+
+    private static FormItem CreatePassengerFormItem()
+    {
+        var id = s_formGid++;
+        var formItem = new FormItem
+        {
+            FieldName = $"Passengers_{id}",
+            Content   = new AtomUILineEdit(),
+            Validators = new List<IFormValidator>()
+            {
+                new LocalizedPassengerNameValidator()
+            }
+        };
+        BindPassengerLabel(formItem, id);
+        return formItem;
+    }
+
+    private static void BindPassengerLabel(FormItem formItem, int id)
+    {
+        _ = LanguageResourceBinder.CreateBinding(
+            formItem,
+            FormItem.LabelTextProperty,
+            FormShowCaseLangResourceKind.P3DynamicPassengerLabelFormat,
+            BindingPriority.LocalValue,
+            value =>
+            {
+                var format = value as string ?? "passengers_{0}";
+                return string.Format(CultureInfo.CurrentCulture, format, id);
+            });
+    }
+
+    private void HandleFormSliderItemAttached(object? sender, VisualTreeAttachmentEventArgs args)
+    {
+        if (sender is AtomUI.Desktop.Controls.Slider FormSliderItem)
+        {
+            FormSliderItem.Marks = CreateSliderMarks();
+        }
+    }
+
+    private static List<SliderMark> CreateSliderMarks()
+    {
+        return new List<SliderMark>
+        {
+            new("A", 0),
+            new("B", 20),
+            new("C", 40),
+            new("D", 60),
+            new("E", 80),
+            new("F", 100)
+        };
+    }
+
+    private static bool TryFindTemplateControl<T>(Control source, string name, out T control)
+        where T : Control
+    {
+        var current = source;
+        while (current is not null)
+        {
+            if (current is T directControl &&
+                current.Name == name)
+            {
+                control = directControl;
+                return true;
+            }
+
+            var descendantControl = current.GetVisualDescendants()
+                                           .OfType<T>()
+                                           .FirstOrDefault(candidate => candidate.Name == name);
+            if (descendantControl is not null)
+            {
+                control = descendantControl;
+                return true;
+            }
+
+            current = current.Parent as Control;
+        }
+
+        control = null!;
+        return false;
     }
 
     private static void RefreshLocalizedOptionData(FormViewModel viewModel)
@@ -217,6 +516,27 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
             Value    = value,
             Children = children ?? []
         };
+    }
+
+    private sealed class LocalizedPassengerNameValidator : FormStringNotEmptyValidator
+    {
+        public LocalizedPassengerNameValidator()
+        {
+            RefreshMessage();
+        }
+
+        protected override Task<bool> ValidateCoreAsync(string fieldName, object? value, CancellationToken cancellationToken)
+        {
+            RefreshMessage();
+            return base.ValidateCoreAsync(fieldName, value, cancellationToken);
+        }
+
+        private void RefreshMessage()
+        {
+            Message = FormShowCaseLanguage.Get(
+                FormShowCaseLangResourceKind.P2MessagePleaseInputPassengerSNameOrDeleteThisField,
+                "Please input passenger's name or delete this field!");
+        }
     }
 }
 
