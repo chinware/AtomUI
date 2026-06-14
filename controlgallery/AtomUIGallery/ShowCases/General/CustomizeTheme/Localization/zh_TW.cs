@@ -6,6 +6,41 @@ namespace AtomUIGallery.ShowCases.CustomizeTheme;
 [LanguageProvider(LanguageCode.zh_TW, CustomizeThemeShowCase.LanguageId)]
 internal partial class zh_TW : LanguageProvider
 {
+    public const string ScenarioExamples = "示例";
+    public const string ScenarioApi = "API";
+    public const string ScenarioDesignToken = "設計令牌";
+    public const string ComponentCategory = "通用";
+    public const string ComponentStatusStable = ".NET 10";
+    public const string PageSubtitle = "通過共享令牌、算法、組件令牌和局部嵌套作用域定制 AtomUI 主題。";
+    public const string PageDescription = "Customize Theme 展示 ThemeConfigProvider 如何覆蓋 Seed Token、派生 Token、預設算法、組件級 Token 和嵌套主題上下文，而不需要修改應用全局主題。";
+    public const string InfoNamespaceLabel = "命名空間：";
+    public const string InfoPackageLabel = "包：";
+    public const string InfoBaseClassLabel = "基類：";
+    public const string ApiColumnMember = "成員";
+    public const string ApiColumnDescription = "說明";
+    public const string ApiColumnType = "類型";
+    public const string ApiColumnDefault = "默認值";
+    public const string ApiMemberThemeConfigProviderAlgorithms = "當前 Provider 應用的主題算法，例如 Default、Dark 或 Compact。";
+    public const string ApiMemberThemeConfigProviderSharedTokenSetters = "共享令牌覆蓋，會影響 Provider 下的所有後代控件。";
+    public const string ApiMemberThemeConfigProviderControlTokenInfoSetters = "按控件 TokenId 分組的組件令牌覆蓋配置。";
+    public const string ApiMemberTokenSetterKey = "需要覆蓋的 Design Token 鍵。";
+    public const string ApiMemberTokenSetterValue = "用於覆蓋 Token 的字符串值。";
+    public const string ApiMemberTokenSetterCatalog = "可選的 Token 目錄，用於指定某個目錄下的 Token。";
+    public const string ApiMemberControlTokenInfoSetter = "控件令牌 ID，例如 Button 或 AddOnDecoratedBox。";
+    public const string ApiMemberControlTokenInfoSetterEnableAlgorithm = "組件令牌覆蓋是否參與主題算法計算。";
+    public const string ApiMemberControlTokenInfoSetterSetters = "應用到當前組件令牌的 TokenSetter 集合。";
+    public const string TokenColumnToken = "令牌";
+    public const string TokenColumnDescription = "說明";
+    public const string TokenColumnScope = "作用域";
+    public const string TokenColumnStatus = "狀態";
+    public const string TokenNameColorPrimary = "交互控件使用的主品牌色。";
+    public const string TokenNameBorderRadius = "用於派生組件圓角的共享 Seed Token。";
+    public const string TokenNameColorBgContainer = "控件和內容容器使用的背景色。";
+    public const string TokenNameButtonColorPrimary = "Button 組件的主色覆蓋。";
+    public const string TokenNameAddOnDecoratedBoxColorPrimary = "AddOnDecoratedBox 組件主色覆蓋，用於輸入裝飾區域。";
+    public const string TokenScopeShared = "共享";
+    public const string TokenScopeComponent = "組件";
+    public const string TokenStatusStable = "穩定";
     public const string CustomizeDesignTokenTitle = "自定義設計令牌";
     public const string CustomizeDesignTokenDescription = "通過修改主題的 token 屬性，可以全局修改 Design Token。部分 token 會影響其他 token，這類 token 稱為 Seed Token。";
     public const string PresetAlgorithmsTitle = "使用預設算法";
@@ -30,4 +65,3 @@ internal partial class zh_TW : LanguageProvider
 
     protected override Type GetResourceKindType() => typeof(CustomizeThemeShowCaseLangResourceKind);
 }
-

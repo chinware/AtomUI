@@ -1519,10 +1519,28 @@ namespace AtomUIGallery.Localization
 {
     public enum CustomizeThemeShowCaseLangResourceKind
     {
+        ApiColumnDefault,
+        ApiColumnDescription,
+        ApiColumnMember,
+        ApiColumnType,
+        ApiMemberControlTokenInfoSetter,
+        ApiMemberControlTokenInfoSetterEnableAlgorithm,
+        ApiMemberControlTokenInfoSetterSetters,
+        ApiMemberThemeConfigProviderAlgorithms,
+        ApiMemberThemeConfigProviderControlTokenInfoSetters,
+        ApiMemberThemeConfigProviderSharedTokenSetters,
+        ApiMemberTokenSetterCatalog,
+        ApiMemberTokenSetterKey,
+        ApiMemberTokenSetterValue,
+        ComponentCategory,
+        ComponentStatusStable,
         CustomizeComponentTokenDescription,
         CustomizeComponentTokenTitle,
         CustomizeDesignTokenDescription,
         CustomizeDesignTokenTitle,
+        InfoBaseClassLabel,
+        InfoNamespaceLabel,
+        InfoPackageLabel,
         NestedThemeDescription,
         NestedThemeTitle,
         P2ContentApple,
@@ -1538,8 +1556,25 @@ namespace AtomUIGallery.Localization
         P2PlaceholderTextPleaseInput,
         P2TextDisableAlgorithm,
         P2TextEnableAlgorithm,
+        PageDescription,
+        PageSubtitle,
         PresetAlgorithmsDescription,
-        PresetAlgorithmsTitle
+        PresetAlgorithmsTitle,
+        ScenarioApi,
+        ScenarioDesignToken,
+        ScenarioExamples,
+        TokenColumnDescription,
+        TokenColumnScope,
+        TokenColumnStatus,
+        TokenColumnToken,
+        TokenNameAddOnDecoratedBoxColorPrimary,
+        TokenNameBorderRadius,
+        TokenNameButtonColorPrimary,
+        TokenNameColorBgContainer,
+        TokenNameColorPrimary,
+        TokenScopeComponent,
+        TokenScopeShared,
+        TokenStatusStable
     }
 
     public class CustomizeThemeShowCaseLangResourceExtension : LanguageResourceExtension<CustomizeThemeShowCaseLangResourceKind>
@@ -3073,9 +3108,16 @@ namespace AtomUIGallery.Localization
 {
     public enum IconShowCaseLangResourceKind
     {
+        ComponentCategory,
+        ComponentStatusStable,
+        InfoBaseClassLabel,
+        InfoNamespaceLabel,
+        InfoPackageLabel,
         P2HeaderFilled,
         P2HeaderOutlined,
-        P2HeaderTwoTone
+        P2HeaderTwoTone,
+        PageDescription,
+        PageSubtitle
     }
 
     public class IconShowCaseLangResourceExtension : LanguageResourceExtension<IconShowCaseLangResourceKind>
