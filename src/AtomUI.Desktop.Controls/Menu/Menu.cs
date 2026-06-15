@@ -216,6 +216,26 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
         }
     }
 
+    internal void CloseImmediately()
+    {
+        if (!IsOpen && !_isClosing)
+        {
+            return;
+        }
+
+        _isClosing = false;
+        for (var i = 0; i < ItemCount; i++)
+        {
+            var container = ContainerFromIndex(i);
+            if (container is MenuItem menuItem)
+            {
+                menuItem.Close();
+            }
+        }
+
+        HandleMenuClosed();
+    }
+
     private void HandleMenuClosed()
     {
         IsOpen        = false;

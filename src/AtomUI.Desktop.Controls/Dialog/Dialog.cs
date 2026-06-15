@@ -397,6 +397,7 @@ public partial class Dialog : TemplatedControl,
     private DialogOpenState? _openState;
     private Action<IDialogHost?>? _dialogHostChangedHandler;
     private CancellationTokenSource? _frameCancellationTokenSource;
+    private DispatcherFrame? _synchronousOpenFrame;
     private bool _opening;
     private bool _closing;
 
@@ -432,7 +433,7 @@ public partial class Dialog : TemplatedControl,
 
     public object? Open()
     {
-        if (_openState != null || _opening)
+        if (_openState != null || _opening || _closing)
         {
             return null;
         }
@@ -441,15 +442,27 @@ public partial class Dialog : TemplatedControl,
         _frameCancellationTokenSource?.Dispose();
         _frameCancellationTokenSource = new CancellationTokenSource();
         var frame = new DispatcherFrame();
+        _synchronousOpenFrame = frame;
         _frameCancellationTokenSource.Token.Register(() => frame.Continue = false);
+        DialogInputCaptureTracker.ReleaseCurrentMouseCapture();
         Dispatcher.InvokeAsync(async () => await OpenAsync(_frameCancellationTokenSource.Token));
-        Dispatcher.PushFrame(frame);
+        try
+        {
+            Dispatcher.PushFrame(frame);
+        }
+        finally
+        {
+            if (ReferenceEquals(_synchronousOpenFrame, frame))
+            {
+                _synchronousOpenFrame = null;
+            }
+        }
         return Result;
     }
 
     public async Task OpenAsync(CancellationToken cancellationToken = default)
     {
-        if (_openState != null || _opening)
+        if (_openState != null || _opening || _closing)
         {
             return;
         }
@@ -636,6 +649,7 @@ public partial class Dialog : TemplatedControl,
                 SetCurrentValue(IsOpenProperty, false);
             }
 
+            StopSynchronousOpenFrame();
             if (openState is not null)
             {
                 var closeCompletedSynchronously = false;
@@ -657,6 +671,14 @@ public partial class Dialog : TemplatedControl,
             {
                 _closing = false;
             }
+        }
+    }
+
+    private void StopSynchronousOpenFrame()
+    {
+        if (_synchronousOpenFrame is { } frame)
+        {
+            frame.Continue = false;
         }
     }
 

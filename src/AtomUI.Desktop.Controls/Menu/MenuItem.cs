@@ -128,6 +128,10 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
         AffectsRender<MenuItem>(BackgroundProperty);
         AffectsMeasure<MenuItem>(IconProperty);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<MenuItem>(false);
+        ClickEvent.AddClassHandler<MenuItem>(
+            (x, e) => x.CloseOwningMenuBeforeClickHandler(e),
+            RoutingStrategies.Bubble,
+            handledEventsToo: true);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -269,6 +273,42 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
         }
 
         IsSubMenuOpen = false;
+    }
+
+    private void CloseOwningMenuBeforeClickHandler(RoutedEventArgs e)
+    {
+        if (!ReferenceEquals(e.Source, this) || HasSubMenu || StaysOpenOnClick)
+        {
+            return;
+        }
+
+        CloseOwningMenuImmediately();
+    }
+
+    private void CloseOwningMenuImmediately()
+    {
+        StyledElement? current = Parent;
+        while (current != null)
+        {
+            if (current is Menu menu)
+            {
+                menu.CloseImmediately();
+                return;
+            }
+
+            if (current is ContextMenu contextMenu)
+            {
+                contextMenu.Close();
+                return;
+            }
+
+            if (current is MenuItem menuItem)
+            {
+                menuItem.Close();
+            }
+
+            current = current.Parent;
+        }
     }
 
     private void ConfigureMaxPopupHeight()

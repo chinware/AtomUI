@@ -15,6 +15,7 @@ public static class ThemeManagerBuilderExtensions
     public static IThemeManagerBuilder UseDesktopControls(this IThemeManagerBuilder themeManagerBuilder)
     {
         themeManagerBuilder.UseCommonControls();
+        DialogInputCaptureTracker.Initialize();
         var controlTokenTypes = RuntimePlatform.Features.SupportsNativeWindow
             ? ControlTokenTypePool.GetTokenTypes()
             : GetBrowserControlTokenTypes();
