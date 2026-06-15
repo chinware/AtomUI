@@ -1,3 +1,8 @@
+---
+name: update-gallery-maintain-docs
+description: Use when AtomUI Gallery code changes require updates to maintenance documentation under docs/Maintain/AtomUIGallery, especially after ReactiveUI upgrades, architecture changes, API changes, routing updates, or Gallery ViewModel/View refactors.
+---
+
 # SKILL: 根据代码修改同步 Gallery 文档
 
 ## 名称
