@@ -29,6 +29,11 @@ public class WindowTitleBar : TemplatedControl,
     
     public static readonly StyledProperty<IDataTemplate?> LogoTemplateProperty =
         AvaloniaProperty.Register<WindowTitleBar, IDataTemplate?>(nameof(LogoTemplate));
+
+    public static readonly StyledProperty<WindowTitleBarLogoVisibility> LogoVisibilityProperty =
+        AvaloniaProperty.Register<WindowTitleBar, WindowTitleBarLogoVisibility>(
+            nameof(LogoVisibility),
+            WindowTitleBarLogoVisibility.Auto);
     
     public static readonly StyledProperty<object?> TitleProperty =
         AvaloniaProperty.Register<WindowTitleBar, object?>(nameof(Title));
@@ -71,6 +76,12 @@ public class WindowTitleBar : TemplatedControl,
     {
         get => GetValue(LogoTemplateProperty);
         set => SetValue(LogoTemplateProperty, value);
+    }
+
+    public WindowTitleBarLogoVisibility LogoVisibility
+    {
+        get => GetValue(LogoVisibilityProperty);
+        set => SetValue(LogoVisibilityProperty, value);
     }
     
     [DependsOn(nameof(TitleTemplate))]
@@ -128,6 +139,23 @@ public class WindowTitleBar : TemplatedControl,
     public Version OsVersion => GetValue(OsVersionProperty);
     #endregion
 
+    #region 内部属性定义
+
+    internal static readonly DirectProperty<WindowTitleBar, bool> IsEffectiveLogoVisibleProperty =
+        AvaloniaProperty.RegisterDirect<WindowTitleBar, bool>(
+            nameof(IsEffectiveLogoVisible),
+            o => o.IsEffectiveLogoVisible);
+
+    private bool _isEffectiveLogoVisible;
+
+    internal bool IsEffectiveLogoVisible
+    {
+        get => _isEffectiveLogoVisible;
+        private set => SetAndRaise(IsEffectiveLogoVisibleProperty, ref _isEffectiveLogoVisible, value);
+    }
+
+    #endregion
+
     #region 公共属性定义
 
     public event EventHandler? MaximizeWindowRequested;
@@ -137,6 +165,7 @@ public class WindowTitleBar : TemplatedControl,
     private CaptionButtonGroup? _captionButtonGroup;
     private CompositeDisposable? _disposables;
     private Window? _window;
+    private bool _isWindowFullScreen;
 
     static WindowTitleBar()
     {
@@ -148,6 +177,7 @@ public class WindowTitleBar : TemplatedControl,
     {
         this.ConfigureOsType();
         this.RegisterTokenResourceScope(WindowTitleBarToken.ScopeProvider);
+        UpdateEffectiveLogoVisible();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -181,6 +211,8 @@ public class WindowTitleBar : TemplatedControl,
                     PseudoClasses.Set(StdPseudoClass.Normal, x == WindowState.Normal);
                     PseudoClasses.Set(StdPseudoClass.Maximized, x == WindowState.Maximized);
                     PseudoClasses.Set(StdPseudoClass.Fullscreen, x == WindowState.FullScreen);
+                    _isWindowFullScreen = x == WindowState.FullScreen;
+                    UpdateEffectiveLogoVisible();
                 }),
                 _window.GetObservable(WindowBase.IsActiveProperty).Subscribe(isActive =>
                 {
@@ -198,7 +230,51 @@ public class WindowTitleBar : TemplatedControl,
         _disposables = null;
         _captionButtonGroup?.Detach();
         _captionButtonGroup = null;
+        _isWindowFullScreen = false;
         _window             = null;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == LogoProperty ||
+            change.Property == LogoTemplateProperty ||
+            change.Property == LogoVisibilityProperty ||
+            change.Property == TitleProperty)
+        {
+            UpdateEffectiveLogoVisible();
+        }
+    }
+
+    private void UpdateEffectiveLogoVisible()
+    {
+        var hasLogo = Logo is not null || LogoTemplate is not null;
+        IsEffectiveLogoVisible = LogoVisibility switch
+        {
+            WindowTitleBarLogoVisibility.Always => hasLogo,
+            WindowTitleBarLogoVisibility.Never => false,
+            _ => hasLogo && ShouldShowLogoInAutoMode()
+        };
+    }
+
+    private bool ShouldShowLogoInAutoMode()
+    {
+        if (HasTitleContent(Title))
+        {
+            return true;
+        }
+
+        return !_isWindowFullScreen;
+    }
+
+    private static bool HasTitleContent(object? title)
+    {
+        return title switch
+        {
+            null => false,
+            string text => !string.IsNullOrWhiteSpace(text),
+            _ => true
+        };
     }
     
     private bool _doubleClickPending;

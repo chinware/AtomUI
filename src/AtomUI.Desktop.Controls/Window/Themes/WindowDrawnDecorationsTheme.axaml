@@ -61,7 +61,8 @@
                                                       HorizontalContentAlignment="Center"
                                                       VerticalContentAlignment="Center"
                                                       Content="{Binding $parent[atom:Window].Logo}"
-                                                      ContentTemplate="{Binding $parent[atom:Window].LogoTemplate}"/>
+                                                      ContentTemplate="{Binding $parent[atom:Window].LogoTemplate}"
+                                                      IsVisible="{Binding $parent[atom:Window].IsEffectiveFullscreenLogoVisible}"/>
                                     <TextBlock Name="FullscreenTitleText"
                                                HorizontalAlignment="Left"
                                                VerticalAlignment="Center"

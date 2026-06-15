@@ -19,7 +19,8 @@
                                               HorizontalContentAlignment="Center"
                                               VerticalContentAlignment="Center"
                                               Content="{TemplateBinding Logo}"
-                                              ContentTemplate="{TemplateBinding LogoTemplate}"/>
+                                              ContentTemplate="{TemplateBinding LogoTemplate}"
+                                              IsVisible="{TemplateBinding IsEffectiveLogoVisible}"/>
                             <ContentPresenter Name="PART_LeftAddOn"
                                               Content="{TemplateBinding LeftAddOn}"
                                               ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
@@ -68,7 +69,8 @@
                                                   HorizontalContentAlignment="Center"
                                                   VerticalContentAlignment="Center"
                                                   Content="{TemplateBinding Logo}"
-                                                  ContentTemplate="{TemplateBinding LogoTemplate}"/>
+                                                  ContentTemplate="{TemplateBinding LogoTemplate}"
+                                                  IsVisible="{TemplateBinding IsEffectiveLogoVisible}"/>
                                 <ContentPresenter Name="PART_LeftAddOn"
                                                   Content="{TemplateBinding LeftAddOn}"
                                                   ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
@@ -126,7 +128,8 @@
                                                   HorizontalContentAlignment="Center"
                                                   VerticalContentAlignment="Center"
                                                   Content="{TemplateBinding Logo}"
-                                                  ContentTemplate="{TemplateBinding LogoTemplate}"/>
+                                                  ContentTemplate="{TemplateBinding LogoTemplate}"
+                                                  IsVisible="{TemplateBinding IsEffectiveLogoVisible}"/>
                                 <ContentPresenter
                                     Name="PART_ContentPresenter"
                                     IsHitTestVisible="False"
@@ -160,6 +163,11 @@
         <Style Selector="^ /template/ ContentPresenter#PART_Logo">
             <Setter Property="Width" Value="{atom:WindowTitleBarTokenResource LogoSize}" />
             <Setter Property="Height" Value="{atom:WindowTitleBarTokenResource LogoSize}" />
+        </Style>
+
+        <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

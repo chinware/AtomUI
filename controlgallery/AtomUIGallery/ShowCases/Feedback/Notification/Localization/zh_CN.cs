@@ -13,7 +13,7 @@ internal partial class zh_CN : LanguageProvider
     public const string WithIconTitle = "带图标通知";
     public const string WithIconDescription = "左侧带图标的通知框。";
     public const string PlacementTitle = "弹出位置";
-    public const string PlacementDescription = "通知框可通过 placement 从视口的 top、bottom、topLeft、topRight、bottomLeft 或 bottomRight 出现。";
+    public const string PlacementDescription = "通知框可通过 placement 从视口顶部、底部、左上、右上、左下或右下出现。";
     public const string CustomizedIconTitle = "自定义图标";
     public const string CustomizedIconDescription = "图标可以自定义为任意图标节点。";
     public const string ProgressTitle = "显示进度";

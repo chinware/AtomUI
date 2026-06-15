@@ -10,6 +10,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls;
@@ -26,6 +27,9 @@ public class Window : AvaloniaWindow,
     
     public static readonly StyledProperty<IDataTemplate?> LogoTemplateProperty =
         WindowTitleBar.LogoTemplateProperty.AddOwner<Window>();
+
+    public static readonly StyledProperty<WindowTitleBarLogoVisibility> LogoVisibilityProperty =
+        WindowTitleBar.LogoVisibilityProperty.AddOwner<Window>();
     
     public static readonly StyledProperty<bool> IsTitleBarVisibleProperty =
         AvaloniaProperty.Register<Window, bool>(nameof(IsTitleBarVisible), defaultValue: true);
@@ -101,6 +105,12 @@ public class Window : AvaloniaWindow,
     {
         get => GetValue(LogoTemplateProperty);
         set => SetValue(LogoTemplateProperty, value);
+    }
+
+    public WindowTitleBarLogoVisibility LogoVisibility
+    {
+        get => GetValue(LogoVisibilityProperty);
+        set => SetValue(LogoVisibilityProperty, value);
     }
     
     [DependsOn(nameof(WindowFrameLayerTemplate))]
@@ -236,6 +246,11 @@ public class Window : AvaloniaWindow,
             nameof(IsCustomResizerVisible),
             o => o.IsCustomResizerVisible,
             (o, v) => o.IsCustomResizerVisible = v);
+
+    internal static readonly DirectProperty<Window, bool> IsEffectiveFullscreenLogoVisibleProperty =
+        AvaloniaProperty.RegisterDirect<Window, bool>(
+            nameof(IsEffectiveFullscreenLogoVisible),
+            o => o.IsEffectiveFullscreenLogoVisible);
     
     internal static readonly StyledProperty<double> TitleBarHeightProperty =
         AvaloniaProperty.Register<Window, double>(nameof(TitleBarHeight));
@@ -248,6 +263,8 @@ public class Window : AvaloniaWindow,
 
     private static readonly ISet<AvaloniaProperty> s_clickThroughShadowExtraAffectsProperties =
         new HashSet<AvaloniaProperty> { FrameShadowThicknessProperty };
+    private static readonly IDataTemplate s_windowIconLogoTemplate =
+        new FuncDataTemplate<WindowIcon>((icon, _) => CreateWindowIconLogo(icon));
     
     private Thickness _titleBarOffsetMargin;
     internal Thickness TitleBarOffsetMargin
@@ -278,6 +295,14 @@ public class Window : AvaloniaWindow,
     {
         get => _isCustomResizerVisible;
         set => SetAndRaise(IsCustomResizerVisibleProperty, ref _isCustomResizerVisible, value);
+    }
+
+    private bool _isEffectiveFullscreenLogoVisible;
+
+    internal bool IsEffectiveFullscreenLogoVisible
+    {
+        get => _isEffectiveFullscreenLogoVisible;
+        private set => SetAndRaise(IsEffectiveFullscreenLogoVisibleProperty, ref _isEffectiveFullscreenLogoVisible, value);
     }
     
     internal double TitleBarHeight
@@ -533,9 +558,10 @@ public class Window : AvaloniaWindow,
     
     protected virtual void NotifyConfigureTitleBar(WindowTitleBar titleBar)
     {
-        titleBar[!WindowTitleBar.TitleProperty]        = this[!TitleProperty];
-        titleBar[!WindowTitleBar.LogoProperty]         = this[!LogoProperty];
-        titleBar[!WindowTitleBar.LogoTemplateProperty] = this[!LogoTemplateProperty];
+        titleBar[!WindowTitleBar.TitleProperty]          = this[!TitleProperty];
+        titleBar[!WindowTitleBar.LogoProperty]           = this[!LogoProperty];
+        titleBar[!WindowTitleBar.LogoTemplateProperty]   = this[!LogoTemplateProperty];
+        titleBar[!WindowTitleBar.LogoVisibilityProperty] = this[!LogoVisibilityProperty];
     }
 
     protected virtual WindowTitleBar? NotifyCreateTitleBar(WindowTitleBar? oldTitleBar)
@@ -648,6 +674,11 @@ public class Window : AvaloniaWindow,
             return;
         }
 
+        if (TryApplyWindowIconLogo(Icon))
+        {
+            return;
+        }
+
         var mainWindow = GetMainWindow();
         if (mainWindow == null || ReferenceEquals(mainWindow, this))
         {
@@ -662,6 +693,46 @@ public class Window : AvaloniaWindow,
         if (mainWindow.Logo != null)
         {
             SetCurrentValue(LogoProperty, mainWindow.Logo);
+        }
+        else if (mainWindow.LogoTemplate == null)
+        {
+            TryApplyWindowIconLogo(mainWindow.Icon);
+        }
+    }
+
+    private bool TryApplyWindowIconLogo(WindowIcon? icon)
+    {
+        if (icon == null)
+        {
+            return false;
+        }
+
+        SetCurrentValue(LogoTemplateProperty, s_windowIconLogoTemplate);
+        SetCurrentValue(LogoProperty, icon);
+        return true;
+    }
+
+    private static Control? CreateWindowIconLogo(WindowIcon? icon)
+    {
+        if (icon == null)
+        {
+            return null;
+        }
+
+        try
+        {
+            using var stream = new MemoryStream();
+            icon.Save(stream);
+            stream.Position = 0;
+            return new Image
+            {
+                Source  = new Bitmap(stream),
+                Stretch = Stretch.Uniform
+            };
+        }
+        catch
+        {
+            return null;
         }
     }
 
@@ -716,6 +787,34 @@ public class Window : AvaloniaWindow,
         {
             ConfigureCustomResizerVisible();
         }
+        if (change.Property == LogoProperty ||
+            change.Property == LogoTemplateProperty ||
+            change.Property == LogoVisibilityProperty ||
+            change.Property == TitleProperty)
+        {
+            UpdateEffectiveFullscreenLogoVisible();
+        }
+    }
+
+    private void UpdateEffectiveFullscreenLogoVisible()
+    {
+        var hasLogo = Logo is not null || LogoTemplate is not null;
+        IsEffectiveFullscreenLogoVisible = LogoVisibility switch
+        {
+            WindowTitleBarLogoVisibility.Always => hasLogo,
+            WindowTitleBarLogoVisibility.Never => false,
+            _ => hasLogo && HasTitleContent(Title)
+        };
+    }
+
+    private static bool HasTitleContent(object? title)
+    {
+        return title switch
+        {
+            null => false,
+            string text => !string.IsNullOrWhiteSpace(text),
+            _ => true
+        };
     }
 
     [SupportedOSPlatform("windows")]

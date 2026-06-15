@@ -21,7 +21,7 @@
             </ControlTemplate>
         </Setter>
 
-        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Background" Value="{x:Null}" />
         <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
         <Setter Property="TransparencyLevelHint" Value="Transparent" />
         <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />

@@ -296,7 +296,7 @@ internal class OverlayDialogHost : ContentControl,
             overlayHost.Opacity               = 0.0;
             overlayHost.RenderTransformOrigin = origin;
             overlayHost.RenderTransform       = transform;
-            EnsureTransitionsOn(overlayHost);
+            EnsureOpenTransitionsOn(overlayHost);
 
             if (IsModal)
             {
@@ -332,7 +332,6 @@ internal class OverlayDialogHost : ContentControl,
         }
 
         _isCloseRequested = true;
-        DetachTemplateHandlers();
         if (!_popup.IsOpen)
         {
             CleanupPopup();
@@ -341,6 +340,11 @@ internal class OverlayDialogHost : ContentControl,
 
         if (IsMotionEnabled && _animatedOverlayHost is { } overlayHost)
         {
+            if (!_dialog.UsesPlacementTargetAsMotionAnchor)
+            {
+                ConfigureUnanchoredCloseTransitions(overlayHost);
+            }
+
             var (origin, transform)           = BuildCollapsedMotionState(overlayHost);
             overlayHost.RenderTransformOrigin = origin;
             overlayHost.Opacity               = 0.0;
@@ -372,22 +376,47 @@ internal class OverlayDialogHost : ContentControl,
         }
     }
 
-    private static void EnsureTransitionsOn(OverlayPopupHost host)
+    private static void EnsureOpenTransitionsOn(OverlayPopupHost host)
     {
         if (host.Transitions is { Count: > 0 })
         {
             return;
         }
-        host.Transitions =
+        host.Transitions = CreateOverlayHostTransitions(new CircularEaseOut());
+    }
+
+    private void ConfigureUnanchoredCloseTransitions(OverlayPopupHost host)
+    {
+        host.Transitions = CreateOverlayHostTransitions(new CubicEaseIn());
+        if (_dialogMask is not null)
+        {
+            _dialogMask.Transitions = CreateMaskTransitions(new CubicEaseIn());
+        }
+    }
+
+    private static Transitions CreateOverlayHostTransitions(Easing easing)
+    {
+        return
         [
             TransitionUtils.CreateTransition<DoubleTransition>(
                 OpacityProperty,
                 SharedTokenKind.MotionDurationMid,
-                new CircularEaseOut()),
+                easing),
             TransitionUtils.CreateTransition<TransformOperationsTransition>(
                 RenderTransformProperty,
                 SharedTokenKind.MotionDurationMid,
-                new CircularEaseOut())
+                easing)
+        ];
+    }
+
+    private static Transitions CreateMaskTransitions(Easing easing)
+    {
+        return
+        [
+            TransitionUtils.CreateTransition<DoubleTransition>(
+                OpacityProperty,
+                SharedTokenKind.MotionDurationMid,
+                easing)
         ];
     }
 
