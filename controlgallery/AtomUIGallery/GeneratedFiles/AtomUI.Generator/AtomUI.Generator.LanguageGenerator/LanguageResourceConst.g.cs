@@ -1495,6 +1495,8 @@ namespace AtomUIGallery.Localization
         MissionText,
         QQGroup,
         QQGroupDescription,
+        TelegramGroup,
+        TelegramGroupDescription,
         VisionLabel,
         VisionText,
         WeChatGroup,

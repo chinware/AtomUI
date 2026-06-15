@@ -4542,6 +4542,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.Community.en_US.MissionText;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.Community.en_US.QQGroup;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroupDescription] = global::AtomUIGallery.ShowCases.Community.en_US.QQGroupDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.TelegramGroup] = global::AtomUIGallery.ShowCases.Community.en_US.TelegramGroup;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.TelegramGroupDescription] = global::AtomUIGallery.ShowCases.Community.en_US.TelegramGroupDescription;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionLabel] = global::AtomUIGallery.ShowCases.Community.en_US.VisionLabel;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionText] = global::AtomUIGallery.ShowCases.Community.en_US.VisionText;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatGroup] = global::AtomUIGallery.ShowCases.Community.en_US.WeChatGroup;
@@ -4580,6 +4582,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.Community.zh_CN.MissionText;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.Community.zh_CN.QQGroup;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroupDescription] = global::AtomUIGallery.ShowCases.Community.zh_CN.QQGroupDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.TelegramGroup] = global::AtomUIGallery.ShowCases.Community.zh_CN.TelegramGroup;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.TelegramGroupDescription] = global::AtomUIGallery.ShowCases.Community.zh_CN.TelegramGroupDescription;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionLabel] = global::AtomUIGallery.ShowCases.Community.zh_CN.VisionLabel;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionText] = global::AtomUIGallery.ShowCases.Community.zh_CN.VisionText;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatGroup] = global::AtomUIGallery.ShowCases.Community.zh_CN.WeChatGroup;
@@ -4618,6 +4622,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.Community.zh_TW.MissionText;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.Community.zh_TW.QQGroup;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroupDescription] = global::AtomUIGallery.ShowCases.Community.zh_TW.QQGroupDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.TelegramGroup] = global::AtomUIGallery.ShowCases.Community.zh_TW.TelegramGroup;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.TelegramGroupDescription] = global::AtomUIGallery.ShowCases.Community.zh_TW.TelegramGroupDescription;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionLabel] = global::AtomUIGallery.ShowCases.Community.zh_TW.VisionLabel;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.VisionText] = global::AtomUIGallery.ShowCases.Community.zh_TW.VisionText;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.WeChatGroup] = global::AtomUIGallery.ShowCases.Community.zh_TW.WeChatGroup;

@@ -66,6 +66,116 @@ public class MessageBoxReentrancyTests
     }
 
     [Fact]
+    public void ShowMessageBox_Called_From_Button_Click_Accepts_Default_Button_With_Enter_Without_Reentering_Click_Handler()
+    {
+        var trigger = new AtomUI.Desktop.Controls.Button
+        {
+            Width   = 120,
+            Height  = 32,
+            Content = "Show"
+        };
+        var window = CreateWindow(trigger);
+
+        var clickCount = 0;
+        var fallbackClickRequired = false;
+        object? result = null;
+        trigger.Click += (_, _) =>
+        {
+            clickCount++;
+            if (clickCount > 1)
+            {
+                return;
+            }
+
+            ScheduleKeyPressOpenMessageBoxButton(
+                window,
+                Key.Enter,
+                DialogStandardButton.Ok,
+                () => fallbackClickRequired = true);
+
+            result = AtomUI.Desktop.Controls.MessageBox.ShowMessageBox(
+                new AtomUI.Desktop.Controls.TextBlock { Text = "Confirm?" },
+                options: new MessageBoxOptions
+                {
+                    Title             = "Confirm",
+                    IsCenterOnStartup = true,
+                    Style             = MessageBoxStyle.Confirm
+                },
+                topLevel: window);
+        };
+
+        try
+        {
+            Click(trigger, window);
+            Dispatcher.UIThread.RunJobs();
+
+            result.ShouldBe(DialogCode.Accepted);
+            clickCount.ShouldBe(1);
+            fallbackClickRequired.ShouldBeFalse(
+                "Enter should activate the MessageBox default button without needing a mouse click fallback.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void ShowMessageBox_Called_From_Button_Click_Rejects_Escape_Button_Without_Reentering_Click_Handler()
+    {
+        var trigger = new AtomUI.Desktop.Controls.Button
+        {
+            Width   = 120,
+            Height  = 32,
+            Content = "Show"
+        };
+        var window = CreateWindow(trigger);
+
+        var clickCount = 0;
+        var fallbackClickRequired = false;
+        object? result = null;
+        trigger.Click += (_, _) =>
+        {
+            clickCount++;
+            if (clickCount > 1)
+            {
+                return;
+            }
+
+            ScheduleKeyPressOpenMessageBoxButton(
+                window,
+                Key.Escape,
+                DialogStandardButton.Cancel,
+                () => fallbackClickRequired = true);
+
+            result = AtomUI.Desktop.Controls.MessageBox.ShowMessageBox(
+                new AtomUI.Desktop.Controls.TextBlock { Text = "Confirm?" },
+                options: new MessageBoxOptions
+                {
+                    Title             = "Confirm",
+                    IsCenterOnStartup = true,
+                    Style             = MessageBoxStyle.Confirm
+                },
+                topLevel: window);
+        };
+
+        try
+        {
+            Click(trigger, window);
+            Dispatcher.UIThread.RunJobs();
+
+            result.ShouldBe(DialogCode.Rejected);
+            clickCount.ShouldBe(1);
+            fallbackClickRequired.ShouldBeFalse(
+                "Escape should activate the MessageBox cancel button without needing a mouse click fallback.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void ShowMessageBox_Returns_When_Dialog_Is_Logically_Closed_Instead_Of_Waiting_For_Close_Animation()
     {
         var trigger = new AtomUI.Desktop.Controls.Button
@@ -158,6 +268,74 @@ public class MessageBoxReentrancyTests
         }
     }
 
+
+    [Fact]
+    public void ShowMessageBox_Called_From_MenuItem_Click_Accepts_Default_Button_With_Enter_Without_Reentering_Click_Handler()
+    {
+        var aboutMenuItem = new AtomUI.Desktop.Controls.MenuItem
+        {
+            Header = "About"
+        };
+        var helpMenuItem = new AtomUI.Desktop.Controls.MenuItem
+        {
+            Header = "Help"
+        };
+        helpMenuItem.Items.Add(aboutMenuItem);
+
+        var menu = new AtomUI.Desktop.Controls.Menu
+        {
+            Width = 320
+        };
+        menu.Items.Add(helpMenuItem);
+
+        var window = CreateWindow(menu);
+        var clickCount = 0;
+        var fallbackClickRequired = false;
+        object? result = null;
+
+        aboutMenuItem.Click += (_, _) =>
+        {
+            clickCount++;
+            if (clickCount > 1)
+            {
+                return;
+            }
+
+            ScheduleKeyPressOpenMessageBoxButton(
+                window,
+                Key.Enter,
+                DialogStandardButton.Ok,
+                () => fallbackClickRequired = true);
+
+            result = AtomUI.Desktop.Controls.MessageBox.ShowMessageBox(
+                new AtomUI.Desktop.Controls.TextBlock { Text = "About" },
+                options: new MessageBoxOptions
+                {
+                    Title = "About",
+                    Style = MessageBoxStyle.Information
+                },
+                topLevel: window);
+        };
+
+        try
+        {
+            menu.Open();
+            helpMenuItem.IsSubMenuOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            aboutMenuItem.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.MenuItem.ClickEvent, aboutMenuItem));
+            Dispatcher.UIThread.RunJobs();
+
+            result.ShouldBe(DialogCode.Accepted);
+            clickCount.ShouldBe(1);
+            fallbackClickRequired.ShouldBeFalse(
+                "Enter should close the MessageBox and must not re-trigger the menu item while ShowMessageBox is nested in the click handler.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
 
     [Fact]
     public void ShowMessageBox_Called_From_MenuItem_Click_Sees_Menu_Closed_Before_Handler_Blocks()
@@ -374,6 +552,63 @@ public class MessageBoxReentrancyTests
         beforeClick?.Invoke();
         acceptButton.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, acceptButton));
         return true;
+    }
+
+    private static void ScheduleKeyPressOpenMessageBoxButton(
+        AvaloniaWindow window,
+        Key key,
+        DialogStandardButton fallbackButton,
+        Action fallbackClickRequired,
+        int attempt = 0)
+    {
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (TryKeyPressOpenMessageBoxButton(window, key, fallbackButton, fallbackClickRequired))
+            {
+                return;
+            }
+
+            attempt.ShouldBeLessThan(10, "MessageBox should become available while the synchronous dispatcher frame is running.");
+            ScheduleKeyPressOpenMessageBoxButton(window, key, fallbackButton, fallbackClickRequired, attempt + 1);
+        });
+    }
+
+    private static bool TryKeyPressOpenMessageBoxButton(
+        AvaloniaWindow window,
+        Key key,
+        DialogStandardButton fallbackButton,
+        Action fallbackClickRequired)
+    {
+        var fallbackDialogButton = window.GetVisualDescendants()
+                                         .OfType<DialogButton>()
+                                         .FirstOrDefault(x => x.StandardButtonType == fallbackButton);
+        if (fallbackDialogButton is null || fallbackDialogButton.Bounds.Width <= 0 || fallbackDialogButton.Bounds.Height <= 0)
+        {
+            return false;
+        }
+
+        window.KeyPress(key, RawInputModifiers.None, ToPhysicalKey(key), null);
+        Dispatcher.UIThread.Post(() =>
+        {
+            if (!fallbackDialogButton.IsAttachedToVisualTree())
+            {
+                return;
+            }
+
+            fallbackClickRequired();
+            fallbackDialogButton.RaiseEvent(new RoutedEventArgs(Avalonia.Controls.Button.ClickEvent, fallbackDialogButton));
+        });
+        return true;
+    }
+
+    private static PhysicalKey ToPhysicalKey(Key key)
+    {
+        return key switch
+        {
+            Key.Enter  => PhysicalKey.Enter,
+            Key.Escape => PhysicalKey.Escape,
+            _          => PhysicalKey.None
+        };
     }
 
     private static void ScheduleFirstMouseClickOpenMessageBoxButton(

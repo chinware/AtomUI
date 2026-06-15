@@ -13,6 +13,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
+using Avalonia.Input;
 using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
@@ -410,6 +411,7 @@ public partial class Dialog : TemplatedControl,
     private DispatcherFrame? _synchronousOpenFrame;
     private bool _opening;
     private bool _closing;
+    private IReadOnlyList<DialogButton> _synchronizedButtons = Array.Empty<DialogButton>();
 
     static Dialog()
     {
@@ -695,6 +697,7 @@ public partial class Dialog : TemplatedControl,
     private void CompleteClose(DialogOpenState? openState, object? result)
     {
         openState?.SetClosed(result);
+        _synchronizedButtons = Array.Empty<DialogButton>();
         Closed?.Invoke(this, EventArgs.Empty);
         _frameCancellationTokenSource?.Cancel();
         _frameCancellationTokenSource?.Dispose();
@@ -942,6 +945,50 @@ public partial class Dialog : TemplatedControl,
 
     internal void NotifyDialogButtonSynchronized(IReadOnlyList<DialogButton> buttons)
     {
+        _synchronizedButtons = buttons;
         ButtonsConfigure?.Invoke(buttons);
+    }
+
+    internal bool TryHandleStandardButtonKey(Key key)
+    {
+        var standardButton = ResolveStandardButtonForKey(key);
+
+        if (standardButton == DialogStandardButton.NoButton)
+        {
+            return false;
+        }
+
+        var button = _synchronizedButtons.FirstOrDefault(x =>
+            x.StandardButtonType == standardButton &&
+            x.IsEffectivelyEnabled);
+        if (button is null)
+        {
+            return false;
+        }
+
+        NotifyDialogButtonBoxClicked(button);
+        return true;
+    }
+
+    private DialogStandardButton ResolveStandardButtonForKey(Key key)
+    {
+        return key switch
+        {
+            Key.Enter  => DefaultStandardButton,
+            Key.Escape => ResolveEscapeStandardButton(),
+            _          => DialogStandardButton.NoButton
+        };
+    }
+
+    private DialogStandardButton ResolveEscapeStandardButton()
+    {
+        if (IsSet(EscapeStandardButtonProperty))
+        {
+            return EscapeStandardButton;
+        }
+
+        return StandardButtons.HasFlag(DialogStandardButton.Cancel)
+            ? DialogStandardButton.Cancel
+            : DialogStandardButton.NoButton;
     }
 }

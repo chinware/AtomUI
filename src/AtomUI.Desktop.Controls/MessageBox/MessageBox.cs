@@ -662,6 +662,7 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
             return;
         }
 
+        dialog.EscapeStandardButton = DialogStandardButton.NoButton;
         if (Style == MessageBoxStyle.Information)
         {
             SetValue(IconProperty, new InfoCircleFilled(), BindingPriority.Template);
@@ -689,6 +690,7 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
         else if (Style == MessageBoxStyle.Confirm)
         {
             SetValue(IconProperty, new ExclamationCircleFilled(), BindingPriority.Template);
+            dialog.EscapeStandardButton = DialogStandardButton.Cancel;
             dialog.StandardButtons = DialogStandardButton.Ok | DialogStandardButton.Cancel;
         }
     }
