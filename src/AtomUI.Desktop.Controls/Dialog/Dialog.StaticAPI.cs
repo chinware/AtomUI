@@ -140,6 +140,9 @@ public partial class Dialog
             IsDragMovable             = options?.IsDragMovable ?? true,
             IsFooterVisible           = options?.IsFooterVisible ?? true,
             PlacementTarget           = options?.PlacementTarget ?? placementTarget,
+            MotionAnchorMode          = options?.PlacementTarget is null
+                ? DialogMotionAnchorMode.FallbackPlacementTarget
+                : DialogMotionAnchorMode.ExplicitPlacementTarget,
             HorizontalOffset          = options?.HorizontalOffset,
             VerticalOffset            = options?.VerticalOffset,
             DialogHostType            = options?.DialogHostType ?? DialogHostType.Overlay,

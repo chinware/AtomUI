@@ -274,6 +274,8 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
 
     public AvaloniaList<DialogButton> CustomButtons { get; } = new ();
 
+    internal DialogMotionAnchorMode MotionAnchorMode { get; set; }
+
     #endregion
 
     #region 公共事件定义
@@ -438,6 +440,9 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
             IsDragMovable     = options?.IsDragMovable ?? false,
             Style             = options?.Style ?? MessageBoxStyle.Information,
             PlacementTarget   = options?.PlacementTarget ?? placementTarget,
+            MotionAnchorMode  = options?.PlacementTarget is null
+                ? DialogMotionAnchorMode.FallbackPlacementTarget
+                : DialogMotionAnchorMode.ExplicitPlacementTarget,
             HorizontalOffset  = options?.HorizontalOffset,
             VerticalOffset    = options?.VerticalOffset,
             DialogHostType    = options?.HostType ?? DialogHostType.Overlay,
@@ -486,6 +491,9 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
             }
             else if (change.Property == PlacementTargetProperty)
             {
+                MotionAnchorMode = PlacementTarget is null
+                    ? DialogMotionAnchorMode.FallbackPlacementTarget
+                    : DialogMotionAnchorMode.ExplicitPlacementTarget;
                 SyncDialogPlacementTarget();
             }
         }
@@ -600,8 +608,22 @@ public class MessageBox : TemplatedControl, IMotionAwareControl
     {
         if (_dialog != null)
         {
-            _dialog.PlacementTarget = PlacementTarget ?? this;
+            var placementTarget = PlacementTarget;
+            _dialog.PlacementTarget  = placementTarget ?? this;
+            _dialog.MotionAnchorMode = ResolveDialogMotionAnchorMode(placementTarget);
         }
+    }
+
+    private DialogMotionAnchorMode ResolveDialogMotionAnchorMode(Control? placementTarget)
+    {
+        return MotionAnchorMode switch
+        {
+            DialogMotionAnchorMode.ExplicitPlacementTarget => DialogMotionAnchorMode.ExplicitPlacementTarget,
+            DialogMotionAnchorMode.FallbackPlacementTarget => DialogMotionAnchorMode.FallbackPlacementTarget,
+            _ => placementTarget is null
+                ? DialogMotionAnchorMode.FallbackPlacementTarget
+                : DialogMotionAnchorMode.ExplicitPlacementTarget
+        };
     }
 
     private void HandleDialogOpened(object? sender, EventArgs e)
