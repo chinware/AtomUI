@@ -590,7 +590,8 @@ public class MessageBoxReentrancyTests
         window.KeyPress(key, RawInputModifiers.None, ToPhysicalKey(key), null);
         Dispatcher.UIThread.Post(() =>
         {
-            if (!fallbackDialogButton.IsAttachedToVisualTree())
+            if (!fallbackDialogButton.IsAttachedToVisualTree() ||
+                IsOverlayDialogCloseRequested(window))
             {
                 return;
             }
@@ -609,6 +610,23 @@ public class MessageBoxReentrancyTests
             Key.Escape => PhysicalKey.Escape,
             _          => PhysicalKey.None
         };
+    }
+
+    private static bool IsOverlayDialogCloseRequested(Visual searchRoot)
+    {
+        return searchRoot.GetVisualDescendants()
+                         .Where(x => x.GetType().Name == "OverlayDialogHost")
+                         .Any(IsCloseRequested);
+
+        static bool IsCloseRequested(Visual overlayDialogHost)
+        {
+            var field = overlayDialogHost.GetType().GetField(
+                "_isCloseRequested",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+
+            field.ShouldNotBeNull();
+            return field.GetValue(overlayDialogHost) is true;
+        }
     }
 
     private static void ScheduleFirstMouseClickOpenMessageBoxButton(

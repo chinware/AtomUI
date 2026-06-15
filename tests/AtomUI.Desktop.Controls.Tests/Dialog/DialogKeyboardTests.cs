@@ -1,3 +1,4 @@
+using System.Reflection;
 using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
@@ -159,7 +160,8 @@ public class DialogKeyboardTests
         window.KeyPress(key, RawInputModifiers.None, ToPhysicalKey(key), null);
         Dispatcher.UIThread.Post(() =>
         {
-            if (!fallbackDialogButton.IsAttachedToVisualTree())
+            if (!fallbackDialogButton.IsAttachedToVisualTree() ||
+                IsOverlayDialogCloseRequested(window))
             {
                 return;
             }
@@ -180,11 +182,28 @@ public class DialogKeyboardTests
         };
     }
 
+    private static bool IsOverlayDialogCloseRequested(Visual searchRoot)
+    {
+        return searchRoot.GetVisualDescendants()
+                         .Where(x => x.GetType().Name == "OverlayDialogHost")
+                         .Any(IsCloseRequested);
+
+        static bool IsCloseRequested(Visual overlayDialogHost)
+        {
+            var field = overlayDialogHost.GetType().GetField(
+                "_isCloseRequested",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+
+            field.ShouldNotBeNull();
+            return field.GetValue(overlayDialogHost) is true;
+        }
+    }
+
     private static void EnablePopupOverlayLayer(VisualLayerManager visualLayerManager)
     {
         var property = typeof(VisualLayerManager).GetProperty(
             "EnablePopupOverlayLayer",
-            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+            BindingFlags.Instance | BindingFlags.NonPublic);
 
         property.ShouldNotBeNull();
         property.SetValue(visualLayerManager, true);

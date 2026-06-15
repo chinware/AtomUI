@@ -88,7 +88,7 @@ internal partial class zh_TW : LanguageProvider
     public const string Feedback_Message = "Message 全局提示";
     public const string Feedback_Modal = "Modal 對話框";
     public const string Feedback_Notification = "Notification 通知提醒框";
-    public const string Feedback_PopupConfirm = "PopupConfirm 氣泡確定框";
+    public const string Feedback_PopupConfirm = "PopupConfirm 氣泡確認框";
     public const string Feedback_ProgressBar = "ProgressBar 進度條";
     public const string Feedback_Result = "Result 結果";
     public const string Feedback_Skeleton = "Skeleton 骨架屏";

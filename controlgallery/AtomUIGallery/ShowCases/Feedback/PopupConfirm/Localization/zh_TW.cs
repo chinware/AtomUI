@@ -58,18 +58,18 @@ internal partial class zh_TW : LanguageProvider
     public const string P2CancelTextCancel = "取消";
     public const string P2TitleDeleteTheTask = "刪除任務";
     public const string P2ContentDelete = "刪除";
-    public const string P2ContentLt = "LT";
+    public const string P2ContentLt = "左上側";
     public const string P2ContentLeft = "左側";
-    public const string P2ContentLb = "LB";
-    public const string P2ContentTl = "TL";
+    public const string P2ContentLb = "左下側";
+    public const string P2ContentTl = "上左側";
     public const string P2ContentTop = "頂部";
-    public const string P2ContentTr = "TR";
-    public const string P2ContentRt = "RT";
+    public const string P2ContentTr = "上右側";
+    public const string P2ContentRt = "右上側";
     public const string P2ContentRight = "右側";
-    public const string P2ContentRb = "RB";
-    public const string P2ContentBl = "BL";
+    public const string P2ContentRb = "右下側";
+    public const string P2ContentBl = "下左側";
     public const string P2ContentBottom = "底部";
-    public const string P2ContentBr = "BR";
+    public const string P2ContentBr = "下右側";
 
     protected override Type GetResourceKindType() => typeof(PopupConfirmShowCaseLangResourceKind);
 }

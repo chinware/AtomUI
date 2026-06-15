@@ -13,7 +13,7 @@ internal partial class zh_TW : LanguageProvider
     public const string WithIconTitle = "帶圖標通知";
     public const string WithIconDescription = "左側帶圖標的通知框。";
     public const string PlacementTitle = "彈出位置";
-    public const string PlacementDescription = "通知框可通過 placement 從視口的 top、bottom、topLeft、topRight、bottomLeft 或 bottomRight 出現。";
+    public const string PlacementDescription = "通知框可通過 placement 從視口頂部、底部、左上、右上、左下或右下出現。";
     public const string CustomizedIconTitle = "自定義圖標";
     public const string CustomizedIconDescription = "圖標可以自定義為任意圖標節點。";
     public const string ProgressTitle = "顯示進度";

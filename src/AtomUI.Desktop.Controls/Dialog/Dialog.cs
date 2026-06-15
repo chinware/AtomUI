@@ -11,7 +11,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.LogicalTree;
 using Avalonia.Metadata;
 using Avalonia.Input;
 using Avalonia.Threading;
@@ -882,9 +881,9 @@ public partial class Dialog : TemplatedControl,
 
         public void Close(Action? closedCallback = null)
         {
-            _cleanup.Dispose();
             DialogHost.Close(() =>
             {
+                _cleanup.Dispose();
                 DialogHost.Content = null;
                 closedCallback?.Invoke();
             });

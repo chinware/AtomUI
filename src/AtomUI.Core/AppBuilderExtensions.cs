@@ -17,10 +17,10 @@ public static class AppBuilderExtensions
     /// <list type="bullet">
     ///   <item>
     ///     <description>
-    ///     <b>Windows</b>：<c>Win32PlatformOptions.CompositionMode</c> 优先使用
-    ///     <c>Win32CompositionMode.LowLatencyDxgiSwapChain</c> / <c>Win32CompositionMode.RedirectionSurface</c>。
-    ///     普通 AtomUI 窗口是 opaque 窗口，避免 WinUIComposition / DirectComposition 的 no-redirection
-    ///     透明 surface 在快速 resize 时露出未绘制区域。
+    ///     <b>Windows</b>：<c>Win32PlatformOptions.CompositionMode</c> 保持
+    ///     WinUIComposition / DirectComposition 优先，确保 Tooltip、Popup 等透明 PopupRoot
+    ///     可以使用独立 Window 模式；普通 AtomUI 窗口由 Windows 专用模板完整绘制 opaque 背景，
+    ///     避免 resize 时露出未绘制区域。
     ///     </description>
     ///   </item>
     ///   <item>
@@ -51,7 +51,7 @@ public static class AppBuilderExtensions
     public static AppBuilder WithAtomUIDefaultOptions(this AppBuilder appBuilder)
     {
         return appBuilder
-            .WithWin32OpaqueFriendlyCompositionOptions()
+            .WithWin32TransparentPopupCompositionOptions()
             .With(new AvaloniaNativePlatformOptions
             {
                 RenderingMode =
@@ -74,7 +74,7 @@ public static class AppBuilderExtensions
             });
     }
 
-    private static AppBuilder WithWin32OpaqueFriendlyCompositionOptions(this AppBuilder appBuilder)
+    private static AppBuilder WithWin32TransparentPopupCompositionOptions(this AppBuilder appBuilder)
     {
         var win32OptionsType = Type.GetType("Avalonia.Win32PlatformOptions, Avalonia.Win32");
         var renderingModeType = Type.GetType("Avalonia.Win32RenderingMode, Avalonia.Win32");
@@ -93,7 +93,11 @@ public static class AppBuilderExtensions
         win32OptionsType.GetProperty("RenderingMode")?.SetValue(options,
             CreateEnumArray(renderingModeType, "AngleEgl", "Software"));
         win32OptionsType.GetProperty("CompositionMode")?.SetValue(options,
-            CreateEnumArray(compositionModeType, "LowLatencyDxgiSwapChain", "RedirectionSurface"));
+            CreateEnumArray(
+                compositionModeType,
+                "WinUIComposition",
+                "DirectComposition",
+                "RedirectionSurface"));
 
         var withMethod = typeof(AppBuilder).GetMethods()
                                            .Single(method =>

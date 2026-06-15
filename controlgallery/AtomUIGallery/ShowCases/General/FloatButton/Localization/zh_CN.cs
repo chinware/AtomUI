@@ -23,7 +23,7 @@ internal partial class zh_CN : LanguageProvider
     public const string ControlledModeTitle = "受控模式";
     public const string ControlledModeDescription = "通过 open 将组件设置为受控模式，需要与 trigger 一起使用。";
     public const string PlacementTitle = "弹出位置";
-    public const string PlacementDescription = "自定义动画弹出位置，提供 top、right、bottom、left 四种预设位置，默认是 top。";
+    public const string PlacementDescription = "自定义动画弹出位置，提供上、右、下、左四种预设位置，默认在上方。";
     public const string BadgeTitle = "徽标";
     public const string BadgeDescription = "带 Badge 的 FloatButton。";
     public const string BackTopTitle = "回到顶部";

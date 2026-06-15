@@ -2,6 +2,8 @@ using System.Reflection;
 using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media.Transformation;
@@ -116,6 +118,107 @@ public class DialogMotionAnchorTests
         }
     }
 
+    [Fact]
+    public void Modal_Dialog_Without_PlacementTarget_Uses_Gentle_Close_Fade()
+    {
+        var trigger = new AtomUI.Desktop.Controls.Button
+        {
+            Width   = 80,
+            Height  = 32,
+            Content = "Open"
+        };
+        var window = CreateWindow(trigger, out var overlayPanel);
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            Content         = new AtomUI.Desktop.Controls.TextBlock { Text = "Dialog" },
+            IsModal         = true,
+            IsMotionEnabled = true,
+            HostWidth       = 160,
+            HostHeight      = 100
+        };
+
+        overlayPanel.Children.Add(dialog);
+
+        try
+        {
+            var closingState = CaptureModalClosingState(dialog, window);
+
+            closingState.HostTransform.IsIdentity.ShouldBeTrue(
+                "a modal dialog without an explicit PlacementTarget should fade out as one layer instead of collapsing toward a fallback host.");
+            closingState.HostOpacityTransition.Easing.ShouldBeOfType<CubicEaseIn>(
+                "close opacity should start gently so the dialog frame does not disappear before the content.");
+            closingState.MaskOpacityTransition.Easing.ShouldBeOfType<CubicEaseIn>(
+                "the modal mask should use the same close curve as the host to avoid an early background drop.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Dialog_Close_Keeps_Footer_Buttons_Until_Overlay_Fade_Finishes()
+    {
+        var trigger = new AtomUI.Desktop.Controls.Button
+        {
+            Width   = 80,
+            Height  = 32,
+            Content = "Open"
+        };
+        var window = CreateWindow(trigger, out var overlayPanel);
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            Content         = new AtomUI.Desktop.Controls.TextBlock { Text = "Dialog" },
+            IsModal         = false,
+            IsMotionEnabled = true,
+            StandardButtons = DialogStandardButton.Ok,
+            HostWidth       = 160,
+            HostHeight      = 100
+        };
+
+        overlayPanel.Children.Add(dialog);
+
+        try
+        {
+            var openTask = dialog.OpenAsync(TestContext.Current.CancellationToken);
+            openTask.IsCompleted.ShouldBeTrue("non-modal Dialog.OpenAsync should finish after scheduling the opening motion.");
+            Dispatcher.UIThread.RunJobs();
+
+            var overlayHost = window.GetVisualDescendants()
+                                    .OfType<OverlayPopupHost>()
+                                    .Single();
+            var buttonBox = overlayHost.GetVisualDescendants()
+                                       .OfType<DialogButtonBox>()
+                                       .Single();
+            var buttonCount  = CountDialogButtons(buttonBox);
+            var hostHeight   = overlayHost.Bounds.Height;
+            var footerHeight = buttonBox.Bounds.Height;
+
+            buttonCount.ShouldBe(1);
+            hostHeight.ShouldBeGreaterThan(0);
+            footerHeight.ShouldBeGreaterThan(0);
+
+            SetOverlayDialogHostAnimationDuration(window, TimeSpan.Zero);
+            dialog.Done();
+
+            CountDialogButtons(buttonBox).ShouldBe(
+                buttonCount,
+                "closing should keep footer buttons in the visual tree until the popup is actually closed.");
+            overlayHost.Bounds.Height.ShouldBe(
+                hostHeight,
+                "closing should not remeasure the dialog to a shorter height before the fade completes.");
+            buttonBox.Bounds.Height.ShouldBe(
+                footerHeight,
+                "closing should not collapse the footer before the fade completes.");
+
+            Dispatcher.UIThread.RunJobs();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static AtomUI.Desktop.Controls.Dialog CreateStaticDialog(
         Control placementTarget,
         DialogOptions? options)
@@ -156,6 +259,68 @@ public class DialogMotionAnchorTests
 
         openingTransform.ShouldNotBeNull();
         return openingTransform;
+    }
+
+    private static (
+        TransformOperations HostTransform,
+        DoubleTransition HostOpacityTransition,
+        DoubleTransition MaskOpacityTransition) CaptureModalClosingState(
+            AtomUI.Desktop.Controls.Dialog dialog,
+            AvaloniaWindow window)
+    {
+        var openTask = dialog.OpenAsync();
+        openTask.IsCompleted.ShouldBeFalse("modal Dialog.OpenAsync should wait for the close animation.");
+
+        Dispatcher.UIThread.RunJobs();
+
+        var overlayHost = window.GetVisualDescendants()
+                                .OfType<OverlayPopupHost>()
+                                .Single();
+        var mask = window.GetVisualDescendants()
+                         .Single(x => x.GetType().Name == "OverlayDialogMask");
+
+        SetOverlayDialogHostAnimationDuration(window, TimeSpan.Zero);
+        dialog.Done();
+
+        var hostTransform          = overlayHost.RenderTransform.ShouldBeOfType<TransformOperations>();
+        var hostOpacityTransition  = GetSingleOpacityTransition(overlayHost);
+        var maskOpacityTransition  = GetSingleOpacityTransition(mask);
+
+        Dispatcher.UIThread.RunJobs();
+        openTask.GetAwaiter().GetResult();
+
+        return (hostTransform, hostOpacityTransition, maskOpacityTransition);
+    }
+
+    private static int CountDialogButtons(Visual visual)
+    {
+        return visual.GetVisualDescendants()
+                     .OfType<DialogButton>()
+                     .Count();
+    }
+
+    private static DoubleTransition GetSingleOpacityTransition(object control)
+    {
+        var transitionsProperty = control.GetType().GetProperty(
+            "Transitions",
+            BindingFlags.Instance | BindingFlags.Public);
+
+        transitionsProperty.ShouldNotBeNull();
+        var transitions = (Transitions?)transitionsProperty.GetValue(control);
+        transitions.ShouldNotBeNull();
+        return transitions.OfType<DoubleTransition>().Single();
+    }
+
+    private static void SetOverlayDialogHostAnimationDuration(Visual searchRoot, TimeSpan duration)
+    {
+        var overlayDialogHost = searchRoot.GetVisualDescendants()
+                                          .Single(x => x.GetType().Name == "OverlayDialogHost");
+        var property = overlayDialogHost.GetType().GetProperty(
+            "AnimationDuration",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        property.ShouldNotBeNull();
+        property.SetValue(overlayDialogHost, duration);
     }
 
     private static AvaloniaWindow CreateWindow(Control content, out ScopeAwareOverlayLayerPanel overlayPanel)

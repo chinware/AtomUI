@@ -36,18 +36,24 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
-    public void AtomUI_Defaults_Use_Opaque_Friendly_Windows_Composition()
+    public void AtomUI_Defaults_Prefer_Windows_Composition_That_Supports_Transparent_Popup_Windows()
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Core/AppBuilderExtensions.cs"));
 
-        source.ShouldContain("WithWin32OpaqueFriendlyCompositionOptions");
+        source.ShouldContain("WithWin32TransparentPopupCompositionOptions");
         source.ShouldContain("Avalonia.Win32PlatformOptions, Avalonia.Win32");
         source.ShouldContain("Avalonia.Win32RenderingMode, Avalonia.Win32");
         source.ShouldContain("Avalonia.Win32CompositionMode, Avalonia.Win32");
         source.ShouldContain("AngleEgl");
         source.ShouldContain("Software");
-        source.ShouldContain("LowLatencyDxgiSwapChain");
+        source.ShouldContain("WinUIComposition");
+        source.ShouldContain("DirectComposition");
         source.ShouldContain("RedirectionSurface");
+        source.ShouldNotContain("LowLatencyDxgiSwapChain");
+        source.IndexOf("\"WinUIComposition\"", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("\"DirectComposition\"", StringComparison.Ordinal));
+        source.IndexOf("\"DirectComposition\"", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("\"RedirectionSurface\"", StringComparison.Ordinal));
     }
 
     [Fact]
