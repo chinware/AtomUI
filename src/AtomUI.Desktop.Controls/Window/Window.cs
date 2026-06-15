@@ -12,6 +12,7 @@ using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
+using Avalonia.Platform;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -265,6 +266,7 @@ public class Window : AvaloniaWindow,
         new HashSet<AvaloniaProperty> { FrameShadowThicknessProperty };
     private static readonly IDataTemplate s_windowIconLogoTemplate =
         new FuncDataTemplate<WindowIcon>((icon, _) => CreateWindowIconLogo(icon));
+    private const double LinuxInitialScreenMargin = 48;
     
     private Thickness _titleBarOffsetMargin;
     internal Thickness TitleBarOffsetMargin
@@ -330,6 +332,7 @@ public class Window : AvaloniaWindow,
     private PointerPressedEventArgs? _lastMousePressedEventArgs;
     private bool _isDragging;
     private bool _wasFullScreen;
+    private bool _isLinuxInitialShowStatePrepared;
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
@@ -358,6 +361,178 @@ public class Window : AvaloniaWindow,
                 s_clickThroughShadowExtraAffectsProperties,
                 () => FrameShadowThickness);
         }
+    }
+
+    public override void Show()
+    {
+        var restoreLinuxStartupLocation = PrepareLinuxInitialShowState();
+        try
+        {
+            base.Show();
+        }
+        finally
+        {
+            restoreLinuxStartupLocation?.Invoke();
+        }
+    }
+
+    private Action? PrepareLinuxInitialShowState()
+    {
+        if (_isLinuxInitialShowStatePrepared || !OperatingSystem.IsLinux() || IsVisible || PlatformImpl is null)
+        {
+            return null;
+        }
+
+        _isLinuxInitialShowStatePrepared = true;
+        EnsureInitialized();
+        ApplyStyling();
+        EnsureMinSizeForDecorations();
+        var screen     = Screens.ScreenFromPoint(Position) ?? Screens.Primary;
+        var clientSize = SynchronizeLinuxInitialClientSize(screen);
+        if (clientSize is null)
+        {
+            return null;
+        }
+
+        var originalStartupLocation = WindowStartupLocation;
+        if (TryGetLinuxInitialStartupPosition(clientSize.Value, screen, out var position))
+        {
+            SetCurrentValue(WindowStartupLocationProperty, WindowStartupLocation.Manual);
+            Position = position;
+            this.ConfigureLinuxInitialWindowGeometry(position, clientSize.Value, screen?.Scaling ?? 1);
+            return () => SetCurrentValue(WindowStartupLocationProperty, originalStartupLocation);
+        }
+
+        this.ConfigureLinuxInitialWindowGeometry(Position, clientSize.Value, screen?.Scaling ?? 1);
+        return null;
+    }
+
+    private Size? SynchronizeLinuxInitialClientSize(Screen? screen)
+    {
+        if (SizeToContent != SizeToContent.Manual)
+        {
+            return null;
+        }
+
+        if (WindowState is WindowState.Minimized or WindowState.Maximized or WindowState.FullScreen)
+        {
+            return null;
+        }
+
+        if (!TryGetExplicitInitialClientSize(out var clientSize))
+        {
+            return null;
+        }
+
+        clientSize = ConstrainLinuxInitialClientSizeToScreen(clientSize, screen);
+
+        if (!MathUtils.AreClose(Width, clientSize.Width))
+        {
+            Width = clientSize.Width;
+        }
+
+        if (!MathUtils.AreClose(Height, clientSize.Height))
+        {
+            Height = clientSize.Height;
+        }
+
+        if (ClientSize != clientSize)
+        {
+            ClientSize = clientSize;
+        }
+
+        return clientSize;
+    }
+
+    private Size ConstrainLinuxInitialClientSizeToScreen(Size clientSize, Screen? screen)
+    {
+        if (screen is null || screen.Scaling <= 0)
+        {
+            return clientSize;
+        }
+
+        var workingArea = screen.WorkingArea;
+        var maxWidth    = Math.Max(1, workingArea.Width / screen.Scaling - LinuxInitialScreenMargin * 2);
+        var maxHeight   = Math.Max(1, workingArea.Height / screen.Scaling - LinuxInitialScreenMargin * 2);
+
+        return new Size(
+            ClampToWindowSizeConstraint(clientSize.Width, MinWidth, Math.Min(MaxWidth, maxWidth)),
+            ClampToWindowSizeConstraint(clientSize.Height, MinHeight, Math.Min(MaxHeight, maxHeight)));
+    }
+
+    private bool TryGetLinuxInitialStartupPosition(Size clientSize, Screen? screen, out PixelPoint position)
+    {
+        position = default;
+
+        if (WindowStartupLocation is not (WindowStartupLocation.CenterScreen or WindowStartupLocation.CenterOwner))
+        {
+            return false;
+        }
+
+        if (screen is null)
+        {
+            return false;
+        }
+
+        var rect      = new PixelRect(PixelSize.FromSize(clientSize, screen.Scaling));
+        var childRect = screen.WorkingArea.CenterRect(rect);
+        if (Screens.ScreenFromPoint(childRect.Position) is null)
+        {
+            childRect = ApplyScreenConstraint(screen, childRect, rect);
+        }
+
+        position = childRect.Position;
+        return true;
+    }
+
+    private static PixelRect ApplyScreenConstraint(Screen screen, PixelRect childRect, PixelRect rect)
+    {
+        var constraint = screen.WorkingArea;
+        var maxX       = constraint.Right - rect.Width;
+        var maxY       = constraint.Bottom - rect.Height;
+
+        if (constraint.X <= maxX)
+        {
+            childRect = childRect.WithX(Math.Clamp(childRect.X, constraint.X, maxX));
+        }
+
+        if (constraint.Y <= maxY)
+        {
+            childRect = childRect.WithY(Math.Clamp(childRect.Y, constraint.Y, maxY));
+        }
+
+        return childRect;
+    }
+
+    private bool TryGetExplicitInitialClientSize(out Size clientSize)
+    {
+        clientSize = default;
+
+        if (!IsUsableExplicitSize(Width) || !IsUsableExplicitSize(Height))
+        {
+            return false;
+        }
+
+        clientSize = new Size(
+            ClampToWindowSizeConstraint(Width, MinWidth, MaxWidth),
+            ClampToWindowSizeConstraint(Height, MinHeight, MaxHeight));
+        return true;
+    }
+
+    private static bool IsUsableExplicitSize(double value)
+    {
+        return double.IsFinite(value) && value > 0;
+    }
+
+    private static double ClampToWindowSizeConstraint(double value, double min, double max)
+    {
+        var effectiveMin = double.IsFinite(min) ? min : 0;
+        var effectiveMax = double.IsFinite(max) ? max : double.PositiveInfinity;
+        if (effectiveMax < effectiveMin)
+        {
+            effectiveMax = effectiveMin;
+        }
+        return Math.Min(Math.Max(value, effectiveMin), effectiveMax);
     }
     
     private static void ConfigureOsType()

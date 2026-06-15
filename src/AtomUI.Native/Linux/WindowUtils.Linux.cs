@@ -166,6 +166,68 @@ internal static class WindowUtilsLinux
         return WindowUtilsInterop.xcb_get_geometry_reply(connection, geomCookie, IntPtr.Zero);
     }
 
+    public static void ConfigureInitialWindowGeometry(
+        IntPtr handle,
+        int x,
+        int y,
+        int width,
+        int height,
+        int minWidth,
+        int minHeight,
+        int? maxWidth,
+        int? maxHeight)
+    {
+        if (handle == IntPtr.Zero || width <= 0 || height <= 0)
+        {
+            return;
+        }
+
+        var display = WindowUtilsInterop.XOpenDisplay(IntPtr.Zero);
+        if (display == IntPtr.Zero)
+        {
+            return;
+        }
+
+        try
+        {
+            var flags = WindowUtilsInterop.XSizeHintsFlags.USPosition
+                        | WindowUtilsInterop.XSizeHintsFlags.USSize
+                        | WindowUtilsInterop.XSizeHintsFlags.PPosition
+                        | WindowUtilsInterop.XSizeHintsFlags.PSize
+                        | WindowUtilsInterop.XSizeHintsFlags.PMinSize
+                        | WindowUtilsInterop.XSizeHintsFlags.PResizeInc;
+
+            var hints = new WindowUtilsInterop.XSizeHints
+            {
+                X         = x,
+                Y         = y,
+                Width     = width,
+                Height    = height,
+                MinWidth  = Math.Max(1, minWidth),
+                MinHeight = Math.Max(1, minHeight),
+                WidthInc  = 1,
+                HeightInc = 1
+            };
+
+            if (maxWidth is { } maxW && maxHeight is { } maxH)
+            {
+                flags |= WindowUtilsInterop.XSizeHintsFlags.PMaxSize;
+                hints.MaxWidth  = Math.Max(hints.MinWidth, maxW);
+                hints.MaxHeight = Math.Max(hints.MinHeight, maxH);
+            }
+
+            hints.Flags = new IntPtr((int)flags);
+
+            WindowUtilsInterop.XSetWMNormalHints(display, handle, ref hints);
+            WindowUtilsInterop.XMoveResizeWindow(display, handle, x, y, width, height);
+            WindowUtilsInterop.XFlush(display);
+        }
+        finally
+        {
+            WindowUtilsInterop.XCloseDisplay(display);
+        }
+    }
+
     /// <summary>
     /// 获取 Linux 系统默认的标题栏高度。
     /// 使用 Avalonia 的 WindowDecorationMargin 属性获取标题栏高度。

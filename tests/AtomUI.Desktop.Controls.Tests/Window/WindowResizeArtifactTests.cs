@@ -10,6 +10,74 @@ namespace AtomUI.Desktop.Controls.Tests.Window;
 public class WindowResizeArtifactTests
 {
     [Fact]
+    public void Window_Prepares_Linux_Initial_Client_Size_Before_Show()
+    {
+        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+
+        source.ShouldContain("public override void Show()");
+        source.ShouldContain("PrepareLinuxInitialShowState();");
+        source.ShouldContain("base.Show();");
+        source.IndexOf("PrepareLinuxInitialShowState();", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("base.Show();", StringComparison.Ordinal));
+        source.ShouldContain("OperatingSystem.IsLinux()");
+        source.ShouldContain("SizeToContent != SizeToContent.Manual");
+        source.ShouldContain("WindowState is WindowState.Minimized or WindowState.Maximized or WindowState.FullScreen");
+        source.ShouldContain("ClientSize = clientSize;");
+        source.ShouldContain("Width = clientSize.Width;");
+        source.ShouldContain("Height = clientSize.Height;");
+        source.ShouldContain("TryGetLinuxInitialStartupPosition");
+        source.ShouldContain("WindowStartupLocation.Manual");
+        source.ShouldContain("ConfigureLinuxInitialWindowGeometry");
+        source.ShouldContain("_isLinuxInitialShowStatePrepared");
+    }
+
+    [Fact]
+    public void Linux_Initial_Geometry_Updates_X11_Size_Hints_Before_Map()
+    {
+        var extensionSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
+        var linuxSource     = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/WindowUtils.Linux.cs"));
+        var interopSource   = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/WindowUtils.Interop.cs"));
+
+        extensionSource.ShouldContain("ConfigureLinuxInitialWindowGeometry");
+        extensionSource.ShouldContain("WindowUtilsLinux.ConfigureInitialWindowGeometry");
+
+        linuxSource.ShouldContain("ConfigureInitialWindowGeometry");
+        linuxSource.ShouldContain("XSetWMNormalHints");
+        linuxSource.ShouldContain("XMoveResizeWindow");
+        linuxSource.IndexOf("XSetWMNormalHints", StringComparison.Ordinal)
+                   .ShouldBeLessThan(linuxSource.IndexOf("XMoveResizeWindow", StringComparison.Ordinal));
+
+        interopSource.ShouldContain("USPosition");
+        interopSource.ShouldContain("USSize");
+        interopSource.ShouldContain("PSize");
+    }
+
+    [Fact]
+    public void Linux_NonCsd_Window_Template_Clips_Content_To_Window_CornerRadius()
+    {
+        var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
+        XNamespace av = "https://github.com/avaloniaui";
+
+        var linuxTemplateStyle = document.Descendants(av + "Style")
+                                         .Single(element =>
+                                             (string?)element.Attribute("Selector") ==
+                                             "^[OsType=Linux][IsCsdEnabled=False]" &&
+                                             element.Descendants(av + "ControlTemplate").Any());
+
+        var contentClip = linuxTemplateStyle.Descendants(av + "Border")
+                                            .Single(element =>
+                                                (string?)element.Attribute("Name") == "WindowContentClip");
+
+        contentClip.Attribute("CornerRadius").ShouldNotBeNull().Value.ShouldBe("{TemplateBinding CornerRadius}");
+        contentClip.Attribute("ClipToBounds").ShouldNotBeNull().Value.ShouldBe("True");
+        contentClip.Attribute("Margin").ShouldNotBeNull().Value.ShouldBe("{TemplateBinding FrameShadowThickness}");
+
+        var dockPanel = contentClip.Elements(av + "DockPanel").Single();
+        dockPanel.Attribute("LastChildFill").ShouldNotBeNull().Value.ShouldBe("True");
+        dockPanel.Attribute("Margin").ShouldBeNull();
+    }
+
+    [Fact]
     public void Windows_Window_Template_Paints_Root_Background_And_Uses_Opaque_Transparency()
     {
         var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
