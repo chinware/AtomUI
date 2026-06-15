@@ -21,10 +21,6 @@ internal static class WindowExtensions
         {
             WindowUtilsMacOS.SetWindowIgnoreMouseEventsMacOS(handle.Value, flag);
         }
-        else if (OperatingSystem.IsLinux())
-        {
-            WindowUtilsLinux.SetWindowIgnoreMouseEventsLinux(handle.Value, flag);
-        }
         else
         {
             throw new PlatformNotSupportedException($"Unsupported platform: {RuntimeInformation.OSDescription}");
@@ -42,10 +38,6 @@ internal static class WindowExtensions
         if (OperatingSystem.IsMacOS())
         {
             return WindowUtilsMacOS.IsWindowIgnoreMouseEventsMacOS(handle.Value);
-        }
-        if (OperatingSystem.IsLinux())
-        {
-            return WindowUtilsLinux.IsWindowIgnoreMouseEventsLinux(handle.Value);
         }
         throw new PlatformNotSupportedException($"Unsupported platform: {RuntimeInformation.OSDescription}");
     }

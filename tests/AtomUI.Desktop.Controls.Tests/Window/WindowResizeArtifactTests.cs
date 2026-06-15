@@ -99,6 +99,29 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
+    public void Native_Linux_Window_Utilities_Do_Not_Keep_Legacy_Ignore_Mouse_Shape_Query_Code()
+    {
+        var extensionSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
+        var linuxSource     = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/WindowUtils.Linux.cs"));
+        var interopSource   = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/WindowUtils.Interop.cs"));
+
+        extensionSource.ShouldNotContain("SetWindowIgnoreMouseEventsLinux");
+        extensionSource.ShouldNotContain("IsWindowIgnoreMouseEventsLinux");
+        linuxSource.ShouldNotContain("SetWindowIgnoreMouseEventsLinux");
+        linuxSource.ShouldNotContain("IsWindowIgnoreMouseEventsLinux");
+        linuxSource.ShouldNotContain("GetWindowGeometry");
+
+        interopSource.ShouldNotContain("xcb_get_geometry");
+        interopSource.ShouldNotContain("xcb_get_geometry_reply");
+        interopSource.ShouldNotContain("xcb_shape_get_rectangles");
+        interopSource.ShouldNotContain("xcb_shape_get_rectangles_reply");
+        interopSource.ShouldNotContain("xcb_shape_get_rectangles_rectangles_length");
+        interopSource.ShouldNotContain("xcb_get_geometry_reply_t");
+        interopSource.ShouldNotContain("xcb_shape_get_rectangles_reply_t");
+        interopSource.ShouldNotContain("xcb_shape_query_version_reply_t");
+    }
+
+    [Fact]
     public void Linux_NonCsd_Window_Template_Clips_Content_To_Window_CornerRadius()
     {
         var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));

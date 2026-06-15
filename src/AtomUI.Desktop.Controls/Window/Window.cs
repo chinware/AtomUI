@@ -262,8 +262,6 @@ public class Window : AvaloniaWindow,
     internal static readonly StyledProperty<Thickness> FrameShadowThicknessProperty =
         AvaloniaProperty.Register<Window, Thickness>(nameof(FrameShadowThickness));
 
-    private static readonly ISet<AvaloniaProperty> s_clickThroughShadowExtraAffectsProperties =
-        new HashSet<AvaloniaProperty> { FrameShadowThicknessProperty };
     private static readonly IDataTemplate s_windowIconLogoTemplate =
         new FuncDataTemplate<WindowIcon>((icon, _) => CreateWindowIconLogo(icon));
     private const double LinuxInitialScreenMargin = 48;
@@ -357,9 +355,6 @@ public class Window : AvaloniaWindow,
         ConfigureCsdStatus();
         if (OperatingSystem.IsLinux())
         {
-            this.AttachClickThroughShadow(
-                s_clickThroughShadowExtraAffectsProperties,
-                () => FrameShadowThickness);
             ScalingChanged += HandleLinuxScalingChanged;
         }
     }
@@ -387,6 +382,7 @@ public class Window : AvaloniaWindow,
         _isLinuxInitialShowStatePrepared = true;
         EnsureInitialized();
         ApplyStyling();
+        EnsureLinuxResizeMinimumSize();
         ApplyLinuxX11CsdFrameExtents();
         var screen     = Screens.ScreenFromPoint(Position) ?? Screens.Primary;
         var clientSize = SynchronizeLinuxInitialClientSize(screen);
@@ -718,6 +714,7 @@ public class Window : AvaloniaWindow,
     private void HandleTitleBarSizeChanged(object? sender, SizeChangedEventArgs e)
     {
         SetCurrentValue(ExtendClientAreaTitleBarHeightHintProperty, e.NewSize.Height);
+        EnsureLinuxResizeMinimumSize();
     }
 
     private void HandleTitleBarPointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -824,6 +821,7 @@ public class Window : AvaloniaWindow,
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
+        EnsureLinuxResizeMinimumSize();
         ApplyLinuxX11CsdFrameExtents();
         ApplyDefaultLogoIfNeeded();
         if (OperatingSystem.IsMacOS())
@@ -952,8 +950,10 @@ public class Window : AvaloniaWindow,
         if (OperatingSystem.IsLinux() &&
             (change.Property == WindowStateProperty ||
              change.Property == FrameShadowThicknessProperty ||
+             change.Property == TitleBarHeightProperty ||
              change.Property == IsCsdEnabledProperty))
         {
+            EnsureLinuxResizeMinimumSize();
             ApplyLinuxX11CsdFrameExtents();
         }
         if (OperatingSystem.IsWindows() && change.Property == WindowStateProperty)
@@ -1040,6 +1040,44 @@ public class Window : AvaloniaWindow,
 
         var frameExtents = WindowState is WindowState.Normal ? FrameShadowThickness : default;
         this.SetLinuxX11CsdFrameExtents(frameExtents);
+    }
+
+    private void EnsureLinuxResizeMinimumSize()
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            return;
+        }
+
+        var shadow       = FrameShadowThickness;
+        var cornerRadius = CornerRadius;
+        var maxCorner = Math.Max(
+            Math.Max(cornerRadius.TopLeft, cornerRadius.TopRight),
+            Math.Max(cornerRadius.BottomLeft, cornerRadius.BottomRight));
+
+        const double frameBorder = 1;
+
+        var horizontalChrome = shadow.Left + shadow.Right + frameBorder * 2;
+        var titleBarWidth    = _titleBar?.DesiredSize.Width ?? 0;
+        var minResizeWidth = Math.Max(
+            horizontalChrome + maxCorner * 2,
+            horizontalChrome + titleBarWidth);
+
+        var titleBarHeight = Math.Max(_titleBar?.DesiredSize.Height ?? 0, TitleBarHeight);
+        var verticalChrome = shadow.Top + shadow.Bottom + frameBorder * 2;
+        var minResizeHeight = Math.Max(
+            verticalChrome + titleBarHeight + maxCorner * 2,
+            verticalChrome + titleBarHeight * 3);
+
+        if (MinWidth < minResizeWidth)
+        {
+            MinWidth = minResizeWidth;
+        }
+
+        if (MinHeight < minResizeHeight)
+        {
+            MinHeight = minResizeHeight;
+        }
     }
 
     private void ConfigureCustomResizerVisible()
