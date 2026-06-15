@@ -4,8 +4,8 @@
         <Title>AtomUI</Title>
         <Author>Qinware Technologies Ltd.</Author>
         <Authors>$(Author)</Authors>
-        <Description>AtomUI is an implementation of AntDesigin based on .NET technology, and is committed to bringing AntDesign's excellent and efficient design language and experience to the Avalonia/.NET cross-platform desktop software development field.</Description>
-        <PackageTags>avalonia;AntDesigin;UI;Control Library</PackageTags>
+        <Description>AtomUI is an Ant Design 6 component system for Avalonia/.NET desktop applications, including themed controls, design tokens, icons, native window integration and optional DataGrid and ColorPicker packages.</Description>
+        <PackageTags>avalonia;AntDesign;UI;Control Library;Desktop;XAML</PackageTags>
         <ProjectUrl>https://qinware.com</ProjectUrl>
         <RepositoryUrl>https://github.com/AtomUI/AtomUI</RepositoryUrl>
         <Company>Qinware Technologies Ltd.</Company>
