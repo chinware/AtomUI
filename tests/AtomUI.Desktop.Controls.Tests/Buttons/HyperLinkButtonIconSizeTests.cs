@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using AtomUI.Controls;
 using Avalonia.Controls;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -42,6 +43,20 @@ public class HyperLinkButtonIconSizeTests
         source.ShouldContain("Property=\"IconWidth\"");
         source.ShouldContain("Property=\"IconHeight\"");
         source.ShouldContain("Value=\"{atom:ButtonTokenResource OnlyIconSize}\"");
+    }
+
+    [Fact]
+    public void HyperLinkButton_Template_Proxies_Icon_Color_Through_Foreground()
+    {
+        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Buttons/Themes/HyperLinkButtonTheme.axaml"));
+
+        source.ShouldContain("IconBrush=\"{TemplateBinding Foreground}\"");
+        source.ShouldContain("FillBrush=\"{TemplateBinding Foreground}\"");
+        source.ShouldContain("StrokeBrush=\"{TemplateBinding Foreground}\"");
+        source.ShouldNotContain("<Setter Property=\"IconBrush\"");
+        source.ShouldNotContain("<Setter Property=\"FillBrush\"");
+        source.ShouldNotContain("<Setter Property=\"StrokeBrush\"");
+        source.ShouldNotContain("SolidColorBrushTransition Property=\"IconBrush\"");
     }
 
     [Fact]
@@ -84,6 +99,59 @@ public class HyperLinkButtonIconSizeTests
             buttonIcon.Height.ShouldBe(24d);
             loadingIcon.Width.ShouldBe(22d);
             loadingIcon.Height.ShouldBe(24d);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void HyperLinkButton_Template_Icon_Color_Follows_Foreground()
+    {
+        var firstBrush  = new SolidColorBrush(Colors.Red);
+        var secondBrush = new SolidColorBrush(Colors.Blue);
+        var button = new HyperLinkButton
+        {
+            Width      = 40,
+            Height     = 40,
+            IconWidth  = 16,
+            IconHeight = 16,
+            Icon            = new PathIcon { Data = Geometry.Parse("M0,0 L10,0 L10,10 Z") },
+            IsLoading       = true,
+            IsMotionEnabled = false,
+            Foreground      = firstBrush
+        };
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 160,
+            Height  = 120,
+            Content = button
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var buttonIcon = button.GetVisualDescendants()
+                                   .OfType<IconPresenter>()
+                                   .Single(x => x.Name == "PART_ButtonIcon");
+            var loadingIcon = button.GetVisualDescendants()
+                                    .OfType<Icon>()
+                                    .Single(x => x.Name == "PART_LoadingIcon");
+
+            buttonIcon.IconBrush.ShouldBeSameAs(firstBrush);
+            loadingIcon.FillBrush.ShouldBeSameAs(firstBrush);
+            loadingIcon.StrokeBrush.ShouldBeSameAs(firstBrush);
+
+            button.Foreground = secondBrush;
+            Dispatcher.UIThread.RunJobs();
+
+            buttonIcon.IconBrush.ShouldBeSameAs(secondBrush);
+            loadingIcon.FillBrush.ShouldBeSameAs(secondBrush);
+            loadingIcon.StrokeBrush.ShouldBeSameAs(secondBrush);
         }
         finally
         {
