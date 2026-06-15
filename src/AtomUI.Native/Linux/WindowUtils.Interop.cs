@@ -30,6 +30,9 @@ internal static class WindowUtilsInterop
     // Atom 常量
     internal const uint XCB_ATOM_CARDINAL = 6;
 
+    // XChangeProperty mode
+    internal const int PropModeReplace = 0;
+
     // 枚举类型（对应C中的typedef enum）
     internal enum xcb_shape_op_t : byte
     {
@@ -170,6 +173,20 @@ internal static class WindowUtilsInterop
 
     [DllImport("libX11.so.6", EntryPoint = "XSetWMNormalHints")]
     internal static extern int XSetWMNormalHints(IntPtr display, IntPtr window, ref XSizeHints hints);
+
+    [DllImport("libX11.so.6", EntryPoint = "XInternAtom", CharSet = CharSet.Ansi)]
+    internal static extern IntPtr XInternAtom(IntPtr display, string atomName, bool onlyIfExists);
+
+    [DllImport("libX11.so.6", EntryPoint = "XChangeProperty")]
+    internal static extern int XChangeProperty(
+        IntPtr display,
+        IntPtr window,
+        IntPtr property,
+        IntPtr type,
+        int format,
+        int mode,
+        IntPtr[] data,
+        int elementCount);
 
     #endregion
         

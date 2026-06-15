@@ -201,6 +201,29 @@ internal static class WindowExtensions
             maxHeight);
     }
 
+    [SupportedOSPlatform("linux")]
+    public static void SetLinuxX11CsdFrameExtents(this Window window, Thickness frameExtents)
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            return;
+        }
+
+        var handle = window.TryGetPlatformHandle();
+        if (handle is null || handle.HandleDescriptor != "XID")
+        {
+            return;
+        }
+
+        var scaling = window.RenderScaling <= 0 ? 1.0 : window.RenderScaling;
+        WindowUtilsLinux.SetX11CsdFrameExtents(
+            handle.Handle,
+            ToPixelMargin(frameExtents.Left, scaling),
+            ToPixelMargin(frameExtents.Top, scaling),
+            ToPixelMargin(frameExtents.Right, scaling),
+            ToPixelMargin(frameExtents.Bottom, scaling));
+    }
+
     private static int ToPixelLength(double value, double scaling)
     {
         if (!double.IsFinite(value) || value <= 0)
@@ -217,5 +240,14 @@ internal static class WindowExtensions
             return null;
         }
         return ToPixelLength(value, scaling);
+    }
+
+    private static int ToPixelMargin(double value, double scaling)
+    {
+        if (!double.IsFinite(value) || value <= 0)
+        {
+            return 0;
+        }
+        return Math.Max(0, (int)Math.Ceiling(value * scaling));
     }
 }

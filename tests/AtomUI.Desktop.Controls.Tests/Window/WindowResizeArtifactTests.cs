@@ -53,6 +53,52 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
+    public void Linux_Client_Drawn_Shadow_Publishes_X11_Csd_Frame_Extents()
+    {
+        var windowSource    = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var extensionSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
+        var linuxSource     = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/WindowUtils.Linux.cs"));
+        var interopSource   = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/WindowUtils.Interop.cs"));
+
+        windowSource.ShouldContain("ScalingChanged += HandleLinuxScalingChanged;");
+        windowSource.ShouldContain("ApplyLinuxX11CsdFrameExtents();");
+        windowSource.ShouldContain("WindowState is WindowState.Normal ? FrameShadowThickness : default");
+        windowSource.ShouldContain("this.SetLinuxX11CsdFrameExtents(frameExtents);");
+        windowSource.ShouldNotContain("EnsureMinSizeForDecorations");
+        windowSource.IndexOf("PrepareLinuxInitialShowState();", StringComparison.Ordinal)
+                    .ShouldBeLessThan(windowSource.IndexOf("base.Show();", StringComparison.Ordinal));
+
+        extensionSource.ShouldContain("SetLinuxX11CsdFrameExtents");
+        extensionSource.ShouldContain("handle.HandleDescriptor != \"XID\"");
+        extensionSource.ShouldContain("ToPixelMargin(frameExtents.Left, scaling)");
+        extensionSource.ShouldContain("ToPixelMargin(frameExtents.Top, scaling)");
+        extensionSource.ShouldContain("ToPixelMargin(frameExtents.Right, scaling)");
+        extensionSource.ShouldContain("ToPixelMargin(frameExtents.Bottom, scaling)");
+
+        linuxSource.ShouldContain("X11CsdFrameExtentsPropertyName = \"_GTK_FRAME_EXTENTS\"");
+        linuxSource.ShouldContain("SetX11CsdFrameExtents");
+        linuxSource.ShouldContain("Mutter and KWin");
+        linuxSource.ShouldContain("left, right, top, bottom");
+        linuxSource.ShouldContain("XInternAtom");
+        linuxSource.ShouldContain("XChangeProperty");
+        linuxSource.IndexOf("ToCardinal(left)", StringComparison.Ordinal)
+                   .ShouldBeLessThan(linuxSource.IndexOf("ToCardinal(right)", StringComparison.Ordinal));
+        linuxSource.IndexOf("ToCardinal(right)", StringComparison.Ordinal)
+                   .ShouldBeLessThan(linuxSource.IndexOf("ToCardinal(top)", StringComparison.Ordinal));
+        linuxSource.IndexOf("ToCardinal(top)", StringComparison.Ordinal)
+                   .ShouldBeLessThan(linuxSource.IndexOf("ToCardinal(bottom)", StringComparison.Ordinal));
+
+        interopSource.ShouldContain("PropModeReplace");
+        interopSource.ShouldContain("XInternAtom");
+        interopSource.ShouldContain("XChangeProperty");
+        interopSource.ShouldContain("IntPtr[] data");
+
+        windowSource.ShouldNotContain("GtkFrameExtents");
+        extensionSource.ShouldNotContain("GtkFrameExtents");
+        linuxSource.ShouldNotContain("GtkFrameExtents");
+    }
+
+    [Fact]
     public void Linux_NonCsd_Window_Template_Clips_Content_To_Window_CornerRadius()
     {
         var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));

@@ -8,6 +8,8 @@ namespace AtomUI.Native;
 [SupportedOSPlatform("linux")]
 internal static class WindowUtilsLinux
 {
+    private const string X11CsdFrameExtentsPropertyName = "_GTK_FRAME_EXTENTS";
+
     public static void SetWindowIgnoreMouseEventsLinux(IntPtr handle, bool flag)
     {
         if (handle == IntPtr.Zero)
@@ -226,6 +228,66 @@ internal static class WindowUtilsLinux
         {
             WindowUtilsInterop.XCloseDisplay(display);
         }
+    }
+
+    public static void SetX11CsdFrameExtents(
+        IntPtr handle,
+        int left,
+        int top,
+        int right,
+        int bottom)
+    {
+        if (handle == IntPtr.Zero)
+        {
+            return;
+        }
+
+        var display = WindowUtilsInterop.XOpenDisplay(IntPtr.Zero);
+        if (display == IntPtr.Zero)
+        {
+            return;
+        }
+
+        try
+        {
+            var property = WindowUtilsInterop.XInternAtom(display, X11CsdFrameExtentsPropertyName, false);
+            if (property == IntPtr.Zero)
+            {
+                return;
+            }
+
+            // _GTK_FRAME_EXTENTS is the historical X11 atom used by Mutter and KWin
+            // to account for client-side decoration extents during snapping/placement.
+            // The property order is left, right, top, bottom and values are device pixels.
+            // Xlib expects format=32 data as C long[], so use IntPtr-sized elements.
+            var extents = new[]
+            {
+                ToCardinal(left),
+                ToCardinal(right),
+                ToCardinal(top),
+                ToCardinal(bottom)
+            };
+
+            WindowUtilsInterop.XChangeProperty(
+                display,
+                handle,
+                property,
+                new IntPtr((int)WindowUtilsInterop.XCB_ATOM_CARDINAL),
+                32,
+                WindowUtilsInterop.PropModeReplace,
+                extents,
+                extents.Length);
+            WindowUtilsInterop.XFlush(display);
+        }
+        finally
+        {
+            WindowUtilsInterop.XCloseDisplay(display);
+        }
+    }
+
+    private static IntPtr ToCardinal(int value)
+    {
+        return new IntPtr(Math.Max(0, value));
     }
 
     /// <summary>

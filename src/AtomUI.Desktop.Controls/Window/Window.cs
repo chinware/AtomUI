@@ -360,6 +360,7 @@ public class Window : AvaloniaWindow,
             this.AttachClickThroughShadow(
                 s_clickThroughShadowExtraAffectsProperties,
                 () => FrameShadowThickness);
+            ScalingChanged += HandleLinuxScalingChanged;
         }
     }
 
@@ -386,7 +387,7 @@ public class Window : AvaloniaWindow,
         _isLinuxInitialShowStatePrepared = true;
         EnsureInitialized();
         ApplyStyling();
-        EnsureMinSizeForDecorations();
+        ApplyLinuxX11CsdFrameExtents();
         var screen     = Screens.ScreenFromPoint(Position) ?? Screens.Primary;
         var clientSize = SynchronizeLinuxInitialClientSize(screen);
         if (clientSize is null)
@@ -823,7 +824,7 @@ public class Window : AvaloniaWindow,
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
-        EnsureMinSizeForDecorations();
+        ApplyLinuxX11CsdFrameExtents();
         ApplyDefaultLogoIfNeeded();
         if (OperatingSystem.IsMacOS())
         {
@@ -948,11 +949,12 @@ public class Window : AvaloniaWindow,
                 }
             }
         }
-        if (change.Property == WindowStateProperty ||
-            change.Property == FrameShadowThicknessProperty ||
-            change.Property == CornerRadiusProperty)
+        if (OperatingSystem.IsLinux() &&
+            (change.Property == WindowStateProperty ||
+             change.Property == FrameShadowThicknessProperty ||
+             change.Property == IsCsdEnabledProperty))
         {
-            EnsureMinSizeForDecorations();
+            ApplyLinuxX11CsdFrameExtents();
         }
         if (OperatingSystem.IsWindows() && change.Property == WindowStateProperty)
         {
@@ -1024,6 +1026,22 @@ public class Window : AvaloniaWindow,
         }
     }
 
+    private void HandleLinuxScalingChanged(object? sender, EventArgs e)
+    {
+        ApplyLinuxX11CsdFrameExtents();
+    }
+
+    private void ApplyLinuxX11CsdFrameExtents()
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            return;
+        }
+
+        var frameExtents = WindowState is WindowState.Normal ? FrameShadowThickness : default;
+        this.SetLinuxX11CsdFrameExtents(frameExtents);
+    }
+
     private void ConfigureCustomResizerVisible()
     {
         if (OsType != OsType.Linux || IsCsdEnabled)
@@ -1033,49 +1051,6 @@ public class Window : AvaloniaWindow,
         else
         {
             IsCustomResizerVisible = CanResize && WindowState == WindowState.Normal;
-        }
-    }
-
-    private void EnsureMinSizeForDecorations()
-    {
-        if (!OperatingSystem.IsLinux())
-        {
-            return;
-        }
-
-        if (WindowState is WindowState.Maximized or WindowState.FullScreen)
-        {
-            return;
-        }
-
-        var shadow       = FrameShadowThickness;
-        var cornerRadius = CornerRadius;
-        var maxCorner = Math.Max(
-            Math.Max(cornerRadius.TopLeft, cornerRadius.TopRight),
-            Math.Max(cornerRadius.BottomLeft, cornerRadius.BottomRight));
-
-        const double frameBorder = 1;
-
-        var horizontalDecoration = shadow.Left + shadow.Right + frameBorder * 2;
-        var titleBarWidth        = _titleBar?.DesiredSize.Width ?? 0;
-        var minDecorationWidth = Math.Max(
-            horizontalDecoration + maxCorner * 2,
-            horizontalDecoration + titleBarWidth);
-
-        var verticalDecoration   = shadow.Top + shadow.Bottom + frameBorder * 2;
-        var titleBarActualHeight = _titleBar?.DesiredSize.Height ?? TitleBarHeight;
-        var minDecorationHeight = verticalDecoration
-                                  + titleBarActualHeight
-                                  + maxCorner * 2;
-
-        if (MinWidth < minDecorationWidth)
-        {
-            MinWidth = minDecorationWidth;
-        }
-
-        if (MinHeight < minDecorationHeight)
-        {
-            MinHeight = minDecorationHeight;
         }
     }
 }
