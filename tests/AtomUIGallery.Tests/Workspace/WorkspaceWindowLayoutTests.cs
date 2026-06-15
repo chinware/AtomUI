@@ -75,6 +75,18 @@ public class WorkspaceWindowLayoutTests
     }
 
     [Fact]
+    public void Workspace_Window_Draws_TitleBar_Bottom_Separator_With_Secondary_Border_Color()
+    {
+        var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
+
+        source.ShouldContain("Name=\"TitleBarBottomSeparator\"");
+        source.ShouldContain("Grid.ColumnSpan=\"2\"");
+        source.ShouldContain("Height=\"1\"");
+        source.ShouldContain("Background=\"{atom:SharedTokenResource ColorBorderSecondary}\"");
+        source.ShouldContain("IsHitTestVisible=\"False\"");
+    }
+
+    [Fact]
     public void Sidebar_Footer_Shows_Website_Gitee_And_Github_Links_With_Larger_Tighter_Icons()
     {
         var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));

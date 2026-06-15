@@ -768,7 +768,7 @@ public class Cascader : AbstractSelect
         {
             if (!IsMultiple)
             {
-                if (option.IsEffectiveLeaf())
+                if (eventArgs.Item.IsLeaf && !eventArgs.Item.IsLoading)
                 {
                     SetCurrentValue(IsDropDownOpenProperty, false);
                 }

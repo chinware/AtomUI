@@ -728,18 +728,6 @@ public partial class CascaderView : TemplatedControl,
     {
         base.OnDetachedFromVisualTree(e);
         
-        // 清理所有 level list 中的 disposable
-        if (_itemsPanel != null)
-        {
-            foreach (var child in _itemsPanel.Children)
-            {
-                if (child is CascaderViewLevelList levelList)
-                {
-                    levelList.NotifyDetachedFromVisualTree();
-                }
-            }
-        }
-        
         // 清理所有待处理的异步加载操作
         _asyncLoadCoordinator.CancelAll();
     }

@@ -4,7 +4,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -126,26 +125,12 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
         return false;
     }
     
-    private IDisposable? _clickDisposable;
-    private const int DoubleClickInterval = 180;
-    
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         if (e.Source is Visual source)
         {
             var point = e.GetCurrentPoint(source);
-            if (IsAllowSelectParent)
-            {
-                _clickDisposable ??= DispatcherTimer.RunOnce(() =>
-                {
-                    _clickDisposable = null;
-                    HandlePointerPressed(source, point);
-                }, TimeSpan.FromMilliseconds(DoubleClickInterval));
-            }
-            else
-            {
-                HandlePointerPressed(source, point);
-            }
+            HandlePointerPressed(source, point);
         }
     }
 
@@ -169,7 +154,7 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
                     (cascaderViewItem.IsLeaf || IsAllowSelectParent) && !cascaderViewItem.IsLoading;
                 if (isUpdateSelection)
                 {
-                    UpdateContainerSelection(cascaderViewItem, !cascaderViewItem.IsSelected);
+                    UpdateContainerSelection(cascaderViewItem, GetNextSelectionState(cascaderViewItem));
                 }
             }
         }
@@ -181,8 +166,6 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
         {
             if (IsAllowSelectParent)
             {
-                _clickDisposable?.Dispose();
-                _clickDisposable = null;
                 if (GetContainerFromEventSource(source) is CascaderViewItem cascaderViewItem)
                 {
                     if (ExpandTrigger == CascaderViewExpandTrigger.Click)
@@ -198,11 +181,21 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
                         (cascaderViewItem.IsLeaf || IsAllowSelectParent) && !cascaderViewItem.IsLoading;
                     if (isUpdateSelection)
                     {
-                        UpdateContainerSelection(cascaderViewItem, !cascaderViewItem.IsSelected);
+                        UpdateContainerSelection(cascaderViewItem, GetNextSelectionState(cascaderViewItem));
                     }
                 }
             }
         }
+    }
+
+    private bool GetNextSelectionState(CascaderViewItem item)
+    {
+        if (IsAllowSelectParent && OwnerView?.IsCheckable != true)
+        {
+            return true;
+        }
+
+        return !item.IsSelected;
     }
 
     private bool UpdateContainerSelection(CascaderViewItem item, bool isSelected)
@@ -358,11 +351,4 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
         }
     }
     #endregion
-
-    internal void NotifyDetachedFromVisualTree()
-    {
-        // 清理 DispatcherTimer
-        _clickDisposable?.Dispose();
-        _clickDisposable = null;
-    }
 }

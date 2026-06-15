@@ -142,5 +142,12 @@
                                  PageTransition="{x:Null}"
                                  ClipToBounds="True" />
         </Border>
+
+        <Border Name="TitleBarBottomSeparator"
+                Grid.ColumnSpan="2"
+                Height="1"
+                VerticalAlignment="Top"
+                Background="{atom:SharedTokenResource ColorBorderSecondary}"
+                IsHitTestVisible="False" />
     </Grid>
 </atom:Window>
