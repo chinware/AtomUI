@@ -289,11 +289,11 @@ internal class OverlayDialogHost : ContentControl,
             // 清 transitions 让起始态瞬时生效，装回 transitions 后下一 Post 设目标态才会
             // 被 transitions 抓到这一次"起始→目标"变化去插值。若不清空，起始态本身也会触发
             // 一次被 Post2 立刻打断的动画，实际看起来像没动画。
-            var (origin, translate)           = CalculateCollapsedTransformState(overlayHost);
+            var (origin, transform)           = BuildCollapsedMotionState(overlayHost);
             overlayHost.Transitions           = null;
             overlayHost.Opacity               = 0.0;
             overlayHost.RenderTransformOrigin = origin;
-            overlayHost.RenderTransform       = BuildCollapsedTransform(translate);
+            overlayHost.RenderTransform       = transform;
             EnsureTransitionsOn(overlayHost);
 
             if (IsModal)
@@ -339,10 +339,10 @@ internal class OverlayDialogHost : ContentControl,
 
         if (IsMotionEnabled && _animatedOverlayHost is { } overlayHost)
         {
-            var (origin, translate)           = CalculateCollapsedTransformState(overlayHost);
+            var (origin, transform)           = BuildCollapsedMotionState(overlayHost);
             overlayHost.RenderTransformOrigin = origin;
             overlayHost.Opacity               = 0.0;
-            overlayHost.RenderTransform       = BuildCollapsedTransform(translate);
+            overlayHost.RenderTransform       = transform;
 
             if (IsModal)
             {
@@ -417,6 +417,17 @@ internal class OverlayDialogHost : ContentControl,
         builder.AppendScale(1.0, 1.0);
         builder.AppendTranslate(0, 0);
         return builder.Build();
+    }
+
+    private (RelativePoint origin, TransformOperations transform) BuildCollapsedMotionState(Visual host)
+    {
+        if (!_dialog.UsesPlacementTargetAsMotionAnchor)
+        {
+            return (RelativePoint.Center, BuildIdentityTransform());
+        }
+
+        var (origin, translate) = CalculateCollapsedTransformState(host);
+        return (origin, BuildCollapsedTransform(translate));
     }
 
     private void AttachMaskToOverlayLayer()

@@ -152,6 +152,16 @@ public partial class Dialog : TemplatedControl,
 
     public IAvaloniaDependencyResolver? DependencyResolver { get; set; }
 
+    internal DialogMotionAnchorMode MotionAnchorMode { get; set; }
+
+    internal bool UsesPlacementTargetAsMotionAnchor =>
+        MotionAnchorMode switch
+        {
+            DialogMotionAnchorMode.ExplicitPlacementTarget => PlacementTarget is not null,
+            DialogMotionAnchorMode.FallbackPlacementTarget => false,
+            _ => PlacementTarget is not null
+        };
+
     public bool IsOpen
     {
         get => GetValue(IsOpenProperty);
