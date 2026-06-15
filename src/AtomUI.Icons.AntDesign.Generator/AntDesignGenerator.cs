@@ -32,13 +32,14 @@ public class AntDesignGenerator : DefaultIconPackageGenerator
             await generator.GenerateAsync();
             return 0;
         }
-        catch  (Exception e)
+        catch (Exception e)
         {
             Console.Error.WriteLine($"Generate error: {e.Message}");
 #if DEBUG
             throw;
-#endif
+#else
             return 1;
+#endif
         }
     }
     
