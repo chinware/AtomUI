@@ -255,6 +255,10 @@ public class NavMenu : ItemsControl,
             {
                 SelectTargetMenuNode(SelectedItem, _selectedItemRevision);
             }
+            else
+            {
+                InteractionHandler?.ClearSelection();
+            }
         }
     }
     

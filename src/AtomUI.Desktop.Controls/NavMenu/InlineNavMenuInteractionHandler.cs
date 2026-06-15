@@ -147,6 +147,24 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
+    public void ClearSelection()
+    {
+        if (_latestSelectedItem is null)
+        {
+            return;
+        }
+
+        var oldItems = NavMenu.CollectSelectPathItems(_latestSelectedItem);
+        foreach (var oldInSelectPathItem in oldItems)
+        {
+            oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
+        }
+
+        var oldParentItem = ItemsControl.ItemsControlFromItemContainer(_latestSelectedItem) as IMenuChildSelectable;
+        oldParentItem?.SelectChildItem(_latestSelectedItem, false);
+        _latestSelectedItem = null;
+    }
+
     internal void Open(INavMenuItem menuItem) => menuItem.Open();
     
     internal static NavMenuItem? GetMenuItemCore(StyledElement? item)

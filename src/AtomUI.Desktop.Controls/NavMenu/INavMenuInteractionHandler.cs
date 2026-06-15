@@ -14,4 +14,6 @@ internal interface INavMenuInteractionHandler
     void Detach(NavMenu menu);
     
     void Select(NavMenuItem menuItem);
+
+    void ClearSelection();
 }
