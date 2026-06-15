@@ -2,8 +2,8 @@
 <br/>
 <div align="center">
 
-[![AntDesign](https://img.shields.io/badge/AntDesign%20-5.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
-[![Nuget Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
+[![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
+[![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-license-shield]][github-license-link]
 
 [更新日志](./CHANGELOG.md) · [提交Bug][github-issues-link] · [提交需求][github-issues-link]
@@ -44,17 +44,21 @@
 
 #### 介绍
 
-AtomUI 是基于 .NET 技术的 Ant Design 实现，致力于将 Ant Design 优秀而高效的设计语言和体验带入 Avalonia/.NET 跨平台桌面软件开发领域。
-欢迎与 AtomUI 进行交流并提出建议，感谢您为该项目点赞。
+AtomUI 是面向 Avalonia/.NET 桌面应用的 Ant Design 6 组件体系，目标是把 Ant Design 的企业级交互模式、
+视觉语言、设计 Token 和主题定制能力带到 Windows、macOS、Linux 原生跨平台应用中。
+
+项目提供面向生产场景的桌面控件、图标包、字体包、原生窗口集成、DataGrid、ColorPicker，以及用于自定义控件、
+Token 和本地化开发的源代码生成器。欢迎提交 Issue、PR 和改进建议。
 
 <img src="./resources/images/readme/Gallery.png"/>
 
 #### 特性
 
-- 实现 Ant Design 提炼自企业级中后台产品的交互语言和视觉风格。
-- 开箱即用的高质量 Avalonia 组件。
-- 使用 .NET 开发，实现一处编写，无缝在主流操作系统平台编译并且渲染出一致的 UI 体验。
-- 基于 Avalonia 强大的风格系统，完整实现了 Ant Design 的主题定制能力。
+- 将 Ant Design 6 的交互体验和视觉体系适配到原生 Avalonia 桌面应用。
+- 提供覆盖布局、导航、数据录入、反馈、数据展示等场景的开箱即用控件，并按需提供 DataGrid、ColorPicker 等高级包。
+- 基于 Avalonia 样式与资源系统实现 Token 驱动的主题能力，便于在应用级统一定制视觉风格。
+- 使用统一的 .NET/XAML 开发模型支持 Windows、macOS、Linux 跨平台桌面应用。
+- 提供自定义控件、主题 Token、本地化相关的源代码生成能力，减少重复基础设施代码。
 
 #### 运行环境
 
@@ -76,13 +80,13 @@ Avalonia 12.0.x<br>
 
 #### 中文社区
 
-目前我们暂时只创建 QQ 和微信开发者群的交流方式，下面是二维码，有兴趣的同学可以扫码加入：
+目前我们提供 QQ 和微信开发者交流群，欢迎对 AtomUI 或 Avalonia 感兴趣的开发者扫码加入：
 
 <table border="0">
     <tbody>
         <tr>
             <td align="center" valign="middle">
-                <img src="./resources/images/readme/wechat.jpg" width="200" height="200"/>
+                <img src="./resources/images/readme/wechat.jpg" width="200"/>
             </td>
             <td align="center" valign="middle">
                 <img src="./resources/images/readme/QQ.png" width="200" height="200"/>
@@ -91,12 +95,12 @@ Avalonia 12.0.x<br>
     </tbody>
 </table>
 
-> PS：扫码请注明来意，比如：学习`AtomUI`或者`Avalonia`爱好者
+> PS：扫码请注明来意，比如：学习 `AtomUI` 或 `Avalonia` 爱好者。
 
 #### 开始使用
 
-AtomUI 推荐的以 nuget 包的方式进行安装，我们已经将 AtomUI OSS 相关的包上传到 nuget.org，目前 AtomUI
-没有发布长期支持版，所以推荐安装我们发布的最新版本
+AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用需要按需添加 DataGrid、ColorPicker 等可选包。
+下面示例使用当前项目最新版本。
 
 目前我们已经发布的包如下：
 
@@ -104,7 +108,8 @@ AtomUI 推荐的以 nuget 包的方式进行安装，我们已经将 AtomUI OSS 
 |-------------------------------------|---------------------------------|
 | AtomUI.Native                       | 原生平台适配基础设施                      |
 | AtomUI.Core                         | 核心基础设施 — 主题系统、Token 系统、动画     |
-| AtomUI.Fonts.AlibabaSans            | 阿里巴巴普惠体字体包                      |
+| AtomUI.Fonts.AlibabaSans            | Alibaba Sans 字体包                  |
+| AtomUI.Fonts.AlibabaPuHuiTi         | 阿里巴巴普惠体字体包                      |
 | AtomUI.Icons.Shared                 | 图标基础设施                          |
 | AtomUI.Icons.AntDesign              | Ant Design 图标包                  |
 | AtomUI.Controls.Shared              | 面向控件开发的共享接口与枚举                 |
@@ -115,18 +120,18 @@ AtomUI 推荐的以 nuget 包的方式进行安装，我们已经将 AtomUI OSS 
 | AtomUI.Generator                    | 面向自定义控件、Token 与本地化开发的源代码生成器   |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.0.0-build.1
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.0-build.1
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.0-build.1
+dotnet add package AtomUI.Desktop.Controls --version 6.0.4
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.4
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.4
 ```
 
-您也可以直接依次安装各个nuget包。如果上述命令行无法完成正常安装，请移步nuget包管理器，在rider中，您可以依次点击
+您也可以在 IDE 的 NuGet 包管理器中安装。以 Rider 为例，可以依次点击：
 
-nuget -> 软件包
+NuGet -> 软件包
 
-搜索AtomUI，即可搜索到可用的AtomUI包。然后依次安装即可。
+搜索 `AtomUI`，即可找到可用包，并按项目需要安装。
 
-> 安装前请点击右侧 框架 和 依赖，确保满足相应的依赖包版本
+> 安装前请查看包详情中的“框架”和“依赖”，确认目标框架与 Avalonia 版本兼容。
 
 ##### 启用 AtomUI 库
 
@@ -144,9 +149,9 @@ nuget -> 软件包
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.0.0-build.1"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.0.0-build.1"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.0.0-build.1"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.0.4"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.0.4"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.0.4"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
@@ -209,9 +214,9 @@ public partial class App : Application
 }
 ```
 
-###### 开始用 `AtomUI` 创造无限可能
+###### 开始使用 AtomUI
 
-您可以开始在自己的项目中开始使用 `AtomUI`
+注册 AtomUI 后，可以直接在 XAML 中使用 AtomUI 控件和 Ant Design 图标。
 
 ```xml
 <atom:Window xmlns="https://github.com/avaloniaui"
@@ -228,7 +233,7 @@ public partial class App : Application
 
 #### 体验所有控件
 
-您可以启动 `./controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj` 项目在本机开发环境来体验所有的 AtomUI 控件
+您可以在本机启动 Gallery 项目，浏览 AtomUI 控件、典型用法、设计 Token 和 API 表格。
 
 ```bash
 git clone https://github.com/AtomUI/AtomUI.git
@@ -240,11 +245,11 @@ dotnet run --project controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.
 
 #### 小的示例项目
 
-AtomUI 的 gallery 项目可能过于庞大繁杂，如果您刚开始接触 AtomUI，可能会感到无从下手，您可以前往
+Gallery 项目覆盖面较完整。如果您希望先看更小的入门项目，可以前往：
 
 [AtomUI/AtomUI.Examples](https://github.com/AtomUI/AtomUI.Samples)
 
-查看简单且小巧的示例项目。帮助您更好的上手 AtomUI。
+这些示例展示了更紧凑的应用搭建方式，更适合作为新项目起点。
 
 #### 致谢
 
@@ -266,9 +271,9 @@ Avalonia 是一个跨平台的 .NET UI 框架，使用 XAML 语言设计界面�
 
 #### 许可证说明
 
-使用 AtomUI 的项目需要遵循 LGPL v3 协议，<strong>商业应用(包括且不限于公司内部项目、个人使用 AtomUI OSS
-开发的商业项目和承接的外包项目)在使用二进制连接的情况下免费</strong>，如果基于源码定制 AtomUI
-需要修改的代码开源或者购买商业授权，需要商业授权，欢迎联系：北京秦派软件科技有限公司。
+使用 AtomUI OSS 的项目需要遵循 LGPL v3 协议。<strong>商业应用，包括公司内部项目、个人商业项目和外包项目，
+在使用已发布二进制包链接的情况下可以免费使用</strong>。如果基于源码定制 AtomUI，则需要按协议开放修改代码，
+或购买商业授权。商业授权请联系：北京秦派软件科技有限公司。
 
 #### 特别感谢
 
