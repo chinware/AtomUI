@@ -291,7 +291,8 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
     {
         base.OnPropertyChanged(change);
         
-        if (change.Property == HasItemAsyncDataLoaderProperty)
+        if (change.Property == HasItemAsyncDataLoaderProperty ||
+            change.Property == DataContextProperty)
         {
             ConfigureIsLeaf();
         }
@@ -349,6 +350,10 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
             else if (AttachedOption?.IsLeaf == true || AsyncLoaded)
             {
                 IsLeaf = true;
+            }
+            else
+            {
+                IsLeaf = false;
             }
         }
         else
