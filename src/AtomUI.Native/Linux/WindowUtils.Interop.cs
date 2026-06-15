@@ -97,6 +97,41 @@ internal static class WindowUtilsInterop
         public uint Pad1;
         public uint Pad2;
     }
+
+    [Flags]
+    internal enum XSizeHintsFlags
+    {
+        USPosition = 1 << 0,
+        USSize     = 1 << 1,
+        PPosition  = 1 << 2,
+        PSize      = 1 << 3,
+        PMinSize   = 1 << 4,
+        PMaxSize   = 1 << 5,
+        PResizeInc = 1 << 6
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct XSizeHints
+    {
+        public IntPtr Flags;
+        public int X;
+        public int Y;
+        public int Width;
+        public int Height;
+        public int MinWidth;
+        public int MinHeight;
+        public int MaxWidth;
+        public int MaxHeight;
+        public int WidthInc;
+        public int HeightInc;
+        public int MinAspectX;
+        public int MinAspectY;
+        public int MaxAspectX;
+        public int MaxAspectY;
+        public int BaseWidth;
+        public int BaseHeight;
+        public int WinGravity;
+    }
     
     #endregion
         
@@ -117,6 +152,25 @@ internal static class WindowUtilsInterop
     [DllImport("libxcb.so.1", EntryPoint = "xcb_request_check")]
     internal static extern IntPtr xcb_request_check(IntPtr connection, xcb_void_cookie_t cookie);
         
+    #endregion
+
+    #region Xlib核心函数P/Invoke声明
+
+    [DllImport("libX11.so.6", EntryPoint = "XOpenDisplay")]
+    internal static extern IntPtr XOpenDisplay(IntPtr displayName);
+
+    [DllImport("libX11.so.6", EntryPoint = "XCloseDisplay")]
+    internal static extern int XCloseDisplay(IntPtr display);
+
+    [DllImport("libX11.so.6", EntryPoint = "XFlush")]
+    internal static extern int XFlush(IntPtr display);
+
+    [DllImport("libX11.so.6", EntryPoint = "XMoveResizeWindow")]
+    internal static extern int XMoveResizeWindow(IntPtr display, IntPtr window, int x, int y, int width, int height);
+
+    [DllImport("libX11.so.6", EntryPoint = "XSetWMNormalHints")]
+    internal static extern int XSetWMNormalHints(IntPtr display, IntPtr window, ref XSizeHints hints);
+
     #endregion
         
     #region 窗口几何函数

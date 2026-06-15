@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using AtomUI.Native.Windows;
+using Avalonia;
 using Avalonia.Controls;
 
 namespace AtomUI.Native;
@@ -163,5 +164,58 @@ internal static class WindowExtensions
         var handle = window.PlatformImpl?.Handle?.Handle;
         Debug.Assert(handle is not null);
         WindowUtilsLinux.ResetInputRegion(handle.Value, width, height);
+    }
+
+    [SupportedOSPlatform("linux")]
+    public static void ConfigureLinuxInitialWindowGeometry(
+        this Window window,
+        PixelPoint position,
+        Size clientSize,
+        double scaling)
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            return;
+        }
+
+        var handle = window.PlatformImpl?.Handle?.Handle;
+        Debug.Assert(handle is not null);
+
+        scaling = Math.Max(1, scaling);
+        var width    = ToPixelLength(clientSize.Width, scaling);
+        var height   = ToPixelLength(clientSize.Height, scaling);
+        var minWidth = ToPixelLength(window.MinWidth, scaling);
+        var minHeight = ToPixelLength(window.MinHeight, scaling);
+        var maxWidth = ToOptionalPixelLength(window.MaxWidth, scaling);
+        var maxHeight = ToOptionalPixelLength(window.MaxHeight, scaling);
+
+        WindowUtilsLinux.ConfigureInitialWindowGeometry(
+            handle.Value,
+            position.X,
+            position.Y,
+            width,
+            height,
+            minWidth,
+            minHeight,
+            maxWidth,
+            maxHeight);
+    }
+
+    private static int ToPixelLength(double value, double scaling)
+    {
+        if (!double.IsFinite(value) || value <= 0)
+        {
+            return 1;
+        }
+        return Math.Max(1, (int)(value * scaling));
+    }
+
+    private static int? ToOptionalPixelLength(double value, double scaling)
+    {
+        if (!double.IsFinite(value) || value <= 0 || value > 100_000)
+        {
+            return null;
+        }
+        return ToPixelLength(value, scaling);
     }
 }
