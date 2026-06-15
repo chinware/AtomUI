@@ -14,6 +14,8 @@ internal partial class en_US : LanguageProvider
     public const string HomePage = "Home Page";
     public const string WeChatOfficial = "WeChat Official Account";
     public const string WeChatOfficialDescription = "Follow release updates";
+    public const string TelegramGroup = "Telegram Community";
+    public const string TelegramGroupDescription = "Join the Telegram group";
     public const string WeChatGroup = "WeChat Community";
     public const string WeChatGroupDescription = "Join the WeChat group";
     public const string QQGroup = "QQ Community";

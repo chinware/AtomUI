@@ -14,6 +14,8 @@ internal partial class zh_CN : LanguageProvider
     public const string HomePage = "官网";
     public const string WeChatOfficial = "微信公众号";
     public const string WeChatOfficialDescription = "关注发布动态";
+    public const string TelegramGroup = "Telegram 交流群";
+    public const string TelegramGroupDescription = "加入 Telegram 交流群";
     public const string WeChatGroup = "微信交流群";
     public const string WeChatGroupDescription = "加入微信交流群";
     public const string QQGroup = "QQ 交流群";

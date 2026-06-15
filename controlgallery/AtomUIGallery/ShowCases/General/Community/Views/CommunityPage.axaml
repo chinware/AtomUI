@@ -108,23 +108,27 @@
                 </Grid>
             </Border>
 
-            <Grid ColumnDefinitions="*,*,*"
-                  ColumnSpacing="14"
+            <Grid ColumnDefinitions="*,*,*,*"
+                  ColumnSpacing="12"
                   Margin="0,6,0,20">
                 <Border Background="{atom:SharedTokenResource ColorBgContainer}"
                         BoxShadow="{atom:SharedTokenResource BoxShadowsTertiary}"
                         CornerRadius="8"
-                        Padding="18">
+                        Padding="16">
                     <StackPanel Spacing="10">
                         <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatOfficial}"
                                         FontSize="16"
                                         FontWeight="Bold"
-                                        HorizontalAlignment="Center" />
+                                        HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap" />
                         <Image Source="/Assets/qinware-wechatpress.png"
                                HorizontalAlignment="Center"
-                               Width="188" />
+                               Width="144" />
                         <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatOfficialDescription}"
                                         HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap"
                                         Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
                     </StackPanel>
                 </Border>
@@ -133,17 +137,21 @@
                         Background="{atom:SharedTokenResource ColorBgContainer}"
                         BoxShadow="{atom:SharedTokenResource BoxShadowsTertiary}"
                         CornerRadius="8"
-                        Padding="18">
+                        Padding="16">
                     <StackPanel Spacing="10">
-                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatGroup}"
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource TelegramGroup}"
                                         FontSize="16"
                                         FontWeight="Bold"
-                                        HorizontalAlignment="Center" />
-                        <Image Source="/Assets/atomui-wechat.png"
-                               HorizontalAlignment="Center"
-                               Width="188" />
-                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatGroupDescription}"
                                         HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap" />
+                        <Image Source="/Assets/atomui-telegram.png"
+                               HorizontalAlignment="Center"
+                               Width="144" />
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource TelegramGroupDescription}"
+                                        HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap"
                                         Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
                     </StackPanel>
                 </Border>
@@ -152,17 +160,44 @@
                         Background="{atom:SharedTokenResource ColorBgContainer}"
                         BoxShadow="{atom:SharedTokenResource BoxShadowsTertiary}"
                         CornerRadius="8"
-                        Padding="18">
+                        Padding="16">
+                    <StackPanel Spacing="10">
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatGroup}"
+                                        FontSize="16"
+                                        FontWeight="Bold"
+                                        HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap" />
+                        <Image Source="/Assets/atomui-wechat.png"
+                               HorizontalAlignment="Center"
+                               Width="144" />
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatGroupDescription}"
+                                        HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="3"
+                        Background="{atom:SharedTokenResource ColorBgContainer}"
+                        BoxShadow="{atom:SharedTokenResource BoxShadowsTertiary}"
+                        CornerRadius="8"
+                        Padding="16">
                     <StackPanel Spacing="10">
                         <atom:TextBlock Text="{gallery:CommunityPageLangResource QQGroup}"
                                         FontSize="16"
                                         FontWeight="Bold"
-                                        HorizontalAlignment="Center" />
+                                        HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap" />
                         <Image Source="/Assets/atomui-qq.png"
                                HorizontalAlignment="Center"
-                               Width="188" />
+                               Width="144" />
                         <atom:TextBlock Text="{gallery:CommunityPageLangResource QQGroupDescription}"
                                         HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap"
                                         Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
                     </StackPanel>
                 </Border>

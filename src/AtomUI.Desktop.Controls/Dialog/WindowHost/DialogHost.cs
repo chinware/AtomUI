@@ -7,6 +7,7 @@ using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Input;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -121,7 +122,10 @@ internal class DialogHost : Window,
     {
         ParentTopLevel = parent;
         _dialog        = dialog;
-        _dialogContent = new DialogWindowContent();
+        _dialogContent = new DialogWindowContent
+        {
+            Focusable = true
+        };
         Content        = _dialogContent;
 
         BindContentProperties();
@@ -284,6 +288,23 @@ internal class DialogHost : Window,
                 _dialog.NotifyDialogHostCloseRequest();
             });
         }
+    }
+
+    protected override void OnOpened(EventArgs e)
+    {
+        base.OnOpened(e);
+        _dialogContent.Focus(NavigationMethod.Unspecified);
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if (!e.Handled && _dialog.TryHandleStandardButtonKey(e.Key))
+        {
+            e.Handled = true;
+            return;
+        }
+
+        base.OnKeyDown(e);
     }
 
     public void Close(Action? callback = null)

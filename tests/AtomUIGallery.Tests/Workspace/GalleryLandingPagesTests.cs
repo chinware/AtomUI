@@ -126,8 +126,12 @@ public class GalleryLandingPagesTests
         source.ShouldContain("https://gitee.com/chinware/atomui");
         source.ShouldContain("https://github.com/chinware/atomui");
         source.ShouldContain("qinware-wechatpress.png");
+        source.ShouldContain("atomui-telegram.png");
         source.ShouldContain("atomui-wechat.png");
         source.ShouldContain("atomui-qq.png");
+        source.ShouldContain("TelegramGroup");
+        source.ShouldContain("TelegramGroupDescription");
+        File.Exists(GetRepoFile("controlgallery/AtomUIGallery/Assets/atomui-telegram.png")).ShouldBeTrue();
         source.ShouldNotContain("AtomUIOSS-release-banner.png");
         source.ShouldNotContain("dotnet add package AtomUI.Desktop.Controls");
     }

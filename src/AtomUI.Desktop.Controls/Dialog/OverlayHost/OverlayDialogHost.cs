@@ -209,6 +209,7 @@ internal class OverlayDialogHost : ContentControl,
 
     public OverlayDialogHost(Control placementTarget, Dialog dialog, IAvaloniaDependencyResolver? dependencyResolver)
     {
+        Focusable = true;
         _popup = new AtomUIPopup
         {
             PlacementTarget               = placementTarget,
@@ -251,6 +252,7 @@ internal class OverlayDialogHost : ContentControl,
 
         _popup.IsOpen = true;
         BringToFront();
+        Focus(NavigationMethod.Unspecified);
 
         if (!IsMotionEnabled)
         {
@@ -796,6 +798,17 @@ internal class OverlayDialogHost : ContentControl,
         }
 
         return size;
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if (!e.Handled && _dialog.TryHandleStandardButtonKey(e.Key))
+        {
+            e.Handled = true;
+            return;
+        }
+
+        base.OnKeyDown(e);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
