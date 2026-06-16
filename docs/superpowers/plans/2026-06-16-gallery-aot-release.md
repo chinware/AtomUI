@@ -23,6 +23,8 @@
 - [x] Add macOS OpenSSL linker search paths for Apple Silicon and Intel Homebrew layouts.
 - [x] Fix osx-arm64 DMG upload step label.
 - [x] Move durable design/maintenance documentation out of `docs/superpowers`.
+- [x] Update AtomUITools checkout repository to `AtomUI/AtomUITools`.
+- [x] Keep `secrets.ACCESS_TOKEN` on private `AtomUI/AtomUITools` checkout.
 
 ## Verification
 
@@ -32,7 +34,9 @@
 - [x] `perl -ne 'print "$.:$_" if /\t/' .github/workflows/release-gallery.yml`
 - [x] `git diff --check`
 - [x] `rg -n "PublishToLocal.ps1" .github/workflows/release-gallery.yml`
+- [x] Static check that all `AtomUI/AtomUITools` checkout blocks include `token: ${{ secrets.ACCESS_TOKEN }}`.
 
 ## Notes
 
 - Real cross-platform NativeAOT publish was not run locally because it needs GitHub runner platforms, signing secrets, and platform toolchains.
+- `AtomUI/AtomUITools` is private, so anonymous `git ls-remote https://github.com/AtomUI/AtomUITools.git ...` is not used as a validity check. The release workflow relies on `secrets.ACCESS_TOKEN` having read access to that repository.

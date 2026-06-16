@@ -23,6 +23,12 @@ PublishAot:
 -publishAot '${{ inputs.PublishAot }}'
 ```
 
+## AtomUITools Checkout
+
+发布流程会拉取 private 仓库 `AtomUI/AtomUITools` 的 `develop` 分支来构建打包工具。由于这是跨仓库 checkout，`GITHUB_TOKEN` 不能默认读取该仓库，必须传入 `secrets.ACCESS_TOKEN`。
+
+`ACCESS_TOKEN` 应是 GitHub PAT 或 fine-grained token，并至少具备 `AtomUI/AtomUITools` 的只读 Contents 权限。这个 token 过期、未授权到该仓库，或没有配置到当前发布仓库的 Actions secrets 时，`actions/checkout` 会在 `Fetching the repository` 阶段失败。
+
 ## 发布脚本职责
 
 `PublishToLocal.ps1` 统一处理 AOT 和非 AOT 两条路径。

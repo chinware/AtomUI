@@ -59,7 +59,7 @@ jobs:
          -  name: Checkout AtomUITools code
             uses: actions/checkout@v6
             with:
-               repository: chinware/AtomUITools
+               repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
                path: ${{ env.BuildDir }}/AtomUITools
@@ -142,7 +142,7 @@ jobs:
          -  name: Checkout AtomUITools code
             uses: actions/checkout@v6
             with:
-               repository: chinware/AtomUITools
+               repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
                path: ${{ env.BuildDir }}/AtomUITools
@@ -224,7 +224,7 @@ jobs:
          -  name: Checkout AtomUITools code
             uses: actions/checkout@v6
             with:
-               repository: chinware/AtomUITools
+               repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
                path: ${{ env.BuildDir }}/AtomUITools
@@ -302,7 +302,7 @@ jobs:
          -  name: Checkout AtomUITools code
             uses: actions/checkout@v6
             with:
-               repository: chinware/AtomUITools
+               repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
                path: ${{ env.BuildDir }}/AtomUITools
@@ -365,7 +365,7 @@ jobs:
          -  name: Checkout AtomUITools code
             uses: actions/checkout@v6
             with:
-               repository: chinware/AtomUITools
+               repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
                path: ${{ env.BuildDir }}/AtomUITools
@@ -424,7 +424,7 @@ jobs:
          -  name: Checkout AtomUITools code
             uses: actions/checkout@v6
             with:
-               repository: chinware/AtomUITools
+               repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
                path: ${{ env.BuildDir }}/AtomUITools
