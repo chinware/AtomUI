@@ -67,10 +67,7 @@ public class FlexPanelViewModel : ReactiveObject, IRoutableViewModel
             return;
         }
 
-        DesignTokenRows =
-        [
-            new FlexPanelDesignTokenRow("N/A", Lang(FlexPanelShowCaseLangResourceKind.TokenNameNoComponentToken), Lang(FlexPanelShowCaseLangResourceKind.TokenScopeComponent), "default", Lang(FlexPanelShowCaseLangResourceKind.TokenStatusNotApplicable), "default")
-        ];
+        DesignTokenRows = [];
     }
 
     private static string Lang(FlexPanelShowCaseLangResourceKind kind)

@@ -69,10 +69,7 @@ public class WatermarkViewModel : ReactiveObject, IRoutableViewModel
             return;
         }
 
-        DesignTokenRows =
-        [
-            new WatermarkDesignTokenRow("N/A", Lang(WatermarkShowCaseLangResourceKind.TokenNameNoComponentToken), Lang(WatermarkShowCaseLangResourceKind.TokenScopeComponent), "default", Lang(WatermarkShowCaseLangResourceKind.TokenStatusNotApplicable), "default")
-        ];
+        DesignTokenRows = [];
     }
 
     private static string Lang(WatermarkShowCaseLangResourceKind kind)

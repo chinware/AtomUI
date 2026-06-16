@@ -1,4 +1,5 @@
 using System.Reactive.Disposables;
+using System.Threading;
 using System.Windows.Input;
 using AtomUI.Controls;
 using AtomUI.Data;
@@ -18,7 +19,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Rendering;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -312,7 +312,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-        
+
     internal bool ShouldUseOverlayPopup
     {
         get => GetValue(ShouldUseOverlayPopupProperty);
@@ -351,7 +351,8 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     private BaseMotionActor? _childItemsLayoutTransform;
 
     private Control? _itemHeader;
-    private bool _animating;
+    private bool _isInlineMotionRunning;
+    private CancellationTokenSource? _inlineMotionCancellation;
     private CompositeDisposable? _nodeBindingDisposables;
     
     internal Popup? Popup => _popup;
@@ -385,12 +386,9 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     public void Open()
     {
-        if (Mode == NavMenuMode.Inline)
+        if (ShouldIgnoreInlineToggleDuringMotion())
         {
-            if (_animating)
-            {
-                return;
-            }
+            return;
         }
 
         IsSubMenuOpen = true;
@@ -398,15 +396,17 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     public void Close()
     {
-        if (Mode == NavMenuMode.Inline)
+        if (ShouldIgnoreInlineToggleDuringMotion())
         {
-            if (_animating)
-            {
-                return;
-            }                                       
+            return;
         }
-        
+
         Dispatcher.InvokeAsync(async () => await CloseItemAsync(this));
+    }
+
+    private bool ShouldIgnoreInlineToggleDuringMotion()
+    {
+        return Mode == NavMenuMode.Inline && IsMotionEnabled && _isInlineMotionRunning;
     }
     
     public async Task CloseItemAsync(INavMenuItem menuItem)
@@ -519,7 +519,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        
+
         if (change.Property == ParentProperty)
         {
             IsTopLevel = Parent is NavMenu;
@@ -652,12 +652,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
                 // 在这里我们有一个动画的效果
                 if (value)
                 {
-                    await OpenInlineItemAsync();
+                    await SetInlineChildItemsOpenAsync(isOpen: true);
                     RaiseEvent(new RoutedEventArgs(SubmenuOpenedEvent));
                 }
                 else
                 {
-                    await CloseInlineItemAsync();
+                    await SetInlineChildItemsOpenAsync(isOpen: false);
                     RaiseEvent(new RoutedEventArgs(SubmenuClosedEvent));
                 }
               
@@ -690,54 +690,108 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         }
     }
     
-    private async Task OpenInlineItemAsync(bool forceDisableMotion = false)
+    private async Task SetInlineChildItemsOpenAsync(bool isOpen)
     {
-        if (HasSubMenu && _childItemsLayoutTransform is not null)
+        var actor = _childItemsLayoutTransform;
+        if (!HasSubMenu || actor is null)
         {
-            if (IsMotionEnabled && !forceDisableMotion)
+            return;
+        }
+
+        if (!ShouldAnimateInlineChildItems(actor, isOpen))
+        {
+            ApplyInlineChildItemsStateImmediately(actor, isOpen);
+            return;
+        }
+
+        if (_isInlineMotionRunning)
+        {
+            return;
+        }
+
+        var cancellation = BeginInlineMotion();
+        try
+        {
+            var motion = CreateInlineChildItemsMotion(isOpen);
+            await motion.RunAsync(actor,
+                () => { actor.IsVisible = true; },
+                cancellation.Token);
+            if (IsCurrentInlineMotion(cancellation) && !cancellation.IsCancellationRequested)
             {
-                if (_animating)
-                {
-                    return;
-                }
-        
-                _animating                           = true;
-                _childItemsLayoutTransform.IsVisible = true;
-                var motion = new SlideUpInMotion(OpenCloseMotionDuration, new CubicEaseOut());
-                await motion.RunAsync(_childItemsLayoutTransform,
-                    () => { _childItemsLayoutTransform.IsVisible = true; });
-                _animating                           = false;
+                ApplyInlineChildItemsStableState(actor, isOpen);
             }
-            else
-            {
-                _childItemsLayoutTransform.IsVisible = true;
-            }
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+        }
+        finally
+        {
+            CompleteInlineMotion(cancellation);
         }
     }
 
-    internal async Task CloseInlineItemAsync(bool forceDisableMotion = false)
+    private bool ShouldAnimateInlineChildItems(BaseMotionActor actor, bool isOpen)
     {
-        if (HasSubMenu && _childItemsLayoutTransform is not null)
+        return IsMotionEnabled && (isOpen || actor.IsVisible);
+    }
+
+    private AbstractMotion CreateInlineChildItemsMotion(bool isOpen)
+    {
+        return isOpen
+            ? new SlideUpInMotion(OpenCloseMotionDuration, new CubicEaseOut())
+            : new SlideUpOutMotion(OpenCloseMotionDuration, new CubicEaseIn());
+    }
+
+    private CancellationTokenSource BeginInlineMotion()
+    {
+        CancelInlineMotion();
+        var cancellation = new CancellationTokenSource();
+        _inlineMotionCancellation = cancellation;
+        _isInlineMotionRunning    = true;
+        return cancellation;
+    }
+
+    private void CompleteInlineMotion(CancellationTokenSource cancellation)
+    {
+        if (IsCurrentInlineMotion(cancellation))
         {
-            if (IsMotionEnabled && !forceDisableMotion && _childItemsLayoutTransform.IsVisible)
-            {
-                if (_animating)
-                {
-                    return;
-                }
-        
-                _animating                           = true;
-                _childItemsLayoutTransform.IsVisible = true;
-                var motion = new SlideUpOutMotion(OpenCloseMotionDuration, new CubicEaseIn());
-                await motion.RunAsync(_childItemsLayoutTransform);
-                _childItemsLayoutTransform.IsVisible = false;
-                _animating                           = false;
-            }
-            else
-            {
-                _childItemsLayoutTransform.IsVisible = false;
-            }
+            _inlineMotionCancellation = null;
+            _isInlineMotionRunning    = false;
         }
+
+        cancellation.Dispose();
+    }
+
+    private void CancelInlineMotion()
+    {
+        var cancellation = _inlineMotionCancellation;
+        if (cancellation is null)
+        {
+            return;
+        }
+
+        _inlineMotionCancellation = null;
+        _isInlineMotionRunning    = false;
+        cancellation.Cancel();
+    }
+
+    private bool IsCurrentInlineMotion(CancellationTokenSource cancellation)
+    {
+        return ReferenceEquals(_inlineMotionCancellation, cancellation);
+    }
+
+    private void ApplyInlineChildItemsStateImmediately(BaseMotionActor actor, bool isOpen)
+    {
+        CancelInlineMotion();
+        ApplyInlineChildItemsStableState(actor, isOpen);
+    }
+
+    private static void ApplyInlineChildItemsStableState(BaseMotionActor actor, bool isOpen)
+    {
+        actor.Transitions     = null;
+        actor.MotionTransform = null;
+        actor.Opacity         = isOpen ? 1.0 : 0.0;
+        actor.IsVisible       = isOpen;
     }
     
     private void CloseSubmenus()

@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.Threading;
+using AtomUI.MotionScene;
 using Avalonia.Controls;
 using Avalonia.Threading;
 using Shouldly;
@@ -121,6 +123,202 @@ public class NavMenuSelectionTests
         }
     }
 
+    [Fact]
+    public void Inline_Submenu_Open_With_Motion_Disabled_Restores_Actor_Opacity_After_Animated_Close()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = true
+        };
+
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Children.Add(new NavMenuNode
+        {
+            Header  = "Child",
+            ItemKey = "child"
+        });
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (Control)menu.ContainerFromItem(parent)!;
+            SetTimeSpanProperty(parentContainer, "OpenCloseMotionDuration", TimeSpan.FromMilliseconds(1));
+
+            var parentMenuItem = (INavMenuItem)parentContainer;
+            parentMenuItem.Open();
+            DrainDispatcher();
+
+            parentMenuItem.Close();
+            DrainDispatcher();
+
+            var actor = GetChildItemsMotionActor(parentContainer);
+            actor.IsVisible.ShouldBeFalse();
+            actor.Opacity.ShouldBe(0.0);
+
+            menu.IsMotionEnabled = false;
+            DrainDispatcher();
+
+            parentMenuItem.Open();
+            DrainDispatcher();
+
+            actor.IsVisible.ShouldBeTrue();
+            actor.Opacity.ShouldBe(1.0);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Inline_Submenu_Open_With_Motion_Disabled_Clears_Child_Header_Transitions_After_Animated_Close()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = true
+        };
+
+        var child = new NavMenuNode
+        {
+            Header  = "Child",
+            ItemKey = "child"
+        };
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Children.Add(child);
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (Control)menu.ContainerFromItem(parent)!;
+            SetTimeSpanProperty(parentContainer, "OpenCloseMotionDuration", TimeSpan.FromMilliseconds(1));
+
+            var parentMenuItem = (INavMenuItem)parentContainer;
+            parentMenuItem.Open();
+            DrainDispatcher();
+
+            var childContainer = (Control)((ItemsControl)parentContainer).ContainerFromItem(child)!;
+            var childHeader    = GetItemHeader(childContainer);
+
+            childHeader.IsMotionEnabled.ShouldBeTrue();
+            childHeader.Transitions.ShouldNotBeNull();
+
+            parentMenuItem.Close();
+            DrainDispatcher();
+
+            menu.IsMotionEnabled = false;
+            DrainDispatcher();
+
+            parentMenuItem.Open();
+            DrainDispatcher();
+
+            childHeader.IsMotionEnabled.ShouldBeFalse();
+            childHeader.Transitions.ShouldBeNull();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Inline_Submenu_Open_With_Motion_Disabled_Overrides_Pending_Animated_Close()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = true
+        };
+
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Children.Add(new NavMenuNode
+        {
+            Header  = "Child",
+            ItemKey = "child"
+        });
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (Control)menu.ContainerFromItem(parent)!;
+            var parentMenuItem  = (INavMenuItem)parentContainer;
+
+            SetTimeSpanProperty(parentContainer, "OpenCloseMotionDuration", TimeSpan.FromMilliseconds(1));
+            parentMenuItem.Open();
+            DrainDispatcher();
+
+            SetTimeSpanProperty(parentContainer, "OpenCloseMotionDuration", TimeSpan.FromMilliseconds(500));
+            parentMenuItem.Close();
+            Dispatcher.UIThread.RunJobs();
+            Dispatcher.UIThread.RunJobs();
+
+            var actor = GetChildItemsMotionActor(parentContainer);
+            actor.IsVisible.ShouldBeTrue();
+            actor.Transitions.ShouldNotBeNull();
+
+            menu.IsMotionEnabled = false;
+            Dispatcher.UIThread.RunJobs();
+
+            parentMenuItem.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            parentMenuItem.IsSubMenuOpen.ShouldBeTrue();
+
+            Thread.Sleep(600);
+            Dispatcher.UIThread.RunJobs();
+
+            actor.IsVisible.ShouldBeTrue();
+            actor.Opacity.ShouldBe(1.0);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static bool IsSelected(Control container)
     {
         return GetBoolProperty(container, "IsSelected");
@@ -133,5 +331,39 @@ public class NavMenuSelectionTests
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         property.ShouldNotBeNull();
         return (bool)property.GetValue(container)!;
+    }
+
+    private static BaseMotionActor GetChildItemsMotionActor(Control container)
+    {
+        var field = container.GetType().GetField(
+            "_childItemsLayoutTransform",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+        return (BaseMotionActor)field.GetValue(container)!;
+    }
+
+    private static BaseNavMenuItemHeader GetItemHeader(Control container)
+    {
+        var field = container.GetType().GetField(
+            "_itemHeader",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+        return (BaseNavMenuItemHeader)field.GetValue(container)!;
+    }
+
+    private static void SetTimeSpanProperty(Control container, string propertyName, TimeSpan value)
+    {
+        var property = container.GetType().GetProperty(
+            propertyName,
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        property.ShouldNotBeNull();
+        property.SetValue(container, value);
+    }
+
+    private static void DrainDispatcher()
+    {
+        Dispatcher.UIThread.RunJobs();
+        Thread.Sleep(20);
+        Dispatcher.UIThread.RunJobs();
     }
 }
