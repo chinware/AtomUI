@@ -22,7 +22,7 @@
 
 [github-releasedate-link]: https://github.com/AtomUI/AtomUI/releases
 
-[github-contributors-shield]: https://img.shields.io/github/contributors/AtomUI/AtomUI?color=c4f042&labelColor=black&style=flat-square
+[github-contributors-shield]: https://img.shields.io/badge/contributors-welcome-c4f042?labelColor=black&style=flat-square
 
 [github-contributors-link]: https://github.com/AtomUI/AtomUI/graphs/contributors
 
@@ -38,7 +38,7 @@
 
 [github-issues-link]: https://github.com/AtomUI/AtomUI/issues
 
-[github-license-shield]: https://img.shields.io/github/license/AtomUI/AtomUI?color=white&labelColor=black&style=flat-square
+[github-license-shield]: https://img.shields.io/badge/license-LGPL--3.0-white?labelColor=black&style=flat-square
 
 [github-license-link]: https://github.com/AtomUI/AtomUI/blob/master/LICENSE
 
