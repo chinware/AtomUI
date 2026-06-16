@@ -118,6 +118,13 @@ public abstract class DataGridBoundColumn : DataGridColumn
         }
     }
 
+    internal string? GetBindingPath()
+    {
+        return Binding is null
+            ? null
+            : GetBindingPath(Binding);
+    }
+
     private static BindingMode GetBindingMode(BindingBase binding)
     {
         return binding switch
