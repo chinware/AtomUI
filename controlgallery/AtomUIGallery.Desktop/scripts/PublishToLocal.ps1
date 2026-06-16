@@ -107,16 +107,22 @@ function Test-NativeAotRestoreAssets {
         throw "NativeAOT restore validation failed: assets file '$AssetsPath' was not found."
     }
 
-    $assetsContent = Get-Content -Path $AssetsPath -Raw
-    $requiredEntries = @(
-        "Microsoft.DotNet.ILCompiler",
-        "runtime.$Runtime.Microsoft.DotNet.ILCompiler"
-    )
+    $assetsContent = Get-Content -Path $AssetsPath -Raw | ConvertFrom-Json -Depth 100
+    $libraryNames = @($assetsContent.libraries.PSObject.Properties.Name)
+    $targetProperties = @($assetsContent.targets.PSObject.Properties)
+    $runtimeTarget = $targetProperties | Where-Object { $_.Name -like "*/$Runtime" } | Select-Object -First 1
 
-    foreach ($entry in $requiredEntries) {
-        if (-not $assetsContent.Contains($entry)) {
-            throw "NativeAOT restore validation failed for runtime '$Runtime': '$entry' was not found in '$AssetsPath'."
-        }
+    if (-not ($libraryNames | Where-Object { $_ -like "Microsoft.DotNet.ILCompiler/*" })) {
+        throw "NativeAOT restore validation failed for runtime '$Runtime': Microsoft.DotNet.ILCompiler was not found in '$AssetsPath'."
+    }
+
+    if (-not $runtimeTarget) {
+        throw "NativeAOT restore validation failed for runtime '$Runtime': no runtime-specific target was found in '$AssetsPath'."
+    }
+
+    $runtimeTargetLibraryNames = @($runtimeTarget.Value.PSObject.Properties.Name)
+    if (-not ($runtimeTargetLibraryNames | Where-Object { $_ -like "Microsoft.DotNet.ILCompiler/*" })) {
+        throw "NativeAOT restore validation failed for runtime '$Runtime': Microsoft.DotNet.ILCompiler was not found in target '$($runtimeTarget.Name)' in '$AssetsPath'."
     }
 
     Write-Host "NativeAOT restore assets validation passed for runtime '$Runtime'." -ForegroundColor Green
@@ -163,9 +169,50 @@ function Test-NativeAotOutput {
     Write-Host "NativeAOT output validation passed for runtime '$Runtime'." -ForegroundColor Green
 }
 
+function Copy-InstallerAssets {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$PackagesPath
+    )
+
+    $installerAssetsPath = Join-Path -Path $PSScriptRoot -ChildPath "../Assets"
+    $targetAssetsPath = Join-Path -Path $PackagesPath -ChildPath "Assets"
+
+    if (-not (Test-Path -Path $installerAssetsPath -PathType Container)) {
+        throw "Installer assets directory was not found: $installerAssetsPath"
+    }
+
+    if (Test-Path -Path $targetAssetsPath -PathType Container) {
+        Remove-Item -Path $targetAssetsPath -Recurse -Force
+    }
+
+    New-Item -Path $targetAssetsPath -ItemType Directory -Force | Out-Null
+    Copy-Item -Path (Join-Path -Path $installerAssetsPath -ChildPath "*") `
+              -Destination $targetAssetsPath `
+              -Recurse `
+              -Force `
+              -ErrorAction Stop
+
+    Write-Host "Installer assets copied to $targetAssetsPath." -ForegroundColor Green
+}
+
+function Test-PackageFile {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$RelativePath
+    )
+
+    $packageFilePath = Join-Path -Path $packagesPath -ChildPath $RelativePath
+    if (-not (Test-Path -Path $packageFilePath -PathType Leaf)) {
+        throw "Required installer package file was not found: $packageFilePath"
+    }
+}
+
 $publishAotEnabled = ConvertTo-Bool -Value $publishAot
 $projectPath = Join-Path -Path $PSScriptRoot -ChildPath "../AtomUIGallery.Desktop.csproj"
 $assetsPath = Join-Path -Path $PSScriptRoot -ChildPath "../../../output/AtomUIGallery.Desktop/obj/project.assets.json"
+$configsPath = Join-Path -Path $PSScriptRoot -ChildPath "../configs"
+$versionPropsPath = Join-Path -Path $PSScriptRoot -ChildPath "../../../build/Version.props"
 
 if ($publishAotEnabled) {
     if ($buildType -ne "Release") {
@@ -178,7 +225,7 @@ if ($publishAotEnabled) {
         "--runtime",
         $runtime,
         "-p:Configuration=$buildType",
-        "-p:PublishAot=true",
+        "-p:GalleryPublishAot=true",
         "--disable-parallel",
         "-m:1",
         "/nr:false",
@@ -202,7 +249,7 @@ if ($publishAotEnabled) {
         "--configuration",
         $buildType,
         "--no-restore",
-        "-p:PublishAot=true",
+        "-p:GalleryPublishAot=true",
         "--nologo",
         "-v:minimal"
     )
@@ -221,15 +268,25 @@ if ($publishAotEnabled) {
         $runtime,
         "--configuration",
         $buildType,
+        "-p:GalleryPublishAot=false",
         "-p:PublishSingleFile=true"
     )
 }
 
+Copy-InstallerAssets -PackagesPath $packagesPath
+
 if ($IsMacOS) {
-    Copy-Item -Path ../configs/InstallerConfig.dmg.xml -Destination $configPath/InstallerConfig.xml -Force
+    Test-PackageFile -RelativePath "Assets/Images/AtomUIGallery.icns"
+    Test-PackageFile -RelativePath "Assets/Images/DmgInstallerBg@2x.png"
+    Copy-Item -Path (Join-Path -Path $configsPath -ChildPath "InstallerConfig.dmg.xml") -Destination $configPath/InstallerConfig.xml -Force -ErrorAction Stop
 } elseif ($IsWindows) {
-    Copy-Item -Path ../configs/InstallerConfig.wix.xml -Destination $configPath/InstallerConfig.xml -Force
+    Copy-Item -Path (Join-Path -Path $configsPath -ChildPath "InstallerConfig.wix.xml") -Destination $configPath/InstallerConfig.xml -Force -ErrorAction Stop
 } elseif ($IsLinux) {
-    Copy-Item -Path ../configs/InstallerConfig.appimage.xml -Destination $configPath/InstallerConfig.xml -Force
+    Copy-Item -Path (Join-Path -Path $configsPath -ChildPath "InstallerConfig.appimage.xml") -Destination $configPath/InstallerConfig.xml -Force -ErrorAction Stop
+} else {
+    throw "Unsupported operating system for Gallery installer config generation."
 }
-Update-VersionInFile -XmlFilePath "../../../build/Version.props" -TargetFilePath "$configPath/InstallerConfig.xml"
+
+if (-not (Update-VersionInFile -XmlFilePath $versionPropsPath -TargetFilePath "$configPath/InstallerConfig.xml")) {
+    throw "Failed to update Gallery installer config version."
+}

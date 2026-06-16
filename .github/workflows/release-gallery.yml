@@ -20,6 +20,7 @@ on:
 env:
    SourceDir: ${{ github.workspace }}
    BuildDir: ${{ github.workspace }}/binaries
+   AtomUIToolsSourceDir: ${{ github.workspace }}/binaries/atomuitools-source
    AtomUIToolsBinDir: ${{ github.workspace }}/binaries/atomuitools
    GalleryPublishDir: ${{ github.workspace }}/binaries/gallery_published
    GalleryArtifactsOutputDir: ${{ github.workspace }}/binaries/artifacts_output
@@ -49,6 +50,7 @@ jobs:
                security create-keychain -p $env:KEYCHAIN_PASSWORD build.keychain
                security default-keychain -s build.keychain
                security unlock-keychain -p $env:KEYCHAIN_PASSWORD build.keychain
+               security set-keychain-settings -lut 21600 build.keychain
 
                security import $certPath -k build.keychain -P $env:CERT_PASSWORD -T /usr/bin/codesign
                security set-key-partition-list -S apple-tool:,apple: -s -k $env:KEYCHAIN_PASSWORD build.keychain
@@ -62,7 +64,7 @@ jobs:
                repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
-               path: ${{ env.BuildDir }}/AtomUITools
+               path: ${{ env.AtomUIToolsSourceDir }}
          -  name: Setup .NET 10
             uses: actions/setup-dotnet@v5
             with:
@@ -76,10 +78,12 @@ jobs:
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/dmg/x64" -Force
                brew install create-dmg openssl@3
-               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               Set-Location ${{ env.AtomUIToolsSourceDir }}/scripts
                pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime osx-x64
          -  name: Build DMG for osx-x64
             shell: pwsh
+            env:
+               KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
             run: |
                $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirX64 = "${{ env.GalleryPublishDir }}/osx-x64"
@@ -89,7 +93,10 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime osx-x64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
+               ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime osx-x64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
+
+               security unlock-keychain -p $env:KEYCHAIN_PASSWORD build.keychain
+               security set-keychain-settings -lut 21600 build.keychain
 
                ${{ env.AtomUIToolsMacBin }} create-dmg `
                   --runtime osx-x64 `
@@ -128,6 +135,7 @@ jobs:
                security create-keychain -p $env:KEYCHAIN_PASSWORD build.keychain
                security default-keychain -s build.keychain
                security unlock-keychain -p $env:KEYCHAIN_PASSWORD build.keychain
+               security set-keychain-settings -lut 21600 build.keychain
 
                security import $certPath -k build.keychain -P $env:CERT_PASSWORD -T /usr/bin/codesign
                security set-key-partition-list -S apple-tool:,apple: -s -k $env:KEYCHAIN_PASSWORD build.keychain
@@ -145,7 +153,7 @@ jobs:
                repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
-               path: ${{ env.BuildDir }}/AtomUITools
+               path: ${{ env.AtomUIToolsSourceDir }}
          -  name: Prepare build environment
             shell: pwsh
             run: |
@@ -155,10 +163,12 @@ jobs:
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/dmg/arm64" -Force
                brew install create-dmg openssl@3
-               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               Set-Location ${{ env.AtomUIToolsSourceDir }}/scripts
                pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime osx-arm64
          -  name: Build DMG for osx-arm64
             shell: pwsh
+            env:
+               KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
             run: |
                $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirArm64 = "${{ env.GalleryPublishDir }}/osx-arm64"
@@ -168,7 +178,10 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime osx-arm64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
+               ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime osx-arm64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
+
+               security unlock-keychain -p $env:KEYCHAIN_PASSWORD build.keychain
+               security set-keychain-settings -lut 21600 build.keychain
 
                & ${{ env.AtomUIToolsMacBin }} create-dmg `
                --runtime osx-arm64 `
@@ -227,11 +240,11 @@ jobs:
                repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
-               path: ${{ env.BuildDir }}/AtomUITools
+               path: ${{ env.AtomUIToolsSourceDir }}
          -  name: Build AtomUITools (Linux)
             shell: pwsh
             run: |
-               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               Set-Location ${{ env.AtomUIToolsSourceDir }}/scripts
                ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime linux-x64
 
          -  name: Build AppImage for linux-x64
@@ -245,7 +258,7 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime linux-x64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
+               ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime linux-x64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
                
                Set-Location ${{ env.BuildDir }}
                Get-Location
@@ -305,11 +318,11 @@ jobs:
                repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
-               path: ${{ env.BuildDir }}/AtomUITools
+               path: ${{ env.AtomUIToolsSourceDir }}
          -  name: Build AtomUITools (Linux)
             shell: pwsh
             run: |
-               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               Set-Location ${{ env.AtomUIToolsSourceDir }}/scripts
                ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime linux-arm64
 
          -  name: Build AppImage for linux-arm64
@@ -323,7 +336,7 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime linux-arm64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
+               ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime linux-arm64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
 
                Set-Location ${{ env.BuildDir }}
                Get-Location
@@ -368,11 +381,11 @@ jobs:
                repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
-               path: ${{ env.BuildDir }}/AtomUITools
+               path: ${{ env.AtomUIToolsSourceDir }}
          -  name: Build AtomUITools (Windows)
             shell: pwsh
             run: |
-               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               Set-Location ${{ env.AtomUIToolsSourceDir }}/scripts
                pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime win-x64
          -  name: Build Zip package for win-x64
             shell: pwsh
@@ -385,7 +398,7 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime win-x64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
+               ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime win-x64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
                Set-Location ${{ env.BuildDir }}
                Get-Location
                ${{ env.AtomUIToolsWinBin }} create-zip `
@@ -427,11 +440,11 @@ jobs:
                repository: AtomUI/AtomUITools
                ref: develop
                token: ${{ secrets.ACCESS_TOKEN }}
-               path: ${{ env.BuildDir }}/AtomUITools
+               path: ${{ env.AtomUIToolsSourceDir }}
          -  name: Build AtomUITools (Windows Arm64)
             shell: pwsh
             run: |
-               Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
+               Set-Location ${{ env.AtomUIToolsSourceDir }}/scripts
                pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime win-arm64
          -  name: Build Zip package for win-arm64
             shell: pwsh
@@ -444,7 +457,7 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime win-arm64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
+               ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime win-arm64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
                Set-Location ${{ env.BuildDir }}
                Get-Location
                ${{ env.AtomUIToolsWinBin }} create-zip `
