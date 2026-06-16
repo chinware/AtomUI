@@ -12,7 +12,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Styling;
 
 namespace AtomUI.Desktop.Controls;
@@ -541,14 +540,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
         {
             if (this is DataGridBoundColumn boundColumn)
             {
-                if (boundColumn.Binding is Binding binding)
-                {
-                    result = binding.Path;
-                }
-                else if (boundColumn.Binding is CompiledBindingExtension compiledBinding)
-                {
-                    result = compiledBinding.Path?.ToString();
-                }
+                result = boundColumn.GetBindingPath();
             }
         }
 
@@ -583,14 +575,7 @@ public abstract partial class DataGridColumn : IDataGridColumnGroupItemInternal
         {
             if (this is DataGridBoundColumn boundColumn)
             {
-                if (boundColumn.Binding is Binding binding)
-                {
-                    result = binding.Path;
-                }
-                else if (boundColumn.Binding is CompiledBindingExtension compiledBinding)
-                {
-                    result = compiledBinding.Path?.ToString();
-                }
+                result = boundColumn.GetBindingPath();
             }
         }
 
