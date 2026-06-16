@@ -27,7 +27,9 @@ PublishAot:
 
 发布流程会拉取 private 仓库 `AtomUI/AtomUITools` 的 `develop` 分支来构建打包工具。由于这是跨仓库 checkout，`GITHUB_TOKEN` 不能默认读取该仓库，必须传入 `secrets.ACCESS_TOKEN`。
 
-`ACCESS_TOKEN` 应是 GitHub PAT 或 fine-grained token，并至少具备 `AtomUI/AtomUITools` 的只读 Contents 权限。这个 token 过期、未授权到该仓库，或没有配置到当前发布仓库的 Actions secrets 时，`actions/checkout` 会在 `Fetching the repository` 阶段失败。
+`AtomUITools` 和主仓库同属 `AtomUI` 组织，但标准 `GITHUB_TOKEN` 仍不应假定可读取另一个 private 仓库。`ACCESS_TOKEN` 应是 GitHub PAT 或 fine-grained token，并至少具备 `AtomUI/AtomUITools` 的只读 Contents 权限。这个 token 过期、未授权到该仓库，或没有配置到当前发布仓库的 Actions secrets 时，`actions/checkout` 会在 `Fetching the repository` 阶段失败。
+
+`AtomUITools` 源码 checkout 到 `AtomUIToolsSourceDir`，构建输出写入 `AtomUIToolsBinDir`。这两个目录不能只靠大小写区分；Windows 和 macOS runner 的文件系统通常大小写不敏感，`AtomUITools` 与 `atomuitools` 会指向同一个目录。
 
 ## 发布脚本职责
 
@@ -36,9 +38,10 @@ PublishAot:
 当 `publishAot` 为 `true`：
 
 - 要求 `buildType` 为 `Release`。
-- 先执行显式 restore，并传入 `-p:Configuration=Release -p:PublishAot=true`。
-- 检查 `project.assets.json` 包含 `Microsoft.DotNet.ILCompiler` 和目标 RID 的 ILCompiler runtime 包。
-- 再执行 `dotnet publish --no-restore`，并显式传入 `-p:PublishAot=true`。
+- 先执行显式 restore，并传入 `-p:Configuration=Release -p:GalleryPublishAot=true`。
+- `AtomUIGallery.Desktop.csproj` 将 `GalleryPublishAot` 映射到本项目的 `PublishAot`。不要在命令行直接传全局 `PublishAot=true`，否则 source generator 等非最终可执行项目也会收到该属性，并可能触发 `NETSDK1207`。
+- 检查 `project.assets.json` 包含 `Microsoft.DotNet.ILCompiler`，并存在目标 RID 对应的 restore target。
+- 再执行 `dotnet publish --no-restore`，并显式传入 `-p:GalleryPublishAot=true`。
 - 检查输出目录里不存在普通 self-contained runtime 标志文件。
 
 当 `publishAot` 为 `false`：

@@ -13,7 +13,8 @@
         <IsAotCompatible>true</IsAotCompatible>
         <IsTrimmable>true</IsTrimmable>
         <PublishTrimmed>true</PublishTrimmed>
-        <PublishAot>true</PublishAot>
+        <PublishAot Condition="'$(GalleryPublishAot)' == ''">true</PublishAot>
+        <PublishAot Condition="'$(GalleryPublishAot)' != ''">$(GalleryPublishAot)</PublishAot>
         <SelfContained>true</SelfContained>
         <UseAppHost>true</UseAppHost>
     </PropertyGroup>
