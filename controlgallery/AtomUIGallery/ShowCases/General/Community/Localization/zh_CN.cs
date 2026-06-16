@@ -12,13 +12,13 @@ internal partial class zh_CN : LanguageProvider
     public const string MissionLabel = "使命：";
     public const string MissionText = "让数字世界建设者更高效";
     public const string HomePage = "官网";
-    public const string WeChatOfficial = "微信公众号";
+    public const string WeChatOfficial = "WeChat Press";
     public const string WeChatOfficialDescription = "关注发布动态";
-    public const string TelegramGroup = "Telegram 交流群";
+    public const string TelegramGroup = "Telegram";
     public const string TelegramGroupDescription = "加入 Telegram 交流群";
-    public const string WeChatGroup = "微信交流群";
+    public const string WeChatGroup = "微信群";
     public const string WeChatGroupDescription = "加入微信交流群";
-    public const string QQGroup = "QQ 交流群";
+    public const string QQGroup = "QQ群";
     public const string QQGroupDescription = "加入 QQ 交流群";
 
     protected override Type GetResourceKindType() => typeof(CommunityPageLangResourceKind);
