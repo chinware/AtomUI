@@ -130,6 +130,17 @@ public class FlexPanelShowCasePageTests
     }
 
     [Fact]
+    public void FlexPanel_ShowCase_Uses_DataGrid_Empty_State_When_No_Design_Tokens()
+    {
+        var viewModel = new AtomUIGallery.ShowCases.FlexPanel.FlexPanelViewModel(null!);
+
+        viewModel.EnsureDesignTokenRows();
+
+        viewModel.DesignTokenRows.ShouldNotBeNull();
+        viewModel.DesignTokenRows!.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void FlexPanel_ShowCase_Initializers_Use_Avalonia_Slider_Type_For_Bare_Slider_Elements()
     {
         var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml");
@@ -203,7 +214,6 @@ public class FlexPanelShowCasePageTests
             source.ShouldContain("ApiPropertyFlexGrow");
             source.ShouldContain("ApiPropertyFlexBasis");
             source.ShouldContain("ApiPropertyFlexAlignSelf");
-            source.ShouldContain("TokenNameNoComponentToken");
         }
     }
 

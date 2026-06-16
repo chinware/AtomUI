@@ -112,6 +112,17 @@ public class WatermarkShowCasePageTests
     }
 
     [Fact]
+    public void Watermark_ShowCase_Uses_DataGrid_Empty_State_When_No_Design_Tokens()
+    {
+        var viewModel = new AtomUIGallery.ShowCases.Watermark.WatermarkViewModel(null!);
+
+        viewModel.EnsureDesignTokenRows();
+
+        viewModel.DesignTokenRows.ShouldNotBeNull();
+        viewModel.DesignTokenRows!.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Watermark_ShowCase_Localization_Includes_Page_And_Api_Copy()
     {
         var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Watermark/Localization/en_US.cs");
@@ -129,7 +140,6 @@ public class WatermarkShowCasePageTests
             source.ShouldContain("ApiPropertyText");
             source.ShouldContain("ApiPropertySource");
             source.ShouldContain("ApiPropertyRotate");
-            source.ShouldContain("TokenNameNoComponentToken");
         }
     }
 

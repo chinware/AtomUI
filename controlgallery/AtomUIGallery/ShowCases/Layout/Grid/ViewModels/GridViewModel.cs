@@ -66,10 +66,7 @@ public class GridViewModel : ReactiveObject, IRoutableViewModel
             return;
         }
 
-        DesignTokenRows =
-        [
-            new GridDesignTokenRow("N/A", Lang(GridShowCaseLangResourceKind.TokenNameNoComponentToken), Lang(GridShowCaseLangResourceKind.TokenScopeComponent), "default", Lang(GridShowCaseLangResourceKind.TokenStatusNotApplicable), "default")
-        ];
+        DesignTokenRows = [];
     }
 
     private static string Lang(GridShowCaseLangResourceKind kind)

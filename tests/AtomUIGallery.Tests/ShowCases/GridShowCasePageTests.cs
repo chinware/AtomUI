@@ -126,6 +126,17 @@ public class GridShowCasePageTests
     }
 
     [Fact]
+    public void Grid_ShowCase_Uses_DataGrid_Empty_State_When_No_Design_Tokens()
+    {
+        var viewModel = new AtomUIGallery.ShowCases.Grid.GridViewModel(null!);
+
+        viewModel.EnsureDesignTokenRows();
+
+        viewModel.DesignTokenRows.ShouldNotBeNull();
+        viewModel.DesignTokenRows!.ShouldBeEmpty();
+    }
+
+    [Fact]
     public void Grid_ShowCase_Localization_Includes_Page_And_Api_Copy()
     {
         var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/Grid/Localization/en_US.cs");
@@ -144,7 +155,6 @@ public class GridShowCasePageTests
             source.ShouldContain("ApiPropertyColOffset");
             source.ShouldContain("ApiPropertyColOrder");
             source.ShouldContain("ApiPropertyColInfo");
-            source.ShouldContain("TokenNameNoComponentToken");
         }
     }
 
