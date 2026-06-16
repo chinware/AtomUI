@@ -9,6 +9,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
@@ -18,9 +19,9 @@ namespace AtomUI.Desktop.Controls;
 
 using AvaloniaWindow = Avalonia.Controls.Window;
 
-public class Window : AvaloniaWindow, 
-                      IOperationSystemAware, 
-                      IMediaBreakAwareControl
+public partial class Window : AvaloniaWindow,
+                              IOperationSystemAware,
+                              IMediaBreakAwareControl
 {
     #region 公共属性定义
     public static readonly StyledProperty<object?> LogoProperty =
@@ -264,7 +265,6 @@ public class Window : AvaloniaWindow,
 
     private static readonly IDataTemplate s_windowIconLogoTemplate =
         new FuncDataTemplate<WindowIcon>((icon, _) => CreateWindowIconLogo(icon));
-    private const double LinuxInitialScreenMargin = 48;
     
     private Thickness _titleBarOffsetMargin;
     internal Thickness TitleBarOffsetMargin
@@ -287,6 +287,17 @@ public class Window : AvaloniaWindow,
     {
         get => _isCsdEnabled;
         set => SetAndRaise(IsCsdEnabledProperty, ref _isCsdEnabled, value);
+    }
+
+    internal void RaiseRoutedEventFromOverlay(Interactive source, RoutedEventArgs args)
+    {
+        if (args.RoutedEvent is null)
+        {
+            return;
+        }
+
+        using var route = BuildEventRoute(args.RoutedEvent);
+        route.RaiseEvent(source, args);
     }
 
     private bool _isCustomResizerVisible;
@@ -330,7 +341,7 @@ public class Window : AvaloniaWindow,
     private PointerPressedEventArgs? _lastMousePressedEventArgs;
     private bool _isDragging;
     private bool _wasFullScreen;
-    private bool _isLinuxInitialShowStatePrepared;
+    private readonly IWindowChromeManager? _platformChromeManager;
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
@@ -347,191 +358,51 @@ public class Window : AvaloniaWindow,
         AffectsRender<Window>(TitleBarFrameBackgroundProperty, 
             ContentFrameBackgroundProperty);
         ConfigureOsType();
-        FrameShadowProperty.Changed.AddClassHandler<Window>((window, args) => window.FrameShadowThickness = args.GetNewValue<BoxShadows>().Thickness());
+        FrameShadowProperty.Changed.AddClassHandler<Window>((window, args) =>
+            window.HandleFrameShadowPropertyChanged(args.GetNewValue<BoxShadows>()));
     }
 
     public Window()
     {
         ConfigureCsdStatus();
-        if (OperatingSystem.IsLinux())
-        {
-            ScalingChanged += HandleLinuxScalingChanged;
-        }
+        _platformChromeManager = WindowChromeManager.Attach(this);
     }
 
     public override void Show()
     {
-        var restoreLinuxStartupLocation = PrepareLinuxInitialShowState();
+        var restoreStartupLocation = _platformChromeManager?.PrepareInitialShowState();
         try
         {
             base.Show();
         }
         finally
         {
-            restoreLinuxStartupLocation?.Invoke();
+            restoreStartupLocation?.Invoke();
         }
     }
 
-    private Action? PrepareLinuxInitialShowState()
+    internal void PreparePlatformChromeInitialShowLayout()
     {
-        if (_isLinuxInitialShowStatePrepared || !OperatingSystem.IsLinux() || IsVisible || PlatformImpl is null)
-        {
-            return null;
-        }
-
-        _isLinuxInitialShowStatePrepared = true;
         EnsureInitialized();
         ApplyStyling();
-        EnsureLinuxResizeMinimumSize();
-        ApplyLinuxX11CsdFrameExtents();
-        var screen     = Screens.ScreenFromPoint(Position) ?? Screens.Primary;
-        var clientSize = SynchronizeLinuxInitialClientSize(screen);
-        if (clientSize is null)
-        {
-            return null;
-        }
-
-        var originalStartupLocation = WindowStartupLocation;
-        if (TryGetLinuxInitialStartupPosition(clientSize.Value, screen, out var position))
-        {
-            SetCurrentValue(WindowStartupLocationProperty, WindowStartupLocation.Manual);
-            Position = position;
-            this.ConfigureLinuxInitialWindowGeometry(position, clientSize.Value, screen?.Scaling ?? 1);
-            return () => SetCurrentValue(WindowStartupLocationProperty, originalStartupLocation);
-        }
-
-        this.ConfigureLinuxInitialWindowGeometry(Position, clientSize.Value, screen?.Scaling ?? 1);
-        return null;
     }
 
-    private Size? SynchronizeLinuxInitialClientSize(Screen? screen)
+    internal void SetPlatformChromeClientSize(Size clientSize)
     {
-        if (SizeToContent != SizeToContent.Manual)
-        {
-            return null;
-        }
-
-        if (WindowState is WindowState.Minimized or WindowState.Maximized or WindowState.FullScreen)
-        {
-            return null;
-        }
-
-        if (!TryGetExplicitInitialClientSize(out var clientSize))
-        {
-            return null;
-        }
-
-        clientSize = ConstrainLinuxInitialClientSizeToScreen(clientSize, screen);
-
-        if (!MathUtils.AreClose(Width, clientSize.Width))
-        {
-            Width = clientSize.Width;
-        }
-
-        if (!MathUtils.AreClose(Height, clientSize.Height))
-        {
-            Height = clientSize.Height;
-        }
-
-        if (ClientSize != clientSize)
-        {
-            ClientSize = clientSize;
-        }
-
-        return clientSize;
+        ClientSize = clientSize;
     }
 
-    private Size ConstrainLinuxInitialClientSizeToScreen(Size clientSize, Screen? screen)
+    private void HandleFrameShadowPropertyChanged(BoxShadows frameShadow)
     {
-        if (screen is null || screen.Scaling <= 0)
+        if (_platformChromeManager is not null)
         {
-            return clientSize;
+            _platformChromeManager.HandleFrameShadowChanged(frameShadow);
+            return;
         }
 
-        var workingArea = screen.WorkingArea;
-        var maxWidth    = Math.Max(1, workingArea.Width / screen.Scaling - LinuxInitialScreenMargin * 2);
-        var maxHeight   = Math.Max(1, workingArea.Height / screen.Scaling - LinuxInitialScreenMargin * 2);
-
-        return new Size(
-            ClampToWindowSizeConstraint(clientSize.Width, MinWidth, Math.Min(MaxWidth, maxWidth)),
-            ClampToWindowSizeConstraint(clientSize.Height, MinHeight, Math.Min(MaxHeight, maxHeight)));
+        FrameShadowThickness = frameShadow.Thickness();
     }
 
-    private bool TryGetLinuxInitialStartupPosition(Size clientSize, Screen? screen, out PixelPoint position)
-    {
-        position = default;
-
-        if (WindowStartupLocation is not (WindowStartupLocation.CenterScreen or WindowStartupLocation.CenterOwner))
-        {
-            return false;
-        }
-
-        if (screen is null)
-        {
-            return false;
-        }
-
-        var rect      = new PixelRect(PixelSize.FromSize(clientSize, screen.Scaling));
-        var childRect = screen.WorkingArea.CenterRect(rect);
-        if (Screens.ScreenFromPoint(childRect.Position) is null)
-        {
-            childRect = ApplyScreenConstraint(screen, childRect, rect);
-        }
-
-        position = childRect.Position;
-        return true;
-    }
-
-    private static PixelRect ApplyScreenConstraint(Screen screen, PixelRect childRect, PixelRect rect)
-    {
-        var constraint = screen.WorkingArea;
-        var maxX       = constraint.Right - rect.Width;
-        var maxY       = constraint.Bottom - rect.Height;
-
-        if (constraint.X <= maxX)
-        {
-            childRect = childRect.WithX(Math.Clamp(childRect.X, constraint.X, maxX));
-        }
-
-        if (constraint.Y <= maxY)
-        {
-            childRect = childRect.WithY(Math.Clamp(childRect.Y, constraint.Y, maxY));
-        }
-
-        return childRect;
-    }
-
-    private bool TryGetExplicitInitialClientSize(out Size clientSize)
-    {
-        clientSize = default;
-
-        if (!IsUsableExplicitSize(Width) || !IsUsableExplicitSize(Height))
-        {
-            return false;
-        }
-
-        clientSize = new Size(
-            ClampToWindowSizeConstraint(Width, MinWidth, MaxWidth),
-            ClampToWindowSizeConstraint(Height, MinHeight, MaxHeight));
-        return true;
-    }
-
-    private static bool IsUsableExplicitSize(double value)
-    {
-        return double.IsFinite(value) && value > 0;
-    }
-
-    private static double ClampToWindowSizeConstraint(double value, double min, double max)
-    {
-        var effectiveMin = double.IsFinite(min) ? min : 0;
-        var effectiveMax = double.IsFinite(max) ? max : double.PositiveInfinity;
-        if (effectiveMax < effectiveMin)
-        {
-            effectiveMax = effectiveMin;
-        }
-        return Math.Min(Math.Max(value, effectiveMin), effectiveMax);
-    }
-    
     private static void ConfigureOsType()
     {
         if (OperatingSystem.IsWindows())
@@ -713,8 +584,14 @@ public class Window : AvaloniaWindow,
 
     private void HandleTitleBarSizeChanged(object? sender, SizeChangedEventArgs e)
     {
-        SetCurrentValue(ExtendClientAreaTitleBarHeightHintProperty, e.NewSize.Height);
-        EnsureLinuxResizeMinimumSize();
+        if (_platformChromeManager is not null)
+        {
+            _platformChromeManager.ConfigureTitleBarHeightHint(e.NewSize.Height);
+        }
+        else
+        {
+            SetCurrentValue(ExtendClientAreaTitleBarHeightHintProperty, e.NewSize.Height);
+        }
     }
 
     private void HandleTitleBarPointerReleased(object? sender, PointerReleasedEventArgs e)
@@ -821,8 +698,7 @@ public class Window : AvaloniaWindow,
     protected override void OnOpened(EventArgs e)
     {
         base.OnOpened(e);
-        EnsureLinuxResizeMinimumSize();
-        ApplyLinuxX11CsdFrameExtents();
+        _platformChromeManager?.UpdateFrameGeometry();
         ApplyDefaultLogoIfNeeded();
         if (OperatingSystem.IsMacOS())
         {
@@ -947,15 +823,7 @@ public class Window : AvaloniaWindow,
                 }
             }
         }
-        if (OperatingSystem.IsLinux() &&
-            (change.Property == WindowStateProperty ||
-             change.Property == FrameShadowThicknessProperty ||
-             change.Property == TitleBarHeightProperty ||
-             change.Property == IsCsdEnabledProperty))
-        {
-            EnsureLinuxResizeMinimumSize();
-            ApplyLinuxX11CsdFrameExtents();
-        }
+        _platformChromeManager?.HandlePropertyChanged(change.Property);
         if (OperatingSystem.IsWindows() && change.Property == WindowStateProperty)
         {
             UpdateWinDwmForWindowState();
@@ -1023,60 +891,6 @@ public class Window : AvaloniaWindow,
         else if (OperatingSystem.IsWindows())
         {
             IsCsdEnabled = false;
-        }
-    }
-
-    private void HandleLinuxScalingChanged(object? sender, EventArgs e)
-    {
-        ApplyLinuxX11CsdFrameExtents();
-    }
-
-    private void ApplyLinuxX11CsdFrameExtents()
-    {
-        if (!OperatingSystem.IsLinux())
-        {
-            return;
-        }
-
-        var frameExtents = WindowState is WindowState.Normal ? FrameShadowThickness : default;
-        this.SetLinuxX11CsdFrameExtents(frameExtents);
-    }
-
-    private void EnsureLinuxResizeMinimumSize()
-    {
-        if (!OperatingSystem.IsLinux())
-        {
-            return;
-        }
-
-        var shadow       = FrameShadowThickness;
-        var cornerRadius = CornerRadius;
-        var maxCorner = Math.Max(
-            Math.Max(cornerRadius.TopLeft, cornerRadius.TopRight),
-            Math.Max(cornerRadius.BottomLeft, cornerRadius.BottomRight));
-
-        const double frameBorder = 1;
-
-        var horizontalChrome = shadow.Left + shadow.Right + frameBorder * 2;
-        var titleBarWidth    = _titleBar?.DesiredSize.Width ?? 0;
-        var minResizeWidth = Math.Max(
-            horizontalChrome + maxCorner * 2,
-            horizontalChrome + titleBarWidth);
-
-        var titleBarHeight = Math.Max(_titleBar?.DesiredSize.Height ?? 0, TitleBarHeight);
-        var verticalChrome = shadow.Top + shadow.Bottom + frameBorder * 2;
-        var minResizeHeight = Math.Max(
-            verticalChrome + titleBarHeight + maxCorner * 2,
-            verticalChrome + titleBarHeight * 3);
-
-        if (MinWidth < minResizeWidth)
-        {
-            MinWidth = minResizeWidth;
-        }
-
-        if (MinHeight < minResizeHeight)
-        {
-            MinHeight = minResizeHeight;
         }
     }
 

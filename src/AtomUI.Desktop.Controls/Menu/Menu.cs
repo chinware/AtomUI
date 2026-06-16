@@ -2,12 +2,10 @@ using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Styling;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -56,7 +54,8 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
     #endregion
 
     private bool _isClosing;
-    private Window? _linuxTitleBarDismissRoot;
+    private bool _isSyncingLinuxCsdRadioGroup;
+    private IDisposable? _linuxCsdPopupDismissRoot;
 
     static Menu()
     {
@@ -67,6 +66,8 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
         : base(new DefaultMenuInteractionHandler(false))
     {
         this.RegisterTokenResourceScope(MenuToken.ScopeProvider);
+        AddHandler(MenuItem.ClickEvent, RelayLinuxCsdPopupClickToHostWindow);
+        AddHandler(MenuItem.IsCheckStateChangedEvent, SyncLinuxCsdRadioGroup);
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -159,19 +160,19 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
     {
         base.OnAttachedToLogicalTree(e);
         ConfigureItemContainerTheme(false);
-        ConfigureLinuxTitleBarDismissRoot();
+        ConfigureLinuxCsdPopupDismissRoot();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        DetachLinuxTitleBarDismissRoot();
+        LinuxCsdPopupSupport.ClearDismissRoot(ref _linuxCsdPopupDismissRoot);
         base.OnDetachedFromLogicalTree(e);
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-        ConfigureLinuxTitleBarDismissRoot();
+        ConfigureLinuxCsdPopupDismissRoot();
     }
 
     private void ConfigureItemContainerTheme(bool force)
@@ -263,65 +264,132 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
         });
     }
 
-    private void ConfigureLinuxTitleBarDismissRoot()
+    private void ConfigureLinuxCsdPopupDismissRoot()
     {
-        var hostWindow = ResolveLinuxTitleBarDismissRoot();
-        if (ReferenceEquals(_linuxTitleBarDismissRoot, hostWindow))
+        _linuxCsdPopupDismissRoot =
+            LinuxCsdPopupSupport.UpdateDismissRoot(
+                this,
+                _linuxCsdPopupDismissRoot,
+                () => IsOpen,
+                Close,
+                IsInteractionInsideMenu);
+    }
+
+    // Title-bar overlay menus are outside the host Window's visual tree, so the
+    // default menu root cannot relay clicks or manage radio groups for this case.
+    private void RelayLinuxCsdPopupClickToHostWindow(object? sender, RoutedEventArgs e)
+    {
+        if (e.Source is not MenuItem ||
+            !LinuxCsdPopupSupport.TryResolveLinuxCsdHostWindow(this, out var hostWindow))
         {
             return;
         }
 
-        DetachLinuxTitleBarDismissRoot();
-        if (hostWindow is null)
+        var relayedArgs = new RoutedEventArgs(MenuItem.ClickEvent)
+        {
+            Source = e.Source
+        };
+        hostWindow.RaiseRoutedEventFromOverlay((MenuItem)e.Source, relayedArgs);
+        e.Handled = relayedArgs.Handled;
+    }
+
+    private void SyncLinuxCsdRadioGroup(object? sender, RoutedEventArgs e)
+    {
+        if (_isSyncingLinuxCsdRadioGroup ||
+            e.Source is not MenuItem checkedItem ||
+            !checkedItem.IsChecked ||
+            checkedItem.ToggleType != MenuItemToggleType.Radio ||
+            !LinuxCsdPopupSupport.TryResolveLinuxCsdHostWindow(this, out _))
         {
             return;
         }
 
-        hostWindow.AddHandler(InputElement.PointerPressedEvent,
-            HandleLinuxTitleBarDismissRootPointerPressed,
-            RoutingStrategies.Tunnel);
-        hostWindow.Deactivated += HandleLinuxTitleBarDismissRootDeactivated;
-        _linuxTitleBarDismissRoot = hostWindow;
+        _isSyncingLinuxCsdRadioGroup = true;
+        try
+        {
+            if (string.IsNullOrEmpty(checkedItem.GroupName))
+            {
+                UncheckSiblingRadioItems(checkedItem);
+            }
+            else
+            {
+                UncheckNamedRadioGroup(checkedItem);
+            }
+        }
+        finally
+        {
+            _isSyncingLinuxCsdRadioGroup = false;
+        }
     }
 
-    private void DetachLinuxTitleBarDismissRoot()
+    private static void UncheckSiblingRadioItems(MenuItem checkedItem)
     {
-        if (_linuxTitleBarDismissRoot is null)
+        var parent = ((ILogical)checkedItem).LogicalParent;
+        if (parent is null)
         {
             return;
         }
 
-        _linuxTitleBarDismissRoot.RemoveHandler(InputElement.PointerPressedEvent,
-            HandleLinuxTitleBarDismissRootPointerPressed);
-        _linuxTitleBarDismissRoot.Deactivated -= HandleLinuxTitleBarDismissRootDeactivated;
-        _linuxTitleBarDismissRoot = null;
-    }
-
-    private Window? ResolveLinuxTitleBarDismissRoot()
-    {
-        if (!OperatingSystem.IsLinux() || TopLevel.GetTopLevel(this) is not null)
+        foreach (var sibling in parent.LogicalChildren)
         {
-            return null;
-        }
-
-        var titleBar = this.FindLogicalAncestorOfType<WindowTitleBar>() ??
-                       this.FindAncestorOfType<WindowTitleBar>();
-        var window = titleBar?.HostWindow;
-        return window is { IsCsdEnabled: true } ? window : null;
-    }
-
-    private void HandleLinuxTitleBarDismissRootPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        if (IsOpen &&
-            e.Source is ILogical control &&
-            !this.IsLogicalAncestorOf(control))
-        {
-            Close();
+            if (sibling is MenuItem menuItem &&
+                !ReferenceEquals(menuItem, checkedItem) &&
+                menuItem.ToggleType == MenuItemToggleType.Radio &&
+                string.IsNullOrEmpty(menuItem.GroupName) &&
+                menuItem.IsChecked)
+            {
+                menuItem.SetCurrentValue(MenuItem.IsCheckedProperty, false);
+            }
         }
     }
 
-    private void HandleLinuxTitleBarDismissRootDeactivated(object? sender, EventArgs e)
+    private void UncheckNamedRadioGroup(MenuItem checkedItem)
     {
-        Close();
+        foreach (var menuItem in EnumerateMenuItems(this))
+        {
+            if (!ReferenceEquals(menuItem, checkedItem) &&
+                menuItem.ToggleType == MenuItemToggleType.Radio &&
+                menuItem.GroupName == checkedItem.GroupName &&
+                menuItem.IsChecked)
+            {
+                menuItem.SetCurrentValue(MenuItem.IsCheckedProperty, false);
+            }
+        }
+    }
+
+    private static IEnumerable<MenuItem> EnumerateMenuItems(ILogical owner)
+    {
+        foreach (var child in owner.LogicalChildren)
+        {
+            if (child is MenuItem menuItem)
+            {
+                yield return menuItem;
+                foreach (var descendant in EnumerateMenuItems(menuItem))
+                {
+                    yield return descendant;
+                }
+            }
+        }
+    }
+
+    private bool IsInteractionInsideMenu(ILogical control)
+    {
+        if (this.IsLogicalAncestorOf(control))
+        {
+            return true;
+        }
+
+        var current = control as StyledElement;
+        while (current is not null)
+        {
+            if (ReferenceEquals(current, this))
+            {
+                return true;
+            }
+
+            current = current.Parent;
+        }
+
+        return false;
     }
 }

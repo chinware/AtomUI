@@ -1,3 +1,4 @@
+using System.Runtime.Versioning;
 using Avalonia;
 using Avalonia.Media;
 
@@ -50,8 +51,12 @@ public static class AppBuilderExtensions
     /// </example>
     public static AppBuilder WithAtomUIDefaultOptions(this AppBuilder appBuilder)
     {
+        if (OperatingSystem.IsWindows())
+        {
+            appBuilder = appBuilder.WithWin32TransparentPopupCompositionOptions();
+        }
+
         return appBuilder
-            .WithWin32TransparentPopupCompositionOptions()
             .With(new AvaloniaNativePlatformOptions
             {
                 RenderingMode =
@@ -74,6 +79,7 @@ public static class AppBuilderExtensions
             });
     }
 
+    [SupportedOSPlatform("windows")]
     private static AppBuilder WithWin32TransparentPopupCompositionOptions(this AppBuilder appBuilder)
     {
         var win32OptionsType = Type.GetType("Avalonia.Win32PlatformOptions, Avalonia.Win32");
