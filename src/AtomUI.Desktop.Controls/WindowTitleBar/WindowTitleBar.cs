@@ -241,7 +241,8 @@ public class WindowTitleBar : TemplatedControl,
         if (change.Property == LogoProperty ||
             change.Property == LogoTemplateProperty ||
             change.Property == LogoVisibilityProperty ||
-            change.Property == TitleProperty)
+            change.Property == TitleProperty ||
+            change.Property == OsTypeProperty)
         {
             UpdateEffectiveLogoVisible();
         }
@@ -263,6 +264,11 @@ public class WindowTitleBar : TemplatedControl,
         if (HasTitleContent(Title))
         {
             return true;
+        }
+
+        if (OsType == OsType.macOS)
+        {
+            return false;
         }
 
         return !_isWindowFullScreen;

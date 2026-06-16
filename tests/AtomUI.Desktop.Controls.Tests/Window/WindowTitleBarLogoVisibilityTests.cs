@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Shouldly;
 using Xunit;
@@ -8,6 +9,11 @@ namespace AtomUI.Desktop.Controls.Tests.Window;
 
 public class WindowTitleBarLogoVisibilityTests
 {
+    static WindowTitleBarLogoVisibilityTests()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+    }
+
     [Fact]
     public void Title_Bar_Logo_Visibility_Mode_Defaults_To_Auto()
     {
@@ -21,7 +27,7 @@ public class WindowTitleBarLogoVisibilityTests
     }
 
     [Fact]
-    public void Title_Bar_Logo_Auto_Mode_Hides_Titleless_Logo_Only_In_FullScreen()
+    public void Title_Bar_Logo_Auto_Mode_Uses_Title_Content_Platform_And_Fullscreen_State()
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/WindowTitleBar/WindowTitleBar.cs"));
 
@@ -30,8 +36,58 @@ public class WindowTitleBarLogoVisibilityTests
         source.ShouldContain("WindowTitleBarLogoVisibility.Never => false");
         source.ShouldContain("_ => hasLogo && ShouldShowLogoInAutoMode()");
         source.ShouldContain("_isWindowFullScreen = x == WindowState.FullScreen");
+        source.ShouldContain("OsType == OsType.macOS");
         source.ShouldContain("return !_isWindowFullScreen;");
         source.ShouldContain("string text => !string.IsNullOrWhiteSpace(text)");
+    }
+
+    [Fact]
+    public void Title_Bar_Logo_Auto_Mode_Hides_Titleless_Logo_On_MacOS()
+    {
+        var titleBar = new AtomUI.Desktop.Controls.WindowTitleBar();
+
+        titleBar.SetValue(AtomUI.Desktop.Controls.WindowTitleBar.OsTypeProperty, OsType.macOS);
+        titleBar.Logo = new object();
+
+        GetIsEffectiveLogoVisible(titleBar).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Title_Bar_Logo_Auto_Mode_Keeps_Titleless_Logo_On_Non_MacOS_When_Not_Fullscreen()
+    {
+        var titleBar = new AtomUI.Desktop.Controls.WindowTitleBar();
+
+        titleBar.SetValue(AtomUI.Desktop.Controls.WindowTitleBar.OsTypeProperty, OsType.Windows);
+        titleBar.Logo = new object();
+
+        GetIsEffectiveLogoVisible(titleBar).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Title_Bar_Logo_Always_Mode_Keeps_Titleless_Logo_On_MacOS()
+    {
+        var titleBar = new AtomUI.Desktop.Controls.WindowTitleBar();
+
+        titleBar.SetValue(AtomUI.Desktop.Controls.WindowTitleBar.OsTypeProperty, OsType.macOS);
+        titleBar.LogoVisibility = AtomUI.Desktop.Controls.WindowTitleBarLogoVisibility.Always;
+        titleBar.Logo           = new object();
+
+        GetIsEffectiveLogoVisible(titleBar).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Title_Bar_Logo_Auto_Mode_Recomputes_When_OsType_Changes()
+    {
+        var titleBar = new AtomUI.Desktop.Controls.WindowTitleBar();
+
+        titleBar.SetValue(AtomUI.Desktop.Controls.WindowTitleBar.OsTypeProperty, OsType.Windows);
+        titleBar.Logo = new object();
+
+        GetIsEffectiveLogoVisible(titleBar).ShouldBeTrue();
+
+        titleBar.SetValue(AtomUI.Desktop.Controls.WindowTitleBar.OsTypeProperty, OsType.macOS);
+
+        GetIsEffectiveLogoVisible(titleBar).ShouldBeFalse();
     }
 
     [Fact]
@@ -89,5 +145,14 @@ public class WindowTitleBarLogoVisibilityTests
         }
 
         throw new FileNotFoundException($"Could not find repository file: {relativePath}");
+    }
+
+    private static bool GetIsEffectiveLogoVisible(AtomUI.Desktop.Controls.WindowTitleBar titleBar)
+    {
+        var property = typeof(AtomUI.Desktop.Controls.WindowTitleBar)
+                       .GetProperty("IsEffectiveLogoVisible", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        property.ShouldNotBeNull();
+        return (bool)property.GetValue(titleBar)!;
     }
 }
