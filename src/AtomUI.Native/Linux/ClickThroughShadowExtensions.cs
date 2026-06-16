@@ -21,7 +21,7 @@ internal static class ClickThroughShadowExtensions
     /// 默认在可见边框内侧保留的 resize 抓手带宽度（DIP）。
     /// 外圈 <c>shadowThickness - ResizeBand</c> 完全穿透。
     /// </summary>
-    public const double DefaultResizeBand = 6.0;
+    public const double DefaultResizeBand = 10.0;
 
     /// <summary>
     /// 为窗体挂接 X11 阴影点击穿透行为。
@@ -87,10 +87,11 @@ internal static class ClickThroughShadowExtensions
             return;
         }
 
-        var insetLeft   = Math.Max(0, shadowThickness.Left - resizeBand);
-        var insetTop    = Math.Max(0, shadowThickness.Top - resizeBand);
-        var insetRight  = Math.Max(0, shadowThickness.Right - resizeBand);
-        var insetBottom = Math.Max(0, shadowThickness.Bottom - resizeBand);
+        var effectiveResizeBand = window.CanResize ? resizeBand : 0;
+        var insetLeft           = Math.Max(0, shadowThickness.Left - effectiveResizeBand);
+        var insetTop            = Math.Max(0, shadowThickness.Top - effectiveResizeBand);
+        var insetRight          = Math.Max(0, shadowThickness.Right - effectiveResizeBand);
+        var insetBottom         = Math.Max(0, shadowThickness.Bottom - effectiveResizeBand);
 
         if (insetLeft <= 0 && insetTop <= 0 && insetRight <= 0 && insetBottom <= 0)
         {

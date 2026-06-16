@@ -8,7 +8,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -53,7 +52,8 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     public EntityKey? ItemKey { get; set; }
 
     private Popup? _popup;
-    private bool _isUsingLinuxTitleBarPopupPlacement;
+    private bool _isUsingLinuxCsdPopupPlacement;
+    private IDisposable? _linuxCsdPopupPlacementTracker;
 
     private IEnumerable<IMenuItemData> EnumerateChildren()
     {
@@ -141,9 +141,16 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        if (change.Property == IsSubMenuOpenProperty && change.GetNewValue<bool>())
+        if (change.Property == IsSubMenuOpenProperty)
         {
-            ConfigureLinuxTitleBarPopupPlacement();
+            if (change.GetNewValue<bool>())
+            {
+                ConfigureLinuxCsdPopupPlacement();
+            }
+            else
+            {
+                LinuxCsdPopupSupport.ClearPopupPlacementTracker(ref _linuxCsdPopupPlacementTracker);
+            }
         }
 
         base.OnPropertyChanged(change);
@@ -266,10 +273,10 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        ClearLinuxTitleBarPopupPlacement();
+        ClearLinuxCsdPopupPlacement();
         base.OnApplyTemplate(e);
         _popup = e.NameScope.Find<Popup>("PART_Popup");
-        ConfigureLinuxTitleBarPopupPlacement();
+        ConfigureLinuxCsdPopupPlacement();
         UpdatePseudoClasses();
         ConfigureMaxPopupHeight();
     }
@@ -277,12 +284,12 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
         base.OnAttachedToLogicalTree(e);
-        ConfigureLinuxTitleBarPopupPlacement();
+        ConfigureLinuxCsdPopupPlacement();
     }
 
     protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
     {
-        ClearLinuxTitleBarPopupPlacement();
+        ClearLinuxCsdPopupPlacement();
         base.OnDetachedFromLogicalTree(e);
     }
 
@@ -342,71 +349,28 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
             ItemHeight * DisplayPageSize + PopupPadding.Top + PopupPadding.Bottom);
     }
 
-    private void ConfigureLinuxTitleBarPopupPlacement()
+    private void ConfigureLinuxCsdPopupPlacement()
     {
-        if (!OperatingSystem.IsLinux() || !IsTopLevel || _popup is null)
-        {
-            ClearLinuxTitleBarPopupPlacement();
-            return;
-        }
-
-        if (TopLevel.GetTopLevel(this) is not null)
-        {
-            ClearLinuxTitleBarPopupPlacement();
-            return;
-        }
-
-        var titleBar = this.FindLogicalAncestorOfType<WindowTitleBar>() ??
-                       this.FindAncestorOfType<WindowTitleBar>();
-        var window = titleBar?.HostWindow;
-        if (window is null || !window.IsCsdEnabled)
-        {
-            ClearLinuxTitleBarPopupPlacement();
-            return;
-        }
-
-        if (!ReferenceEquals(_popup.PlacementTarget, window))
-        {
-            _popup.PlacementTarget = window;
-        }
-
-        _isUsingLinuxTitleBarPopupPlacement = true;
-        UpdateLinuxTitleBarPopupPlacementRect(window);
+        LinuxCsdPopupSupport.ConfigurePopupPlacement(
+            this,
+            _popup,
+            ref _isUsingLinuxCsdPopupPlacement,
+            IsTopLevel);
+        _linuxCsdPopupPlacementTracker =
+            LinuxCsdPopupSupport.UpdatePopupPlacementTracker(
+                this,
+                _popup,
+                _linuxCsdPopupPlacementTracker,
+                () => IsSubMenuOpen,
+                IsTopLevel && IsSubMenuOpen);
     }
 
-    private void UpdateLinuxTitleBarPopupPlacementRect(Window window)
+    private void ClearLinuxCsdPopupPlacement()
     {
-        if (_popup is null)
-        {
-            return;
-        }
-
-        var position = this.TranslatePoint(default, window);
-        if (position is null)
-        {
-            try
-            {
-                position = window.PointToClient(this.PointToScreen(default));
-            }
-            catch (ArgumentException)
-            {
-                return;
-            }
-        }
-
-        _popup.PlacementRect = new Rect(position.Value, Bounds.Size);
-    }
-
-    private void ClearLinuxTitleBarPopupPlacement()
-    {
-        if (_popup is null || !_isUsingLinuxTitleBarPopupPlacement)
-        {
-            return;
-        }
-
-        _popup.PlacementTarget = null;
-        _popup.PlacementRect   = null;
-        _isUsingLinuxTitleBarPopupPlacement = false;
+        LinuxCsdPopupSupport.ClearPopupPlacementTracker(ref _linuxCsdPopupPlacementTracker);
+        LinuxCsdPopupSupport.ClearPopupPlacement(
+            _popup,
+            ref _isUsingLinuxCsdPopupPlacement);
     }
 
     protected override void OnInitialized()

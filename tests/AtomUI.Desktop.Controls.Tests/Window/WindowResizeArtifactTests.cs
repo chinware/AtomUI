@@ -12,23 +12,25 @@ public class WindowResizeArtifactTests
     [Fact]
     public void Window_Prepares_Linux_Initial_Client_Size_Before_Show()
     {
-        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var windowSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var chromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
 
-        source.ShouldContain("public override void Show()");
-        source.ShouldContain("PrepareLinuxInitialShowState();");
-        source.ShouldContain("base.Show();");
-        source.IndexOf("PrepareLinuxInitialShowState();", StringComparison.Ordinal)
-              .ShouldBeLessThan(source.IndexOf("base.Show();", StringComparison.Ordinal));
-        source.ShouldContain("OperatingSystem.IsLinux()");
-        source.ShouldContain("SizeToContent != SizeToContent.Manual");
-        source.ShouldContain("WindowState is WindowState.Minimized or WindowState.Maximized or WindowState.FullScreen");
-        source.ShouldContain("ClientSize = clientSize;");
-        source.ShouldContain("Width = clientSize.Width;");
-        source.ShouldContain("Height = clientSize.Height;");
-        source.ShouldContain("TryGetLinuxInitialStartupPosition");
-        source.ShouldContain("WindowStartupLocation.Manual");
-        source.ShouldContain("ConfigureLinuxInitialWindowGeometry");
-        source.ShouldContain("_isLinuxInitialShowStatePrepared");
+        windowSource.ShouldContain("public override void Show()");
+        windowSource.ShouldContain("_platformChromeManager?.PrepareInitialShowState();");
+        windowSource.ShouldContain("base.Show();");
+        windowSource.IndexOf("_platformChromeManager?.PrepareInitialShowState();", StringComparison.Ordinal)
+                    .ShouldBeLessThan(windowSource.IndexOf("base.Show();", StringComparison.Ordinal));
+
+        chromeSource.ShouldContain("PrepareInitialShowState()");
+        chromeSource.ShouldContain("SizeToContent != SizeToContent.Manual");
+        chromeSource.ShouldContain("WindowState is WindowState.Minimized or WindowState.Maximized or WindowState.FullScreen");
+        chromeSource.ShouldContain("SetPlatformChromeClientSize(clientSize);");
+        chromeSource.ShouldContain("_window.Width = clientSize.Width;");
+        chromeSource.ShouldContain("_window.Height = clientSize.Height;");
+        chromeSource.ShouldContain("TryGetInitialStartupPosition");
+        chromeSource.ShouldContain("WindowStartupLocation.Manual");
+        chromeSource.ShouldContain("ConfigureLinuxInitialWindowGeometry");
+        chromeSource.ShouldContain("_initialShowStatePrepared");
     }
 
     [Fact]
@@ -56,16 +58,18 @@ public class WindowResizeArtifactTests
     public void Linux_Client_Drawn_Shadow_Publishes_X11_Csd_Frame_Extents()
     {
         var windowSource    = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var chromeSource    = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
         var extensionSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
         var linuxSource     = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/WindowUtils.Linux.cs"));
         var interopSource   = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/WindowUtils.Interop.cs"));
 
-        windowSource.ShouldContain("ScalingChanged += HandleLinuxScalingChanged;");
-        windowSource.ShouldContain("ApplyLinuxX11CsdFrameExtents();");
-        windowSource.ShouldContain("WindowState is WindowState.Normal ? FrameShadowThickness : default");
-        windowSource.ShouldContain("this.SetLinuxX11CsdFrameExtents(frameExtents);");
+        windowSource.ShouldContain("_platformChromeManager = WindowChromeManager.Attach(this);");
+        chromeSource.ShouldContain("_window.ScalingChanged += HandleScalingChanged;");
+        chromeSource.ShouldContain("ApplyX11CsdFrameExtents();");
+        chromeSource.ShouldContain("WindowState is WindowState.Normal ? _window.FrameShadowThickness : default");
+        chromeSource.ShouldContain("_window.SetLinuxX11CsdFrameExtents(frameExtents);");
         windowSource.ShouldNotContain("EnsureMinSizeForDecorations");
-        windowSource.IndexOf("PrepareLinuxInitialShowState();", StringComparison.Ordinal)
+        windowSource.IndexOf("_platformChromeManager?.PrepareInitialShowState();", StringComparison.Ordinal)
                     .ShouldBeLessThan(windowSource.IndexOf("base.Show();", StringComparison.Ordinal));
 
         extensionSource.ShouldContain("SetLinuxX11CsdFrameExtents");
@@ -94,8 +98,67 @@ public class WindowResizeArtifactTests
         interopSource.ShouldContain("IntPtr[] data");
 
         windowSource.ShouldNotContain("GtkFrameExtents");
+        chromeSource.ShouldNotContain("GtkFrameExtents");
         extensionSource.ShouldNotContain("GtkFrameExtents");
         linuxSource.ShouldNotContain("GtkFrameExtents");
+    }
+
+    [Fact]
+    public void Linux_Window_Frame_Geometry_Updates_Are_Coalesced_Before_Render()
+    {
+        var windowSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var chromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
+
+        chromeSource.ShouldContain("HandleFrameShadowChanged");
+        chromeSource.ShouldContain("ConfigureTitleBarHeightHint");
+        chromeSource.ShouldContain("_hasPendingFrameShadowThickness");
+        chromeSource.ShouldContain("_hasPendingTitleBarHeightHint");
+        chromeSource.ShouldContain("RequestFrameGeometryUpdate");
+        chromeSource.ShouldContain("ApplyPendingFrameGeometryUpdate");
+        chromeSource.ShouldContain("ApplyPendingFrameGeometryInputs");
+        chromeSource.ShouldContain("UpdateFrameGeometry");
+        chromeSource.ShouldContain("Avalonia.Threading.DispatcherPriority.Render");
+
+        windowSource.ShouldContain("FrameShadowProperty.Changed.AddClassHandler<Window>((window, args) =>");
+        windowSource.ShouldContain("window.HandleFrameShadowPropertyChanged(args.GetNewValue<BoxShadows>())");
+        windowSource.ShouldContain("_platformChromeManager.HandleFrameShadowChanged(frameShadow);");
+        windowSource.ShouldContain("_platformChromeManager.ConfigureTitleBarHeightHint(e.NewSize.Height);");
+        windowSource.ShouldContain("_platformChromeManager?.HandlePropertyChanged(change.Property);");
+        chromeSource.ShouldContain("RequestFrameGeometryUpdate();");
+
+        chromeSource.IndexOf("private void RequestFrameGeometryUpdate()", StringComparison.Ordinal)
+                    .ShouldBeLessThan(chromeSource.IndexOf("private void ApplyPendingFrameGeometryUpdate()", StringComparison.Ordinal));
+        chromeSource.IndexOf("private void ApplyPendingFrameGeometryUpdate()", StringComparison.Ordinal)
+                    .ShouldBeLessThan(chromeSource.IndexOf("private void ApplyPendingFrameGeometryInputs()", StringComparison.Ordinal));
+        chromeSource.ShouldContain("ApplyPendingFrameGeometryInputs();\n        UpdateFrameGeometry();");
+        chromeSource.IndexOf("Dispatcher.Post(ApplyPendingFrameGeometryUpdate", StringComparison.Ordinal)
+                    .ShouldBeLessThan(chromeSource.IndexOf("private void ApplyPendingFrameGeometryUpdate()", StringComparison.Ordinal));
+
+        windowSource.ShouldNotContain("RequestLinuxFrameGeometryUpdate");
+        windowSource.ShouldNotContain("ApplyPendingLinuxFrameGeometryUpdate");
+        windowSource.ShouldNotContain("UpdateLinuxFrameGeometry");
+    }
+
+    [Fact]
+    public void Linux_Shadow_Input_Region_Keeps_Only_Ten_Dip_Resize_Band()
+    {
+        var chromeSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/LinuxWindowChromeManager.cs"));
+        var inputSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Linux/ClickThroughShadowExtensions.cs"));
+
+        chromeSource.ShouldContain("_window.AttachClickThroughShadow(");
+        chromeSource.ShouldContain("s_shadowInputRegionAffectsProperties");
+        chromeSource.ShouldContain("() => _window.FrameShadowThickness");
+        chromeSource.ShouldContain("ClickThroughShadowExtensions.DefaultResizeBand");
+        chromeSource.ShouldContain("CanResizeProperty");
+        chromeSource.ShouldContain("FrameShadowThicknessProperty");
+        chromeSource.ShouldContain("IsCsdEnabledProperty");
+
+        inputSource.ShouldContain("public const double DefaultResizeBand = 10.0;");
+        inputSource.ShouldContain("var effectiveResizeBand = window.CanResize ? resizeBand : 0;");
+        inputSource.ShouldContain("shadowThickness.Left - effectiveResizeBand");
+        inputSource.ShouldContain("shadowThickness.Top - effectiveResizeBand");
+        inputSource.ShouldContain("window.SetWindowInputRectangle(x, y, w, h);");
+        inputSource.ShouldContain("window.ResetWindowInputRegion(fullW, fullH);");
     }
 
     [Fact]
@@ -228,6 +291,8 @@ public class WindowResizeArtifactTests
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Core/AppBuilderExtensions.cs"));
 
         source.ShouldContain("WithWin32TransparentPopupCompositionOptions");
+        source.ShouldContain("if (OperatingSystem.IsWindows())");
+        source.ShouldContain("[SupportedOSPlatform(\"windows\")]");
         source.ShouldContain("Avalonia.Win32PlatformOptions, Avalonia.Win32");
         source.ShouldContain("Avalonia.Win32RenderingMode, Avalonia.Win32");
         source.ShouldContain("Avalonia.Win32CompositionMode, Avalonia.Win32");
