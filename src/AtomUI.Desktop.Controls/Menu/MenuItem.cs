@@ -7,6 +7,8 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -49,6 +51,9 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     IEnumerable<IMenuItemData> ITreeNode<IMenuItemData>.Children => EnumerateChildren();
     public ITreeNode<IMenuItemData>? ParentNode => Parent as ITreeNode<IMenuItemData>;
     public EntityKey? ItemKey { get; set; }
+
+    private Popup? _popup;
+    private bool _isUsingLinuxTitleBarPopupPlacement;
 
     private IEnumerable<IMenuItemData> EnumerateChildren()
     {
@@ -136,6 +141,11 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
+        if (change.Property == IsSubMenuOpenProperty && change.GetNewValue<bool>())
+        {
+            ConfigureLinuxTitleBarPopupPlacement();
+        }
+
         base.OnPropertyChanged(change);
         if (change.Property == ParentProperty)
         {
@@ -256,9 +266,24 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ClearLinuxTitleBarPopupPlacement();
         base.OnApplyTemplate(e);
+        _popup = e.NameScope.Find<Popup>("PART_Popup");
+        ConfigureLinuxTitleBarPopupPlacement();
         UpdatePseudoClasses();
         ConfigureMaxPopupHeight();
+    }
+
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        ConfigureLinuxTitleBarPopupPlacement();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        ClearLinuxTitleBarPopupPlacement();
+        base.OnDetachedFromLogicalTree(e);
     }
 
     public async Task CloseItemAsync(CancellationToken cancellationToken = default)
@@ -315,6 +340,73 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     {
         SetCurrentValue(MaxPopupHeightProperty,
             ItemHeight * DisplayPageSize + PopupPadding.Top + PopupPadding.Bottom);
+    }
+
+    private void ConfigureLinuxTitleBarPopupPlacement()
+    {
+        if (!OperatingSystem.IsLinux() || !IsTopLevel || _popup is null)
+        {
+            ClearLinuxTitleBarPopupPlacement();
+            return;
+        }
+
+        if (TopLevel.GetTopLevel(this) is not null)
+        {
+            ClearLinuxTitleBarPopupPlacement();
+            return;
+        }
+
+        var titleBar = this.FindLogicalAncestorOfType<WindowTitleBar>() ??
+                       this.FindAncestorOfType<WindowTitleBar>();
+        var window = titleBar?.HostWindow;
+        if (window is null || !window.IsCsdEnabled)
+        {
+            ClearLinuxTitleBarPopupPlacement();
+            return;
+        }
+
+        if (!ReferenceEquals(_popup.PlacementTarget, window))
+        {
+            _popup.PlacementTarget = window;
+        }
+
+        _isUsingLinuxTitleBarPopupPlacement = true;
+        UpdateLinuxTitleBarPopupPlacementRect(window);
+    }
+
+    private void UpdateLinuxTitleBarPopupPlacementRect(Window window)
+    {
+        if (_popup is null)
+        {
+            return;
+        }
+
+        var position = this.TranslatePoint(default, window);
+        if (position is null)
+        {
+            try
+            {
+                position = window.PointToClient(this.PointToScreen(default));
+            }
+            catch (ArgumentException)
+            {
+                return;
+            }
+        }
+
+        _popup.PlacementRect = new Rect(position.Value, Bounds.Size);
+    }
+
+    private void ClearLinuxTitleBarPopupPlacement()
+    {
+        if (_popup is null || !_isUsingLinuxTitleBarPopupPlacement)
+        {
+            return;
+        }
+
+        _popup.PlacementTarget = null;
+        _popup.PlacementRect   = null;
+        _isUsingLinuxTitleBarPopupPlacement = false;
     }
 
     protected override void OnInitialized()

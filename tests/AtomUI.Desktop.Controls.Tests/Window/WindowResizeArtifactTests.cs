@@ -147,6 +147,56 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
+    public void Linux_Csd_Window_Template_Clips_Content_Surface_To_Bottom_Window_CornerRadius()
+    {
+        var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
+        XNamespace av = "https://github.com/avaloniaui";
+
+        document.Descendants()
+                .ShouldContain(element =>
+                    element.Name.LocalName == "CornerRadiusFilterConverter" &&
+                    element.Attributes().Any(attribute =>
+                        attribute.Name.LocalName == "Key" &&
+                        (string?)attribute == "WindowContentBottomCornerRadiusFilter") &&
+                    (string?)element.Attribute("Filter") == "BottomLeft, BottomRight");
+
+        var csdTemplateStyle = document.Descendants(av + "Style")
+                                       .Single(element =>
+                                           (string?)element.Attribute("Selector") == "^[IsCsdEnabled=True]" &&
+                                           element.Descendants(av + "ControlTemplate").Any());
+
+        csdTemplateStyle.Descendants(av + "Border")
+                        .ShouldNotContain(element =>
+                            (string?)element.Attribute("Name") == "WindowContentClip");
+
+        var contentPanel = csdTemplateStyle.Descendants(av + "VisualLayerManager")
+                                           .Single(element =>
+                                               (string?)element.Attribute("Name") == "PART_VisualLayerManager")
+                                           .Elements(av + "Panel")
+                                           .Single();
+
+        contentPanel.Attribute("Margin").ShouldNotBeNull().Value.ShouldBe(
+            "{Binding $parent[Window].WindowDecorationMargin}");
+        contentPanel.Attribute("ClipToBounds").ShouldBeNull();
+
+        var contentFrameLayer = contentPanel.Elements(av + "ContentPresenter")
+                                            .Single(element =>
+                                                (string?)element.Attribute("Name") == "ContentFrameLayer");
+
+        contentFrameLayer.Attribute("CornerRadius").ShouldNotBeNull().Value.ShouldBe(
+            "{TemplateBinding CornerRadius, Converter={StaticResource WindowContentBottomCornerRadiusFilter}}");
+        contentFrameLayer.Attribute("ClipToBounds").ShouldNotBeNull().Value.ShouldBe("True");
+
+        var contentFrame = contentPanel.Elements(av + "Border")
+                                       .Single(element =>
+                                           (string?)element.Attribute("Name") == "ContentFrame");
+
+        contentFrame.Attribute("CornerRadius").ShouldNotBeNull().Value.ShouldBe(
+            "{TemplateBinding CornerRadius, Converter={StaticResource WindowContentBottomCornerRadiusFilter}}");
+        contentFrame.Attribute("ClipToBounds").ShouldNotBeNull().Value.ShouldBe("True");
+    }
+
+    [Fact]
     public void Windows_Window_Template_Paints_Root_Background_And_Uses_Opaque_Transparency()
     {
         var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
