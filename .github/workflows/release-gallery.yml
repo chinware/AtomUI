@@ -13,6 +13,10 @@ on:
                - Debug
                - Release
             default: 'Release'
+         PublishAot:
+            description: 'Publish Gallery with NativeAOT'
+            type: boolean
+            default: true
 env:
    SourceDir: ${{ github.workspace }}
    BuildDir: ${{ github.workspace }}/binaries
@@ -71,7 +75,7 @@ jobs:
                New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/dmg/x64" -Force
-               brew install create-dmg
+               brew install create-dmg openssl@3
                Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
                pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime osx-x64
          -  name: Build DMG for osx-x64
@@ -85,7 +89,7 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime osx-x64 -buildType ${{ inputs.BuildConfiguration }}
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime osx-x64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
 
                ${{ env.AtomUIToolsMacBin }} create-dmg `
                   --runtime osx-x64 `
@@ -150,7 +154,7 @@ jobs:
                New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/dmg/arm64" -Force
-               brew install create-dmg
+               brew install create-dmg openssl@3
                Set-Location ${{ env.BuildDir }}/AtomUITools/scripts
                pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime osx-arm64
          -  name: Build DMG for osx-arm64
@@ -164,7 +168,7 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime osx-arm64 -buildType ${{ inputs.BuildConfiguration }}
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime osx-arm64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
 
                & ${{ env.AtomUIToolsMacBin }} create-dmg `
                --runtime osx-arm64 `
@@ -176,7 +180,7 @@ jobs:
                --cleanupBundleOption true
 
                Get-ChildItem -Path "${{ env.GalleryArtifactsOutputDir }}" | Format-Table
-         -  name: Upload x86_64 DMG artifacts
+         -  name: Upload arm64 DMG artifacts
             uses: actions/upload-artifact@v7
             with:
                name: dmg-packages-osx-arm64
@@ -200,7 +204,7 @@ jobs:
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/appimage/x64" -Force
                
                sudo apt-get update
-               sudo apt-get install -y fuse libfuse2 patchelf desktop-file-utils file
+               sudo apt-get install -y fuse libfuse2 patchelf desktop-file-utils file clang zlib1g-dev
                sudo apt-get install -y libxcb1 libxcb-shape0 libxcb-shape0-dev
                
                wget https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20250213-2/linuxdeploy-x86_64.AppImage
@@ -241,7 +245,7 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime linux-x64 -buildType ${{ inputs.BuildConfiguration }}
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime linux-x64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
                
                Set-Location ${{ env.BuildDir }}
                Get-Location
@@ -278,7 +282,7 @@ jobs:
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/appimage/arm64" -Force
 
                sudo apt-get update
-               sudo apt-get install -y fuse libfuse2 patchelf desktop-file-utils file
+               sudo apt-get install -y fuse libfuse2 patchelf desktop-file-utils file clang zlib1g-dev
                sudo apt-get install -y libxcb1 libxcb-shape0 libxcb-shape0-dev
 
                wget https://github.com/linuxdeploy/linuxdeploy/releases/download/1-alpha-20250213-2/linuxdeploy-aarch64.AppImage
@@ -319,7 +323,7 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime linux-arm64 -buildType ${{ inputs.BuildConfiguration }}
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime linux-arm64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
 
                Set-Location ${{ env.BuildDir }}
                Get-Location
@@ -381,7 +385,7 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime win-x64 -buildType ${{ inputs.BuildConfiguration }}
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirX64 -runtime win-x64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
                Set-Location ${{ env.BuildDir }}
                Get-Location
                ${{ env.AtomUIToolsWinBin }} create-zip `
@@ -440,7 +444,7 @@ jobs:
                }
 
                Set-Location $galleryScriptsPath
-               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime win-arm64 -buildType ${{ inputs.BuildConfiguration }}
+               pwsh ./PublishToLocal.ps1 -publishRootPath $galleryPublishDirArm64 -runtime win-arm64 -buildType ${{ inputs.BuildConfiguration }} -publishAot '${{ inputs.PublishAot }}'
                Set-Location ${{ env.BuildDir }}
                Get-Location
                ${{ env.AtomUIToolsWinBin }} create-zip `

@@ -50,6 +50,7 @@ docs/
 - [FilteringArchitecture.md](FilteringArchitecture.md) - 过滤体系
 - [PopupAnchorScopeGuide.md](PopupAnchorScopeGuide.md) - Popup Anchor 作用域检查
 - [engineering/aot-programming-guidelines.md](engineering/aot-programming-guidelines.md) - AtomUI AOT 编程规范
+- [engineering/gallery-aot-release-workflow.md](engineering/gallery-aot-release-workflow.md) - Gallery NativeAOT 发布 workflow 维护说明
 - [engineering/windows-native-aot-publish.md](engineering/windows-native-aot-publish.md) - Windows 11 Gallery Native AOT 发布维护手册
 - [engineering/linux-native-aot-publish.md](engineering/linux-native-aot-publish.md) - Linux Gallery Native AOT 发布维护手册
 - [modules/native/architecture.md](modules/native/architecture.md) - Native 项目架构
