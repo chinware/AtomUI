@@ -4,7 +4,13 @@
     x:ClassModifier="internal"
     x:Class="AtomUI.Desktop.Controls.Themes.WindowTheme"
     xmlns:atom="https://atomui.net"
+    xmlns:converters="using:Avalonia.Controls.Converters"
     TargetType="atom:Window">
+    <ControlTheme.Resources>
+        <converters:CornerRadiusFilterConverter x:Key="WindowContentBottomCornerRadiusFilter"
+                                                Filter="BottomLeft, BottomRight" />
+    </ControlTheme.Resources>
+
     <Style Selector="^:is(atom|Window)">
         <Style Selector="^[OsType=Linux][IsCsdEnabled=False]">
             <Setter Property="Template">
@@ -226,11 +232,13 @@
                             <Panel Margin="{Binding $parent[Window].WindowDecorationMargin}">
                                 <ContentPresenter Name="ContentFrameLayer"
                                                   Background="{TemplateBinding ContentFrameBackground}"
+                                                  CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource WindowContentBottomCornerRadiusFilter}}"
                                                   ClipToBounds="True"
                                                   Opacity="{TemplateBinding ContentFrameLayerOpacity}"
                                                   Content="{TemplateBinding ContentFrameLayer}"
                                                   ContentTemplate="{TemplateBinding ContentFrameLayerTemplate}" />
                                 <Border Name="ContentFrame"
+                                        CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource WindowContentBottomCornerRadiusFilter}}"
                                         ClipToBounds="True"
                                         Padding="{TemplateBinding Padding}">
                                     <ContentPresenter Name="PART_ContentPresenter"

@@ -2,10 +2,12 @@ using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Styling;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -54,6 +56,7 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
     #endregion
 
     private bool _isClosing;
+    private Window? _linuxTitleBarDismissRoot;
 
     static Menu()
     {
@@ -156,6 +159,19 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
     {
         base.OnAttachedToLogicalTree(e);
         ConfigureItemContainerTheme(false);
+        ConfigureLinuxTitleBarDismissRoot();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        DetachLinuxTitleBarDismissRoot();
+        base.OnDetachedFromLogicalTree(e);
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureLinuxTitleBarDismissRoot();
     }
 
     private void ConfigureItemContainerTheme(bool force)
@@ -245,5 +261,67 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
             RoutedEvent = ClosedEvent,
             Source      = this
         });
+    }
+
+    private void ConfigureLinuxTitleBarDismissRoot()
+    {
+        var hostWindow = ResolveLinuxTitleBarDismissRoot();
+        if (ReferenceEquals(_linuxTitleBarDismissRoot, hostWindow))
+        {
+            return;
+        }
+
+        DetachLinuxTitleBarDismissRoot();
+        if (hostWindow is null)
+        {
+            return;
+        }
+
+        hostWindow.AddHandler(InputElement.PointerPressedEvent,
+            HandleLinuxTitleBarDismissRootPointerPressed,
+            RoutingStrategies.Tunnel);
+        hostWindow.Deactivated += HandleLinuxTitleBarDismissRootDeactivated;
+        _linuxTitleBarDismissRoot = hostWindow;
+    }
+
+    private void DetachLinuxTitleBarDismissRoot()
+    {
+        if (_linuxTitleBarDismissRoot is null)
+        {
+            return;
+        }
+
+        _linuxTitleBarDismissRoot.RemoveHandler(InputElement.PointerPressedEvent,
+            HandleLinuxTitleBarDismissRootPointerPressed);
+        _linuxTitleBarDismissRoot.Deactivated -= HandleLinuxTitleBarDismissRootDeactivated;
+        _linuxTitleBarDismissRoot = null;
+    }
+
+    private Window? ResolveLinuxTitleBarDismissRoot()
+    {
+        if (!OperatingSystem.IsLinux() || TopLevel.GetTopLevel(this) is not null)
+        {
+            return null;
+        }
+
+        var titleBar = this.FindLogicalAncestorOfType<WindowTitleBar>() ??
+                       this.FindAncestorOfType<WindowTitleBar>();
+        var window = titleBar?.HostWindow;
+        return window is { IsCsdEnabled: true } ? window : null;
+    }
+
+    private void HandleLinuxTitleBarDismissRootPointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (IsOpen &&
+            e.Source is ILogical control &&
+            !this.IsLogicalAncestorOf(control))
+        {
+            Close();
+        }
+    }
+
+    private void HandleLinuxTitleBarDismissRootDeactivated(object? sender, EventArgs e)
+    {
+        Close();
     }
 }

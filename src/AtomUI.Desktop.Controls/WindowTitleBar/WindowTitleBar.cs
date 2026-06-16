@@ -1,5 +1,4 @@
 using System.Reactive.Disposables;
-using Avalonia.Threading;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Theme;
@@ -166,6 +165,8 @@ public class WindowTitleBar : TemplatedControl,
     private CompositeDisposable? _disposables;
     private Window? _window;
     private bool _isWindowFullScreen;
+
+    internal Window? HostWindow => _window;
 
     static WindowTitleBar()
     {
