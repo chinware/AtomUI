@@ -34,10 +34,10 @@ function Update-VersionInFile {
     try {
         [xml]$xmlContent = Get-Content -Path $XmlFilePath -ErrorAction Stop
         
-        $version = $xmlContent.Project.PropertyGroup.AtomUIGalleryVersion
+        $version = $xmlContent.Project.PropertyGroup.AtomUIVersion
 
         if (-not $version) {
-            throw "AtomUIGalleryVersion not found in XML file"
+            throw "AtomUIVersion not found in XML file"
         }
 
         Write-Host "Extracted version: $version" -ForegroundColor Green
