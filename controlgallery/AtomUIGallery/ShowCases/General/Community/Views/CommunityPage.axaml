@@ -125,11 +125,6 @@
                         <Image Source="/Assets/qinware-wechatpress.png"
                                HorizontalAlignment="Center"
                                Width="144" />
-                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatOfficialDescription}"
-                                        HorizontalAlignment="Center"
-                                        TextAlignment="Center"
-                                        TextWrapping="Wrap"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
                     </StackPanel>
                 </Border>
 
@@ -148,11 +143,6 @@
                         <Image Source="/Assets/atomui-telegram.png"
                                HorizontalAlignment="Center"
                                Width="144" />
-                        <atom:TextBlock Text="{gallery:CommunityPageLangResource TelegramGroupDescription}"
-                                        HorizontalAlignment="Center"
-                                        TextAlignment="Center"
-                                        TextWrapping="Wrap"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
                     </StackPanel>
                 </Border>
 
@@ -171,11 +161,6 @@
                         <Image Source="/Assets/atomui-wechat.png"
                                HorizontalAlignment="Center"
                                Width="144" />
-                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatGroupDescription}"
-                                        HorizontalAlignment="Center"
-                                        TextAlignment="Center"
-                                        TextWrapping="Wrap"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
                     </StackPanel>
                 </Border>
 
@@ -194,11 +179,6 @@
                         <Image Source="/Assets/atomui-qq.png"
                                HorizontalAlignment="Center"
                                Width="144" />
-                        <atom:TextBlock Text="{gallery:CommunityPageLangResource QQGroupDescription}"
-                                        HorizontalAlignment="Center"
-                                        TextAlignment="Center"
-                                        TextWrapping="Wrap"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
                     </StackPanel>
                 </Border>
             </Grid>
