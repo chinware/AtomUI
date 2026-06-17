@@ -38,6 +38,7 @@ internal partial class zh_TW : LanguageProvider
     public const string ApiPropertyDanger = "為刪除或高風險動作應用危險樣式。";
     public const string ApiPropertyColor = "設置 Color 和 Variant 模型使用的語義顏色。";
     public const string ApiPropertyVariant = "設置視覺變體，例如實心、描邊、虛線、填充、文本或鏈接。";
+    public const string ApiPropertyCustomBackground = "為非危險實心按鈕設置受控的普通態自定義背景覆層。";
     public const string TokenColumnToken = "Token";
     public const string TokenColumnDescription = "說明";
     public const string TokenColumnScope = "作用域";
@@ -53,6 +54,8 @@ internal partial class zh_TW : LanguageProvider
     public const string TypeDescription = "Ant Design 中包含主按鈕、默認按鈕、虛線按鈕、文本按鈕和鏈接按鈕。";
     public const string ColorVariantTitle = "顏色與變體";
     public const string ColorVariantDescription = "組合語義顏色和視覺變體，用於創建主要、危險和預設色按鈕。";
+    public const string GradientButtonTitle = "漸變按鈕";
+    public const string GradientButtonDescription = "通過 CustomBackground 為實心按鈕自定義漸變背景。";
     public const string ButtonShapeTitle = "按鈕形狀";
     public const string ButtonShapeDescription = "展示支持的按鈕形狀，例如主按鈕、默認按鈕、虛線按鈕和文本按鈕等。";
     public const string SizeTitle = "按鈕尺寸";
@@ -81,6 +84,8 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentFilled = "填充";
     public const string P2ContentText = "文本";
     public const string P2ContentLink = "鏈接";
+    public const string P2ContentGradient = "漸變按鈕";
+    public const string P2ContentWarmGradient = "暖色漸變";
     public const string P2ColorDefault = "默認";
     public const string P2ColorPrimary = "主要";
     public const string P2ColorDanger = "危險";

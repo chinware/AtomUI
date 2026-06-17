@@ -42,7 +42,7 @@ Button 架构按职责分层，避免公共 API 解析、运行时状态、主�
 ```text
 Public API
   ButtonType / IsDanger / IsGhost / IsLoading / Shape / SizeType / Icon
-  Color? / Variant?
+  Color? / Variant? / CustomBackground
         ↓
 Effective State
   Button type pseudo-classes
@@ -53,6 +53,7 @@ Effective State
         ↓
 Theme Variables
   Text / Background / Border / Shadow
+  Custom background layer visibility
         ↓
 Template Visual
   Normal / PointerOver / Pressed / Disabled / Loading
@@ -80,6 +81,7 @@ Public API 模型由兼容 API 和正交 API 两部分组成。兼容 API 保持
 - `Icon`
 - `IsMotionEnabled`
 - `IsWaveSpiritEnabled`
+- `CustomBackground`
 
 正交 API：
 
@@ -111,6 +113,16 @@ public ButtonVariant? Variant { get; set; }
 
 `ButtonColor` 不建议暴露 `Link`。`ButtonType.Link` 是兼容入口，内部映射到链接视觉即可。
 
+自定义视觉覆层 API：
+
+```csharp
+public IBrush? CustomBackground { get; set; }
+```
+
+`CustomBackground` 表示 Button normal 状态的受控自定义背景覆层，主要用于渐变、图片或其他非纯色表面。该属性不是颜色语义，不参与 `Color + Variant` 的状态归一、文字色、边框色、阴影或 wave 颜色计算。`CustomBackground == null` 表示不启用自定义背景覆层。
+
+`CustomBackground` 只在 `EffectiveVariant=Solid`、非危险态、非禁用态下生效。Hover 与 Pressed 状态隐藏自定义背景覆层，并露出 Button 标准 `Color + Variant` 状态背景。Text、Link、Filled、Outlined、Dashed 和 Danger 场景不应用该覆层。
+
 ## 5. 行为交互模型
 
 Button 的交互状态应具有明确优先级。
@@ -140,6 +152,7 @@ Button 的状态计算应由 C# 层完成，AXAML 主题只消费已经归一的
 - `Shape` 决定 `WaveSpiritType`，并参与 `Circle`、`Round` 的尺寸和圆角计算。
 - `BorderThickness`、`ButtonType`、`IsEnabled` 等属性共同决定 `EffectiveBorderThickness`。
 - `CornerRadius` 与 CompactSpace 状态共同决定 `EffectiveCornerRadius`。
+- `CustomBackground`、`EffectiveVariant`、`EffectiveIsDanger` 和 `IsEnabled` 共同决定自定义背景覆层是否可见。
 
 `Color + Variant` 归一后形成以下有效状态：
 
@@ -159,7 +172,8 @@ Button 模板应保持职责清晰的视觉分层。
 | --- | --- |
 | `PART_WaveSpirit` | 承载点击 wave 反馈。 |
 | `ShadowsFrame` | 承载按钮阴影。 |
-| `Frame` | 承载主体背景、边框、圆角和 padding。 |
+| `Frame` | 承载主体背景、边框、圆角和尺寸基底。 |
+| `CustomBackgroundLayer` | 覆盖在 `Frame` 上方，承载 Button normal 状态的受控自定义背景覆层，仅由 Button 主题内部使用。 |
 | `PART_RootLayout` | 排列 loading icon、icon 和 content。 |
 | `PART_LoadingIcon` | 展示 loading 状态图标。 |
 | `PART_ButtonIcon` | 展示用户设置的 icon。 |
@@ -168,6 +182,10 @@ Button 模板应保持职责清晰的视觉分层。
 AXAML 优化应以保持职责边界为前提。可以移除无明确职责的包装层，但不得合并承担不同视觉职责的节点，例如阴影层、主体绘制层和 wave 层。
 
 `ShadowsFrame` 不应被视为普通包装层。它将阴影从主体背景和边框中分离出来，使 shadow、background、border、corner radius 和 `BackgroundSizing` 可以保持独立职责。
+
+`CustomBackgroundLayer` 是 Button 主题内部视觉层，不作为用户可依赖的 template part 暴露。用户应通过 `CustomBackground` 设置自定义背景，不应通过 `/template/` selector 操作该层。该层只覆盖 normal 状态表面，不承载 border、shadow、content、hit test 或 wave 职责。
+
+启用 `CustomBackground` 时，`Frame` 仍保留标准 `Color + Variant` 背景和边框，作为 hover / pressed 以及覆层 opacity 过渡期间的底色。`CustomBackgroundLayer` 覆盖在 `Frame` 上方，normal 状态遮盖底层边框和背景；hover / pressed 状态隐藏覆层，露出标准状态背景。
 
 ## 8. Theme 架构
 
@@ -182,6 +200,9 @@ Variant Selector
 
 State Selector
   将 Normal / PointerOver / Pressed / Disabled / Loading 状态应用到最终视觉属性
+
+Custom Background Selector
+  在受支持状态显示自定义背景覆层，在 hover / pressed / disabled / danger 状态隐藏覆层
 ```
 
 用于 AXAML `Setter`、selector、动态资源和主题切换的变量应定义为 internal `StyledProperty`。普通 CLR 属性不适合作为主题变量，`DirectProperty` 仅适用于不参与 Style 系统的内部运行时状态。
@@ -212,6 +233,7 @@ Button 家族控件应共享一致的动作语义和状态解释。
 - `Shape=Circle`、`Shape=Round` 的尺寸和圆角计算不变。
 - CompactSpace 下的有效圆角、有效边框和 z-index 行为不变。
 - wave 播放条件和危险态 wave brush 不变。
+- `CustomBackground` 不改变 `WaveSpiritDecorator` 的 wave brush，wave 颜色仍由 `EffectiveColor + EffectiveVariant` 推导。
 - Browser 主题与桌面主题在同一 API 下语义一致。
 
 如果实现某项能力时无法保持这些不变量，应先停止实现，说明原因、影响范围、替代方案和迁移方式，并获得授权。
@@ -230,6 +252,21 @@ Button 家族控件应共享一致的动作语义和状态解释。
 
 实现必须以状态归一层为基础，再进行主题变量映射。不得直接在 AXAML 中通过大量 selector 组合模拟状态模型。
 
+### 11.1 CustomBackground 视觉覆层模型
+
+`CustomBackground` 是 Button 的受控视觉覆层模型，用于表达 normal 状态下的自定义按钮表面。它解决渐变背景等纯色 Token 无法表达的视觉需求，但不改变 Button 的动作语义、颜色语义或交互状态。
+
+模型定义：
+
+- `CustomBackground` 是 public `StyledProperty<IBrush?>`，用户通过属性或样式设置。
+- `CustomBackground` 不需要额外启用开关；非空值表示请求显示自定义背景覆层。
+- 自定义背景覆层只在 `EffectiveVariant=Solid`、非危险态、非禁用态下显示。
+- Hover 与 Pressed 状态将覆层透明度降为 `0`，标准 Button hover / pressed 背景继续由 `VariantBackgroundHoverBrush` 和 `VariantBackgroundPressedBrush` 决定。
+- `CustomBackground` 不影响 `VariantTextBrush`、`VariantBackgroundBrush`、`VariantBorderBrush`、`VariantShadow` 或 wave brush。
+- 自定义背景覆层是主题内部实现细节，不形成用户可依赖的 `/template/` 样式入口。
+
+该模型等价于 Ant Design 渐变按钮示例中的 `::before` 覆层：normal 状态显示自定义表面，交互状态回落到 Button 原有语义状态。
+
 ## 12. 验证策略
 
 不同改动类型对应不同验证范围。
@@ -242,4 +279,3 @@ Button 家族控件应共享一致的动作语义和状态解释。
 | Token / Palette 改动 | Light / Dark 主题检查，确认 Browser 主题一致性。 |
 | Button 家族影响 | 覆盖 `DropdownButton`、`SplitButton`、`IconButton`、`HyperLinkButton` 关联场景。 |
 | Public API 改动 | 需要授权，并补充 API 兼容测试与文档。 |
-

@@ -20,7 +20,12 @@
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BackgroundSizing="{TemplateBinding BackgroundSizing}"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                Background="{TemplateBinding Background}">
+                                Background="{TemplateBinding Background}" />
+                        <Border Name="CustomBackgroundLayer"
+                                IsHitTestVisible="False"
+                                Background="{TemplateBinding CustomBackground}"
+                                CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
+                        <Border Padding="{TemplateBinding Padding}">
                             <DockPanel Name="PART_RootLayout"
                                        LastChildFill="True"
                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -69,6 +74,10 @@
                         <Border Name="ShadowsFrame"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                                 Background="{TemplateBinding Background}" />
+                        <Border Name="CustomBackgroundLayer"
+                                IsHitTestVisible="False"
+                                Background="{TemplateBinding CustomBackground}"
+                                CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
                         <atom:DashedBorder Name="Frame"
                                            Padding="{TemplateBinding Padding}"
                                            BorderThickness="{TemplateBinding EffectiveBorderThickness}"
@@ -124,6 +133,10 @@
                         <Border Name="ShadowsFrame"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                                 Background="{TemplateBinding Background}" />
+                        <Border Name="CustomBackgroundLayer"
+                                IsHitTestVisible="False"
+                                Background="{TemplateBinding CustomBackground}"
+                                CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
                         <atom:DashedBorder Name="Frame"
                                            Padding="{TemplateBinding Padding}"
                                            BorderThickness="{TemplateBinding EffectiveBorderThickness}"
@@ -350,6 +363,28 @@
         </Style>
         <Style Selector="^:focus-visible /template/ Border#FocusVisual">
             <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#CustomBackgroundLayer">
+            <Setter Property="IsVisible" Value="False" />
+            <Setter Property="Opacity" Value="0" />
+        </Style>
+
+        <Style Selector="^[IsMotionEnabled=True] /template/ Border#CustomBackgroundLayer">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <DoubleTransition Property="Opacity"
+                                      Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="^[HasCustomBackground=True] /template/ Border#CustomBackgroundLayer">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^[HasCustomBackground=True]:not(:pointerover):not(:pressed) /template/ Border#CustomBackgroundLayer">
+            <Setter Property="Opacity" Value="1" />
         </Style>
 
         <Style Selector="^:disabled">
@@ -635,6 +670,10 @@
                     <Border Name="ShadowsFrame"
                             CornerRadius="{TemplateBinding EffectiveCornerRadius}"
                             Background="{TemplateBinding Background}" />
+                    <Border Name="CustomBackgroundLayer"
+                            IsHitTestVisible="False"
+                            Background="{TemplateBinding CustomBackground}"
+                            CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
                     <atom:DashedBorder Name="Frame"
                                        Padding="{TemplateBinding Padding}"
                                        BorderThickness="{TemplateBinding EffectiveBorderThickness}"

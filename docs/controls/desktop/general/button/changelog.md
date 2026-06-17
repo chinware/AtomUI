@@ -12,11 +12,17 @@
 
 - Feature
   - Add the Button `Color + Variant` public API model with nullable `ButtonColor?` and `ButtonVariant?` properties.
+  - Add the Button `CustomBackground` public API for controlled custom normal-state background overlays.
   - Add effective Button state normalization for compatibility with `ButtonType`, `IsDanger` and `IsGhost`.
   - Add internal StyledProperty theme variables for variant text, background, border and shadow states.
+  - Define custom background overlays as visual-only Button surfaces that do not alter `Color + Variant` state, shadow, border, text brushes or wave brush.
   - Map preset colors through the active shared token palette instead of Button-private color tables.
   - Support colorful Button rendering in desktop and Browser Button themes.
   - Add a Gallery Color/Variant matrix example and document the new API rows.
+
+- Fix
+  - Keep the standard Button frame background under `CustomBackgroundLayer` to avoid a blank background flash when pointer hover leaves.
+  - Render `CustomBackgroundLayer` above the Button frame so custom gradient backgrounds cover the normal-state border.
 
 - Docs
   - Establish Button desktop architecture documentation under `docs/controls/desktop/general/button/overview.md`.
@@ -24,6 +30,7 @@
   - Introduce per-control changelog under `docs/controls/desktop/general/button/changelog.md`.
   - Adopt the per-control documentation directory structure for Button.
   - Define `Color + Variant` as the current Button design model while preserving `ButtonType` and `IsDanger` as compatibility entries.
+  - Define the `CustomBackground` visual overlay model for gradient-style Button surfaces.
   - Document Button template contract, behavior priorities, Button family coordination, and Token boundaries.
   - Move global Token design rules out of Button Token documentation into `docs/engineering/control-token-guidelines.md`.
   - Promote the Button documentation structure into the global control documentation guideline at `docs/engineering/control-documentation-guidelines.md`.

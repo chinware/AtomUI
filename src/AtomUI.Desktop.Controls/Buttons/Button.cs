@@ -115,7 +115,10 @@ public class Button : AvaloniaButton,
 
     public static readonly StyledProperty<ButtonVariant?> VariantProperty =
         AvaloniaProperty.Register<Button, ButtonVariant?>(nameof(Variant));
-    
+
+    public static readonly StyledProperty<IBrush?> CustomBackgroundProperty =
+        AvaloniaProperty.Register<Button, IBrush?>(nameof(CustomBackground));
+
     public ButtonType ButtonType
     {
         get => GetValue(ButtonTypeProperty);
@@ -182,6 +185,12 @@ public class Button : AvaloniaButton,
         set => SetValue(VariantProperty, value);
     }
 
+    public IBrush? CustomBackground
+    {
+        get => GetValue(CustomBackgroundProperty);
+        set => SetValue(CustomBackgroundProperty, value);
+    }
+
     #endregion
 
     #region 内部属性定义
@@ -217,6 +226,9 @@ public class Button : AvaloniaButton,
 
     internal static readonly StyledProperty<bool> EffectiveIsBorderedProperty =
         AvaloniaProperty.Register<Button, bool>(nameof(EffectiveIsBordered), true);
+
+    internal static readonly StyledProperty<bool> HasCustomBackgroundProperty =
+        AvaloniaProperty.Register<Button, bool>(nameof(HasCustomBackground));
 
     internal static readonly StyledProperty<IBrush?> VariantTextBrushProperty =
         AvaloniaProperty.Register<Button, IBrush?>(nameof(VariantTextBrush));
@@ -317,6 +329,12 @@ public class Button : AvaloniaButton,
     {
         get => GetValue(EffectiveIsBorderedProperty);
         set => SetValue(EffectiveIsBorderedProperty, value);
+    }
+
+    internal bool HasCustomBackground
+    {
+        get => GetValue(HasCustomBackgroundProperty);
+        set => SetValue(HasCustomBackgroundProperty, value);
     }
 
     internal IBrush? VariantTextBrush
@@ -584,6 +602,11 @@ public class Button : AvaloniaButton,
             ConfigureEffectiveButtonState();
         }
 
+        if (ShouldConfigureCustomBackground(change.Property))
+        {
+            ConfigureCustomBackground();
+        }
+
         if (ShouldUpdatePseudoClasses(change.Property))
         {
             UpdatePseudoClasses();
@@ -708,6 +731,7 @@ public class Button : AvaloniaButton,
 
         ConfigureEffectiveBorderThickness();
         ConfigureVariantThemeVariables();
+        ConfigureCustomBackground();
     }
 
     private (ButtonColor Color, ButtonVariant Variant) ResolveEffectiveColorAndVariant()
@@ -752,6 +776,14 @@ public class Button : AvaloniaButton,
         return variant == ButtonVariant.Outlined ||
                variant == ButtonVariant.Dashed ||
                variant == ButtonVariant.Solid;
+    }
+
+    private void ConfigureCustomBackground()
+    {
+        HasCustomBackground = CustomBackground is not null &&
+                              IsEnabled &&
+                              EffectiveVariant == ButtonVariant.Solid &&
+                              !EffectiveIsDanger;
     }
 
     private void ConfigureVariantThemeVariables()
@@ -1184,6 +1216,12 @@ public class Button : AvaloniaButton,
                property == IsGhostProperty ||
                property == ColorProperty ||
                property == VariantProperty;
+    }
+
+    private bool ShouldConfigureCustomBackground(AvaloniaProperty property)
+    {
+        return property == CustomBackgroundProperty ||
+               property == IsEnabledProperty;
     }
 
     private bool ShouldConfigureEffectiveBorderThickness(AvaloniaProperty property)
