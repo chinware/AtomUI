@@ -137,14 +137,14 @@ public static class ColorUtils
     public static bool IsBright(Color color)
     {
         var lum = GetRelativeLuminance(color);
-        return lum <= 0.5;
+        return lum > 0.5;
     }
     
     public static bool IsBright(Color color, Color bgColor)
     {
         var resultColor = OnBackground(color, bgColor);
         var lum         = GetRelativeLuminance(resultColor);
-        return lum <= 0.5;
+        return lum > 0.5;
     }
 
     public static Color CalculateAlphaColor(in Color frontColor, in Color backgroundColor)

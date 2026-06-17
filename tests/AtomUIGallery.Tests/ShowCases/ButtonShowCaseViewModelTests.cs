@@ -18,9 +18,13 @@ public class ButtonShowCaseViewModelTests
         viewModel.EnsureApiRows();
 
         viewModel.ApiRows.ShouldNotBeNull();
-        viewModel.ApiRows.Count.ShouldBe(6);
+        viewModel.ApiRows.Count.ShouldBe(8);
         viewModel.ApiRows[0].Property.ShouldBe("ButtonType");
         viewModel.ApiRows[0].Type.ShouldBe("ButtonType");
+        viewModel.ApiRows[6].Property.ShouldBe("Color");
+        viewModel.ApiRows[6].Type.ShouldBe("ButtonColor?");
+        viewModel.ApiRows[7].Property.ShouldBe("Variant");
+        viewModel.ApiRows[7].Type.ShouldBe("ButtonVariant?");
         viewModel.DesignTokenRows.ShouldBeNull();
 
         var apiRows = viewModel.ApiRows;

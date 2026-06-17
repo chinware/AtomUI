@@ -4,3 +4,8 @@
 
 此分类适合放置不依赖复杂数据源、不承担布局容器职责、通常作为基础交互元素或基础展示元素的控件。
 
+## 控件文档
+
+- [Button 桌面版架构设计](button/overview.md)
+- [Button Token 设计](button/token.md)
+- [Button Changelog](button/changelog.md)

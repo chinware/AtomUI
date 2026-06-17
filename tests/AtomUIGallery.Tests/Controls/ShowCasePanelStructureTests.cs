@@ -1,10 +1,16 @@
 using System;
 using System.IO;
+using System.Linq;
 using AtomUIGallery.Controls;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
+using AtomRibbonBadge = AtomUI.Desktop.Controls.RibbonBadge;
+using AtomSeparator = AtomUI.Desktop.Controls.Separator;
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUIGallery.Tests.Controls;
 
@@ -50,6 +56,67 @@ public class ShowCasePanelStructureTests
         itemTheme.ShouldNotContain("Padding=\"20\"");
         itemTheme.ShouldNotContain("CornerRadius=\"8\"");
         itemTheme.ShouldNotContain("Margin=\"0, 0, 0, 40\"");
+    }
+
+    [Fact]
+    public void ShowCaseItem_Integrates_RibbonBadge_For_Feature_Version_Marker()
+    {
+        var itemSource = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItem.axaml.cs");
+        var itemTheme  = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItemTheme.axaml");
+
+        itemSource.ShouldContain("BadgeTextProperty");
+        itemSource.ShouldContain("BadgeColorProperty");
+        itemSource.ShouldContain("IsBadgeVisibleProperty");
+        itemTheme.ShouldContain("Selector=\"^[IsBadgeVisible=True]\"");
+        itemTheme.ShouldContain("<atom:RibbonBadge");
+        itemTheme.ShouldContain("Text=\"{TemplateBinding BadgeText}\"");
+        itemTheme.ShouldContain("RibbonColor=\"{TemplateBinding BadgeColor}\"");
+        itemTheme.ShouldNotContain("RibbonBadgeText");
+        itemTheme.ShouldNotContain("FeatureBadgeText");
+        itemTheme.ShouldNotContain("PART_FeatureBadge");
+        itemTheme.ShouldNotContain("HorizontalAlignment=\"Right\"");
+        itemTheme.ShouldNotContain("VerticalAlignment=\"Top\"");
+        itemTheme.ShouldNotContain("IsHitTestVisible=\"False\"");
+    }
+
+    [Fact]
+    public void ShowCaseItem_Badge_Template_Keeps_Card_Content()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var item = new ShowCaseItem
+        {
+            Title       = "Feature",
+            Description = "Feature item",
+            BadgeText   = "v6.0.5",
+            Content     = new TextBlock
+            {
+                Text = "content"
+            }
+        };
+
+        ShowInWindow(item, () =>
+        {
+            var ribbonBadge = item.GetVisualDescendants()
+                                  .OfType<AtomRibbonBadge>()
+                                  .SingleOrDefault();
+            ribbonBadge.ShouldNotBeNull();
+            ribbonBadge.Text.ShouldBe("v6.0.5");
+
+            item.GetVisualDescendants()
+                .OfType<AtomSeparator>()
+                .Single()
+                .Title
+                .ShouldBe("Feature");
+            item.GetVisualDescendants()
+                .OfType<TextBlock>()
+                .Any(textBlock => textBlock.Text == "Feature item")
+                .ShouldBeTrue();
+            item.GetVisualDescendants()
+                .OfType<TextBlock>()
+                .Any(textBlock => textBlock.Text == "content")
+                .ShouldBeTrue();
+        });
     }
 
     [Fact]
@@ -222,6 +289,29 @@ public class ShowCasePanelStructureTests
 
             count++;
             startIndex = matchIndex + value.Length;
+        }
+    }
+
+    private static void ShowInWindow(Control content, Action assertion)
+    {
+        var window = new AvaloniaWindow
+        {
+            Content = content,
+            Width   = 640,
+            Height  = 480
+        };
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            content.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+            assertion();
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
         }
     }
 

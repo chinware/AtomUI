@@ -60,7 +60,9 @@ public class ButtonViewModel : ReactiveObject, IRoutableViewModel, IActivatableV
             new ButtonApiRow("Shape", Lang(ButtonShowCaseLangResourceKind.ApiPropertyShape), "ButtonShape", "blue", "Default"),
             new ButtonApiRow("Icon", Lang(ButtonShowCaseLangResourceKind.ApiPropertyIcon), "Icon?", "cyan", "null"),
             new ButtonApiRow("IsLoading", Lang(ButtonShowCaseLangResourceKind.ApiPropertyLoading), "bool", "green", "false"),
-            new ButtonApiRow("IsDanger", Lang(ButtonShowCaseLangResourceKind.ApiPropertyDanger), "bool", "green", "false")
+            new ButtonApiRow("IsDanger", Lang(ButtonShowCaseLangResourceKind.ApiPropertyDanger), "bool", "green", "false"),
+            new ButtonApiRow("Color", Lang(ButtonShowCaseLangResourceKind.ApiPropertyColor), "ButtonColor?", "purple", "null"),
+            new ButtonApiRow("Variant", Lang(ButtonShowCaseLangResourceKind.ApiPropertyVariant), "ButtonVariant?", "purple", "null")
         ];
     }
 
@@ -117,6 +119,8 @@ public class ButtonViewModel : ReactiveObject, IRoutableViewModel, IActivatableV
             ButtonShowCaseLangResourceKind.ApiPropertyIcon         => en_US.ApiPropertyIcon,
             ButtonShowCaseLangResourceKind.ApiPropertyLoading      => en_US.ApiPropertyLoading,
             ButtonShowCaseLangResourceKind.ApiPropertyDanger       => en_US.ApiPropertyDanger,
+            ButtonShowCaseLangResourceKind.ApiPropertyColor        => en_US.ApiPropertyColor,
+            ButtonShowCaseLangResourceKind.ApiPropertyVariant      => en_US.ApiPropertyVariant,
             ButtonShowCaseLangResourceKind.TokenNameColorPrimary   => en_US.TokenNameColorPrimary,
             ButtonShowCaseLangResourceKind.TokenNameControlHeight  => en_US.TokenNameControlHeight,
             ButtonShowCaseLangResourceKind.TokenNameButtonToken    => en_US.TokenNameButtonToken,

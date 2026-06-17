@@ -36,6 +36,8 @@ internal partial class en_US : LanguageProvider
     public const string ApiPropertyIcon = "Displays an icon before the content or as an icon-only button.";
     public const string ApiPropertyLoading = "Shows a loading indicator and communicates that the action is in progress.";
     public const string ApiPropertyDanger = "Applies danger styling for destructive or high-risk actions.";
+    public const string ApiPropertyColor = "Sets the semantic color used by the Color and Variant model.";
+    public const string ApiPropertyVariant = "Sets the visual variant, such as solid, outlined, dashed, filled, text, or link.";
     public const string TokenColumnToken = "Token";
     public const string TokenColumnDescription = "Description";
     public const string TokenColumnScope = "Scope";
@@ -49,6 +51,8 @@ internal partial class en_US : LanguageProvider
     public const string TokenStatusMapped = "Mapped";
     public const string TypeTitle = "Type";
     public const string TypeDescription = "There are primary button, default button, dashed button, text button and link button in antd.";
+    public const string ColorVariantTitle = "Color and variant";
+    public const string ColorVariantDescription = "Combine semantic color with visual variant to create primary, danger and preset-color buttons.";
     public const string ButtonShapeTitle = "Button Shape";
     public const string ButtonShapeDescription = "Supported button shape display, such as primary, default, dashed and text, etc.";
     public const string SizeTitle = "Size";
@@ -72,8 +76,17 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentLinkButton = "Link Button";
     public const string P2ContentPrimary = "Primary";
     public const string P2ContentDefault = "Default";
+    public const string P2ContentSolid = "Solid";
+    public const string P2ContentOutlined = "Outlined";
+    public const string P2ContentFilled = "Filled";
     public const string P2ContentText = "Text";
     public const string P2ContentLink = "Link";
+    public const string P2ColorDefault = "Default";
+    public const string P2ColorPrimary = "Primary";
+    public const string P2ColorDanger = "Danger";
+    public const string P2ColorPink = "Pink";
+    public const string P2ColorPurple = "Purple";
+    public const string P2ColorCyan = "Cyan";
     public const string P2ContentAa = "AA";
     public const string P2TextExpandDirection = "Button size:";
     public const string P2ContentLarge = "Large";

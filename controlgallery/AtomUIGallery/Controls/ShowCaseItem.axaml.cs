@@ -40,11 +40,20 @@ public class ShowCaseItem : ContentControl
     public static readonly StyledProperty<double> DeferredPlaceholderHeightProperty =
         AvaloniaProperty.Register<ShowCaseItem, double>(nameof(DeferredPlaceholderHeight), 160);
 
+    public static readonly StyledProperty<string?> BadgeTextProperty =
+        AvaloniaProperty.Register<ShowCaseItem, string?>(nameof(BadgeText));
+
+    public static readonly StyledProperty<string?> BadgeColorProperty =
+        AvaloniaProperty.Register<ShowCaseItem, string?>(nameof(BadgeColor), "blue");
+
     public static readonly StyledProperty<bool> IsDeferredContentMaterializedProperty =
         AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsDeferredContentMaterialized), false);
 
     internal static readonly StyledProperty<bool> IsDeferredPlaceholderVisibleProperty =
         AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsDeferredPlaceholderVisible), false);
+
+    internal static readonly StyledProperty<bool> IsBadgeVisibleProperty =
+        AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsBadgeVisible), false);
 
     public string Title
     {
@@ -100,6 +109,18 @@ public class ShowCaseItem : ContentControl
         set => SetValue(DeferredPlaceholderHeightProperty, value);
     }
 
+    public string? BadgeText
+    {
+        get => GetValue(BadgeTextProperty);
+        set => SetValue(BadgeTextProperty, value);
+    }
+
+    public string? BadgeColor
+    {
+        get => GetValue(BadgeColorProperty);
+        set => SetValue(BadgeColorProperty, value);
+    }
+
     public bool IsDeferredContentMaterialized
     {
         get => GetValue(IsDeferredContentMaterializedProperty);
@@ -110,6 +131,12 @@ public class ShowCaseItem : ContentControl
     {
         get => GetValue(IsDeferredPlaceholderVisibleProperty);
         set => SetValue(IsDeferredPlaceholderVisibleProperty, value);
+    }
+
+    internal bool IsBadgeVisible
+    {
+        get => GetValue(IsBadgeVisibleProperty);
+        set => SetValue(IsBadgeVisibleProperty, value);
     }
 
     public void MaterializeDeferredContent()
@@ -153,6 +180,11 @@ public class ShowCaseItem : ContentControl
             MaterializeDeferredContentIfDiagnosticsDisabled();
             UpdateDeferredPlaceholderVisibility();
         }
+
+        if (change.Property == BadgeTextProperty)
+        {
+            UpdateBadgeVisibility();
+        }
     }
 
     private void MaterializeDeferredContentIfDiagnosticsDisabled()
@@ -170,5 +202,10 @@ public class ShowCaseItem : ContentControl
             !GalleryShowCaseRuntimeOptions.IsDeferredLoadingDisabled &&
             DeferredContentTemplate is not null &&
             !IsDeferredContentMaterialized;
+    }
+
+    private void UpdateBadgeVisibility()
+    {
+        IsBadgeVisible = !string.IsNullOrWhiteSpace(BadgeText);
     }
 }

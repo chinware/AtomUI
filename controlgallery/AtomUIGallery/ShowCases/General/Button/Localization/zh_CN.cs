@@ -36,6 +36,8 @@ internal partial class zh_CN : LanguageProvider
     public const string ApiPropertyIcon = "在内容前显示图标，也可以作为纯图标按钮使用。";
     public const string ApiPropertyLoading = "显示加载指示，表达当前操作正在执行。";
     public const string ApiPropertyDanger = "为删除或高风险动作应用危险样式。";
+    public const string ApiPropertyColor = "设置 Color 和 Variant 模型使用的语义颜色。";
+    public const string ApiPropertyVariant = "设置视觉变体，例如实心、描边、虚线、填充、文本或链接。";
     public const string TokenColumnToken = "Token";
     public const string TokenColumnDescription = "说明";
     public const string TokenColumnScope = "作用域";
@@ -49,6 +51,8 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenStatusMapped = "映射";
     public const string TypeTitle = "按钮类型";
     public const string TypeDescription = "Ant Design 中包含主按钮、默认按钮、虚线按钮、文本按钮和链接按钮。";
+    public const string ColorVariantTitle = "颜色与变体";
+    public const string ColorVariantDescription = "组合语义颜色和视觉变体，用于创建主要、危险和预设色按钮。";
     public const string ButtonShapeTitle = "按钮形状";
     public const string ButtonShapeDescription = "展示支持的按钮形状，例如主按钮、默认按钮、虚线按钮和文本按钮等。";
     public const string SizeTitle = "按钮尺寸";
@@ -72,8 +76,17 @@ internal partial class zh_CN : LanguageProvider
     public const string P2ContentLinkButton = "链接按钮";
     public const string P2ContentPrimary = "主要";
     public const string P2ContentDefault = "默认";
+    public const string P2ContentSolid = "实心";
+    public const string P2ContentOutlined = "描边";
+    public const string P2ContentFilled = "填充";
     public const string P2ContentText = "文本";
     public const string P2ContentLink = "链接";
+    public const string P2ColorDefault = "默认";
+    public const string P2ColorPrimary = "主要";
+    public const string P2ColorDanger = "危险";
+    public const string P2ColorPink = "粉色";
+    public const string P2ColorPurple = "紫色";
+    public const string P2ColorCyan = "青色";
     public const string P2ContentAa = "AA";
     public const string P2TextExpandDirection = "按钮尺寸：";
     public const string P2ContentLarge = "大号";

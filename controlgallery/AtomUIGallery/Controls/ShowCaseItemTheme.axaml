@@ -37,6 +37,42 @@
             </ControlTemplate>
         </Setter>
 
+        <Style Selector="^[IsBadgeVisible=True]">
+            <Setter Property="Template">
+                <ControlTemplate TargetType="{x:Type gallery:ShowCaseItem}">
+                    <atom:RibbonBadge Text="{TemplateBinding BadgeText}"
+                                      RibbonColor="{TemplateBinding BadgeColor}"
+                                      BadgeIsVisible="True">
+                        <Border x:Name="PART_RootBorder"
+                                Background="{atom:SharedTokenResource ColorBgContainer}"
+                                BoxShadow="{gallery:ShowCaseItemTokenResource CardShadow}"
+                                Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
+                                CornerRadius="{gallery:ShowCaseItemTokenResource CardCornerRadius}">
+                            <StackPanel Orientation="Vertical">
+                                <Grid Margin="{gallery:ShowCaseItemTokenResource PreviewMargin}">
+                                    <Border Name="PART_DeferredPlaceholder"
+                                            IsVisible="{Binding IsDeferredPlaceholderVisible, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
+                                            MinHeight="{Binding DeferredPlaceholderHeight, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
+                                            Background="{atom:SharedTokenResource ColorFillTertiary}"
+                                            CornerRadius="{gallery:ShowCaseItemTokenResource DeferredPlaceholderCornerRadius}" />
+                                    <ContentPresenter Name="PART_ContentPresenter"
+                                                      IsVisible="{Binding IsDeferredPlaceholderVisible, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}, Converter={x:Static BoolConverters.Not}}"
+                                                      Content="{Binding Content, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
+                                                      ContentTemplate="{Binding ContentTemplate, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}" />
+                                </Grid>
+                                <atom:Separator TitlePosition="Left"
+                                                FontWeight="{gallery:ShowCaseItemTokenResource TitleFontWeight}"
+                                                Title="{Binding Title, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}" />
+                                <atom:TextBlock TextWrapping="Wrap"
+                                                Margin="{gallery:ShowCaseItemTokenResource DescriptionMargin}"
+                                                Text="{Binding Description, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}" />
+                            </StackPanel>
+                        </Border>
+                    </atom:RibbonBadge>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
         <Style Selector="^[IsFake=True] /template/ Border#PART_RootBorder">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
