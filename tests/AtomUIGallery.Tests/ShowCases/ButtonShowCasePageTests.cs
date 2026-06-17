@@ -63,6 +63,7 @@ public class ButtonShowCasePageTests
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("ButtonShowCaseLangResource TypeTitle");
         source.ShouldContain("ButtonShowCaseLangResource ColorVariantTitle");
+        source.ShouldContain("ButtonShowCaseLangResource GradientButtonTitle");
         source.ShouldContain("ButtonShowCaseLangResource ButtonShapeTitle");
         source.ShouldContain("ButtonShowCaseLangResource SizeTitle");
         source.ShouldContain("ButtonShowCaseLangResource LoadingTitle");
@@ -82,7 +83,7 @@ public class ButtonShowCasePageTests
     }
 
     [Fact]
-    public void Button_Color_And_Variant_Example_Is_Last_Full_Row_With_Version_Ribbon()
+    public void Button_Color_And_Variant_Example_Is_Last_Full_Row_With_Version_Badge()
     {
         var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml");
         var examples = ExtractButtonExampleItems(source);
@@ -93,11 +94,42 @@ public class ButtonShowCasePageTests
             examples.IndexOf("ButtonShowCaseLangResource DisabledTitle", StringComparison.Ordinal));
         colorVariantIndex.ShouldBeGreaterThan(
             examples.IndexOf("ButtonShowCaseLangResource GhostButtonTitle", StringComparison.Ordinal));
+        colorVariantIndex.ShouldBeGreaterThan(
+            examples.IndexOf("ButtonShowCaseLangResource GradientButtonTitle", StringComparison.Ordinal));
 
         var colorVariantItem = examples[colorVariantIndex..];
         colorVariantItem.ShouldContain("Span=\"Full\"");
         colorVariantItem.ShouldContain("BadgeText=\"v6.0.5\"");
+        colorVariantItem.ShouldNotContain("CustomBackground");
+        colorVariantItem.ShouldNotContain("LinearGradientBrush");
+        colorVariantItem.ShouldNotContain("P2ColorCustom");
+        colorVariantItem.ShouldNotContain("P2ContentGradient");
         colorVariantItem.ShouldNotContain("RibbonBadgeText=\"v6.0.5\"");
+    }
+
+    [Fact]
+    public void Button_Gradient_Example_Is_Separate_ShowCase_With_Two_Custom_Backgrounds()
+    {
+        var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml");
+        var examples = ExtractButtonExampleItems(source);
+
+        var colorVariantIndex = examples.IndexOf("ButtonShowCaseLangResource ColorVariantTitle", StringComparison.Ordinal);
+        var gradientIndex     = examples.IndexOf("ButtonShowCaseLangResource GradientButtonTitle", StringComparison.Ordinal);
+        gradientIndex.ShouldBeGreaterThanOrEqualTo(0);
+        gradientIndex.ShouldBeLessThan(colorVariantIndex);
+
+        var gradientItem = ExtractShowCaseItemByTitle(examples, "ButtonShowCaseLangResource GradientButtonTitle");
+        gradientItem.ShouldContain("BadgeText=\"v6.0.5\"");
+        gradientItem.ShouldNotContain("Span=\"Full\"");
+        gradientItem.ShouldContain("CustomBackground");
+        CountOccurrences(gradientItem, "<atom:Button.CustomBackground>").ShouldBe(2);
+        CountOccurrences(gradientItem, "<LinearGradientBrush").ShouldBe(2);
+        gradientItem.ShouldContain("#6253E1");
+        gradientItem.ShouldContain("#04BEFE");
+        gradientItem.ShouldContain("#FF7A45");
+        gradientItem.ShouldContain("#FFD666");
+        gradientItem.ShouldNotContain("/template/");
+        gradientItem.ShouldNotContain("RibbonBadgeText=\"v6.0.5\"");
     }
 
     [Fact]
@@ -182,6 +214,9 @@ public class ButtonShowCasePageTests
             source.ShouldContain("ApiPropertyButtonType");
             source.ShouldContain("ApiPropertyColor");
             source.ShouldContain("ApiPropertyVariant");
+            source.ShouldContain("ApiPropertyCustomBackground");
+            source.ShouldContain("GradientButtonTitle");
+            source.ShouldContain("GradientButtonDescription");
             source.ShouldContain("ApiPropertyLoading");
             source.ShouldContain("ApiPropertyIcon");
             source.ShouldContain("TokenNameColorPrimary");
@@ -211,6 +246,23 @@ public class ButtonShowCasePageTests
         panelCloseStart.ShouldBeGreaterThan(firstItemStart);
 
         return source[firstItemStart..panelCloseStart];
+    }
+
+    private static string ExtractShowCaseItemByTitle(string source, string titleResource)
+    {
+        const string itemStartMarker = "<gallery:ShowCaseItem";
+        const string itemCloseMarker = "</gallery:ShowCaseItem>";
+
+        var titleIndex = source.IndexOf(titleResource, StringComparison.Ordinal);
+        titleIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemStart = source.LastIndexOf(itemStartMarker, titleIndex, StringComparison.Ordinal);
+        itemStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemClose = source.IndexOf(itemCloseMarker, titleIndex, StringComparison.Ordinal);
+        itemClose.ShouldBeGreaterThan(titleIndex);
+
+        return source[itemStart..(itemClose + itemCloseMarker.Length)];
     }
 
     private static string NormalizeMarkup(string source)

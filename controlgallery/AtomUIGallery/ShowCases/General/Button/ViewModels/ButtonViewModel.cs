@@ -62,7 +62,8 @@ public class ButtonViewModel : ReactiveObject, IRoutableViewModel, IActivatableV
             new ButtonApiRow("IsLoading", Lang(ButtonShowCaseLangResourceKind.ApiPropertyLoading), "bool", "green", "false"),
             new ButtonApiRow("IsDanger", Lang(ButtonShowCaseLangResourceKind.ApiPropertyDanger), "bool", "green", "false"),
             new ButtonApiRow("Color", Lang(ButtonShowCaseLangResourceKind.ApiPropertyColor), "ButtonColor?", "purple", "null"),
-            new ButtonApiRow("Variant", Lang(ButtonShowCaseLangResourceKind.ApiPropertyVariant), "ButtonVariant?", "purple", "null")
+            new ButtonApiRow("Variant", Lang(ButtonShowCaseLangResourceKind.ApiPropertyVariant), "ButtonVariant?", "purple", "null"),
+            new ButtonApiRow("CustomBackground", Lang(ButtonShowCaseLangResourceKind.ApiPropertyCustomBackground), "IBrush?", "cyan", "null")
         ];
     }
 
@@ -113,22 +114,23 @@ public class ButtonViewModel : ReactiveObject, IRoutableViewModel, IActivatableV
     {
         return kind switch
         {
-            ButtonShowCaseLangResourceKind.ApiPropertyButtonType   => en_US.ApiPropertyButtonType,
-            ButtonShowCaseLangResourceKind.ApiPropertySizeType     => en_US.ApiPropertySizeType,
-            ButtonShowCaseLangResourceKind.ApiPropertyShape        => en_US.ApiPropertyShape,
-            ButtonShowCaseLangResourceKind.ApiPropertyIcon         => en_US.ApiPropertyIcon,
-            ButtonShowCaseLangResourceKind.ApiPropertyLoading      => en_US.ApiPropertyLoading,
-            ButtonShowCaseLangResourceKind.ApiPropertyDanger       => en_US.ApiPropertyDanger,
-            ButtonShowCaseLangResourceKind.ApiPropertyColor        => en_US.ApiPropertyColor,
-            ButtonShowCaseLangResourceKind.ApiPropertyVariant      => en_US.ApiPropertyVariant,
-            ButtonShowCaseLangResourceKind.TokenNameColorPrimary   => en_US.TokenNameColorPrimary,
-            ButtonShowCaseLangResourceKind.TokenNameControlHeight  => en_US.TokenNameControlHeight,
-            ButtonShowCaseLangResourceKind.TokenNameButtonToken    => en_US.TokenNameButtonToken,
-            ButtonShowCaseLangResourceKind.TokenScopeShared        => en_US.TokenScopeShared,
-            ButtonShowCaseLangResourceKind.TokenScopeComponent     => en_US.TokenScopeComponent,
-            ButtonShowCaseLangResourceKind.TokenStatusStable       => en_US.TokenStatusStable,
-            ButtonShowCaseLangResourceKind.TokenStatusMapped       => en_US.TokenStatusMapped,
-            _                                                      => kind.ToString()
+            ButtonShowCaseLangResourceKind.ApiPropertyButtonType       => en_US.ApiPropertyButtonType,
+            ButtonShowCaseLangResourceKind.ApiPropertySizeType         => en_US.ApiPropertySizeType,
+            ButtonShowCaseLangResourceKind.ApiPropertyShape            => en_US.ApiPropertyShape,
+            ButtonShowCaseLangResourceKind.ApiPropertyIcon             => en_US.ApiPropertyIcon,
+            ButtonShowCaseLangResourceKind.ApiPropertyLoading          => en_US.ApiPropertyLoading,
+            ButtonShowCaseLangResourceKind.ApiPropertyDanger           => en_US.ApiPropertyDanger,
+            ButtonShowCaseLangResourceKind.ApiPropertyColor            => en_US.ApiPropertyColor,
+            ButtonShowCaseLangResourceKind.ApiPropertyVariant          => en_US.ApiPropertyVariant,
+            ButtonShowCaseLangResourceKind.ApiPropertyCustomBackground => en_US.ApiPropertyCustomBackground,
+            ButtonShowCaseLangResourceKind.TokenNameColorPrimary       => en_US.TokenNameColorPrimary,
+            ButtonShowCaseLangResourceKind.TokenNameControlHeight      => en_US.TokenNameControlHeight,
+            ButtonShowCaseLangResourceKind.TokenNameButtonToken        => en_US.TokenNameButtonToken,
+            ButtonShowCaseLangResourceKind.TokenScopeShared            => en_US.TokenScopeShared,
+            ButtonShowCaseLangResourceKind.TokenScopeComponent         => en_US.TokenScopeComponent,
+            ButtonShowCaseLangResourceKind.TokenStatusStable           => en_US.TokenStatusStable,
+            ButtonShowCaseLangResourceKind.TokenStatusMapped           => en_US.TokenStatusMapped,
+            _                                                          => kind.ToString()
         };
     }
 }

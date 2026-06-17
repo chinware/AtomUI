@@ -259,6 +259,31 @@ public class ButtonBehaviorTests
     }
 
     [Theory]
+    [InlineData("primary-solid", true)]
+    [InlineData("primary-outlined", false)]
+    [InlineData("primary-text", false)]
+    [InlineData("danger-solid", false)]
+    [InlineData("disabled-primary-solid", false)]
+    public void Button_CustomBackground_Visibility_Follows_Effective_State(
+        string scenario,
+        bool expectedVisible)
+    {
+        var customBackground = CreateCustomBackground();
+        var button           = CreateCustomBackgroundButton(scenario, customBackground);
+
+        ShowInWindow(button, () =>
+        {
+            GetInternalPropertyValue<bool>(button, "HasCustomBackground")
+                .ShouldBe(expectedVisible);
+
+            var customBackgroundLayer = FindTemplateBorder(button, "CustomBackgroundLayer");
+            customBackgroundLayer.Background.ShouldBeSameAs(customBackground);
+            customBackgroundLayer.IsVisible.ShouldBe(expectedVisible);
+            customBackgroundLayer.Opacity.ShouldBe(expectedVisible ? 1.0 : 0.0);
+        });
+    }
+
+    [Theory]
     [InlineData(ButtonColor.Pink, ButtonVariant.Solid, "VariantBackgroundBrush")]
     [InlineData(ButtonColor.Pink, ButtonVariant.Outlined, "VariantBorderBrush")]
     [InlineData(ButtonColor.Cyan, ButtonVariant.Dashed, "VariantBorderBrush")]
@@ -282,6 +307,105 @@ public class ButtonBehaviorTests
 
             BrushShouldHaveSameColor(waveBrush, expectedBrush);
         });
+    }
+
+    [Fact]
+    public void Button_CustomBackground_Does_Not_Change_WaveSpiritBrush()
+    {
+        var customBackground = CreateCustomBackground();
+        var button = new AtomUIButton
+        {
+            ButtonType       = ButtonType.Primary,
+            CustomBackground = customBackground,
+            IsMotionEnabled  = false
+        };
+
+        ShowInWindow(button, () =>
+        {
+            var waveSpiritDecorator = GetPrivateFieldValue(button, "_waveSpiritDecorator");
+            var waveBrush           = GetPublicPropertyValue<IBrush?>(waveSpiritDecorator, "WaveBrush");
+            var expectedBrush       = GetInternalPropertyValue<IBrush?>(button, "VariantBackgroundBrush");
+
+            waveBrush.ShouldNotBeSameAs(customBackground);
+            BrushShouldHaveSameColor(waveBrush, expectedBrush);
+        });
+    }
+
+    [Fact]
+    public void Button_CustomBackground_Layer_Overlays_Frame_In_Normal_State()
+    {
+        var button = new AtomUIButton
+        {
+            ButtonType       = ButtonType.Primary,
+            CustomBackground = CreateCustomBackground(),
+            IsMotionEnabled  = false
+        };
+
+        ShowInWindow(button, () =>
+        {
+            var frame                 = FindTemplateBorder(button, "Frame");
+            var customBackgroundLayer = FindTemplateBorder(button, "CustomBackgroundLayer");
+            var rootPanel             = frame.GetVisualParent<Panel>();
+            rootPanel.ShouldNotBeNull();
+
+            var rootChildren                = rootPanel!.GetVisualChildren().ToList();
+            var frameIndex                  = rootChildren.IndexOf(frame);
+            var customBackgroundLayerIndex  = rootChildren.IndexOf(customBackgroundLayer);
+
+            frameIndex.ShouldBeGreaterThanOrEqualTo(0);
+            customBackgroundLayerIndex.ShouldBeGreaterThan(frameIndex);
+            BrushShouldHaveSameColor(frame.Background, GetInternalPropertyValue<IBrush?>(button, "VariantBackgroundBrush"));
+        });
+    }
+
+    private static AtomUIButton CreateCustomBackgroundButton(string scenario, IBrush customBackground)
+    {
+        var button = new AtomUIButton
+        {
+            CustomBackground = customBackground,
+            IsMotionEnabled  = false
+        };
+
+        switch (scenario)
+        {
+            case "primary-solid":
+                button.ButtonType = ButtonType.Primary;
+                break;
+            case "primary-outlined":
+                button.Color   = ButtonColor.Primary;
+                button.Variant = ButtonVariant.Outlined;
+                break;
+            case "primary-text":
+                button.Color   = ButtonColor.Primary;
+                button.Variant = ButtonVariant.Text;
+                break;
+            case "danger-solid":
+                button.ButtonType = ButtonType.Primary;
+                button.IsDanger   = true;
+                break;
+            case "disabled-primary-solid":
+                button.ButtonType = ButtonType.Primary;
+                button.IsEnabled  = false;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(scenario), scenario, null);
+        }
+
+        return button;
+    }
+
+    private static LinearGradientBrush CreateCustomBackground()
+    {
+        return new LinearGradientBrush
+        {
+            StartPoint = new RelativePoint(0, 0, RelativeUnit.Relative),
+            EndPoint   = new RelativePoint(1, 1, RelativeUnit.Relative),
+            GradientStops =
+            {
+                new GradientStop { Color = Colors.MediumPurple, Offset = 0 },
+                new GradientStop { Color = Colors.DeepSkyBlue, Offset   = 1 }
+            }
+        };
     }
 
     private static object GetInternalPropertyValue(object target, string propertyName)
