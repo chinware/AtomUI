@@ -125,7 +125,9 @@ public class DataGridDataMemberAccessorsTests
         };
         var view = new DataGridCollectionView(source, descriptor);
 
+#pragma warning disable ATOMUIAOT003
         view.SortDescriptions.Add(DataGridSortDescription.FromPath("SyntheticScore"));
+#pragma warning restore ATOMUIAOT003
 
         view.Cast<ManualRow>().Select(row => row.Score).ShouldBe([null, 1, 2]);
     }
@@ -165,7 +167,9 @@ public class DataGridDataMemberAccessorsTests
     [Fact]
     public void DataGridPathSortRequiresGeneratedAccessorWhenDynamicCodeIsDisabled()
     {
+#pragma warning disable ATOMUIAOT001
         var sort = DataGridSortDescription.FromPath(nameof(UnregisteredRow.Score));
+#pragma warning restore ATOMUIAOT001
 
         Should.Throw<InvalidOperationException>(() =>
             sort.Initialize(typeof(UnregisteredRow), isDynamicCodeSupported: false));
@@ -193,7 +197,9 @@ public class DataGridDataMemberAccessorsTests
         };
         var view = new DataGridCollectionView(source);
 
+#pragma warning disable ATOMUIAOT001
         view.SortDescriptions.Add(DataGridSortDescription.FromPath(nameof(UnregisteredRow.Score)));
+#pragma warning restore ATOMUIAOT001
 
         view.Cast<UnregisteredRow>().Select(row => row.Score).ShouldBe([1, 2]);
     }

@@ -76,6 +76,7 @@ Read the relevant document before touching the corresponding area:
 - Module boundaries: [docs/architecture/dependency-graph.md](docs/architecture/dependency-graph.md)
 - AI collaboration and bug-fix discipline: [docs/engineering/agent-guidelines.md](docs/engineering/agent-guidelines.md)
 - AOT, trimming, dynamic data, source generators: [docs/engineering/aot-programming-guidelines.md](docs/engineering/aot-programming-guidelines.md)
+- Compiler diagnostics: [docs/engineering/compiler-diagnostics-guidelines.md](docs/engineering/compiler-diagnostics-guidelines.md)
 - Changelog and release notes: [docs/engineering/changelog-guidelines.md](docs/engineering/changelog-guidelines.md)
 - Gallery NativeAOT release flow: [docs/engineering/gallery-aot-release-workflow.md](docs/engineering/gallery-aot-release-workflow.md)
 - Gallery page structure: [docs/gallery/gallery-showcase-design-pattern.md](docs/gallery/gallery-showcase-design-pattern.md)
