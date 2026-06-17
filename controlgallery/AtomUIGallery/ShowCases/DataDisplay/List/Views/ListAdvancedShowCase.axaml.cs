@@ -9,7 +9,7 @@ public partial class ListAdvancedShowCase : GalleryReactiveUserControl<ListViewM
     public ListAdvancedShowCase()
     {
         InitializeComponent();
-        OrderedList.SortDescriptions = [ListSortDescription.FromPath("Content")];
+        OrderedList.SortDescriptions = [ListSortDescription.FromPath(nameof(IListItemData.Content))];
     }
 
     private void HandleFilterListBoxClicked(object? sender, RoutedEventArgs e)

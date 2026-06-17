@@ -389,6 +389,12 @@ var descriptor = new DataMemberAccessorDescriptor<PersonRow>(
 
 所以结论是：AtomUI 内置模型要走生成 accessor；用户如果要 NativeAOT 稳定发布，就要提供 generated 或手写 descriptor。
 
+### 编译期诊断
+
+DataGrid、List、collection view 等使用字符串 path 做排序、过滤、分组、自动列或数据成员读取时，必须优先让问题在编译期暴露，而不是等到 NativeAOT 运行时才失败。
+
+可静态判断的场景必须提供 analyzer warning。诊断 ID、ID 命名、severity、编码组织和测试规则统一维护在 [compiler-diagnostics-guidelines.md](compiler-diagnostics-guidelines.md)。
+
 ## Reflection helper
 
 反射 helper 只能存在于明确边界：
@@ -640,6 +646,7 @@ docs/superpowers/aot-review-checklist.md
 - 是否新增 `Activator.CreateInstance(Type)`、`Expression.Compile()` 或 `MakeGenericType(...)`。
 - 是否新增 ReactiveUI expression/view activation API。
 - 是否新增动态 data model path，但没有 descriptor 或 generator。
+- 是否新增 DataGrid/List/collection 字符串 path，但没有可在编译期报警的 analyzer 覆盖。
 - 是否新增订阅、binding、event handler，但没有 release path。
 - 是否新增 source generator 逻辑，但没有检查生成物稳定性。
 - 是否新增 suppress trim/AOT warning。

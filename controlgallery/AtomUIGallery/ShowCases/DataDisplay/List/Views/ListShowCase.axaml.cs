@@ -33,7 +33,7 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
             {
                 RefreshLocalizedListItems(viewModel);
                 viewModel.SelectionMode            = SelectionMode.Single;
-                viewModel.OrderedSortDescriptions  = [ListSortDescription.FromPath("Content")];
+                viewModel.OrderedSortDescriptions  = [ListSortDescription.FromPath(nameof(IListItemData.Content))];
 
                 var themeManager = Application.Current?.GetThemeManager();
                 if (themeManager != null)

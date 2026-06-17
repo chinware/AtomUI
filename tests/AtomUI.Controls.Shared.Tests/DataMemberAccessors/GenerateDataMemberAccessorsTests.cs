@@ -71,7 +71,9 @@ public class GenerateDataMemberAccessorsTests
         };
         var view = new ListCollectionView(source, descriptor);
 
+#pragma warning disable ATOMUIAOT003
         view.SortDescriptions.Add(ListSortDescription.FromPath("SyntheticScore"));
+#pragma warning restore ATOMUIAOT003
 
         view.Cast<ManualRow>().Select(row => row.Score).ShouldBe([null, 1, 2]);
     }
@@ -98,7 +100,9 @@ public class GenerateDataMemberAccessorsTests
     [Fact]
     public void PathSortRequiresGeneratedAccessorWhenDynamicCodeIsDisabled()
     {
+#pragma warning disable ATOMUIAOT001
         var sort = ListSortDescription.FromPath(nameof(UnregisteredRow.Score));
+#pragma warning restore ATOMUIAOT001
 
         Should.Throw<InvalidOperationException>(() =>
             sort.Initialize(typeof(UnregisteredRow), isDynamicCodeSupported: false));
@@ -114,7 +118,9 @@ public class GenerateDataMemberAccessorsTests
         };
         var view = new ListCollectionView(source);
 
+#pragma warning disable ATOMUIAOT001
         view.SortDescriptions.Add(ListSortDescription.FromPath(nameof(UnregisteredRow.Score)));
+#pragma warning restore ATOMUIAOT001
 
         view.Cast<UnregisteredRow>().Select(row => row.Score).ShouldBe([1, 2]);
     }
