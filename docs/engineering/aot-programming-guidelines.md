@@ -10,14 +10,15 @@
 
 ## 先看这几条
 
-日常开发先记住这 6 条，绝大多数 AOT 问题都能在写代码时避开。
+日常开发先记住这 7 条，绝大多数 AOT 问题都能在写代码时避开。
 
-1. 不要在 AtomUI 内置路径里新增字符串绑定，例如 `new Binding("Name")` 或 AXAML `ReflectionBinding`。
-2. 不要运行时扫描 assembly、type、field、property 来完成内置注册。能生成就用 source generator，能显式注册就显式注册。
-3. 不要用 `UnconditionalSuppressMessage` 盖掉 trim/AOT warning。它只是不显示 warning，不会保留被 trim 掉的 metadata。
-4. 替换 AOT 不安全代码时，先确认旧语义，再改实现。尤其是 binding mode、binding priority、初始值、异常包装、dispose 后行为。
-5. 新增 subscription、binding、event handler、activation scope、cache 时，必须能说清楚在哪里释放或失效。
-6. Analyzer 通过不等于 NativeAOT publish 一定成功。涉及发布配置、linker、root descriptor 时，要做真实 publish 验证。
+1. 新增功能和修复 bug 时，AOT 兼容是第一设计约束。同一需求有 AOT 友好实现和运行时反射/动态发现实现时，必须选择 AOT 友好实现；能用 source generator 就不要用反射。
+2. 不要在 AtomUI 内置路径里新增字符串绑定，例如 `new Binding("Name")` 或 AXAML `ReflectionBinding`。
+3. 不要运行时扫描 assembly、type、field、property 来完成内置注册。能显式注册就显式注册，能生成 registry/catalog 就用 source generator。
+4. 不要用 `UnconditionalSuppressMessage` 盖掉 trim/AOT warning。它只是不显示 warning，不会保留被 trim 掉的 metadata。
+5. 替换 AOT 不安全代码时，先确认旧语义，再改实现。尤其是 binding mode、binding priority、初始值、异常包装、dispose 后行为。
+6. 新增 subscription、binding、event handler、activation scope、cache 时，必须能说清楚在哪里释放或失效。
+7. Analyzer 通过不等于 NativeAOT publish 一定成功。涉及发布配置、linker、root descriptor 时，要做真实 publish 验证。
 
 一句话总结：AOT 改造的方向是把运行时动态发现变成编译期已知代码，而不是把 warning 压下去。
 
@@ -359,6 +360,8 @@ public partial class PersonRow
     public int Age { get; set; }
 }
 ```
+
+如果集合以接口或基类作为 item type 暴露，并且排序、过滤或分组 path 来自这个接口/基类，也要在对应接口或基类上生成 accessor；不要依赖运行时从首个 item 反推具体类型。
 
 不可加 attribute 的模型，显式传入 `IDataMemberAccessorDescriptor`：
 

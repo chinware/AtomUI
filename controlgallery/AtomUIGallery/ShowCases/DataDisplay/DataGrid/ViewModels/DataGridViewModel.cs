@@ -1,8 +1,7 @@
 using System.Collections.ObjectModel;
 using AtomUI.Controls;
+using AtomUI.Controls.Data;
 using AtomUI.Data;
-using AtomUI.Theme.Language;
-using DynamicData;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Threading;
@@ -196,7 +195,8 @@ public sealed record DataGridDesignTokenRow(
     string Status,
     string StatusTagColor);
 
-public class DataGridBaseInfo
+[GenerateDataMemberAccessors]
+public partial class DataGridBaseInfo
 {
     public string Key { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
@@ -212,7 +212,8 @@ public class TagInfo
     public string Color { get; set; } = string.Empty;
 }
 
-public class MultiSorterDataType
+[GenerateDataMemberAccessors]
+public partial class MultiSorterDataType
 {
     public string Key { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
