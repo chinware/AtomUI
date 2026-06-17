@@ -16,6 +16,7 @@
         <PackageVersion Include="SkiaSharp.QrCode" Version="0.12.0"/>
         <PackageVersion Include="System.Reactive" Version="6.1.0"/>
         <PackageVersion Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
+        <PackageVersion Include="AsyncImageLoader.Avalonia" Version="3.8.0"/>
         <!-- 测试相关依赖 -->
         <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.3.0"/>
         <PackageVersion Include="NSubstitute" Version="5.1.0"/>
