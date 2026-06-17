@@ -240,6 +240,73 @@ public class Button : AvaloniaButton,
         this.RegisterTokenResourceScope(ButtonToken.ScopeProvider);
     }
 
+    #region 实现 CompactSpace 接口
+
+    void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
+    {
+        IsUsedInCompactSpace     = position != null;
+        CompactSpaceItemPosition = position;
+    }
+
+    void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
+    {
+        CompactSpaceOrientation = orientation;
+    }
+
+    bool ICompactSpaceAware.IsAlwaysActiveZIndex()
+    {
+        return ButtonType == ButtonType.Primary;
+    }
+
+    double ICompactSpaceAware.GetBorderThickness() => GetBorderThicknessForCompactSpace();
+
+    protected virtual double GetBorderThicknessForCompactSpace()
+    {
+        if (!IsUsedInCompactSpace)
+        {
+            return 0.0;
+        }
+
+        return CompactSpaceOrientation == Orientation.Horizontal ? BorderThickness.Left : BorderThickness.Top;
+    }
+
+    #endregion
+
+    #region 实现 FormItem 接口
+
+    private EventHandler? _formValueChanged;
+
+    event EventHandler? IFormItemAware.ValueChanged
+    {
+        add => _formValueChanged += value;
+        remove => _formValueChanged -= value;
+    }
+
+    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value);
+
+    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
+    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
+    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
+
+    protected virtual void NotifySetFormValue(object? value)
+    {
+    }
+
+    protected virtual object? NotifyGetFormValue()
+    {
+        return null;
+    }
+
+    protected virtual void NotifyClearFormValue()
+    {
+    }
+
+    protected virtual void NotifyValidateStatus(FormValidateStatus status)
+    {
+    }
+
+    #endregion
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -250,6 +317,15 @@ public class Button : AvaloniaButton,
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>("PART_WaveSpirit");
+        UpdatePseudoClasses();
+        ConfigureWaveSpiritType();
+        ConfigureEffectiveBorderThickness();
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -279,36 +355,7 @@ public class Button : AvaloniaButton,
         base.OnPropertyChanged(change);
         if (change.Property == IsPressedProperty)
         {
-            if (!IsLoading &&
-                IsWaveSpiritEnabled &&
-                (change.OldValue as bool? == true) &&
-                (ButtonType == ButtonType.Primary || ButtonType == ButtonType.Default || ButtonType == ButtonType.Dashed))
-            {
-                Debug.Assert(_waveSpiritDecorator != null);
-                
-                IBrush? waveBrush = null;
-                if (IsDanger)
-                {
-                    if (ButtonType == ButtonType.Primary && !IsGhost)
-                    {
-                        waveBrush = Background;
-                    }
-                    else
-                    {
-                        waveBrush = Foreground;
-                    }
-                }
-
-                if (waveBrush != null)
-                {
-                    _waveSpiritDecorator.WaveBrush = waveBrush;
-                }
-     
-                Dispatcher.Post(() =>
-                {
-                    _waveSpiritDecorator?.Play();
-                });
-            }
+            HandlePressedChanged(change);
         }
 
         if (change.Property == ButtonTypeProperty)
@@ -316,60 +363,86 @@ public class Button : AvaloniaButton,
             ConfigureWaveSpiritType();
         }
 
-        if (change.Property == ContentProperty ||
-            change.Property == IsLoadingProperty)
+        if (ShouldUpdatePseudoClasses(change.Property))
         {
             UpdatePseudoClasses();
         }
-        else if (change.Property == BorderBrushProperty ||
-                 change.Property == ButtonTypeProperty ||
-                 change.Property == IsEnabledProperty ||
-                 change.Property == BorderThicknessProperty)
+        else if (ShouldConfigureEffectiveBorderThickness(change.Property))
         {
             ConfigureEffectiveBorderThickness();
         }
 
-        if (change.Property == CornerRadiusProperty ||
-            change.Property == CompactSpaceItemPositionProperty ||
-            change.Property == CompactSpaceOrientationProperty)
+        if (ShouldConfigureEffectiveCornerRadius(change.Property))
         {
             ConfigureEffectiveCornerRadius();
         }
     }
-    
-    private void ConfigureWaveSpiritType()
+
+    private void HandlePressedChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        WaveSpiritType waveType = default;
-        if (Shape == ButtonShape.Default)
+        if (!CanPlayWaveSpirit(change))
         {
-            waveType = WaveSpiritType.RoundRectWave;
-        }
-        else if (Shape == ButtonShape.Round)
-        {
-            waveType = WaveSpiritType.PillWave;
-        }
-        else if (Shape == ButtonShape.Circle)
-        {
-            waveType = WaveSpiritType.CircleWave;
+            return;
         }
 
-        WaveSpiritType = waveType;
+        Debug.Assert(_waveSpiritDecorator != null);
+        ConfigureDangerWaveSpiritBrush();
+        Dispatcher.Post(() =>
+        {
+            _waveSpiritDecorator?.Play();
+        });
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    private bool CanPlayWaveSpirit(AvaloniaPropertyChangedEventArgs change)
     {
-        base.OnApplyTemplate(e);
-        _waveSpiritDecorator = e.NameScope.Find<WaveSpiritDecorator>("PART_WaveSpirit");
-        UpdatePseudoClasses();
-        ConfigureWaveSpiritType();
-        ConfigureEffectiveBorderThickness();
+        return !IsLoading &&
+               IsWaveSpiritEnabled &&
+               (change.OldValue as bool? == true) &&
+               IsWaveSpiritSupportedButtonType();
+    }
+
+    private bool IsWaveSpiritSupportedButtonType()
+    {
+        return ButtonType == ButtonType.Primary ||
+               ButtonType == ButtonType.Default ||
+               ButtonType == ButtonType.Dashed;
+    }
+
+    private void ConfigureDangerWaveSpiritBrush()
+    {
+        IBrush? waveBrush = null;
+        if (IsDanger)
+        {
+            if (ButtonType == ButtonType.Primary && !IsGhost)
+            {
+                waveBrush = Background;
+            }
+            else
+            {
+                waveBrush = Foreground;
+            }
+        }
+
+        if (waveBrush != null)
+        {
+            _waveSpiritDecorator!.WaveBrush = waveBrush;
+        }
+    }
+
+    private void ConfigureWaveSpiritType()
+    {
+        WaveSpiritType = Shape switch
+        {
+            ButtonShape.Default => WaveSpiritType.RoundRectWave,
+            ButtonShape.Round   => WaveSpiritType.PillWave,
+            ButtonShape.Circle  => WaveSpiritType.CircleWave,
+            _                   => default
+        };
     }
 
     private void ConfigureEffectiveBorderThickness()
     {
-        if (ButtonType == ButtonType.Default ||
-            ButtonType == ButtonType.Dashed ||
-            ButtonType == ButtonType.Primary)
+        if (IsBorderedButtonType())
         {
             EffectiveBorderThickness = BorderThickness;
         }
@@ -388,6 +461,34 @@ public class Button : AvaloniaButton,
             CompactSpaceOrientation);
     }
 
+    private bool ShouldUpdatePseudoClasses(AvaloniaProperty property)
+    {
+        return property == ContentProperty ||
+               property == IsLoadingProperty;
+    }
+
+    private bool ShouldConfigureEffectiveBorderThickness(AvaloniaProperty property)
+    {
+        return property == BorderBrushProperty ||
+               property == ButtonTypeProperty ||
+               property == IsEnabledProperty ||
+               property == BorderThicknessProperty;
+    }
+
+    private bool ShouldConfigureEffectiveCornerRadius(AvaloniaProperty property)
+    {
+        return property == CornerRadiusProperty ||
+               property == CompactSpaceItemPositionProperty ||
+               property == CompactSpaceOrientationProperty;
+    }
+
+    private bool IsBorderedButtonType()
+    {
+        return ButtonType == ButtonType.Default ||
+               ButtonType == ButtonType.Dashed ||
+               ButtonType == ButtonType.Primary;
+    }
+
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(ButtonPseudoClass.IconOnly, Icon is not null && Content is null);
@@ -400,63 +501,4 @@ public class Button : AvaloniaButton,
         PseudoClasses.Set(ButtonPseudoClass.IsDanger, IsDanger);
     }
 
-    void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
-    {
-        IsUsedInCompactSpace     = position != null;
-        CompactSpaceItemPosition = position;
-    }
-
-    void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
-    {
-        CompactSpaceOrientation = orientation;
-    }
-    
-    bool ICompactSpaceAware.IsAlwaysActiveZIndex()
-    {
-        return ButtonType == ButtonType.Primary;
-    }
-
-    double ICompactSpaceAware.GetBorderThickness() => GetBorderThicknessForCompactSpace();
-
-    protected virtual double GetBorderThicknessForCompactSpace()
-    {
-        if (!IsUsedInCompactSpace)
-        {
-            return 0.0;
-        }
-
-        return CompactSpaceOrientation == Orientation.Horizontal ? BorderThickness.Left : BorderThickness.Top;
-    }
-    
-    #region 实现 FormItem 接口
-    private EventHandler? _formValueChanged;
-    event EventHandler? IFormItemAware.ValueChanged
-    {
-        add => _formValueChanged += value;
-        remove => _formValueChanged -= value;
-    }
-
-    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value);
-
-    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
-    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
-    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
-    
-    protected virtual void NotifySetFormValue(object? value)
-    {
-    }
-
-    protected virtual object? NotifyGetFormValue()
-    {
-        return null;
-    }
-
-    protected virtual void NotifyClearFormValue()
-    {
-    }
-
-    protected virtual void NotifyValidateStatus(FormValidateStatus status)
-    {
-    }
-    #endregion
 }
