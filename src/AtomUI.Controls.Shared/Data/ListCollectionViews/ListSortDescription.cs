@@ -349,7 +349,7 @@ public abstract class ListSortDescription : IListSortDescription
                 return true;
             }
 
-            if (DataMemberAccessorRegistry.TryGet(itemType, out var descriptor) &&
+            if (DataMemberAccessorRegistry.TryGetCompatible(itemType, out var descriptor) &&
                 descriptor.TryGetAccessor(_propertyPath, out accessor!))
             {
                 return true;

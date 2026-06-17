@@ -1,5 +1,6 @@
 namespace AtomUI.Controls.Data;
 
+[GenerateDataMemberAccessors]
 public interface IListItemData : IItemKey, IGroupHeader
 {
     bool IsEnabled { get; set; }

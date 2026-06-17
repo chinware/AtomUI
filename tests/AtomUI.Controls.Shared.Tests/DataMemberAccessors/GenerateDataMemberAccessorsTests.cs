@@ -129,12 +129,56 @@ public class GenerateDataMemberAccessorsTests
         Should.NotThrow(() => sort.Initialize(descriptor.DataType, isDynamicCodeSupported: false));
     }
 
+    [Fact]
+    public void PathSortUsesCompatibleGeneratedAccessorWhenDynamicCodeIsDisabled()
+    {
+        var sort = ListSortDescription.FromPath(nameof(BaseRow.Score));
+
+        Should.NotThrow(() => sort.Initialize(typeof(DerivedRow), isDynamicCodeSupported: false));
+    }
+
+    [Fact]
+    public void PathSortUsesAbstractBaseGeneratedAccessorWhenDynamicCodeIsDisabled()
+    {
+        var sort = ListSortDescription.FromPath(nameof(AbstractBaseRow.Score));
+
+        Should.NotThrow(() => sort.Initialize(typeof(AbstractDerivedRow), isDynamicCodeSupported: false));
+    }
+
+    [Fact]
+    public void IListItemDataContentPathSortUsesGeneratedAccessorWhenDynamicCodeIsDisabled()
+    {
+        var sort = ListSortDescription.FromPath(nameof(IListItemData.Content));
+
+        Should.NotThrow(() => sort.Initialize(typeof(IListItemData), isDynamicCodeSupported: false));
+    }
+
     [GenerateDataMemberAccessors]
     public partial class SampleRow
     {
         public string? Name { get; set; }
 
         public int? Score { get; set; }
+    }
+
+    [GenerateDataMemberAccessors]
+    public partial class BaseRow
+    {
+        public int Score { get; set; }
+    }
+
+    private sealed class DerivedRow : BaseRow
+    {
+    }
+
+    [GenerateDataMemberAccessors]
+    public abstract partial class AbstractBaseRow
+    {
+        public int Score { get; set; }
+    }
+
+    private sealed class AbstractDerivedRow : AbstractBaseRow
+    {
     }
 
     private sealed class ManualRow

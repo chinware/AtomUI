@@ -45,20 +45,17 @@ public sealed class DataMemberAccessorGenerator : IIncrementalGenerator
             return null;
         }
 
-        if ((typeSymbol.TypeKind != TypeKind.Class && typeSymbol.TypeKind != TypeKind.Struct) ||
-            typeSymbol.IsAbstract ||
+        if ((typeSymbol.TypeKind != TypeKind.Class &&
+             typeSymbol.TypeKind != TypeKind.Struct &&
+             typeSymbol.TypeKind != TypeKind.Interface) ||
             typeSymbol.IsGenericType)
         {
             return null;
         }
 
-        var properties = typeSymbol.GetMembers()
-                                   .OfType<IPropertySymbol>()
-                                   .Where(static property => !property.IsStatic &&
-                                                             property.GetMethod is not null &&
-                                                             IsAccessibleFromGeneratedCode(property.GetMethod.DeclaredAccessibility))
-                                   .Select(CreatePropertyInfo)
-                                   .ToArray();
+        var properties = GetAccessibleInstanceProperties(typeSymbol)
+            .Select(CreatePropertyInfo)
+            .ToArray();
 
         return new DataMemberAccessorTypeInfo(
             typeSymbol.ToDisplayString(s_fullyQualifiedNullableFormat),
@@ -82,6 +79,45 @@ public sealed class DataMemberAccessorGenerator : IIncrementalGenerator
             GetNamedIntValue(displayAttribute, "Order"),
             IsReadOnly(property),
             IsEditable(property));
+    }
+
+    private static IEnumerable<IPropertySymbol> GetAccessibleInstanceProperties(INamedTypeSymbol typeSymbol)
+    {
+        var properties = new List<IPropertySymbol>();
+        var names      = new HashSet<string>();
+
+        void AddProperties(INamedTypeSymbol symbol)
+        {
+            foreach (var property in symbol.GetMembers().OfType<IPropertySymbol>())
+            {
+                if (property.IsStatic ||
+                    property.GetMethod is null ||
+                    !IsAccessibleFromGeneratedCode(property.GetMethod.DeclaredAccessibility) ||
+                    !names.Add(property.Name))
+                {
+                    continue;
+                }
+
+                properties.Add(property);
+            }
+        }
+
+        if (typeSymbol.TypeKind == TypeKind.Interface)
+        {
+            AddProperties(typeSymbol);
+            foreach (var interfaceSymbol in typeSymbol.AllInterfaces)
+            {
+                AddProperties(interfaceSymbol);
+            }
+            return properties;
+        }
+
+        for (INamedTypeSymbol? current = typeSymbol; current != null; current = current.BaseType)
+        {
+            AddProperties(current);
+        }
+
+        return properties;
     }
 
     private static string? GetDisplayName(AttributeData? displayAttribute)
@@ -151,6 +187,11 @@ public sealed class DataMemberAccessorGenerator : IIncrementalGenerator
         if (typeSymbol.TypeKind == TypeKind.Struct)
         {
             return true;
+        }
+
+        if (typeSymbol.IsAbstract || typeSymbol.TypeKind == TypeKind.Interface)
+        {
+            return false;
         }
 
         return typeSymbol.InstanceConstructors.Any(static ctor => ctor.Parameters.Length == 0 &&
