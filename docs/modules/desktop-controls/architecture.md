@@ -19,11 +19,10 @@
 
 - Popup/Overlay：`Popup/`、`Flyouts/`、`Dialog/OverlayHost/`、`Primitives/OverlayLayerResolver.cs`。
 - Window：`Window/`、`WindowTitleBar/`，并依赖 Native 和 Avalonia 平台能力。
-- 媒体断点：`Window/MediaBreakPointThemeBootstrapper.cs` 与 `AtomUI.Controls.Shared/MediaQuery/` 配合。
+- 媒体断点：`Window/MediaBreakPointThemeBootstrapper.cs` 与 `AtomUI.Controls.Shared/MediaQuery/` 配合，响应式规则见 [../controls-shared/responsive-system.md](../controls-shared/responsive-system.md)。
 - 异步加载：AutoComplete、Mentions、Select、Cascader、TreeView 等控件使用共享协调器。
 - 过滤：Select、Cascader、TreeView、Transfer、ListBox/ListView 等控件共享过滤契约。
 
 ## 与具体控件文档的关系
 
 本文件描述源码组织和内部系统。具体控件 API、使用方式、行为说明应写入 `docs/controls/desktop/` 下对应分类文件。
-

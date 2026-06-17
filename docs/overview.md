@@ -49,6 +49,7 @@ docs/
 - [AsyncLoadingArchitecture.md](AsyncLoadingArchitecture.md) - 异步加载体系
 - [FilteringArchitecture.md](FilteringArchitecture.md) - 过滤体系
 - [PopupAnchorScopeGuide.md](PopupAnchorScopeGuide.md) - Popup Anchor 作用域检查
+- [modules/controls-shared/responsive-system.md](modules/controls-shared/responsive-system.md) - 响应式机制设计
 - [engineering/aot-programming-guidelines.md](engineering/aot-programming-guidelines.md) - AtomUI AOT 编程规范
 - [engineering/agent-guidelines.md](engineering/agent-guidelines.md) - AI 协作与修复约束
 - [engineering/changelog-guidelines.md](engineering/changelog-guidelines.md) - Changelog 维护规范
