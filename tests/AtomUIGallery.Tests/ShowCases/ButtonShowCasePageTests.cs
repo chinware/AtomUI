@@ -62,6 +62,7 @@ public class ButtonShowCasePageTests
         source.ShouldNotContain("ContentPadding=\"0,10,16,0\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("ButtonShowCaseLangResource TypeTitle");
+        source.ShouldContain("ButtonShowCaseLangResource ColorVariantTitle");
         source.ShouldContain("ButtonShowCaseLangResource ButtonShapeTitle");
         source.ShouldContain("ButtonShowCaseLangResource SizeTitle");
         source.ShouldContain("ButtonShowCaseLangResource LoadingTitle");
@@ -78,6 +79,25 @@ public class ButtonShowCasePageTests
         source.ShouldNotContain("OverviewTitle");
         source.ShouldNotContain(">Gallery<");
         source.ShouldNotContain("ButtonShowCaseLangResource ScenarioGallery");
+    }
+
+    [Fact]
+    public void Button_Color_And_Variant_Example_Is_Last_Full_Row_With_Version_Ribbon()
+    {
+        var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml");
+        var examples = ExtractButtonExampleItems(source);
+
+        var colorVariantIndex = examples.IndexOf("ButtonShowCaseLangResource ColorVariantTitle", StringComparison.Ordinal);
+        colorVariantIndex.ShouldBeGreaterThanOrEqualTo(0);
+        colorVariantIndex.ShouldBeGreaterThan(
+            examples.IndexOf("ButtonShowCaseLangResource DisabledTitle", StringComparison.Ordinal));
+        colorVariantIndex.ShouldBeGreaterThan(
+            examples.IndexOf("ButtonShowCaseLangResource GhostButtonTitle", StringComparison.Ordinal));
+
+        var colorVariantItem = examples[colorVariantIndex..];
+        colorVariantItem.ShouldContain("Span=\"Full\"");
+        colorVariantItem.ShouldContain("BadgeText=\"v6.0.5\"");
+        colorVariantItem.ShouldNotContain("RibbonBadgeText=\"v6.0.5\"");
     }
 
     [Fact]
@@ -160,6 +180,8 @@ public class ButtonShowCasePageTests
             source.ShouldContain("PageSubtitle");
             source.ShouldContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyButtonType");
+            source.ShouldContain("ApiPropertyColor");
+            source.ShouldContain("ApiPropertyVariant");
             source.ShouldContain("ApiPropertyLoading");
             source.ShouldContain("ApiPropertyIcon");
             source.ShouldContain("TokenNameColorPrimary");

@@ -276,3 +276,72 @@
 
     </WrapPanel>
 </gallery:ShowCaseItem>
+
+<gallery:ShowCaseItem
+    Title="{gallery:ButtonShowCaseLangResource ColorVariantTitle}"
+    Description="{gallery:ButtonShowCaseLangResource ColorVariantDescription}"
+    Span="Full"
+    BadgeText="v6.0.5">
+    <Grid ColumnDefinitions="72,Auto,Auto,Auto,Auto,Auto,Auto"
+          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto">
+        <atom:TextBlock Grid.Row="0" Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="{gallery:ButtonShowCaseLangResource P2ColorDefault}" />
+        <atom:Button Grid.Row="0" Grid.Column="1" Color="Default" Variant="Solid" Content="{gallery:ButtonShowCaseLangResource P2ContentSolid}" />
+        <atom:Button Grid.Row="0" Grid.Column="2" Color="Default" Variant="Outlined" Content="{gallery:ButtonShowCaseLangResource P2ContentOutlined}" />
+        <atom:Button Grid.Row="0" Grid.Column="3" Color="Default" Variant="Dashed" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+        <atom:Button Grid.Row="0" Grid.Column="4" Color="Default" Variant="Filled" Content="{gallery:ButtonShowCaseLangResource P2ContentFilled}" />
+        <atom:Button Grid.Row="0" Grid.Column="5" Color="Default" Variant="Text" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
+        <atom:Button Grid.Row="0" Grid.Column="6" Color="Default" Variant="Link" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
+
+        <atom:TextBlock Grid.Row="1" Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="{gallery:ButtonShowCaseLangResource P2ColorPrimary}" />
+        <atom:Button Grid.Row="1" Grid.Column="1" Color="Primary" Variant="Solid" Content="{gallery:ButtonShowCaseLangResource P2ContentSolid}" />
+        <atom:Button Grid.Row="1" Grid.Column="2" Color="Primary" Variant="Outlined" Content="{gallery:ButtonShowCaseLangResource P2ContentOutlined}" />
+        <atom:Button Grid.Row="1" Grid.Column="3" Color="Primary" Variant="Dashed" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+        <atom:Button Grid.Row="1" Grid.Column="4" Color="Primary" Variant="Filled" Content="{gallery:ButtonShowCaseLangResource P2ContentFilled}" />
+        <atom:Button Grid.Row="1" Grid.Column="5" Color="Primary" Variant="Text" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
+        <atom:Button Grid.Row="1" Grid.Column="6" Color="Primary" Variant="Link" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
+
+        <atom:TextBlock Grid.Row="2" Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="{gallery:ButtonShowCaseLangResource P2ColorDanger}" />
+        <atom:Button Grid.Row="2" Grid.Column="1" Color="Danger" Variant="Solid" Content="{gallery:ButtonShowCaseLangResource P2ContentSolid}" />
+        <atom:Button Grid.Row="2" Grid.Column="2" Color="Danger" Variant="Outlined" Content="{gallery:ButtonShowCaseLangResource P2ContentOutlined}" />
+        <atom:Button Grid.Row="2" Grid.Column="3" Color="Danger" Variant="Dashed" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+        <atom:Button Grid.Row="2" Grid.Column="4" Color="Danger" Variant="Filled" Content="{gallery:ButtonShowCaseLangResource P2ContentFilled}" />
+        <atom:Button Grid.Row="2" Grid.Column="5" Color="Danger" Variant="Text" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
+        <atom:Button Grid.Row="2" Grid.Column="6" Color="Danger" Variant="Link" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
+
+        <atom:TextBlock Grid.Row="3" Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="{gallery:ButtonShowCaseLangResource P2ColorPink}" />
+        <atom:Button Grid.Row="3" Grid.Column="1" Color="Pink" Variant="Solid" Content="{gallery:ButtonShowCaseLangResource P2ContentSolid}" />
+        <atom:Button Grid.Row="3" Grid.Column="2" Color="Pink" Variant="Outlined" Content="{gallery:ButtonShowCaseLangResource P2ContentOutlined}" />
+        <atom:Button Grid.Row="3" Grid.Column="3" Color="Pink" Variant="Dashed" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+        <atom:Button Grid.Row="3" Grid.Column="4" Color="Pink" Variant="Filled" Content="{gallery:ButtonShowCaseLangResource P2ContentFilled}" />
+        <atom:Button Grid.Row="3" Grid.Column="5" Color="Pink" Variant="Text" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
+        <atom:Button Grid.Row="3" Grid.Column="6" Color="Pink" Variant="Link" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
+
+        <atom:TextBlock Grid.Row="4" Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="{gallery:ButtonShowCaseLangResource P2ColorPurple}" />
+        <atom:Button Grid.Row="4" Grid.Column="1" Color="Purple" Variant="Solid" Content="{gallery:ButtonShowCaseLangResource P2ContentSolid}" />
+        <atom:Button Grid.Row="4" Grid.Column="2" Color="Purple" Variant="Outlined" Content="{gallery:ButtonShowCaseLangResource P2ContentOutlined}" />
+        <atom:Button Grid.Row="4" Grid.Column="3" Color="Purple" Variant="Dashed" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+        <atom:Button Grid.Row="4" Grid.Column="4" Color="Purple" Variant="Filled" Content="{gallery:ButtonShowCaseLangResource P2ContentFilled}" />
+        <atom:Button Grid.Row="4" Grid.Column="5" Color="Purple" Variant="Text" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
+        <atom:Button Grid.Row="4" Grid.Column="6" Color="Purple" Variant="Link" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
+
+        <atom:TextBlock Grid.Row="5" Grid.Column="0"
+                        VerticalAlignment="Center"
+                        Text="{gallery:ButtonShowCaseLangResource P2ColorCyan}" />
+        <atom:Button Grid.Row="5" Grid.Column="1" Color="Cyan" Variant="Solid" Content="{gallery:ButtonShowCaseLangResource P2ContentSolid}" />
+        <atom:Button Grid.Row="5" Grid.Column="2" Color="Cyan" Variant="Outlined" Content="{gallery:ButtonShowCaseLangResource P2ContentOutlined}" />
+        <atom:Button Grid.Row="5" Grid.Column="3" Color="Cyan" Variant="Dashed" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+        <atom:Button Grid.Row="5" Grid.Column="4" Color="Cyan" Variant="Filled" Content="{gallery:ButtonShowCaseLangResource P2ContentFilled}" />
+        <atom:Button Grid.Row="5" Grid.Column="5" Color="Cyan" Variant="Text" Content="{gallery:ButtonShowCaseLangResource P2ContentText}" />
+        <atom:Button Grid.Row="5" Grid.Column="6" Color="Cyan" Variant="Link" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
+    </Grid>
+</gallery:ShowCaseItem>

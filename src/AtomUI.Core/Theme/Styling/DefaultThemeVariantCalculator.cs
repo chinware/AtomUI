@@ -80,6 +80,10 @@ public class DefaultThemeVariantCalculator : AbstractThemeVariantCalculator
         designToken.ColorBgSpotlight = AlphaColor(colorTextBase, 0.85);
         designToken.ColorBgBlur      = ColorUtils.TransparentColor();
 
+        designToken.ColorBgSolid       = AlphaColor(colorTextBase, 1);
+        designToken.ColorBgSolidHover  = AlphaColor(colorTextBase, 0.75);
+        designToken.ColorBgSolidActive = AlphaColor(colorTextBase, 0.95);
+
         designToken.ColorBorder          = SolidColor(colorBgBase, 15);
         designToken.ColorBorderSecondary = SolidColor(colorBgBase, 6);
     }

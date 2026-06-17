@@ -114,6 +114,61 @@
             </Setter>
         </Style>
 
+        <Style Selector="^[EffectiveVariant=Dashed]">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Panel>
+                        <atom:WaveSpiritDecorator Name="PART_WaveSpirit"
+                                                  CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                                                  WaveType="{TemplateBinding WaveSpiritType}" />
+                        <Border Name="ShadowsFrame"
+                                CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                                Background="{TemplateBinding Background}" />
+                        <atom:DashedBorder Name="Frame"
+                                           Padding="{TemplateBinding Padding}"
+                                           BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                                           BorderBrush="{TemplateBinding BorderBrush}"
+                                           BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                           CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                                           Background="{TemplateBinding Background}"
+                                           StrokeDashArray="{x:Static atom:ButtonTheme.DashedStyle}">
+                            <DockPanel Name="PART_RootLayout"
+                                       LastChildFill="True"
+                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <antdicons:LoadingOutlined
+                                    Name="PART_LoadingIcon"
+                                    LoadingAnimation="Spin"
+                                    FillBrush="{TemplateBinding Foreground}"
+                                    StrokeBrush="{TemplateBinding Foreground}"
+                                    DockPanel.Dock="Left" />
+
+                                <atom:IconPresenter
+                                    Name="PART_ButtonIcon"
+                                    Icon="{TemplateBinding Icon}"
+                                    IconBrush="{TemplateBinding Foreground}"
+                                    DockPanel.Dock="Left">
+                                    <atom:IconPresenter.IsVisible>
+                                        <MultiBinding
+                                            Converter="{x:Static atom:ButtonTheme.IconVisibleConverter}">
+                                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Icon" />
+                                            <Binding RelativeSource="{RelativeSource TemplatedParent}"
+                                                     Path="IsIconVisible" />
+                                            <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="IsLoading" />
+                                        </MultiBinding>
+                                    </atom:IconPresenter.IsVisible>
+                                </atom:IconPresenter>
+                                <ContentPresenter
+                                    Name="PART_ContentPresenter"
+                                    Content="{TemplateBinding Content}"
+                                    ContentTemplate="{TemplateBinding ContentTemplate}" />
+                            </DockPanel>
+                        </atom:DashedBorder>
+                    </Panel>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
         <!-- 公用样式开始 -->
 
         <Style Selector="^[IsMotionEnabled=True]">
@@ -394,14 +449,6 @@
                 </Style>
             </Style>
 
-            <Style Selector="^ /template/ Border#ShadowsFrame">
-                <Setter Property="BoxShadow" Value="{atom:ButtonTokenResource DefaultShadow}" />
-            </Style>
-            <Style Selector="^[IsDanger=True]">
-                <Style Selector="^ /template/ Border#ShadowsFrame">
-                    <Setter Property="BoxShadow" Value="{atom:ButtonTokenResource DangerShadow}" />
-                </Style>
-            </Style>
         </Style>
         <!-- 默认按钮样式结束 -->
 
@@ -488,15 +535,6 @@
                                     Value="{atom:SharedTokenResource ColorErrorActive}" />
                         </Style>
                     </Style>
-                </Style>
-            </Style>
-
-            <Style Selector="^ /template/ Border#ShadowsFrame">
-                <Setter Property="BoxShadow" Value="{atom:ButtonTokenResource PrimaryShadow}" />
-            </Style>
-            <Style Selector="^[IsDanger=True]">
-                <Style Selector="^ /template/ Border#ShadowsFrame">
-                    <Setter Property="BoxShadow" Value="{atom:ButtonTokenResource DangerShadow}" />
                 </Style>
             </Style>
 
@@ -731,15 +769,6 @@
                 <Setter Property="IsVisible" Value="True" />
             </Style>
 
-            <Style Selector="^ /template/ Border#ShadowsFrame">
-                <Setter Property="BoxShadow" Value="{atom:ButtonTokenResource DefaultShadow}" />
-            </Style>
-            <Style Selector="^[IsDanger=True]">
-                <Style Selector="^ /template/ Border#ShadowsFrame">
-                    <Setter Property="BoxShadow" Value="{atom:ButtonTokenResource DangerShadow}" />
-                </Style>
-            </Style>
-
             <Style Selector="^[SizeType=Large]">
                 <Style Selector="^ /template/ atom|DashedBorder#Frame">
                     <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
@@ -759,5 +788,44 @@
             </Style>
         </Style>
         <!-- 虚线按钮样式结束 -->
+
+        <!-- Color / Variant 视觉变量开始 -->
+        <Style Selector="^:not(:disabled)">
+            <Setter Property="Foreground"
+                    Value="{Binding VariantTextBrush, RelativeSource={RelativeSource Self}}" />
+            <Setter Property="Background"
+                    Value="{Binding VariantBackgroundBrush, RelativeSource={RelativeSource Self}}" />
+            <Setter Property="BorderBrush"
+                    Value="{Binding VariantBorderBrush, RelativeSource={RelativeSource Self}}" />
+
+            <Style Selector="^:pointerover">
+                <Setter Property="Foreground"
+                        Value="{Binding VariantTextHoverBrush, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="Background"
+                        Value="{Binding VariantBackgroundHoverBrush, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="BorderBrush"
+                        Value="{Binding VariantBorderHoverBrush, RelativeSource={RelativeSource Self}}" />
+            </Style>
+
+            <Style Selector="^:pressed">
+                <Setter Property="Foreground"
+                        Value="{Binding VariantTextPressedBrush, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="Background"
+                        Value="{Binding VariantBackgroundPressedBrush, RelativeSource={RelativeSource Self}}" />
+                <Setter Property="BorderBrush"
+                        Value="{Binding VariantBorderPressedBrush, RelativeSource={RelativeSource Self}}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[EffectiveVariant=Text]:disabled, ^[EffectiveVariant=Link]:disabled">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#ShadowsFrame">
+            <Setter Property="BoxShadow"
+                    Value="{Binding VariantShadow, RelativeSource={RelativeSource TemplatedParent}}" />
+        </Style>
+        <!-- Color / Variant 视觉变量结束 -->
     </Style>
 </ControlTheme>

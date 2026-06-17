@@ -33,6 +33,14 @@ API 和主题契约包括但不限于：
 - 生命周期入口建议留在主文件，复杂细节可下沉到私有 helper 或 partial 文件中。
 - 不为未来可能复用提前抽象；只有出现真实重复，且抽象不会模糊生命周期、绑定优先级或主题契约时，再提取共享 helper。
 
+## 控件级设计文档与 Changelog
+
+控件级研发文档必须遵循 [AtomUI 控件文档规范](control-documentation-guidelines.md)。控件设计文档只描述最新设计状态；设计、API、主题契约、Token 和实现结构的历史变化记录在对应控件目录下的 `changelog.md`。
+
+## 控件 Token 设计
+
+控件 Token 的分层、命名、计算、Theme Variables 边界、预设色和兼容性规则见 [AtomUI 控件 Token 设计规范](control-token-guidelines.md)。单个控件的 `token.md` 只记录该控件专属的 Token 语义、分类、使用范围和兼容边界，不重复全局 Token 系统规则。
+
 ## 控件成员排列建议
 
 这是一条推荐规范，不作为强制约定边界。优化控件代码时应优先遵循现有控件的组织习惯，不要按个人偏好重排成员。

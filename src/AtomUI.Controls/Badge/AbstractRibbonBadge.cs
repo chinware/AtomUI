@@ -250,7 +250,7 @@ public abstract class AbstractRibbonBadge : Control
             _adornerLayerRetryCount     = 0;
             _adornerLayerRetryScheduled = false;
             AdornerLayer.SetAdornedElement(ribbonBadgeAdorner, this);
-            AdornerLayer.SetIsClipEnabled(ribbonBadgeAdorner, true);
+            AdornerLayer.SetIsClipEnabled(ribbonBadgeAdorner, false);
             _adornerLayer.Children.Add(ribbonBadgeAdorner);
         }
         else
