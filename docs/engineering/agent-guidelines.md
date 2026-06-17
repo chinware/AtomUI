@@ -84,6 +84,7 @@ Gallery 改动时注意：
 - AOT、trim、source generator：`aot-programming-guidelines.md`。
 - Gallery 页面结构：`gallery-showcase-design-pattern.md`。
 - Gallery AOT 发布：`gallery-aot-release-workflow.md`。
+- 控件研发标准：`control-development-guidelines.md`。
 - 模块架构：`docs/modules/**/overview.md`。
 - 控件用户文档：`docs/controls/**`。
 
@@ -96,6 +97,10 @@ Gallery 改动时注意：
 - 删除只因本次改动变得无用的代码；既有无关遗留先报告，不直接处理。
 - 抽象只在能消除实际重复、降低共享复杂度或匹配既有模式时引入。
 - 生成文件不要手改；改 generator 或输入源，并验证输出。
+
+## 控件研发标准
+
+控件 C# 实现、AXAML 主题、API 和主题契约变更必须遵循 [AtomUI 控件研发标准规范](control-development-guidelines.md)。优化代码和修复 bug 时，如果涉及控件既有 API、主题契约或可观察行为变化，必须先获得用户明确授权。
 
 ## Changelog 与发布
 
