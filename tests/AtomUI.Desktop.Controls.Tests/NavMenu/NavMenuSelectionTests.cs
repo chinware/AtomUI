@@ -184,6 +184,137 @@ public class NavMenuSelectionTests
     }
 
     [Fact]
+    public void Inline_Selection_Marks_All_Ancestor_Submenus_As_Selected_Path()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        var leaf = new NavMenuNode
+        {
+            Header  = "Option 1",
+            ItemKey = "option-1"
+        };
+        var secondLevel = new NavMenuNode
+        {
+            Header  = "Item 1",
+            ItemKey = "item-1"
+        };
+        secondLevel.Children.Add(leaf);
+        var firstLevel = new NavMenuNode
+        {
+            Header  = "Navigation Three - Submenu",
+            ItemKey = "navigation-three"
+        };
+        firstLevel.Children.Add(secondLevel);
+        menu.Items.Add(firstLevel);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 360,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var firstLevelContainer = (NavMenuItem)menu.ContainerFromItem(firstLevel)!;
+            firstLevelContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var secondLevelContainer = (NavMenuItem)firstLevelContainer.ContainerFromItem(secondLevel)!;
+            secondLevelContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var leafContainer = (NavMenuItem)secondLevelContainer.ContainerFromItem(leaf)!;
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(leafContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            firstLevelContainer.IsInSelectedPath.ShouldBeTrue(
+                "Ant Design colors every ancestor submenu title in the selected path.");
+            secondLevelContainer.IsInSelectedPath.ShouldBeTrue(
+                "Every inline ancestor must expose selected-path state to its header.");
+            leafContainer.IsSelected.ShouldBeTrue();
+
+            var firstLevelHeader  = GetItemHeader(firstLevelContainer);
+            var secondLevelHeader = GetItemHeader(secondLevelContainer);
+            firstLevelHeader.IsInSelectedPath.ShouldBeTrue(
+                "The selected-path state must reach the first ancestor header so its icon, text and arrow use the selected color.");
+            secondLevelHeader.IsInSelectedPath.ShouldBeTrue(
+                "Nested ancestor headers must receive selected-path state consistently.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Inline_Selected_Path_Submenu_Header_Keeps_Selected_Foreground_When_Hovered()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        var leaf = new NavMenuNode
+        {
+            Header  = "Option 1",
+            ItemKey = "option-1"
+        };
+        var parent = new NavMenuNode
+        {
+            Header  = "Navigation Three - Submenu",
+            ItemKey = "navigation-three"
+        };
+        parent.Children.Add(leaf);
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (NavMenuItem)menu.ContainerFromItem(parent)!;
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var leafContainer = (NavMenuItem)parentContainer.ContainerFromItem(leaf)!;
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(leafContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            var parentHeader             = GetItemHeader(parentContainer);
+            var selectedForegroundBefore = GetSolidBrushColor(parentHeader.Foreground);
+            selectedForegroundBefore.ShouldNotBeNull();
+            parentHeader.IsInSelectedPath.ShouldBeTrue();
+
+            MouseMove(parentHeader, window);
+            Dispatcher.UIThread.RunJobs();
+
+            GetSolidBrushColor(parentHeader.Foreground).ShouldBe(
+                selectedForegroundBefore,
+                "hover must not override the selected-path submenu title foreground; Ant Design keeps selected ancestor submenu titles in the selected color.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Inline_Item_Background_Control_Propagates_To_Header_And_Submenu_Frame()
     {
         var menu = new AtomUI.Desktop.Controls.NavMenu
@@ -192,11 +323,17 @@ public class NavMenuSelectionTests
             IsMotionEnabled         = false,
             IsItemBackgroundEnabled = false
         };
+        var grandchild = new NavMenuNode
+        {
+            Header  = "Grandchild",
+            ItemKey = "grandchild"
+        };
         var child = new NavMenuNode
         {
             Header  = "Child",
             ItemKey = "child"
         };
+        child.Children.Add(grandchild);
         var parent = new NavMenuNode
         {
             Header  = "Parent",
@@ -218,17 +355,106 @@ public class NavMenuSelectionTests
             Dispatcher.UIThread.RunJobs();
 
             var parentContainer = (Control)menu.ContainerFromItem(parent)!;
+            var parentMenuItem  = (INavMenuItem)parentContainer;
+            parentMenuItem.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var childContainer = (NavMenuItem)((ItemsControl)parentContainer).ContainerFromItem(child)!;
+            var childMenuItem  = (INavMenuItem)childContainer;
+            childMenuItem.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var grandchildContainer = (NavMenuItem)childContainer.ContainerFromItem(grandchild)!;
             var parentHeader    = GetItemHeader(parentContainer);
+            var childHeader     = GetItemHeader(childContainer);
+            var grandchildHeader = GetItemHeader(grandchildContainer);
             var childFrame      = GetChildItemsFrame(parentContainer);
+            var grandchildFrame = GetChildItemsFrame(childContainer);
 
             parentHeader.IsItemBackgroundEnabled.ShouldBeFalse();
+            childHeader.IsItemBackgroundEnabled.ShouldBeFalse(
+                "the menu-level background control must be inherited by nested inline menu items.");
+            grandchildHeader.IsItemBackgroundEnabled.ShouldBeFalse(
+                "every realized descendant header must receive the same background control value.");
             GetSolidBrushColor(parentHeader.Background).ShouldBe(Colors.Transparent);
             GetSolidBrushColor(childFrame.Background).ShouldBe(Colors.Transparent);
+            GetSolidBrushColor(grandchildFrame.Background).ShouldBe(Colors.Transparent);
+
+            MouseMove(grandchildHeader, window);
+            Dispatcher.UIThread.RunJobs();
+
+            GetSolidBrushColor(grandchildHeader.Background).ShouldNotBe(
+                Colors.Transparent,
+                "NavMenuItemHeader hover visuals must stay available when NavMenuItem background is disabled.");
+
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(grandchildContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            GetSolidBrushColor(grandchildHeader.Background).ShouldNotBe(
+                Colors.Transparent,
+                "NavMenuItemHeader selected visuals must stay available when NavMenuItem background is disabled.");
 
             menu.IsItemBackgroundEnabled = true;
             Dispatcher.UIThread.RunJobs();
 
             parentHeader.IsItemBackgroundEnabled.ShouldBeTrue();
+            childHeader.IsItemBackgroundEnabled.ShouldBeTrue();
+            grandchildHeader.IsItemBackgroundEnabled.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Theory]
+    [InlineData(NavMenuMode.Horizontal)]
+    [InlineData(NavMenuMode.Vertical)]
+    [InlineData(NavMenuMode.Inline)]
+    public void Selecting_Realized_Item_Does_Not_Temporarily_Disable_Motion(NavMenuMode mode)
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = mode,
+            IsMotionEnabled = true
+        };
+        var item = new NavMenuNode
+        {
+            Header  = "Item",
+            ItemKey = "item"
+        };
+        menu.Items.Add(item);
+
+        var disabledDuringSelection = false;
+        menu.PropertyChanged += (_, args) =>
+        {
+            if (args.Property == AtomUI.Desktop.Controls.NavMenu.IsMotionEnabledProperty &&
+                args.NewValue is false)
+            {
+                disabledDuringSelection = true;
+            }
+        };
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var itemContainer = (NavMenuItem)menu.ContainerFromItem(item)!;
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(itemContainer);
+            Dispatcher.UIThread.RunJobs();
+
+            disabledDuringSelection.ShouldBeFalse(
+                "a user item selection is already applied by the interaction handler and must not replay the path by disabling motion");
         }
         finally
         {
@@ -482,13 +708,23 @@ public class NavMenuSelectionTests
 
     private static void MouseDown(Control control, Avalonia.Controls.Window window)
     {
+        MouseMove(control, window);
+        window.MouseDown(GetCenterPoint(control, window), MouseButton.Left);
+    }
+
+    private static void MouseMove(Control control, Avalonia.Controls.Window window)
+    {
+        window.MouseMove(GetCenterPoint(control, window));
+    }
+
+    private static Point GetCenterPoint(Control control, Avalonia.Controls.Window window)
+    {
         var point = control.TranslatePoint(
             new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
             window);
 
         point.ShouldNotBeNull();
-        window.MouseMove(point.Value);
-        window.MouseDown(point.Value, MouseButton.Left);
+        return point.Value;
     }
 
     private static Color? GetSolidBrushColor(IBrush? brush)

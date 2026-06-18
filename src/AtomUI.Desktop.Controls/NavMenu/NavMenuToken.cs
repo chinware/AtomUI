@@ -461,12 +461,12 @@ internal class NavMenuToken : AbstractControlDesignToken
         TopLevelItemPopupMarginToAnchor = SharedToken.UniformlyMarginXS;
         
         MenuPopupBg               = SharedToken.ColorBgElevated;
-        MenuPopupContentPadding   = new Thickness(SharedToken.UniformlyPaddingXXS, SharedToken.BorderRadiusLG.TopLeft / 2);
+        MenuPopupContentPadding   = new Thickness(0, SharedToken.UniformlyMarginXXS, 0, 0);
         VerticalItemsPanelSpacing = 0;
         VerticalChildItemsMargin = new Thickness(0);
 
         InlineItemIndentUnit       = ItemHeight / 2;
-        VerticalMenuContentPadding = SharedToken.PaddingXXS;
+        VerticalMenuContentPadding = new Thickness(0, SharedToken.UniformlyMarginXXS, 0, 0);
     }
     
     protected override Type GetTokenKindType() => typeof(NavMenuTokenKind);

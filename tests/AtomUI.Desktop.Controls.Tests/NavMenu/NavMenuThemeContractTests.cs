@@ -45,37 +45,40 @@ public class NavMenuThemeContractTests
         navMenuSource.ShouldContain("menuItem[!NavMenuItem.IsItemBackgroundEnabledProperty] = this[!IsItemBackgroundEnabledProperty];");
 
         navMenuItemSource.ShouldContain("internal static readonly StyledProperty<bool> IsItemBackgroundEnabledProperty");
+        navMenuItemSource.ShouldContain("menuItem[!NavMenuItem.IsItemBackgroundEnabledProperty] = this[!IsItemBackgroundEnabledProperty];");
         headerSource.ShouldContain("internal static readonly StyledProperty<bool> IsItemBackgroundEnabledProperty");
         navMenuThemeSource.ShouldContain("IsItemBackgroundEnabled=\"{TemplateBinding IsItemBackgroundEnabled}\"");
     }
 
     [Fact]
-    public void Disabled_Item_Background_Mode_Gates_Item_And_Inline_Submenu_Backgrounds()
+    public void Disabled_Item_Background_Mode_Gates_Item_Background_Without_Gating_Header_Backgrounds()
     {
         var headerThemeSource      = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/BaseNavMenuItemHeaderTheme.axaml");
         var horizontalThemeSource  = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/HorizontalNavMenuItemHeaderTheme.axaml");
         var navMenuItemThemeSource = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuItemTheme.axaml");
 
-        headerThemeSource.ShouldContain("Selector=\"^[IsItemBackgroundEnabled=True]\"");
-        headerThemeSource.ShouldContain("Selector=\"^[IsItemBackgroundEnabled=False]\"");
-        headerThemeSource.ShouldContain("<Setter Property=\"Background\" Value=\"Transparent\" />");
+        headerThemeSource.ShouldNotContain("Selector=\"^[IsItemBackgroundEnabled=True]\"");
+        headerThemeSource.ShouldNotContain("Selector=\"^[IsItemBackgroundEnabled=False]\"");
+        horizontalThemeSource.ShouldNotContain("Selector=\"^[IsItemBackgroundEnabled=True]\"");
+        horizontalThemeSource.ShouldNotContain("Selector=\"^[IsItemBackgroundEnabled=False]\"");
 
-        horizontalThemeSource.ShouldContain("Selector=\"^[IsItemBackgroundEnabled=True]\"");
-        horizontalThemeSource.ShouldContain("Selector=\"^[IsItemBackgroundEnabled=False]\"");
-
+        navMenuItemThemeSource.ShouldContain("Selector=\"^[IsItemBackgroundEnabled=True]\"");
         navMenuItemThemeSource.ShouldContain("Selector=\"^[IsItemBackgroundEnabled=False]\"");
         navMenuItemThemeSource.ShouldContain("Selector=\"^ /template/ Border#PART_ChildItemsFrame\"");
         navMenuItemThemeSource.ShouldContain("<Setter Property=\"Background\" Value=\"Transparent\" />");
     }
 
     [Fact]
-    public void Inline_And_Vertical_Item_Header_Backgrounds_Use_Content_Margin()
+    public void Block_And_Popup_Item_Header_Backgrounds_Use_Content_Margin()
     {
         var inlineHeaderSource = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/InlineNavMenuItemHeaderTheme.axaml");
         var verticalHeaderSource = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/VerticalNavMenuItemHeaderTheme.axaml");
+        var horizontalHeaderSource = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/HorizontalNavMenuItemHeaderTheme.axaml");
 
         inlineHeaderSource.ShouldContain("<Setter Property=\"Margin\" Value=\"{atom:NavMenuTokenResource ItemContentMargin}\" />");
         verticalHeaderSource.ShouldContain("<Setter Property=\"Margin\" Value=\"{atom:NavMenuTokenResource ItemContentMargin}\" />");
+        horizontalHeaderSource.ShouldContain("Selector=\"^[IsTopLevel=False]\"");
+        horizontalHeaderSource.ShouldContain("<Setter Property=\"Margin\" Value=\"{atom:NavMenuTokenResource ItemContentMargin}\" />");
     }
 
     [Fact]

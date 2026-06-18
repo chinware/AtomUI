@@ -917,6 +917,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             
             menuItem[!NavMenuItem.ModeProperty]                  = this[!ModeProperty];
             menuItem[!NavMenuItem.IsDarkStyleProperty]           = this[!IsDarkStyleProperty];
+            menuItem[!NavMenuItem.IsItemBackgroundEnabledProperty] = this[!IsItemBackgroundEnabledProperty];
             menuItem[!NavMenuItem.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
             menuItem[!NavMenuItem.ItemContainerThemeProperty]    = this[!ItemContainerThemeProperty];
             menuItem[!NavMenuItem.ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];

@@ -36,6 +36,7 @@ public class NavMenuTokenTests
         navMenuToken.CalculateTokenValues(isDarkMode: false);
 
         navMenuToken.ItemContentMargin.ShouldBe(new Thickness(4, 0, 4, 4));
+        navMenuToken.VerticalMenuContentPadding.ShouldBe(new Thickness(0, 4, 0, 0));
         navMenuToken.VerticalItemsPanelSpacing.ShouldBe(0);
         navMenuToken.VerticalChildItemsMargin.ShouldBe(new Thickness(0));
     }

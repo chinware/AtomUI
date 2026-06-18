@@ -67,6 +67,7 @@
 
             <Style Selector="^[IsTopLevel=False]">
                 <Setter Property="Height" Value="{atom:NavMenuTokenResource ItemHeight}" />
+                <Setter Property="Margin" Value="{atom:NavMenuTokenResource ItemContentMargin}" />
             </Style>
             <Style Selector="^[IsTopLevel=True]">
 
@@ -91,14 +92,9 @@
 
                 <Style Selector="^[IsDarkStyle=True]">
                     <Setter Property="CornerRadius" Value="0" />
-                    <Style Selector="^[IsItemBackgroundEnabled=True]">
-                        <Style Selector="^[IsSelected=True], ^[IsInSelectedPath=True]">
-                            <Setter Property="Background"
-                                    Value="{atom:NavMenuTokenResource DarkItemSelectedBg}" />
-                        </Style>
-                    </Style>
-                    <Style Selector="^[IsItemBackgroundEnabled=False]">
-                        <Setter Property="Background" Value="Transparent" />
+                    <Style Selector="^[IsSelected=True], ^[IsInSelectedPath=True]">
+                        <Setter Property="Background"
+                                Value="{atom:NavMenuTokenResource DarkItemSelectedBg}" />
                     </Style>
                 </Style>
 
