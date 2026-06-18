@@ -52,6 +52,8 @@ public class NumberUpDownShowCasePageTests
         CountOccurrences(source, "DataTemplate x:DataType=\"vm:NumberUpDownViewModel\"").ShouldBe(14);
         source.ShouldContain("NumberUpDownShowCaseLangResource BasicUsageTitle");
         source.ShouldContain("NumberUpDownShowCaseLangResource SpinnerModeTitle");
+        source.ShouldContain("Title=\"{gallery:NumberUpDownShowCaseLangResource SpinnerModeTitle}\"\n            BadgeText=\"v6.0.5\"");
+        CountOccurrences(source, "BadgeText=\"v6.0.5\"").ShouldBe(1);
         source.ShouldContain("Spacing=\"{atom:SharedTokenResource UniformlyMargin}\"");
         source.ShouldContain("Mode=\"Spinner\"");
         source.ShouldContain("FormatString=\"0\"");
