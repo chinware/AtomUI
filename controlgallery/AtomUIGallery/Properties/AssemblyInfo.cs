@@ -42,6 +42,7 @@ using Avalonia.Metadata;
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.InfoFlyout")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.LineEdit")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.List")]
+[assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Masonry")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Mentions")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Menu")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Message")]

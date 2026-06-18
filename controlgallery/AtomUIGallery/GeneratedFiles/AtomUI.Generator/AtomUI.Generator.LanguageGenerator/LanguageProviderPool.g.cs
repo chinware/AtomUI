@@ -11233,6 +11233,195 @@ namespace AtomUI.Theme.Language
         }
     }
 
+    internal sealed class MasonryShowCaseEnUSLanguageProvider : LanguageProvider
+    {
+        public MasonryShowCaseEnUSLanguageProvider()
+            : base(LanguageCode.en_US, "MasonryShowCase")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiEventLayoutChanged] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiEventLayoutChanged;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyColumnCount] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiPropertyColumnCount;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyColumnGap] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiPropertyColumnGap;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyColumnInfo] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiPropertyColumnInfo;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyGutter] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiPropertyGutter;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyItemsSource] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiPropertyItemsSource;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyItemTemplate] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiPropertyItemTemplate;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMasonryColumn] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiPropertyMasonryColumn;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMasonrySpan] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiPropertyMasonrySpan;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMaxColumnCount] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiPropertyMaxColumnCount;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMinColumnWidth] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiPropertyMinColumnWidth;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyRowGap] = global::AtomUIGallery.ShowCases.Masonry.en_US.ApiPropertyRowGap;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Masonry.en_US.BasicDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Masonry.en_US.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Masonry.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Masonry.en_US.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Masonry.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Masonry.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Masonry.en_US.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Masonry.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Masonry.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ResponsiveDescription] = global::AtomUIGallery.ShowCases.Masonry.en_US.ResponsiveDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ResponsiveTitle] = global::AtomUIGallery.ShowCases.Masonry.en_US.ResponsiveTitle;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Masonry.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Masonry.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Masonry.en_US.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Masonry.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Masonry.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Masonry.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Masonry.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenNameNoComponentToken] = global::AtomUIGallery.ShowCases.Masonry.en_US.TokenNameNoComponentToken;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Masonry.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenStatusNotApplicable] = global::AtomUIGallery.ShowCases.Masonry.en_US.TokenStatusNotApplicable;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class MasonryShowCaseZhCNLanguageProvider : LanguageProvider
+    {
+        public MasonryShowCaseZhCNLanguageProvider()
+            : base(LanguageCode.zh_CN, "MasonryShowCase")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiEventLayoutChanged] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiEventLayoutChanged;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyColumnCount] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiPropertyColumnCount;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyColumnGap] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiPropertyColumnGap;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyColumnInfo] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiPropertyColumnInfo;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyGutter] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiPropertyGutter;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyItemsSource] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiPropertyItemsSource;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyItemTemplate] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiPropertyItemTemplate;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMasonryColumn] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiPropertyMasonryColumn;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMasonrySpan] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiPropertyMasonrySpan;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMaxColumnCount] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiPropertyMaxColumnCount;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMinColumnWidth] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiPropertyMinColumnWidth;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyRowGap] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ApiPropertyRowGap;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.BasicDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ResponsiveDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ResponsiveDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ResponsiveTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ResponsiveTitle;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenNameNoComponentToken] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.TokenNameNoComponentToken;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenStatusNotApplicable] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.TokenStatusNotApplicable;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class MasonryShowCaseZhTWLanguageProvider : LanguageProvider
+    {
+        public MasonryShowCaseZhTWLanguageProvider()
+            : base(LanguageCode.zh_TW, "MasonryShowCase")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiEventLayoutChanged] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiEventLayoutChanged;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyColumnCount] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiPropertyColumnCount;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyColumnGap] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiPropertyColumnGap;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyColumnInfo] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiPropertyColumnInfo;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyGutter] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiPropertyGutter;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyItemsSource] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiPropertyItemsSource;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyItemTemplate] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiPropertyItemTemplate;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMasonryColumn] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiPropertyMasonryColumn;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMasonrySpan] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiPropertyMasonrySpan;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMaxColumnCount] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiPropertyMaxColumnCount;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyMinColumnWidth] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiPropertyMinColumnWidth;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ApiPropertyRowGap] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ApiPropertyRowGap;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.BasicDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ResponsiveDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ResponsiveDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ResponsiveTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ResponsiveTitle;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenNameNoComponentToken] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.TokenNameNoComponentToken;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.TokenStatusNotApplicable] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.TokenStatusNotApplicable;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
     internal sealed class MentionsShowCaseEnUSLanguageProvider : LanguageProvider
     {
         public MentionsShowCaseEnUSLanguageProvider()
@@ -23522,6 +23711,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Layout;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_FlexPanel] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Layout_FlexPanel;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Grid] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Layout_Grid;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Masonry] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Layout_Masonry;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Space] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Layout_Space;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Splitter] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Layout_Splitter;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Navigation;
@@ -23629,6 +23819,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Layout;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_FlexPanel] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Layout_FlexPanel;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Grid] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Layout_Grid;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Masonry] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Layout_Masonry;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Space] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Layout_Space;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Splitter] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Layout_Splitter;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Navigation;
@@ -23736,6 +23927,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Layout;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_FlexPanel] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Layout_FlexPanel;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Grid] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Layout_Grid;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Masonry] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Layout_Masonry;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Space] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Layout_Space;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Layout_Splitter] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Layout_Splitter;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Navigation;
@@ -23885,7 +24077,7 @@ namespace AtomUI.Theme.Language
     {
         internal static IList<LanguageProvider> GetLanguageProviders()
         {
-            List<LanguageProvider> languageProviders = new List<LanguageProvider>(225);
+            List<LanguageProvider> languageProviders = new List<LanguageProvider>(228);
             languageProviders.Add(new AlertShowCaseEnUSLanguageProvider());
             languageProviders.Add(new AlertShowCaseZhCNLanguageProvider());
             languageProviders.Add(new AlertShowCaseZhTWLanguageProvider());
@@ -23988,6 +24180,9 @@ namespace AtomUI.Theme.Language
             languageProviders.Add(new ListShowCaseEnUSLanguageProvider());
             languageProviders.Add(new ListShowCaseZhCNLanguageProvider());
             languageProviders.Add(new ListShowCaseZhTWLanguageProvider());
+            languageProviders.Add(new MasonryShowCaseEnUSLanguageProvider());
+            languageProviders.Add(new MasonryShowCaseZhCNLanguageProvider());
+            languageProviders.Add(new MasonryShowCaseZhTWLanguageProvider());
             languageProviders.Add(new MentionsShowCaseEnUSLanguageProvider());
             languageProviders.Add(new MentionsShowCaseZhCNLanguageProvider());
             languageProviders.Add(new MentionsShowCaseZhTWLanguageProvider());

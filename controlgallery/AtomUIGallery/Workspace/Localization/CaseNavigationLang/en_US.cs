@@ -26,6 +26,7 @@ internal partial class en_US : LanguageProvider
     public const string Layout_Grid = "Grid";
     public const string Layout_Space = "Space";
     public const string Layout_Splitter = "Splitter";
+    public const string Layout_Masonry = "Masonry";
 
     public const string Navigation = "Navigation";
     public const string Navigation_Breadcrumb = "Breadcrumb";

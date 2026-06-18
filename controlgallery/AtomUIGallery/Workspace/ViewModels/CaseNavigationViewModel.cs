@@ -37,6 +37,7 @@ using AtomUIGallery.ShowCases.ImagePreviewer;
 using AtomUIGallery.ShowCases.InfoFlyout;
 using AtomUIGallery.ShowCases.LineEdit;
 using AtomUIGallery.ShowCases.List;
+using AtomUIGallery.ShowCases.Masonry;
 using AtomUIGallery.ShowCases.Mentions;
 using AtomUIGallery.ShowCases.Menu;
 using AtomUIGallery.ShowCases.Message;
@@ -194,6 +195,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(SpaceViewModel.ID, () => new SpaceViewModel(HostScreen));
         _showCaseViewModelFactories.Add(NumberUpDownViewModel.ID, () => new NumberUpDownViewModel(HostScreen));
         _showCaseViewModelFactories.Add(ListViewModel.ID, () => new ListViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(MasonryViewModel.ID, () => new MasonryViewModel(HostScreen));
         _showCaseViewModelFactories.Add(TreeViewViewModel.ID, () => new TreeViewViewModel(HostScreen));
         _showCaseViewModelFactories.Add(TourViewModel.ID, () => new TourViewModel(HostScreen));
         _showCaseViewModelFactories.Add(DataGridViewModel.ID, () => new DataGridViewModel(HostScreen));

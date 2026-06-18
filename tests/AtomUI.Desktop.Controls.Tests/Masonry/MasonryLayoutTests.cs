@@ -393,6 +393,99 @@ public class MasonryLayoutTests
         }
     }
 
+    [Fact]
+    public void Responsive_Gutter_Scalar_Applies_To_Column_And_Row_Gap()
+    {
+        var host = new TestMediaBreakHost(MediaBreakPoint.Large)
+        {
+            Width = 500,
+            Height = 600
+        };
+        var masonry = new AtomUI.Desktop.Controls.Masonry
+        {
+            ColumnInfo = 2,
+            Gutter = ResponsiveGutter.Parse("16"),
+            RowGap = 4,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            ItemTemplate = new FuncDataTemplate<_Item>(
+                _ => true,
+                item => new Border { Height = item!.Height, Child = new TextBlock { Text = item.Index.ToString() } })
+        };
+
+        masonry.ItemsSource = new ObservableCollection<_Item>
+        {
+            new(1, 40),
+            new(2, 40),
+            new(3, 40)
+        };
+        host.Children.Add(masonry);
+
+        var window = new AvaloniaWindow { Width = 500, Height = 600, Content = host };
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var presenters = masonry.GetLogicalDescendants().OfType<ContentPresenter>().OrderBy(p => p.Bounds.Y).ThenBy(p => p.Bounds.X).ToArray();
+            presenters[1].Bounds.X.ShouldBe(258, 0.5);
+            presenters[2].Bounds.Y.ShouldBe(56, 0.5);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Responsive_Breakpoint_Change_Recalculates_Columns_And_Gutter()
+    {
+        var host = new TestMediaBreakHost(MediaBreakPoint.Small)
+        {
+            Width = 500,
+            Height = 600
+        };
+        var masonry = new AtomUI.Desktop.Controls.Masonry
+        {
+            ColumnInfo = ResponsiveInt.Parse("xs: 1, md: 2"),
+            Gutter = ResponsiveGutter.Parse("xs: 8, md: 20; xs: 4, md: 12"),
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            ItemTemplate = new FuncDataTemplate<_Item>(
+                _ => true,
+                item => new Border { Height = item!.Height, Child = new TextBlock { Text = item.Index.ToString() } })
+        };
+
+        masonry.ItemsSource = new ObservableCollection<_Item>
+        {
+            new(1, 40),
+            new(2, 40),
+            new(3, 40)
+        };
+        host.Children.Add(masonry);
+
+        var window = new AvaloniaWindow { Width = 500, Height = 600, Content = host };
+        try
+        {
+            window.Show();
+            RunLayoutJobs();
+
+            var presenters = masonry.GetLogicalDescendants().OfType<ContentPresenter>().OrderBy(p => p.Bounds.Y).ThenBy(p => p.Bounds.X).ToArray();
+            presenters.Select(p => Math.Round(p.Bounds.X)).Distinct().Count().ShouldBe(1);
+            presenters[2].Bounds.Y.ShouldBe(88, 0.5);
+
+            host.SetMediaBreakPoint(MediaBreakPoint.Medium);
+            RunLayoutJobs();
+
+            presenters = masonry.GetLogicalDescendants().OfType<ContentPresenter>().OrderBy(p => p.Bounds.Y).ThenBy(p => p.Bounds.X).ToArray();
+            presenters.Select(p => Math.Round(p.Bounds.X)).Distinct().Count().ShouldBe(2);
+            presenters[1].Bounds.X.ShouldBe(260, 0.5);
+            presenters[2].Bounds.Y.ShouldBe(52, 0.5);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private sealed class _Item
     {
         public int Index { get; }
