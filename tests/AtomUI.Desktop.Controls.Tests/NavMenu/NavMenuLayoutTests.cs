@@ -1,6 +1,7 @@
 using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Headless;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -14,6 +15,55 @@ public class NavMenuLayoutTests
     static NavMenuLayoutTests()
     {
         AvaloniaTestApp.EnsureInitialized();
+    }
+
+    [Theory]
+    [InlineData(NavMenuMode.Inline)]
+    [InlineData(NavMenuMode.Vertical)]
+    public void Root_Item_Inset_Uses_AntDesign_Item_Margins_Without_Outer_Menu_Padding(NavMenuMode mode)
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = mode,
+            IsMotionEnabled = false,
+            Width           = 240
+        };
+        var item = new NavMenuNode
+        {
+            Header  = "Item",
+            ItemKey = "item"
+        };
+        menu.Items.Add(item);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var itemContainer = (Control)menu.ContainerFromItem(item)!;
+            var itemHeader    = GetItemHeader(itemContainer);
+            var leftInset     = GetLeft(itemHeader, menu);
+            var rightInset    = menu.Bounds.Width - GetRight(itemHeader, menu);
+            var topInset      = GetTop(itemHeader, menu);
+
+            leftInset.ShouldBe(4, 0.5,
+                "Ant Design vertical/inline root menus do not add outer menu padding; item marginInline is the only horizontal inset.");
+            rightInset.ShouldBe(4, 0.5,
+                "Ant Design vertical/inline root menus do not add outer menu padding; item marginInline is the only horizontal inset.");
+            topInset.ShouldBe(4, 0.5,
+                "Ant Design vertical/inline root menus expose one marginXXS before the first item.");
+        }
+        finally
+        {
+            window.Close();
+        }
     }
 
     [Theory]
@@ -180,6 +230,79 @@ public class NavMenuLayoutTests
         }
     }
 
+    [Theory]
+    [InlineData(NavMenuMode.Vertical)]
+    [InlineData(NavMenuMode.Horizontal)]
+    public void Popup_Item_Inset_Uses_AntDesign_Item_Margins(NavMenuMode mode)
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = mode,
+            IsMotionEnabled = false,
+            Width           = 240
+        };
+        var firstChild = new NavMenuNode
+        {
+            Header  = "Item 1",
+            ItemKey = "item-1"
+        };
+        var secondChild = new NavMenuNode
+        {
+            Header  = "Item 2",
+            ItemKey = "item-2"
+        };
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Children.Add(firstChild);
+        parent.Children.Add(secondChild);
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 640,
+            Height  = 480,
+            Content = CreatePopupOverlayHost(menu)
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (Control)menu.ContainerFromItem(parent)!;
+            var parentMenuItem  = (INavMenuItem)parentContainer;
+            parentMenuItem.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var popupFrame          = FindPopupFrame(window);
+            var firstChildContainer = (Control)((ItemsControl)parentContainer).ContainerFromItem(firstChild)!;
+            var secondChildContainer = (Control)((ItemsControl)parentContainer).ContainerFromItem(secondChild)!;
+            var firstChildHeader    = GetItemHeader(firstChildContainer);
+            var secondChildHeader   = GetItemHeader(secondChildContainer);
+
+            var leftInset   = GetLeft(firstChildHeader, popupFrame);
+            var rightInset  = popupFrame.Bounds.Width - GetRight(firstChildHeader, popupFrame);
+            var topInset    = GetTop(firstChildHeader, popupFrame);
+            var bottomInset = popupFrame.Bounds.Height - GetBottom(secondChildHeader, popupFrame);
+
+            leftInset.ShouldBe(4, 0.5,
+                "Ant Design popup submenus use the item's marginInline as the only horizontal inset.");
+            rightInset.ShouldBe(4, 0.5,
+                "Ant Design popup submenus use the item's marginInline as the only horizontal inset.");
+            topInset.ShouldBe(4, 0.5,
+                "Ant Design popup submenus expose one marginXXS before the first item.");
+            bottomInset.ShouldBe(4, 0.5,
+                "Ant Design popup submenus expose one marginXXS after the last item.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static BaseNavMenuItemHeader GetItemHeader(Control container)
     {
         var field = container.GetType().GetField(
@@ -196,8 +319,48 @@ public class NavMenuLayoutTests
         return point.Value.Y;
     }
 
+    private static double GetLeft(Control control, Visual relativeTo)
+    {
+        var point = control.TranslatePoint(default, relativeTo);
+        point.ShouldNotBeNull();
+        return point.Value.X;
+    }
+
+    private static double GetRight(Control control, Visual relativeTo)
+    {
+        return GetLeft(control, relativeTo) + control.Bounds.Width;
+    }
+
     private static double GetBottom(Control control, Visual relativeTo)
     {
         return GetTop(control, relativeTo) + control.Bounds.Height;
+    }
+
+    private static Border FindPopupFrame(Visual root)
+    {
+        return root.GetVisualDescendants()
+                   .OfType<Border>()
+                   .Single(border => border.Name == "PART_PopupFrame");
+    }
+
+    private static VisualLayerManager CreatePopupOverlayHost(Control content)
+    {
+        var visualLayerManager = new VisualLayerManager
+        {
+            Child = content
+        };
+
+        EnablePopupOverlayLayer(visualLayerManager);
+        return visualLayerManager;
+    }
+
+    private static void EnablePopupOverlayLayer(VisualLayerManager visualLayerManager)
+    {
+        var property = typeof(VisualLayerManager).GetProperty(
+            "EnablePopupOverlayLayer",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        property.ShouldNotBeNull();
+        property.SetValue(visualLayerManager, true);
     }
 }

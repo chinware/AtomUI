@@ -262,7 +262,10 @@ public class NavMenu : ItemsControl,
             _selectedItemRevision++;
             if (SelectedItem != null)
             {
-                SelectTargetMenuNode(SelectedItem, _selectedItemRevision);
+                if (!IsSelectedNodeAlreadyApplied(SelectedItem))
+                {
+                    SelectTargetMenuNode(SelectedItem, _selectedItemRevision);
+                }
             }
             else
             {
@@ -474,6 +477,40 @@ public class NavMenu : ItemsControl,
                 }
             }));
         }
+    }
+
+    private bool IsSelectedNodeAlreadyApplied(INavMenuNode node)
+    {
+        var pathNodes = CollectPathNodes(node);
+        if (pathNodes.Count == 0)
+        {
+            return false;
+        }
+
+        ItemsControl current = this;
+        for (var i = 0; i < pathNodes.Count; i++)
+        {
+            var menuItem = current.ContainerFromItem(pathNodes[i]) as NavMenuItem;
+            if (menuItem is null)
+            {
+                return false;
+            }
+
+            var isLeaf = i == pathNodes.Count - 1;
+            if (isLeaf)
+            {
+                return menuItem.IsSelected;
+            }
+
+            if (!menuItem.IsInSelectedPath)
+            {
+                return false;
+            }
+
+            current = menuItem;
+        }
+
+        return false;
     }
 
     public void Close()

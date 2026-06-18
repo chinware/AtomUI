@@ -18,9 +18,9 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     private IDisposable? _currentOpenDelayRunDisposable;
     private IDisposable? _currentCloseDelayRunDisposable;
     private bool _currentPressedIsValid;
-    private NavMenuItem? _latestSelectedItem;
     private NavMenuItem? _latestClickedItem;
     private IDisposable? _deactivationSubscription;
+    private readonly NavMenuSelectionCoordinator _selectionCoordinator = new();
 
     public DefaultNavMenuInteractionHandler()
         : this(AvaloniaLocator.Current.GetService<IInputManager>(), DefaultDelayRun)
@@ -46,14 +46,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
     public static TimeSpan MenuShowDelay { get; set; } = TimeSpan.FromMilliseconds(400);
 
-    protected virtual void GotFocus(object? sender, FocusChangedEventArgs e)
-    {
-    }
-
-    protected virtual void LostFocus(object? sender, FocusChangedEventArgs e)
-    {
-    }
-
     protected virtual void NotifyPointerEntered(object? sender, RoutedEventArgs e)
     {
         var menuItem = GetMenuItemCore(e.Source as Control) as INavMenuItem;
@@ -62,8 +54,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             return;
         }
 
-        _currentOpenDelayRunDisposable?.Dispose();
-        _currentCloseDelayRunDisposable?.Dispose();
+        DisposePendingDelayRuns();
         if (menuItem.HasSubMenu)
         {
             OpenWithDelay(menuItem);
@@ -91,8 +82,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             return;
         }
 
-        _currentOpenDelayRunDisposable?.Dispose();
-        _currentCloseDelayRunDisposable?.Dispose();
+        DisposePendingDelayRuns();
 
         if (!menuItem.IsPointerOverSubMenu)
         {
@@ -110,6 +100,8 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
 
     protected virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        ResetPressState();
+
         var sourceControl = e.Source as Control;
         var menuItem      = GetMenuItemCore(sourceControl);
         if (menuItem is null || !menuItem.ItemHeader.IsVisualAncestorOf(sourceControl)) 
@@ -134,12 +126,17 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             return;
         }
 
-        _currentPressedIsValid = false;
-
-        if (e.InitialPressMouseButton == MouseButton.Left)
+        try
         {
-            Click(_latestClickedItem);
-            e.Handled = true;
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                Click(_latestClickedItem);
+                e.Handled = true;
+            }
+        }
+        finally
+        {
+            ResetPressState();
         }
     }
 
@@ -154,66 +151,13 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
         else
         {
-            // 判断当前选中的是不是自己
-            if (!ReferenceEquals(_latestSelectedItem, menuItem))
-            {
-                var newItems = NavMenu.CollectSelectPathItems(menuItem);
-                var newSelectedPaths = NavMenu.BuildSelectPathSet(newItems);
-
-                HashSet<NavMenuItem>? oldSelectedPaths = null;
-                if (_latestSelectedItem != null)
-                {
-                    var oldItems = NavMenu.CollectSelectPathItems(_latestSelectedItem);
-                    oldSelectedPaths = NavMenu.BuildSelectPathSet(oldItems);
-                }
-
-                var navMenu = Menu as NavMenu;
-                if (oldSelectedPaths != null)
-                {
-                    foreach (var oldInSelectPathItem in oldSelectedPaths)
-                    {
-                        if (!newSelectedPaths.Contains(oldInSelectPathItem))
-                        {
-                            oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
-                        }
-                    }
-                }
-
-                if (_latestSelectedItem != null)
-                {
-                    var oldParentItem = ItemsControl.ItemsControlFromItemContainer(_latestSelectedItem) as IMenuChildSelectable;
-                    oldParentItem?.SelectChildItem(_latestSelectedItem, false);
-                }
-
-                foreach (var newInSelectPathItem in newSelectedPaths)
-                {
-                    newInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, true);
-                }
-
-                var parentItem = ItemsControl.ItemsControlFromItemContainer(menuItem) as IMenuChildSelectable;
-                parentItem?.SelectChildItem(menuItem, true);
-                _latestSelectedItem = menuItem;
-                navMenu?.RaiseNavMenuItemSelected(menuItem);
-            }
+            _selectionCoordinator.Select(Menu, menuItem);
         }
     }
 
     public void ClearSelection()
     {
-        if (_latestSelectedItem is null)
-        {
-            return;
-        }
-
-        var oldItems = NavMenu.CollectSelectPathItems(_latestSelectedItem);
-        foreach (var oldInSelectPathItem in oldItems)
-        {
-            oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
-        }
-
-        var oldParentItem = ItemsControl.ItemsControlFromItemContainer(_latestSelectedItem) as IMenuChildSelectable;
-        oldParentItem?.SelectChildItem(_latestSelectedItem, false);
-        _latestSelectedItem = null;
+        _selectionCoordinator.ClearSelection();
     }
     
     protected virtual void RawInput(RawInputEventArgs e)
@@ -314,8 +258,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
 
         Menu                 =  navMenu;
-        Menu.GotFocus        += GotFocus;
-        Menu.LostFocus       += LostFocus;
         Menu.PointerPressed  += PointerPressed;
         Menu.PointerReleased += PointerReleased;
 
@@ -349,8 +291,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
             throw new NotSupportedException("DefaultMenuInteractionHandler is not attached to the navMenu.");
         }
 
-        Menu.GotFocus        -= GotFocus;
-        Menu.LostFocus       -= LostFocus;
         Menu.PointerPressed  -= PointerPressed;
         Menu.PointerReleased -= PointerReleased;
        
@@ -372,11 +312,13 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         _inputManagerSubscription?.Dispose();
         _inputManagerSubscription = null;
 
+        DisposePendingDelayRuns();
+        ResetPressState();
+
         Menu                = null;
         _root               = null;
         _deactivationSubscription = null;
-        _latestClickedItem  = null;
-        _latestSelectedItem = null;
+        _selectionCoordinator.Reset();
     }
     
     internal void Click(INavMenuItem item)
@@ -412,14 +354,39 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     {
         void Execute()
         {
+            _currentOpenDelayRunDisposable = null;
             var parent = item.Parent as NavMenuItem;
             if (!item.IsTopLevel && parent?.Popup?.IsOpen == true)
             {
                 item.Open();
             }
         }
-        _currentOpenDelayRunDisposable?.Dispose();
+        DisposePendingOpenDelayRun();
         _currentOpenDelayRunDisposable = DelayRun(Execute, MenuShowDelay);
+    }
+
+    private void DisposePendingDelayRuns()
+    {
+        DisposePendingOpenDelayRun();
+        DisposePendingCloseDelayRun();
+    }
+
+    private void DisposePendingOpenDelayRun()
+    {
+        _currentOpenDelayRunDisposable?.Dispose();
+        _currentOpenDelayRunDisposable = null;
+    }
+
+    private void DisposePendingCloseDelayRun()
+    {
+        _currentCloseDelayRunDisposable?.Dispose();
+        _currentCloseDelayRunDisposable = null;
+    }
+
+    private void ResetPressState()
+    {
+        _currentPressedIsValid = false;
+        _latestClickedItem     = null;
     }
 
     internal static NavMenuItem? GetMenuItemCore(StyledElement? item)

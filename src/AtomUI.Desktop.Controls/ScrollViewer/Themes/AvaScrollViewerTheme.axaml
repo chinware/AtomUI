@@ -7,7 +7,10 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
-                    <atom:ScopeAwareOverlayLayerPanel Grid.Row="0" Grid.Column="0" ClipToBounds="False">
+                    <atom:ScopeAwareOverlayLayerPanel Name="PART_ContentHost"
+                                                      Grid.Row="0"
+                                                      Grid.Column="0"
+                                                      ClipToBounds="False">
                         <ScrollContentPresenter Name="PART_ContentPresenter"
                                                 Background="{TemplateBinding Background}"
                                                 HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
@@ -55,7 +58,7 @@
             <Setter Property="Opacity" Value="1" />
         </Style>
         
-        <Style Selector="^[AllowAutoHide=True] /template/ ScrollContentPresenter#ContentPresenter">
+        <Style Selector="^[AllowAutoHide=True] /template/ atom|ScopeAwareOverlayLayerPanel#PART_ContentHost">
             <Setter Property="Grid.ColumnSpan" Value="2" />
             <Setter Property="Grid.RowSpan" Value="2" />
         </Style>

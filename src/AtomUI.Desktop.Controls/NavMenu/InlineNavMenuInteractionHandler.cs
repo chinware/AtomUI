@@ -14,8 +14,8 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
     public void Detach(NavMenu navMenu) => DetachCore(navMenu);
 
     private bool _currentPressedIsValid;
-    private NavMenuItem? _latestSelectedItem;
     private NavMenuItem? _latestClickedItem;
+    private readonly NavMenuSelectionCoordinator _selectionCoordinator = new();
 
     internal void AttachCore(INavMenu navMenu)
     {
@@ -37,12 +37,14 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
         Menu.PointerPressed  -= PointerPressed;
         Menu.PointerReleased -= PointerReleased;
         Menu                 =  null;
-        _latestSelectedItem  =  null;
-        _latestClickedItem   =  null;
+        ResetPressState();
+        _selectionCoordinator.Reset();
     }
     
     protected virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
     {
+        ResetPressState();
+
         var sourceControl = e.Source as Control;
         var menuItem      = GetMenuItemCore(sourceControl);
         if (menuItem is null || !menuItem.ItemHeader.IsVisualAncestorOf(sourceControl)) 
@@ -67,12 +69,17 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
             return;
         }
 
-        _currentPressedIsValid = false;
-
-        if (e.InitialPressMouseButton == MouseButton.Left)
+        try
         {
-            Click(_latestClickedItem);
-            e.Handled = true;
+            if (e.InitialPressMouseButton == MouseButton.Left)
+            {
+                Click(_latestClickedItem);
+                e.Handled = true;
+            }
+        }
+        finally
+        {
+            ResetPressState();
         }
     }
     
@@ -103,69 +110,22 @@ internal class InlineNavMenuInteractionHandler : INavMenuInteractionHandler
         }
         else
         {
-            // 判断当前选中的是不是自己
-            if (!ReferenceEquals(_latestSelectedItem, menuItem))
-            {
-                HashSet<NavMenuItem>? oldSelectedPaths = null;
-                if (_latestSelectedItem != null)
-                {
-                    var oldItems = NavMenu.CollectSelectPathItems(_latestSelectedItem);
-                    oldSelectedPaths = NavMenu.BuildSelectPathSet(oldItems);
-                }
-                
-                var newItems         = NavMenu.CollectSelectPathItems(menuItem);
-                var newSelectedPaths = NavMenu.BuildSelectPathSet(newItems);
-
-                var navMenu = Menu as NavMenu;
-                if (oldSelectedPaths != null)
-                {
-                    foreach (var oldInSelectPathItem in oldSelectedPaths)
-                    {
-                        if (!newSelectedPaths.Contains(oldInSelectPathItem))
-                        {
-                            oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
-                        }
-                    }
-                }
-
-                if (_latestSelectedItem != null)
-                {
-                    var oldParentItem = ItemsControl.ItemsControlFromItemContainer(_latestSelectedItem) as IMenuChildSelectable;
-                    oldParentItem?.SelectChildItem(_latestSelectedItem, false);
-                }
-
-                foreach (var newInSelectPathItem in newSelectedPaths)
-                {
-                    newInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, true);
-                }
-
-                var parentItem = ItemsControl.ItemsControlFromItemContainer(menuItem) as IMenuChildSelectable;
-                parentItem?.SelectChildItem(menuItem, true);
-                _latestSelectedItem = menuItem;
-                navMenu?.RaiseNavMenuItemSelected(menuItem);
-            }
+            _selectionCoordinator.Select(Menu, menuItem);
         }
     }
 
     public void ClearSelection()
     {
-        if (_latestSelectedItem is null)
-        {
-            return;
-        }
-
-        var oldItems = NavMenu.CollectSelectPathItems(_latestSelectedItem);
-        foreach (var oldInSelectPathItem in oldItems)
-        {
-            oldInSelectPathItem.SetCurrentValue(NavMenuItem.IsInSelectedPathProperty, false);
-        }
-
-        var oldParentItem = ItemsControl.ItemsControlFromItemContainer(_latestSelectedItem) as IMenuChildSelectable;
-        oldParentItem?.SelectChildItem(_latestSelectedItem, false);
-        _latestSelectedItem = null;
+        _selectionCoordinator.ClearSelection();
     }
 
     internal void Open(INavMenuItem menuItem) => menuItem.Open();
+
+    private void ResetPressState()
+    {
+        _currentPressedIsValid = false;
+        _latestClickedItem     = null;
+    }
     
     internal static NavMenuItem? GetMenuItemCore(StyledElement? item)
     {
