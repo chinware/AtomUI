@@ -40,6 +40,9 @@ public class Col : ContentControl
     public static readonly StyledProperty<GridColSize?> XxlProperty =
         AvaloniaProperty.Register<Col, GridColSize?>(nameof(Xxl));
 
+    public static readonly StyledProperty<GridColSize?> XxxlProperty =
+        AvaloniaProperty.Register<Col, GridColSize?>(nameof(Xxxl));
+
     public GridColSpanInfo Span
     {
         get => GetValue(SpanProperty);
@@ -106,6 +109,12 @@ public class Col : ContentControl
         set => SetValue(XxlProperty, value);
     }
 
+    public GridColSize? Xxxl
+    {
+        get => GetValue(XxxlProperty);
+        set => SetValue(XxxlProperty, value);
+    }
+
     static Col()
     {
         AffectsMeasure<Col>(
@@ -119,7 +128,8 @@ public class Col : ContentControl
             MdProperty,
             LgProperty,
             XlProperty,
-            XxlProperty);
+            XxlProperty,
+            XxxlProperty);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -135,7 +145,8 @@ public class Col : ContentControl
             change.Property == MdProperty ||
             change.Property == LgProperty ||
             change.Property == XlProperty ||
-            change.Property == XxlProperty)
+            change.Property == XxlProperty ||
+            change.Property == XxxlProperty)
         {
             if (this.GetVisualParent() is Row row)
             {
@@ -180,6 +191,11 @@ public class Col : ContentControl
         if (breakPoint >= MediaBreakPoint.ExtraExtraLarge && Xxl is not null)
         {
             layout = Xxl.ApplyTo(layout);
+        }
+
+        if (breakPoint >= MediaBreakPoint.ExtraExtraExtraLarge && Xxxl is not null)
+        {
+            layout = Xxxl.ApplyTo(layout);
         }
 
         return layout;

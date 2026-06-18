@@ -746,4 +746,25 @@ public partial class DesignToken
     /// </summary>
     [DesignTokenKind(DesignTokenKind.Alias)]
     public int ScreenXXLMin { get; set; }
+
+    /// <summary>
+    /// 屏幕宽度（像素） - 超超大屏幕最大值
+    /// 控制超超大屏幕的最大宽度。
+    /// </summary>
+    [DesignTokenKind(DesignTokenKind.Alias)]
+    public int ScreenXXLMax { get; set; }
+
+    /// <summary>
+    /// 屏幕宽度（像素） - 超超超大屏幕
+    /// 控制超超超大屏幕的屏幕宽度。
+    /// </summary>
+    [DesignTokenKind(DesignTokenKind.Alias)]
+    public int ScreenXXXL { get; set; }
+
+    /// <summary>
+    /// 屏幕宽度（像素） - 超超超大屏幕最小值
+    /// 控制超超超大屏幕的最小宽度。
+    /// </summary>
+    [DesignTokenKind(DesignTokenKind.Alias)]
+    public int ScreenXXXLMin { get; set; }
 }

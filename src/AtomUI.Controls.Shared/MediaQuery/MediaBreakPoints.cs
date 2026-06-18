@@ -8,4 +8,5 @@ public enum MediaBreakPoint
     Large = 992,
     ExtraLarge = 1200,
     ExtraExtraLarge = 1600,
+    ExtraExtraExtraLarge = 1920,
 }

@@ -75,6 +75,7 @@ public partial class DesignToken : AbstractDesignToken
         var screenLG  = 992;
         var screenXL  = 1200;
         var screenXXL = 1600;
+        var screenXXXL = 1920;
 
         // setup alias token
         // ============== Background ============== //
@@ -207,8 +208,11 @@ public partial class DesignToken : AbstractDesignToken
         ScreenXL     = screenXL;
         ScreenXLMin  = screenXL;
         ScreenXLMax  = screenXXL - 1;
-        ScreenXXL    = screenXXL;
-        ScreenXXLMin = screenXXL;
+        ScreenXXL     = screenXXL;
+        ScreenXXLMin  = screenXXL;
+        ScreenXXLMax  = screenXXXL - 1;
+        ScreenXXXL    = screenXXXL;
+        ScreenXXXLMin = screenXXXL;
 
         BoxShadows = new BoxShadows(new BoxShadow
         {

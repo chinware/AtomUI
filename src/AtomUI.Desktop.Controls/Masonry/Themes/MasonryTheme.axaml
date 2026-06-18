@@ -1,0 +1,27 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:Masonry}" TargetType="atom:Masonry">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ItemsPresenter Name="PART_ItemsPresenter"
+                                ItemsPanel="{TemplateBinding ItemsPanel}" />
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ItemsPanel">
+            <ItemsPanelTemplate>
+                <atom:MasonryPanel
+                    ColumnCount="{Binding ColumnCount, RelativeSource={RelativeSource AncestorType=atom:Masonry}}"
+                    ColumnInfo="{Binding ColumnInfo, RelativeSource={RelativeSource AncestorType=atom:Masonry}}"
+                    MinColumnWidth="{Binding MinColumnWidth, RelativeSource={RelativeSource AncestorType=atom:Masonry}}"
+                    MaxColumnCount="{Binding MaxColumnCount, RelativeSource={RelativeSource AncestorType=atom:Masonry}}"
+                    ColumnGap="{Binding ColumnGap, RelativeSource={RelativeSource AncestorType=atom:Masonry}}"
+                    RowGap="{Binding RowGap, RelativeSource={RelativeSource AncestorType=atom:Masonry}}"
+                    Gutter="{Binding Gutter, RelativeSource={RelativeSource AncestorType=atom:Masonry}}" />
+            </ItemsPanelTemplate>
+        </Setter>
+    </ControlTheme>
+</ResourceDictionary>

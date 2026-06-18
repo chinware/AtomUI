@@ -26,7 +26,7 @@ public class DescriptionsResponsiveLayoutTests
         var descriptions = new AtomUI.Desktop.Controls.Descriptions
         {
             IsBordered = true,
-            ColumnInfo = new DescriptionsMediaBreakInfo(1, 1, 2, 3, 3, 3)
+            ColumnInfo = ResponsiveInt.Parse("xs: 1, md: 2, lg: 3")
         };
         AddDescriptionItems(descriptions);
         host.Children.Add(descriptions);
@@ -55,14 +55,36 @@ public class DescriptionsResponsiveLayoutTests
         }
     }
 
+    [Fact]
+    public void Descriptions_ColumnInfo_Uses_Mobile_First_Cascade()
+    {
+        var descriptions = new AtomUI.Desktop.Controls.Descriptions
+        {
+            ColumnInfo = ResponsiveInt.Parse("xs: 1, md: 3")
+        };
+
+        descriptions.ColumnInfo!.Value.Resolve(MediaBreakPoint.Large, 9).ShouldBe(3);
+    }
+
+    [Fact]
+    public void DescriptionItem_Span_Uses_Mobile_First_Cascade()
+    {
+        var item = new DescriptionItem
+        {
+            Span = ResponsiveInt.Parse("xs: 1, md: 3")
+        };
+
+        item.Span.Resolve(MediaBreakPoint.ExtraExtraLarge, 1).ShouldBe(3);
+    }
+
     private static void AddDescriptionItems(AtomUI.Desktop.Controls.Descriptions descriptions)
     {
         descriptions.Items.Add(new DescriptionItem { Label = "Product", Content = "Cloud Database" });
         descriptions.Items.Add(new DescriptionItem { Label = "Billing Mode", Content = "Prepaid" });
         descriptions.Items.Add(new DescriptionItem { Label = "Automatic Renewal", Content = "YES" });
         descriptions.Items.Add(new DescriptionItem { Label = "Order Time", Content = "2018-04-24 18:00:00" });
-        descriptions.Items.Add(new DescriptionItem { Label = "Usage Time", Content = "2019-04-24 18:00:00", Span = new DescriptionsMediaBreakInfo(2) });
-        descriptions.Items.Add(new DescriptionItem { Label = "Status", Content = "Running", Span = new DescriptionsMediaBreakInfo(3) });
+        descriptions.Items.Add(new DescriptionItem { Label = "Usage Time", Content = "2019-04-24 18:00:00", Span = 2 });
+        descriptions.Items.Add(new DescriptionItem { Label = "Status", Content = "Running", Span = 3 });
     }
 
     private sealed class TestMediaBreakHost : Panel, IMediaBreakAwareControl
