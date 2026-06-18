@@ -15,7 +15,7 @@
              WindowState="Normal"
              WindowStartupLocation="CenterScreen"
              Height="900"
-             MinWidth="1040"
+             MinWidth="520"
              Width="1300">
     <atom:Window.Resources>
         <atom:Menu x:Key="WorkspaceTitleBarMenu">

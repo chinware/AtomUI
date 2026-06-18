@@ -70,7 +70,8 @@ public class WorkspaceWindowLayoutTests
     {
         var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
 
-        source.ShouldContain("MinWidth=\"1040\"");
+        source.ShouldContain("MinWidth=\"520\"");
+        source.ShouldNotContain("MinWidth=\"1040\"");
         source.ShouldNotContain("MinWidth=\"1200\"");
     }
 
