@@ -26,6 +26,7 @@ internal partial class zh_CN : LanguageProvider
     public const string Layout_Grid = "Grid 栅格布局";
     public const string Layout_Space = "Space 间距";
     public const string Layout_Splitter = "Splitter 分隔面板";
+    public const string Layout_Masonry = "Masonry 瀑布流";
 
     public const string Navigation = "导航";
     public const string Navigation_Breadcrumb = "Breadcrumb 面包屑";

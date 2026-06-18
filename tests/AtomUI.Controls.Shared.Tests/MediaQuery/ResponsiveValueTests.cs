@@ -93,4 +93,12 @@ public class ResponsiveValueTests
 
         gutter.Resolve(MediaBreakPoint.Large, (0, 12)).ShouldBe((16, 12));
     }
+
+    [Fact]
+    public void ResponsiveGutter_Scalar_Value_Applies_To_Horizontal_And_Vertical()
+    {
+        var gutter = ResponsiveGutter.Parse("16");
+
+        gutter.Resolve(MediaBreakPoint.Large, (0, 12)).ShouldBe((16, 16));
+    }
 }

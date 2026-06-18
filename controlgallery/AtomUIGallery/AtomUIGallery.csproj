@@ -35,6 +35,7 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" />
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport"/>
+        <PackageReference Include="AsyncImageLoader.Avalonia" />
     </ItemGroup>
 
 </Project>

@@ -63,7 +63,8 @@ public readonly record struct ResponsiveGutter
             return new ResponsiveGutter(new ResponsiveDouble(horizontalValue), new ResponsiveDouble(verticalValue));
         }
 
-        return new ResponsiveGutter(ResponsiveDouble.Parse(trimmed.ToString()), new ResponsiveDouble(0));
+        var scalar = ResponsiveDouble.Parse(trimmed.ToString());
+        return new ResponsiveGutter(scalar, scalar);
     }
 
     public (double Horizontal, double Vertical) Resolve(MediaBreakPoint breakPoint, (double Horizontal, double Vertical) fallback)
@@ -191,8 +192,8 @@ public class ResponsiveGutterConverter : TypeConverter
         }
         if (value is IConvertible convertible)
         {
-            return new ResponsiveGutter(new ResponsiveDouble(convertible.ToDouble(culture ?? CultureInfo.InvariantCulture)),
-                new ResponsiveDouble(0));
+            var scalar = new ResponsiveDouble(convertible.ToDouble(culture ?? CultureInfo.InvariantCulture));
+            return new ResponsiveGutter(scalar, scalar);
         }
 
         throw new NotSupportedException($"Cannot convert value '{value}' to ResponsiveGutter.");

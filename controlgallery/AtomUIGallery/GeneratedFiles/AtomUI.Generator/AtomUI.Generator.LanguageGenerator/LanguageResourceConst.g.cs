@@ -1114,6 +1114,7 @@ namespace AtomUIGallery.Localization
         Layout,
         Layout_FlexPanel,
         Layout_Grid,
+        Layout_Masonry,
         Layout_Space,
         Layout_Splitter,
         Navigation,
@@ -3566,6 +3567,61 @@ namespace AtomUIGallery.Localization
         }
 
         public ListShowCaseLangResourceExtension(ListShowCaseLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.Localization
+{
+    public enum MasonryShowCaseLangResourceKind
+    {
+        ApiColumnDefault,
+        ApiColumnDescription,
+        ApiColumnProperty,
+        ApiColumnType,
+        ApiEventLayoutChanged,
+        ApiPropertyColumnCount,
+        ApiPropertyColumnGap,
+        ApiPropertyColumnInfo,
+        ApiPropertyGutter,
+        ApiPropertyItemsSource,
+        ApiPropertyItemTemplate,
+        ApiPropertyMasonryColumn,
+        ApiPropertyMasonrySpan,
+        ApiPropertyMaxColumnCount,
+        ApiPropertyMinColumnWidth,
+        ApiPropertyRowGap,
+        BasicDescription,
+        BasicTitle,
+        ComponentCategory,
+        ComponentStatusStable,
+        InfoBaseClassLabel,
+        InfoNamespaceLabel,
+        InfoPackageLabel,
+        PageDescription,
+        PageSubtitle,
+        ResponsiveDescription,
+        ResponsiveTitle,
+        ScenarioApi,
+        ScenarioDesignToken,
+        ScenarioExamples,
+        TokenColumnDescription,
+        TokenColumnScope,
+        TokenColumnStatus,
+        TokenColumnToken,
+        TokenNameNoComponentToken,
+        TokenScopeComponent,
+        TokenStatusNotApplicable
+    }
+
+    public class MasonryShowCaseLangResourceExtension : LanguageResourceExtension<MasonryShowCaseLangResourceKind>
+    {
+        public MasonryShowCaseLangResourceExtension()
+        {
+        }
+
+        public MasonryShowCaseLangResourceExtension(MasonryShowCaseLangResourceKind kind) : base(kind)
         {
         }
     }

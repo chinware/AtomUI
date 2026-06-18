@@ -154,6 +154,7 @@ Gutter="xs: 8, md: 16"
 格式规则：
 
 - scalar 值表示所有断点固定为同一值。
+- Gutter scalar 值表示水平和垂直两个维度使用同一固定值。
 - breakpoint map 只记录显式出现的断点。
 - breakpoint key 大小写不敏感，但文档和示例统一使用小写。
 - 未知 breakpoint、空 key、空 value、非法数值必须抛出明确异常。

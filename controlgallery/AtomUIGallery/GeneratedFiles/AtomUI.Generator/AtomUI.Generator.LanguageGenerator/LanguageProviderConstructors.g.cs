@@ -1120,6 +1120,39 @@ namespace AtomUIGallery.ShowCases.List
     }
 }
 
+namespace AtomUIGallery.ShowCases.Masonry
+{
+    internal partial class en_US
+    {
+        public en_US()
+            : base(global::AtomUI.Theme.Language.LanguageCode.en_US, "MasonryShowCase")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.Masonry
+{
+    internal partial class zh_CN
+    {
+        public zh_CN()
+            : base(global::AtomUI.Theme.Language.LanguageCode.zh_CN, "MasonryShowCase")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.Masonry
+{
+    internal partial class zh_TW
+    {
+        public zh_TW()
+            : base(global::AtomUI.Theme.Language.LanguageCode.zh_TW, "MasonryShowCase")
+        {
+        }
+    }
+}
+
 namespace AtomUIGallery.ShowCases.Mentions
 {
     internal partial class en_US

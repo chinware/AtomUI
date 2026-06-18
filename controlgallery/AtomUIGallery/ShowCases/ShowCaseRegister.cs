@@ -32,6 +32,7 @@ using AtomUIGallery.ShowCases.ImagePreviewer;
 using AtomUIGallery.ShowCases.InfoFlyout;
 using AtomUIGallery.ShowCases.LineEdit;
 using AtomUIGallery.ShowCases.List;
+using AtomUIGallery.ShowCases.Masonry;
 using AtomUIGallery.ShowCases.Mentions;
 using AtomUIGallery.ShowCases.Menu;
 using AtomUIGallery.ShowCases.Message;
@@ -148,6 +149,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<SpaceViewModel, SpaceShowCase>(() => new SpaceShowCase());
         locator.Map<NumberUpDownViewModel, NumberUpDownShowCase>(() => new NumberUpDownShowCase());
         locator.Map<ListViewModel, ListShowCase>(() => new ListShowCase());
+        locator.Map<MasonryViewModel, MasonryShowCase>(() => new MasonryShowCase());
         locator.Map<TreeViewViewModel, TreeViewShowCase>(() => new TreeViewShowCase());
         locator.Map<TourViewModel, TourShowCase>(() => new TourShowCase());
         locator.Map<DataGridViewModel, DataGridShowCase>(() => new DataGridShowCase());
