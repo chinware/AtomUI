@@ -367,7 +367,13 @@ internal class NavMenuToken : AbstractControlDesignToken
         var activeBarHeight = !double.IsNaN(ActiveBarHeight)
             ? ActiveBarHeight
             : SharedToken.LineWidthBold;
-        var itemContentMargin    = ItemContentMargin != default ? ItemContentMargin : new Thickness(SharedToken.UniformlyMarginXXS, SharedToken.UniformlyMarginXXS);
+        var itemContentMargin = ItemContentMargin != default
+            ? ItemContentMargin
+            : new Thickness(
+                SharedToken.UniformlyMarginXXS,
+                0,
+                SharedToken.UniformlyMarginXXS,
+                SharedToken.UniformlyMarginXXS);
         var colorTextDark = ColorUtils.FromRgbF(
             0.65d,
             colorTextLightSolid.GetRedF(),
@@ -382,7 +388,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         GroupTitleColor             = SharedToken.ColorTextDescription;
         ItemSelectedColor           = SharedToken.ColorPrimary;
         HorizontalItemSelectedColor = SharedToken.ColorPrimary;
-        ItemBg                      = SharedToken.ColorTransparent;
+        ItemBg                      = SharedToken.ColorBgContainer;
         ItemHoverBg                 = SharedToken.ColorBgTextHover;
         ItemActiveBg                = SharedToken.ColorFillContent;
         SubMenuItemBg               = SharedToken.ColorFillAlter;
@@ -406,7 +412,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         ItemContentMargin    = itemContentMargin;
         ItemContentPadding   = new Thickness(SharedToken.UniformlyPadding, SharedToken.UniformlyPaddingXXS);
         ItemMargin           = new Thickness(0, 0, SharedToken.UniformlyMarginXS, 0);
-        ItemHeight           = SharedToken.ControlHeight;
+        ItemHeight           = SharedToken.ControlHeightLG;
         GroupTitleLineHeight = SharedToken.ControlHeight;
         CollapsedWidth       = SharedToken.ControlHeight * 2;
         IconSize             = SharedToken.FontSize;
@@ -456,8 +462,8 @@ internal class NavMenuToken : AbstractControlDesignToken
         
         MenuPopupBg               = SharedToken.ColorBgElevated;
         MenuPopupContentPadding   = new Thickness(SharedToken.UniformlyPaddingXXS, SharedToken.BorderRadiusLG.TopLeft / 2);
-        VerticalItemsPanelSpacing = SharedToken.UniformlyMarginXXS;
-        VerticalChildItemsMargin = new Thickness(0, SharedToken.UniformlyMarginXXS, 0, 0);
+        VerticalItemsPanelSpacing = 0;
+        VerticalChildItemsMargin = new Thickness(0);
 
         InlineItemIndentUnit       = ItemHeight / 2;
         VerticalMenuContentPadding = SharedToken.PaddingXXS;

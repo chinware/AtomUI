@@ -56,6 +56,9 @@ public class NavMenu : ItemsControl,
     public static readonly StyledProperty<bool> IsDarkStyleProperty =
         AvaloniaProperty.Register<NavMenu, bool>(nameof(IsDarkStyle), false);
     
+    public static readonly StyledProperty<bool> IsItemBackgroundEnabledProperty =
+        AvaloniaProperty.Register<NavMenu, bool>(nameof(IsItemBackgroundEnabled), true);
+
     public static readonly DirectProperty<NavMenu, IList<TreeNodePath>?> DefaultOpenPathsProperty =
         AvaloniaProperty.RegisterDirect<NavMenu, IList<TreeNodePath>?>(
             nameof(DefaultOpenPaths),
@@ -114,6 +117,12 @@ public class NavMenu : ItemsControl,
         set => SetValue(IsDarkStyleProperty, value);
     }
     
+    public bool IsItemBackgroundEnabled
+    {
+        get => GetValue(IsItemBackgroundEnabledProperty);
+        set => SetValue(IsItemBackgroundEnabledProperty, value);
+    }
+
     public bool ShouldUseOverlayPopup
     {
         get => GetValue(ShouldUseOverlayPopupProperty);
@@ -331,6 +340,7 @@ public class NavMenu : ItemsControl,
             
             menuItem[!NavMenuItem.ModeProperty]                  = this[!ModeProperty];
             menuItem[!NavMenuItem.IsDarkStyleProperty]           = this[!IsDarkStyleProperty];
+            menuItem[!NavMenuItem.IsItemBackgroundEnabledProperty] = this[!IsItemBackgroundEnabledProperty];
             menuItem[!NavMenuItem.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
             menuItem[!NavMenuItem.ShouldUseOverlayPopupProperty] = this[!ShouldUseOverlayPopupProperty];
            

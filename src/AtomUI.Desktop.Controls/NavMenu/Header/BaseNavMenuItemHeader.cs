@@ -5,7 +5,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -110,6 +109,19 @@ public class BaseNavMenuItemHeader : TemplatedControl
         get => _isInSelectedPath;
         set => SetAndRaise(IsInSelectedPathProperty, ref _isInSelectedPath, value);
     }
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<bool> IsItemBackgroundEnabledProperty =
+        AvaloniaProperty.Register<BaseNavMenuItemHeader, bool>(nameof(IsItemBackgroundEnabled), true);
+
+    internal bool IsItemBackgroundEnabled
+    {
+        get => GetValue(IsItemBackgroundEnabledProperty);
+        set => SetValue(IsItemBackgroundEnabledProperty, value);
+    }
+
     #endregion
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

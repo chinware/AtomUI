@@ -39,11 +39,25 @@ public class WorkspaceWindowLayoutTests
     }
 
     [Fact]
-    public void Sidebar_Navigation_Keeps_Two_Pixel_Gap_Between_Scrollbar_And_Divider()
+    public void Sidebar_Navigation_Does_Not_Reserve_Divider_Gap()
     {
         var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/CaseNavigation.axaml"));
 
-        source.ShouldContain("Margin=\"0,0,2,0\"");
+        source.ShouldNotContain("Margin=\"0,0,2,0\"");
+    }
+
+    [Fact]
+    public void Workspace_Draws_Navigation_Content_Separator()
+    {
+        var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
+
+        source.ShouldContain("Name=\"WorkspaceNavigationSeparator\"");
+        source.ShouldContain("Grid.Column=\"1\"");
+        source.ShouldContain("Width=\"1\"");
+        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldContain("Background=\"{atom:SharedTokenResource ColorBorderSecondary}\"");
+        source.ShouldContain("IsHitTestVisible=\"False\"");
+        source.ShouldNotContain("BorderThickness=\"0,0,1,0\"");
     }
 
     [Fact]
@@ -55,6 +69,18 @@ public class WorkspaceWindowLayoutTests
         source.ShouldNotContain("BaseNavMenuItemHeader[IsSelected=True]");
         source.ShouldNotContain("IsDarkStyle=True][IsSelected=True]");
         source.ShouldNotContain("Value=\"#");
+    }
+
+    [Fact]
+    public void Sidebar_Navigation_Does_Not_Couple_Dark_Menu_Style_To_Global_Dark_Mode()
+    {
+        var viewSource = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/CaseNavigation.axaml"));
+        var codeBehindSource = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/CaseNavigation.axaml.cs"));
+
+        viewSource.ShouldNotContain("IsDarkStyle=\"True\"");
+        codeBehindSource.ShouldNotContain("IThemeManager.IsDarkThemeModeProperty");
+        codeBehindSource.ShouldNotContain("NavMenu.IsDarkStyleProperty");
+        codeBehindSource.ShouldContain("ShowCaseNavMenu");
     }
 
     [Fact]
