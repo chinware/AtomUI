@@ -65,6 +65,7 @@
         
         <Style Selector="^:is(atom|InlineNavMenuItemHeader)">
             <Setter Property="Height" Value="{atom:NavMenuTokenResource ItemHeight}" />
+            <Setter Property="Margin" Value="{atom:NavMenuTokenResource ItemContentMargin}" />
             <Setter Property="InlineItemIndentUnit"
                     Value="{atom:NavMenuTokenResource InlineItemIndentUnit}" />
             <Setter Property="MenuIndicatorRenderTransform" Value="rotate(90deg)" />

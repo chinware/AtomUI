@@ -8,7 +8,6 @@
              x:CompileBindings="True">
     <atom:NavMenu Mode="Inline" Name="ShowCaseNavMenu"
                   HorizontalAlignment="Stretch"
-                  Margin="0,0,2,0"
                   atom:ScrollViewer.IsLiteMode="True"
                   ScrollViewer.AllowAutoHide="True">
         <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Overview}"

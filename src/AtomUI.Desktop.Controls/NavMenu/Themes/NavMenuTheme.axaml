@@ -85,7 +85,8 @@
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="Padding"
                     Value="{atom:NavMenuTokenResource VerticalMenuContentPadding}" />
-            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Background" Value="{atom:NavMenuTokenResource ItemBg}" />
+            <Setter Property="BorderThickness" Value="0" />
             <Style Selector="^[IsDarkStyle=True]">
                 <Setter Property="Background" Value="{atom:NavMenuTokenResource DarkMenuBg}" />
             </Style>
@@ -104,7 +105,8 @@
             <Setter Property="HorizontalAlignment" Value="Left" />
             <Setter Property="Padding"
                     Value="{atom:NavMenuTokenResource VerticalMenuContentPadding}" />
-            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Background" Value="{atom:NavMenuTokenResource ItemBg}" />
+            <Setter Property="BorderThickness" Value="0" />
             <Style Selector="^[IsDarkStyle=True]">
                 <Setter Property="Background" Value="{atom:NavMenuTokenResource DarkMenuBg}" />
             </Style>
@@ -120,7 +122,7 @@
                     <StackPanel Orientation="Horizontal"/>
                 </ItemsPanelTemplate>
             </Setter>
-            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+            <Setter Property="Background" Value="{atom:NavMenuTokenResource ItemBg}" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="Height" Value="{atom:NavMenuTokenResource MenuHorizontalHeight}" />
@@ -129,7 +131,10 @@
             </Style>
             
             <Style Selector="^[IsDarkStyle=True]">
-                <Setter Property="Background" Value="{atom:NavMenuTokenResource DarkMenuPopupBg}" />
+                <Setter Property="Background" Value="{atom:NavMenuTokenResource DarkMenuBg}" />
+                <Style Selector="^ /template/ Rectangle#PART_HorizontalLine">
+                    <Setter Property="IsVisible" Value="False" />
+                </Style>
             </Style>
         </Style>
 

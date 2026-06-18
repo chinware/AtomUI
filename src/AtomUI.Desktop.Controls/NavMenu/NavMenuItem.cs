@@ -1,5 +1,4 @@
 using System.Reactive.Disposables;
-using System.Threading;
 using System.Windows.Input;
 using AtomUI.Controls;
 using AtomUI.Data;
@@ -262,6 +261,9 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.IsDarkStyle,
             (o, v) => o.IsDarkStyle = v);
 
+    internal static readonly StyledProperty<bool> IsItemBackgroundEnabledProperty =
+        AvaloniaProperty.Register<NavMenuItem, bool>(nameof(IsItemBackgroundEnabled), true);
+
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<NavMenuItem>();
     
@@ -305,6 +307,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         get => _isDarkStyle;
         set => SetAndRaise(IsDarkStyleProperty, ref _isDarkStyle, value);
+    }
+
+    internal bool IsItemBackgroundEnabled
+    {
+        get => GetValue(IsItemBackgroundEnabledProperty);
+        set => SetValue(IsItemBackgroundEnabledProperty, value);
     }
 
     internal bool IsMotionEnabled

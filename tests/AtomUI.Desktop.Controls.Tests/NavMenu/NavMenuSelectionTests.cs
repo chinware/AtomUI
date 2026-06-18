@@ -1,8 +1,13 @@
 using System.Reflection;
 using System.Threading;
 using AtomUI.MotionScene;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Headless;
+using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 
@@ -116,6 +121,114 @@ public class NavMenuSelectionTests
 
             IsSelected(firstContainer).ShouldBeTrue();
             selectedNodes.ShouldBe([first]);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Inline_Submenu_Child_Press_Does_Not_Apply_Active_Background_To_Parent_Header()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        var child = new NavMenuNode
+        {
+            Header  = "Child",
+            ItemKey = "child"
+        };
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Children.Add(child);
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (Control)menu.ContainerFromItem(parent)!;
+            var parentMenuItem  = (INavMenuItem)parentContainer;
+            parentMenuItem.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var childContainer = (Control)((ItemsControl)parentContainer).ContainerFromItem(child)!;
+            var parentHeader   = GetItemHeader(parentContainer);
+            var childHeader    = GetItemHeader(childContainer);
+
+            MouseDown(childHeader, window);
+            Dispatcher.UIThread.RunJobs();
+
+            GetSolidBrushColor(parentHeader.Background).ShouldBe(
+                Colors.Transparent,
+                "pressing a child menu item must not make its parent header look active");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Inline_Item_Background_Control_Propagates_To_Header_And_Submenu_Frame()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode                    = NavMenuMode.Inline,
+            IsMotionEnabled         = false,
+            IsItemBackgroundEnabled = false
+        };
+        var child = new NavMenuNode
+        {
+            Header  = "Child",
+            ItemKey = "child"
+        };
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Children.Add(child);
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (Control)menu.ContainerFromItem(parent)!;
+            var parentHeader    = GetItemHeader(parentContainer);
+            var childFrame      = GetChildItemsFrame(parentContainer);
+
+            parentHeader.IsItemBackgroundEnabled.ShouldBeFalse();
+            GetSolidBrushColor(parentHeader.Background).ShouldBe(Colors.Transparent);
+            GetSolidBrushColor(childFrame.Background).ShouldBe(Colors.Transparent);
+
+            menu.IsItemBackgroundEnabled = true;
+            Dispatcher.UIThread.RunJobs();
+
+            parentHeader.IsItemBackgroundEnabled.ShouldBeTrue();
         }
         finally
         {
@@ -342,6 +455,13 @@ public class NavMenuSelectionTests
         return (BaseMotionActor)field.GetValue(container)!;
     }
 
+    private static Border GetChildItemsFrame(Control container)
+    {
+        var actor = GetChildItemsMotionActor(container);
+        actor.Content.ShouldBeOfType<Border>();
+        return (Border)actor.Content;
+    }
+
     private static BaseNavMenuItemHeader GetItemHeader(Control container)
     {
         var field = container.GetType().GetField(
@@ -358,6 +478,24 @@ public class NavMenuSelectionTests
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         property.ShouldNotBeNull();
         property.SetValue(container, value);
+    }
+
+    private static void MouseDown(Control control, Avalonia.Controls.Window window)
+    {
+        var point = control.TranslatePoint(
+            new Point(control.Bounds.Width / 2, control.Bounds.Height / 2),
+            window);
+
+        point.ShouldNotBeNull();
+        window.MouseMove(point.Value);
+        window.MouseDown(point.Value, MouseButton.Left);
+    }
+
+    private static Color? GetSolidBrushColor(IBrush? brush)
+    {
+        return brush is ISolidColorBrush solidColorBrush
+            ? solidColorBrush.Color
+            : null;
     }
 
     private static void DrainDispatcher()

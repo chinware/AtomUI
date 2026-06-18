@@ -91,9 +91,14 @@
 
                 <Style Selector="^[IsDarkStyle=True]">
                     <Setter Property="CornerRadius" Value="0" />
-                    <Style Selector="^[IsSelected=True], ^[IsInSelectedPath=True]">
-                        <Setter Property="Background"
-                                Value="{atom:NavMenuTokenResource DarkItemSelectedBg}" />
+                    <Style Selector="^[IsItemBackgroundEnabled=True]">
+                        <Style Selector="^[IsSelected=True], ^[IsInSelectedPath=True]">
+                            <Setter Property="Background"
+                                    Value="{atom:NavMenuTokenResource DarkItemSelectedBg}" />
+                        </Style>
+                    </Style>
+                    <Style Selector="^[IsItemBackgroundEnabled=False]">
+                        <Setter Property="Background" Value="Transparent" />
                     </Style>
                 </Style>
 

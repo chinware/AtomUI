@@ -17,6 +17,7 @@
                                                            HasSubMenu="{TemplateBinding HasSubMenu}"
                                                            IsSubMenuOpen="{TemplateBinding IsSubMenuOpen}"
                                                            IsDarkStyle="{TemplateBinding IsDarkStyle}"
+                                                           IsItemBackgroundEnabled="{TemplateBinding IsItemBackgroundEnabled}"
                                                            IsEnabled="{TemplateBinding IsEnabled}"
                                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                            IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
@@ -63,6 +64,7 @@
                                                          HasSubMenu="{TemplateBinding HasSubMenu}"
                                                          IsSubMenuOpen="{TemplateBinding IsSubMenuOpen}"
                                                          IsDarkStyle="{TemplateBinding IsDarkStyle}"
+                                                         IsItemBackgroundEnabled="{TemplateBinding IsItemBackgroundEnabled}"
                                                          IsEnabled="{TemplateBinding IsEnabled}"
                                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                          IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
@@ -108,6 +110,7 @@
                             HasSubMenu="{TemplateBinding HasSubMenu}"
                             IsSubMenuOpen="{TemplateBinding IsSubMenuOpen}"
                             IsDarkStyle="{TemplateBinding IsDarkStyle}"
+                            IsItemBackgroundEnabled="{TemplateBinding IsItemBackgroundEnabled}"
                             IsEnabled="{TemplateBinding IsEnabled}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
@@ -116,9 +119,11 @@
 
                         <atom:LayoutAwareMotionActor
                             Name="PART_ChildItemsLayoutTransform">
-                            <ItemsPresenter Name="ChildItemsPresenter"
-                                            Focusable="False"
-                                            ItemsPanel="{TemplateBinding ItemsPanel}" />
+                            <Border Name="PART_ChildItemsFrame">
+                                <ItemsPresenter Name="ChildItemsPresenter"
+                                                Focusable="False"
+                                                ItemsPanel="{TemplateBinding ItemsPanel}" />
+                            </Border>
                         </atom:LayoutAwareMotionActor>
                     </StackPanel>
                 </ControlTemplate>
@@ -134,7 +139,7 @@
 
             <Style Selector="^ /template/ Border#PART_PopupFrame">
                 <Setter Property="Background"
-                        Value="{atom:SharedTokenResource ColorBgElevated}" />
+                        Value="{atom:NavMenuTokenResource MenuPopupBg}" />
                 <Setter Property="CornerRadius"
                         Value="{atom:PopupHostTokenResource BorderRadius}" />
                 <Setter Property="MinWidth"
@@ -185,6 +190,26 @@
             <Style Selector="^ /template/ atom|LayoutAwareMotionActor#PART_ChildItemsLayoutTransform">
                 <Setter Property="Margin"
                         Value="{atom:NavMenuTokenResource VerticalChildItemsMargin}" />
+            </Style>
+
+            <Style Selector="^[IsItemBackgroundEnabled=True]">
+                <Style Selector="^ /template/ Border#PART_ChildItemsFrame">
+                    <Setter Property="Background"
+                            Value="{atom:NavMenuTokenResource SubMenuItemBg}" />
+                </Style>
+
+                <Style Selector="^[IsDarkStyle=True]">
+                    <Style Selector="^ /template/ Border#PART_ChildItemsFrame">
+                        <Setter Property="Background"
+                                Value="{atom:NavMenuTokenResource DarkSubMenuItemBg}" />
+                    </Style>
+                </Style>
+            </Style>
+
+            <Style Selector="^[IsItemBackgroundEnabled=False]">
+                <Style Selector="^ /template/ Border#PART_ChildItemsFrame">
+                    <Setter Property="Background" Value="Transparent" />
+                </Style>
             </Style>
         </Style>
 

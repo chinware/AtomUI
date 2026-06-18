@@ -54,6 +54,7 @@
         
         <Style Selector="^:is(atom|VerticalNavMenuItemHeader)">
             <Setter Property="Height" Value="{atom:NavMenuTokenResource ItemHeight}" />
+            <Setter Property="Margin" Value="{atom:NavMenuTokenResource ItemContentMargin}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

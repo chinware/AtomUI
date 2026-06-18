@@ -84,9 +84,7 @@
     </atom:Window.Resources>
     <Grid ColumnDefinitions="280,*"
           Background="{atom:SharedTokenResource ColorBgContainer}">
-        <Border Grid.Column="0"
-                BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
-                BorderThickness="0,0,1,0">
+        <Border Grid.Column="0">
             <Grid RowDefinitions="Auto,*,Auto">
                 <StackPanel Grid.Row="0"
                             Margin="24,28,24,24">
@@ -142,6 +140,13 @@
                                  PageTransition="{x:Null}"
                                  ClipToBounds="True" />
         </Border>
+
+        <Border Name="WorkspaceNavigationSeparator"
+                Grid.Column="1"
+                Width="1"
+                HorizontalAlignment="Left"
+                Background="{atom:SharedTokenResource ColorBorderSecondary}"
+                IsHitTestVisible="False" />
 
         <Border Name="TitleBarBottomSeparator"
                 Grid.ColumnSpan="2"
