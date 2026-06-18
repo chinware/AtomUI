@@ -1,5 +1,4 @@
 using AtomUI.Controls;
-using AtomUI.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -7,20 +6,16 @@ using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
+internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
 {
     private IDisposable? _inputManagerSubscription;
     private TopLevel? _root;
     private IDisposable? _currentOpenDelayRunDisposable;
     private IDisposable? _currentCloseDelayRunDisposable;
-    private bool _currentPressedIsValid;
-    private NavMenuItem? _latestClickedItem;
     private IDisposable? _deactivationSubscription;
-    private readonly NavMenuSelectionCoordinator _selectionCoordinator = new();
 
     public DefaultNavMenuInteractionHandler()
         : this(AvaloniaLocator.Current.GetService<IInputManager>(), DefaultDelayRun)
@@ -35,14 +30,9 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         DelayRun     = delayRun;
     }
 
-    public void Attach(NavMenu navMenu) => AttachCore(navMenu);
-    public void Detach(NavMenu navMenu) => DetachCore(navMenu);
-
     protected Func<Action, TimeSpan, IDisposable> DelayRun { get; }
 
     protected IInputManager? InputManager { get; }
-
-    internal INavMenu? Menu { get; private set; }
 
     public static TimeSpan MenuShowDelay { get; set; } = TimeSpan.FromMilliseconds(400);
 
@@ -98,49 +88,7 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    protected virtual void PointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        ResetPressState();
-
-        var sourceControl = e.Source as Control;
-        var menuItem      = GetMenuItemCore(sourceControl);
-        if (menuItem is null || !menuItem.ItemHeader.IsVisualAncestorOf(sourceControl)) 
-        {
-            return;
-        }
-        
-        _currentPressedIsValid = true;
-        _latestClickedItem     = menuItem;
-        if (sender is Visual visual &&
-            e.GetCurrentPoint(visual).Properties.IsLeftButtonPressed)
-        {
-            Select(menuItem);
-            e.Handled = true;
-        }
-    }
-    
-    protected virtual void PointerReleased(object? sender, PointerReleasedEventArgs e)
-    {
-        if (_latestClickedItem is null || !_currentPressedIsValid) 
-        {
-            return;
-        }
-
-        try
-        {
-            if (e.InitialPressMouseButton == MouseButton.Left)
-            {
-                Click(_latestClickedItem);
-                e.Handled = true;
-            }
-        }
-        finally
-        {
-            ResetPressState();
-        }
-    }
-
-    public void Select(NavMenuItem menuItem)
+    public override void Select(NavMenuItem menuItem)
     {
         if (menuItem.HasSubMenu)
         {
@@ -151,15 +99,10 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
         else
         {
-            _selectionCoordinator.Select(Menu, menuItem);
+            SelectionCoordinator.Select(Menu, menuItem);
         }
     }
 
-    public void ClearSelection()
-    {
-        _selectionCoordinator.ClearSelection();
-    }
-    
     protected virtual void RawInput(RawInputEventArgs e)
     {
         var mouse = e as RawPointerEventArgs;
@@ -250,21 +193,12 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         return false;
     }
 
-    internal void AttachCore(INavMenu navMenu)
+    protected override void OnAttached(INavMenu navMenu)
     {
-        if (Menu != null)
-        {
-            throw new NotSupportedException("DefaultMenuInteractionHandler is already attached.");
-        }
+        navMenu.AddHandler(NavMenuItem.PointerEnteredItemEvent, NotifyPointerEntered);
+        navMenu.AddHandler(NavMenuItem.PointerExitedItemEvent, NotifyPointerExited);
 
-        Menu                 =  navMenu;
-        Menu.PointerPressed  += PointerPressed;
-        Menu.PointerReleased += PointerReleased;
-
-        Menu.AddHandler(NavMenuItem.PointerEnteredItemEvent, NotifyPointerEntered);
-        Menu.AddHandler(NavMenuItem.PointerExitedItemEvent, NotifyPointerExited);
-
-        if (Menu is Visual visual)
+        if (navMenu is Visual visual)
         {
             _root = TopLevel.GetTopLevel(visual);
         }
@@ -284,18 +218,10 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         _inputManagerSubscription = InputManager?.Process.Subscribe(RawInput);
     }
 
-    internal void DetachCore(INavMenu navMenu)
+    protected override void OnDetached(INavMenu navMenu)
     {
-        if (Menu != navMenu)
-        {
-            throw new NotSupportedException("DefaultMenuInteractionHandler is not attached to the navMenu.");
-        }
-
-        Menu.PointerPressed  -= PointerPressed;
-        Menu.PointerReleased -= PointerReleased;
-       
-        Menu.RemoveHandler(NavMenuItem.PointerEnteredItemEvent, NotifyPointerEntered);
-        Menu.RemoveHandler(NavMenuItem.PointerExitedItemEvent, NotifyPointerExited);
+        navMenu.RemoveHandler(NavMenuItem.PointerEnteredItemEvent, NotifyPointerEntered);
+        navMenu.RemoveHandler(NavMenuItem.PointerExitedItemEvent, NotifyPointerExited);
 
         if (_root is InputElement inputRoot)
         {
@@ -313,20 +239,15 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         _inputManagerSubscription = null;
 
         DisposePendingDelayRuns();
-        ResetPressState();
-
-        Menu                = null;
-        _root               = null;
+        _root                      = null;
         _deactivationSubscription = null;
-        _selectionCoordinator.Reset();
     }
     
-    internal void Click(INavMenuItem item)
+    protected override void Click(INavMenuItem item)
     {
-        (item as IClickableControl)?.RaiseClick();
-        if (Menu is NavMenu navMenu) 
+        base.Click(item);
+        if (Menu is NavMenu)
         {
-            navMenu.RaiseNavMenuItemClick(item);
             if (!item.HasSubMenu && !item.StaysOpenOnClick)
             {
                 var topLevelItem = FindTopLevelMenuItem(item);
@@ -335,21 +256,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
         }
     }
 
-    private static INavMenuItem? FindTopLevelMenuItem(INavMenuItem item)
-    {
-        if (item.IsTopLevel)
-        {
-            return item;
-        }
-
-        var current = item;
-        while (current != null && !current.IsTopLevel)
-        {
-            current = current.Parent as INavMenuItem;
-        }
-        return current;
-    }
-    
     internal void OpenWithDelay(INavMenuItem item)
     {
         void Execute()
@@ -381,28 +287,6 @@ internal class DefaultNavMenuInteractionHandler : INavMenuInteractionHandler
     {
         _currentCloseDelayRunDisposable?.Dispose();
         _currentCloseDelayRunDisposable = null;
-    }
-
-    private void ResetPressState()
-    {
-        _currentPressedIsValid = false;
-        _latestClickedItem     = null;
-    }
-
-    internal static NavMenuItem? GetMenuItemCore(StyledElement? item)
-    {
-        NavMenuItem? target  = null;
-        var           current = item;
-        while (current != null)
-        {
-            if (current is NavMenuItem menuItem)
-            {
-                target = menuItem;
-                break;
-            }
-            current = current.Parent;
-        }
-        return target;
     }
 
     private void TopLevelLostPlatformFocus()

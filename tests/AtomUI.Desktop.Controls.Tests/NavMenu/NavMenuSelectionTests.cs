@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Threading;
+using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;
@@ -62,6 +63,128 @@ public class NavMenuSelectionTests
 
             selectedNodes.ShouldBe([second]);
             menu.SelectedItem.ShouldBeSameAs(second);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Theory]
+    [InlineData(NavMenuMode.Horizontal)]
+    [InlineData(NavMenuMode.Vertical)]
+    [InlineData(NavMenuMode.Inline)]
+    public void DefaultSelectedPath_Selects_Nested_Item_Without_Waiting_For_Timer(NavMenuMode mode)
+    {
+        var leaf = new NavMenuNode
+        {
+            Header  = "Leaf",
+            ItemKey = "leaf"
+        };
+        var child = new NavMenuNode
+        {
+            Header  = "Child",
+            ItemKey = "child"
+        };
+        child.Children.Add(leaf);
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Children.Add(child);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode                = mode,
+            IsMotionEnabled     = false,
+            DefaultSelectedPath = new TreeNodePath("parent/child/leaf")
+        };
+        menu.Items.Add(parent);
+
+        var selectedNodes = new List<INavMenuNode>();
+        menu.NavMenuNodeSelected += (_, args) => selectedNodes.Add(args.NavMenuNode);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = mode == NavMenuMode.Inline ? menu : CreatePopupOverlayHost(menu)
+        };
+
+        try
+        {
+            window.Show();
+            RunDispatcherJobsUntil(() => ReferenceEquals(menu.SelectedItem, leaf));
+
+            menu.SelectedItem.ShouldBeSameAs(leaf);
+            selectedNodes.ShouldBe([leaf]);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Theory]
+    [InlineData(NavMenuMode.Horizontal)]
+    [InlineData(NavMenuMode.Vertical)]
+    [InlineData(NavMenuMode.Inline)]
+    public void DefaultOpenPaths_Opens_Nested_Submenu_Without_Waiting_For_Timer(NavMenuMode mode)
+    {
+        var leaf = new NavMenuNode
+        {
+            Header  = "Leaf",
+            ItemKey = "leaf"
+        };
+        var child = new NavMenuNode
+        {
+            Header  = "Child",
+            ItemKey = "child"
+        };
+        child.Children.Add(leaf);
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Children.Add(child);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = mode,
+            IsMotionEnabled = false,
+            DefaultOpenPaths =
+            [
+                new TreeNodePath("parent/child")
+            ]
+        };
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = mode == NavMenuMode.Inline ? menu : CreatePopupOverlayHost(menu)
+        };
+
+        try
+        {
+            window.Show();
+            RunDispatcherJobsUntil(() =>
+            {
+                var parentContainer = menu.ContainerFromItem(parent) as NavMenuItem;
+                var childContainer  = parentContainer?.ContainerFromItem(child) as NavMenuItem;
+                return parentContainer?.IsSubMenuOpen == true &&
+                       childContainer?.IsSubMenuOpen == true;
+            });
+
+            var realizedParent = menu.ContainerFromItem(parent) as NavMenuItem;
+            var realizedChild  = realizedParent?.ContainerFromItem(child) as NavMenuItem;
+            realizedParent.ShouldNotBeNull();
+            realizedChild.ShouldNotBeNull();
+            realizedParent.IsSubMenuOpen.ShouldBeTrue();
+            realizedChild.IsSubMenuOpen.ShouldBeTrue();
         }
         finally
         {
@@ -739,5 +862,34 @@ public class NavMenuSelectionTests
         Dispatcher.UIThread.RunJobs();
         Thread.Sleep(20);
         Dispatcher.UIThread.RunJobs();
+    }
+
+    private static void RunDispatcherJobsUntil(Func<bool> condition, int maxPasses = 128)
+    {
+        for (var i = 0; i < maxPasses && !condition(); i++)
+        {
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    private static Avalonia.Controls.Primitives.VisualLayerManager CreatePopupOverlayHost(Control content)
+    {
+        var visualLayerManager = new Avalonia.Controls.Primitives.VisualLayerManager
+        {
+            Child = content
+        };
+
+        EnablePopupOverlayLayer(visualLayerManager);
+        return visualLayerManager;
+    }
+
+    private static void EnablePopupOverlayLayer(Avalonia.Controls.Primitives.VisualLayerManager visualLayerManager)
+    {
+        var property = typeof(Avalonia.Controls.Primitives.VisualLayerManager).GetProperty(
+            "EnablePopupOverlayLayer",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        property.ShouldNotBeNull();
+        property.SetValue(visualLayerManager, true);
     }
 }

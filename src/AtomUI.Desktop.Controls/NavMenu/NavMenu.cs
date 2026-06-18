@@ -10,12 +10,14 @@ using Avalonia.Automation;
 using Avalonia.Automation.Peers;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
+using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -173,7 +175,7 @@ public class NavMenu : ItemsControl,
     
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new StackPanel { Orientation = Orientation.Vertical });
-    
+
     private bool _defaultOpenPathsApplied;
     private int _motionContextLevel;
     private bool _originIsMotionEnabled;
@@ -310,35 +312,13 @@ public class NavMenu : ItemsControl,
         {
             menuItem.OwnerMenu = this;
             var nodeBindingDisposables = menuItem.ResetNodeBindingDisposables();
+            NavMenuItemContainerBinder.BindNode(menuItem, item, this, nodeBindingDisposables);
 
+            if (!NavMenuItemContainerBinder.TryBindNodeHeaderTemplate(menuItem, item, nodeBindingDisposables) &&
+                ItemTemplate != null)
             {
-                if (item is INavMenuNode menuNode)
-                {
-                    if (menuNode is NavMenuNode navMenuNode)
-                    {
-                        nodeBindingDisposables.Add(navMenuNode.AttachResourceHost(this));
-                    }
-
-                    menuItem.SetCurrentValue(NavMenuItem.HeaderProperty, menuNode);
-                    nodeBindingDisposables.Add(BindUtils.RelayBind(menuNode, nameof(INavMenuNode.Icon),
-                        node => node.Icon, menuItem, NavMenuItem.IconProperty));
-                    nodeBindingDisposables.Add(BindUtils.RelayBind(menuNode, nameof(INavMenuNode.IsEnabled),
-                        node => node.IsEnabled, menuItem, NavMenuItem.IsEnabledProperty));
-                    menuItem.ItemKey = menuNode.ItemKey;
-                }
-            }
-
-            {
-                if (item is INavMenuNode menuNode && menuNode.HeaderTemplate != null)
-                {
-                    nodeBindingDisposables.Add(BindUtils.RelayBind(menuNode, nameof(INavMenuNode.HeaderTemplate),
-                        node => node.HeaderTemplate, menuItem, NavMenuItem.HeaderTemplateProperty));
-                }
-                else if (ItemTemplate != null)
-                {
-                    nodeBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem,
-                        NavMenuItem.HeaderTemplateProperty));
-                }
+                nodeBindingDisposables.Add(BindUtils.RelayBind(this, ItemTemplateProperty, menuItem,
+                    NavMenuItem.HeaderTemplateProperty));
             }
             
             menuItem[!NavMenuItem.ModeProperty]                  = this[!ModeProperty];
@@ -430,14 +410,9 @@ public class NavMenu : ItemsControl,
     {
         if (DefaultOpenPaths != null && !_defaultOpenPathsApplied)
         {
-            Dispatcher.InvokeAsync(async () =>
-            {
-                foreach (var defaultOpenPath in DefaultOpenPaths)
-                {
-                    await TraverNavMenuPathAsync(defaultOpenPath);
-                }
-                _defaultOpenPathsApplied = true;
-            });
+            Dispatcher.InvokeAsync(
+                () => ReplayDefaultOpenPaths(DefaultOpenPaths, GetMaxPathReplayPassCount(DefaultOpenPaths)),
+                DispatcherPriority.Loaded);
         }
     }
     
@@ -450,13 +425,9 @@ public class NavMenu : ItemsControl,
         }
         else if (DefaultSelectedPath != null)
         {
-            Dispatcher.InvokeAsync(async () => await TraverNavMenuPathAsync(DefaultSelectedPath, (menuItem, i) =>
-            {
-                if (i == DefaultSelectedPath.Length - 1)
-                {
-                    InteractionHandler?.Select(menuItem);
-                }
-            }));
+            Dispatcher.InvokeAsync(
+                () => ReplayDefaultSelectedPath(DefaultSelectedPath, DefaultSelectedPath.Length + 1),
+                DispatcherPriority.Loaded);
         }
     }
 
@@ -465,18 +436,93 @@ public class NavMenu : ItemsControl,
         var selectPathNodes = CollectPathNodes(node);
         if (selectPathNodes.Count > 0)
         {
-            Dispatcher.InvokeAsync(async () => await TraverNavMenuPathAsync(selectPathNodes, (menuItem, i) =>
-            {
-                if (i == selectPathNodes.Count - 1)
-                {
-                    if (selectedItemRevision == _selectedItemRevision &&
-                        ReferenceEquals(SelectedItem, node))
-                    {
-                        InteractionHandler?.Select(menuItem);
-                    }
-                }
-            }));
+            Dispatcher.InvokeAsync(
+                () => ReplaySelectedNodePath(node, selectPathNodes, selectedItemRevision, selectPathNodes.Count + 1),
+                DispatcherPriority.Loaded);
         }
+    }
+
+    private static int GetMaxPathReplayPassCount(IList<TreeNodePath> paths)
+    {
+        var maxLength = 0;
+        foreach (var path in paths)
+        {
+            maxLength = Math.Max(maxLength, path.Length);
+        }
+
+        return maxLength + 1;
+    }
+
+    private void ReplayDefaultOpenPaths(IList<TreeNodePath> paths, int remainingPasses)
+    {
+        var allApplied = true;
+        foreach (var path in paths)
+        {
+            if (TraverseNavMenuPath(path) is null)
+            {
+                allApplied = false;
+            }
+        }
+
+        if (allApplied || remainingPasses <= 0)
+        {
+            _defaultOpenPathsApplied = true;
+            return;
+        }
+
+        Dispatcher.InvokeAsync(
+            () => ReplayDefaultOpenPaths(paths, remainingPasses - 1),
+            DispatcherPriority.Loaded);
+    }
+
+    private void ReplayDefaultSelectedPath(TreeNodePath path, int remainingPasses)
+    {
+        var pathItems = TraverseNavMenuPath(path, (menuItem, i) =>
+        {
+            if (i == path.Length - 1)
+            {
+                InteractionHandler?.Select(menuItem);
+            }
+        });
+
+        if (pathItems != null || remainingPasses <= 0)
+        {
+            return;
+        }
+
+        Dispatcher.InvokeAsync(() => ReplayDefaultSelectedPath(path, remainingPasses - 1),
+            DispatcherPriority.Loaded);
+    }
+
+    private void ReplaySelectedNodePath(
+        INavMenuNode node,
+        IReadOnlyList<INavMenuNode> pathNodes,
+        int selectedItemRevision,
+        int remainingPasses)
+    {
+        if (selectedItemRevision != _selectedItemRevision ||
+            !ReferenceEquals(SelectedItem, node))
+        {
+            return;
+        }
+
+        var pathItems = TraverseNavMenuPath(pathNodes, (menuItem, i) =>
+        {
+            if (i == pathNodes.Count - 1 &&
+                selectedItemRevision == _selectedItemRevision &&
+                ReferenceEquals(SelectedItem, node))
+            {
+                InteractionHandler?.Select(menuItem);
+            }
+        });
+
+        if (pathItems != null || remainingPasses <= 0)
+        {
+            return;
+        }
+
+        Dispatcher.InvokeAsync(() => ReplaySelectedNodePath(node, pathNodes, selectedItemRevision,
+            remainingPasses - 1), DispatcherPriority.Loaded);
     }
 
     private bool IsSelectedNodeAlreadyApplied(INavMenuNode node)
@@ -590,18 +636,42 @@ public class NavMenu : ItemsControl,
         }
     }
     
-    private async Task<List<NavMenuItem>?> TraverNavMenuPathAsync(TreeNodePath treeNodePath, Action<NavMenuItem, int>? action = null)
+    private List<NavMenuItem>? TraverseNavMenuPath(TreeNodePath treeNodePath, Action<NavMenuItem, int>? action = null)
     {
         if (treeNodePath.Length == 0)
         {
             return null;
         }
+
+        return TraverseNavMenuPath(
+            treeNodePath.Segments,
+            (_, menuItem, segment) => menuItem.ItemKey != null && menuItem.ItemKey.Value == segment,
+            action);
+    }
+    
+    private List<NavMenuItem>? TraverseNavMenuPath(IReadOnlyList<INavMenuNode> pathNodes, Action<NavMenuItem, int>? action = null)
+    {
+        if (pathNodes.Count == 0)
+        {
+            return null;
+        }
+
+        return TraverseNavMenuPath(
+            pathNodes,
+            (node, _, currentNode) => ReferenceEquals(node, currentNode),
+            action);
+    }
+
+    private List<NavMenuItem>? TraverseNavMenuPath<TSegment>(
+        IReadOnlyList<TSegment> segments,
+        Func<INavMenuNode, NavMenuItem, TSegment, bool> isTargetSegment,
+        Action<NavMenuItem, int>? action = null)
+    {
         try
         {
             EnterDisableMotionRegion();
-            var          segments     = treeNodePath.Segments;
             IList        items        = Items;
-            var          pathNodes    = new List<NavMenuItem>(segments.Count);
+            var          pathItems    = new List<NavMenuItem>(segments.Count);
             NavMenuItem? previousItem = null;
             for (int i = 0; i < segments.Count; i++)
             {
@@ -609,74 +679,31 @@ public class NavMenu : ItemsControl,
                 bool childFound = false;
                 for (var j = 0; j < items.Count; j++)
                 {
-                    if (items[j] is INavMenuNode item)
-                    {
-                        var navMenuItem = await (previousItem != null 
-                            ? GetNavMenuItemContainerAsync(item, previousItem) 
-                            : GetNavMenuItemContainerAsync(item, this));
-                        if (navMenuItem == null)
-                        {
-                            return null;
-                        }
-
-                        if (navMenuItem.ItemKey != null && navMenuItem.ItemKey.Value == segment)
-                        {
-                            navMenuItem.SetCurrentValue(NavMenuItem.IsSubMenuOpenProperty, true);
-                            items      = navMenuItem.Items;
-                            childFound = true;
-                            pathNodes.Add(navMenuItem);
-                            action?.Invoke(navMenuItem, i);
-                            previousItem = navMenuItem;
-                            break;
-                        }
-                    }
-                }
-
-                if (!childFound)
-                {
-                    return null;
-                }
-            }
-
-            return pathNodes;
-        }
-        finally
-        {
-            ExitDisableMotionRegion();
-        }
-    }
-    
-    private async Task<List<NavMenuItem>?> TraverNavMenuPathAsync(List<INavMenuNode> pathNodes, Action<NavMenuItem, int>? action = null)
-    {
-        if (pathNodes.Count == 0)
-        {
-            return null;
-        }
-        try
-        {
-            EnterDisableMotionRegion();
-            IList        items        = Items;
-            var          pathItems    = new List<NavMenuItem>(pathNodes.Count);
-            NavMenuItem? previousItem = null;
-            for (int i = 0; i < pathNodes.Count; i++)
-            {
-                var  currentNode = pathNodes[i];
-                bool childFound  = false;
-                for (var j = 0; j < items.Count; j++)
-                {
                     if (items[j] is INavMenuNode node)
                     {
-                        var navMenuItem = await (previousItem != null 
-                            ? GetNavMenuItemContainerAsync(node, previousItem) 
-                            : GetNavMenuItemContainerAsync(node, this));
+                        var navMenuItem = previousItem != null
+                            ? GetNavMenuItemContainer(node, previousItem)
+                            : GetNavMenuItemContainer(node, this);
                         if (navMenuItem == null)
                         {
                             return null;
                         }
 
-                        if (node == currentNode)
+                        if (isTargetSegment(node, navMenuItem, segment))
                         {
-                            navMenuItem.SetCurrentValue(NavMenuItem.IsSubMenuOpenProperty, true);
+                            var requiresChildContainer = i < segments.Count - 1;
+                            if (requiresChildContainer || HasNodeChildren(node))
+                            {
+                                if (!OpenPathSubmenu(navMenuItem, requiresChildContainer))
+                                {
+                                    return null;
+                                }
+                            }
+                            else
+                            {
+                                navMenuItem.SetCurrentValue(NavMenuItem.IsSubMenuOpenProperty, true);
+                            }
+
                             items      = navMenuItem.Items;
                             childFound = true;
                             pathItems.Add(navMenuItem);
@@ -774,37 +801,98 @@ public class NavMenu : ItemsControl,
         return count;
     }
     
-    private async Task<NavMenuItem?> GetNavMenuItemContainerAsync(INavMenuNode childNode, ItemsControl current)
+    private NavMenuItem? GetNavMenuItemContainer(INavMenuNode childNode, ItemsControl current)
     {
-        var          cycleCount = 10;
-        NavMenuItem? target     = null;
-        target = current.ContainerFromItem(childNode) as NavMenuItem;
+        var target = current.ContainerFromItem(childNode) as NavMenuItem;
         if (target != null)
         {
             return target;
         }
-        if (current.Presenter?.Panel == null)
+
+        ExecutePendingContainerLayout(current);
+        return current.ContainerFromItem(childNode) as NavMenuItem;
+    }
+
+    private void ExecutePendingContainerLayout(ItemsControl current)
+    {
+        current.ApplyTemplate();
+
+        if (current.Presenter is { Panel: null } presenter)
         {
-            var topLevel = TopLevel.GetTopLevel(this);
-            if (topLevel != null)
+            presenter.ApplyTemplate();
+            if (current.Presenter?.Panel != null)
             {
-                topLevel.InvalidateArrange();
-                topLevel.InvalidateMeasure();
+                return;
             }
         }
-        while (cycleCount > 0)
+
+        if (current is NavMenuItem { Popup.Child: ILogical popupContent })
         {
-            target = current.ContainerFromItem(childNode) as NavMenuItem;
-            if (target == null)
+            foreach (var descendant in popupContent.GetSelfAndLogicalDescendants())
             {
-                await Task.Delay(TimeSpan.FromMilliseconds(50));
+                if (descendant is ItemsPresenter popupPresenter &&
+                    ReferenceEquals(popupPresenter.TemplatedParent, current))
+                {
+                    popupPresenter.ApplyTemplate();
+                    if (current.Presenter?.Panel != null)
+                    {
+                        return;
+                    }
+                }
             }
-            else
-            {
-                break;
-            }
-            --cycleCount;
         }
-        return target;
+
+        if (current is NavMenuItem { Popup: { IsOpen: true, Child: { } popupChild } })
+        {
+            popupChild.UpdateLayout();
+            if (current.Presenter?.Panel != null)
+            {
+                return;
+            }
+        }
+
+        var topLevel = TopLevel.GetTopLevel(current);
+        topLevel?.GetLayoutManager()?.ExecuteLayoutPass();
+    }
+
+    private static bool HasNodeChildren(INavMenuNode node)
+    {
+        foreach (var _ in node.Children)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool OpenPathSubmenu(NavMenuItem menuItem, bool requiresChildContainer)
+    {
+        if (menuItem.Mode != NavMenuMode.Inline &&
+            !CanOpenPopup(menuItem))
+        {
+            return false;
+        }
+
+        var wasOpen = menuItem.IsSubMenuOpen;
+        menuItem.SetCurrentValue(NavMenuItem.IsSubMenuOpenProperty, true);
+        ExecutePendingContainerLayout(menuItem);
+        if (menuItem.Mode == NavMenuMode.Inline &&
+            !wasOpen)
+        {
+            return false;
+        }
+
+        return !requiresChildContainer || menuItem.Presenter?.Panel != null;
+    }
+
+    private static bool CanOpenPopup(NavMenuItem menuItem)
+    {
+        if (!menuItem.ShouldUseOverlayPopup &&
+            RuntimePlatform.Features.SupportsNativeWindow)
+        {
+            return true;
+        }
+
+        return menuItem.GetPopupOverlayLayer() is not null;
     }
 }
