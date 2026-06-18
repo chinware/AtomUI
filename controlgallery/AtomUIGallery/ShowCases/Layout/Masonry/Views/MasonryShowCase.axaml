@@ -211,6 +211,31 @@
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
+
+                    <!-- Image: mirrors the Ant Design image demo with natural image heights. -->
+                    <gallery:ShowCaseItem
+                        Title="{gallery:MasonryShowCaseLangResource ImageTitle}"
+                        Description="{gallery:MasonryShowCaseLangResource ImageDescription}"
+                        IsDeferredContentEnabled="True"
+                        IsOccupyEntireRow="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:MasonryViewModel">
+                                <atom:Masonry ItemsSource="{Binding ImageItems}"
+                                              ColumnCount="4"
+                                              ColumnGap="16"
+                                              RowGap="16"
+                                              HorizontalAlignment="Stretch">
+                                    <atom:Masonry.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:MasonryImageItem">
+                                            <Image asyncImageLoader:ImageLoader.Source="{Binding ImageSource}"
+                                                   Stretch="Uniform"
+                                                   HorizontalAlignment="Stretch" />
+                                        </DataTemplate>
+                                    </atom:Masonry.ItemTemplate>
+                                </atom:Masonry>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>
         </gallery:GalleryStickyTabsHost>

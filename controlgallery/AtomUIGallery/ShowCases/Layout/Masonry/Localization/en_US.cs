@@ -45,6 +45,8 @@ internal partial class en_US : LanguageProvider
     public const string BasicDescription = "Basic usage. Set the number of columns with ColumnCount and the spacing with ColumnGap and RowGap.";
     public const string ResponsiveTitle = "Responsive";
     public const string ResponsiveDescription = "Use responsive values to adapt to different screen widths. ColumnInfo controls the column count at each breakpoint, and Gutter controls the spacing.";
+    public const string ImageTitle = "Image";
+    public const string ImageDescription = "Positions are adjusted dynamically as images load.";
 
     protected override Type GetResourceKindType() => typeof(MasonryShowCaseLangResourceKind);
 }

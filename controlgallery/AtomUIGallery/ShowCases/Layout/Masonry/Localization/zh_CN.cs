@@ -45,6 +45,8 @@ internal partial class zh_CN : LanguageProvider
     public const string BasicDescription = "基础用法展示。通过 ColumnCount 设置列数，ColumnGap 和 RowGap 设置间距。";
     public const string ResponsiveTitle = "响应式";
     public const string ResponsiveDescription = "使用响应式参数来适配不同屏幕宽度。ColumnInfo 可以设置在不同断点下的列数，Gutter 可以设置不同断点下的间距大小。";
+    public const string ImageTitle = "图片";
+    public const string ImageDescription = "随加载动态调整位置。";
 
     protected override Type GetResourceKindType() => typeof(MasonryShowCaseLangResourceKind);
 }

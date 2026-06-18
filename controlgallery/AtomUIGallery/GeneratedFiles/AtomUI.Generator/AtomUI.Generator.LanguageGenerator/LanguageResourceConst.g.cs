@@ -3596,6 +3596,8 @@ namespace AtomUIGallery.Localization
         BasicTitle,
         ComponentCategory,
         ComponentStatusStable,
+        ImageDescription,
+        ImageTitle,
         InfoBaseClassLabel,
         InfoNamespaceLabel,
         InfoPackageLabel,
