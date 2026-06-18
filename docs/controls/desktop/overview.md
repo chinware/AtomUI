@@ -12,6 +12,7 @@ docs/controls/desktop/
 ├── data-entry/     # LineEdit、Select、TreeSelect、DatePicker、ColorPicker、Upload、Form 等
 ├── data-display/   # List、TreeView、DataGrid、Card、Descriptions 等
 ├── feedback/       # Dialog、Message、Notification、Tooltip、PopupConfirm、Spin 等
+├── other/          # App、ConfigProvider、Util、BorderBeam 等
 └── window/         # Window、WindowTitleBar、ImagePreviewer 等
 ```
 

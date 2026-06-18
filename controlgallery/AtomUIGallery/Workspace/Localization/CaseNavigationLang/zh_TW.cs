@@ -96,5 +96,8 @@ internal partial class zh_TW : LanguageProvider
     public const string Feedback_Spin = "Spin 加載提示";
     public const string Feedback_Watermark = "Watermark 水印";
 
+    public const string Other = "其他";
+    public const string Other_BorderBeam = "BorderBeam 流光邊框";
+
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }

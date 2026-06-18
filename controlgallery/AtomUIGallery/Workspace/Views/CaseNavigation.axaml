@@ -189,6 +189,12 @@
                 <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Feedback_Watermark}"
                                   ItemKey="{x:Static viewmodels:WatermarkViewModel.ID}" />
             </atom:NavMenuNode>
+
+            <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Other}"
+                              Icon="{antdicons:AntDesignIconProvider Kind=BlockOutlined}">
+                <atom:NavMenuNode Header="{gallery:CaseNavigationLangResource Other_BorderBeam}"
+                                  ItemKey="{x:Static viewmodels:BorderBeamViewModel.ID}" />
+            </atom:NavMenuNode>
         </atom:NavMenuNode>
     </atom:NavMenu>
 </UserControl>

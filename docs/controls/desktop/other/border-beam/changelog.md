@@ -1,0 +1,22 @@
+# BorderBeam Changelog
+
+本文档记录 BorderBeam 控件级设计、API、主题契约、Token 和实现结构的变化。
+它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
+
+## 2026-06-18
+
+- Docs
+  - 新增 BorderBeam 桌面版架构设计文档。
+  - 新增 BorderBeam Token 设计文档。
+  - 将 BorderBeam 归入桌面控件 `Other` 分类，并在 Gallery 中使用 `Other` 顶层分类承载。
+- API
+  - 确立 `BorderBeam` 独立包装控件模型。
+  - 确立 `IBorderBeamAwareControl` 与 `BorderBeamGeometry` 作为被装饰控件边界感知契约。
+  - 确立 `ColorStops` 使用 `DirectProperty` 暴露实例级可变集合，避免共享默认集合。
+- Theme
+  - 确立 `PART_ContentPresenter` 与 `PART_BeamPresenter` 的模板结构。
+  - 确立 BorderBeam 默认不使用全局 AdornerLayer，不修改被装饰控件模板。
+  - 落地 `BorderBeamTheme.axaml`，将默认颜色、边框、圆角和动效参数映射到 SharedToken 与 BorderBeamToken。
+- Token
+  - 确立 BorderBeamToken 只承载 beam 自有尺寸、透明度、动效时长和渐变映射参数。
+  - 确立颜色、线宽、圆角和 motion 开关优先复用 SharedToken。

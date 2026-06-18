@@ -364,6 +364,64 @@ namespace AtomUIGallery.Localization
 
 namespace AtomUIGallery.Localization
 {
+    public enum BorderBeamShowCaseLangResourceKind
+    {
+        ApiColumnDefault,
+        ApiColumnDescription,
+        ApiColumnProperty,
+        ApiColumnType,
+        ApiPropertyBeamSize,
+        ApiPropertyBorderThickness,
+        ApiPropertyColor,
+        ApiPropertyColorStops,
+        ApiPropertyCornerRadius,
+        ApiPropertyDuration,
+        ApiPropertyIsMotionEnabled,
+        ApiPropertyOutset,
+        BasicDescription,
+        BasicTitle,
+        ComponentCategory,
+        ComponentStatusPreview,
+        CustomizedColorCardDescription,
+        CustomizedColorDescription,
+        CustomizedColorTitle,
+        InfoBaseClassLabel,
+        InfoNamespaceLabel,
+        InfoPackageLabel,
+        NonUniformRadiusCardDescription,
+        NonUniformRadiusDescription,
+        NonUniformRadiusTitle,
+        PageDescription,
+        PageSubtitle,
+        ScenarioApi,
+        ScenarioDesignToken,
+        ScenarioExamples,
+        TokenColumnDescription,
+        TokenColumnScope,
+        TokenColumnStatus,
+        TokenColumnToken,
+        TokenNameBeamOpacity,
+        TokenNameBeamSize,
+        TokenNameMaxVisibleStopPercent,
+        TokenNameMotionDuration,
+        TokenScopeComponent,
+        TokenStatusStable
+    }
+
+    public class BorderBeamShowCaseLangResourceExtension : LanguageResourceExtension<BorderBeamShowCaseLangResourceKind>
+    {
+        public BorderBeamShowCaseLangResourceExtension()
+        {
+        }
+
+        public BorderBeamShowCaseLangResourceExtension(BorderBeamShowCaseLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.Localization
+{
     public enum BreadcrumbShowCaseLangResourceKind
     {
         ApiColumnDefault,
@@ -1127,6 +1185,8 @@ namespace AtomUIGallery.Localization
         Navigation_Steps,
         Navigation_TabControl,
         Navigation_TabStrip,
+        Other,
+        Other_BorderBeam,
         Overview
     }
 

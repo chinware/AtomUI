@@ -68,6 +68,7 @@ public static class ThemeManagerBuilderExtensions
             new ControlTokenRegistration(typeof(AutoCompleteToken)),
             new ControlTokenRegistration(typeof(AvatarToken)),
             new ControlTokenRegistration(typeof(BadgeToken)),
+            new ControlTokenRegistration(typeof(BorderBeamToken)),
             new ControlTokenRegistration(typeof(BreadcrumbToken)),
             new ControlTokenRegistration(typeof(ButtonSpinnerToken)),
             new ControlTokenRegistration(typeof(ButtonToken)),

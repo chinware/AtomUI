@@ -100,6 +100,14 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         TextFontWeight
     }
 
+    public enum BorderBeamTokenKind
+    {
+        BeamOpacity,
+        BeamSize,
+        MaxVisibleStopPercent,
+        MotionDuration
+    }
+
     public enum BreadcrumbTokenKind
     {
         BreadcrumbItemContentPadding,
@@ -1359,6 +1367,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public BadgeTokenResourceExtension(BadgeTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class BorderBeamTokenResourceExtension : TokenResourceExtension<BorderBeamTokenKind>
+    {
+        public BorderBeamTokenResourceExtension()
+        {
+        }
+
+        public BorderBeamTokenResourceExtension(BorderBeamTokenKind kind) : base(kind)
         {
         }
     }

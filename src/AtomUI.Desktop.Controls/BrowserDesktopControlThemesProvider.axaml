@@ -8,6 +8,7 @@
         <ResourceInclude Source="AutoComplete/Themes/AutoCompleteThemes.axaml" />
         <ResourceInclude Source="Avatar/Themes/AvatarThemes.axaml" />
         <ResourceInclude Source="Badge/Themes/BadgeThemes.axaml" />
+        <ResourceInclude Source="BorderBeam/Themes/BorderBeamTheme.axaml" />
         <ResourceInclude Source="Breadcrumb/Themes/BreadcrumbThemes.axaml" />
         <ResourceInclude Source="Calendar/Themes/CalendarThemes.axaml" />
         <ResourceInclude Source="Card/Themes/CardThemes.axaml" />

@@ -130,6 +130,39 @@ namespace AtomUIGallery.ShowCases.Badge
     }
 }
 
+namespace AtomUIGallery.ShowCases.BorderBeam
+{
+    internal partial class en_US
+    {
+        public en_US()
+            : base(global::AtomUI.Theme.Language.LanguageCode.en_US, "BorderBeamShowCase")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.BorderBeam
+{
+    internal partial class zh_CN
+    {
+        public zh_CN()
+            : base(global::AtomUI.Theme.Language.LanguageCode.zh_CN, "BorderBeamShowCase")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.BorderBeam
+{
+    internal partial class zh_TW
+    {
+        public zh_TW()
+            : base(global::AtomUI.Theme.Language.LanguageCode.zh_TW, "BorderBeamShowCase")
+        {
+        }
+    }
+}
+
 namespace AtomUIGallery.ShowCases.Breadcrumb
 {
     internal partial class en_US
