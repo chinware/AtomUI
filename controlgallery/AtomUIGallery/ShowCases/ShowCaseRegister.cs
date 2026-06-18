@@ -2,6 +2,7 @@ using AtomUIGallery.ShowCases.Alert;
 using AtomUIGallery.ShowCases.AutoComplete;
 using AtomUIGallery.ShowCases.Avatar;
 using AtomUIGallery.ShowCases.Badge;
+using AtomUIGallery.ShowCases.BorderBeam;
 using AtomUIGallery.ShowCases.Breadcrumb;
 using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.ButtonSpinner;
@@ -124,6 +125,7 @@ public sealed class ShowCaseViewModule : IViewModule
         locator.Map<GroupBoxViewModel, GroupBoxShowCase>(() => new GroupBoxShowCase());
         locator.Map<ResultViewModel, ResultShowCase>(() => new ResultShowCase());
         locator.Map<BadgeViewModel, BadgeShowCase>(() => new BadgeShowCase());
+        locator.Map<BorderBeamViewModel, BorderBeamShowCase>(() => new BorderBeamShowCase());
         locator.Map<StatisticViewModel, StatisticShowCase>(() => new StatisticShowCase());
         locator.Map<TimelineViewModel, TimelineShowCase>(() => new TimelineShowCase());
         locator.Map<QRCodeViewModel, QRCodeShowCase>(() => new QRCodeShowCase());

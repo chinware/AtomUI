@@ -1,12 +1,11 @@
 using System.Reactive;
-using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using AtomUIGallery.Controls;
 using AtomUIGallery.ShowCases.Alert;
 using AtomUIGallery.ShowCases.AutoComplete;
 using AtomUIGallery.ShowCases.Avatar;
 using AtomUIGallery.ShowCases.Badge;
+using AtomUIGallery.ShowCases.BorderBeam;
 using AtomUIGallery.ShowCases.Breadcrumb;
 using AtomUIGallery.ShowCases.Button;
 using AtomUIGallery.ShowCases.ButtonSpinner;
@@ -170,6 +169,7 @@ public class CaseNavigationViewModel : ReactiveObject, IActivatableViewModel
         _showCaseViewModelFactories.Add(GroupBoxViewModel.ID, () => new GroupBoxViewModel(HostScreen));
         _showCaseViewModelFactories.Add(ResultViewModel.ID, () => new ResultViewModel(HostScreen));
         _showCaseViewModelFactories.Add(BadgeViewModel.ID, () => new BadgeViewModel(HostScreen));
+        _showCaseViewModelFactories.Add(BorderBeamViewModel.ID, () => new BorderBeamViewModel(HostScreen));
         _showCaseViewModelFactories.Add(StatisticViewModel.ID, () => new StatisticViewModel(HostScreen));
         _showCaseViewModelFactories.Add(TimelineViewModel.ID, () => new TimelineViewModel(HostScreen));
         _showCaseViewModelFactories.Add(QRCodeViewModel.ID, () => new QRCodeViewModel(HostScreen));

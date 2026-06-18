@@ -1,0 +1,47 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:BorderBeam}" TargetType="atom:BorderBeam">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid ClipToBounds="False">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    <atom:BorderBeamPresenter Name="PART_BeamPresenter"
+                                               IsHitTestVisible="False"
+                                               Color="{TemplateBinding Color}"
+                                               ColorStops="{TemplateBinding ColorStops}"
+                                               Outset="{TemplateBinding Outset}"
+                                               BorderBeamGeometry="{TemplateBinding EffectiveBorderBeamGeometry}"
+                                               IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                               Duration="{TemplateBinding Duration}"
+                                               BeamSize="{TemplateBinding BeamSize}"
+                                               BeamOpacity="{TemplateBinding BeamOpacity}"
+                                               MaxVisibleStopPercent="{TemplateBinding MaxVisibleStopPercent}"
+                                               DefaultStartColor="{TemplateBinding DefaultStartColor}"
+                                               DefaultEndColor="{TemplateBinding DefaultEndColor}" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="ClipToBounds" Value="False" />
+        <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="DefaultStartColor" Value="{atom:SharedTokenResource ColorPrimary}" />
+        <Setter Property="DefaultEndColor" Value="{atom:SharedTokenResource ColorPrimaryHover}" />
+        <Setter Property="Duration" Value="{atom:BorderBeamTokenResource MotionDuration}" />
+        <Setter Property="BeamSize" Value="{atom:BorderBeamTokenResource BeamSize}" />
+        <Setter Property="BeamOpacity" Value="{atom:BorderBeamTokenResource BeamOpacity}" />
+        <Setter Property="MaxVisibleStopPercent" Value="{atom:BorderBeamTokenResource MaxVisibleStopPercent}" />
+
+        <Style Selector="^[IsMotionEnabled=False] /template/ atom|BorderBeamPresenter#PART_BeamPresenter">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

@@ -13,6 +13,7 @@ namespace AtomUI.Theme
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.AutoCompleteToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.AvatarToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.BadgeToken))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.BorderBeamToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.BreadcrumbToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.ButtonSpinnerToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.ButtonToken))]
@@ -85,7 +86,7 @@ namespace AtomUI.Theme
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.WindowToken))]
         internal static IList<ControlTokenRegistration> GetTokenTypes()
         {
-            List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>(77);
+            List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>(78);
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.AddOnDecoratedBoxToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.AdornerLayerToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.AlertToken)));
@@ -93,6 +94,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.AutoCompleteToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.AvatarToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.BadgeToken)));
+            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.BorderBeamToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.BreadcrumbToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.ButtonSpinnerToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.ButtonToken)));

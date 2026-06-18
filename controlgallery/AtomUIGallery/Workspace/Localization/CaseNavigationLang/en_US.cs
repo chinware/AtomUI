@@ -96,5 +96,8 @@ internal partial class en_US : LanguageProvider
     public const string Feedback_Spin = "Spin";
     public const string Feedback_Watermark = "Watermark";
 
+    public const string Other = "Other";
+    public const string Other_BorderBeam = "BorderBeam";
+
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }

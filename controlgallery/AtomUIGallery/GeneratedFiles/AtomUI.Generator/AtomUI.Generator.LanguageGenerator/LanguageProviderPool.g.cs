@@ -1183,6 +1183,204 @@ namespace AtomUI.Theme.Language
         }
     }
 
+    internal sealed class BorderBeamShowCaseEnUSLanguageProvider : LanguageProvider
+    {
+        public BorderBeamShowCaseEnUSLanguageProvider()
+            : base(LanguageCode.en_US, "BorderBeamShowCase")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyBeamSize] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiPropertyBeamSize;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyBorderThickness] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiPropertyBorderThickness;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyColor] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiPropertyColor;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyColorStops] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiPropertyColorStops;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyCornerRadius] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiPropertyCornerRadius;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyDuration] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiPropertyDuration;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyOutset] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ApiPropertyOutset;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.BasicDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ComponentStatusPreview] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ComponentStatusPreview;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.CustomizedColorCardDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.CustomizedColorDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorTitle] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.CustomizedColorTitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.NonUniformRadiusCardDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.NonUniformRadiusDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusTitle] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.NonUniformRadiusTitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameBeamOpacity] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.TokenNameBeamOpacity;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameBeamSize] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.TokenNameBeamSize;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameMaxVisibleStopPercent] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.TokenNameMaxVisibleStopPercent;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameMotionDuration] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.TokenNameMotionDuration;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.TokenStatusStable;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class BorderBeamShowCaseZhCNLanguageProvider : LanguageProvider
+    {
+        public BorderBeamShowCaseZhCNLanguageProvider()
+            : base(LanguageCode.zh_CN, "BorderBeamShowCase")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyBeamSize] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiPropertyBeamSize;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyBorderThickness] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiPropertyBorderThickness;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyColor] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiPropertyColor;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyColorStops] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiPropertyColorStops;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyCornerRadius] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiPropertyCornerRadius;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyDuration] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiPropertyDuration;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyOutset] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ApiPropertyOutset;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.BasicDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ComponentStatusPreview] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ComponentStatusPreview;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.CustomizedColorCardDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.CustomizedColorDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorTitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.CustomizedColorTitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.NonUniformRadiusCardDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.NonUniformRadiusDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusTitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.NonUniformRadiusTitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameBeamOpacity] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.TokenNameBeamOpacity;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameBeamSize] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.TokenNameBeamSize;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameMaxVisibleStopPercent] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.TokenNameMaxVisibleStopPercent;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameMotionDuration] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.TokenNameMotionDuration;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.TokenStatusStable;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class BorderBeamShowCaseZhTWLanguageProvider : LanguageProvider
+    {
+        public BorderBeamShowCaseZhTWLanguageProvider()
+            : base(LanguageCode.zh_TW, "BorderBeamShowCase")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiColumnProperty;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyBeamSize] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiPropertyBeamSize;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyBorderThickness] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiPropertyBorderThickness;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyColor] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiPropertyColor;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyColorStops] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiPropertyColorStops;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyCornerRadius] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiPropertyCornerRadius;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyDuration] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiPropertyDuration;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ApiPropertyOutset] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ApiPropertyOutset;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.BasicDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ComponentStatusPreview] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ComponentStatusPreview;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.CustomizedColorCardDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.CustomizedColorDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorTitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.CustomizedColorTitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.NonUniformRadiusCardDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.NonUniformRadiusDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusTitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.NonUniformRadiusTitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameBeamOpacity] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.TokenNameBeamOpacity;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameBeamSize] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.TokenNameBeamSize;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameMaxVisibleStopPercent] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.TokenNameMaxVisibleStopPercent;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenNameMotionDuration] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.TokenNameMotionDuration;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.TokenStatusStable;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
     internal sealed class BreadcrumbShowCaseEnUSLanguageProvider : LanguageProvider
     {
         public BreadcrumbShowCaseEnUSLanguageProvider()
@@ -23748,6 +23946,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_Steps] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Navigation_Steps;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabControl] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Navigation_TabControl;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabStrip] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Navigation_TabStrip;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Other;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other_BorderBeam] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Other_BorderBeam;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Overview] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Overview;
             }
             catch (System.Exception)
@@ -23856,6 +24056,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_Steps] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Navigation_Steps;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabControl] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Navigation_TabControl;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabStrip] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Navigation_TabStrip;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Other;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other_BorderBeam] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Other_BorderBeam;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Overview] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Overview;
             }
             catch (System.Exception)
@@ -23964,6 +24166,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_Steps] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Navigation_Steps;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabControl] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Navigation_TabControl;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabStrip] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Navigation_TabStrip;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Other;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other_BorderBeam] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Other_BorderBeam;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Overview] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Overview;
             }
             catch (System.Exception)
@@ -24101,7 +24305,7 @@ namespace AtomUI.Theme.Language
     {
         internal static IList<LanguageProvider> GetLanguageProviders()
         {
-            List<LanguageProvider> languageProviders = new List<LanguageProvider>(228);
+            List<LanguageProvider> languageProviders = new List<LanguageProvider>(231);
             languageProviders.Add(new AlertShowCaseEnUSLanguageProvider());
             languageProviders.Add(new AlertShowCaseZhCNLanguageProvider());
             languageProviders.Add(new AlertShowCaseZhTWLanguageProvider());
@@ -24114,6 +24318,9 @@ namespace AtomUI.Theme.Language
             languageProviders.Add(new BadgeShowCaseEnUSLanguageProvider());
             languageProviders.Add(new BadgeShowCaseZhCNLanguageProvider());
             languageProviders.Add(new BadgeShowCaseZhTWLanguageProvider());
+            languageProviders.Add(new BorderBeamShowCaseEnUSLanguageProvider());
+            languageProviders.Add(new BorderBeamShowCaseZhCNLanguageProvider());
+            languageProviders.Add(new BorderBeamShowCaseZhTWLanguageProvider());
             languageProviders.Add(new BreadcrumbShowCaseEnUSLanguageProvider());
             languageProviders.Add(new BreadcrumbShowCaseZhCNLanguageProvider());
             languageProviders.Add(new BreadcrumbShowCaseZhTWLanguageProvider());
