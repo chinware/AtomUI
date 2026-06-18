@@ -1,0 +1,135 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Media;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+using Shouldly;
+using Xunit;
+using AvaloniaWindow = Avalonia.Controls.Window;
+
+namespace AtomUI.Desktop.Controls.Tests.GroupBox;
+
+public class GroupBoxRenderTests
+{
+    static GroupBoxRenderTests()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+    }
+
+    [Fact]
+    public void Transparent_Background_Does_Not_Use_Header_Background_Mask()
+    {
+        var groupBox = new AtomUI.Desktop.Controls.GroupBox
+        {
+            Width            = 180,
+            Height           = 100,
+            HeaderTitle      = "Title",
+            HeaderTitleColor = Brushes.Transparent,
+            Background       = Brushes.Transparent,
+            BorderBrush      = Brushes.Black,
+            BorderThickness  = new Thickness(2),
+            Content          = new Border { Height = 48 }
+        };
+        var root = new Border
+        {
+            Width      = 240,
+            Height     = 140,
+            Background = Brushes.White,
+            Padding    = new Thickness(24),
+            Child      = groupBox
+        };
+
+        ShowInWindow(root, window =>
+        {
+            var headerContent = groupBox.GetVisualDescendants()
+                                        .OfType<Decorator>()
+                                        .Single(item => item.Name == "PART_HeaderContent");
+
+            var headerOffset = headerContent.TranslatePoint(default, window);
+            headerOffset.ShouldNotBeNull();
+
+            var groupBoxOffset = groupBox.TranslatePoint(default, window);
+            groupBoxOffset.ShouldNotBeNull();
+
+            var headerBounds = new Rect(
+                headerOffset.Value - groupBoxOffset.Value,
+                headerContent.Bounds.Size);
+            var drawingGroup = RenderToDrawingGroup(groupBox);
+
+            HasTransparentHeaderMaskDrawing(drawingGroup, headerBounds).ShouldBeFalse(
+                "the header gap must be excluded from the border geometry instead of covered with GroupBox.Background");
+        });
+    }
+
+    private static void ShowInWindow(Control content, Action<AvaloniaWindow> assertion)
+    {
+        var window = new AvaloniaWindow
+        {
+            Width   = 240,
+            Height  = 140,
+            Content = content
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            assertion(window);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    private static DrawingGroup RenderToDrawingGroup(AtomUI.Desktop.Controls.GroupBox groupBox)
+    {
+        var drawingGroup = new DrawingGroup();
+        using var context = drawingGroup.Open();
+        groupBox.Render(context);
+        return drawingGroup;
+    }
+
+    private static bool HasTransparentHeaderMaskDrawing(DrawingGroup drawingGroup, Rect headerBounds)
+    {
+        return EnumerateGeometryDrawings(drawingGroup)
+            .Any(drawing =>
+            {
+                if (drawing.Pen is not null || drawing.Brush is not ISolidColorBrush brush || brush.Color.A != 0)
+                {
+                    return false;
+                }
+
+                var bounds = drawing.Geometry?.Bounds ?? default;
+                return AreClose(bounds, headerBounds);
+            });
+    }
+
+    private static IEnumerable<GeometryDrawing> EnumerateGeometryDrawings(Drawing drawing)
+    {
+        if (drawing is GeometryDrawing geometryDrawing)
+        {
+            yield return geometryDrawing;
+        }
+        else if (drawing is DrawingGroup drawingGroup)
+        {
+            foreach (var child in drawingGroup.Children.SelectMany(EnumerateGeometryDrawings))
+            {
+                yield return child;
+            }
+        }
+    }
+
+    private static bool AreClose(Rect left, Rect right)
+    {
+        const double tolerance = 0.001;
+        return Math.Abs(left.X - right.X) < tolerance
+               && Math.Abs(left.Y - right.Y) < tolerance
+               && Math.Abs(left.Width - right.Width) < tolerance
+               && Math.Abs(left.Height - right.Height) < tolerance;
+    }
+}
