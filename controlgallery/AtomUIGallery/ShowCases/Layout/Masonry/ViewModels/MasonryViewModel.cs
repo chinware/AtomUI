@@ -20,6 +20,7 @@ public class MasonryViewModel : ReactiveObject, IRoutableViewModel
     private ObservableCollection<MasonryDesignTokenRow>? _designTokenRows;
     private ObservableCollection<MasonryBasicItem>? _basicItems;
     private ObservableCollection<MasonryBasicItem>? _responsiveItems;
+    private ObservableCollection<MasonryImageItem>? _imageItems;
 
     public ObservableCollection<MasonryApiRow>? ApiRows
     {
@@ -50,11 +51,18 @@ public class MasonryViewModel : ReactiveObject, IRoutableViewModel
         private set => this.RaiseAndSetIfChanged(ref _responsiveItems, value);
     }
 
+    public ObservableCollection<MasonryImageItem>? ImageItems
+    {
+        get => _imageItems;
+        private set => this.RaiseAndSetIfChanged(ref _imageItems, value);
+    }
+
     public MasonryViewModel(IScreen screen)
     {
         HostScreen = screen;
         EnsureBasicItems();
         EnsureResponsiveItems();
+        EnsureImageItems();
     }
 
     private void EnsureBasicItems()
@@ -105,6 +113,42 @@ public class MasonryViewModel : ReactiveObject, IRoutableViewModel
         }
 
         ResponsiveItems = items;
+    }
+
+    private void EnsureImageItems()
+    {
+        if (ImageItems is not null)
+        {
+            return;
+        }
+
+        var imageSources = new[]
+        {
+            "https://images.unsplash.com/photo-1510001618818-4b4e3d86bf0f?w=523&auto=format",
+            "https://images.unsplash.com/photo-1507513319174-e556268bb244?w=523&auto=format",
+            "https://images.unsplash.com/photo-1474181487882-5abf3f0ba6c2?w=523&auto=format",
+            "https://images.unsplash.com/photo-1492778297155-7be4c83960c7?w=523&auto=format",
+            "https://images.unsplash.com/photo-1508062878650-88b52897f298?w=523&auto=format",
+            "https://images.unsplash.com/photo-1506158278516-d720e72406fc?w=523&auto=format",
+            "https://images.unsplash.com/photo-1552203274-e3c7bd771d26?w=523&auto=format",
+            "https://images.unsplash.com/photo-1528163186890-de9b86b54b51?w=523&auto=format",
+            "https://images.unsplash.com/photo-1727423304224-6d2fd99b864c?w=523&auto=format",
+            "https://images.unsplash.com/photo-1675090391405-432434e23595?w=523&auto=format",
+            "https://images.unsplash.com/photo-1554196967-97a8602084d9?w=523&auto=format",
+            "https://images.unsplash.com/photo-1491961865842-98f7befd1a60?w=523&auto=format",
+            "https://images.unsplash.com/photo-1721728613411-d56d2ddda959?w=523&auto=format",
+            "https://images.unsplash.com/photo-1731901245099-20ac7f85dbaa?w=523&auto=format",
+            "https://images.unsplash.com/photo-1617694455303-59af55af7e58?w=523&auto=format",
+            "https://images.unsplash.com/photo-1709198165282-1dab551df890?w=523&auto=format"
+        };
+
+        var items = new ObservableCollection<MasonryImageItem>();
+        for (var i = 0; i < imageSources.Length; i++)
+        {
+            items.Add(new MasonryImageItem(i + 1, imageSources[i]));
+        }
+
+        ImageItems = items;
     }
 
     public void EnsureApiRows()
@@ -189,6 +233,8 @@ public sealed record MasonryDesignTokenRow(
     string ScopeTagColor,
     string Status,
     string StatusTagColor);
+
+public sealed record MasonryImageItem(int Index, string ImageSource);
 
 /// <summary>
 /// Data item for the basic Masonry example. Regular items render as a small Card with the
