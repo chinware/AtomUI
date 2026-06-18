@@ -47,6 +47,9 @@ internal partial class zh_TW : LanguageProvider
     public const string ResponsiveDescription = "使用響應式參數來適配不同螢幕寬度。ColumnInfo 可以設定在不同斷點下的列數，Gutter 可以設定不同斷點下的間距大小。";
     public const string ImageTitle = "圖片";
     public const string ImageDescription = "隨載入動態調整位置。";
+    public const string DynamicTitle = "動態更新";
+    public const string DynamicDescription = "展示瀑布流動態更新的效果，配合 item.column 固化位置。";
+    public const string DynamicAddItemLabel = "Add Item";
 
     protected override Type GetResourceKindType() => typeof(MasonryShowCaseLangResourceKind);
 }

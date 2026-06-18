@@ -47,6 +47,9 @@ internal partial class zh_CN : LanguageProvider
     public const string ResponsiveDescription = "使用响应式参数来适配不同屏幕宽度。ColumnInfo 可以设置在不同断点下的列数，Gutter 可以设置不同断点下的间距大小。";
     public const string ImageTitle = "图片";
     public const string ImageDescription = "随加载动态调整位置。";
+    public const string DynamicTitle = "动态更新";
+    public const string DynamicDescription = "展示瀑布流动态更新的效果，配合 item.column 固化位置。";
+    public const string DynamicAddItemLabel = "Add Item";
 
     protected override Type GetResourceKindType() => typeof(MasonryShowCaseLangResourceKind);
 }

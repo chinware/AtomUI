@@ -1,7 +1,10 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Windows.Input;
+using AtomUI.Desktop.Controls;
 using AtomUIGallery.ShowCases.Masonry;
+using Avalonia.Controls;
 using Shouldly;
 using Xunit;
 
@@ -136,6 +139,65 @@ public class MasonryShowCasePageTests
             "https://images.unsplash.com/photo-1617694455303-59af55af7e58?w=523&auto=format",
             "https://images.unsplash.com/photo-1709198165282-1dab551df890?w=523&auto=format"
         });
+    }
+
+    [Fact]
+    public void Masonry_ShowCase_Dynamic_Demo_Matches_Ant_Design_Dynamic_Demo()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/Masonry/Views/MasonryShowCase.axaml");
+        var dynamicDemoMarkup = ExtractMasonryMarkup(source, "ItemsSource=\"{Binding DynamicItems}\"");
+
+        dynamicDemoMarkup.ShouldContain("ColumnCount=\"4\"");
+        dynamicDemoMarkup.ShouldContain("ColumnGap=\"16\"");
+        dynamicDemoMarkup.ShouldContain("RowGap=\"16\"");
+        dynamicDemoMarkup.ShouldContain("ItemContainerTheme");
+        dynamicDemoMarkup.ShouldContain("Property=\"atom:Masonry.Column\"");
+        dynamicDemoMarkup.ShouldContain("Value=\"{Binding Column}\"");
+        dynamicDemoMarkup.ShouldContain("LayoutChanged=\"HandleDynamicMasonryLayoutChanged\"");
+        dynamicDemoMarkup.ShouldContain("Height=\"{Binding Height}\"");
+        dynamicDemoMarkup.ShouldContain("Text=\"{Binding DisplayText}\"");
+        dynamicDemoMarkup.ShouldContain("Click=\"HandleRemoveDynamicMasonryItemClick\"");
+        dynamicDemoMarkup.ShouldContain("Icon=\"{antdicons:AntDesignIconProvider Kind=CloseOutlined}\"");
+        source.ShouldContain("Command=\"{Binding AddDynamicMasonryItemCommand}\"");
+        source.ShouldContain("Content=\"{gallery:MasonryShowCaseLangResource DynamicAddItemLabel}\"");
+    }
+
+    [Fact]
+    public void Masonry_ShowCase_Dynamic_Items_Mirror_Ant_Design_Dynamic_Demo()
+    {
+        var viewModel = new MasonryViewModel(null!);
+
+        viewModel.DynamicItems.ShouldNotBeNull();
+        viewModel.DynamicItems!.Select(item => item.Key).ShouldBe(Enumerable.Range(0, 15));
+        viewModel.DynamicItems.Select(item => item.Height).ShouldBe(new[]
+        {
+            150, 50, 90, 70, 110, 150, 130, 80, 50, 90, 100, 150, 70, 50, 80
+        });
+        viewModel.DynamicItems.Select(item => item.Column).ShouldBe(new int?[]
+        {
+            0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2
+        });
+        viewModel.DynamicItems.Select(item => item.DisplayText).ShouldBe(Enumerable.Range(1, 15).Select(index => index.ToString()));
+
+        ((ICommand)viewModel.RemoveDynamicMasonryItemCommand).Execute(4);
+        viewModel.DynamicItems.Count.ShouldBe(14);
+        viewModel.DynamicItems.Select(item => item.Key).ShouldNotContain(4);
+
+        ((ICommand)viewModel.AddDynamicMasonryItemCommand).Execute(null);
+        viewModel.DynamicItems.Count.ShouldBe(15);
+        var addedItem = viewModel.DynamicItems[^1];
+        addedItem.Key.ShouldBe(15);
+        addedItem.Height.ShouldBeInRange(50, 149);
+        addedItem.Column.ShouldBeNull();
+        addedItem.DisplayText.ShouldBe("16");
+
+        viewModel.UpdateDynamicMasonryColumns(new[]
+        {
+            new MasonryItemLayout(new Border(), 0, 3, false),
+            new MasonryItemLayout(new Border(), 2, 1, false)
+        });
+        viewModel.DynamicItems[0].Column.ShouldBe(3);
+        viewModel.DynamicItems[2].Column.ShouldBe(1);
     }
 
     [Fact]

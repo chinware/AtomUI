@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Threading;
@@ -21,6 +23,8 @@ public class MasonryViewModel : ReactiveObject, IRoutableViewModel
     private ObservableCollection<MasonryBasicItem>? _basicItems;
     private ObservableCollection<MasonryBasicItem>? _responsiveItems;
     private ObservableCollection<MasonryImageItem>? _imageItems;
+    private ObservableCollection<MasonryDynamicItem>? _dynamicItems;
+    private readonly Random _dynamicItemHeightRandom = new();
 
     public ObservableCollection<MasonryApiRow>? ApiRows
     {
@@ -57,12 +61,26 @@ public class MasonryViewModel : ReactiveObject, IRoutableViewModel
         private set => this.RaiseAndSetIfChanged(ref _imageItems, value);
     }
 
+    public ObservableCollection<MasonryDynamicItem>? DynamicItems
+    {
+        get => _dynamicItems;
+        private set => this.RaiseAndSetIfChanged(ref _dynamicItems, value);
+    }
+
+    public ReactiveCommand<Unit, Unit> AddDynamicMasonryItemCommand { get; }
+
+    public ReactiveCommand<int, Unit> RemoveDynamicMasonryItemCommand { get; }
+
     public MasonryViewModel(IScreen screen)
     {
         HostScreen = screen;
         EnsureBasicItems();
         EnsureResponsiveItems();
         EnsureImageItems();
+        EnsureDynamicItems();
+
+        AddDynamicMasonryItemCommand    = ReactiveCommand.Create(AddDynamicMasonryItem);
+        RemoveDynamicMasonryItemCommand = ReactiveCommand.Create<int>(RemoveDynamicMasonryItem);
     }
 
     private void EnsureBasicItems()
@@ -151,6 +169,67 @@ public class MasonryViewModel : ReactiveObject, IRoutableViewModel
         ImageItems = items;
     }
 
+    private void EnsureDynamicItems()
+    {
+        if (DynamicItems is not null)
+        {
+            return;
+        }
+
+        var heights = new[] { 150, 50, 90, 70, 110, 150, 130, 80, 50, 90, 100, 150, 70, 50, 80 };
+        var items = new ObservableCollection<MasonryDynamicItem>();
+        for (var i = 0; i < heights.Length; i++)
+        {
+            items.Add(new MasonryDynamicItem(i, heights[i], i % 4));
+        }
+
+        DynamicItems = items;
+    }
+
+    public void UpdateDynamicMasonryColumns(IReadOnlyList<MasonryItemLayout> layouts)
+    {
+        if (DynamicItems is null)
+        {
+            return;
+        }
+
+        foreach (var layout in layouts)
+        {
+            if (layout.Index >= 0 && layout.Index < DynamicItems.Count)
+            {
+                DynamicItems[layout.Index].Column = layout.Column;
+            }
+        }
+    }
+
+    private void AddDynamicMasonryItem()
+    {
+        if (DynamicItems is null)
+        {
+            return;
+        }
+
+        var key = DynamicItems.Count > 0 ? DynamicItems[^1].Key + 1 : 0;
+        DynamicItems.Add(new MasonryDynamicItem(key, _dynamicItemHeightRandom.Next(50, 150)));
+    }
+
+    public void RemoveDynamicMasonryItem(int key)
+    {
+        if (DynamicItems is null)
+        {
+            return;
+        }
+
+        for (var i = 0; i < DynamicItems.Count; i++)
+        {
+            if (DynamicItems[i].Key == key)
+            {
+                DynamicItems.RemoveAt(i);
+                return;
+            }
+        }
+    }
+
     public void EnsureApiRows()
     {
         if (ApiRows is not null)
@@ -235,6 +314,30 @@ public sealed record MasonryDesignTokenRow(
     string StatusTagColor);
 
 public sealed record MasonryImageItem(int Index, string ImageSource);
+
+public sealed class MasonryDynamicItem : ReactiveObject
+{
+    private int? _column;
+
+    public int Key { get; }
+
+    public int Height { get; }
+
+    public int? Column
+    {
+        get => _column;
+        set => this.RaiseAndSetIfChanged(ref _column, value);
+    }
+
+    public string DisplayText => (Key + 1).ToString();
+
+    public MasonryDynamicItem(int key, int height, int? column = null)
+    {
+        Key     = key;
+        Height  = height;
+        _column = column;
+    }
+}
 
 /// <summary>
 /// Data item for the basic Masonry example. Regular items render as a small Card with the

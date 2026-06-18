@@ -11270,6 +11270,9 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Masonry.en_US.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Masonry.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Masonry.en_US.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicAddItemLabel] = global::AtomUIGallery.ShowCases.Masonry.en_US.DynamicAddItemLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.Masonry.en_US.DynamicDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Masonry.en_US.DynamicTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageDescription] = global::AtomUIGallery.ShowCases.Masonry.en_US.ImageDescription;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageTitle] = global::AtomUIGallery.ShowCases.Masonry.en_US.ImageTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Masonry.en_US.InfoBaseClassLabel;
@@ -11335,6 +11338,9 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicAddItemLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.DynamicAddItemLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.DynamicDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.DynamicTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ImageDescription;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ImageTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.InfoBaseClassLabel;
@@ -11400,6 +11406,9 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ComponentStatusStable;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicAddItemLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.DynamicAddItemLabel;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.DynamicDescription;
+                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.DynamicTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ImageDescription;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ImageTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.InfoBaseClassLabel;
