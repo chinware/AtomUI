@@ -1,6 +1,7 @@
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace AtomUIGallery.ShowCases.Masonry;
 
@@ -34,6 +35,19 @@ public partial class MasonryShowCase : GalleryReactiveUserControl<MasonryViewMod
     {
         base.OnDataContextChanged(e);
         _scenarioController.UpdateDataContext(DataContext);
+    }
+
+    private void HandleDynamicMasonryLayoutChanged(object? sender, MasonryLayoutChangedEventArgs e)
+    {
+        ViewModel?.UpdateDynamicMasonryColumns(e.Items);
+    }
+
+    private void HandleRemoveDynamicMasonryItemClick(object? sender, RoutedEventArgs e)
+    {
+        if (sender is Control { DataContext: MasonryDynamicItem item })
+        {
+            ViewModel?.RemoveDynamicMasonryItem(item.Key);
+        }
     }
 
     private static Control CreateScenarioContent(string scenario)

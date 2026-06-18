@@ -5,6 +5,7 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.Masonry"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              x:DataType="vm:MasonryViewModel">
     <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
         <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
@@ -233,6 +234,53 @@
                                         </DataTemplate>
                                     </atom:Masonry.ItemTemplate>
                                 </atom:Masonry>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <!-- Dynamic: mirrors the Ant Design dynamic demo and persists effective item columns. -->
+                    <gallery:ShowCaseItem
+                        Title="{gallery:MasonryShowCaseLangResource DynamicTitle}"
+                        Description="{gallery:MasonryShowCaseLangResource DynamicDescription}"
+                        IsDeferredContentEnabled="True"
+                        IsOccupyEntireRow="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:MasonryViewModel">
+                                <StackPanel Spacing="16">
+                                    <atom:Masonry ItemsSource="{Binding DynamicItems}"
+                                                  ColumnCount="4"
+                                                  ColumnGap="16"
+                                                  RowGap="16"
+                                                  HorizontalAlignment="Stretch"
+                                                  LayoutChanged="HandleDynamicMasonryLayoutChanged">
+                                        <atom:Masonry.ItemContainerTheme>
+                                            <ControlTheme TargetType="ContentPresenter"
+                                                          x:CompileBindings="False">
+                                                <Setter Property="atom:Masonry.Column"
+                                                        Value="{Binding Column}" />
+                                            </ControlTheme>
+                                        </atom:Masonry.ItemContainerTheme>
+                                        <atom:Masonry.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:MasonryDynamicItem">
+                                                <atom:Card SizeType="Small"
+                                                           Height="{Binding Height}"
+                                                           HorizontalAlignment="Stretch">
+                                                    <Grid>
+                                                        <atom:TextBlock Text="{Binding DisplayText}" />
+                                                        <atom:Button SizeType="Small"
+                                                                     HorizontalAlignment="Right"
+                                                                     VerticalAlignment="Top"
+                                                                     Icon="{antdicons:AntDesignIconProvider Kind=CloseOutlined}"
+                                                                     Click="HandleRemoveDynamicMasonryItemClick" />
+                                                    </Grid>
+                                                </atom:Card>
+                                            </DataTemplate>
+                                        </atom:Masonry.ItemTemplate>
+                                    </atom:Masonry>
+                                    <atom:Button HorizontalAlignment="Stretch"
+                                                 Command="{Binding AddDynamicMasonryItemCommand}"
+                                                 Content="{gallery:MasonryShowCaseLangResource DynamicAddItemLabel}" />
+                                </StackPanel>
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>

@@ -47,6 +47,9 @@ internal partial class en_US : LanguageProvider
     public const string ResponsiveDescription = "Use responsive values to adapt to different screen widths. ColumnInfo controls the column count at each breakpoint, and Gutter controls the spacing.";
     public const string ImageTitle = "Image";
     public const string ImageDescription = "Positions are adjusted dynamically as images load.";
+    public const string DynamicTitle = "Dynamic";
+    public const string DynamicDescription = "Demonstrate how masonry layout updates dynamically. Use item.column to keep items in place.";
+    public const string DynamicAddItemLabel = "Add Item";
 
     protected override Type GetResourceKindType() => typeof(MasonryShowCaseLangResourceKind);
 }
