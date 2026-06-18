@@ -105,11 +105,21 @@ public class MasonryShowCasePageTests
         imageDemoMarkup.ShouldContain("ColumnGap=\"16\"");
         imageDemoMarkup.ShouldContain("RowGap=\"16\"");
         imageDemoMarkup.ShouldContain("asyncImageLoader:ImageLoader.Source=\"{Binding ImageSource}\"");
+        imageDemoMarkup.ShouldContain("Name=\"MasonryImage\"");
         imageDemoMarkup.ShouldContain("Stretch=\"Uniform\"");
         imageDemoMarkup.ShouldContain("HorizontalAlignment=\"Stretch\"");
+        imageDemoMarkup.ShouldContain("<Panel MinHeight=\"210\"");
+        imageDemoMarkup.ShouldContain("ClipToBounds=\"True\"");
+        imageDemoMarkup.ShouldContain("IsVisible=\"{Binding #MasonryImage.Source, Converter={x:Static ObjectConverters.IsNull}}\"");
+        imageDemoMarkup.ShouldContain("<atom:Skeleton IsLoading=\"True\"");
+        imageDemoMarkup.ShouldContain("Padding=\"16,16\"");
+        imageDemoMarkup.ShouldContain("IsActive=\"True\"");
+        imageDemoMarkup.ShouldContain("IsShowAvatar=\"False\"");
+        imageDemoMarkup.ShouldContain("IsShowTitle=\"True\"");
+        imageDemoMarkup.ShouldContain("ParagraphRows=\"3\"");
+        imageDemoMarkup.ShouldContain("IsRound=\"True\"");
         imageDemoMarkup.ShouldNotContain("<atom:Card");
-        imageDemoMarkup.ShouldNotContain("<Border");
-        imageDemoMarkup.ShouldNotContain("<atom:Skeleton");
+        imageDemoMarkup.ShouldNotContain("<atom:SkeletonImage");
         imageDemoMarkup.ShouldNotContain("Height=\"{Binding Height}\"");
     }
 
