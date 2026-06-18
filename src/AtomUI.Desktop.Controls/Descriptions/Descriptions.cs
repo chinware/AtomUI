@@ -25,9 +25,8 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<bool> IsShowColonProperty =
         AvaloniaProperty.Register<Descriptions, bool>(nameof(IsShowColon), true);
 
-    public static readonly StyledProperty<DescriptionsMediaBreakInfo> ColumnInfoProperty =
-        AvaloniaProperty.Register<Descriptions, DescriptionsMediaBreakInfo>(nameof(ColumnInfo),
-            new DescriptionsMediaBreakInfo(3));
+    public static readonly StyledProperty<ResponsiveInt?> ColumnInfoProperty =
+        AvaloniaProperty.Register<Descriptions, ResponsiveInt?>(nameof(ColumnInfo));
 
     public static readonly StyledProperty<object?> ExtraProperty =
         AvaloniaProperty.Register<Descriptions, object?>(nameof(Extra));
@@ -62,7 +61,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         set => SetValue(IsShowColonProperty, value);
     }
 
-    public DescriptionsMediaBreakInfo ColumnInfo
+    public ResponsiveInt? ColumnInfo
     {
         get => GetValue(ColumnInfoProperty);
         set => SetValue(ColumnInfoProperty, value);
@@ -242,33 +241,19 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
 
     private int GetColumnsForMediaBreak(MediaBreakPoint breakPoint)
     {
-        var columns = 1;
-        if (breakPoint == MediaBreakPoint.ExtraSmall)
-        {
-            columns = ColumnInfo.ExtraSmall;
-        }
-        else if (breakPoint == MediaBreakPoint.Small)
-        {
-            columns = ColumnInfo.Small;
-        }
-        else if (breakPoint == MediaBreakPoint.Medium)
-        {
-            columns = ColumnInfo.Medium;
-        }
-        else if (breakPoint == MediaBreakPoint.Large)
-        {
-            columns = ColumnInfo.Large;
-        }
-        else if (breakPoint == MediaBreakPoint.ExtraLarge)
-        {
-            columns = ColumnInfo.ExtraLarge;
-        }
-        else if (breakPoint == MediaBreakPoint.ExtraExtraLarge)
-        {
-            columns = ColumnInfo.ExtraExtraLarge;
-        }
+        var fallback = GetDefaultColumnsForMediaBreak(breakPoint);
+        return ColumnInfo?.Resolve(breakPoint, fallback) ?? fallback;
+    }
 
-        return columns;
+    private static int GetDefaultColumnsForMediaBreak(MediaBreakPoint breakPoint)
+    {
+        return breakPoint switch
+        {
+            MediaBreakPoint.ExtraSmall => 1,
+            MediaBreakPoint.Small => 2,
+            MediaBreakPoint.ExtraExtraExtraLarge => 4,
+            _ => 3
+        };
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -307,6 +292,14 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
                  change.Property == ExtraProperty)
         {
             SetCurrentValue(IsHeaderLayoutVisibleProperty, Header != null || Extra != null);
+        }
+        else if (change.Property == ColumnInfoProperty)
+        {
+            if (_breakPoint.HasValue)
+            {
+                UpdateGridColumns(GetColumnsForMediaBreak(_breakPoint.Value), true);
+                InvalidateMeasure();
+            }
         }
 
         if (this.IsAttachedToVisualTree())
@@ -703,18 +696,10 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
         }
     }
 
-    private int GetItemSpan(DescriptionsMediaBreakInfo breakInfo)
+    private int GetItemSpan(ResponsiveInt breakInfo)
     {
         Debug.Assert(_breakPoint != null);
-        return _breakPoint switch
-        {
-            MediaBreakPoint.ExtraSmall => breakInfo.ExtraSmall,
-            MediaBreakPoint.Small => breakInfo.Small,
-            MediaBreakPoint.Medium => breakInfo.Medium,
-            MediaBreakPoint.Large => breakInfo.Large,
-            MediaBreakPoint.ExtraLarge => breakInfo.ExtraLarge,
-            _ => breakInfo.ExtraExtraLarge
-        };
+        return breakInfo.Resolve(_breakPoint.Value, 1);
     }
 
     private void HandleLayoutChanged()

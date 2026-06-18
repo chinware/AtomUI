@@ -137,7 +137,7 @@ attached responsive property 必须同样提供 `AttachedProperty`、`GetXxx`、
 - 必须记录哪些断点由用户显式配置。
 - 必须委托底层共享求值器完成断点排序、显式配置检查和 fallback 处理。
 - 不允许每个控件各自复制 breakpoint parser 和 switch 逻辑。
-- 不再为单个控件新增 `DescriptionsMediaBreakInfo` 这类只服务单控件且复制规则的类型；旧类型如为兼容保留，也必须适配到标准类型和共享 resolver。
+- 不再为单个控件新增 `DescriptionsMediaBreakInfo` 这类只服务单控件且复制规则的类型；既有同类类型完成标准 API 迁移后应删除。
 
 ### 5.3 字符串格式
 

@@ -55,7 +55,7 @@ public class DescriptionsViewModel : ReactiveObject, IRoutableViewModel
         [
             new DescriptionsApiRow("IsBordered", Lang(DescriptionsShowCaseLangResourceKind.ApiPropertyIsBordered), "bool", "green", "false"),
             new DescriptionsApiRow("IsShowColon", Lang(DescriptionsShowCaseLangResourceKind.ApiPropertyIsShowColon), "bool", "green", "true"),
-            new DescriptionsApiRow("ColumnInfo", Lang(DescriptionsShowCaseLangResourceKind.ApiPropertyColumnInfo), "DescriptionsMediaBreakInfo", "blue", "3"),
+            new DescriptionsApiRow("ColumnInfo", Lang(DescriptionsShowCaseLangResourceKind.ApiPropertyColumnInfo), "ResponsiveInt?", "blue", "null"),
             new DescriptionsApiRow("Header", Lang(DescriptionsShowCaseLangResourceKind.ApiPropertyHeader), "object?", "cyan", "null"),
             new DescriptionsApiRow("HeaderTemplate", Lang(DescriptionsShowCaseLangResourceKind.ApiPropertyHeaderTemplate), "IDataTemplate?", "cyan", "null"),
             new DescriptionsApiRow("Extra", Lang(DescriptionsShowCaseLangResourceKind.ApiPropertyExtra), "object?", "cyan", "null"),
