@@ -166,7 +166,7 @@
         </Style>
         
         <Style Selector="^:disabled">
-            <Style Selector="^ /template/ ScrollViewer#PART_ScrollViewer">
+            <Style Selector="^ /template/ atom|ScrollViewer#ScrollViewer">
                 <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>
         </Style>

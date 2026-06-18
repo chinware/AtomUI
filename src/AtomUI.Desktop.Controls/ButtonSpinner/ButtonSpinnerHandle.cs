@@ -16,6 +16,9 @@ internal class ButtonSpinnerHandle : TemplatedControl
     public static readonly StyledProperty<ButtonSpinnerLocation> ButtonSpinnerLocationProperty =
         ButtonSpinner.ButtonSpinnerLocationProperty.AddOwner<ButtonSpinnerHandle>();
 
+    public static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
+        InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<ButtonSpinnerHandle>();
+
     public static readonly DirectProperty<ButtonSpinnerHandle, Thickness> SpinnerBorderThicknessProperty =
         AvaloniaProperty.RegisterDirect<ButtonSpinnerHandle, Thickness>(nameof(SpinnerBorderThickness),
             o => o.SpinnerBorderThickness,
@@ -31,6 +34,12 @@ internal class ButtonSpinnerHandle : TemplatedControl
     {
         get => GetValue(ButtonSpinnerLocationProperty);
         set => SetValue(ButtonSpinnerLocationProperty, value);
+    }
+
+    public InputControlStyleVariant StyleVariant
+    {
+        get => GetValue(StyleVariantProperty);
+        set => SetValue(StyleVariantProperty, value);
     }
 
     private Thickness _spinnerBorderThickness;
