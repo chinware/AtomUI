@@ -333,8 +333,8 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
         if (!IsEffectivelyEnabled)
         {
             IsSpinnerContentHover = false;
-            HandleOpacity = IsShowHandle ? 1.0 : 0.0;
-            HandleOffset = 0.0;
+            HandleOpacity = 0.0;
+            HandleOffset = IsHandleFloatable ? GetHiddenOffset() : 0.0;
             ContentLeftShift = 0.0;
             ContentRightShift = 0.0;
             return;

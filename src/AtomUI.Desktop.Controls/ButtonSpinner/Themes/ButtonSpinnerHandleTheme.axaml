@@ -28,9 +28,16 @@
         </Setter>
         
         <Setter Property="ClipToBounds" Value="True"/>
-        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}"/>
+        <Setter Property="BorderBrush" Value="{atom:ButtonSpinnerTokenResource HandleBorderColor}"/>
         <Setter Property="SpinnerBorderThickness" Value="{atom:SharedTokenResource BorderThickness}"/>
-        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}"/>
+        <Setter Property="Background" Value="{atom:ButtonSpinnerTokenResource HandleBg}"/>
+        <Style Selector="^[StyleVariant=Filled]">
+            <Setter Property="Background" Value="{atom:ButtonSpinnerTokenResource FilledHandleBg}" />
+        </Style>
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
         <Style
             Selector="^ /template/ atom|IconButton#PART_IncreaseButton, ^ /template/ atom|IconButton#PART_DecreaseButton">
             <Setter Property="IconWidth" Value="{atom:ButtonSpinnerTokenResource HandleIconSize}" />
