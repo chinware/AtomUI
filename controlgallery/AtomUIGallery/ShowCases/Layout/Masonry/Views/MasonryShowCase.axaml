@@ -228,9 +228,22 @@
                                               HorizontalAlignment="Stretch">
                                     <atom:Masonry.ItemTemplate>
                                         <DataTemplate x:DataType="vm:MasonryImageItem">
-                                            <Image asyncImageLoader:ImageLoader.Source="{Binding ImageSource}"
-                                                   Stretch="Uniform"
-                                                   HorizontalAlignment="Stretch" />
+                                            <Panel MinHeight="210"
+                                                   ClipToBounds="True">
+                                                <Image Name="MasonryImage"
+                                                       asyncImageLoader:ImageLoader.Source="{Binding ImageSource}"
+                                                       Stretch="Uniform"
+                                                       HorizontalAlignment="Stretch" />
+                                                <Border Padding="16,16"
+                                                        IsVisible="{Binding #MasonryImage.Source, Converter={x:Static ObjectConverters.IsNull}}">
+                                                    <atom:Skeleton IsLoading="True"
+                                                                   IsActive="True"
+                                                                   IsShowAvatar="False"
+                                                                   IsShowTitle="True"
+                                                                   ParagraphRows="3"
+                                                                   IsRound="True" />
+                                                </Border>
+                                            </Panel>
                                         </DataTemplate>
                                     </atom:Masonry.ItemTemplate>
                                 </atom:Masonry>
