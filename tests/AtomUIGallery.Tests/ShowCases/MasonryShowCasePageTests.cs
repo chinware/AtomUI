@@ -108,8 +108,8 @@ public class MasonryShowCasePageTests
         imageDemoMarkup.ShouldContain("Name=\"MasonryImage\"");
         imageDemoMarkup.ShouldContain("Stretch=\"Uniform\"");
         imageDemoMarkup.ShouldContain("HorizontalAlignment=\"Stretch\"");
-        imageDemoMarkup.ShouldContain("<Panel MinHeight=\"210\"");
         imageDemoMarkup.ShouldContain("ClipToBounds=\"True\"");
+        imageDemoMarkup.ShouldContain("<Border MinHeight=\"210\"");
         imageDemoMarkup.ShouldContain("IsVisible=\"{Binding #MasonryImage.Source, Converter={x:Static ObjectConverters.IsNull}}\"");
         imageDemoMarkup.ShouldContain("<atom:Skeleton IsLoading=\"True\"");
         imageDemoMarkup.ShouldContain("Padding=\"16,16\"");
@@ -120,6 +120,7 @@ public class MasonryShowCasePageTests
         imageDemoMarkup.ShouldContain("IsRound=\"True\"");
         imageDemoMarkup.ShouldNotContain("<atom:Card");
         imageDemoMarkup.ShouldNotContain("<atom:SkeletonImage");
+        imageDemoMarkup.ShouldNotContain("<Panel MinHeight=");
         imageDemoMarkup.ShouldNotContain("Height=\"{Binding Height}\"");
     }
 
