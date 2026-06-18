@@ -13140,6 +13140,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyLeftAddOn] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.ApiPropertyLeftAddOn;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyMaximum] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.ApiPropertyMaximum;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyMinimum] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.ApiPropertyMinimum;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyMode] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.ApiPropertyMode;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyRightAddOn] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.ApiPropertyRightAddOn;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.ApiPropertySizeType;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyStatus] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.ApiPropertyStatus;
@@ -13189,6 +13190,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ScenarioStyle] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.ScenarioStyle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SizesDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.SizesDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SizesTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.SizesTitle;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SpinnerModeDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.SpinnerModeDescription;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SpinnerModeTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.SpinnerModeTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.StatusDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.StatusTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.StringModeDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.StringModeDescription;
@@ -13252,6 +13255,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyLeftAddOn] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.ApiPropertyLeftAddOn;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyMaximum] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.ApiPropertyMaximum;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyMinimum] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.ApiPropertyMinimum;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyMode] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.ApiPropertyMode;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyRightAddOn] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.ApiPropertyRightAddOn;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.ApiPropertySizeType;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyStatus] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.ApiPropertyStatus;
@@ -13301,6 +13305,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ScenarioStyle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.ScenarioStyle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SizesDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.SizesDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SizesTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.SizesTitle;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SpinnerModeDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.SpinnerModeDescription;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SpinnerModeTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.SpinnerModeTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.StatusDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.StatusTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.StringModeDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.StringModeDescription;
@@ -13364,6 +13370,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyLeftAddOn] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.ApiPropertyLeftAddOn;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyMaximum] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.ApiPropertyMaximum;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyMinimum] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.ApiPropertyMinimum;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyMode] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.ApiPropertyMode;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyRightAddOn] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.ApiPropertyRightAddOn;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertySizeType] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.ApiPropertySizeType;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ApiPropertyStatus] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.ApiPropertyStatus;
@@ -13413,6 +13420,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.ScenarioStyle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.ScenarioStyle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SizesDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.SizesDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SizesTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.SizesTitle;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SpinnerModeDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.SpinnerModeDescription;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.SpinnerModeTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.SpinnerModeTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.StatusDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.StatusTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.StringModeDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.StringModeDescription;

@@ -13,6 +13,8 @@ internal partial class en_US : LanguageProvider
 
     public const string BasicUsageTitle = "Basic usage";
     public const string BasicUsageDescription = "Numeric-only NumberUpDown.";
+    public const string SpinnerModeTitle = "Spinner";
+    public const string SpinnerModeDescription = "Numeric spinner.";
     public const string StringModeTitle = "String mode (high precision)";
     public const string StringModeDescription = "Keep a high-precision value as a string.";
     public const string KeyboardBehaviorTitle = "Keyboard behavior";
@@ -69,6 +71,7 @@ internal partial class en_US : LanguageProvider
     public const string ApiPropertyMaximum = "Highest accepted numeric value.";
     public const string ApiPropertyIncrement = "Amount added or subtracted by spin buttons, keyboard or wheel actions.";
     public const string ApiPropertyFormatString = "Format string used to display the numeric value.";
+    public const string ApiPropertyMode = "Display mode of the control, either the default input mode or the inline spinner mode.";
     public const string ApiPropertyIsStringMode = "Keeps high-precision input as text while preserving numeric editing behavior.";
     public const string ApiPropertyStringValue = "String value used by high-precision string mode.";
     public const string ApiPropertyIsKeyboardEnabled = "Allows keyboard spin shortcuts such as Up, Down, PageUp and PageDown.";

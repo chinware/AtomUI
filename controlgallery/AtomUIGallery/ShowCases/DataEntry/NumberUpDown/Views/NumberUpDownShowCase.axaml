@@ -150,6 +150,36 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource SpinnerModeTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource SpinnerModeDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <StackPanel Orientation="Vertical"
+                        Spacing="{atom:SharedTokenResource UniformlyMargin}">
+                <atom:NumericUpDown Mode="Spinner"
+                                    Minimum="1"
+                                    Maximum="10"
+                                    Value="3"
+                                    FormatString="0"
+                                    PlaceholderText="Outlined"
+                                    Width="150"
+                                    HorizontalAlignment="Left" />
+                <atom:NumericUpDown Mode="Spinner"
+                                    Minimum="1"
+                                    Maximum="10"
+                                    Value="3"
+                                    FormatString="0"
+                                    PlaceholderText="Filled"
+                                    Width="150"
+                                    HorizontalAlignment="Left"
+                                    StyleVariant="Filled" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:NumberUpDownShowCaseLangResource StringModeTitle}"
             IsDeferredContentEnabled="True"
             Description="{gallery:NumberUpDownShowCaseLangResource StringModeDescription}">

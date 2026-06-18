@@ -300,12 +300,27 @@ public class ButtonSpinner : Spinner,
         {
             _spinnerHandle.ButtonsCreated -= HandleButtonCreated;
         }
+        _spinnerHandle = null;
         DecoratedBox = e.NameScope.Find<ButtonSpinnerDecoratedBox>("PART_DecoratedBox");
         base.OnApplyTemplate(e);
-        if (DecoratedBox?.SpinnerContent is ButtonSpinnerHandle spinnerHandle)
+        var increaseButton = e.NameScope.Find<IconButton>("PART_IncreaseButton");
+        var decreaseButton = e.NameScope.Find<IconButton>("PART_DecreaseButton");
+        if (increaseButton is not null || decreaseButton is not null)
+        {
+            IncreaseButton = increaseButton;
+            DecreaseButton = decreaseButton;
+        }
+        else if (DecoratedBox?.SpinnerContent is ButtonSpinnerHandle spinnerHandle)
         {
             _spinnerHandle                =  spinnerHandle;
             _spinnerHandle.ButtonsCreated += HandleButtonCreated;
+            IncreaseButton                =  _spinnerHandle.IncreaseButton;
+            DecreaseButton                =  _spinnerHandle.DecreaseButton;
+        }
+        else
+        {
+            IncreaseButton = null;
+            DecreaseButton = null;
         }
         SetButtonUsage();
         ConfigureAddOns();

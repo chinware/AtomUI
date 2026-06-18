@@ -21,6 +21,12 @@ namespace AtomUI.Desktop.Controls;
 
 using AvaloniaNumericUpDown = Avalonia.Controls.NumericUpDown;
 
+public enum NumericUpDownMode
+{
+    Input,
+    Spinner
+}
+
 public class NumericUpDown : AvaloniaNumericUpDown, 
                              IMotionAwareControl,
                              ICompactSpaceAware,
@@ -71,6 +77,9 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     
     public static readonly StyledProperty<bool> IsKeyboardEnabledProperty =
         AvaloniaProperty.Register<NumericUpDown, bool>(nameof(IsKeyboardEnabled), true);
+
+    public static readonly StyledProperty<NumericUpDownMode> ModeProperty =
+        AvaloniaProperty.Register<NumericUpDown, NumericUpDownMode>(nameof(Mode), NumericUpDownMode.Input);
 
     public static readonly StyledProperty<string?> StringValueProperty =
         AvaloniaProperty.Register<NumericUpDown, string?>(nameof(StringValue));
@@ -159,6 +168,12 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     {
         get => GetValue(IsKeyboardEnabledProperty);
         set => SetValue(IsKeyboardEnabledProperty, value);
+    }
+
+    public NumericUpDownMode Mode
+    {
+        get => GetValue(ModeProperty);
+        set => SetValue(ModeProperty, value);
     }
 
     public string? StringValue
