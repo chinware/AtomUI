@@ -4,3 +4,8 @@
 
 此分类关注数据结构展示、列表/树/表格行为、分组、排序、过滤、高亮和虚拟化。DataGrid 作为独立包，包级架构在 `docs/modules/desktop-controls-datagrid/`。
 
+## 控件文档
+
+- [GroupBox 桌面版架构设计](group-box/overview.md)
+- [GroupBox Token 设计](group-box/token.md)
+- [GroupBox Changelog](group-box/changelog.md)
