@@ -47,10 +47,17 @@ public class NumberUpDownShowCasePageTests
         source.ShouldContain("Text=\"{gallery:NumberUpDownShowCaseLangResource PageDescription}\"");
         source.ShouldContain("HorizontalAlignment=\"Left\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(13);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(13);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:NumberUpDownViewModel\"").ShouldBe(13);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(14);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(14);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:NumberUpDownViewModel\"").ShouldBe(14);
         source.ShouldContain("NumberUpDownShowCaseLangResource BasicUsageTitle");
+        source.ShouldContain("NumberUpDownShowCaseLangResource SpinnerModeTitle");
+        source.ShouldContain("Spacing=\"{atom:SharedTokenResource UniformlyMargin}\"");
+        source.ShouldContain("Mode=\"Spinner\"");
+        source.ShouldContain("FormatString=\"0\"");
+        source.ShouldContain("PlaceholderText=\"Outlined\"");
+        source.ShouldContain("PlaceholderText=\"Filled\"");
+        source.ShouldContain("StyleVariant=\"Filled\"");
         source.ShouldContain("NumberUpDownShowCaseLangResource StringModeTitle");
         source.ShouldContain("NumberUpDownShowCaseLangResource DecimalStepTitle");
         source.ShouldContain("NumberUpDownShowCaseLangResource StatusTitle");
@@ -144,6 +151,7 @@ public class NumberUpDownShowCasePageTests
             source.ShouldContain("ApiPropertyIsStringMode");
             source.ShouldContain("ApiPropertyIsAllowClear");
             source.ShouldContain("ApiPropertyIsKeyboardEnabled");
+            source.ShouldContain("SpinnerModeTitle");
             source.ShouldContain("TokenNameControlWidth");
             source.ShouldContain("TokenNameHandleWidth");
             source.ShouldContain("TokenNameHandleIconSize");

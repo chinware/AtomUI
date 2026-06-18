@@ -20,9 +20,10 @@ NumericUpDown 的设计语言来自输入框与微调按钮的组合。
 | 输入密度 | 控件在表单、工具栏或紧凑布局中的尺寸等级。 | `Large`、`Middle`、`Small`。 |
 | 输入表面 | 控件边框和背景的视觉强度。 | `Outlined`、`Filled`、`Borderless`。 |
 | 反馈状态 | 输入的校验和业务状态。 | `Default`、`Error`、`Warning`。 |
+| 展示模式 | 控件以输入框或三段式拨轮呈现。 | `Mode=Input`、`Mode=Spinner`。 |
 | 辅助内容 | 输入框前后附加说明、单位、协议、图标或清除入口。 | `LeftAddOn`、`RightAddOn`、`InnerLeftContent`、`InnerRightContent`、`IsAllowClear`。 |
 
-步进 Handle 是输入框语义的一部分，不是独立操作按钮组。它应在普通状态下提供数值增减入口，在禁用状态下不显示可操作 Handle，在 Filled 状态下与输入表面保持同源弱背景。
+步进能力是输入框语义的一部分，不是独立操作按钮组。`Input` 模式使用右侧浮动 Handle，在普通状态下提供数值增减入口，在禁用状态下不显示可操作 Handle，在 Filled 状态下与输入表面保持同源弱背景。`Spinner` 模式使用左减号、中间输入、右加号的三段式结构，适用于需要持续暴露步进操作的场景。
 
 ## 3. 架构分层
 
@@ -32,9 +33,9 @@ NumericUpDown 架构按职责分层，避免数值解析、输入视觉、Addon�
 | --- | --- | --- |
 | Public API | 暴露数值、文本、格式化、步进、输入外观、Addon、清除按钮和集成入口。 | `NumericUpDown.cs` 以及继承的 Avalonia `NumericUpDown` API |
 | Numeric State | 维护 `Value`、`Text`、`StringValue`、格式化和解析之间的同步。 | `NumericUpDown.cs`、`NumericUpDownTextConverter` |
-| Input Shell | 承载输入框边框、背景、状态、Addon、CompactSpace 和 spinner Handle。 | `ButtonSpinner`、`ButtonSpinnerDecoratedBox` |
-| Template Contract | 定义 `PART_Spinner`、`PART_TextBox`、`PART_ClearButton` 和内部右侧内容 presenter。 | `NumericUpDownTheme.axaml` |
-| Theme Mapping | 将尺寸、variant、status、disabled、filled Handle、清除按钮等状态映射为视觉属性。 | `NumericUpDownTheme.axaml`、ButtonSpinner / TextBox 主题 |
+| Input Shell | 承载输入框边框、背景、状态、Addon、CompactSpace、浮动 Handle 或三段式拨轮按钮。 | `ButtonSpinner`、`ButtonSpinnerDecoratedBox`、NumericUpDown spinner 专用模板 |
+| Template Contract | 定义 `PART_Spinner`、`PART_TextBox`、`PART_ClearButton`、内部右侧内容 presenter，以及 spinner 模式专用按钮 part。 | `NumericUpDownTheme.axaml` |
+| Theme Mapping | 将尺寸、variant、status、disabled、filled Handle、清除按钮和 `Mode` 映射为视觉属性与模板。 | `NumericUpDownTheme.axaml`、ButtonSpinner / TextBox 主题 |
 | Component Token | 以独立 `NumericUpDown` token scope 复用 ButtonSpinner 的输入与 Handle Token。 | `NumericUpDownToken.cs` |
 | Integration | 与 Form、CompactSpace、Motion、Gallery 和 Avalonia 原生数值事件协同。 | `IFormItemAware`、`ICompactSpaceAware`、`IMotionAwareControl` |
 
@@ -44,7 +45,7 @@ NumericUpDown 架构按职责分层，避免数值解析、输入视觉、Addon�
 Public API
   Value / Text / StringValue / IsStringMode
   Minimum / Maximum / Increment / FormatString / NumberFormat
-  SizeType / StyleVariant / Status / IsAllowClear / AddOn
+  Mode / SizeType / StyleVariant / Status / IsAllowClear / AddOn
         ↓
 Numeric State
   parse / format / clamp / value changed
@@ -100,6 +101,7 @@ String mode 用于高精度小数、后端要求字符串传输或需要保留�
 
 | API | 类型 | 语义 |
 | --- | --- | --- |
+| `Mode` | `NumericUpDownMode` | 控件展示模式，默认 `Input`，可设置为 `Spinner` 以启用三段式拨轮结构。 |
 | `SizeType` | `SizeType` | 输入框尺寸密度。 |
 | `StyleVariant` | `InputControlStyleVariant` | 输入表面样式，支持 `Outlined`、`Filled`、`Borderless`。 |
 | `Status` | `InputControlStatus` | 输入反馈状态，支持默认、错误和警告。 |
@@ -113,6 +115,15 @@ String mode 用于高精度小数、后端要求字符串传输或需要保留�
 | `InnerLeftContentTemplate` / `InnerRightContentTemplate` | `IDataTemplate?` | 内部前后缀模板。 |
 
 清除按钮只在 `IsAllowClear=true`、`IsReadOnly=false` 且 `Text` 非空时显示。清除动作将 `Value` 置为 `null`，并通过 Avalonia 文本和值同步机制更新显示状态。
+
+`NumericUpDownMode` 定义 NumericUpDown 的展示结构：
+
+| 值 | 语义 |
+| --- | --- |
+| `Input` | 默认输入框模式，使用当前右侧浮动 Handle，不改变既有视觉树和交互行为。 |
+| `Spinner` | 三段式拨轮模式，左侧为减号按钮，中间为居中文本输入，右侧为加号按钮。 |
+
+`Mode` 只改变展示结构，不改变 `Value`、`Text`、`Minimum`、`Maximum`、`Increment`、`AllowSpin`、键盘、滚轮、Form 或 string mode 的数值语义。`Mode=Input` 是默认值，必须保证未使用 spinner 模式的用户不承担 spinner 模式的视觉树和事件订阅成本。
 
 ## 5. 行为交互模型
 
@@ -135,6 +146,8 @@ Disabled
 `IsKeyboardEnabled=false` 只拦截 `Up`、`Down`、`PageUp` 和 `PageDown` 的步进行为，不改变文本输入、焦点、鼠标或 spinner 可见性。该属性用于需要保留数字输入但不希望方向键改变数值的表单场景。
 
 鼠标滚轮、按钮点击和键盘步进沿 Avalonia 基类的 `OnSpin` / `DoIncrement` / `DoDecrement` 语义更新 `Value`，并遵守 `Minimum`、`Maximum`、`Increment`、`IsReadOnly` 与 `AllowSpin`。
+
+`Mode=Spinner` 时，左右按钮始终位于输入区域两侧，并通过当前有效步进方向分别进入 enabled / disabled 状态。`Value` 达到 `Minimum` 时减号按钮禁用，达到 `Maximum` 时加号按钮禁用；`AllowSpin=false` 时两个按钮禁用但不等价于控件 disabled；`IsEnabled=false` 或 `IsReadOnly=true` 时不提供可操作步进入口。
 
 ## 6. 状态模型
 
@@ -173,22 +186,30 @@ IsEffectiveShowClearButton =
 - `SizeType` 传递给 `ButtonSpinner`、`TextBox` 和内部 Handle。
 - `StyleVariant` 传递给 `ButtonSpinner` 和 Handle，使 Filled / Borderless / Outlined 的背景、边框和 Handle 表面保持一致。
 - `Status` 传递给 `ButtonSpinner`，由 AddOnDecoratedBox 体系映射错误和警告状态。
+- `Mode` 只驱动模板选择和模式专用 part 接入，不参与数值状态计算。
 - `CompactSpaceItemPosition`、`CompactSpaceOrientation` 和 `IsUsedInCompactSpace` 只作为 CompactSpace 集成状态，不形成公开 API。
 
 ## 7. 模板与视觉架构
 
-NumericUpDown 的模板以 `ButtonSpinner` 作为输入壳体，以 AtomUI `TextBox` 作为文本编辑器，以 `InputClearIconButton` 和 `ContentPresenter` 组成内部右侧内容区域。
+NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模板，以 `ButtonSpinner` 作为输入壳体，以 AtomUI `TextBox` 作为文本编辑器，以 `InputClearIconButton` 和 `ContentPresenter` 组成内部右侧内容区域。`Mode=Spinner` 使用独立三段式拨轮模板，只在用户显式启用 spinner 模式时创建左右步进按钮和分隔视觉。
 
-稳定模板节点：
+跨模式稳定模板节点：
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_Spinner` | `ButtonSpinner` | 输入壳体、外部 AddOn、内部前后缀、浮动 Handle 和 CompactSpace 状态承载。 |
+| `PART_Spinner` | `ButtonSpinner` | 输入壳体、外部 AddOn、内部前后缀、步进入口和 CompactSpace 状态承载。 |
 | `PART_TextBox` | `TextBox` | 文本输入、占位符、只读、数据校验和文本双向绑定。 |
 | `PART_ClearButton` | `InputClearIconButton` | 清除 `Value` 的内部按钮。 |
 | `PART_InnerRightContentPresenter` | `ContentPresenter` | 用户 `InnerRightContent` 的内部右侧内容承载。 |
 
-默认视觉树形态：
+`Mode=Spinner` 专用模板节点：
+
+| Template Part | 类型 | 职责 |
+| --- | --- | --- |
+| `PART_DecreaseButton` | `IconButton` | 触发 `SpinDirection.Decrease`，显示 `MinusOutlined`。 |
+| `PART_IncreaseButton` | `IconButton` | 触发 `SpinDirection.Increase`，显示 `PlusOutlined`。 |
+
+默认 `Input` 模式视觉树形态：
 
 ```text
 NumericUpDown
@@ -205,9 +226,28 @@ NumericUpDown
    └─ ButtonSpinnerHandle
 ```
 
+`Spinner` 模式视觉树形态：
+
+```text
+NumericUpDown
+└─ ButtonSpinner#PART_Spinner (spinner template)
+   ├─ outer add-ons
+   └─ content frame
+      ├─ IconButton#PART_DecreaseButton
+      ├─ inner left content
+      ├─ TextBox#PART_TextBox
+      ├─ inner right stack
+      │  ├─ InputClearIconButton#PART_ClearButton
+      │  └─ ContentPresenter#PART_InnerRightContentPresenter
+      └─ IconButton#PART_IncreaseButton
+```
+
 视觉层级要求：
 
-- `ButtonSpinner` 是输入壳体边界，不应被普通 `Border` 或 `Grid` 包装替代。
+- `Mode=Input` 的默认模板不得预埋 spinner 模式左右按钮或无职责 wrapper。未启用 spinner 模式的用户不应承担额外视觉树、绑定、selector 和事件订阅成本。
+- `Mode=Spinner` 使用独立 `ControlTemplate`，不通过同一模板内两套视觉树加 `IsVisible` 切换实现。
+- `ButtonSpinner` 是默认输入壳体边界，不应被普通 `Border` 或 `Grid` 包装替代。
+- spinner 专用模板应复用输入控件家族的 AddOn、边框、圆角、状态和 CompactSpace 语义，不应重写数值编辑模型。
 - `PART_TextBox` 的 `BorderThickness=0` 是为了避免内层 TextBox 与外层输入壳体重复绘制边框。
 - `PART_ClearButton` 与 `PART_InnerRightContentPresenter` 共用内部右侧 stack，必须保留顺序：清除按钮在用户内部右侧内容之前。
 - 浮动 Handle 由 `ButtonSpinnerDecoratedBox` 控制透明度和偏移，不应在 NumericUpDown 模板中动态创建或移除。
@@ -219,11 +259,39 @@ NumericUpDown Theme 位于 `src/AtomUI.Desktop.Controls/NumericUpDown/Themes/Num
 
 Theme 职责：
 
-- 装配 `ButtonSpinner#PART_Spinner`。
+- 默认装配 `ButtonSpinner#PART_Spinner`，保持 `Mode=Input` 现有结构和行为。
+- 为 `Mode=Spinner` 提供独立 `ControlTemplate`，并通过 selector 切换模板。
 - 将 `AllowSpin`、`IsEnabled`、`SizeType`、`StyleVariant`、`Status`、Addon、内部内容和 CompactSpace 状态传递给 `ButtonSpinner`。
-- 固定使用可见且可浮动的 ButtonSpinner Handle。
+- 在 `Mode=Input` 中固定使用可见且可浮动的 ButtonSpinner Handle。
 - 装配 `TextBox#PART_TextBox`，并把 `Text`、`PlaceholderText`、`PlaceholderForeground`、`IsReadOnly` 和数据校验错误传递给 TextBox。
 - 设置 `IsMotionEnabled`、`SpinnerHandleWidth`、`HorizontalAlignment`、`VerticalAlignment` 和 `PlaceholderForeground` 默认值。
+
+模板切换应采用 `StyledProperty` 驱动的 `ControlTemplate` setter，而不是在同一个模板中创建两套视觉树：
+
+```xml
+<ControlTemplate x:Key="NumericUpDownInputTemplate"
+                 TargetType="atom:NumericUpDown">
+    <!-- 默认输入框模板 -->
+</ControlTemplate>
+
+<ControlTemplate x:Key="NumericUpDownSpinnerTemplate"
+                 TargetType="atom:NumericUpDown">
+    <!-- 三段式拨轮模板 -->
+</ControlTemplate>
+
+<ControlTheme x:Key="{x:Type atom:NumericUpDown}"
+              TargetType="atom:NumericUpDown">
+    <Setter Property="Template"
+            Value="{StaticResource NumericUpDownInputTemplate}" />
+
+    <Style Selector="^[Mode=Spinner]">
+        <Setter Property="Template"
+                Value="{StaticResource NumericUpDownSpinnerTemplate}" />
+    </Style>
+</ControlTheme>
+```
+
+该模型使 `Mode=Input` 实例只创建默认模板视觉树。`Mode=Spinner` 的按钮、分隔线和专用布局节点只在启用 spinner 模式时实例化。运行时切换 `Mode` 会触发模板重建，控件本体上的 `Value`、`Text`、`StringValue`、`Status` 等状态通过绑定保留；旧 TextBox 的焦点、光标位置和选区属于旧模板实例，可做 best-effort 恢复，但不作为跨模板强契约。
 
 状态视觉由共享主题分层承担：
 
@@ -260,6 +328,8 @@ NumericUpDown 不应直接依赖 Gallery 结构，也不应把 Gallery 示例中
 - 不修改继承自 Avalonia `NumericUpDown` 的 `Value`、`Text`、`Minimum`、`Maximum`、`Increment`、`FormatString`、`NumberFormat`、`ParsingNumberStyle`、`TextConverter`、`AllowSpin`、`ShowButtonSpinner`、`ButtonSpinnerLocation`、`ValueChanged` 和 `Spinned` API 契约。
 - 不在未授权情况下改变 AtomUI 桌面主题对 `ShowButtonSpinner` 和 `ButtonSpinnerLocation` 的当前解释：自定义浮动 Handle 保持右侧并由 ButtonSpinner 体系控制显示状态。
 - 不擅自新增、删除、重命名或改变 AtomUI public API：`IsStringMode`、`StringValue`、`IsKeyboardEnabled`、`IsAllowClear`、`ClearIcon`、`SizeType`、`StyleVariant`、`Status`、Addon 和内部内容模板属性。
+- `Mode=Input` 默认行为和渲染效果不变；新增 spinner 模式不能让默认用户承担额外视觉树或额外交互订阅成本。
+- `Mode=Spinner` 只改变展示结构，不改变数值解析、格式化、步进、Form、CompactSpace 或 string mode 语义。
 - `IsStringMode=true` 时必须保留原始 `StringValue`，不能因 `decimal` 无法表达高精度输入而丢失文本。
 - `IsKeyboardEnabled=false` 只屏蔽步进快捷键，不屏蔽普通文本输入。
 - 清除按钮只在允许清除、非只读且文本非空时显示。
@@ -298,7 +368,24 @@ NumericUpDown 使用 ButtonSpinner 的浮动 Handle 模型：
 
 该模型保证 NumericUpDown 在普通表单中保持输入框视觉密度，同时在可交互状态提供步进入口。
 
-### 11.3 Form 集成模型
+### 11.3 Spinner Mode 按需模板模型
+
+Spinner mode 对齐 Ant Design InputNumber 的 `mode="spinner"` 设计：同一个数值输入控件在保留数值语义的前提下，切换为左减号、中间输入、右加号的三段式展示。
+
+实现原则：
+
+- `Mode=Input` 是默认路径，必须零新增视觉节点、零新增按钮事件订阅、零额外布局分支。
+- `Mode=Spinner` 通过独立 `ControlTemplate` 创建三段式结构，禁止在默认模板中预埋 spinner mode 节点后用 `IsVisible` 隐藏。
+- 按钮点击继续进入统一 spin 语义，不在 NumericUpDown 内复制 `Value += Increment` 或 `Value -= Increment` 的数值逻辑。
+- 左右按钮的 enabled 状态由 `AllowSpin`、`IsEnabled`、`IsReadOnly` 和有效步进方向共同决定。
+- `TextBox#PART_TextBox` 在 spinner 模式中居中显示文本，仍保持 `Text` 双向绑定、placeholder、只读、数据校验和 disabled 文本色语义。
+- spinner 模式的外层 content frame 必须保持零 padding，避免与左右 action 段和中间输入段自身 padding 叠加，导致控件高度超过输入控件标准高度。
+- spinner 模式的左右 action 段按 Ant Design InputNumber `mode="spinner"` 规则自适应宽度，不使用浮动 Handle 的固定 `HandleWidth`。action 段宽度由输入横向 padding、标准图标尺寸和分隔线共同决定。
+- spinner 模式的 `MinusOutlined` / `PlusOutlined` 使用标准图标尺寸，不使用浮动 Handle 的 `HandleIconSize` 小号箭头规则。
+- spinner 模式不新增专属 Token。分隔线使用 `HandleBorderColor`，hover 图标色使用 `HandleHoverColor`，pressed 背景使用 `HandleActiveBg`；普通背景跟随输入壳体表面，避免左右 action 段绘制成独立按钮框。
+- 外部 AddOn 仍包裹整个输入壳体；`InnerLeftContent`、`IsAllowClear` 和 `InnerRightContent` 仍位于中间输入段内，不进入左右步进按钮段。
+
+### 11.4 Form 集成模型
 
 NumericUpDown 通过 `IFormItemAware` 暴露表单值能力：
 
@@ -337,6 +424,9 @@ AXAML/Theme 验证：
 - Disabled 状态下 TextBox 文本色命中 disabled token。
 - Disabled 状态下浮动 Handle 不显示。
 - Filled 状态下 Handle 背景使用 `FilledHandleBg`。
+- `Mode=Input` 下不创建 spinner 模式的 inline 左右按钮布局；默认浮动 Handle 内部仍保留自身的上下按钮 part。
+- `Mode=Spinner` 下创建 `PART_DecreaseButton` 和 `PART_IncreaseButton`，并正确处理 min/max、disabled、read-only 和 `AllowSpin=false` 状态。
+- `Mode` 运行时切换后，新模板 part 重新接入，旧模板 part 事件解绑。
 - 清除按钮和 `InnerRightContent` 的顺序稳定。
 - 不引入额外无职责 wrapper，不把共享 ButtonSpinner/TextBox 状态复制到 NumericUpDown 主题。
 

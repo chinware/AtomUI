@@ -13,6 +13,8 @@ internal partial class zh_TW : LanguageProvider
 
     public const string BasicUsageTitle = "基礎用法";
     public const string BasicUsageDescription = "僅支持數字輸入的 NumberUpDown。";
+    public const string SpinnerModeTitle = "撥輪";
+    public const string SpinnerModeDescription = "數字撥輪。";
     public const string StringModeTitle = "字符串模式（高精度）";
     public const string StringModeDescription = "以字符串形式保留高精度值。";
     public const string KeyboardBehaviorTitle = "鍵盤行為";
@@ -69,6 +71,7 @@ internal partial class zh_TW : LanguageProvider
     public const string ApiPropertyMaximum = "允許輸入的最大數值。";
     public const string ApiPropertyIncrement = "通過步進按鈕、鍵盤或滾輪增減的數值。";
     public const string ApiPropertyFormatString = "用於顯示數值的格式字符串。";
+    public const string ApiPropertyMode = "控件展示模式，可使用默認輸入框模式或三段式撥輪模式。";
     public const string ApiPropertyIsStringMode = "以文本保留高精度輸入，同時保持數值編輯行為。";
     public const string ApiPropertyStringValue = "高精度字符串模式使用的字符串值。";
     public const string ApiPropertyIsKeyboardEnabled = "允許 Up、Down、PageUp、PageDown 等鍵盤步進快捷鍵。";
