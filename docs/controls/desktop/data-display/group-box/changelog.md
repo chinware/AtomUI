@@ -13,4 +13,5 @@
   - 明确 `PART_HeaderContent` 是 Header 缺口计算的稳定模板节点。
 - Token
   - 按内容区域、Header 结构和 fieldset 语义分类记录 GroupBox Token 边界。
-
+- Fix
+  - 将 Header 缺口从背景遮挡改为边框几何排除，修复 `Background="Transparent"` 时标题下方露出边框短线的问题。
