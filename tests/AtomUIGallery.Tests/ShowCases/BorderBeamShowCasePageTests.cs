@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using AtomUI.Toolkits.GalleryBase.Localization;
+using AtomUI.Toolkits.GalleryBase.Navigation;
 using AtomUIGallery.ShowCases.BorderBeam;
 using Avalonia.Media;
 using Shouldly;
@@ -13,20 +15,24 @@ public class BorderBeamShowCasePageTests
     [Fact]
     public void BorderBeam_ShowCase_Is_Registered_Under_Other_Category()
     {
-        var navigationSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Views/CaseNavigation.axaml");
-        var navigationVmSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/ViewModels/CaseNavigationViewModel.cs");
+        var configuration = global::AtomUIGallery.AtomUIGalleryModule.CreateConfiguration();
         var registerSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/ShowCaseRegister.cs");
         var navigationEnSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/en_US.cs");
         var navigationZhCnSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/zh_CN.cs");
         var navigationZhTwSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Localization/CaseNavigationLang/zh_TW.cs");
 
-        navigationSource.ShouldContain("CaseNavigationLangResource Other");
-        navigationSource.ShouldContain("Icon=\"{antdicons:AntDesignIconProvider Kind=BlockOutlined}\"");
-        navigationSource.ShouldNotContain("Icon=\"{antdicons:AntDesignIconProvider Kind=MoreOutlined}\"");
-        navigationSource.ShouldContain("CaseNavigationLangResource Other_BorderBeam");
-        navigationSource.ShouldContain("ItemKey=\"{x:Static viewmodels:BorderBeamViewModel.ID}\"");
-        navigationVmSource.ShouldContain("_showCaseViewModelFactories.Add(BorderBeamViewModel.ID");
-        registerSource.ShouldContain("locator.Map<BorderBeamViewModel, BorderBeamShowCase>");
+        var otherNode = Walk(configuration.NavigationNodes)
+            .First(node => node.Key == "Other");
+        var borderBeamNode = Walk(configuration.NavigationNodes)
+            .First(node => node.Key == BorderBeamViewModel.ID);
+
+        otherNode.IsRoute.ShouldBeFalse();
+        otherNode.Header.ShouldBeAssignableTo<IGalleryLocalizedText>();
+        otherNode.Icon.ShouldNotBeNull();
+        borderBeamNode.IsRoute.ShouldBeTrue();
+        borderBeamNode.Header.ShouldBeAssignableTo<IGalleryLocalizedText>();
+        configuration.Routes.ContainsRoute(BorderBeamViewModel.ID).ShouldBeTrue();
+        registerSource.ShouldContain("AtomUIGalleryModule.RegisterViews(locator)");
 
         navigationEnSource.ShouldContain("public const string Other");
         navigationEnSource.ShouldContain("public const string Other_BorderBeam");
@@ -181,6 +187,18 @@ public class BorderBeamShowCasePageTests
         itemEnd.ShouldBeGreaterThan(itemStart);
 
         return source[itemStart..(itemEnd + itemEndMarker.Length)];
+    }
+
+    private static IEnumerable<GalleryNavigationNode> Walk(IEnumerable<GalleryNavigationNode> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            yield return node;
+            foreach (var child in Walk(node.Children))
+            {
+                yield return child;
+            }
+        }
     }
 
     private static string ReadRepoFile(string relativePath)

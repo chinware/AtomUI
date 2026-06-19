@@ -1,15 +1,15 @@
 # AtomUI.Toolkits.GalleryBase 模块概览
 
-`AtomUI.Toolkits.GalleryBase` 是面向 AtomUI 生态的 Gallery 应用底座库。它不承载任何具体产品的示例内容，而是提供搭建产品 Gallery 所需的 Shell、导航、路由、展示控件、主题和本地化基础设施。
+`AtomUI.Toolkits.GalleryBase` 是面向 AtomUI 生态的 Gallery 应用底座库。它不承载任何具体产品的示例内容，而是提供搭建产品 Gallery 所需的配置、导航、路由、Shell ViewModel、展示控件、主题和本地化基础设施。
 
 该模块可以依赖 AtomUI 作为默认 UI 实现，包括 AtomUI 控件、主题 Token、语言系统和桌面/浏览器平台能力；但它自身必须保持产品中立，不能写入 AtomUI 控件库、AtomIdea 或其他产品的品牌、页面、示例和业务文案。
 
 ## 职责
 
-- 提供可配置的 Gallery Shell，包括侧边栏、内容路由区、标题栏菜单、主题切换和语言切换入口。
+- 提供可配置的 Gallery Shell 基础，包括共享 Workspace ViewModel、内容路由状态、导航 ViewModel、主题切换和语言切换命令。
 - 提供 Demo 展示基础控件，包括 `ShowCasePanel`、`ShowCaseItem`、瀑布流布局、Sticky 场景导航和延迟创建机制。
 - 提供产品侧注册模型，让产品通过配置注册品牌、导航树、路由、页面工厂、链接和版本信息。
-- 提供 Desktop 与 Browser Gallery 宿主可共用的 Shell 结构，减少每个产品重复维护 Gallery 底层。
+- 提供 Desktop 与 Browser Gallery 宿主可共用的配置、导航和路由结构，减少每个产品重复维护 Gallery 底层。
 - 提供 GalleryBase 自身的主题 Token、ControlTheme 和 Shell 文案本地化。
 
 ## 非职责
@@ -23,21 +23,22 @@
 
 - `ThemeManagerBuilderExtensions.UseGalleryBase(...)`
 - `GalleryBaseOptions`
+- `GalleryBaseConfiguration`
 - `GalleryRouteRegistry`
 - `GalleryNavigationBuilder`
-- `GalleryShell`
-- `GalleryBrowserView`
+- `GalleryNavigationViewModel`
+- `GalleryWorkspaceViewModel`
 
 ## 关键目录
 
 | 目录 | 说明 |
 |---|---|
 | `Controls/` | Gallery 展示控件、瀑布流布局、Sticky Tabs、场景 lazy controller |
-| `Shell/` | Gallery Shell、Desktop Window、Browser View、标题栏菜单 |
+| `Shell/` | Gallery 共享 Workspace ViewModel；Desktop Window 和 Browser View 视图抽取是后续 Shell 视图层工作 |
 | `Navigation/` | 导航节点模型、导航构建器、NavMenu 适配 |
 | `Routing/` | 路由注册、ViewModel 工厂、ReactiveUI ViewLocator 适配 |
 | `Theming/` | GalleryBase Token、ControlThemesProvider、主题注册扩展 |
-| `Localization/` | GalleryBase Shell 文案和语言资源 |
+| `Localization/` | GalleryBase 本地化抽象，例如 `IGalleryLocalizedText` |
 | `Runtime/` | 诊断和运行时选项，例如关闭 ShowCase 延迟创建 |
 
 ## 对外关系

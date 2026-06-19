@@ -77,7 +77,7 @@ dotnet test tests/AtomUI.Toolkits.GalleryBase.Tests/AtomUI.Toolkits.GalleryBase.
 dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --nologo /nr:false
 ```
 
-## 阶段 3：引入配置和路由注册
+## 阶段 3：引入配置和路由注册（已完成）
 
 新增：
 
@@ -112,16 +112,18 @@ controlgallery/AtomUIGallery/AtomUIGalleryModule.cs
 - 所有控件 ShowCase 导航
 - 所有 ViewModel/View route
 
-阶段 3 可以先保留旧 `CaseNavigationViewModel`，但必须有测试证明新 registry 覆盖所有现有页面。
+当前 `AtomUIGalleryModule` 已集中注册品牌、导航、路由和 ViewLocator 映射；`ShowCaseViewModule` 只保留为兼容包装。
 
 测试：
 
 - route key 唯一性。
 - navigation key 唯一性。
 - navigation 页面都有 route。
+- configuration 中的 routes 是只读快照，不能被原始 options 后续修改污染。
+- 默认展开 key 必须指向已注册分组。
 - 所有旧 `ShowCaseViewModule` 注册迁入新 registry。
 
-## 阶段 4：替换导航 ViewModel 和 XAML
+## 阶段 4：替换导航 ViewModel 和 XAML（已完成）
 
 删除硬编码导航：
 
@@ -131,12 +133,12 @@ controlgallery/AtomUIGallery/AtomUIGalleryModule.cs
 替换为：
 
 ```text
-GalleryNavigationView
 GalleryNavigationViewModel
 GalleryNavigationMenuAdapter
+产品侧 CaseNavigation 适配视图
 ```
 
-`AtomUIGallery` 只提供导航配置，不提供导航控件实现。
+`AtomUIGallery` 只提供导航配置和产品侧 `CaseNavigation` 视图适配，不再维护页面 factory 或手写导航树。`CaseNavigationViewModel` 继承 `GalleryNavigationViewModel`，`CaseNavigation.axaml` 只保留 `NavMenu` 容器，节点由 `GalleryNavigationMenuAdapter` 生成。
 
 验收：
 
@@ -144,8 +146,9 @@ GalleryNavigationMenuAdapter
 - 默认页面仍是 Overview。
 - 点击所有导航项能进入对应页面。
 - F5/F6 自动切页诊断保留。
+- Navigation ViewModel 释放时停止诊断 timer，并恢复自身启动的 ShowCase 延迟创建覆盖值。
 
-## 阶段 5：抽出共享 Shell
+## 阶段 5：抽出共享 Shell（部分完成）
 
 迁移：
 
@@ -155,6 +158,9 @@ WorkspaceWindowViewModel -> GalleryWorkspaceViewModel
 BrowserGalleryView -> GalleryBrowserView
 GalleryWindowTitleBar -> GalleryBase title bar control
 ```
+
+当前已完成 `GalleryWorkspaceViewModel` 抽取，提供 Router、导航 ViewModel、主题命令和语言命令。`WorkspaceWindow`、`BrowserGalleryView` 和完整侧边栏/footer 视图层仍在产品项目内，后续应继续迁入 GalleryBase。
+`GalleryWorkspaceViewModel` 已实现 `IDisposable`，用于解绑 ThemeManager 语言事件并释放导航运行时。
 
 保留在产品侧：
 

@@ -1,16 +1,16 @@
 # GalleryBase Shell 与平台宿主设计
 
-本文档细化 GalleryBase 的 Desktop Window、Browser View、共享 Shell、品牌区域、标题栏菜单和平台差异。Shell 层的目标是让产品不再复制 `WorkspaceWindow`、`CaseNavigation`、`BrowserGalleryView` 这类底层代码。
+本文档细化 GalleryBase 的 Desktop Window、Browser View、共享 Shell、品牌区域、标题栏菜单和平台差异。当前已抽出共享 Workspace ViewModel、导航运行时和产品配置；Desktop Window 与 Browser View 的视图层抽取仍是后续工作。
 
 ## 设计目标
 
-- Desktop 和 Browser 共用同一套品牌、导航、路由和内容宿主。
+- Desktop 和 Browser 共用同一套品牌、导航、路由和 Workspace ViewModel 基础。
 - 产品侧只提供配置，不重写 Shell 布局。
 - Shell 视觉使用 AtomUI 控件和 Token，但不写入任何产品品牌默认值。
 - Desktop 差异和 Browser 差异封装在平台宿主边界。
 - 支持未来扩展搜索、面包屑、页面元信息和响应式布局。
 
-## Shell 组成
+## Shell 组成目标
 
 通用 Shell 结构：
 
@@ -31,7 +31,7 @@ Shell 不负责 Demo 页面内部布局。ShowCase 页面继续使用 `GallerySt
 ## 共享 ViewModel
 
 ```csharp
-public sealed class GalleryWorkspaceViewModel : ReactiveObject, IScreen
+public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 {
     public RoutingState Router { get; }
     public GalleryNavigationViewModel Navigation { get; }
@@ -40,7 +40,9 @@ public sealed class GalleryWorkspaceViewModel : ReactiveObject, IScreen
     public ReactiveCommand<bool, Unit> ToggleCompactModeCommand { get; }
     public ReactiveCommand<bool, Unit> ToggleMotionCommand { get; }
     public ReactiveCommand<bool, Unit> ToggleWaveSpiritCommand { get; }
-    public ReactiveCommand<LanguageVariant, Unit> SwitchLanguageCommand { get; }
+    public ReactiveCommand<Unit, Unit> SwitchToZhCNCommand { get; }
+    public ReactiveCommand<Unit, Unit> SwitchToZhTWCommand { get; }
+    public ReactiveCommand<Unit, Unit> SwitchToEnUSCommand { get; }
 }
 ```
 
@@ -50,10 +52,13 @@ public sealed class GalleryWorkspaceViewModel : ReactiveObject, IScreen
 - 持有导航 ViewModel。
 - 转发主题、紧凑、动效、语言切换命令。
 - 监听 ThemeManager 语言变化并更新菜单状态。
+- 释放时解绑 ThemeManager 语言事件，并释放 `GalleryNavigationViewModel`。
 
-`GalleryWorkspaceViewModel` 不能知道具体产品页面类型。
+`GalleryWorkspaceViewModel` 不能知道具体产品页面类型。产品可以通过继承或组合方式提供自己的导航 ViewModel 类型别名，例如 AtomUI Gallery 的 `WorkspaceWindowViewModel` 继承 `GalleryWorkspaceViewModel`，并把 `CaseNavigation` 暴露为产品侧兼容属性。
 
-## Desktop 宿主
+宿主 View/Window 关闭或 Browser 根视图卸载时，如果其生命周期不是进程级单例，应调用 `Dispose()`。当前 AtomUI Gallery 的 `WorkspaceWindowViewModel` 继承该基类，因此同样获得导航诊断 timer 和语言事件的释放边界。
+
+## Desktop 宿主目标
 
 ```csharp
 public class GalleryWorkspaceWindow : ReactiveWindow<GalleryWorkspaceViewModel>
@@ -75,7 +80,7 @@ Desktop 不负责：
 - 创建产品导航树。
 - 写死产品 logo 或链接。
 
-## Browser 宿主
+## Browser 宿主目标
 
 ```csharp
 public sealed class GalleryBrowserView : UserControl, IScreen, IMediaBreakAwareControl
@@ -203,6 +208,7 @@ GalleryDesktopCrashLogger.Log(ex, configuration.Platform.CrashLogDirectoryName);
 - Desktop Shell 不包含具体产品 logo URI。
 - Browser Shell 不包含具体产品链接。
 - Desktop 和 Browser 都使用 `GalleryWorkspaceViewModel`。
+- Workspace ViewModel 可释放并释放导航运行时。
 - Footer 在 links/version 为空时隐藏。
 - 标题栏菜单按配置开关显示或隐藏。
 - Browser OverlayLayer 初始化方法存在且只在 Browser View 使用。

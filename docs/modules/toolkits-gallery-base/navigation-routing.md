@@ -1,6 +1,6 @@
 # GalleryBase 导航与路由设计
 
-本文档细化 GalleryBase 的导航树、路由注册、ReactiveUI ViewLocator 适配和导航生命周期。该部分是产品复用的核心：产品只描述“有哪些页面”和“如何创建页面”，GalleryBase 负责展示导航并完成路由。
+本文档细化 GalleryBase 的导航树、路由注册、ReactiveUI ViewLocator 适配和导航生命周期。该部分是产品复用的核心：产品只描述“有哪些页面”和“如何创建页面”，GalleryBase 负责生成导航模型并完成路由。
 
 ## 设计目标
 
@@ -15,7 +15,7 @@
 ```csharp
 public sealed class GalleryNavigationNode
 {
-    public string Key { get; }
+    public EntityKey Key { get; }
     public object Header { get; }
     public object? Icon { get; }
     public bool IsRoute { get; }
@@ -63,34 +63,39 @@ Builder 规则：
 
 ## 本地化 Header
 
-第一阶段允许 `Header` 为字符串。为了支持 Shell 级语言切换，预留 `IGalleryLocalizedText`：
+`Header` 可以是普通字符串，也可以是 `IGalleryLocalizedText`。产品需要语言切换时应使用 `GalleryLocalizedText<TResourceKind>`，把导航文案绑定到产品自己的语言资源：
 
 ```csharp
 public interface IGalleryLocalizedText
 {
-    string Resolve();
+    object Resolve();
 }
 ```
 
-产品可在后续提供：
+产品侧示例：
 
 ```csharp
 options.Navigation.AddPage(
     "Button",
-    GalleryLang.Text(ButtonNavigationLangResourceKind.Button));
+    new GalleryLocalizedText<CaseNavigationLangResourceKind>(
+        CaseNavigationLangResourceKind.General_Button,
+        "Button"));
 ```
 
-第一阶段如果产品仍用 `{gallery:...LangResource}` 绑定页面内部文案，不受导航模型影响。
+页面内部文案仍由产品页面自己的 `{gallery:...LangResource}` 或绑定策略维护，不进入 GalleryBase。
 
 ## NavMenu 适配
 
-GalleryBase 提供内部适配器：
+GalleryBase 提供 NavMenu 适配器：
 
 ```csharp
-internal sealed class GalleryNavigationMenuAdapter
+public sealed class GalleryNavigationMenuAdapter
 {
-    public IReadOnlyList<INavMenuNode> BuildNodes(
-        IReadOnlyList<GalleryNavigationNode> nodes);
+    public IReadOnlyList<NavMenuNode> BuildNodes(
+        IEnumerable<GalleryNavigationNode> nodes);
+
+    public IList<TreeNodePath> BuildDefaultOpenPaths(
+        IEnumerable<EntityKey> defaultOpenKeys);
 }
 ```
 
@@ -100,9 +105,9 @@ internal sealed class GalleryNavigationMenuAdapter
 - 设置 `ItemKey`。
 - 应用图标。
 - 设置默认展开路径。
-- 处理 Header 内容和语言刷新。
+- 解析 `IGalleryLocalizedText` Header。
 
-该适配器是 UI 实现细节，不暴露为产品 API。未来如果 GalleryBase 支持其他 UI 实现，可以替换该适配层。
+该适配器是 AtomUI UI 实现边界。未来如果 GalleryBase 支持其他 UI 实现，可以替换该适配层。
 
 ## 路由注册模型
 
@@ -110,9 +115,9 @@ internal sealed class GalleryNavigationMenuAdapter
 public sealed class GalleryRouteRegistry
 {
     public void Map<TViewModel, TView>(
-        string routeKey,
+        EntityKey routeKey,
         Func<IScreen, TViewModel> viewModelFactory,
-        Func<TView>? viewFactory = null)
+        Func<TView> viewFactory)
         where TViewModel : class, IRoutableViewModel
         where TView : class, IViewFor<TViewModel>;
 }
@@ -121,17 +126,17 @@ public sealed class GalleryRouteRegistry
 注册后生成：
 
 ```csharp
-internal sealed class GalleryRouteDescriptor
+public sealed class GalleryRouteDescriptor
 {
-    public string RouteKey { get; }
+    public EntityKey RouteKey { get; }
     public Type ViewModelType { get; }
     public Type ViewType { get; }
-    public Func<IScreen, IRoutableViewModel> CreateViewModel { get; }
-    public Func<IViewFor> CreateView { get; }
 }
 ```
 
-`viewFactory` 允许为空。为空时第一阶段可以要求 `TView` 有公开无参构造；否则配置校验失败。这样避免运行时通过反射找不到构造器。
+产品应显式提供 `viewFactory`，或者使用要求 `TView : new()` 的重载。两种路径都不依赖运行时反射。
+
+`GalleryRouteRegistry` 在 options 阶段是可写 builder，在 `GalleryBaseConfiguration` 中是只读快照。只读快照保留 `ContainsRoute(...)`、`CreateViewModel(...)`、`RegisterViews(...)` 等运行时能力，但不允许继续 `Map(...)` 新路由。
 
 ## ViewLocator 适配
 
@@ -140,21 +145,7 @@ internal sealed class GalleryRouteDescriptor
 ```csharp
 public void RegisterViews(DefaultViewLocator locator)
 {
-    foreach (var route in _routes)
-    {
-        locator.Map(route.ViewModelType, route.CreateView);
-    }
-}
-```
-
-如果 `DefaultViewLocator` 没有非泛型 `Map`，GalleryBase 内部提供一个小型 adapter：
-
-```csharp
-public interface IGalleryViewLocatorRegistrar
-{
-    void Register<TViewModel, TView>(Func<TView> viewFactory)
-        where TViewModel : class
-        where TView : IViewFor<TViewModel>;
+    // Registry stores typed registration delegates and calls locator.Map<TViewModel, TView>(...).
 }
 ```
 
@@ -169,16 +160,16 @@ AppBuilder.Configure<GalleryApplication>()
 
 ## 导航 ViewModel
 
-`GalleryNavigationViewModel` 替代当前产品硬编码的 `CaseNavigationViewModel`：
+`GalleryNavigationViewModel` 替代产品硬编码的导航 ViewModel。AtomUI Gallery 保留的 `CaseNavigationViewModel` 只是产品类型别名，实际导航逻辑由 GalleryBase 提供：
 
 ```csharp
-public sealed class GalleryNavigationViewModel : ReactiveObject, IActivatableViewModel
+public class GalleryNavigationViewModel : ReactiveObject, IActivatableViewModel, IDisposable
 {
-    public ReactiveCommand<string, Unit> NavigateToCommand { get; }
-    public ReactiveCommand<TimeSpan, Unit> StartNavigationDiagnosticsCommand { get; }
-    public ReactiveCommand<Unit, Unit> StopNavigationDiagnosticsCommand { get; }
+    public ReactiveCommand<EntityKey, Unit> NavigateToCommand { get; }
+    public ReactiveCommand<TimeSpan, Unit> TestNavigatePagesCommand { get; }
+    public ReactiveCommand<Unit, Unit> StopTestNavigatePagesCommand { get; }
 
-    public bool CanNavigateTo(string routeKey);
+    public bool CanNavigateTo(EntityKey routeKey);
 }
 ```
 
@@ -189,12 +180,14 @@ public sealed class GalleryNavigationViewModel : ReactiveObject, IActivatableVie
 - 调用 `HostScreen.Router.NavigateAndReset`。
 - 避免重复导航到当前页面。
 - 提供诊断命令循环切换页面，用于内存和延迟加载压测。
+- AtomUI Gallery 的 `CaseNavigation` 监听语言变化后重建 NavMenu，使 `GalleryLocalizedText<TResourceKind>` 重新解析。
+- 释放时停止诊断 timer、解绑 activation subscription；如果诊断命令由当前实例启动，则恢复 ShowCase 延迟创建开关。
 
 ## 导航流程
 
 ```text
 User clicks NavMenu item
-  -> GalleryNavigationView receives item key
+  -> Product navigation view receives item key
   -> GalleryNavigationViewModel.CanNavigateTo(key)
   -> GalleryRouteRegistry.CreateViewModel(key, hostScreen)
   -> HostScreen.Router.NavigateAndReset(viewModel)
@@ -228,13 +221,24 @@ Activator.Activated.Subscribe(_ =>
 - 默认路由不允许是分组节点。
 - Browser 和 Desktop 默认路由一致。
 
+## 默认展开节点
+
+`DefaultOpenKeys` 只描述启动时默认展开的导航分组：
+
+- 每个 key 必须存在于导航树。
+- 每个 key 必须指向分组节点，不能指向页面 route。
+- key 不允许重复。
+- 语言切换只重建 NavMenu header 和 icon，不改变这些稳定 key。
+
 ## 测试要求
 
 - 导航树重复 key 报错。
 - 页面节点没有 route 报错。
 - 默认路由不存在报错。
+- 默认展开 key 不存在、重复或指向页面节点时报错。
 - 点击分组节点不触发 route factory。
 - 点击页面节点只创建目标 ViewModel。
 - 重复点击当前页面不重复创建 ViewModel。
 - 诊断自动切页会暂时关闭 ShowCase 延迟创建，并在停止后恢复。
+- Dispose 导航 ViewModel 后诊断 timer 停止；只有当前实例启动的延迟创建覆盖值会被恢复。
 - Browser 和 Desktop 使用同一份 `GalleryRouteRegistry`。

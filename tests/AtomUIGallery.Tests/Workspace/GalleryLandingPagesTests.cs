@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using AtomUI.Controls;
+using AtomUI.Toolkits.GalleryBase.Navigation;
 using Shouldly;
 using Xunit;
 
@@ -11,31 +13,34 @@ public class GalleryLandingPagesTests
     [Fact]
     public void Navigation_Uses_Overview_Community_And_Components_As_Top_Level_Items()
     {
-        var source = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Views/CaseNavigation.axaml");
-        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Views/CaseNavigation.axaml.cs");
+        var configuration = global::AtomUIGallery.AtomUIGalleryModule.CreateConfiguration();
+        var topLevelKeys  = configuration.NavigationNodes.Select(node => node.Key.Value).ToArray();
 
-        source.ShouldContain("Header=\"{gallery:CaseNavigationLangResource Overview}\"");
-        source.ShouldContain("ItemKey=\"{x:Static viewmodels:OverviewViewModel.ID}\"");
-        source.ShouldContain("Header=\"{gallery:CaseNavigationLangResource Community}\"");
-        source.ShouldContain("ItemKey=\"{x:Static viewmodels:CommunityViewModel.ID}\"");
-        source.ShouldContain("Header=\"{gallery:CaseNavigationLangResource Components}\"");
-        source.ShouldContain("ItemKey=\"Components\"");
-        source.ShouldContain("Icon=\"{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}\"");
-        Regex.IsMatch(
-            source,
-            "Header=\"\\{gallery:CaseNavigationLangResource General\\}\"\\s+Icon=\"\\{antdicons:AntDesignIconProvider Kind=ControlOutlined\\}\"").ShouldBeTrue();
+        topLevelKeys.ShouldBe(["Overview", "Community", "Components"]);
+        configuration.DefaultOpenKeys.ShouldContain(new EntityKey("Components"));
+        configuration.NavigationNodes[0].IsRoute.ShouldBeTrue();
+        configuration.NavigationNodes[1].IsRoute.ShouldBeTrue();
+        configuration.NavigationNodes[2].IsRoute.ShouldBeFalse();
+        Walk(configuration.NavigationNodes)
+            .ShouldContain(node => node.Key == "General" && !node.IsRoute);
+        Walk(configuration.NavigationNodes)
+            .ShouldNotContain(node => node.Key == "AboutUs" || node.Key == "General_AboutUs");
+
+        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Views/CaseNavigation.axaml.cs");
         codeBehindSource.ShouldContain("ShowCaseNavMenu.DefaultOpenPaths");
-        codeBehindSource.ShouldContain("new(\"Components\")");
-        source.ShouldNotContain("Header=\"{gallery:CaseNavigationLangResource General_AboutUs}\"");
+        codeBehindSource.ShouldContain("GalleryNavigationMenuAdapter");
     }
 
     [Fact]
     public void Navigation_Default_Page_Is_Overview()
     {
-        var source = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/ViewModels/CaseNavigationViewModel.cs");
+        var configuration = global::AtomUIGallery.AtomUIGalleryModule.CreateConfiguration();
+        var source        = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/ViewModels/CaseNavigationViewModel.cs");
 
-        source.ShouldContain("DoNavigateTo(OverviewViewModel.ID)");
-        source.ShouldNotContain("DoNavigateTo(AboutUsViewModel.ID)");
+        configuration.DefaultRoute.ShouldBe(new EntityKey("Overview"));
+        source.ShouldContain("GalleryNavigationViewModel");
+        source.ShouldNotContain("OverviewViewModel.ID");
+        source.ShouldNotContain("AboutUsViewModel.ID");
     }
 
     [Fact]
@@ -45,8 +50,8 @@ public class GalleryLandingPagesTests
         var viewModelSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/ViewModels/CaseNavigationViewModel.cs");
 
         viewSource.ShouldContain("ViewModel.CanNavigateTo(key.Value)");
-        viewModelSource.ShouldContain("public bool CanNavigateTo(EntityKey showCaseId)");
-        viewModelSource.ShouldContain("_showCaseViewModelFactories.ContainsKey(showCaseId)");
+        viewModelSource.ShouldContain("GalleryNavigationViewModel");
+        viewModelSource.ShouldNotContain("_showCaseViewModelFactories");
     }
 
     [Fact]
@@ -154,13 +159,26 @@ public class GalleryLandingPagesTests
     [Fact]
     public void Overview_And_Community_ViewModels_Are_Registered()
     {
+        var configuration = global::AtomUIGallery.AtomUIGalleryModule.CreateConfiguration();
         var registerSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/ShowCaseRegister.cs");
         var navigationSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/ViewModels/CaseNavigationViewModel.cs");
 
-        registerSource.ShouldContain("locator.Map<OverviewViewModel, OverviewPage>");
-        registerSource.ShouldContain("locator.Map<CommunityViewModel, CommunityPage>");
-        navigationSource.ShouldContain("_showCaseViewModelFactories.Add(OverviewViewModel.ID");
-        navigationSource.ShouldContain("_showCaseViewModelFactories.Add(CommunityViewModel.ID");
+        configuration.Routes.ContainsRoute("Overview").ShouldBeTrue();
+        configuration.Routes.ContainsRoute("Community").ShouldBeTrue();
+        registerSource.ShouldContain("AtomUIGalleryModule.RegisterViews(locator)");
+        navigationSource.ShouldContain("AtomUIGalleryModule.GetConfiguration()");
+    }
+
+    private static IEnumerable<GalleryNavigationNode> Walk(IEnumerable<GalleryNavigationNode> nodes)
+    {
+        foreach (var node in nodes)
+        {
+            yield return node;
+            foreach (var child in Walk(node.Children))
+            {
+                yield return child;
+            }
+        }
     }
 
     private static string ReadRepoFile(string relativePath)
