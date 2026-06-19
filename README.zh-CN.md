@@ -120,9 +120,9 @@ AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用
 | AtomUI.Generator                    | 面向自定义控件、Token 与本地化开发的源代码生成器   |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.0.4
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.4
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.4
+dotnet add package AtomUI.Desktop.Controls --version 6.0.5
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.5
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.5
 ```
 
 您也可以在 IDE 的 NuGet 包管理器中安装。以 Rider 为例，可以依次点击：
@@ -149,9 +149,9 @@ NuGet -> 软件包
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.0.4"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.0.4"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.0.4"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.0.5"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.0.5"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.0.5"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>

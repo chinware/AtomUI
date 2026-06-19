@@ -87,7 +87,8 @@
                         <atom:ResizeHandle Name="PART_ResizeHandle"
                                            HorizontalAlignment="Right"
                                            VerticalAlignment="Bottom"
-                                           Cursor="SizeNorthSouth" />
+                                           Cursor="SizeNorthSouth"
+                                           IsVisible="{TemplateBinding IsResizable}" />
                     </Panel>
                 </DockPanel>
             </ControlTemplate>
