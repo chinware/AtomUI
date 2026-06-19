@@ -17,9 +17,9 @@ Windows, macOS and Linux.
 Install the main desktop controls package first, then add optional packages only when your application needs them.
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.0.4
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.4
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.4
+dotnet add package AtomUI.Desktop.Controls --version 6.0.5
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.5
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.5
 ```
 
 ### Requirements

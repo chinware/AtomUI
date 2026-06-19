@@ -432,6 +432,12 @@ public class TextArea : AvaloniaTextBox,
 
     internal void NotifyAboutToResize()
     {
+        if (!IsResizable)
+        {
+            _originHeight = null;
+            return;
+        }
+
         _originHeight = Bounds.Height;
         SetCurrentValue(HeightProperty, Bounds.Height);
         if (_scrollViewer != null)
@@ -454,7 +460,7 @@ public class TextArea : AvaloniaTextBox,
 
     internal void NotifyResizing(Point delta)
     {
-        if (_originHeight != null)
+        if (IsResizable && _originHeight != null)
         {
             var height = _originHeight.Value + delta.Y;
             height = Math.Max(_minResizeHeight, Math.Min(height, _maxResizeHeight));
