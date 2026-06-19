@@ -60,7 +60,7 @@ public class DropdownButtonViewModel : ReactiveObject, IRoutableViewModel
             new DropdownButtonApiRow("OpenIndicator", Lang(DropdownButtonShowCaseLangResourceKind.ApiPropertyOpenIndicator), "PathIcon?", "cyan", "DownOutlined"),
             new DropdownButtonApiRow("ShouldUseOverlayPopup", Lang(DropdownButtonShowCaseLangResourceKind.ApiPropertyShouldUseOverlayPopup), "bool", "purple", "true"),
             new DropdownButtonApiRow("ButtonType", Lang(DropdownButtonShowCaseLangResourceKind.ApiPropertyButtonType), "ButtonType", "blue", "Default"),
-            new DropdownButtonApiRow("SizeType", Lang(DropdownButtonShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new DropdownButtonApiRow("SizeType", Lang(DropdownButtonShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new DropdownButtonApiRow("IsDanger", Lang(DropdownButtonShowCaseLangResourceKind.ApiPropertyIsDanger), "bool", "purple", "false"),
             new DropdownButtonApiRow("IsMotionEnabled", Lang(DropdownButtonShowCaseLangResourceKind.ApiPropertyIsMotionEnabled), "bool", "purple", "token"),
             new DropdownButtonApiRow("IsWaveSpiritEnabled", Lang(DropdownButtonShowCaseLangResourceKind.ApiPropertyIsWaveSpiritEnabled), "bool", "purple", "true"),
