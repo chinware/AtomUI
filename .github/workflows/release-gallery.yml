@@ -77,6 +77,11 @@ jobs:
                New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/dmg/x64" -Force
+               brew untap --force aws/tap azure/bicep
+               if ($LASTEXITCODE -ne 0) {
+                  Write-Host "Optional Homebrew runner taps were not present or could not be untapped."
+                  $global:LASTEXITCODE = 0
+               }
                brew install create-dmg openssl@3
                Set-Location ${{ env.AtomUIToolsSourceDir }}/scripts
                pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime osx-x64
@@ -162,6 +167,11 @@ jobs:
                New-Item -ItemType Directory -Path "${{ env.GalleryPublishDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}" -Force
                New-Item -ItemType Directory -Path "${{ env.GalleryArtifactsOutputDir }}/dmg/arm64" -Force
+               brew untap --force aws/tap azure/bicep
+               if ($LASTEXITCODE -ne 0) {
+                  Write-Host "Optional Homebrew runner taps were not present or could not be untapped."
+                  $global:LASTEXITCODE = 0
+               }
                brew install create-dmg openssl@3
                Set-Location ${{ env.AtomUIToolsSourceDir }}/scripts
                pwsh ./PublishAtomUIToolsLocal.ps1 -publishRootPath "${{ env.AtomUIToolsBinDir }}" -runtime osx-arm64
