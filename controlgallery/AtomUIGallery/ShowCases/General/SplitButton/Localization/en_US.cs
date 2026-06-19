@@ -23,6 +23,7 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentLarge = "Large";
     public const string P2ContentMiddle = "Middle";
     public const string P2ContentSmall = "Small";
+    public const string P2ContentCustom = "Custom";
     public const string P2ContentDefault = "Default";
     public const string P2ContentPrimary = "Primary";
     public const string P2ContentClickMe = "Click Me";

@@ -51,6 +51,8 @@ ButtonTheme.axaml visual states
 
 自定义背景只影响 normal 状态的视觉覆层可见性。它不参与颜色语义、文字色、边框色、阴影和 wave brush 计算。
 
+尺寸状态由 `SizeType` 与 Button 现有布局属性共同决定。`Large`、`Middle`、`Small` 走预设 Token；`Custom` 走 `Middle` 默认值，并允许用户通过本地 `Height`、`Padding`、`FontSize`、`CornerRadius` 等属性覆盖。实现不得为 Custom 增加 Button 专属尺寸属性或尺寸聚合对象。
+
 ## 5. 生命周期与模板接入
 
 Button 在静态构造中注册属性、伪类和主题关联，在实例构造中完成需要的状态订阅。模板应用时读取稳定 template part，并把状态同步到视觉节点。
@@ -80,6 +82,7 @@ Loading 状态影响 loading icon、原 icon 可见性和交互反馈，但不�
 关键流程：
 
 - API 归一：显式 `Color + Variant` 优先，其次兼容 API 映射，再回退到默认语义。
+- 尺寸归一：`Large`、`Middle`、`Small` 映射到对应 Token；`Custom` 以 `Middle` Token 作为 Style 默认值，Button 本地尺寸属性保持更高优先级。
 - 伪类同步：当 public API、content、icon、loading、shape、enabled 或 compact 状态变化时同步模板可见状态。
 - 有效边框：由 Button 类型、variant、enabled、bordered 状态和 compact 状态共同决定。
 - 有效圆角：由 `CornerRadius`、`Shape`、`SizeType` 和 CompactSpace 位置共同决定。
@@ -87,6 +90,8 @@ Loading 状态影响 loading icon、原 icon 可见性和交互反馈，但不�
 - Wave 几何：Button 暴露 wave 所需边框和圆角，使 wave 与最终按钮边界一致。
 
 这些流程必须保持 C# 层归一、AXAML 层消费的分工。不得把 API 优先级判断下沉到大量 AXAML selector 组合中。
+
+维护 Custom 尺寸时应优先让主题默认值落在 Button 可覆盖的属性上，或让模板内部尺寸节点通过 `TemplateBinding` 跟随 Button 属性。不得用模板内部固定高度阻断用户在 Button 上设置的本地 `Height`。
 
 ## 8. 资源、性能与 AOT 边界
 
@@ -104,6 +109,8 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 - StyledProperty / DirectProperty / RoutedEvent 与支持字段的定义顺序符合控件代码规范。
 - `Button.cs` 保留公共属性、事件、方法和接口入口；实现拆分只承载内部逻辑。
 - `Color + Variant` 优先级和旧 API 映射结果不变。
+- `SizeType=Custom` 不引入 Button 专属 `Custom*` 尺寸属性；未设置本地尺寸属性时表现等同 `Middle`，设置本地属性时由 Avalonia 属性优先级自然覆盖。
+- 主题不得以高于本地值的优先级写入 Custom 默认尺寸。
 - `CustomBackgroundLayer` 不成为用户可依赖 template part。
 - wave brush 不从 `CustomBackground`、模板背景或 hover 背景反推。
 - CompactSpace 圆角和边框折叠行为不变。
@@ -114,6 +121,7 @@ Button 实现不得引入运行时反射、动态代码生成或非 AOT 友好�
 验证范围：
 
 - API 归一：覆盖 `ButtonType`、`IsDanger`、`Color`、`Variant`、`IsGhost` 的组合。
+- 尺寸契约：覆盖 `SizeType=Large/Middle/Small/Custom`；验证 Custom 默认等同 Middle，并验证本地 `Height`、`Padding`、`FontSize` 覆盖 Custom 默认值。
 - 状态同步：覆盖 disabled、loading、hover、pressed、icon-only、circle、round。
 - Wave：覆盖危险态、预设色、custom background 与 disabled / loading 播放条件。
 - Theme：检查 default、primary、dashed、text、link、solid、outlined、filled、danger 和 custom background 视觉。

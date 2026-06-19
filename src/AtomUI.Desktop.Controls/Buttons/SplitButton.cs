@@ -21,7 +21,7 @@ namespace AtomUI.Desktop.Controls;
 
 public class SplitButton : ContentControl, 
                            ICommandSource, 
-                           ISizeTypeAware,
+                           ICustomizableSizeTypeAware,
                            IWaveSpiritAwareControl,
                            ICompactSpaceAware
 {
@@ -71,8 +71,8 @@ public class SplitButton : ContentControl,
     public static readonly StyledProperty<int> MouseLeaveDelayProperty =
         FlyoutStateHelper.MouseLeaveDelayProperty.AddOwner<SplitButton>();
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<SplitButton>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<SplitButton>();
 
     public static readonly StyledProperty<PathIcon?> IconProperty =
         Button.IconProperty.AddOwner<SplitButton>();
@@ -188,7 +188,7 @@ public class SplitButton : ContentControl,
         set => SetValue(MouseLeaveDelayProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
@@ -309,6 +309,7 @@ public class SplitButton : ContentControl,
         IsArrowVisibleProperty.OverrideDefaultValue<SplitButton>(false);
         HorizontalAlignmentProperty.OverrideDefaultValue<SplitButton>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<SplitButton>(VerticalAlignment.Top);
+        AffectsMeasure<SplitButton>(SizeTypeProperty);
         AffectsRender<SplitButton>(IsPrimaryButtonTypeProperty, IsDangerProperty, SplitSeparatorBrushProperty);
     }
 
@@ -459,6 +460,7 @@ public class SplitButton : ContentControl,
         _secondaryButton                = e.NameScope.Find<Button>("PART_SecondaryButton");
         _flyoutStateHelper.AnchorTarget = _secondaryButton;
         ConfigureButtonCornerRadius();
+        ConfigureButtonCustomSizeOverrides();
         if (_primaryButton != null)
         {
             _primaryButton.Click += HandlePrimaryButtonClick;
@@ -566,6 +568,11 @@ public class SplitButton : ContentControl,
             ConfigureButtonCornerRadius();
         }
 
+        if (ShouldConfigureCustomSizeOverrides(change.Property))
+        {
+            ConfigureButtonCustomSizeOverrides();
+        }
+
         base.OnPropertyChanged(change);
     }
 
@@ -608,6 +615,61 @@ public class SplitButton : ContentControl,
         {
             _secondaryButton.CornerRadius = secondaryButtonCornerRadius;
         }
+    }
+
+    private void ConfigureButtonCustomSizeOverrides()
+    {
+        var useCustomOverrides = SizeType == CustomizableSizeType.Custom;
+
+        ConfigureButtonCustomSizeOverride(_primaryButton, HeightProperty, Height, useCustomOverrides);
+        ConfigureButtonCustomSizeOverride(_secondaryButton, HeightProperty, Height, useCustomOverrides);
+        ConfigureButtonCustomSizeOverride(_primaryButton, MinHeightProperty, MinHeight, useCustomOverrides);
+        ConfigureButtonCustomSizeOverride(_secondaryButton, MinHeightProperty, MinHeight, useCustomOverrides);
+        ConfigureButtonCustomSizeOverride(_primaryButton, WidthProperty, Width, useCustomOverrides);
+        ConfigureButtonCustomSizeOverride(_secondaryButton, WidthProperty, Width, useCustomOverrides);
+        ConfigureButtonCustomSizeOverride(_primaryButton, MinWidthProperty, MinWidth, useCustomOverrides);
+        ConfigureButtonCustomSizeOverride(_secondaryButton, MinWidthProperty, MinWidth, useCustomOverrides);
+        ConfigureButtonCustomSizeOverride(_primaryButton, PaddingProperty, Padding, useCustomOverrides);
+        ConfigureButtonCustomSizeOverride(_secondaryButton, PaddingProperty, Padding, useCustomOverrides);
+        ConfigureButtonCustomSizeOverride(_primaryButton, FontSizeProperty, FontSize, useCustomOverrides);
+        ConfigureButtonCustomSizeOverride(_secondaryButton, FontSizeProperty, FontSize, useCustomOverrides);
+    }
+
+    private void ConfigureButtonCustomSizeOverride<T>(
+        Button? button,
+        StyledProperty<T> property,
+        T value,
+        bool useCustomOverrides)
+    {
+        if (button is null)
+        {
+            return;
+        }
+
+        if (useCustomOverrides && IsLocalValue(property))
+        {
+            button.SetValue(property, value);
+        }
+        else
+        {
+            button.ClearValue(property);
+        }
+    }
+
+    private bool IsLocalValue(AvaloniaProperty property)
+    {
+        return IsSet(property);
+    }
+
+    private static bool ShouldConfigureCustomSizeOverrides(AvaloniaProperty property)
+    {
+        return property == SizeTypeProperty ||
+               property == HeightProperty ||
+               property == MinHeightProperty ||
+               property == WidthProperty ||
+               property == MinWidthProperty ||
+               property == PaddingProperty ||
+               property == FontSizeProperty;
     }
     
     protected override void OnKeyDown(KeyEventArgs e)
@@ -769,7 +831,7 @@ public class SplitButton : ContentControl,
             if (!IsPrimaryButtonType)
             {
                 _secondaryButton.Arrange(
-                    originRect.Inflate(new Thickness(_secondaryButton.BorderThickness.Left * 2, 0, 0, 0)));
+                    originRect.Inflate(new Thickness(_secondaryButton.BorderThickness.Left, 0, 0, 0)));
             }
             else
             {

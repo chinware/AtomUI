@@ -96,6 +96,7 @@ internal partial class en_US : LanguageProvider
     public const string P2TextExpandDirection = "Button size:";
     public const string P2ContentLarge = "Large";
     public const string P2ContentSmall = "Small";
+    public const string P2ContentCustom = "Custom";
     public const string P2ContentDownload = "Download";
     public const string P2ContentSearch = "Search";
     public const string P2ContentLoading = "Loading";

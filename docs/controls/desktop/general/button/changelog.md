@@ -14,6 +14,15 @@
   - Add `implementation.md` for Button internal state normalization, template integration, wave coordination and maintenance invariants.
   - Refactor `overview.md` to focus on design positioning, public contracts, behavior state, visual theme model and validation entry points.
   - Add Button implementation documentation to the General category entry.
+  - Document the Button `SizeType=Custom` contract: Custom uses Middle defaults unless existing Button sizing properties are locally set, and does not introduce Button-specific `Custom*` metrics.
+  - Clarify that Button themes must provide Custom size defaults at a priority that local `Height`, `Padding`, `FontSize` and related properties can override.
+- API
+  - Change Button family `SizeType` contracts for `Button`, `DropdownButton`, `SplitButton` and `HyperLinkButton` to `CustomizableSizeType`.
+- Theme
+  - Add `SizeType=Custom` selectors for Button, Browser Button, DropdownButton, SplitButton and HyperLinkButton themes, using Middle size token defaults.
+  - Bind Button family frame heights to the owning control `Height` so local height values can override Custom defaults.
+- Tests
+  - Add Button custom size contract tests for API type, Custom default metrics and local property overrides.
 
 ## 2026-06-17
 

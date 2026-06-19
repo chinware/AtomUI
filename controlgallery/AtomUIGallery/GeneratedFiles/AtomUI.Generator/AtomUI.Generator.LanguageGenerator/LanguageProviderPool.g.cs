@@ -1707,6 +1707,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ColorPurple] = global::AtomUIGallery.ShowCases.Button.en_US.P2ColorPurple;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentAa] = global::AtomUIGallery.ShowCases.Button.en_US.P2ContentAa;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.Button.en_US.P2ContentClickMe;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.Button.en_US.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentDanger] = global::AtomUIGallery.ShowCases.Button.en_US.P2ContentDanger;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentDangerDefault] = global::AtomUIGallery.ShowCases.Button.en_US.P2ContentDangerDefault;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentDangerDefaultDisabled] = global::AtomUIGallery.ShowCases.Button.en_US.P2ContentDangerDefaultDisabled;
@@ -1843,6 +1844,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ColorPurple] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2ColorPurple;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentAa] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2ContentAa;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2ContentClickMe;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentDanger] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2ContentDanger;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentDangerDefault] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2ContentDangerDefault;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentDangerDefaultDisabled] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2ContentDangerDefaultDisabled;
@@ -1979,6 +1981,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ColorPurple] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2ColorPurple;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentAa] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2ContentAa;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2ContentClickMe;
+                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentDanger] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2ContentDanger;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentDangerDefault] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2ContentDangerDefault;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ContentDangerDefaultDisabled] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2ContentDangerDefaultDisabled;
@@ -18341,6 +18344,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.SplitButton.en_US.InfoNamespaceLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.SplitButton.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2ContentClickMe;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentHoverMe] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2ContentHoverMe;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2ContentLarge;
@@ -18435,6 +18439,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.InfoNamespaceLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2ContentClickMe;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentHoverMe] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2ContentHoverMe;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2ContentLarge;
@@ -18529,6 +18534,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.InfoNamespaceLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2ContentClickMe;
+                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentHoverMe] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2ContentHoverMe;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2ContentLarge;

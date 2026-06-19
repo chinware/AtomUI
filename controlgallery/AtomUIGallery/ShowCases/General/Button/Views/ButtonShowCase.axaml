@@ -190,6 +190,24 @@
                         Title="{gallery:ButtonShowCaseLangResource SizeTitle}"
                         Description="{gallery:ButtonShowCaseLangResource SizeDescription}"
                         IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.Styles>
+                            <Style Selector="atom|Button.size-demo-button[SizeType=Custom]">
+                                <Setter Property="Height" Value="44" />
+                                <Setter Property="Padding" Value="18,0" />
+                                <Setter Property="FontSize" Value="15" />
+                            </Style>
+                            <Style Selector="atom|Button.size-demo-button[SizeType=Custom]:icononly">
+                                <Setter Property="Padding" Value="12" />
+                            </Style>
+                            <Style Selector="atom|Button.size-demo-button[SizeType=Custom] /template/ atom|IconPresenter#PART_ButtonIcon, atom|Button.size-demo-button[SizeType=Custom] /template/ atom|Icon#PART_LoadingIcon">
+                                <Setter Property="Width" Value="18" />
+                                <Setter Property="Height" Value="18" />
+                            </Style>
+                            <Style Selector="atom|Button.size-demo-button[SizeType=Custom]:icononly /template/ atom|IconPresenter#PART_ButtonIcon atom|Icon, atom|Button.size-demo-button[SizeType=Custom]:icononly /template/ atom|Icon#PART_LoadingIcon">
+                                <Setter Property="Width" Value="20" />
+                                <Setter Property="Height" Value="20" />
+                            </Style>
+                        </gallery:ShowCaseItem.Styles>
                         <gallery:ShowCaseItem.DeferredContentTemplate>
                             <DataTemplate x:DataType="viewModels:ButtonViewModel">
                         <DockPanel Margin="0, 0, 0, 0">
@@ -200,33 +218,34 @@
                                     <atom:OptionButton IsChecked="True" Content="{gallery:ButtonShowCaseLangResource P2ContentLarge}" />
                                     <atom:OptionButton Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
                                     <atom:OptionButton Content="{gallery:ButtonShowCaseLangResource P2ContentSmall}" />
+                                    <atom:OptionButton Content="{gallery:ButtonShowCaseLangResource P2ContentCustom}" />
                                 </atom:OptionButtonGroup>
                             </StackPanel>
 
                             <StackPanel Orientation="Vertical" Margin="0, 20, 0, 0" Spacing="10">
                                 <WrapPanel>
-                                    <atom:Button ButtonType="Primary" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
-                                    <atom:Button ButtonType="Dashed" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
-                                    <atom:Button ButtonType="Default" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
-                                    <atom:Button ButtonType="Link" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
+                                    <atom:Button Classes="size-demo-button" ButtonType="Primary" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentPrimary}" />
+                                    <atom:Button Classes="size-demo-button" ButtonType="Dashed" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentDashed}" />
+                                    <atom:Button Classes="size-demo-button" ButtonType="Default" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentDefault}" />
+                                    <atom:Button Classes="size-demo-button" ButtonType="Link" SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentLink}" />
                                 </WrapPanel>
                                 <WrapPanel>
-                                    <atom:Button ButtonType="Primary" Shape="Default"
+                                    <atom:Button Classes="size-demo-button" ButtonType="Primary" Shape="Default"
                                                  Icon="{antdicons:AntDesignIconProvider Kind=DownloadOutlined}"
                                                  SizeType="{Binding ButtonSizeType}" />
-                                    <atom:Button ButtonType="Dashed" Shape="Default"
+                                    <atom:Button Classes="size-demo-button" ButtonType="Dashed" Shape="Default"
                                                  Icon="{antdicons:AntDesignIconProvider Kind=DownloadOutlined}"
                                                  SizeType="{Binding ButtonSizeType}" />
-                                    <atom:Button ButtonType="Primary" Shape="Circle"
+                                    <atom:Button Classes="size-demo-button" ButtonType="Primary" Shape="Circle"
                                                  Icon="{antdicons:AntDesignIconProvider Kind=DownloadOutlined}"
                                                  SizeType="{Binding ButtonSizeType}" />
-                                    <atom:Button ButtonType="Primary" Shape="Round"
+                                    <atom:Button Classes="size-demo-button" ButtonType="Primary" Shape="Round"
                                                  Icon="{antdicons:AntDesignIconProvider Kind=DownloadOutlined}"
                                                  SizeType="{Binding ButtonSizeType}" />
-                                    <atom:Button ButtonType="Primary" Shape="Round"
+                                    <atom:Button Classes="size-demo-button" ButtonType="Primary" Shape="Round"
                                                  Icon="{antdicons:AntDesignIconProvider Kind=DownloadOutlined}"
                                                  SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentDownload}" />
-                                    <atom:Button ButtonType="Primary" Shape="Default"
+                                    <atom:Button Classes="size-demo-button" ButtonType="Primary" Shape="Default"
                                                  Icon="{antdicons:AntDesignIconProvider Kind=DownloadOutlined}"
                                                  SizeType="{Binding ButtonSizeType}" Content="{gallery:ButtonShowCaseLangResource P2ContentDownload}" />
                                 </WrapPanel>

@@ -18,11 +18,11 @@ public class ButtonViewModel : ReactiveObject, IRoutableViewModel, IActivatableV
 
     public string? UrlPathSegment => ID.ToString();
 
-    private SizeType _buttonSizeType;
+    private CustomizableSizeType _buttonSizeType;
     private ObservableCollection<ButtonApiRow>? _apiRows;
     private ObservableCollection<ButtonDesignTokenRow>? _designTokenRows;
 
-    public SizeType ButtonSizeType
+    public CustomizableSizeType ButtonSizeType
     {
         get => _buttonSizeType;
         set => this.RaiseAndSetIfChanged(ref _buttonSizeType, value);
@@ -56,7 +56,7 @@ public class ButtonViewModel : ReactiveObject, IRoutableViewModel, IActivatableV
         ApiRows =
         [
             new ButtonApiRow("ButtonType", Lang(ButtonShowCaseLangResourceKind.ApiPropertyButtonType), "ButtonType", "blue", "Default"),
-            new ButtonApiRow("SizeType", Lang(ButtonShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new ButtonApiRow("SizeType", Lang(ButtonShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new ButtonApiRow("Shape", Lang(ButtonShowCaseLangResourceKind.ApiPropertyShape), "ButtonShape", "blue", "Default"),
             new ButtonApiRow("Icon", Lang(ButtonShowCaseLangResourceKind.ApiPropertyIcon), "Icon?", "cyan", "null"),
             new ButtonApiRow("IsLoading", Lang(ButtonShowCaseLangResourceKind.ApiPropertyLoading), "bool", "green", "false"),

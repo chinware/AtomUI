@@ -139,10 +139,25 @@ public class SplitButtonShowCasePageTests
             source.ShouldContain("ApiPropertyFlyout");
             source.ShouldContain("ApiPropertyTriggerType");
             source.ShouldContain("ApiPropertyIsPrimaryButtonType");
+            source.ShouldContain("P2ContentCustom");
             source.ShouldContain("TokenNameGutterToFlyout");
             source.ShouldContain("TokenNamePadding");
             source.ShouldContain("TokenNameIconSize");
         }
+    }
+
+    [Fact]
+    public void SplitButton_Size_Example_Includes_Custom_Size_Demo()
+    {
+        var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/SplitButton/Views/SplitButtonShowCase.axaml");
+        var examples = ExtractSplitButtonExampleItems(source);
+
+        var sizeItem = ExtractShowCaseItemByTitle(examples, "SplitButtonShowCaseLangResource SizeTitle");
+        sizeItem.ShouldContain("SizeType=\"Custom\"");
+        sizeItem.ShouldContain("Height=\"44\"");
+        sizeItem.ShouldContain("Padding=\"18,0\"");
+        sizeItem.ShouldContain("FontSize=\"15\"");
+        sizeItem.ShouldContain("SplitButtonShowCaseLangResource P2ContentCustom");
     }
 
     [Fact]
@@ -168,6 +183,23 @@ public class SplitButtonShowCasePageTests
         panelCloseStart.ShouldBeGreaterThan(firstItemStart);
 
         return source[firstItemStart..panelCloseStart];
+    }
+
+    private static string ExtractShowCaseItemByTitle(string source, string titleResource)
+    {
+        const string itemStartMarker = "<gallery:ShowCaseItem";
+        const string itemCloseMarker = "</gallery:ShowCaseItem>";
+
+        var titleIndex = source.IndexOf(titleResource, StringComparison.Ordinal);
+        titleIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemStart = source.LastIndexOf(itemStartMarker, titleIndex, StringComparison.Ordinal);
+        itemStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemClose = source.IndexOf(itemCloseMarker, titleIndex, StringComparison.Ordinal);
+        itemClose.ShouldBeGreaterThan(titleIndex);
+
+        return source[itemStart..(itemClose + itemCloseMarker.Length)];
     }
 
     private static string NormalizeMarkup(string source)

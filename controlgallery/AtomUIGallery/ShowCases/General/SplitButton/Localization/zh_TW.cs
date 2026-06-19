@@ -23,6 +23,7 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentLarge = "大號";
     public const string P2ContentMiddle = "中號";
     public const string P2ContentSmall = "小號";
+    public const string P2ContentCustom = "自定義";
     public const string P2ContentDefault = "默認";
     public const string P2ContentPrimary = "主要";
     public const string P2ContentClickMe = "點我";

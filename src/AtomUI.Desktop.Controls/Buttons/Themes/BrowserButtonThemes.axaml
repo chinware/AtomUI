@@ -17,6 +17,7 @@
                     <Border Name="ShadowsFrame"
                             CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
                     <Border Name="Frame"
+                            Height="{TemplateBinding Height}"
                             Padding="{TemplateBinding Padding}"
                             BorderThickness="{TemplateBinding EffectiveBorderThickness}"
                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -65,6 +66,7 @@
                                 Background="{TemplateBinding CustomBackground}"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
                         <atom:DashedBorder Name="Frame"
+                                           Height="{TemplateBinding Height}"
                                            Padding="{TemplateBinding Padding}"
                                            BorderThickness="{TemplateBinding EffectiveBorderThickness}"
                                            BorderBrush="{TemplateBinding BorderBrush}"
@@ -110,6 +112,7 @@
                                 Background="{TemplateBinding CustomBackground}"
                                 CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
                         <atom:DashedBorder Name="Frame"
+                                           Height="{TemplateBinding Height}"
                                            Padding="{TemplateBinding Padding}"
                                            BorderThickness="{TemplateBinding EffectiveBorderThickness}"
                                            BorderBrush="{TemplateBinding BorderBrush}"
@@ -165,12 +168,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
-            </Style>
-            <Style Selector="^ /template/ atom|DashedBorder#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
-            </Style>
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeLG}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
             <Style Selector="^:not(^[Shape=Circle])">
@@ -182,12 +180,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
-            </Style>
-            <Style Selector="^ /template/ atom|DashedBorder#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
-            </Style>
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
             <Style Selector="^:not(^[Shape=Circle])">
@@ -199,12 +192,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
-            </Style>
-            <Style Selector="^ /template/ atom|DashedBorder#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
-            </Style>
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeSM}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Style Selector="^:not(^[Shape=Circle])">
@@ -212,6 +200,18 @@
             </Style>
             <Style Selector="^:icononly">
                 <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPaddingSM}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Custom]">
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+            <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            <Style Selector="^:not(^[Shape=Circle])">
+                <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
+            </Style>
+            <Style Selector="^:icononly">
+                <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPadding}" />
             </Style>
         </Style>
 
@@ -225,6 +225,11 @@
         </Style>
 
         <Style Selector="^[SizeType=Middle] /template/ atom|IconPresenter#PART_ButtonIcon, ^[SizeType=Middle] /template/ atom|Icon#PART_LoadingIcon">
+            <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Custom] /template/ atom|IconPresenter#PART_ButtonIcon, ^[SizeType=Custom] /template/ atom|Icon#PART_LoadingIcon">
             <Setter Property="Width" Value="{atom:SharedTokenResource IconSize}" />
             <Setter Property="Height" Value="{atom:SharedTokenResource IconSize}" />
         </Style>
@@ -248,6 +253,11 @@
         </Style>
 
         <Style Selector="^:icononly^[SizeType=Middle] /template/ atom|IconPresenter#PART_ButtonIcon, ^:icononly^[SizeType=Middle] /template/ atom|Icon#PART_LoadingIcon">
+            <Setter Property="Width" Value="{atom:ButtonTokenResource OnlyIconSize}" />
+            <Setter Property="Height" Value="{atom:ButtonTokenResource OnlyIconSize}" />
+        </Style>
+
+        <Style Selector="^:icononly^[SizeType=Custom] /template/ atom|IconPresenter#PART_ButtonIcon, ^:icononly^[SizeType=Custom] /template/ atom|Icon#PART_LoadingIcon">
             <Setter Property="Width" Value="{atom:ButtonTokenResource OnlyIconSize}" />
             <Setter Property="Height" Value="{atom:ButtonTokenResource OnlyIconSize}" />
         </Style>
@@ -471,6 +481,7 @@
                     <Border Name="ShadowsFrame"
                             CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
                     <Border Name="Frame"
+                            Height="{TemplateBinding Height}"
                             Padding="{TemplateBinding Padding}"
                             BorderThickness="{TemplateBinding EffectiveBorderThickness}"
                             BorderBrush="{TemplateBinding BorderBrush}"
@@ -536,9 +547,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
-            </Style>
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeLG}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
             <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingLG}" />
@@ -548,9 +557,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
-            </Style>
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
             <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
@@ -560,14 +567,22 @@
         </Style>
 
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
-            </Style>
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeSM}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingSM}" />
             <Style Selector="^ /template/ atom|IconPresenter#PART_DropdownIndicator">
                 <Setter Property="Margin" Value="{atom:ButtonTokenResource ExtraContentMarginSM}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Custom]">
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+            <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
+            <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+            <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
+            <Style Selector="^ /template/ atom|IconPresenter#PART_DropdownIndicator">
+                <Setter Property="Margin" Value="{atom:ButtonTokenResource ExtraContentMargin}" />
             </Style>
         </Style>
 
