@@ -5,10 +5,10 @@
     <Version>__VERSION__</Version>
     <AppBundleIdentifier>net.atomui.gallery</AppBundleIdentifier>
     <Title>AtomUIGallery Installer</Title>
-    <AppIcon>Assets/Images/icons</AppIcon>
+    <AppIcon>Assets/Images/AppLogo.iconset</AppIcon>
     <Company>Qinware</Company>
     <CompanyFullName>Qinware Technology Co., Ltd.</CompanyFullName>
     <CompanyUrl>https://www.qinware.com</CompanyUrl>
     <Copyright>Copyright Qinware Technology Co., Ltd.</Copyright>
-    <InstallerApplicationIcon>Assets/Images/AtomUIGallery.png</InstallerApplicationIcon>
+    <InstallerApplicationIcon>Assets/Images/AppLogo.iconset/icon_512x512.png</InstallerApplicationIcon>
 </Installer>
