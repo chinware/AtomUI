@@ -39,6 +39,7 @@ AtomUI/
 │   │           └── DatePickerThemes.axaml
 │   ├── AtomUI.Desktop.Controls.DataGrid
 │   ├── AtomUI.Desktop.Controls.ColorPicker
+│   ├── AtomUI.Toolkits.GalleryBase # Product-neutral Gallery base controls and themes
 │   ├── AtomUI.Icons.*            # Icon infrastructure and Ant Design icon package
 │   ├── AtomUI.Fonts.*            # Font packages
 │   └── AtomUI.Generator          # Roslyn source generators
@@ -56,6 +57,7 @@ Important source boundaries:
 - `AtomUI.Controls`: common controls and primitives.
 - `AtomUI.Desktop.Controls`: main desktop control package.
 - `AtomUI.Desktop.Controls.DataGrid` and `AtomUI.Desktop.Controls.ColorPicker`: optional desktop packages.
+- `AtomUI.Toolkits.GalleryBase`: product-neutral Gallery base controls, models, themes, and runtime helpers.
 - `AtomUI.Generator`: Roslyn source generators referenced as analyzers.
 - `AtomUIGallery`: Gallery shell, showcases, API tables, token tables, and NativeAOT publish target.
 

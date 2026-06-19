@@ -1,5 +1,5 @@
 using System;
-using AtomUIGallery.Controls;
+using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUIGallery.Workspace.ViewModels;
 using ReactiveUI;
 using Shouldly;

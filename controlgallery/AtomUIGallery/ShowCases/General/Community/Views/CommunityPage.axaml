@@ -122,6 +122,11 @@
                                         HorizontalAlignment="Center"
                                         TextAlignment="Center"
                                         TextWrapping="Wrap" />
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatOfficialDescription}"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                        HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap" />
                         <Image Source="/Assets/qinware-wechatpress.png"
                                HorizontalAlignment="Center"
                                Width="144" />
@@ -137,6 +142,11 @@
                         <atom:TextBlock Text="{gallery:CommunityPageLangResource TelegramGroup}"
                                         FontSize="16"
                                         FontWeight="Bold"
+                                        HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap" />
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource TelegramGroupDescription}"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
                                         HorizontalAlignment="Center"
                                         TextAlignment="Center"
                                         TextWrapping="Wrap" />
@@ -158,6 +168,11 @@
                                         HorizontalAlignment="Center"
                                         TextAlignment="Center"
                                         TextWrapping="Wrap" />
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource WeChatGroupDescription}"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                        HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap" />
                         <Image Source="/Assets/atomui-wechat.png"
                                HorizontalAlignment="Center"
                                Width="144" />
@@ -173,6 +188,11 @@
                         <atom:TextBlock Text="{gallery:CommunityPageLangResource QQGroup}"
                                         FontSize="16"
                                         FontWeight="Bold"
+                                        HorizontalAlignment="Center"
+                                        TextAlignment="Center"
+                                        TextWrapping="Wrap" />
+                        <atom:TextBlock Text="{gallery:CommunityPageLangResource QQGroupDescription}"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
                                         HorizontalAlignment="Center"
                                         TextAlignment="Center"
                                         TextWrapping="Wrap" />

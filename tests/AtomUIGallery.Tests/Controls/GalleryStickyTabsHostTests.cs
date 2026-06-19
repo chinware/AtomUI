@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using AtomUIGallery.Controls;
+using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Shouldly;
@@ -72,11 +72,11 @@ public class GalleryStickyTabsHostTests
     [Fact]
     public void Sticky_Host_Uses_Gallery_Control_Token_And_Template_Conventions()
     {
-        var hostSource    = ReadRepoFile("controlgallery/AtomUIGallery/Controls/GalleryStickyTabsHost.cs");
-        var panelSource   = ReadRepoFile("controlgallery/AtomUIGallery/Controls/GalleryStickyTabsPanel.cs");
-        var themeSource   = ReadRepoFile("controlgallery/AtomUIGallery/Controls/GalleryStickyTabsHostTheme.axaml");
-        var tokenSource   = ReadRepoFile("controlgallery/AtomUIGallery/Controls/GalleryStickyTabsHostToken.cs");
-        var provider      = ReadRepoFile("controlgallery/AtomUIGallery/Controls/GalleryControlThemesProvider.axaml");
+        var hostSource    = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryStickyTabsHost.cs");
+        var panelSource   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryStickyTabsPanel.cs");
+        var themeSource   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryStickyTabsHostTheme.axaml");
+        var tokenSource   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryStickyTabsHostToken.cs");
+        var provider      = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryControlThemesProvider.axaml");
 
         hostSource.ShouldContain("HeaderProperty");
         hostSource.ShouldContain("StickyContentProperty");
@@ -121,7 +121,7 @@ public class GalleryStickyTabsHostTests
     [Fact]
     public void Sticky_Host_Keeps_Sticky_Content_In_Inline_Presenter_When_Pinned()
     {
-        var hostSource = ReadRepoFile("controlgallery/AtomUIGallery/Controls/GalleryStickyTabsHost.cs");
+        var hostSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryStickyTabsHost.cs");
 
         hostSource.ShouldNotContain("MoveStickyContentToOverlay");
         hostSource.ShouldNotContain("MoveStickyContentInline");

@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using AtomUIGallery.Controls;
+using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;

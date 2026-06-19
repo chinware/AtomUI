@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
-using AtomUIGallery.Controls;
+using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Threading;
@@ -19,8 +19,8 @@ public class ShowCasePanelStructureTests
     [Fact]
     public void ShowCasePanel_Uses_Masonry_Panel_Instead_Of_Manual_Grid_Placement()
     {
-        var source = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCasePanel.axaml.cs");
-        var theme  = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCasePanelTheme.axaml");
+        var source = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanel.axaml.cs");
+        var theme  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanelTheme.axaml");
 
         theme.ShouldContain("gallery:ShowCaseMasonryPanel");
         theme.ShouldNotContain("<Grid Margin=\"5\" Name=\"PART_MainPanel\"");
@@ -35,10 +35,10 @@ public class ShowCasePanelStructureTests
     [Fact]
     public void ShowCasePanel_And_Item_Use_Gallery_Tokens_For_Layout_And_Cards()
     {
-        var panelTheme = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCasePanelTheme.axaml");
-        var itemTheme  = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItemTheme.axaml");
-        var panelToken = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCasePanelToken.cs");
-        var itemToken  = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItemToken.cs");
+        var panelTheme = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanelTheme.axaml");
+        var itemTheme  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemTheme.axaml");
+        var panelToken = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanelToken.cs");
+        var itemToken  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemToken.cs");
 
         panelToken.ShouldContain("[ControlDesignToken]");
         itemToken.ShouldContain("[ControlDesignToken]");
@@ -48,7 +48,7 @@ public class ShowCasePanelStructureTests
         panelTheme.ShouldContain("VerticalScrollBarVisibility=\"Auto\"");
         panelTheme.ShouldContain("Selector=\"^[IsScrollEnabled=False]\"");
         itemTheme.ShouldContain("ShowCaseItemTokenResource");
-        var panelSource = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCasePanel.axaml.cs");
+        var panelSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanel.axaml.cs");
         panelSource.ShouldContain("ContentMarginProperty");
         panelSource.ShouldContain("IsScrollEnabledProperty");
         panelSource.ShouldContain("public bool IsScrollEnabled");
@@ -61,8 +61,8 @@ public class ShowCasePanelStructureTests
     [Fact]
     public void ShowCaseItem_Integrates_RibbonBadge_For_Feature_Version_Marker()
     {
-        var itemSource = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItem.axaml.cs");
-        var itemTheme  = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItemTheme.axaml");
+        var itemSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItem.axaml.cs");
+        var itemTheme  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemTheme.axaml");
 
         itemSource.ShouldContain("BadgeTextProperty");
         itemSource.ShouldContain("BadgeColorProperty");
@@ -220,10 +220,10 @@ public class ShowCasePanelStructureTests
     [Fact]
     public void ShowCasePanel_Supports_Opt_In_Viewport_Driven_Deferred_Loading()
     {
-        var panelSource = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCasePanel.axaml.cs");
-        var itemSource  = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItem.axaml.cs");
-        var itemTheme   = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItemTheme.axaml");
-        var itemToken   = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItemToken.cs");
+        var panelSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanel.axaml.cs");
+        var itemSource  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItem.axaml.cs");
+        var itemTheme   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemTheme.axaml");
+        var itemToken   = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemToken.cs");
 
         panelSource.ShouldContain("IsDeferredLoadingEnabledProperty");
         panelSource.ShouldContain("InitialDeferredLoadItemCountProperty");
