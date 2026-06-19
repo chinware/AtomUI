@@ -1,6 +1,6 @@
 # Button Token 设计
 
-本文档定义 `AtomUI.Desktop.Controls.ButtonToken` 的 Button 专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Button 整体架构见 [Button 桌面版架构设计](overview.md)，设计和契约变化记录见 [Button Changelog](changelog.md)。
+本文档定义 `AtomUI.Desktop.Controls.ButtonToken` 的 Button 专属语义、分类、使用范围和兼容边界。控件 Token 的通用分层、命名、计算、Theme Variables 边界和预设色规则见 [AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。Button 整体架构见 [Button 桌面版架构设计](overview.md)，内部实现原理见 [Button 桌面版实现原理](implementation.md)，设计和契约变化记录见 [Button Changelog](changelog.md)。
 
 ## 1. 定位
 
@@ -166,4 +166,3 @@ ButtonToken 变更要求：
 | 修改 ButtonToken 计算 | 覆盖 light / dark 主题，检查 Button 与 Button 家族视觉。 |
 | 删除或重命名 ButtonToken | 默认不允许；如获授权，需同步所有 AXAML 引用和生成文件。 |
 | 多彩按钮 Token 调整 | 验证 default、primary、danger、preset color 与各 variant 的状态映射。 |
-

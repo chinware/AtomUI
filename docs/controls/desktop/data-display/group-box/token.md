@@ -1,6 +1,6 @@
 # GroupBox Token 设计
 
-关联文档：[架构设计](overview.md)、[Changelog](changelog.md)、[AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。
+关联文档：[架构设计](overview.md)、[实现原理](implementation.md)、[Changelog](changelog.md)、[AtomUI 控件 Token 设计规范](../../../../engineering/control-token-guidelines.md)。
 
 ## 1. 定位
 
@@ -83,4 +83,3 @@ GroupBox Token 相关变更至少验证：
 | Gallery 表格 | GroupBox Design Token DataGrid 与 `GroupBoxToken` 属性一致。 |
 | 视觉 | Header 左/中/右位置、带图标 Header、透明背景 Header 缺口均正常。 |
 | 文档 | 本文件、`overview.md` 和 `changelog.md` 的 Token 描述一致。 |
-

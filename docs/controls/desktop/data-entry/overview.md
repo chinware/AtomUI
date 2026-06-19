@@ -7,5 +7,6 @@
 ## 控件文档
 
 - [NumericUpDown 桌面版架构设计](numeric-up-down/overview.md)
+- [NumericUpDown 桌面版实现原理](numeric-up-down/implementation.md)
 - [NumericUpDown Token 设计](numeric-up-down/token.md)
 - [NumericUpDown Changelog](numeric-up-down/changelog.md)

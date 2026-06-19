@@ -211,56 +211,69 @@ internal class DefaultTreeViewInteractionHandler : ITreeViewInteractionHandler
 
     internal void OnCheckedChanged(TreeViewItem viewItem)
     {
-        if (TreeView != null)
+        if (TreeView is not { } treeView)
         {
-            if (TreeView.ToggleType == ItemToggleType.Radio && viewItem is IRadioButton radioButton)
-            {
-                _groupManager?.OnCheckedChanged(radioButton);
-            }
-            else if (TreeView.ToggleType == ItemToggleType.CheckBox)
-            {
-                if (!TreeView.IsCheckStrictly)
-                {
-                    if (viewItem.IsChecked.HasValue)
-                    {
-                        if (viewItem.IsChecked.Value)
-                        {
-                            TreeView.CheckedSubTree(viewItem);
-                        }
-                        else
-                        {
-                            TreeView.UnCheckedSubTree(viewItem);
-                        }
-                    }
-                }
-                else
-                {
-                    if (!viewItem.IsEffectiveCheckable())
-                    {
-                        return;
-                    }
+            return;
+        }
 
-                    try
-                    {
-                        TreeView.SyncingCheckedItems = true;
-                        var treeNode = TreeView.TreeItemFromContainer(viewItem);
-                        if (viewItem.IsChecked == true)
-                        {
-                            if (!TreeView.CheckedItems.Contains(treeNode))
-                            {
-                                TreeView.CheckedItems.Add(treeNode);
-                            }
-                        }
-                        else
-                        {
-                            TreeView.CheckedItems.Remove(treeNode);
-                        }
-                    }
-                    finally
-                    {
-                        TreeView.SyncingCheckedItems = false;
-                    }
+        if (treeView.ToggleType == ItemToggleType.Radio && viewItem is IRadioButton radioButton)
+        {
+            _groupManager?.OnCheckedChanged(radioButton);
+            return;
+        }
+
+        if (treeView.ToggleType != ItemToggleType.CheckBox)
+        {
+            return;
+        }
+
+        if (treeView.IsCheckStrictly)
+        {
+            UpdateStrictCheckedState(treeView, viewItem);
+        }
+        else
+        {
+            UpdateCascadingCheckedState(treeView, viewItem);
+        }
+    }
+
+    private static void UpdateCascadingCheckedState(TreeView treeView, TreeViewItem viewItem)
+    {
+        if (!viewItem.IsChecked.HasValue)
+        {
+            return;
+        }
+
+        if (viewItem.IsChecked.Value)
+        {
+            treeView.CheckedSubTree(viewItem);
+        }
+        else
+        {
+            treeView.UnCheckedSubTree(viewItem);
+        }
+    }
+
+    private static void UpdateStrictCheckedState(TreeView treeView, TreeViewItem viewItem)
+    {
+        if (!viewItem.IsEffectiveCheckable())
+        {
+            return;
+        }
+
+        using (treeView.BeginCheckedItemsSync())
+        {
+            var treeNode = treeView.TreeItemFromContainer(viewItem);
+            if (viewItem.IsChecked == true)
+            {
+                if (!treeView.CheckedItems.Contains(treeNode))
+                {
+                    treeView.CheckedItems.Add(treeNode);
                 }
+            }
+            else
+            {
+                treeView.CheckedItems.Remove(treeNode);
             }
         }
     }

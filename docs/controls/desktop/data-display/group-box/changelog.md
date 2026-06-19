@@ -3,6 +3,13 @@
 本文档记录 GroupBox 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-06-19
+
+- Docs
+  - 新增 `implementation.md`，记录 GroupBox template part 接入、Header 缺口几何、自绘边框和维护不变量。
+  - 将 `overview.md` 收敛为控件定位、公共契约、行为状态、视觉主题模型和验证入口。
+  - 在 Data Display 分类入口中登记 GroupBox 实现原理文档。
+
 ## 2026-06-18
 
 - Docs
