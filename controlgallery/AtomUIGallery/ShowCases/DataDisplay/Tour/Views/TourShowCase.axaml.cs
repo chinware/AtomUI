@@ -113,7 +113,7 @@ public class SkipTourActionButton : AtomUIButton, ITourAction
     static SkipTourActionButton()
     {
         AtomUITour.StyleTypeProperty.AddOwner<SkipTourActionButton>();
-        SizeTypeProperty.OverrideDefaultValue<SkipTourActionButton>(AtomUI.SizeType.Small);
+        SizeTypeProperty.OverrideDefaultValue<SkipTourActionButton>(AtomUI.CustomizableSizeType.Small);
         ButtonTypeProperty.OverrideDefaultValue<SkipTourActionButton>(ButtonType.Default);
     }
 
