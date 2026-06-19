@@ -1,5 +1,4 @@
 <atom:Window xmlns="https://github.com/avaloniaui"
-             xmlns:rxui="http://reactiveui.net"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
@@ -82,74 +81,9 @@
             </atom:MenuItem>
         </atom:Menu>
     </atom:Window.Resources>
-    <Grid ColumnDefinitions="280,*"
-          Background="{atom:SharedTokenResource ColorBgContainer}">
-        <Border Grid.Column="0">
-            <Grid RowDefinitions="Auto,*,Auto">
-                <StackPanel Grid.Row="0"
-                            Margin="24,28,24,24">
-                    <Svg Path="avares://AtomUIGallery/Assets/atomui-oss.svg"
-                         Width="190"
-                         Height="45"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Center" />
-                </StackPanel>
-
-                <workspaceviews:CaseNavigation Grid.Row="1"
-                                               Name="ShowCaseNavigation" />
-
-                <Border Grid.Row="2"
-                        BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
-                        BorderThickness="0,1,0,0"
-                        Padding="16,12">
-                    <Grid ColumnDefinitions="Auto,*">
-                        <StackPanel Orientation="Horizontal"
-                                    Spacing="0">
-                            <atom:HyperLinkButton Width="40"
-                                                  Height="40"
-                                                  IconWidth="22"
-                                                  IconHeight="22"
-                                                  Icon="{antdicons:AntDesignIconProvider Kind=GlobalOutlined}"
-                                                  NavigateUri="https://www.atomui.net" />
-                            <atom:HyperLinkButton Width="40"
-                                                  Height="40"
-                                                  IconWidth="22"
-                                                  IconHeight="22"
-                                                  Icon="{antdicons:AntDesignIconProvider Kind=GiteeOutlined}"
-                                                  NavigateUri="https://gitee.com/chinware/AtomUI" />
-                            <atom:HyperLinkButton Width="40"
-                                                  Height="40"
-                                                  IconWidth="22"
-                                                  IconHeight="22"
-                                                  Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}"
-                                                  NavigateUri="https://github.com/chinware/atomui" />
-                        </StackPanel>
-                        <atom:Tag Grid.Column="1"
-                                  Text="{x:Static gallery:GalleryVersionInfo.DisplayVersion}"
-                                  TagColor="Green"
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Center" />
-                    </Grid>
-                </Border>
-            </Grid>
-        </Border>
-
-        <Border Grid.Column="1"
-                Background="{atom:SharedTokenResource ColorBgLayout}">
-            <rxui:RoutedViewHost Name="RoutedViewHost"
-                                 PageTransition="{x:Null}"
-                                 ClipToBounds="True" />
-        </Border>
-
-        <Border Name="WorkspaceNavigationSeparator"
-                Grid.Column="1"
-                Width="1"
-                HorizontalAlignment="Left"
-                Background="{atom:SharedTokenResource ColorBorderSecondary}"
-                IsHitTestVisible="False" />
-
+    <Grid>
+        <Grid Name="ShellHost" />
         <Border Name="TitleBarBottomSeparator"
-                Grid.ColumnSpan="2"
                 Height="1"
                 VerticalAlignment="Top"
                 Background="{atom:SharedTokenResource ColorBorderSecondary}"

@@ -46,6 +46,7 @@ dotnet build -v diag --configuration $buildType ../src/AtomUI.Core/AtomUI.Core.c
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
+dotnet build -v diag --configuration $buildType ../src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Generator/AtomUI.Generator.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
 dotnet build -v diag --configuration $buildType ../src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj
@@ -55,6 +56,7 @@ dotnet pack --no-build --configuration $buildType ../src/AtomUI.Core/AtomUI.Core
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
+dotnet pack --no-build --configuration $buildType ../src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Generator/AtomUI.Generator.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
 dotnet pack --no-build --configuration $buildType ../src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj

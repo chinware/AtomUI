@@ -54,6 +54,7 @@ jobs:
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls/AtomUI.Controls.csproj
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
+               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Generator/AtomUI.Generator.csproj
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
                dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj
@@ -67,6 +68,7 @@ jobs:
                   "./src/AtomUI.Controls/AtomUI.Controls.csproj",
                   "./src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj",
                   "./src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj",
+                  "./src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj",
                   "./src/AtomUI.Generator/AtomUI.Generator.csproj",
                   "./src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj",
                   "./src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj"

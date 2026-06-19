@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
 using AtomUI.Controls;
 using AtomUI.Toolkits.GalleryBase.Navigation;
 using Shouldly;
@@ -57,14 +56,17 @@ public class GalleryLandingPagesTests
     [Fact]
     public void Workspace_Uses_Layout_Background_Only_For_Content_Area()
     {
-        var source = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml");
+        var shellSource  = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Shell/GalleryShellView.cs");
+        var windowSource = ReadRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml");
 
-        source.ShouldContain("Background=\"{atom:SharedTokenResource ColorBgContainer}\"");
-        source.ShouldContain("BorderBrush=\"{atom:SharedTokenResource ColorBorderSecondary}\"");
-        source.ShouldContain("<Border Grid.Column=\"1\"");
-        source.ShouldContain("Background=\"{atom:SharedTokenResource ColorBgLayout}\"");
-        Regex.IsMatch(source, "<Border Grid\\.Column=\"0\"\\s+Background=").ShouldBeFalse();
-        source.ShouldNotContain("Background=\"#");
+        shellSource.ShouldContain("SharedTokenKind.ColorBgContainer");
+        shellSource.ShouldContain("SharedTokenKind.ColorBorderSecondary");
+        shellSource.ShouldContain("SharedTokenKind.ColorBgLayout");
+        shellSource.ShouldContain("Grid.SetColumn(ContentHost, 1)");
+        windowSource.ShouldContain("Name=\"ShellHost\"");
+        windowSource.ShouldNotContain("Background=\"#");
+        windowSource.ShouldNotContain("ColorBgContainer");
+        windowSource.ShouldNotContain("ColorBgLayout");
     }
 
     [Fact]

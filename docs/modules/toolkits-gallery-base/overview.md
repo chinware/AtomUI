@@ -34,7 +34,7 @@
 | 目录 | 说明 |
 |---|---|
 | `Controls/` | Gallery 展示控件、瀑布流布局、Sticky Tabs、场景 lazy controller |
-| `Shell/` | Gallery 共享 Workspace ViewModel；Desktop Window 和 Browser View 视图抽取是后续 Shell 视图层工作 |
+| `Shell/` | Gallery 共享 Workspace ViewModel、Shell 布局、Browser 宿主、OverlayLayer 和媒体断点 |
 | `Navigation/` | 导航节点模型、导航构建器、NavMenu 适配 |
 | `Routing/` | 路由注册、ViewModel 工厂、ReactiveUI ViewLocator 适配 |
 | `Theming/` | GalleryBase Token、ControlThemesProvider、主题注册扩展 |
@@ -44,6 +44,8 @@
 ## 对外关系
 
 `AtomUI.Toolkits.GalleryBase` 位于 AtomUI 上层工具库层。它依赖 AtomUI UI 基础设施，但不反向被 AtomUI 核心控件包依赖。
+
+该模块以 `AtomUI.Toolkits.GalleryBase` NuGet 包发布，版本跟随主库 `AtomUIVersion`，并纳入 `release-atomui.yml` 与 `scripts/PublishToLocalSources.ps1` 的主包发布链路。
 
 典型消费方是具体产品 Gallery 应用：
 

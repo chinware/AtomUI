@@ -11,9 +11,12 @@ public class WorkspaceWindowLayoutTests
     public void Sidebar_Brand_Area_Does_Not_Show_Desktop_Gallery_Text()
     {
         var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
+        var moduleSource = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/AtomUIGalleryModule.cs"));
 
         source.ShouldNotContain("Text=\"Desktop Gallery\"");
-        source.ShouldContain("avares://AtomUIGallery/Assets/atomui-oss.svg");
+        source.ShouldNotContain("avares://AtomUIGallery/Assets/atomui-oss.svg");
+        source.ShouldContain("ShellHost");
+        moduleSource.ShouldContain("avares://AtomUIGallery/Assets/atomui-oss.svg");
         source.ShouldNotContain("avares://AtomUIGallery/Assets/atomui-red.svg");
     }
 
@@ -31,11 +34,11 @@ public class WorkspaceWindowLayoutTests
     {
         var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
 
-        source.ShouldContain("<Grid RowDefinitions=\"Auto,*,Auto\">");
+        source.ShouldContain("Name=\"ShellHost\"");
         source.ShouldNotContain("<atom:SearchEdit");
         source.ShouldNotContain("Search components...");
-        source.ShouldContain("<workspaceviews:CaseNavigation Grid.Row=\"1\"");
-        source.ShouldContain("<Border Grid.Row=\"2\"");
+        source.ShouldNotContain("<workspaceviews:CaseNavigation Grid.Row=\"1\"");
+        source.ShouldNotContain("<Border Grid.Row=\"2\"");
     }
 
     [Fact]
@@ -49,14 +52,14 @@ public class WorkspaceWindowLayoutTests
     [Fact]
     public void Workspace_Draws_Navigation_Content_Separator()
     {
-        var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
+        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Toolkits.GalleryBase/Shell/GalleryShellView.cs"));
 
-        source.ShouldContain("Name=\"WorkspaceNavigationSeparator\"");
-        source.ShouldContain("Grid.Column=\"1\"");
-        source.ShouldContain("Width=\"1\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
-        source.ShouldContain("Background=\"{atom:SharedTokenResource ColorBorderSecondary}\"");
-        source.ShouldContain("IsHitTestVisible=\"False\"");
+        source.ShouldContain("Name             = \"WorkspaceNavigationSeparator\"");
+        source.ShouldContain("Grid.SetColumn(_navigationSeparator, 1)");
+        source.ShouldContain("Width            = 1");
+        source.ShouldContain("HorizontalAlignment = HorizontalAlignment.Left");
+        source.ShouldContain("SharedTokenKind.ColorBorderSecondary");
+        source.ShouldContain("IsHitTestVisible = false");
         source.ShouldNotContain("BorderThickness=\"0,0,1,0\"");
     }
 
@@ -86,9 +89,9 @@ public class WorkspaceWindowLayoutTests
     [Fact]
     public void Sidebar_Width_Is_Twenty_Pixels_Narrower()
     {
-        var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
+        var configuration = global::AtomUIGallery.AtomUIGalleryModule.CreateConfiguration();
 
-        source.ShouldContain("ColumnDefinitions=\"280,*\"");
+        configuration.Shell.SidebarWidth.ShouldBe(280);
     }
 
     [Fact]
@@ -107,7 +110,6 @@ public class WorkspaceWindowLayoutTests
         var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
 
         source.ShouldContain("Name=\"TitleBarBottomSeparator\"");
-        source.ShouldContain("Grid.ColumnSpan=\"2\"");
         source.ShouldContain("Height=\"1\"");
         source.ShouldContain("Background=\"{atom:SharedTokenResource ColorBorderSecondary}\"");
         source.ShouldContain("IsHitTestVisible=\"False\"");
@@ -116,29 +118,31 @@ public class WorkspaceWindowLayoutTests
     [Fact]
     public void Sidebar_Footer_Shows_Website_Gitee_And_Github_Links_With_Larger_Tighter_Icons()
     {
-        var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
+        var moduleSource = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/AtomUIGalleryModule.cs"));
+        var shellSource = File.ReadAllText(GetRepoFile("src/AtomUI.Toolkits.GalleryBase/Shell/GalleryShellView.cs"));
 
-        source.ShouldContain("NavigateUri=\"https://www.atomui.net\"");
-        source.ShouldContain("Kind=GlobalOutlined");
-        source.ShouldContain("NavigateUri=\"https://gitee.com/chinware/AtomUI\"");
-        source.ShouldContain("Kind=GiteeOutlined");
-        source.ShouldContain("NavigateUri=\"https://github.com/chinware/atomui\"");
-        source.ShouldContain("Kind=GithubOutlined");
-        source.ShouldContain("Spacing=\"0\"");
-        source.ShouldContain("IconWidth=\"22\"");
-        source.ShouldContain("IconHeight=\"22\"");
-        source.ShouldNotContain("FontSize=\"22\"");
+        moduleSource.ShouldContain("https://www.atomui.net");
+        moduleSource.ShouldContain("AntDesignIconKind.GlobalOutlined");
+        moduleSource.ShouldContain("https://gitee.com/chinware/AtomUI");
+        moduleSource.ShouldContain("AntDesignIconKind.GiteeOutlined");
+        moduleSource.ShouldContain("https://github.com/chinware/atomui");
+        moduleSource.ShouldContain("AntDesignIconKind.GithubOutlined");
+        shellSource.ShouldContain("Spacing     = 0");
+        shellSource.ShouldContain("IconWidth   = 22");
+        shellSource.ShouldContain("IconHeight  = 22");
+        shellSource.ShouldNotContain("FontSize = 22");
     }
 
     [Fact]
     public void Sidebar_Footer_Shows_AtomUI_Version_As_Green_Tag()
     {
-        var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/WorkspaceWindow.axaml"));
+        var moduleSource = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/AtomUIGalleryModule.cs"));
+        var shellSource = File.ReadAllText(GetRepoFile("src/AtomUI.Toolkits.GalleryBase/Shell/GalleryShellView.cs"));
 
-        source.ShouldContain("<atom:Tag Grid.Column=\"1\"");
-        source.ShouldContain("TagColor=\"Green\"");
-        source.ShouldContain("Text=\"{x:Static gallery:GalleryVersionInfo.DisplayVersion}\"");
-        source.ShouldNotContain("Text=\"v0.9.8\"");
+        shellSource.ShouldContain("new DesktopTag");
+        shellSource.ShouldContain("TagColor            = \"Green\"");
+        moduleSource.ShouldContain("GalleryVersionInfo.DisplayVersion");
+        shellSource.ShouldNotContain("Text = \"v0.9.8\"");
     }
 
     private static string GetRepoFile(string relativePath)

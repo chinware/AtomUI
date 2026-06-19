@@ -2,11 +2,13 @@
 
 本文档记录 2026-06-07 进行 `AtomUIGallery.Browser` 初步改造时遇到的问题、根因和处理结论。当前目标是让 Browser Gallery 以薄封装方式复用共享 `AtomUIGallery` 的 ShowCase，并允许 Browser 项目引用 `AtomUI.Desktop.Controls`，由控件库内部自动降级。
 
+> **【已更新】** 2026-06-19 起，Browser Gallery 的 Shell 布局已经迁入 `AtomUI.Toolkits.GalleryBase`。`BrowserGalleryView` 只保留 Browser 字体、`WorkspaceWindowViewModel` 工厂和 `CaseNavigation` 工厂；侧边栏、品牌区、footer、`RoutedViewHost`、OverlayLayer 和 media breakpoint 由 `GalleryBrowserShellView` / `GalleryShellView` 提供。
+
 ## 本轮目标
 
 - 新增 Browser Gallery 项目并跑通空壳应用。
 - Browser 启动阶段使用 AtomUI 红色 SVG logo。
-- Browser Gallery 不复制 Desktop `WorkspaceWindow`，但复用共享 `CaseNavigation`、`CaseNavigationViewModel`、`RoutedViewHost` 和 `ShowCaseViewModule`，只做一层 Browser 单视图宿主封装。
+- Browser Gallery 不复制 Desktop `WorkspaceWindow`，而是通过 `GalleryBrowserShellView` 复用 GalleryBase Shell、共享 `CaseNavigation`、`CaseNavigationViewModel` 和显式路由注册。
 - Browser 可以引用 `AtomUI.Desktop.Controls`，用户侧继续调用 `UseDesktopControls()`，控件库内部按平台自动降级。
 - 不改变公开 API，不影响 Desktop Gallery 原有行为。
 
@@ -17,7 +19,7 @@
 | Browser 直接引用 `AtomUI.Desktop.Controls` 后启动失败 | 页面 splash 显示 `AggregateException_ctor_DefaultMessage (Arg_InvalidCastException)` | `UseDesktopControls()` 注册完整 Desktop 主题资源时包含 Browser 不支持的 Window/TopLevel 相关资源和初始化逻辑 | `UseDesktopControls()` 保持公开 API 不变，内部根据 `RuntimePlatform.Features.SupportsNativeWindow` 切换 Browser 降级 provider |
 | 缩小 Desktop provider 后仍启动失败 | 只保留 `HyperLinkButton`、`GroupBox`、`ScrollViewer` 后仍报同类异常 | `UseDesktopControls()` 会先调用 `UseCommonControls()`；失败点不在 Desktop provider，而在 Common provider | 先二分跳过 `UseCommonControls()` 验证，确认 root cause 后再改造 Common provider |
 | Common provider 在 Browser 下不兼容 | 跳过 `UseCommonControls()` 后 Browser 能启动；恢复后失败 | `CommonControlThemesProvider` 包含 `Embedding/Themes/EmbeddableControlRootTheme.axaml`，该资源对 Browser 单视图场景不安全 | 新增 `BrowserCommonControlThemesProvider`，Browser 下排除 `EmbeddableControlRootTheme.axaml`；Desktop 仍使用原 `CommonControlThemesProvider` |
-| `AboutUsPage` 复用后再次启动失败 | splash error: `Don't know how to detect when ... AboutUsPage is activated/deactivated` | Browser `AppBuilder` 没有注册 ReactiveUI Avalonia 集成，`AboutUsPage.WhenActivated(...)` 无法找到 activation fetcher | Browser `Program` 和 Desktop 对齐，调用 `UseReactiveUI(...)` 并注册 `ShowCaseViewModule` |
+| `AboutUsPage` 复用后再次启动失败 | splash error: `Don't know how to detect when ... AboutUsPage is activated/deactivated` | Browser `AppBuilder` 没有注册 ReactiveUI Avalonia 集成，`AboutUsPage.WhenActivated(...)` 无法找到 activation fetcher | Browser `Program` 和 Desktop 对齐，调用 `UseReactiveUI(...)` 并通过 `AtomUIGalleryModule.RegisterViews(...)` 注册 ViewLocator |
 | 页面 DOM 看不到 AboutUs 文本 | `document.body.innerText` 为空，但没有启动错误 | Avalonia Browser 主要渲染在 canvas 中，DOM 文本不是可靠验证信号 | Browser 验证要看 splash error、canvas 是否存在，并用截图确认实际渲染 |
 | 控制台日志容易混入旧端口错误 | Console 中出现历史端口的 `libSkiaSharp` 或旧 wasm 异常 | 多次运行 Browser dev server 后，浏览器日志会保留旧页面/旧端口记录 | 每次验证前停止旧宿主，重新 build/run，并以当前端口页面的 splash error 和截图为准 |
 | Browser static web assets 有重复项风险 | Browser 构建/运行阶段可能遇到重复 wasm static asset | Browser 项目引用共享 Gallery 和控件库后，静态资源解析链路更复杂 | Browser 项目保留 `DeduplicateBrowserWasmStaticWebAssets` target，去重 `WasmStaticWebAsset` |
@@ -30,7 +32,7 @@
 | Browser FloatButton Placement 展开缺子按钮 | Placement 示例中点击左侧展开组后，trigger 变为 X，但 X 左侧两个子按钮没有显示 | Browser 分支此前完全跳过 Desktop initialized handler，导致 `MotionTransformOptionsAnimator` 没有注册；`MoveRightInMotion` / `MoveLeftInMotion` 的 `TransformOperations` keyframe 动画停留在隐藏起始态 | initialized handler 所有平台都注册 `TransformOperations` animator；`ToolTipService` 和 `MediaBreakPointThemeBootstrapper` 继续只在 native window 下启用 |
 | FloatButton Tooltip 暂未打开 Browser 完整链路 | Tooltip 属性在 Browser 下不会导致页面崩溃，但本轮不验证 tooltip 弹层 | AtomUI Tooltip 会继续牵出 `Popup`、`PopupRoot`、`OverlayPopupHost`、`ArrowDecoratedBox`、`PopupHostToken`、`ToolTipService` 等一组资源，超出 FloatButton ShowCase 首轮接入范围 | 本轮先保证 FloatButton 主体、Badge、BackTop、Group 可用；Tooltip/Popup Browser 降级后续单独拆分验证 |
 | Browser shell 字体未继承 AtomUI 字体 | Browser Gallery 外壳文字看起来没有使用 AtomUI 的 AlibabaSans | Browser 根是 `UserControl`，没有 Desktop `atom:Window` theme 里的 `FontFamily="{atom:SharedTokenResource FontFamily}"` 继承入口 | `BrowserGalleryView` 根设置 `fonts:AlibabaSans#Alibaba Sans, $Default`，由 Avalonia 可继承 `FontFamily` 向导航外壳和共享 ShowCase 传递 |
-| Browser 宿主和 Desktop 信息架构分叉 | Browser 旧宿主有独立标题栏、独立导航分组、手写 `CreatePage` switch、页面缓存和 idle 预热 | Browser 自己维护一套页面创建和导航结构，容易和 Desktop 最新 Showcase 规范、默认 Overview/Community、Components 分组以及延迟创建策略脱节 | `BrowserGalleryView` 改为复用 `CaseNavigation` + `CaseNavigationViewModel` + `RoutedViewHost`，删除手写页面工厂和主动预热逻辑；页面创建交给共享 `ShowCaseViewModule`，默认页和导航结构跟 Desktop 同源 |
+| Browser 宿主和 Desktop 信息架构分叉 | Browser 旧宿主有独立标题栏、独立导航分组、手写 `CreatePage` switch、页面缓存和 idle 预热 | Browser 自己维护一套页面创建和导航结构，容易和 Desktop 最新 Showcase 规范、默认 Overview/Community、Components 分组以及延迟创建策略脱节 | `BrowserGalleryView` 改为继承 `GalleryBrowserShellView`，删除手写页面工厂、主动预热、sidebar/footer/routing host 和 OverlayLayer 反射代码；页面创建交给 `AtomUIGalleryModule` 的显式路由注册，默认页和导航结构跟 Desktop 同源 |
 
 ## 当前实现要点
 
@@ -47,7 +49,7 @@ controlgallery/AtomUIGallery.Browser/
 ```csharp
 AppBuilder.Configure<BrowserGalleryApplication>()
     .UseReactiveUI(build =>
-        build.ConfigureViewLocator(locator => new ShowCaseViewModule().RegisterViews(locator)));
+        build.ConfigureViewLocator(locator => AtomUIGalleryModule.RegisterViews(locator)));
 ```
 
 `BrowserGalleryApplication.Initialize()` 中继续使用和 Desktop 相同的 AtomUI 配置主线：
@@ -58,31 +60,44 @@ this.UseAtomUI(builder =>
     builder.WithDefaultCultureInfo(CultureInfo.CurrentUICulture);
     builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID);
     builder.UseAlibabaSansFont();
+    builder.UseAlibabaPuHuiTiFont();
+    builder.WithDefaultFontFamily(FontFamily.Parse(
+        $"fonts:AlibabaSans#Alibaba Sans, {AlibabaPuHuiTiFontConstants.FontFamily}, $Default"));
     builder.UseDesktopControls();
+    builder.UseDesktopColorPicker();
+    builder.UseDesktopDataGrid();
     builder.UseGalleryControls();
 });
 ```
 
-`BrowserGalleryView` 只负责 Browser 单视图宿主和 Desktop 风格外壳：
+`BrowserGalleryView` 是 `GalleryBrowserShellView` 的产品薄适配：
 
 ```csharp
-_caseNavigationViewModel = new CaseNavigationViewModel(this);
-
-var showCaseNavigation = new CaseNavigation
+internal sealed class BrowserGalleryView : GalleryBrowserShellView
 {
-    ViewModel = _caseNavigationViewModel
-};
+    public BrowserGalleryView()
+        : base(AtomUIGalleryModule.GetConfiguration(),
+               _ => new WorkspaceWindowViewModel(),
+               CreateNavigationView)
+    {
+        FontFamily = s_appFontFamily;
+    }
 
-var routedViewHost = new RoutedViewHost
-{
-    Router = Router,
-    PageTransition = null
-};
+    private static Control CreateNavigationView(GalleryWorkspaceViewModel workspaceViewModel)
+    {
+        var viewModel = (WorkspaceWindowViewModel)workspaceViewModel;
+        return new CaseNavigation
+        {
+            Name      = "ShowCaseNavigation",
+            ViewModel = viewModel.CaseNavigation
+        };
+    }
+}
 ```
 
-Browser 左侧外壳和 Desktop `WorkspaceWindow` 对齐：280px 导航列、顶部 `atomui-oss.svg`、中间共享 `CaseNavigation`、底部官网 / Gitee / GitHub 链接和绿色版本 `Tag`。右侧内容区使用 `ColorBgLayout`，具体 Showcase 页面继续遵守 Desktop 的 `GalleryStickyTabsHost`、`ShowCasePanel`、延迟 `ShowCaseItem` 和 API / Design Token 延迟加载规范。
+Browser 左侧外壳和 Desktop `WorkspaceWindow` 通过 `GalleryShellView` 对齐：导航列宽、顶部品牌、产品导航视图、底部官网 / Gitee / GitHub 链接、绿色版本 `Tag`、内容区 `RoutedViewHost` 和背景 token 都来自 `GalleryBaseConfiguration`。具体 Showcase 页面继续遵守 Desktop 的 `GalleryStickyTabsHost`、`ShowCasePanel`、延迟 `ShowCaseItem` 和 API / Design Token 延迟加载规范。
 
-Browser 宿主不再缓存、预热或手动创建各个 Showcase 页面。默认页、导航合法性和页面创建由 `CaseNavigationViewModel`、ReactiveUI 路由和 `ShowCaseViewModule` 统一承担。这样 Browser 不会绕开 Desktop 最新 Showcase 规范，也不会因为后台预热提前创建大量 `ShowCaseItem`。
+Browser 宿主不再缓存、预热或手动创建各个 Showcase 页面。默认页、导航合法性和页面创建由 `GalleryNavigationViewModel`、ReactiveUI 路由和 `AtomUIGalleryModule` 的 `GalleryRouteRegistry` 统一承担。这样 Browser 不会绕开 Desktop 最新 Showcase 规范，也不会因为后台预热提前创建大量 `ShowCaseItem`。
 
 ### Common 控件降级
 
@@ -187,7 +202,7 @@ dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --filter Browse
 - Browser Debug build 通过。
 - Browser Release build 通过。
 - Desktop Gallery Debug build 通过。
-- Browser 规范测试覆盖：宿主必须复用 `CaseNavigation` / `CaseNavigationViewModel` / `RoutedViewHost`，不得保留旧标题栏、手写页面工厂、主动预热和 `AboutUsPage` 默认入口。
+- Browser 规范测试覆盖：宿主必须继承 `GalleryBrowserShellView`，不得保留旧标题栏、手写页面工厂、主动预热、产品链接硬编码、OverlayLayer 反射代码和 `AboutUsPage` 默认入口。
 - Browser 宿主改为共享导航 / 路由后，Debug build 通过；默认入口改为 Desktop 同源的 `Overview`。
 - 旧宿主阶段曾实跑 `ButtonShowCase`、`FloatButtonShowCase`、`PaletteShowCase`、`IconShowCase` 等页面 smoke；共享导航改造后，后续视觉验收应以 `Overview` 默认入口和 Components 分组为准重新走 Browser smoke。
 
@@ -207,7 +222,7 @@ Browser 运行验证时不要只依赖 DOM 文本，因为 Avalonia Browser 页�
 ## 待继续处理
 
 - `UseDesktopColorPicker()` 和 `UseDesktopDataGrid()` 尚未接入 Browser 降级路径。
-- Browser Gallery 当前已使用共享 `CaseNavigation` 暴露全量 Showcase 入口；后续新增导航和 ShowCase 页面必须先进入 Desktop 共享导航 / `ShowCaseViewModule`，Browser 不再维护独立页面列表。
+- Browser Gallery 当前已通过 `AtomUIGalleryModule` 和 `GalleryBaseConfiguration` 暴露全量 Showcase 入口；后续新增导航和 ShowCase 页面必须先进入产品模块的共享导航 / 路由注册，Browser 不再维护独立页面列表。
 - Tooltip / Popup 的 Browser 降级链路尚未打开；`FloatButtonShowCase` 中 Tooltip 属性本轮只保证不阻塞页面渲染。
 - `BrowserDesktopControlThemesProvider` 的范围后续应随着 ShowCase 迁移逐步扩大，并保持最小可用集合。
 - `EmbeddableControlRootTheme` 在 Browser 下的精确不兼容点后续可以进一步拆解；当前先通过 Browser provider 排除该资源，保证启动路径稳定。

@@ -148,19 +148,25 @@ GalleryNavigationMenuAdapter
 - F5/F6 自动切页诊断保留。
 - Navigation ViewModel 释放时停止诊断 timer，并恢复自身启动的 ShowCase 延迟创建覆盖值。
 
-## 阶段 5：抽出共享 Shell（部分完成）
+## 阶段 5：抽出共享 Shell（已完成基础层）
 
 迁移：
 
 ```text
-WorkspaceWindow -> GalleryWorkspaceWindow
+WorkspaceWindow Shell layout -> GalleryShellView
 WorkspaceWindowViewModel -> GalleryWorkspaceViewModel
-BrowserGalleryView -> GalleryBrowserView
+BrowserGalleryView base -> GalleryBrowserShellView
 GalleryWindowTitleBar -> GalleryBase title bar control
 ```
 
-当前已完成 `GalleryWorkspaceViewModel` 抽取，提供 Router、导航 ViewModel、主题命令和语言命令。`WorkspaceWindow`、`BrowserGalleryView` 和完整侧边栏/footer 视图层仍在产品项目内，后续应继续迁入 GalleryBase。
+当前已完成 `GalleryWorkspaceViewModel`、`GalleryShellView` 和 `GalleryBrowserShellView` 抽取。`GalleryShellView` 负责品牌区、产品导航视图承载、footer 链接/版本、导航分隔线和 `RoutedViewHost`；`GalleryBrowserShellView` 负责 Browser OverlayLayer、内容区 media breakpoint 和释放链。
 `GalleryWorkspaceViewModel` 已实现 `IDisposable`，用于解绑 ThemeManager 语言事件并释放导航运行时。
+
+AtomUI Gallery 仍保留产品窗口和产品导航视图：
+
+- `WorkspaceWindow`：只处理产品标题栏菜单、caption button 开关和窗口生命周期。
+- `BrowserGalleryView`：只提供字体、`WorkspaceWindowViewModel` 工厂和 `CaseNavigation` 工厂。
+- `CaseNavigation`：只负责产品导航事件、语言刷新和 F5/F6 诊断快捷键。
 
 保留在产品侧：
 
@@ -170,12 +176,14 @@ GalleryWindowTitleBar -> GalleryBase title bar control
 - 产品字体注册
 - 产品模块注册
 - 产品崩溃日志目录名配置
+- 产品标题栏菜单事件
+- 产品导航视图适配
 
 处理 Browser：
 
 - 删除重复 sidebar/footer 构造代码。
-- 保留 Browser overlay layer 初始化，但迁入 GalleryBase。
-- Browser `MainView = new GalleryBrowserView(configuration)`。
+- Browser overlay layer 初始化迁入 GalleryBase。
+- Browser `MainView` 使用继承 `GalleryBrowserShellView` 的产品薄适配类。
 
 验收：
 
@@ -183,6 +191,7 @@ GalleryWindowTitleBar -> GalleryBase title bar control
 - Desktop 标题栏菜单可用。
 - Browser Popup/Flyout/Tour overlay 正常。
 - 产品品牌来自配置。
+- 产品 Desktop/Browser 入口不再硬编码 logo、footer links 或 routing host。
 
 ## 阶段 6：清理产品项目
 

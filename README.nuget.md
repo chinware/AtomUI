@@ -10,6 +10,7 @@ Windows, macOS and Linux.
 - Token-driven theming built on Avalonia's style and resource system.
 - Ant Design icon packages, font packages and native desktop integration.
 - Optional advanced packages such as `AtomUI.Desktop.Controls.DataGrid` and `AtomUI.Desktop.Controls.ColorPicker`.
+- A reusable Gallery toolkit package, `AtomUI.Toolkits.GalleryBase`, for product demos and documentation galleries.
 - Source generators for custom controls, theme tokens and localization infrastructure.
 
 ### Install
@@ -20,6 +21,7 @@ Install the main desktop controls package first, then add optional packages only
 dotnet add package AtomUI.Desktop.Controls --version 6.0.5
 dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.5
 dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.5
+dotnet add package AtomUI.Toolkits.GalleryBase --version 6.0.5
 ```
 
 ### Requirements

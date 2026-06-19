@@ -29,11 +29,11 @@ GalleryBase 可以依赖 AtomUI 作为 UI 具体实现。这里的中立不是 U
 
 | 职责 | 当前状态 | 迁移目标 |
 |---|---|---|
-| Gallery 底层控件 | `ShowCasePanel`、`ShowCaseItem`、Sticky Tabs、场景 lazy controller 位于 `AtomUIGallery.Controls` | 迁入 GalleryBase |
-| Gallery Shell | `WorkspaceWindow`、`CaseNavigation`、Browser sidebar 和 routing host 位于 AtomUI Gallery 项目内 | 迁入 GalleryBase 并配置化 |
+| Gallery 底层控件 | `ShowCasePanel`、`ShowCaseItem`、Sticky Tabs、场景 lazy controller 已位于 GalleryBase | 保持产品中立并由产品 Gallery 复用 |
+| Gallery Shell | Sidebar、footer、routing host、Browser overlay 和 media breakpoint 已位于 GalleryBase；产品侧保留标题栏菜单和导航视图适配 | 后续继续抽出可复用标题栏菜单和平台日志 helper |
 | AtomUI 产品内容 | AtomUI 示例页面、首页、社区页、logo、链接、版本、语言文案 | 保留在 `AtomUIGallery` |
 
-导航和路由已经改为由产品模块显式配置。`AtomUIGalleryModule` 作为第一个消费方注册 AtomUI 的品牌、导航树、路由工厂和 ViewLocator 映射；`CaseNavigationViewModel` 使用 GalleryBase 的 `GalleryNavigationViewModel`，`CaseNavigation` 由 `GalleryNavigationMenuAdapter` 从配置生成 `NavMenuNode` 树。Browser Shell 仍保留平台宿主代码，后续 Shell 视图层抽取应继续删除侧边栏、footer 和 routing host 的重复拼装。
+导航、路由和 Shell 基础已经改为由产品模块显式配置并由 GalleryBase 承载。`AtomUIGalleryModule` 作为第一个消费方注册 AtomUI 的品牌、导航树、路由工厂和 ViewLocator 映射；`CaseNavigationViewModel` 使用 GalleryBase 的 `GalleryNavigationViewModel`，`CaseNavigation` 由 `GalleryNavigationMenuAdapter` 从配置生成 `NavMenuNode` 树；Desktop 和 Browser 共用 `GalleryShellView` 渲染 sidebar、footer 和 routing host，Browser 通过 `GalleryBrowserShellView` 复用 OverlayLayer 和 media breakpoint 逻辑。
 
 ## 模块分层
 
@@ -42,7 +42,7 @@ GalleryBase 采用四层结构：
 | 层级 | 职责 | 依赖方向 |
 |---|---|---|
 | 展示控件层 | ShowCase 卡片、瀑布流、Sticky Tabs、延迟创建 | 依赖 Avalonia 和 AtomUI 主题控件 |
-| Shell 层 | 共享 Workspace ViewModel、Desktop Window、Browser View、侧边栏、内容区域、标题栏菜单 | 依赖展示控件层、AtomUI Desktop 控件、ReactiveUI |
+| Shell 层 | 共享 Workspace ViewModel、Shell 布局、Browser 基础视图、侧边栏、footer、内容区域 | 依赖展示控件层、AtomUI Desktop 控件、ReactiveUI |
 | 注册层 | Branding、Navigation、Routes、Links、Shell options | 不依赖具体产品页面 |
 | 产品适配层 | 由消费方实现，注册具体页面、ViewModel、语言资源和资产 | 依赖 GalleryBase |
 
@@ -66,6 +66,8 @@ src/AtomUI.Toolkits.GalleryBase/
   Controls/
   Shell/
     GalleryWorkspaceViewModel.cs
+    GalleryShellView.cs
+    GalleryBrowserShellView.cs
   Navigation/
   Routing/
   Theming/
@@ -240,8 +242,8 @@ GalleryBase 提供两个宿主：
 
 | 宿主 | 用途 |
 |---|---|
-| `GalleryWorkspaceWindow` | Desktop 主窗口，继承 AtomUI `Window` 或现有 Reactive Window 基类 |
-| `GalleryBrowserView` | Browser 单页面主视图，继承 `UserControl` 并实现 `IScreen` |
+| `GalleryShellView` | Desktop 与 Browser 共用的侧边栏、footer 和内容路由布局 |
+| `GalleryBrowserShellView` | Browser 单页面基础视图，继承 `UserControl` 并实现 `IScreen`、`IMediaBreakAwareControl` |
 
 两者共享：
 
@@ -249,12 +251,12 @@ GalleryBase 提供两个宿主：
 - `GalleryNavigationViewModel`
 - `GalleryBaseOptions`
 - `GalleryRouteRegistry`
-- `GallerySidebar` 或等价内部视图
+- `GalleryShellView`
 
 Desktop 与 Browser 的差异只保留在宿主边界：
 
 - Desktop 负责窗口标题栏、caption button、窗口尺寸和崩溃日志。
-- Browser 负责 `ISingleViewApplicationLifetime`、媒体断点、OverlayLayer 初始化和浏览器字体策略。
+- Browser 启动项目负责 `ISingleViewApplicationLifetime` 和浏览器字体策略；`GalleryBrowserShellView` 负责媒体断点和 OverlayLayer 初始化。
 
 产品侧不应再复制侧边栏、footer、NavMenu 事件和 routing host。
 
@@ -352,7 +354,7 @@ GalleryBase 必须避免以下设计：
 
 - 阶段 1 和阶段 2 已完成。
 - 阶段 3 和阶段 4 已完成：`GalleryBaseOptions`、`GalleryRouteRegistry`、`GalleryNavigationBuilder`、`GalleryNavigationViewModel`、`GalleryNavigationMenuAdapter` 和 `GalleryLocalizedText<T>` 已落地，`AtomUIGalleryModule` 已成为 AtomUI Gallery 的产品注册入口。
-- 阶段 5 已完成共享 Workspace ViewModel 抽取：`GalleryWorkspaceViewModel` 提供 Router、主题命令、语言命令和导航 ViewModel。Desktop Window / Browser View 的视图层抽取仍是后续 Shell 视图层工作。
+- 阶段 5 已完成共享 Shell 基础抽取：`GalleryWorkspaceViewModel` 提供 Router、主题命令、语言命令和导航 ViewModel；`GalleryShellView` 提供 sidebar、footer 和 routing host；`GalleryBrowserShellView` 提供 Browser overlay 和 media breakpoint。产品侧仍保留窗口菜单和导航视图适配。
 
 ## 测试策略
 
