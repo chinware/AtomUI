@@ -8,7 +8,7 @@ public static class ThemeManagerBuilderExtensions
 {
     public static IThemeManagerBuilder UseGalleryControls(this IThemeManagerBuilder themeManagerBuilder)
     {
-        themeManagerBuilder.UseGalleryBase();
+        themeManagerBuilder.UseGalleryBase(AtomUIGalleryModule.Configure);
 
         var languageProviders = LanguageProviderPool.GetLanguageProviders();
         foreach (var languageProvider in languageProviders)

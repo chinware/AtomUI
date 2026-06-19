@@ -33,7 +33,7 @@ GalleryBase 可以依赖 AtomUI 作为 UI 具体实现。这里的中立不是 U
 | Gallery Shell | `WorkspaceWindow`、`CaseNavigation`、Browser sidebar 和 routing host 位于 AtomUI Gallery 项目内 | 迁入 GalleryBase 并配置化 |
 | AtomUI 产品内容 | AtomUI 示例页面、首页、社区页、logo、链接、版本、语言文案 | 保留在 `AtomUIGallery` |
 
-当前导航和路由也写死在 AtomUI Gallery 中。`CaseNavigationViewModel` 手工创建所有 ShowCase ViewModel，`CaseNavigation.axaml` 手工声明完整 `NavMenuNode` 树。Browser Shell 又用代码重复实现了一套侧边栏和路由宿主。这些代码对其他产品没有直接复用价值，必须改成数据驱动。
+导航和路由已经改为由产品模块显式配置。`AtomUIGalleryModule` 作为第一个消费方注册 AtomUI 的品牌、导航树、路由工厂和 ViewLocator 映射；`CaseNavigationViewModel` 使用 GalleryBase 的 `GalleryNavigationViewModel`，`CaseNavigation` 由 `GalleryNavigationMenuAdapter` 从配置生成 `NavMenuNode` 树。Browser Shell 仍保留平台宿主代码，后续 Shell 视图层抽取应继续删除侧边栏、footer 和 routing host 的重复拼装。
 
 ## 模块分层
 
@@ -42,7 +42,7 @@ GalleryBase 采用四层结构：
 | 层级 | 职责 | 依赖方向 |
 |---|---|---|
 | 展示控件层 | ShowCase 卡片、瀑布流、Sticky Tabs、延迟创建 | 依赖 Avalonia 和 AtomUI 主题控件 |
-| Shell 层 | Desktop Window、Browser View、侧边栏、内容区域、标题栏菜单 | 依赖展示控件层、AtomUI Desktop 控件、ReactiveUI |
+| Shell 层 | 共享 Workspace ViewModel、Desktop Window、Browser View、侧边栏、内容区域、标题栏菜单 | 依赖展示控件层、AtomUI Desktop 控件、ReactiveUI |
 | 注册层 | Branding、Navigation、Routes、Links、Shell options | 不依赖具体产品页面 |
 | 产品适配层 | 由消费方实现，注册具体页面、ViewModel、语言资源和资产 | 依赖 GalleryBase |
 
@@ -65,6 +65,7 @@ src/AtomUI.Toolkits.GalleryBase/
   AtomUI.Toolkits.GalleryBase.csproj
   Controls/
   Shell/
+    GalleryWorkspaceViewModel.cs
   Navigation/
   Routing/
   Theming/
@@ -159,6 +160,7 @@ public sealed class GalleryBaseOptions
     public GalleryNavigationBuilder Navigation { get; }
     public GalleryRouteRegistry Routes { get; }
     public GalleryShellOptions Shell { get; }
+    public GalleryPlatformOptions Platform { get; }
 }
 
 public sealed class GalleryBrandingOptions
@@ -188,8 +190,8 @@ public sealed class GalleryShellOptions
 ```csharp
 public sealed class GalleryNavigationNode
 {
-    public string Key { get; }
-    public string Header { get; }
+    public EntityKey Key { get; }
+    public object Header { get; }
     public object? Icon { get; }
     public bool IsRoute { get; }
     public IReadOnlyList<GalleryNavigationNode> Children { get; }
@@ -199,7 +201,7 @@ public sealed class GalleryNavigationNode
 规则：
 
 - `Key` 是稳定路由身份，不使用自然语言文案。
-- `Header` 可以是本地化后的字符串，也可以在后续扩展为语言资源引用。
+- `Header` 可以是字符串或 `IGalleryLocalizedText`，语言切换时由 NavMenu 适配器重新解析。
 - 分组节点 `IsRoute=false`，点击后只展开或收起。
 - 页面节点 `IsRoute=true`，点击后通过 `GalleryRouteRegistry` 创建目标 ViewModel。
 - 默认展开路径由配置提供，不能写死为 `Components`。
@@ -214,11 +216,11 @@ GalleryBase 内部提供 AtomUI `NavMenu` 适配器，把 `GalleryNavigationNode
 public sealed class GalleryRouteRegistry
 {
     public void Map<TViewModel, TView>(
-        string routeKey,
+        EntityKey routeKey,
         Func<IScreen, TViewModel> viewModelFactory,
-        Func<TView>? viewFactory = null)
-        where TViewModel : IRoutableViewModel
-        where TView : IViewFor<TViewModel>;
+        Func<TView> viewFactory)
+        where TViewModel : class, IRoutableViewModel
+        where TView : class, IViewFor<TViewModel>;
 }
 ```
 
@@ -230,6 +232,7 @@ GalleryBase 需要维护两个映射：
 | `ViewModel type -> Func<IViewFor>` | ReactiveUI ViewLocator 创建 View |
 
 `GalleryRouteRegistry` 应提供 `RegisterViews(DefaultViewLocator locator)` 适配方法，让 Desktop 和 Browser 启动时继续使用现有 ReactiveUI ViewLocator 流程。
+配置构建完成后，configuration 中的 route registry 是只读快照；产品只能在 options 阶段继续 `Map(...)`。
 
 ## Shell 设计
 
@@ -344,6 +347,12 @@ GalleryBase 必须避免以下设计：
 6. 拆分测试：GalleryBase 控件和 Shell 测试迁入 `AtomUI.Toolkits.GalleryBase.Tests`，AtomUI 产品页面快照测试保留在 `AtomUIGallery.Tests`。
 
 每个阶段必须保持 `AtomUIGallery` 可构建、可运行，并通过已有 Gallery 测试。
+
+当前实现状态：
+
+- 阶段 1 和阶段 2 已完成。
+- 阶段 3 和阶段 4 已完成：`GalleryBaseOptions`、`GalleryRouteRegistry`、`GalleryNavigationBuilder`、`GalleryNavigationViewModel`、`GalleryNavigationMenuAdapter` 和 `GalleryLocalizedText<T>` 已落地，`AtomUIGalleryModule` 已成为 AtomUI Gallery 的产品注册入口。
+- 阶段 5 已完成共享 Workspace ViewModel 抽取：`GalleryWorkspaceViewModel` 提供 Router、主题命令、语言命令和导航 ViewModel。Desktop Window / Browser View 的视图层抽取仍是后续 Shell 视图层工作。
 
 ## 测试策略
 

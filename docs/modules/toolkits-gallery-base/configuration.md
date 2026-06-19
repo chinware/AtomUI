@@ -70,7 +70,7 @@ public sealed class GalleryBrandingOptions
 }
 
 public sealed record GalleryLink(
-    string Key,
+    EntityKey Key,
     string Uri,
     object? Icon = null,
     string? ToolTip = null);
@@ -163,6 +163,8 @@ public static class AtomUIGalleryModule
 3. GalleryBase 执行 `Validate()`，生成 immutable `GalleryBaseConfiguration`。
 4. Shell 构造时读取 configuration，不再持有 mutable options。
 
+`GalleryBaseConfiguration` 是运行时快照：`NavigationNodes`、`DefaultOpenKeys` 和 `Routes` 都在 `BuildConfiguration()` 时复制。产品侧继续修改原始 `GalleryBaseOptions.Routes` 不会影响已经构建出来的配置；配置里的 `Routes` 处于只读状态，继续调用 `Map(...)` 会抛出 `GalleryConfigurationException`。
+
 不可变快照示意：
 
 ```csharp
@@ -170,9 +172,11 @@ public sealed class GalleryBaseConfiguration
 {
     public GalleryBrandingConfiguration Branding { get; }
     public IReadOnlyList<GalleryNavigationNode> NavigationNodes { get; }
-    public string DefaultRoute { get; }
+    public IReadOnlyList<EntityKey> DefaultOpenKeys { get; }
+    public EntityKey DefaultRoute { get; }
     public GalleryRouteRegistry Routes { get; }
     public GalleryShellConfiguration Shell { get; }
+    public GalleryPlatformConfiguration Platform { get; }
 }
 ```
 
@@ -185,9 +189,14 @@ GalleryBase 必须在启动阶段校验：
 | `DefaultRoute` 为空 | 抛出 `GalleryConfigurationException` |
 | `DefaultRoute` 没有对应 route | 抛出 `GalleryConfigurationException` |
 | 导航页面节点没有 route | 抛出 `GalleryConfigurationException` |
+| `DefaultOpenKeys` 包含空 key | 抛出 `GalleryConfigurationException` |
+| `DefaultOpenKeys` 指向不存在节点 | 抛出 `GalleryConfigurationException` |
+| `DefaultOpenKeys` 指向页面节点 | 抛出 `GalleryConfigurationException` |
+| `DefaultOpenKeys` 重复 | 抛出 `GalleryConfigurationException` |
 | route 没有导航入口 | 允许，但记录诊断信息 |
 | 导航 key 重复 | 抛出 `GalleryConfigurationException` |
 | route key 重复 | 抛出 `GalleryConfigurationException` |
+| 配置构建后继续修改配置快照 routes | 抛出 `GalleryConfigurationException` |
 | `SidebarWidth <= 0` | 抛出 `GalleryConfigurationException` |
 | link URI 非法 | 抛出 `GalleryConfigurationException` |
 
@@ -212,7 +221,9 @@ GalleryBase 使用 `IThemeManagerBuilder` 作为入口，是因为它需要注�
 - 空配置时报明确错误。
 - 默认路由不存在时报错。
 - 导航页面 route 缺失时报错。
+- 默认展开 key 必须存在且必须是分组节点。
 - 重复 route key 和重复 navigation key 报错。
+- 配置构建后 route registry 是只读快照，不受原始 options 后续修改影响。
 - 空 links 时 footer 可隐藏。
 - Desktop 和 Browser 读取同一份 immutable configuration。
 - 配置阶段不创建产品 ViewModel 和 View。
