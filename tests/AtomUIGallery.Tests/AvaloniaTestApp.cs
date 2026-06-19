@@ -3,8 +3,10 @@ using Avalonia;
 using Avalonia.Headless;
 using AtomUI;
 using AtomUI.Desktop.Controls;
+using Xunit;
 
 [assembly: AvaloniaTestApplication(typeof(AtomUIGallery.Tests.TestAppBuilder))]
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace AtomUIGallery.Tests;
 

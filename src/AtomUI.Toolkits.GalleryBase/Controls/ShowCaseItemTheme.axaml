@@ -1,0 +1,90 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    xmlns:gallery="https://atomui.net/toolkits/gallery-base">
+
+    <ControlTheme x:Key="{x:Type gallery:ShowCaseItem}"
+                  TargetType="{x:Type gallery:ShowCaseItem}">
+        <Setter Property="DeferredPlaceholderHeight"
+                Value="{gallery:ShowCaseItemTokenResource DeferredPlaceholderHeight}" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="{x:Type gallery:ShowCaseItem}">
+                <Border x:Name="PART_RootBorder"
+                        Background="{atom:SharedTokenResource ColorBgContainer}"
+                        BoxShadow="{gallery:ShowCaseItemTokenResource CardShadow}"
+                        Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
+                        CornerRadius="{gallery:ShowCaseItemTokenResource CardCornerRadius}">
+                    <StackPanel Orientation="Vertical">
+                        <Grid Margin="{gallery:ShowCaseItemTokenResource PreviewMargin}">
+                            <Border Name="PART_DeferredPlaceholder"
+                                    IsVisible="False"
+                                    MinHeight="{TemplateBinding DeferredPlaceholderHeight}"
+                                    Background="{atom:SharedTokenResource ColorFillTertiary}"
+                                    CornerRadius="{gallery:ShowCaseItemTokenResource DeferredPlaceholderCornerRadius}" />
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        </Grid>
+                        <atom:Separator TitlePosition="Left"
+                                        FontWeight="{gallery:ShowCaseItemTokenResource TitleFontWeight}"
+                                        Title="{TemplateBinding Title}" />
+                        <atom:TextBlock TextWrapping="Wrap"
+                                        Margin="{gallery:ShowCaseItemTokenResource DescriptionMargin}"
+                                        Text="{TemplateBinding Description}" />
+                    </StackPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[IsBadgeVisible=True]">
+            <Setter Property="Template">
+                <ControlTemplate TargetType="{x:Type gallery:ShowCaseItem}">
+                    <atom:RibbonBadge Text="{TemplateBinding BadgeText}"
+                                      RibbonColor="{TemplateBinding BadgeColor}"
+                                      BadgeIsVisible="True">
+                        <Border x:Name="PART_RootBorder"
+                                Background="{atom:SharedTokenResource ColorBgContainer}"
+                                BoxShadow="{gallery:ShowCaseItemTokenResource CardShadow}"
+                                Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
+                                CornerRadius="{gallery:ShowCaseItemTokenResource CardCornerRadius}">
+                            <StackPanel Orientation="Vertical">
+                                <Grid Margin="{gallery:ShowCaseItemTokenResource PreviewMargin}">
+                                    <Border Name="PART_DeferredPlaceholder"
+                                            IsVisible="{Binding IsDeferredPlaceholderVisible, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
+                                            MinHeight="{Binding DeferredPlaceholderHeight, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
+                                            Background="{atom:SharedTokenResource ColorFillTertiary}"
+                                            CornerRadius="{gallery:ShowCaseItemTokenResource DeferredPlaceholderCornerRadius}" />
+                                    <ContentPresenter Name="PART_ContentPresenter"
+                                                      IsVisible="{Binding IsDeferredPlaceholderVisible, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}, Converter={x:Static BoolConverters.Not}}"
+                                                      Content="{Binding Content, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
+                                                      ContentTemplate="{Binding ContentTemplate, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}" />
+                                </Grid>
+                                <atom:Separator TitlePosition="Left"
+                                                FontWeight="{gallery:ShowCaseItemTokenResource TitleFontWeight}"
+                                                Title="{Binding Title, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}" />
+                                <atom:TextBlock TextWrapping="Wrap"
+                                                Margin="{gallery:ShowCaseItemTokenResource DescriptionMargin}"
+                                                Text="{Binding Description, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}" />
+                            </StackPanel>
+                        </Border>
+                    </atom:RibbonBadge>
+                </ControlTemplate>
+            </Setter>
+        </Style>
+
+        <Style Selector="^[IsFake=True] /template/ Border#PART_RootBorder">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BoxShadow" Value="0 0 0 0 #00000000" />
+        </Style>
+        <Style Selector="^[IsFake=True] /template/ atom|Separator">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+        <Style Selector="^[IsDeferredPlaceholderVisible=True] /template/ Border#PART_DeferredPlaceholder">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^[IsDeferredPlaceholderVisible=True] /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

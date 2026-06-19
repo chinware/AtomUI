@@ -9,7 +9,7 @@ using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUIGallery.Desktop;
-using AtomUIGallery.Controls;
+using AtomUI.Toolkits.GalleryBase.Controls;
 using AtomUIGallery.ShowCases;
 using AtomUIGallery.ShowCases.ViewModels;
 using AtomUIGallery.ShowCases.Views;
@@ -2294,15 +2294,15 @@ internal sealed record RouteStats(
             {
                 textAreaCount++;
             }
-            if (IsTypeOrDerived(type, "AtomUIGallery.Controls.ShowCaseItem"))
+            if (IsTypeOrDerived(type, "AtomUI.Toolkits.GalleryBase.Controls.ShowCaseItem"))
             {
                 showCaseItemCount++;
             }
-            if (IsTypeOrDerived(type, "AtomUIGallery.Controls.IconGallery"))
+            if (IsTypeOrDerived(type, "AtomUI.Toolkits.GalleryBase.Controls.IconGallery"))
             {
                 iconGalleryCount++;
             }
-            if (IsTypeOrDerived(type, "AtomUIGallery.Controls.IconInfoItem"))
+            if (IsTypeOrDerived(type, "AtomUI.Toolkits.GalleryBase.Controls.IconInfoItem"))
             {
                 iconInfoItemCount++;
             }

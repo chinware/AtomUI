@@ -19,6 +19,7 @@
 - `src/AtomUI.Icons.AntDesign.Generator`
 - `src/AtomUI.Fonts.AlibabaSans`
 - `src/AtomUI.Fonts.AlibabaPuHuiTi`
+- `src/AtomUI.Toolkits.GalleryBase`
 - `controlgallery/AtomUIGallery`
 - `controlgallery/AtomUIGallery.Desktop`
 - `controlgallery/AtomUIGallery.Browser`
@@ -34,10 +35,11 @@
 | `AtomUI.Desktop.Controls` | `AtomUI.Controls`, `AtomUI.Generator` | 桌面主控件包 |
 | `AtomUI.Desktop.Controls.DataGrid` | `AtomUI.Desktop.Controls`, `AtomUI.Generator` | 独立 DataGrid 包 |
 | `AtomUI.Desktop.Controls.ColorPicker` | `AtomUI.Desktop.Controls`, `AtomUI.Generator`, `Avalonia.Controls.ColorPicker` | 独立 ColorPicker 包 |
+| `AtomUI.Toolkits.GalleryBase` | `AtomUI.Desktop.Controls`, `AtomUI.Generator` | 产品中立的 Gallery 展示控件、主题和运行时底座 |
 | `AtomUI.Icons.AntDesign` | `AtomUI.Core` | Ant Design 图标注册与生成图标 |
 | `AtomUI.Icons.AntDesign.Generator` | `AtomUI.Icons.Shared` | 从 SVG 生成 Ant Design 图标源码 |
 | `AtomUI.Fonts.*` | `AtomUI.Core` | 字体集合注册 |
-| `AtomUIGallery` | `AtomUI.Desktop.Controls`, `AtomUI.Desktop.Controls.DataGrid`, `AtomUI.Desktop.Controls.ColorPicker`, `AtomUI.Generator` | 控件示例主体 |
+| `AtomUIGallery` | `AtomUI.Toolkits.GalleryBase`, `AtomUI.Desktop.Controls`, `AtomUI.Desktop.Controls.DataGrid`, `AtomUI.Desktop.Controls.ColorPicker`, `AtomUI.Generator` | AtomUI 产品示例主体 |
 | `AtomUIGallery.Desktop` | `AtomUIGallery` | 桌面宿主 |
 | `AtomUIGallery.Browser` | `AtomUIGallery`, `AtomUI.Fonts.AlibabaPuHuiTi` | 浏览器宿主 |
 
@@ -51,4 +53,3 @@
 - `AtomUI.Native` 对 `AtomUI.Core`、`AtomUI.Desktop.Controls`、未来 `AtomUI.Mobile.Controls` 开放内部成员。
 
 这些关系说明 DataGrid 和 ColorPicker 虽然是独立包，但它们不是完全隔离的第三方扩展，而是桌面控件体系的同源扩展。
-

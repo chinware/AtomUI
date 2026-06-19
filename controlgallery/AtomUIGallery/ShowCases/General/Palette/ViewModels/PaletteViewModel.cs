@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using AtomUI.Controls;
 using AtomUI.Theme.Palette;
-using AtomUIGallery.Models;
+using AtomUI.Toolkits.GalleryBase.Models;
 using ReactiveUI;
 
 namespace AtomUIGallery.ShowCases.Palette;

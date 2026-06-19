@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Avalonia.Interactivity;
-using AtomUIGallery.Controls;
+using AtomUI.Toolkits.GalleryBase.Controls;
 using ReactiveUI;
 using Shouldly;
 using Xunit;

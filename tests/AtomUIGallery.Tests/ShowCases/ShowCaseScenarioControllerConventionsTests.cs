@@ -12,7 +12,7 @@ public class ShowCaseScenarioControllerConventionsTests
     [Fact]
     public void Migrated_ShowCases_Use_Shared_Scenario_Controller()
     {
-        var helperSource = ReadRepoFile("controlgallery/AtomUIGallery/Controls/GalleryShowCaseScenarioController.cs");
+        var helperSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseScenarioController.cs");
 
         helperSource.ShouldContain("SelectionChanged += HandleScenarioSelectionChanged");
         helperSource.ShouldContain("_lazyScenarioContentCache");

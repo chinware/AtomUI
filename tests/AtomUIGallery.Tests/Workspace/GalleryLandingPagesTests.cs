@@ -105,7 +105,7 @@ public class GalleryLandingPagesTests
     [Fact]
     public void Showcase_Items_Use_Elevated_Cards_Instead_Of_Bordered_Cards()
     {
-        var source = ReadRepoFile("controlgallery/AtomUIGallery/Controls/ShowCaseItemTheme.axaml");
+        var source = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItemTheme.axaml");
 
         source.ShouldContain("Background=\"{atom:SharedTokenResource ColorBgContainer}\"");
         source.ShouldContain("BoxShadow=\"{gallery:ShowCaseItemTokenResource CardShadow}\"");
