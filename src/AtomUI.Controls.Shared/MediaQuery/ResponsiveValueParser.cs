@@ -2,10 +2,12 @@ namespace AtomUI.Controls;
 
 internal static class ResponsiveValueParser
 {
-    public static ResponsiveValueMap<T> Parse<T>(
+    internal delegate T SpanValueParser<T>(ReadOnlySpan<char> input);
+
+    internal static ResponsiveValueMap<T> Parse<T>(
         string input,
-        Func<ReadOnlySpan<char>, T> parseScalar,
-        Func<ReadOnlySpan<char>, T> parseBreakpointValue)
+        SpanValueParser<T> parseScalar,
+        SpanValueParser<T> parseBreakpointValue)
     {
         var trimmed = input.AsSpan().Trim();
         if (trimmed.IsEmpty)
@@ -23,7 +25,7 @@ internal static class ResponsiveValueParser
 
     private static ResponsiveValueMap<T> ParseKeyValueFormat<T>(
         ReadOnlySpan<char> input,
-        Func<ReadOnlySpan<char>, T> parseBreakpointValue)
+        SpanValueParser<T> parseBreakpointValue)
     {
         var values = new Dictionary<MediaBreakPoint, T>();
         var span = input;
