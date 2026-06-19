@@ -115,9 +115,9 @@ public static class AtomUIGalleryModule
         branding.AppName     = "AtomUI Gallery";
         branding.Logo        = "avares://AtomUIGallery/Assets/atomui-oss.svg";
         branding.VersionText = GalleryVersionInfo.DisplayVersion;
-        branding.Links.Add(new GalleryLink("Website", "https://www.atomui.net", AntDesignIconKind.GlobalOutlined));
-        branding.Links.Add(new GalleryLink("Gitee", "https://gitee.com/chinware/AtomUI", AntDesignIconKind.GiteeOutlined));
-        branding.Links.Add(new GalleryLink("GitHub", "https://github.com/chinware/atomui", AntDesignIconKind.GithubOutlined));
+        branding.Links.Add(new GalleryLink("Website", "https://www.atomui.net", Icon(AntDesignIconKind.GlobalOutlined)));
+        branding.Links.Add(new GalleryLink("Gitee", "https://gitee.com/chinware/AtomUI", Icon(AntDesignIconKind.GiteeOutlined)));
+        branding.Links.Add(new GalleryLink("GitHub", "https://github.com/chinware/atomui", Icon(AntDesignIconKind.GithubOutlined)));
     }
 
     private static void ConfigureNavigation(AtomUI.Toolkits.GalleryBase.Navigation.GalleryNavigationBuilder navigation)

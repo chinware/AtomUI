@@ -60,9 +60,10 @@ README 中声明的主要包边界为：
 - `AtomUI.Controls.Shared`
 - `AtomUI.Controls`
 - `AtomUI.Desktop.Controls`
+- `AtomUI.Toolkits.GalleryBase`
 - `AtomUI.Desktop.Controls.DataGrid`
 - `AtomUI.Desktop.Controls.ColorPicker`
 - `AtomUI.Generator`
 
 DataGrid 和 ColorPicker 是独立按需包，但源码上依赖 `AtomUI.Desktop.Controls` 并访问其内部成员。
-
+GalleryBase 是产品中立的 Gallery 应用底座包，跟随主库版本发布，供 AtomUI 生态内的产品 Gallery、Demo 和文档应用复用。

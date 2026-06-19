@@ -19,6 +19,8 @@ GalleryBase 使用独立 XAML namespace：
 [assembly: XmlnsDefinition("https://atomui.net/toolkits/gallery-base", "AtomUI.Toolkits.GalleryBase")]
 [assembly: XmlnsDefinition("https://atomui.net/toolkits/gallery-base", "AtomUI.Toolkits.GalleryBase.Controls")]
 [assembly: XmlnsDefinition("https://atomui.net/toolkits/gallery-base", "AtomUI.Toolkits.GalleryBase.Controls.DesignTokens")]
+[assembly: XmlnsDefinition("https://atomui.net/toolkits/gallery-base", "AtomUI.Toolkits.GalleryBase.Models")]
+[assembly: XmlnsDefinition("https://atomui.net/toolkits/gallery-base", "AtomUI.Toolkits.GalleryBase.Shell")]
 ```
 
 产品 XAML 使用：
@@ -43,7 +45,7 @@ public static class ThemeManagerBuilderExtensions
 入口职责：
 
 - 注册 GalleryBase Control Token。
-- 注册 `GalleryBaseControlThemesProvider`。
+- 注册 `GalleryControlThemesProvider`。
 - 注册 GalleryBase 语言 Provider。
 - 构建并保存 `GalleryBaseConfiguration`。
 
@@ -64,21 +66,23 @@ GalleryBase 依赖 AtomUI Desktop 控件作为 Shell 默认 UI，因此产品应
 ## ControlThemesProvider
 
 ```text
-Theming/
-  GalleryBaseControlThemesProvider.axaml
-  GalleryBaseControlThemesProvider.cs
+Controls/
+  GalleryControlThemesProvider.axaml
+  GalleryControlThemesProvider.cs
 ```
 
-Provider 汇总：
+当前 Provider 汇总：
 
 - `ShowCaseItemTheme.axaml`
 - `ShowCasePanelTheme.axaml`
 - `GalleryStickyTabsHostTheme.axaml`
+- `ColorItemControlTheme.axaml`
+- `ColorListControlTheme.axaml`
+- `IconGalleryTheme.axaml`
+- `IconInfoItemTheme.axaml`
 - `GalleryWindowTitleBarTheme.axaml`
-- `GallerySidebarTheme.axaml`
-- `GalleryNavigationTheme.axaml`
 
-第一阶段可以先迁入当前已有主题，再随着 Shell 抽取补充 sidebar/navigation 主题。
+`GalleryShellView` 当前主要通过 C# 组合 AtomUI 现有控件和 Shared Token 完成 sidebar、footer、分隔线与内容区背景；后续如果 sidebar/navigation 有独立主题状态，再补对应 GalleryBase 控件主题和 token。
 
 ## Control Token
 

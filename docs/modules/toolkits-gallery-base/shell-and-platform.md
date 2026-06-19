@@ -1,16 +1,16 @@
 # GalleryBase Shell 与平台宿主设计
 
-本文档细化 GalleryBase 的 Desktop Window、Browser View、共享 Shell、品牌区域、标题栏菜单和平台差异。当前已抽出共享 Workspace ViewModel、导航运行时和产品配置；Desktop Window 与 Browser View 的视图层抽取仍是后续工作。
+本文档细化 GalleryBase 的共享 Shell、Desktop Window 适配、Browser View、品牌区域、标题栏菜单和平台差异。当前 GalleryBase 已承载 Workspace ViewModel、导航运行时、共享侧边栏/内容布局、Browser OverlayLayer 和媒体断点；产品侧只保留窗口菜单、字体、产品导航视图适配和启动代码。
 
 ## 设计目标
 
-- Desktop 和 Browser 共用同一套品牌、导航、路由和 Workspace ViewModel 基础。
+- Desktop 和 Browser 共用同一套品牌、导航、路由、Workspace ViewModel 和 Shell 布局。
 - 产品侧只提供配置，不重写 Shell 布局。
 - Shell 视觉使用 AtomUI 控件和 Token，但不写入任何产品品牌默认值。
 - Desktop 差异和 Browser 差异封装在平台宿主边界。
 - 支持未来扩展搜索、面包屑、页面元信息和响应式布局。
 
-## Shell 组成目标
+## Shell 组成
 
 通用 Shell 结构：
 
@@ -26,7 +26,7 @@ GalleryShell
   PlatformTitleBarMenu
 ```
 
-Shell 不负责 Demo 页面内部布局。ShowCase 页面继续使用 `GalleryStickyTabsHost`、`ShowCasePanel` 和 `ShowCaseItem`。
+`GalleryShellView` 负责 Sidebar、BrandArea、FooterLinks、VersionTag、`RoutedViewHost` 和导航/内容分隔线。Shell 不负责 Demo 页面内部布局。ShowCase 页面继续使用 `GalleryStickyTabsHost`、`ShowCasePanel` 和 `ShowCaseItem`。
 
 ## 共享 ViewModel
 
@@ -58,45 +58,48 @@ public class GalleryWorkspaceViewModel : ReactiveObject, IScreen, IDisposable
 
 宿主 View/Window 关闭或 Browser 根视图卸载时，如果其生命周期不是进程级单例，应调用 `Dispose()`。当前 AtomUI Gallery 的 `WorkspaceWindowViewModel` 继承该基类，因此同样获得导航诊断 timer 和语言事件的释放边界。
 
-## Desktop 宿主目标
+## Desktop 宿主适配
 
 ```csharp
-public class GalleryWorkspaceWindow : ReactiveWindow<GalleryWorkspaceViewModel>
-{
-}
+public sealed class GalleryShellView : UserControl, IDisposable
+```
+
+AtomUI Gallery 的 `WorkspaceWindow` 保留产品窗口菜单和标题栏事件处理，然后在 code-behind 中创建 `GalleryShellView`：
+
+```csharp
+var shellView = new GalleryShellView(configuration, navigationView, viewModel.Router);
 ```
 
 职责：
 
-- 创建并绑定 `GalleryWorkspaceViewModel`。
-- 配置 AtomUI Window title bar。
-- 应用 `GalleryShellOptions.InitialDesktopWindowSize` 和 `MinDesktopWindowSize`。
-- 根据配置显示或隐藏窗口选项菜单。
-- 处理 caption button 可见性、移动、缩放、置顶等窗口行为。
+- 产品窗口创建并绑定产品 `GalleryWorkspaceViewModel` 派生类型。
+- 产品窗口配置 AtomUI Window title bar 和菜单事件。
+- `GalleryShellView` 应用 Sidebar、品牌、footer 和 routing content host。
+- 产品窗口处理 caption button 可见性、移动、缩放、置顶等窗口行为。
 
 Desktop 不负责：
 
 - 注册产品页面。
 - 创建产品导航树。
-- 写死产品 logo 或链接。
+- 写死 sidebar、footer、logo、链接或 routing host。
 
-## Browser 宿主目标
+## Browser 宿主
 
 ```csharp
-public sealed class GalleryBrowserView : UserControl, IScreen, IMediaBreakAwareControl
+public class GalleryBrowserShellView : UserControl, IScreen, IMediaBreakAwareControl, IDisposable
 {
 }
 ```
 
 职责：
 
-- 创建并绑定 `GalleryWorkspaceViewModel`。
-- 提供 Browser 单页面 `MainView`。
+- 创建并绑定产品提供的 `GalleryWorkspaceViewModel`。
+- 使用 `GalleryShellView` 渲染侧边栏和内容路由区。
 - 配置 Browser 需要的 overlay layers。
 - 根据内容区域宽度维护 media breakpoint。
-- 使用同一个 Gallery Shell 渲染侧边栏和内容路由区。
+- 在 detach 时释放 Shell 和 Workspace ViewModel。
 
-Browser 不再手写一份独立 sidebar/footer/routing host。它只能处理 Browser 平台差异。
+AtomUI Gallery 的 `BrowserGalleryView` 继承 `GalleryBrowserShellView`，只提供字体、`WorkspaceWindowViewModel` 工厂和 `CaseNavigation` 视图工厂。
 
 ## Branding 渲染
 
@@ -112,7 +115,7 @@ BrandArea
 
 - 有 Logo 时优先展示 Logo。
 - 无 Logo 但有 AppName 时展示文本。
-- Logo 不强制固定宽高，默认约束由 Shell Token 提供。
+- 字符串 Logo 当前按 SVG 资源路径渲染，并使用 Shell 默认尺寸约束。
 - 产品可通过 `GalleryBrandingOptions.Logo` 提供自定义 Control。
 
 Footer 区域：
@@ -152,10 +155,13 @@ Footer
 
 内容区使用 ReactiveUI `RoutedViewHost`：
 
-```xml
-<rxui:RoutedViewHost Router="{Binding Router}"
-                     PageTransition="{x:Null}"
-                     ClipToBounds="True" />
+```csharp
+RoutedViewHost = new RoutedViewHost
+{
+    Router         = router,
+    PageTransition = null,
+    ClipToBounds   = true
+};
 ```
 
 规则：
@@ -172,7 +178,7 @@ Browser 宿主实现 `IMediaBreakAwareControl`，用于让 AtomUI 控件获得�
 断点来源：
 
 - Desktop 第一阶段不由 GalleryBase 强制提供，继续依赖 Window/AtomUI 现有机制。
-- Browser 根据 ContentHost 宽度计算。
+- Browser 由 `GalleryBrowserShellView` 根据 `GalleryShellView.ContentHost` 宽度计算。
 
 规则：
 
@@ -191,25 +197,20 @@ Browser 宿主需要初始化 `VisualLayerManager`：
 
 ## 崩溃日志
 
-Desktop 崩溃日志由启动项目决定是否使用 GalleryBase helper：
-
-```csharp
-GalleryDesktopCrashLogger.Log(ex, configuration.Platform.CrashLogDirectoryName);
-```
+Desktop 崩溃日志当前仍由产品启动项目处理。`GalleryPlatformOptions` 已保留 `EnableDesktopCrashLog` 和 `CrashLogDirectoryName`，但 GalleryBase 尚未提供统一 crash logger helper。
 
 规则：
 
-- GalleryBase 提供 helper，但不强制包裹 `Main`。
 - 产品可以替换为自己的日志系统。
-- helper 不吞异常，只写日志后重新抛出。
+- 如果后续新增 GalleryBase helper，不能强制包裹 `Main`，也不能吞异常。
 
 ## 测试要求
 
-- Desktop Shell 不包含具体产品 logo URI。
-- Browser Shell 不包含具体产品链接。
+- Desktop 产品窗口不包含具体产品 logo URI、footer 链接或 routing host。
+- Browser 产品视图不包含具体产品 logo URI、footer 链接、sidebar 构造或 OverlayLayer 反射代码。
 - Desktop 和 Browser 都使用 `GalleryWorkspaceViewModel`。
 - Workspace ViewModel 可释放并释放导航运行时。
 - Footer 在 links/version 为空时隐藏。
 - 标题栏菜单按配置开关显示或隐藏。
-- Browser OverlayLayer 初始化方法存在且只在 Browser View 使用。
+- Browser OverlayLayer 初始化方法存在于 GalleryBase Browser 宿主中。
 - Browser 不再手写重复导航树。
