@@ -9,6 +9,7 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="Frame"
+                        Height="{TemplateBinding Height}"
                         Padding="{TemplateBinding Padding}"
                         BackgroundSizing="{TemplateBinding BackgroundSizing}"
                         CornerRadius="{TemplateBinding CornerRadius}">
@@ -55,9 +56,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
-            </Style>
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeLG}" />
             <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingLG}" />
             <Style Selector="^:icononly">
@@ -66,9 +65,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
-            </Style>
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
             <Style Selector="^:icononly">
@@ -77,13 +74,20 @@
         </Style>
 
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ Border#Frame">
-                <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
-            </Style>
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
             <Setter Property="Padding" Value="{atom:ButtonTokenResource PaddingSM}" />
             <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSizeSM}" />
             <Style Selector="^:icononly">
                 <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPaddingSM}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[SizeType=Custom]">
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+            <Setter Property="Padding" Value="{atom:ButtonTokenResource Padding}" />
+            <Setter Property="FontSize" Value="{atom:ButtonTokenResource ContentFontSize}" />
+            <Style Selector="^:icononly">
+                <Setter Property="Padding" Value="{atom:ButtonTokenResource IconOnyPadding}" />
             </Style>
         </Style>
 
@@ -93,6 +97,10 @@
             <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSizeLG}" />
         </Style>
         <Style Selector="^[SizeType=Middle]">
+            <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
+            <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
+        </Style>
+        <Style Selector="^[SizeType=Custom]">
             <Setter Property="IconWidth" Value="{atom:SharedTokenResource IconSize}" />
             <Setter Property="IconHeight" Value="{atom:SharedTokenResource IconSize}" />
         </Style>
@@ -112,6 +120,12 @@
                         Value="{atom:ButtonTokenResource OnlyIconSizeLG}" />
             </Style>
             <Style Selector="^[SizeType=Middle]">
+                <Setter Property="IconWidth"
+                        Value="{atom:ButtonTokenResource OnlyIconSize}" />
+                <Setter Property="IconHeight"
+                        Value="{atom:ButtonTokenResource OnlyIconSize}" />
+            </Style>
+            <Style Selector="^[SizeType=Custom]">
                 <Setter Property="IconWidth"
                         Value="{atom:ButtonTokenResource OnlyIconSize}" />
                 <Setter Property="IconHeight"

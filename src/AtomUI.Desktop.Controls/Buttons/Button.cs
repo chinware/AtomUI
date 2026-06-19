@@ -76,7 +76,7 @@ public enum ButtonVariant
     ButtonPseudoClass.LinkType,
     ButtonPseudoClass.TextType)]
 public class Button : AvaloniaButton,
-                      ISizeTypeAware,
+                      ICustomizableSizeTypeAware,
                       IWaveSpiritAwareControl,
                       ICompactSpaceAware,
                       IFormItemAware
@@ -98,8 +98,8 @@ public class Button : AvaloniaButton,
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<Button, bool>(nameof(IsLoading));
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Button>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<Button>();
 
     public static readonly StyledProperty<PathIcon?> IconProperty =
         AvaloniaProperty.Register<Button, PathIcon?>(nameof(Icon));
@@ -149,7 +149,7 @@ public class Button : AvaloniaButton,
         set => SetValue(IsLoadingProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

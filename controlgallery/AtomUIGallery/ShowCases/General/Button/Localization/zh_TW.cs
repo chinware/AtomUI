@@ -96,6 +96,7 @@ internal partial class zh_TW : LanguageProvider
     public const string P2TextExpandDirection = "按鈕尺寸：";
     public const string P2ContentLarge = "大號";
     public const string P2ContentSmall = "小號";
+    public const string P2ContentCustom = "自定義";
     public const string P2ContentDownload = "下載";
     public const string P2ContentSearch = "搜索";
     public const string P2ContentLoading = "加載中";

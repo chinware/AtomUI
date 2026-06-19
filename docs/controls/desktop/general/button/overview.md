@@ -69,6 +69,8 @@ public ButtonVariant? Variant { get; set; }
 
 `CustomBackground` 表示 Button normal 状态的受控自定义背景覆层，主要用于渐变、图片或其他非纯色表面。它不是颜色语义，不参与 `Color + Variant` 的状态归一、文字色、边框色、阴影或 wave 颜色计算。`CustomBackground == null` 表示不启用自定义背景覆层。
 
+`SizeType` 使用可自定义尺寸模型，支持 `Large`、`Middle`、`Small` 和 `Custom`。`Large`、`Middle`、`Small` 是 Button 预设尺寸档，完全由 Token 和主题决定。`Custom` 表示用户希望基于 Button 现有属性进行实例级尺寸定制，而不是引入 Button 专属的 `CustomHeight`、`CustomPadding` 或尺寸对象。
+
 Template part 与主题入口：
 
 | 节点 | 职责 |
@@ -152,6 +154,8 @@ Button 与 CompactSpace、FormItem、Wave、Browser 主题协同。`Color + Vari
 - loading icon、opacity、原 icon 隐藏逻辑不变。
 - icon-only 判断与布局不变。
 - `Shape=Circle`、`Shape=Round` 的尺寸和圆角计算不变。
+- `SizeType=Large/Middle/Small` 的预设尺寸、字体、内边距、圆角和 icon 尺寸不变。
+- `SizeType=Custom` 未显式设置尺寸相关属性时必须按 `Middle` 默认值渲染；用户在 Button 上设置的本地 `Height`、`Padding`、`FontSize`、`CornerRadius` 等现有属性必须覆盖 Custom 默认值。
 - CompactSpace 下的有效圆角、有效边框和 z-index 行为不变。
 - wave 播放条件和危险态 wave brush 不变。
 - `CustomBackground` 不改变 `WaveSpiritDecorator` 的 wave brush，wave 颜色仍由 `EffectiveColor + EffectiveVariant` 推导。
@@ -176,6 +180,18 @@ Button 与 CompactSpace、FormItem、Wave、Browser 主题协同。`Color + Vari
 `CustomBackground` 是 Button 的受控视觉覆层模型，用于表达 normal 状态下的自定义按钮表面。覆层只在 `EffectiveVariant=Solid`、非危险态、非禁用态下显示；hover 与 pressed 状态隐藏覆层，露出标准 Button 状态背景。
 
 自定义背景覆层是主题内部实现细节，不形成用户可依赖的 `/template/` 样式入口。该模型等价于 Ant Design 渐变按钮示例中的 `::before` 覆层：normal 状态显示自定义表面，交互状态回落到 Button 原有语义状态。
+
+### 8.3 Custom 尺寸模型
+
+Button 的尺寸模型由预设档和实例定制组成。预设档 `Large`、`Middle`、`Small` 对齐 Ant Design Button 的三档尺寸；AtomUI 额外通过 `CustomizableSizeType.Custom` 提供实例级自定义入口。
+
+`SizeType=Custom` 的设计契约：
+
+- 未设置本地尺寸属性时，`Custom` 使用 `Middle` 的默认视觉指标，包括高度、字体、内边距、圆角、普通 icon 尺寸和 icon-only 尺寸。
+- 用户通过 Button 已有属性定制尺寸，例如 `Height`、`MinHeight`、`Width`、`MinWidth`、`Padding`、`FontSize` 和 `CornerRadius`。
+- 主题只能以 Style 默认值或可被 Button 本地属性覆盖的模板绑定提供 Custom 默认值，不得用更高优先级写入覆盖用户本地值。
+- Button 不提供 `CustomHeight`、`CustomPadding`、`CustomFontSize`、`CustomIconSize`、`CustomOnlyIconSize` 或 `ButtonSizeMetrics`。
+- Custom 模式下 icon 与 loading icon 默认沿用 `Middle` Token；需要特殊 icon 尺寸时，应通过现有 icon 或样式能力定制，不扩展 Button 公共 API。
 
 ## 9. 文档导航与验证策略
 

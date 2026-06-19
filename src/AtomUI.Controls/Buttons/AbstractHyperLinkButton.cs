@@ -7,14 +7,13 @@ using Avalonia.Interactivity;
 namespace AtomUI.Controls.Commons;
 
 using AvaloniaButton = Avalonia.Controls.Button;
-using ButtonSizeType = SizeType;
 
 [PseudoClasses(ButtonPseudoClass.Visited,
     ButtonPseudoClass.IconOnly,
     ButtonPseudoClass.Loading,
     ButtonPseudoClass.IsDanger)]
 public abstract class AbstractHyperLinkButton : AvaloniaButton,
-                                                ISizeTypeAware,
+                                                ICustomizableSizeTypeAware,
                                                 IMotionAwareControl
 {
     #region 公共属性定义
@@ -28,8 +27,8 @@ public abstract class AbstractHyperLinkButton : AvaloniaButton,
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<AbstractHyperLinkButton, bool>(nameof(IsLoading));
     
-    public static readonly StyledProperty<ButtonSizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractHyperLinkButton>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractHyperLinkButton>();
 
     public static readonly StyledProperty<PathIcon?> IconProperty = 
         AvaloniaProperty.Register<AbstractHyperLinkButton, PathIcon?>(nameof(Icon));
@@ -71,7 +70,7 @@ public abstract class AbstractHyperLinkButton : AvaloniaButton,
         set => SetValue(IsLoadingProperty, value);
     }
     
-    public ButtonSizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

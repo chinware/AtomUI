@@ -49,18 +49,15 @@ public partial class ButtonShowCase : GalleryReactiveUserControl<ButtonViewModel
     {
         if (_viewModel != null)
         {
-            if (args.Index == 0)
+            var sizeType = args.Index switch
             {
-                _viewModel.ButtonSizeType = SizeType.Large;
-            }
-            else if (args.Index == 1)
-            {
-                _viewModel.ButtonSizeType = SizeType.Middle;
-            }
-            else
-            {
-                _viewModel.ButtonSizeType = SizeType.Small;
-            }
+                0 => CustomizableSizeType.Large,
+                1 => CustomizableSizeType.Middle,
+                2 => CustomizableSizeType.Small,
+                3 => CustomizableSizeType.Custom,
+                _ => _viewModel.ButtonSizeType
+            };
+            _viewModel.ButtonSizeType = sizeType;
         }
     }
 

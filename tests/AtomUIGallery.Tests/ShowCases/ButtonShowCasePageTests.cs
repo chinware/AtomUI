@@ -133,6 +133,30 @@ public class ButtonShowCasePageTests
     }
 
     [Fact]
+    public void Button_Size_Example_Uses_Custom_Option_To_Resize_All_Bound_Buttons()
+    {
+        var source           = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml");
+        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml.cs");
+        var examples         = ExtractButtonExampleItems(source);
+
+        var sizeItem = ExtractShowCaseItemByTitle(examples, "ButtonShowCaseLangResource SizeTitle");
+        CountOccurrences(sizeItem, "<atom:OptionButton ").ShouldBe(4);
+        sizeItem.ShouldContain("ButtonShowCaseLangResource P2ContentCustom");
+        CountOccurrences(sizeItem, "SizeType=\"{Binding ButtonSizeType}\"").ShouldBe(10);
+        CountOccurrences(sizeItem, "Classes=\"size-demo-button\"").ShouldBe(10);
+        sizeItem.ShouldContain("Selector=\"atom|Button.size-demo-button[SizeType=Custom]\"");
+        sizeItem.ShouldContain("<Setter Property=\"Height\" Value=\"44\" />");
+        sizeItem.ShouldContain("<Setter Property=\"Padding\" Value=\"18,0\" />");
+        sizeItem.ShouldContain("<Setter Property=\"FontSize\" Value=\"15\" />");
+        sizeItem.ShouldNotContain("SizeType=\"Custom\"");
+        sizeItem.ShouldNotContain("Height=\"44\"");
+        sizeItem.ShouldNotContain("Padding=\"18,0\"");
+        sizeItem.ShouldNotContain("FontSize=\"15\"");
+
+        codeBehindSource.ShouldContain("CustomizableSizeType.Custom");
+    }
+
+    [Fact]
     public void Button_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
     {
         var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml");
@@ -219,6 +243,7 @@ public class ButtonShowCasePageTests
             source.ShouldContain("GradientButtonDescription");
             source.ShouldContain("ApiPropertyLoading");
             source.ShouldContain("ApiPropertyIcon");
+            source.ShouldContain("P2ContentCustom");
             source.ShouldContain("TokenNameColorPrimary");
             source.ShouldContain("TokenNameControlHeight");
         }
