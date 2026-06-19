@@ -231,6 +231,77 @@ public class NavMenuLayoutTests
     }
 
     [Theory]
+    [InlineData(true, 4d)]
+    [InlineData(false, 0d)]
+    public void Inline_Submenu_Background_Gap_Follows_Item_Background_Mode(
+        bool isItemBackgroundEnabled,
+        double expectedGap)
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode                    = NavMenuMode.Inline,
+            IsMotionEnabled         = false,
+            IsItemBackgroundEnabled = isItemBackgroundEnabled,
+            Width                   = 240
+        };
+        var firstChild = new NavMenuNode
+        {
+            Header  = "First child",
+            ItemKey = "first-child"
+        };
+        var secondChild = new NavMenuNode
+        {
+            Header  = "Second child",
+            ItemKey = "second-child"
+        };
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        var nextRoot = new NavMenuNode
+        {
+            Header  = "Next root",
+            ItemKey = "next-root"
+        };
+        parent.Children.Add(firstChild);
+        parent.Children.Add(secondChild);
+        menu.Items.Add(parent);
+        menu.Items.Add(nextRoot);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 360,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+
+            var parentContainer = (Control)menu.ContainerFromItem(parent)!;
+            var parentMenuItem  = (INavMenuItem)parentContainer;
+            parentMenuItem.Open();
+            menu.SelectedItem = secondChild;
+            Dispatcher.UIThread.RunJobs();
+
+            var childItemsFrame   = FindChildItemsFrame(parentContainer);
+            var nextRootContainer = (Control)menu.ContainerFromItem(nextRoot)!;
+            var nextRootHeader    = GetItemHeader(nextRootContainer);
+
+            var gap = GetTop(nextRootHeader, menu) - GetBottom(childItemsFrame, menu);
+
+            gap.ShouldBe(expectedGap, 0.5,
+                "The extra inline submenu block gap is only needed when the submenu background block is visible.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Theory]
     [InlineData(NavMenuMode.Vertical)]
     [InlineData(NavMenuMode.Horizontal)]
     public void Popup_Item_Inset_Uses_AntDesign_Item_Margins(NavMenuMode mode)
@@ -341,6 +412,13 @@ public class NavMenuLayoutTests
         return root.GetVisualDescendants()
                    .OfType<Border>()
                    .Single(border => border.Name == "PART_PopupFrame");
+    }
+
+    private static Border FindChildItemsFrame(Visual root)
+    {
+        return root.GetVisualDescendants()
+                   .OfType<Border>()
+                   .Single(border => border.Name == "PART_ChildItemsFrame");
     }
 
     private static VisualLayerManager CreatePopupOverlayHost(Control content)
