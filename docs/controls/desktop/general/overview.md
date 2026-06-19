@@ -7,5 +7,6 @@
 ## 控件文档
 
 - [Button 桌面版架构设计](button/overview.md)
+- [Button 桌面版实现原理](button/implementation.md)
 - [Button Token 设计](button/token.md)
 - [Button Changelog](button/changelog.md)

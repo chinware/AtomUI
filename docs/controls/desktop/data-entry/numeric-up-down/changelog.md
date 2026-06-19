@@ -8,6 +8,13 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-06-19
+
+- Docs
+  - Add `implementation.md` for NumericUpDown value synchronization, string mode, on-demand template switching, ButtonSpinner integration and maintenance invariants.
+  - Refactor `overview.md` to focus on data-entry semantics, public contracts, behavior state, visual theme model and validation entry points.
+  - Add NumericUpDown implementation documentation to the Data Entry category entry.
+
 ## 2026-06-18
 
 - Docs

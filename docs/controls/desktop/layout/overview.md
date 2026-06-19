@@ -7,4 +7,5 @@
 ## 控件文档
 
 - [Masonry 桌面版架构设计](masonry/overview.md)
+- [Masonry 桌面版实现原理](masonry/implementation.md)
 - [Masonry Changelog](masonry/changelog.md)

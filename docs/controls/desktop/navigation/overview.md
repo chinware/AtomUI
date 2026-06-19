@@ -7,5 +7,6 @@
 ## 控件文档
 
 - [NavMenu 桌面版架构设计](nav-menu/overview.md)
+- [NavMenu 桌面版实现原理](nav-menu/implementation.md)
 - [NavMenu Token 设计](nav-menu/token.md)
 - [NavMenu Changelog](nav-menu/changelog.md)

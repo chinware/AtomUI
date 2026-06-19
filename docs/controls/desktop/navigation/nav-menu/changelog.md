@@ -5,6 +5,9 @@
 ## 2026-06-19
 
 - Docs
+  - 新增 `implementation.md`，记录 NavMenu 容器绑定、interaction handler、selection coordinator、默认路径 replay、popup 和背景块实现边界。
+  - 将 `overview.md` 收敛为模式语义、公共契约、行为状态、视觉主题模型和验证入口。
+  - 在 Navigation 分类入口中登记 NavMenu 实现原理文档。
   - 按控件文档规范补齐 NavMenu 桌面版架构设计、Token 设计和控件级 changelog。
   - 在 Navigation 分类入口中登记 NavMenu 文档。
 - Theme
@@ -13,4 +16,3 @@
 - Token
   - 记录 NavMenuToken 的颜色、间距、popup、horizontal、dark 和 danger 分类。
   - 明确 `VerticalChildItemsMargin` 只服务背景模式下的 inline submenu 背景块外距。
-

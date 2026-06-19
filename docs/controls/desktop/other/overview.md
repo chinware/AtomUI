@@ -7,5 +7,6 @@
 ## 控件文档
 
 - [BorderBeam 桌面版架构设计](border-beam/overview.md)
+- [BorderBeam 桌面版实现原理](border-beam/implementation.md)
 - [BorderBeam Token 设计](border-beam/token.md)
 - [BorderBeam Changelog](border-beam/changelog.md)

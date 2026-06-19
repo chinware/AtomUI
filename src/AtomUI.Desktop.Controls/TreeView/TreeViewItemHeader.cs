@@ -464,16 +464,26 @@ internal class TreeViewItemHeader : ContentControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _headerContentFrame = e.NameScope.Find<Border>("PART_HeaderContentFrame");
+        SetHeaderContentFrame(e.NameScope.Find<Border>("PART_HeaderContentFrame"));
+        _iconPresenter = e.NameScope.Find<IconPresenter>("PART_IconPresenter");
+        _nodeSwitcherButton = e.NameScope.Find<NodeSwitcherButton>("PART_NodeSwitcherButton");
+        SetupSwitcherButtonIconMode();
+    }
+
+    private void SetHeaderContentFrame(Border? headerContentFrame)
+    {
+        if (_headerContentFrame != null)
+        {
+            _headerContentFrame.PointerEntered -= HandleHeaderPresenterEntered;
+            _headerContentFrame.PointerExited  -= HandleHeaderPresenterExited;
+        }
+
+        _headerContentFrame = headerContentFrame;
         if (_headerContentFrame != null)
         {
             _headerContentFrame.PointerEntered += HandleHeaderPresenterEntered;
             _headerContentFrame.PointerExited  += HandleHeaderPresenterExited;
         }
-
-        _iconPresenter = e.NameScope.Find<IconPresenter>("PART_IconPresenter");
-        _nodeSwitcherButton = e.NameScope.Find<NodeSwitcherButton>("PART_NodeSwitcherButton");
-        SetupSwitcherButtonIconMode();
     }
 
     internal Rect SwitcherButtonRect(Control relativeTo)
