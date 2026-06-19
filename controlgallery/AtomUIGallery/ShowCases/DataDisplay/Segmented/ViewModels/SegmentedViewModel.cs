@@ -45,7 +45,7 @@ public class SegmentedViewModel : ReactiveObject, IRoutableViewModel
 
         ApiRows =
         [
-            new SegmentedApiRow("SizeType", Lang(SegmentedShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new SegmentedApiRow("SizeType", Lang(SegmentedShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new SegmentedApiRow("IsExpanding", Lang(SegmentedShowCaseLangResourceKind.ApiPropertyIsExpanding), "bool", "green", "false"),
             new SegmentedApiRow("IsMotionEnabled", Lang(SegmentedShowCaseLangResourceKind.ApiPropertyIsMotionEnabled), "bool", "green", "EnableMotion"),
             new SegmentedApiRow("SelectedIndex", Lang(SegmentedShowCaseLangResourceKind.ApiPropertySelectedIndex), "int", "green", "0"),

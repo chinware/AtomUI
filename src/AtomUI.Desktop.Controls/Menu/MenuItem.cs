@@ -21,13 +21,13 @@ public class MenuItem : AvaloniaMenuItem, IMenuItemData
     public new static readonly StyledProperty<PathIcon?> IconProperty =
         AvaloniaProperty.Register<MenuItem, PathIcon?>(nameof(Icon));
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<MenuItem>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<MenuItem>();
 
     public static readonly StyledProperty<int> DisplayPageSizeProperty =
         Menu.DisplayPageSizeProperty.AddOwner<MenuItem>();
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

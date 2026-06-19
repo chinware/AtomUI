@@ -15,7 +15,7 @@ namespace AtomUI.Desktop.Controls;
 
 public abstract class AbstractSelect : TemplatedControl,
                                        IMotionAwareControl,
-                                       ISizeTypeAware,
+                                       ICustomizableSizeTypeAware,
                                        ICompactSpaceAware,
                                        IInputControlStatusAware,
                                        IInputControlStyleVariantAware,
@@ -116,8 +116,8 @@ public abstract class AbstractSelect : TemplatedControl,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractSelect>();
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractSelect>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractSelect>();
 
     public static readonly StyledProperty<object?> EmptyIndicatorProperty =
         AvaloniaProperty.Register<AbstractSelect, object?>(nameof(EmptyIndicator));
@@ -328,7 +328,7 @@ public abstract class AbstractSelect : TemplatedControl,
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

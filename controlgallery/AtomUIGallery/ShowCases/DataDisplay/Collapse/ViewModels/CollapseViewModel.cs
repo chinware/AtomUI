@@ -54,7 +54,7 @@ public class CollapseViewModel : ReactiveObject, IRoutableViewModel
 
         ApiRows =
         [
-            new CollapseApiRow("SizeType", Lang(CollapseShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new CollapseApiRow("SizeType", Lang(CollapseShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new CollapseApiRow("IsGhostStyle", Lang(CollapseShowCaseLangResourceKind.ApiPropertyIsGhostStyle), "bool", "purple", "false"),
             new CollapseApiRow("IsBorderless", Lang(CollapseShowCaseLangResourceKind.ApiPropertyIsBorderless), "bool", "purple", "false"),
             new CollapseApiRow("IsAccordion", Lang(CollapseShowCaseLangResourceKind.ApiPropertyIsAccordion), "bool", "purple", "false"),

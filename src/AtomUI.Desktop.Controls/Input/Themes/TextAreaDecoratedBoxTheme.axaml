@@ -77,7 +77,7 @@
                     <Setter Property="Padding" Value="{atom:TextAreaTokenResource RightAddOnPaddingLG}" />
                 </Style>
             </Style>
-            <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Style Selector="^ /template/ Border#PART_ContentFrame">
                     <Setter Property="Padding" Value="0" />
                 </Style>

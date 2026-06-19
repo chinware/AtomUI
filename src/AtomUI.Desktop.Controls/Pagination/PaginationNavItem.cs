@@ -27,8 +27,8 @@ internal class PaginationNavItem : ContentControl, ISelectable
     public static readonly StyledProperty<PaginationItemType> PaginationItemTypeProperty =
         AvaloniaProperty.Register<PaginationNavItem, PaginationItemType>(nameof(PaginationItemType));
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<PaginationNavItem>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<PaginationNavItem>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PaginationNavItem>();
@@ -54,7 +54,7 @@ internal class PaginationNavItem : ContentControl, ISelectable
         set => SetValue(PaginationItemTypeProperty, value);
     }
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

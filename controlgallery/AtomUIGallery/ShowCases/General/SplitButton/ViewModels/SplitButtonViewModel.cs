@@ -60,7 +60,7 @@ public class SplitButtonViewModel : ReactiveObject, IRoutableViewModel, IActivat
             new SplitButtonApiRow("GutterToFlyout", Lang(SplitButtonShowCaseLangResourceKind.ApiPropertyGutterToFlyout), "double", "cyan", "0"),
             new SplitButtonApiRow("MouseEnterDelay", Lang(SplitButtonShowCaseLangResourceKind.ApiPropertyMouseEnterDelay), "int", "cyan", "0"),
             new SplitButtonApiRow("MouseLeaveDelay", Lang(SplitButtonShowCaseLangResourceKind.ApiPropertyMouseLeaveDelay), "int", "cyan", "0"),
-            new SplitButtonApiRow("SizeType", Lang(SplitButtonShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new SplitButtonApiRow("SizeType", Lang(SplitButtonShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new SplitButtonApiRow("Icon", Lang(SplitButtonShowCaseLangResourceKind.ApiPropertyIcon), "PathIcon?", "cyan", "null"),
             new SplitButtonApiRow("OpenIndicator", Lang(SplitButtonShowCaseLangResourceKind.ApiPropertyOpenIndicator), "PathIcon?", "cyan", "EllipsisOutlined"),
             new SplitButtonApiRow("IsDanger", Lang(SplitButtonShowCaseLangResourceKind.ApiPropertyIsDanger), "bool", "green", "false"),

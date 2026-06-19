@@ -18,7 +18,7 @@ using AvaloniaComboBox = Avalonia.Controls.ComboBox;
 
 public class ComboBox : AvaloniaComboBox,
                         IMotionAwareControl,
-                        ISizeTypeAware,
+                        ICustomizableSizeTypeAware,
                         IInputControlStatusAware,
                         IInputControlStyleVariantAware,
                         IFormItemAware,
@@ -50,8 +50,8 @@ public class ComboBox : AvaloniaComboBox,
     public static readonly StyledProperty<IDataTemplate?> ContentRightAddOnTemplateProperty =
         AddOnDecoratedBox.ContentRightAddOnTemplateProperty.AddOwner<ComboBox>();
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ComboBox>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<ComboBox>();
 
     public static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
         InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<ComboBox>();
@@ -122,7 +122,7 @@ public class ComboBox : AvaloniaComboBox,
         set => SetValue(ContentRightAddOnTemplateProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

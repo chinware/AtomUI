@@ -23,7 +23,7 @@
                         Value="{atom:SharedTokenResource IconSizeLG}" />
             </Style>
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ atom|IconPresenter#PART_IconPresenter">
                 <Setter Property="Width"
                         Value="{atom:SharedTokenResource IconSize}" />

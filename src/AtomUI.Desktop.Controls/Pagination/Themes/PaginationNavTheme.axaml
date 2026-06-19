@@ -21,7 +21,7 @@
             </ControlTemplate>
         </Setter>
         
-        <Style Selector="^[SizeType=Large], ^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Large], ^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="ItemSpacing" Value="{atom:SharedTokenResource UniformlyMarginXS}"/>
         </Style>
     </ControlTheme>

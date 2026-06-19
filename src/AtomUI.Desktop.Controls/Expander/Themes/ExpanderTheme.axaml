@@ -181,7 +181,7 @@
                 </Style>
 
             </Style>
-            <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Style Selector="^ /template/ Border#PART_HeaderDecorator">
                     <Setter Property="Padding" Value="{atom:ExpanderTokenResource HeaderPadding}" />
                 </Style>
@@ -204,7 +204,7 @@
                             Value="{atom:ExpanderTokenResource ContentPaddingLG}" />
                 </Style>
             </Style>
-            <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
                     <Setter Property="Padding"
                             Value="{atom:ExpanderTokenResource ContentPadding}" />
@@ -226,7 +226,7 @@
                         Value="{atom:SharedTokenResource FontHeightLG}" />
             </Style>
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ Border#PART_HeaderDecorator">
                 <Setter Property="TextElement.FontSize"
                         Value="{atom:SharedTokenResource FontSize}" />

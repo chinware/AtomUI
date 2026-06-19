@@ -96,7 +96,7 @@ public class RadioButtonViewModel : ReactiveObject, IRoutableViewModel
             new RadioButtonApiRow("RadioButtonGroup.ItemSpacing", Lang(RadioButtonShowCaseLangResourceKind.ApiPropertyItemSpacing), "double", "cyan", "0"),
             new RadioButtonApiRow("RadioButtonGroup.LineSpacing", Lang(RadioButtonShowCaseLangResourceKind.ApiPropertyLineSpacing), "double", "cyan", "0"),
             new RadioButtonApiRow("OptionButtonGroup.ButtonStyle", Lang(RadioButtonShowCaseLangResourceKind.ApiPropertyButtonStyle), "OptionButtonStyle", "purple", "Outline"),
-            new RadioButtonApiRow("OptionButtonGroup.SizeType", Lang(RadioButtonShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new RadioButtonApiRow("OptionButtonGroup.SizeType", Lang(RadioButtonShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new RadioButtonApiRow("OptionButtonGroup.SelectedItem", Lang(RadioButtonShowCaseLangResourceKind.ApiPropertySelectedItem), "object?", "cyan", "null"),
             new RadioButtonApiRow("OptionButton.Icon", Lang(RadioButtonShowCaseLangResourceKind.ApiPropertyIcon), "PathIcon?", "cyan", "null")
         ];

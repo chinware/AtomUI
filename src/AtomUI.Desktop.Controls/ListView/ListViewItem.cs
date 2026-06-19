@@ -45,8 +45,8 @@ public class ListViewItem : ContentControl,
     
     #region 内部属性定义
 
-    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ListViewItem>();
+    internal static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<ListViewItem>();
     
     internal static readonly StyledProperty<IBrush?> ItemHoverBgProperty =
         ListBox.ItemHoverBgProperty.AddOwner<ListViewItem>();
@@ -78,7 +78,7 @@ public class ListViewItem : ContentControl,
     internal static readonly StyledProperty<ClickMode> ItemClickModeProperty =
         ListView.ItemClickModeProperty.AddOwner<ListViewItem>();
     
-    internal SizeType SizeType
+    internal CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

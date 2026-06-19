@@ -6,14 +6,14 @@ using Avalonia.Interactivity;
 
 namespace AtomUI.Desktop.Controls;
 
-internal class PaginationNav : SelectingItemsControl, ISizeTypeAware
+internal class PaginationNav : SelectingItemsControl, ICustomizableSizeTypeAware
 {
     #region 公共属性定义
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<PaginationNav>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<PaginationNav>();
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

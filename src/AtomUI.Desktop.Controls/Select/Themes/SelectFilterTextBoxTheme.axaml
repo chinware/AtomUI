@@ -13,7 +13,7 @@
             <Style Selector="^[SizeType=Large]">
                 <Setter Property="FontSize" Value="{atom:LineEditTokenResource InputFontSizeLG}" />
             </Style>
-            <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Setter Property="FontSize" Value="{atom:LineEditTokenResource InputFontSize}" />
             </Style>
             <Style Selector="^[SizeType=Small]">

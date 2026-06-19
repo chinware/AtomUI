@@ -112,7 +112,7 @@
             </Style>
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style
                 Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
                 <Setter Property="Padding" Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
@@ -148,7 +148,7 @@
                 <Setter Property="MinHeight" Value="{atom:SharedTokenResource FontHeightLG}" />
             </Style>
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ Border#PART_ContentFrame">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />

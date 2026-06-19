@@ -16,7 +16,7 @@ using Avalonia.VisualTree;
 namespace AtomUI.Desktop.Controls;
 
 internal class AddOnDecoratedBox : ContentControl, 
-                                   ISizeTypeAware,
+                                   ICustomizableSizeTypeAware,
                                    IMotionAwareControl,
                                    IInputControlStatusAware,
                                    IInputControlStyleVariantAware
@@ -49,8 +49,8 @@ internal class AddOnDecoratedBox : ContentControl,
     public static readonly StyledProperty<IDataTemplate?> ContentRightAddOnTemplateProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, IDataTemplate?>(nameof(ContentRightAddOnTemplate));
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AddOnDecoratedBox>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AddOnDecoratedBox>();
 
     public static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
         InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<AddOnDecoratedBox>();
@@ -116,7 +116,7 @@ internal class AddOnDecoratedBox : ContentControl,
         set => SetValue(ContentRightAddOnTemplateProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

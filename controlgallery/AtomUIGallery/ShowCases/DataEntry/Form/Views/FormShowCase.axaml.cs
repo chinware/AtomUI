@@ -169,7 +169,7 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
     private void HandleFormSizeTypeChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (DataContext is FormViewModel vm &&
-            args.CheckedOption.Tag is SizeType sizeType)
+            args.CheckedOption.Tag is CustomizableSizeType sizeType)
         {
             vm.FormSizeType = sizeType;
         }

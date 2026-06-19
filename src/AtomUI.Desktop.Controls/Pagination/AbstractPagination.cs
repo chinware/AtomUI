@@ -4,7 +4,7 @@ using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Desktop.Controls;
 
-public abstract class AbstractPagination : TemplatedControl, ISizeTypeAware, IMotionAwareControl
+public abstract class AbstractPagination : TemplatedControl, ICustomizableSizeTypeAware, IMotionAwareControl
 {
     public const int DefaultPageSize = 10;
     public const int DefaultCurrentPage = 1;
@@ -17,8 +17,8 @@ public abstract class AbstractPagination : TemplatedControl, ISizeTypeAware, IMo
     public static readonly StyledProperty<PaginationAlign> AlignProperty =
         AvaloniaProperty.Register<AbstractPagination, PaginationAlign>(nameof(Align));
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractPagination>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractPagination>();
     
     public static readonly StyledProperty<int> CurrentPageProperty =
         AvaloniaProperty.Register<AbstractPagination, int>(nameof(CurrentPage), DefaultCurrentPage,
@@ -51,7 +51,7 @@ public abstract class AbstractPagination : TemplatedControl, ISizeTypeAware, IMo
         set => SetValue(AlignProperty, value);
     }
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

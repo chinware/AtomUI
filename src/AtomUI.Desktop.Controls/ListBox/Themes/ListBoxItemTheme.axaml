@@ -64,7 +64,7 @@
             <Setter Property="Padding" Value="{atom:ListBoxTokenResource ItemPaddingLG}" />
         </Style>
 
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="Padding" Value="{atom:ListBoxTokenResource ItemPadding}" />

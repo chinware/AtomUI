@@ -47,7 +47,7 @@
             <Setter Property="Padding" Value="{atom:DataGridTokenResource TablePadding}"/>
             <Setter Property="FontSize" Value="{atom:DataGridTokenResource TableFontSize}"/>
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="Padding" Value="{atom:DataGridTokenResource TablePaddingMiddle}"/>
             <Setter Property="FontSize" Value="{atom:DataGridTokenResource TableFontSizeMiddle}"/>
         </Style>

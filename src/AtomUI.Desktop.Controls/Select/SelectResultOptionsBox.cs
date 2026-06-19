@@ -26,8 +26,8 @@ internal class SelectResultOptionsBox : TemplatedControl
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
         AvaloniaProperty.Register<SelectResultOptionsBox, bool>(nameof(IsDropDownOpen));
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<SelectResultOptionsBox>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<SelectResultOptionsBox>();
 
     public static readonly StyledProperty<int?> MaxTagCountProperty =
         Select.MaxTagCountProperty.AddOwner<SelectResultOptionsBox>();
@@ -61,7 +61,7 @@ internal class SelectResultOptionsBox : TemplatedControl
         set => SetValue(IsDropDownOpenProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

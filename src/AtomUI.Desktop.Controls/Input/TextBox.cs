@@ -14,15 +14,15 @@ using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
 public class TextBox : AvaloniaTextBox,
                        IMotionAwareControl,
-                       ISizeTypeAware,
+                       ICustomizableSizeTypeAware,
                        ICompactSpaceAware,
                        IFormItemAware,
                        IFormItemFeedbackAware
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<TextBox>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<TextBox>();
 
     public static readonly StyledProperty<bool> IsAllowClearProperty =
         AvaloniaProperty.Register<TextBox, bool>(nameof(IsAllowClear));
@@ -42,7 +42,7 @@ public class TextBox : AvaloniaTextBox,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TextBox>();
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

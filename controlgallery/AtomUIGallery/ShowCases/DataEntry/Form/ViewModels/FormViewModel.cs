@@ -67,9 +67,9 @@ public class FormViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _formRequiredMark, value);
     }
     
-    private SizeType _formSizeType = SizeType.Middle;
+    private CustomizableSizeType _formSizeType = CustomizableSizeType.Middle;
 
-    public SizeType FormSizeType
+    public CustomizableSizeType FormSizeType
     {
         get => _formSizeType;
         set => this.RaiseAndSetIfChanged(ref _formSizeType, value);

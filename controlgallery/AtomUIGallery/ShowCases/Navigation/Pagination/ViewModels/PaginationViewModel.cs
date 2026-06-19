@@ -51,7 +51,7 @@ public class PaginationViewModel : ReactiveObject, IRoutableViewModel
             new PaginationApiRow("PageCount", Lang(PaginationShowCaseLangResourceKind.ApiPropertyPageCount), "int", "cyan", "computed"),
             new PaginationApiRow("IsHideOnSinglePage", Lang(PaginationShowCaseLangResourceKind.ApiPropertyIsHideOnSinglePage), "bool", "purple", "false"),
             new PaginationApiRow("Align", Lang(PaginationShowCaseLangResourceKind.ApiPropertyAlign), "PaginationAlign", "blue", "Start"),
-            new PaginationApiRow("SizeType", Lang(PaginationShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new PaginationApiRow("SizeType", Lang(PaginationShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new PaginationApiRow("IsMotionEnabled", Lang(PaginationShowCaseLangResourceKind.ApiPropertyIsMotionEnabled), "bool", "purple", "token"),
             new PaginationApiRow("CurrentPageChanged", Lang(PaginationShowCaseLangResourceKind.ApiPropertyCurrentPageChanged), "event", "default", "null"),
             new PaginationApiRow("Pagination.IsShowSizeChanger", Lang(PaginationShowCaseLangResourceKind.ApiPropertyIsShowSizeChanger), "bool", "purple", "false"),

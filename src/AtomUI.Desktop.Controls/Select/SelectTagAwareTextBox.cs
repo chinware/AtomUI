@@ -24,8 +24,8 @@ internal class SelectTagAwareTextBox : TemplatedControl
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
         AvaloniaProperty.Register<SelectTagAwareTextBox, bool>(nameof(IsDropDownOpen));
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<SelectTagAwareTextBox>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<SelectTagAwareTextBox>();
 
     public static readonly StyledProperty<int?> MaxTagCountProperty =
         Select.MaxTagCountProperty.AddOwner<SelectTagAwareTextBox>();
@@ -53,7 +53,7 @@ internal class SelectTagAwareTextBox : TemplatedControl
         set => SetValue(IsDropDownOpenProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

@@ -88,7 +88,7 @@
             <Setter Property="ContentPadding"
                     Value="{atom:CollapseTokenResource CollapseContentPaddingLG}" />
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="HeaderPadding"
                     Value="{atom:CollapseTokenResource HeaderPadding}" />
             <Setter Property="ContentPadding"
@@ -109,7 +109,7 @@
                         Value="{atom:SharedTokenResource FontHeightLG}" />
             </Style>
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ Border#PART_HeaderDecorator">
                 <Setter Property="TextElement.FontSize"
                         Value="{atom:SharedTokenResource FontSize}" />
@@ -147,7 +147,7 @@
                             Value="{atom:CollapseTokenResource LeftExpandButtonMarginLG}" />
                 </Style>
             </Style>
-            <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
                     <Setter Property="Grid.Column" Value="0" />
                     <Setter Property="Margin"
@@ -172,7 +172,7 @@
                             Value="{atom:CollapseTokenResource RightExpandButtonMarginLG}" />
                 </Style>
             </Style>
-            <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Style Selector="^ /template/ atom|IconButton#PART_ExpandButton">
                     <Setter Property="Grid.Column" Value="3" />
                     <Setter Property="Margin"

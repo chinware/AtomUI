@@ -91,8 +91,8 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<CollapseItem>();
+    internal static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<CollapseItem>();
 
     internal static readonly DirectProperty<CollapseItem, bool> IsGhostStyleProperty =
         AvaloniaProperty.RegisterDirect<CollapseItem, bool>(nameof(IsGhostStyle),
@@ -126,7 +126,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CollapseItem>();
     
-    internal SizeType SizeType
+    internal CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

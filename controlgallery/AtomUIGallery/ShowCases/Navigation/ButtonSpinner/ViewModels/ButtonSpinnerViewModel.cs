@@ -55,7 +55,7 @@ public class ButtonSpinnerViewModel : ReactiveObject, IRoutableViewModel, IActiv
             new ButtonSpinnerApiRow("RightAddOn", Lang(ButtonSpinnerShowCaseLangResourceKind.ApiPropertyRightAddOn), "object?", "cyan", "null"),
             new ButtonSpinnerApiRow("InnerLeftContent", Lang(ButtonSpinnerShowCaseLangResourceKind.ApiPropertyInnerLeftContent), "object?", "cyan", "null"),
             new ButtonSpinnerApiRow("InnerRightContent", Lang(ButtonSpinnerShowCaseLangResourceKind.ApiPropertyInnerRightContent), "object?", "cyan", "null"),
-            new ButtonSpinnerApiRow("SizeType", Lang(ButtonSpinnerShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new ButtonSpinnerApiRow("SizeType", Lang(ButtonSpinnerShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new ButtonSpinnerApiRow("StyleVariant", Lang(ButtonSpinnerShowCaseLangResourceKind.ApiPropertyStyleVariant), "InputControlStyleVariant", "blue", "Outlined"),
             new ButtonSpinnerApiRow("Status", Lang(ButtonSpinnerShowCaseLangResourceKind.ApiPropertyStatus), "InputControlStatus", "blue", "Default"),
             new ButtonSpinnerApiRow("IsButtonSpinnerFloatable", Lang(ButtonSpinnerShowCaseLangResourceKind.ApiPropertyIsButtonSpinnerFloatable), "bool", "purple", "false"),

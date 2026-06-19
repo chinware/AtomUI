@@ -61,7 +61,7 @@ public class ComboBoxViewModel : ReactiveObject, IRoutableViewModel
             new ComboBoxApiRow("RightAddOn", Lang(ComboBoxShowCaseLangResourceKind.ApiPropertyRightAddOn), "object?", "cyan", "null"),
             new ComboBoxApiRow("ContentLeftAddOn", Lang(ComboBoxShowCaseLangResourceKind.ApiPropertyContentLeftAddOn), "object?", "cyan", "null"),
             new ComboBoxApiRow("ContentRightAddOn", Lang(ComboBoxShowCaseLangResourceKind.ApiPropertyContentRightAddOn), "object?", "cyan", "null"),
-            new ComboBoxApiRow("SizeType", Lang(ComboBoxShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new ComboBoxApiRow("SizeType", Lang(ComboBoxShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new ComboBoxApiRow("StyleVariant", Lang(ComboBoxShowCaseLangResourceKind.ApiPropertyStyleVariant), "InputControlStyleVariant", "blue", "Outlined"),
             new ComboBoxApiRow("Status", Lang(ComboBoxShowCaseLangResourceKind.ApiPropertyStatus), "InputControlStatus", "blue", "Default"),
             new ComboBoxApiRow("IsAllowClear", Lang(ComboBoxShowCaseLangResourceKind.ApiPropertyIsAllowClear), "bool", "purple", "false"),

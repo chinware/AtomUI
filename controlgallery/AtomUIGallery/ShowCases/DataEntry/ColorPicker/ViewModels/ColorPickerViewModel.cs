@@ -51,7 +51,7 @@ public class ColorPickerViewModel : ReactiveObject, IRoutableViewModel
             new ColorPickerApiRow("IsAlphaEnabled", Lang(ColorPickerShowCaseLangResourceKind.ApiPropertyIsAlphaEnabled), "bool", "green", "true"),
             new ColorPickerApiRow("IsTextVisible", Lang(ColorPickerShowCaseLangResourceKind.ApiPropertyIsTextVisible), "bool", "green", "false"),
             new ColorPickerApiRow("IsClearEnabled", Lang(ColorPickerShowCaseLangResourceKind.ApiPropertyIsClearEnabled), "bool", "green", "false"),
-            new ColorPickerApiRow("SizeType", Lang(ColorPickerShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new ColorPickerApiRow("SizeType", Lang(ColorPickerShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new ColorPickerApiRow("TriggerType", Lang(ColorPickerShowCaseLangResourceKind.ApiPropertyTriggerType), "FlyoutTriggerType", "blue", "Click"),
             new ColorPickerApiRow("ValueSyncStrategy", Lang(ColorPickerShowCaseLangResourceKind.ApiPropertyValueSyncStrategy), "ColorPickerValueSyncMode", "blue", "Immediate"),
             new ColorPickerApiRow("IsPaletteGroupEnabled", Lang(ColorPickerShowCaseLangResourceKind.ApiPropertyIsPaletteGroupEnabled), "bool", "green", "false")

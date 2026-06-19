@@ -33,7 +33,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
                              IFormItemAware,
                              IInputControlStatusAware,
                              IInputControlStyleVariantAware,
-                             ISizeTypeAware
+                             ICustomizableSizeTypeAware
 {
     #region 公共属性定义
     public static readonly StyledProperty<PathIcon?> ClearIconProperty =
@@ -57,8 +57,8 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     public static readonly StyledProperty<IDataTemplate?> InnerRightContentTemplateProperty =
         AvaloniaProperty.Register<NumericUpDown, IDataTemplate?>(nameof(InnerRightContentTemplate));
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<NumericUpDown>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<NumericUpDown>();
 
     public static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
         InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<NumericUpDown>();
@@ -128,7 +128,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         set => SetValue(InnerRightContentTemplateProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

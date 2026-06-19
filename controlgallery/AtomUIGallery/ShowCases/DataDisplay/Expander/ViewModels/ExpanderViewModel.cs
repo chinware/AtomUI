@@ -63,7 +63,7 @@ public class ExpanderViewModel : ReactiveObject, IRoutableViewModel
 
         ApiRows =
         [
-            new ExpanderApiRow("SizeType", Lang(ExpanderShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new ExpanderApiRow("SizeType", Lang(ExpanderShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new ExpanderApiRow("ExpandDirection", Lang(ExpanderShowCaseLangResourceKind.ApiPropertyExpandDirection), "ExpandDirection", "blue", "Down"),
             new ExpanderApiRow("IsShowExpandIcon", Lang(ExpanderShowCaseLangResourceKind.ApiPropertyIsShowExpandIcon), "bool", "purple", "true"),
             new ExpanderApiRow("ExpandIcon", Lang(ExpanderShowCaseLangResourceKind.ApiPropertyExpandIcon), "PathIcon?", "cyan", "RightOutlined"),

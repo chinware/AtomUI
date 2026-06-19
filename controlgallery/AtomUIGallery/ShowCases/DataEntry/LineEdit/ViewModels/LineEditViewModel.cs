@@ -48,7 +48,7 @@ public class LineEditViewModel : ReactiveObject, IRoutableViewModel
             new LineEditApiRow("PlaceholderText", Lang(LineEditShowCaseLangResourceKind.ApiPropertyPlaceholderText), "string?", "cyan", "null"),
             new LineEditApiRow("Text", Lang(LineEditShowCaseLangResourceKind.ApiPropertyText), "string?", "cyan", "null"),
             new LineEditApiRow("IsAllowClear", Lang(LineEditShowCaseLangResourceKind.ApiPropertyIsAllowClear), "bool", "green", "false"),
-            new LineEditApiRow("SizeType", Lang(LineEditShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new LineEditApiRow("SizeType", Lang(LineEditShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new LineEditApiRow("StyleVariant", Lang(LineEditShowCaseLangResourceKind.ApiPropertyStyleVariant), "InputControlStyleVariant", "purple", "Outlined"),
             new LineEditApiRow("Status", Lang(LineEditShowCaseLangResourceKind.ApiPropertyStatus), "InputControlStatus", "purple", "Default"),
             new LineEditApiRow("LeftAddOn", Lang(LineEditShowCaseLangResourceKind.ApiPropertyLeftAddOn), "object?", "cyan", "null"),
