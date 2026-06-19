@@ -71,8 +71,11 @@ AtomUIGallery.Desktop.dll
 macOS 任务安装：
 
 ```bash
+brew untap --force aws/tap azure/bicep
 brew install create-dmg openssl@3
 ```
+
+GitHub-hosted macOS runner 可能预置 `aws/tap` 和 `azure/bicep`。Gallery 发布不依赖这些 tap，workflow 在安装包依赖前先 untap，避免 Homebrew tap trust 检查把无关第三方 tap 的预警或强制校验带进发布流程。
 
 `AtomUIGallery.Desktop.csproj` 保留 Apple Silicon 和 Intel Homebrew OpenSSL linker 搜索路径。
 
