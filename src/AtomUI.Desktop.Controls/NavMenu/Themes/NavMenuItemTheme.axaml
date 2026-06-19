@@ -187,12 +187,12 @@
                         Value="{atom:NavMenuTokenResource VerticalItemsPanelSpacing}" />
             </Style>
 
-            <Style Selector="^ /template/ atom|LayoutAwareMotionActor#PART_ChildItemsLayoutTransform">
-                <Setter Property="Margin"
-                        Value="{atom:NavMenuTokenResource VerticalChildItemsMargin}" />
-            </Style>
-
             <Style Selector="^[IsItemBackgroundEnabled=True]">
+                <Style Selector="^ /template/ atom|LayoutAwareMotionActor#PART_ChildItemsLayoutTransform">
+                    <Setter Property="Margin"
+                            Value="{atom:NavMenuTokenResource VerticalChildItemsMargin}" />
+                </Style>
+
                 <Style Selector="^ /template/ Border#PART_ChildItemsFrame">
                     <Setter Property="Background"
                             Value="{atom:NavMenuTokenResource SubMenuItemBg}" />
