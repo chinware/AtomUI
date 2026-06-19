@@ -65,7 +65,7 @@
             <Setter Property="EmptyIndicatorPadding" Value="{atom:SharedTokenResource PaddingXL}" />
         </Style>
 
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
             <Setter Property="EmptyIndicatorPadding" Value="{atom:SharedTokenResource Padding}" />
         </Style>

@@ -6,17 +6,17 @@ using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls.Primitives;
 
-internal class SizeTypeAwareIconPresenter : TemplatedControl, ISizeTypeAware
+internal class SizeTypeAwareIconPresenter : TemplatedControl, ICustomizableSizeTypeAware
 {
     #region 公共属性定义
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<SizeTypeAwareIconPresenter>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<SizeTypeAwareIconPresenter>();
     
     public static readonly StyledProperty<PathIcon?> IconProperty =
         AvaloniaProperty.Register<SizeTypeAwareIconPresenter, PathIcon?>(nameof(Icon));
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

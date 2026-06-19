@@ -10,7 +10,7 @@ using Avalonia.Metadata;
 namespace AtomUI.Desktop.Controls;
 
 public class CompactSpaceAddOn : TemplatedControl,
-                                 ISizeTypeAware,
+                                 ICustomizableSizeTypeAware,
                                  ICompactSpaceAware,
                                  IInputControlStatusAware,
                                  IInputControlStyleVariantAware
@@ -23,8 +23,8 @@ public class CompactSpaceAddOn : TemplatedControl,
     public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty =
         ContentPresenter.ContentTemplateProperty.AddOwner<CompactSpaceAddOn>();
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<CompactSpaceAddOn>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<CompactSpaceAddOn>();
     
     public static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
         InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<CompactSpaceAddOn>();
@@ -46,7 +46,7 @@ public class CompactSpaceAddOn : TemplatedControl,
         set => SetValue(ContentTemplateProperty, value);
     }
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

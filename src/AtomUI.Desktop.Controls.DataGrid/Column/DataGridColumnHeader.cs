@@ -70,8 +70,8 @@ internal partial class DataGridColumnHeader : ContentControl
 
     #region 内部属性定义
     
-    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<DataGridColumnHeader>();
+    internal static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<DataGridColumnHeader>();
     
     internal static readonly DirectProperty<DataGridColumnHeader, bool> IsFirstVisibleProperty =
         AvaloniaProperty.RegisterDirect<DataGridColumnHeader, bool>(
@@ -183,7 +183,7 @@ internal partial class DataGridColumnHeader : ContentControl
         set => SetAndRaise(IsSeparatorFullHeightProperty, ref _isSeparatorFullHeight, value);
     }
 
-    internal SizeType SizeType
+    internal CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

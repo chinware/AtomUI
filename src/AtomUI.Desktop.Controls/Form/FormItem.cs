@@ -25,6 +25,17 @@ public enum FormItemLayout
 
 public class FormItem : TemplatedControl, IFormItem
 {
+    public static readonly RoutedEvent<FormItemValidateChangedEventArgs> ValidateChangedEvent =
+        RoutedEvent.Register<Button, FormItemValidateChangedEventArgs>(
+            nameof(ValidateChanged),
+            RoutingStrategies.Bubble | RoutingStrategies.Tunnel);
+
+    internal static readonly RoutedEvent<RoutedEventArgs> ValueChangedEvent =
+        RoutedEvent.Register<FormItem, RoutedEventArgs>(nameof(ValueChanged), RoutingStrategies.Bubble);
+
+    internal static readonly RoutedEvent<RoutedEventArgs> DeleteRequestEvent =
+        RoutedEvent.Register<FormItem, RoutedEventArgs>(nameof(DeleteRequest), RoutingStrategies.Bubble);
+
     #region 公共属性定义
     
     public static readonly StyledProperty<object?> ExtraProperty =
@@ -256,9 +267,6 @@ public class FormItem : TemplatedControl, IFormItem
 
     #region 公共事件定义
 
-    public static readonly RoutedEvent<FormItemValidateChangedEventArgs> ValidateChangedEvent =
-        RoutedEvent.Register<Button, FormItemValidateChangedEventArgs>(nameof(ValidateChanged), RoutingStrategies.Bubble | RoutingStrategies.Tunnel);
-    
     public event EventHandler<FormItemValidateChangedEventArgs>? ValidateChanged
     {
         add => AddHandler(ValidateChangedEvent, value);
@@ -271,8 +279,8 @@ public class FormItem : TemplatedControl, IFormItem
     internal static readonly StyledProperty<bool> IsShowColonProperty =
         Form.IsShowColonProperty.AddOwner<FormItem>();
 
-    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<FormItem>();
+    internal static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<FormItem>();
     
     internal static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
         InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<FormItem>();
@@ -399,7 +407,7 @@ public class FormItem : TemplatedControl, IFormItem
         set => SetValue(IsShowColonProperty, value);
     }
     
-    internal SizeType SizeType
+    internal CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
@@ -596,12 +604,6 @@ public class FormItem : TemplatedControl, IFormItem
 
     #region 内部事件定义
 
-    internal static readonly RoutedEvent<RoutedEventArgs> ValueChangedEvent =
-        RoutedEvent.Register<FormItem, RoutedEventArgs>(nameof(ValueChanged), RoutingStrategies.Bubble);
-    
-    internal static readonly RoutedEvent<RoutedEventArgs> DeleteRequestEvent =
-        RoutedEvent.Register<FormItem, RoutedEventArgs>(nameof(DeleteRequest), RoutingStrategies.Bubble);
-    
     internal event EventHandler<RoutedEventArgs>? ValueChanged
     {
         add => AddHandler(ValueChangedEvent, value);
@@ -677,9 +679,9 @@ public class FormItem : TemplatedControl, IFormItem
         
         _disposables?.Dispose();
         _disposables = new CompositeDisposable(2);
-        if (Content is ISizeTypeAware)
+        if (Content is not null)
         {
-            _disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, Content, SizeTypeProperty));
+            _disposables.Add(FormSizeTypeBindingHelper.RelaySizeType(this, SizeTypeProperty, Content));
         }
         if (Content is IMotionAwareControl)
         {

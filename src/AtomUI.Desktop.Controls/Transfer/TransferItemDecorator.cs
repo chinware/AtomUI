@@ -13,7 +13,7 @@ namespace AtomUI.Desktop.Controls;
 internal class TransferItemDecorator : TemplatedControl,
                                        IMotionAwareControl,
                                        IInputControlStatusAware,
-                                       ISizeTypeAware
+                                       ICustomizableSizeTypeAware
 {
     #region 公共属性定义
 
@@ -35,8 +35,8 @@ internal class TransferItemDecorator : TemplatedControl,
     public static readonly StyledProperty<InputControlStatus> StatusProperty =
         InputControlStatusProperty.StatusProperty.AddOwner<TransferItemDecorator>();
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<TransferItemDecorator>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<TransferItemDecorator>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<TransferItemDecorator>();
@@ -113,7 +113,7 @@ internal class TransferItemDecorator : TemplatedControl,
         set => SetValue(StatusProperty, value);
     }
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

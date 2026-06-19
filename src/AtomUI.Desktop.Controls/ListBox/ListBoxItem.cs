@@ -31,8 +31,8 @@ public class ListBoxItem : AvaloniaListBoxItem, IListItemVirtualizingContextAwar
     
     #region 内部属性定义
 
-    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ListBoxItem>();
+    internal static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<ListBoxItem>();
     
     internal static readonly StyledProperty<IBrush?> ItemHoverBgProperty =
         ListBox.ItemHoverBgProperty.AddOwner<ListBoxItem>();
@@ -87,7 +87,7 @@ public class ListBoxItem : AvaloniaListBoxItem, IListItemVirtualizingContextAwar
     internal static readonly StyledProperty<IBrush?> FilterHighlightForegroundProperty =
         ListBox.FilterHighlightForegroundProperty.AddOwner<ListBoxItem>();
     
-    internal SizeType SizeType
+    internal CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

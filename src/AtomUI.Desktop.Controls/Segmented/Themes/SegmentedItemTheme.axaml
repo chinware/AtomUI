@@ -88,7 +88,7 @@
                     Value="{atom:SegmentedTokenResource SegmentedItemPadding}" />
         </Style>
 
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="CornerRadius"
                     Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="FontSize"
@@ -126,7 +126,7 @@
             </Style>
         </Style>
 
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">
                 <Setter Property="Width"
                         Value="{atom:SharedTokenResource IconSize}" />

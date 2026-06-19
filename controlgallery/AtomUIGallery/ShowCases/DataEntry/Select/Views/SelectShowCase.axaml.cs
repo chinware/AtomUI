@@ -103,7 +103,7 @@ public partial class SelectShowCase : GalleryReactiveUserControl<SelectViewModel
     private void HandleSizeTypeChanged(object? sender, OptionCheckedChangedEventArgs e)
     {
         if (DataContext is SelectViewModel viewModel &&
-            e.CheckedOption.Tag is SizeType sizeType)
+            e.CheckedOption.Tag is CustomizableSizeType sizeType)
         {
             viewModel.SelectSizeType = sizeType;
         }

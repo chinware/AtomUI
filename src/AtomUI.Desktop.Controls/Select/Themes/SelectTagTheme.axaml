@@ -27,7 +27,7 @@
                 <Setter Property="Height" Value="{atom:SelectTokenResource MultipleItemHeightLG}" />
             </Style>
 
-            <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Setter Property="Height" Value="{atom:SelectTokenResource MultipleItemHeight}" />
             </Style>
 

@@ -37,7 +37,7 @@
             </Style>
             <Setter Property="FontSize" Value="{atom:DataGridTokenResource TableFontSize}"/>
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ Border#PART_Frame">
                 <Setter Property="Padding" Value="{atom:DataGridTokenResource TablePaddingMiddle}"/>
             </Style>

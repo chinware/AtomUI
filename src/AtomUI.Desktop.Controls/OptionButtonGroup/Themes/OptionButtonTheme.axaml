@@ -45,7 +45,7 @@
             </Style>
         </Style>
 
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="FontSize" Value="{atom:OptionButtonTokenResource ContentFontSize}" />
             <Setter Property="Padding" Value="{atom:OptionButtonTokenResource Padding}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />

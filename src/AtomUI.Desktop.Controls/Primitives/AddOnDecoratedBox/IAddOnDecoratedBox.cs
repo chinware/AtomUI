@@ -26,7 +26,7 @@ public interface IAddOnDecoratedBox
     
     public IDataTemplate? ContentRightAddOnTemplate { get; set; }
 
-    public SizeType SizeType { get; set; }
+    public CustomizableSizeType SizeType { get; set; }
 
     public InputControlStyleVariant StyleVariant { get; set; }
 

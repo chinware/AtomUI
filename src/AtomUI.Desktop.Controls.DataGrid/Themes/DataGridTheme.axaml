@@ -212,7 +212,7 @@
                 <Setter Property="Margin" Value="{atom:DataGridTokenResource PaginationMargin}" />
             </Style>
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ ContentPresenter#Title">
                 <Setter Property="Padding"
                         Value="{atom:DataGridTokenResource TablePaddingMiddle}" />

@@ -32,7 +32,7 @@
                     Value="{atom:SpaceTokenResource AddOnPaddingLG}" />
             <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="FontSize"
                     Value="{atom:SharedTokenResource FontSize}" />
             <Setter Property="CornerRadius"

@@ -36,7 +36,7 @@ public enum AutoCompletePlacementMode
 
 [PseudoClasses(AutoCompletePseudoClass.CandidatePopupOpen)]
 public abstract class AbstractAutoComplete : TemplatedControl, 
-                                             ISizeTypeAware,
+                                             ICustomizableSizeTypeAware,
                                              IMotionAwareControl,
                                              IFormItemAware,
                                              IInputControlStatusAware,
@@ -47,8 +47,8 @@ public abstract class AbstractAutoComplete : TemplatedControl,
     public static readonly StyledProperty<PathIcon?> ClearIconProperty =
         AvaloniaProperty.Register<AbstractAutoComplete, PathIcon?>(nameof(ClearIcon));
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractAutoComplete>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractAutoComplete>();
     
     public static readonly StyledProperty<int> CaretIndexProperty =
         AvaloniaTextBox.CaretIndexProperty.AddOwner<AbstractAutoComplete>(new(
@@ -184,7 +184,7 @@ public abstract class AbstractAutoComplete : TemplatedControl,
         set => SetValue(ClearIconProperty, value);
     }
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

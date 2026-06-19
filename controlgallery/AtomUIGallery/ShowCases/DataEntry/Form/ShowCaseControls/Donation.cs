@@ -23,14 +23,14 @@ public record DonationInfo
 
 public class Donation: TemplatedControl,
                        IMotionAwareControl,
-                       ISizeTypeAware,
+                       ICustomizableSizeTypeAware,
                        IFormItemAware,
                        IInputControlStatusAware,
                        IInputControlStyleVariantAware
 {
     #region 公共属性定义
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Donation>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<Donation>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Donation>();
@@ -44,7 +44,7 @@ public class Donation: TemplatedControl,
     public static readonly StyledProperty<InputControlStatus> StatusProperty =
         InputControlStatusProperty.StatusProperty.AddOwner<Donation>();
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

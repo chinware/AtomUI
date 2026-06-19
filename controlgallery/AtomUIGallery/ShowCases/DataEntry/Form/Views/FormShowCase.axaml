@@ -706,9 +706,9 @@
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <atom:TextBlock VerticalAlignment="Center" Text="{gallery:FormShowCaseLangResource P2TextRequiredMark}" />
                     <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleFormSizeTypeChanged">
-                        <atom:OptionButton Tag="{x:Static atom:SizeType.Small}" Content="{gallery:FormShowCaseLangResource P2ContentSmall}" />
-                        <atom:OptionButton Tag="{x:Static atom:SizeType.Middle}" IsChecked="True" Content="{gallery:FormShowCaseLangResource P2ContentMiddle}" />
-                        <atom:OptionButton Tag="{x:Static atom:SizeType.Large}" Content="{gallery:FormShowCaseLangResource P2ContentLarge}" />
+                        <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Small}" Content="{gallery:FormShowCaseLangResource P2ContentSmall}" />
+                        <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Middle}" IsChecked="True" Content="{gallery:FormShowCaseLangResource P2ContentMiddle}" />
+                        <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Large}" Content="{gallery:FormShowCaseLangResource P2ContentLarge}" />
                     </atom:OptionButtonGroup>
                 </StackPanel>
 

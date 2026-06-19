@@ -146,7 +146,7 @@
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
                 <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightLG}" />
             </Style>
-            <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Setter Property="ContentPadding"
                         Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
                 <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
@@ -156,7 +156,7 @@
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
                 <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
             </Style>
-            <Style Selector="^[SizeType=Large], ^[SizeType=Middle], ^[SizeType=Small]">
+            <Style Selector="^[SizeType=Large], ^[SizeType=Middle], ^[SizeType=Custom], ^[SizeType=Small]">
                 <Style Selector="^ /template/ Border#PART_ContentFrame">
                     <Setter Property="Padding"
                             Value="{Binding (atom:ButtonSpinnerDecoratedBox).EffectiveContentPadding, RelativeSource={RelativeSource TemplatedParent}}" />

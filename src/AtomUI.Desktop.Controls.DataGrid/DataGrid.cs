@@ -26,13 +26,13 @@ namespace AtomUI.Desktop.Controls;
 
 [PseudoClasses(StdPseudoClass.Invalid, DataGridPseudoClass.EmptyRows, DataGridPseudoClass.EmptyColumns)]
 public partial class DataGrid : TemplatedControl,
-                                ISizeTypeAware,
+                                ICustomizableSizeTypeAware,
                                 IMotionAwareControl
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<DataGrid>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<DataGrid>();
     
     public static readonly StyledProperty<bool> IsOperatingProperty =
         AvaloniaProperty.Register<DataGrid, bool>(nameof(IsOperating));
@@ -224,7 +224,7 @@ public partial class DataGrid : TemplatedControl,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<DataGrid>();
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
@@ -976,7 +976,7 @@ public partial class DataGrid : TemplatedControl,
             HorizontalScrollBarVisibilityProperty,
             VerticalScrollBarVisibilityProperty);
 
-        SizeTypeProperty.OverrideDefaultValue<DataGrid>(SizeType.Large);
+        SizeTypeProperty.OverrideDefaultValue<DataGrid>(CustomizableSizeType.Large);
 
         ItemsSourceProperty.Changed.AddClassHandler<DataGrid>((x, e) => x.HandleItemsSourcePropertyChanged(e));
         CanUserResizeColumnsProperty.Changed.AddClassHandler<DataGrid>((x, e) =>
@@ -1619,7 +1619,7 @@ public partial class DataGrid : TemplatedControl,
         ConfigurePaginationVisibility();
         SetValue(EmptyIndicatorProperty, new Empty()
         {
-            SizeType    = SizeType.Middle,
+            SizeType    = AtomUI.SizeType.Middle,
             PresetImage = PresetEmptyImage.Simple
         }, BindingPriority.Template);
 

@@ -112,7 +112,7 @@
             </Style>
 
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="Height" Value="{atom:PaginationTokenResource ItemSize}" />
             <Setter Property="MinWidth" Value="{atom:PaginationTokenResource ItemSize}" />
             <Style Selector="^ /template/ atom|IconPresenter#IconPresenter">

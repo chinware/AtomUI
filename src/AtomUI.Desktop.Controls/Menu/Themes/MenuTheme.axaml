@@ -39,7 +39,7 @@
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
         </Style>
 
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
         </Style>

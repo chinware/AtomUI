@@ -378,9 +378,9 @@
 
             <StackPanel Orientation="Vertical" Spacing="10">
                 <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleSizeTypeChanged">
-                    <atom:OptionButton Tag="{x:Static atom:SizeType.Large}" Content="{gallery:SelectShowCaseLangResource P2ContentLarge}" />
-                    <atom:OptionButton IsChecked="True" Tag="{x:Static atom:SizeType.Middle}" Content="{gallery:SelectShowCaseLangResource P2ContentDefault}" />
-                    <atom:OptionButton Tag="{x:Static atom:SizeType.Small}" Content="{gallery:SelectShowCaseLangResource P2ContentSmall}" />
+                    <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Large}" Content="{gallery:SelectShowCaseLangResource P2ContentLarge}" />
+                    <atom:OptionButton IsChecked="True" Tag="{x:Static atom:CustomizableSizeType.Middle}" Content="{gallery:SelectShowCaseLangResource P2ContentDefault}" />
+                    <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Small}" Content="{gallery:SelectShowCaseLangResource P2ContentSmall}" />
                 </atom:OptionButtonGroup>
 
                 <atom:Select Name="SizeSelect1"

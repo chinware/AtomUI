@@ -33,7 +33,7 @@ public class Mentions : TemplatedControl,
                         IFormItemAware,
                         IInputControlStatusAware,
                         IInputControlStyleVariantAware,
-                        ISizeTypeAware,
+                        ICustomizableSizeTypeAware,
                         IFormItemFeedbackAware
 {
     #region 公共属性定义
@@ -154,8 +154,8 @@ public class Mentions : TemplatedControl,
         AvaloniaProperty.Register<Mentions, bool>(
             nameof(IsDropDownOpen));
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Mentions>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<Mentions>();
     
     public PathIcon? ClearIcon
     {
@@ -377,7 +377,7 @@ public class Mentions : TemplatedControl,
         set => SetValue(IsDropDownOpenProperty, value);
     }
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

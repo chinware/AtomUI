@@ -268,7 +268,7 @@ public class TransferListView : ListView, ITransferView
         SetCurrentValue(BottomPaginationProperty, new SimplePagination()
         {
             IsReadOnly = false,
-            SizeType = SizeType.Small
+            SizeType = CustomizableSizeType.Small
         });
     }
 

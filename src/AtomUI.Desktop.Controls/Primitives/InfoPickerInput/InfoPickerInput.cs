@@ -24,7 +24,7 @@ public abstract class InfoPickerInput : TemplatedControl,
                                         IFormItemAware,
                                         IInputControlStatusAware,
                                         IInputControlStyleVariantAware,
-                                        ISizeTypeAware,
+                                        ICustomizableSizeTypeAware,
                                         IFormItemFeedbackAware
 {
     #region 公共属性定义
@@ -52,8 +52,8 @@ public abstract class InfoPickerInput : TemplatedControl,
     public static readonly StyledProperty<IDataTemplate?> ContentRightAddOnTemplateProperty =
         AddOnDecoratedBox.ContentRightAddOnTemplateProperty.AddOwner<InfoPickerInput>();
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<InfoPickerInput>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<InfoPickerInput>();
 
     public static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
         InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<InfoPickerInput>();
@@ -138,7 +138,7 @@ public abstract class InfoPickerInput : TemplatedControl,
         set => SetValue(ContentRightAddOnTemplateProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

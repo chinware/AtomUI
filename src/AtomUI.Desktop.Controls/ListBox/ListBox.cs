@@ -18,7 +18,7 @@ namespace AtomUI.Desktop.Controls;
 using AvaloniaListBox = Avalonia.Controls.ListBox;
 
 public class ListBox : AvaloniaListBox,
-                       ISizeTypeAware,
+                       ICustomizableSizeTypeAware,
                        IMotionAwareControl,
                        IListVirtualizingContextAware
 {
@@ -26,8 +26,8 @@ public class ListBox : AvaloniaListBox,
     public static readonly StyledProperty<bool> IsSelectableProperty =
         AvaloniaProperty.Register<ListBox, bool>(nameof(IsSelectable), true);
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ListBox>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<ListBox>();
     
     public static readonly StyledProperty<bool> IsBorderlessProperty =
         AvaloniaProperty.Register<ListBox, bool>(nameof(IsBorderless), false);
@@ -88,7 +88,7 @@ public class ListBox : AvaloniaListBox,
         set => SetValue(IsSelectableProperty, value);
     }
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

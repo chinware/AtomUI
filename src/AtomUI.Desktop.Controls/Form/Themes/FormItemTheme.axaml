@@ -166,7 +166,7 @@
                         Value="{atom:SharedTokenResource ControlHeightLG}" />
             </Style>
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ Panel#PART_LabelLayout">
                 <Setter Property="MinHeight"
                         Value="{atom:SharedTokenResource ControlHeight}" />

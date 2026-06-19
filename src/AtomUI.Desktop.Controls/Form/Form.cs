@@ -17,7 +17,7 @@ using Avalonia.Threading;
 namespace AtomUI.Desktop.Controls;
 
 public class Form : ItemsControl,
-                    ISizeTypeAware,
+                    ICustomizableSizeTypeAware,
                     IMotionAwareControl,
                     IForm,
                     IInputControlStyleVariantAware
@@ -30,8 +30,8 @@ public class Form : ItemsControl,
     public static readonly StyledProperty<InputControlStyleVariant> StyleVariantProperty =
         InputControlStyleVariantProperty.StyleVariantProperty.AddOwner<Form>();
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Form>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<Form>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Form>();
@@ -155,7 +155,7 @@ public class Form : ItemsControl,
         set => SetValue(StyleVariantProperty, value);
     }
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

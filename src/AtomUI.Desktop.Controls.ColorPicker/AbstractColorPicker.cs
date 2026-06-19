@@ -28,7 +28,7 @@ public enum ColorPickerValueSyncMode
 }
 
 public abstract class AbstractColorPicker : AvaloniaButton,
-                                            ISizeTypeAware,
+                                            ICustomizableSizeTypeAware,
                                             IMotionAwareControl,
                                             ICompactSpaceAware,
                                             IFormItemAware,
@@ -72,8 +72,8 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     public static readonly StyledProperty<bool> IsClearEnabledProperty =
         AbstractColorPickerView.IsClearEnabledProperty.AddOwner<AbstractColorPicker>();
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractColorPicker>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractColorPicker>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractColorPicker>();
@@ -174,7 +174,7 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         set => SetValue(IsClearEnabledProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

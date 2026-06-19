@@ -28,8 +28,8 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
     
     #region 内部属性定义
 
-    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractOptionButton>();
+    internal static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractOptionButton>();
 
     internal static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
         AvaloniaProperty.Register<AbstractOptionButton, OptionButtonStyle>(nameof(ButtonStyle));
@@ -47,7 +47,7 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
     internal static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
         WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<AbstractOptionButton>();
 
-    internal SizeType SizeType
+    internal CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

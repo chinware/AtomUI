@@ -30,8 +30,8 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Collapse>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<Collapse>();
 
     public static readonly StyledProperty<bool> IsGhostStyleProperty =
         AvaloniaProperty.Register<Collapse, bool>(nameof(IsGhostStyle));
@@ -57,7 +57,7 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
     public static readonly StyledProperty<Thickness> ItemContentPaddingProperty =
         AvaloniaProperty.Register<Collapse, Thickness>(nameof(ItemContentPadding));
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

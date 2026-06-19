@@ -27,14 +27,14 @@ public record PriceInfo
 
 public class PriceInput : TemplatedControl,
                           IMotionAwareControl,
-                          ISizeTypeAware,
+                          ICustomizableSizeTypeAware,
                           IFormItemAware,
                           IInputControlStatusAware,
                           IInputControlStyleVariantAware
 {
     #region 公共属性定义
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<PriceInput>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<PriceInput>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PriceInput>();
@@ -53,7 +53,7 @@ public class PriceInput : TemplatedControl,
     public static readonly StyledProperty<InputControlStatus> StatusProperty =
         InputControlStatusProperty.StatusProperty.AddOwner<PriceInput>();
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

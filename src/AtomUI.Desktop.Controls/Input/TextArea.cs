@@ -22,7 +22,7 @@ using AvaloniaTextBox = Avalonia.Controls.TextBox;
 
 public class TextArea : AvaloniaTextBox,
                         IMotionAwareControl,
-                        ISizeTypeAware,
+                        ICustomizableSizeTypeAware,
                         IFormItemAware,
                         IInputControlStatusAware,
                         IInputControlStyleVariantAware,
@@ -50,8 +50,8 @@ public class TextArea : AvaloniaTextBox,
     public static readonly StyledProperty<InputControlStatus> StatusProperty =
         InputControlStatusProperty.StatusProperty.AddOwner<TextArea>();
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<TextArea>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<TextArea>();
 
     public static readonly StyledProperty<bool> IsAllowClearProperty =
         AvaloniaProperty.Register<TextArea, bool>(nameof(IsAllowClear));
@@ -111,7 +111,7 @@ public class TextArea : AvaloniaTextBox,
         set => SetValue(StatusProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

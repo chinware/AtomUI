@@ -58,7 +58,7 @@
             <Setter Property="Padding" Value="{atom:ListViewTokenResource ItemPaddingLG}" />
         </Style>
 
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusSM}" />
             <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />
             <Setter Property="Padding" Value="{atom:ListViewTokenResource ItemPadding}" />
@@ -85,7 +85,7 @@
                 <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
             </Style>
 
-            <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeSM}" />
             </Style>
 

@@ -42,8 +42,8 @@ public class DataGridCell : ContentControl
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<DataGridCell>();
+    internal static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<DataGridCell>();
 
     internal static readonly DirectProperty<DataGridCell, bool> IsSortingProperty =
         AvaloniaProperty.RegisterDirect<DataGridCell, bool>(
@@ -81,7 +81,7 @@ public class DataGridCell : ContentControl
             o => o.IsClipContent, 
             (o, v) => o.IsClipContent = v);
     
-    internal SizeType SizeType
+    internal CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

@@ -136,13 +136,13 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
 
         ApiRows =
         [
-            new MenuApiRow("Menu.SizeType", Lang(MenuShowCaseLangResourceKind.ApiPropertyMenuSizeType), "SizeType", "blue", "Middle"),
+            new MenuApiRow("Menu.SizeType", Lang(MenuShowCaseLangResourceKind.ApiPropertyMenuSizeType), "CustomizableSizeType", "blue", "Middle"),
             new MenuApiRow("Menu.IsMotionEnabled", Lang(MenuShowCaseLangResourceKind.ApiPropertyMenuIsMotionEnabled), "bool", "purple", "token"),
             new MenuApiRow("Menu.DisplayPageSize", Lang(MenuShowCaseLangResourceKind.ApiPropertyMenuDisplayPageSize), "int", "cyan", "10"),
             new MenuApiRow("Menu.ShouldUseOverlayPopup", Lang(MenuShowCaseLangResourceKind.ApiPropertyMenuShouldUseOverlayPopup), "bool", "purple", "false"),
             new MenuApiRow("MenuItem.Icon", Lang(MenuShowCaseLangResourceKind.ApiPropertyMenuItemIcon), "PathIcon?", "cyan", "null"),
             new MenuApiRow("MenuItem.ToggleType", Lang(MenuShowCaseLangResourceKind.ApiPropertyMenuItemToggleType), "MenuItemToggleType", "blue", "None"),
-            new MenuApiRow("ContextMenu.SizeType", Lang(MenuShowCaseLangResourceKind.ApiPropertyContextMenuSizeType), "SizeType", "blue", "Middle"),
+            new MenuApiRow("ContextMenu.SizeType", Lang(MenuShowCaseLangResourceKind.ApiPropertyContextMenuSizeType), "CustomizableSizeType", "blue", "Middle"),
             new MenuApiRow("ContextMenu.ItemsSource", Lang(MenuShowCaseLangResourceKind.ApiPropertyContextMenuItemsSource), "IEnumerable?", "cyan", "null"),
             new MenuApiRow("MenuFlyout.ItemsSource", Lang(MenuShowCaseLangResourceKind.ApiPropertyMenuFlyoutItemsSource), "IEnumerable?", "cyan", "null"),
             new MenuApiRow("NavMenu.Mode", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuMode), "NavMenuMode", "blue", "Inline"),

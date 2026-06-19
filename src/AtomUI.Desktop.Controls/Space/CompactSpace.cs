@@ -24,7 +24,7 @@ internal enum SpaceItemPosition
 }
 
 public class CompactSpace : TemplatedControl,
-                            ISizeTypeAware,
+                            ICustomizableSizeTypeAware,
                             IChildIndexProvider,
                             INavigableContainer
 {
@@ -47,8 +47,8 @@ public class CompactSpace : TemplatedControl,
     public static readonly StyledProperty<Orientation> OrientationProperty =
         AvaloniaProperty.Register<CompactSpace, Orientation>(nameof(Orientation), defaultValue: Orientation.Horizontal);
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<CompactSpace>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<CompactSpace>();
     
     public static readonly AttachedProperty<CompactSpaceSize> ItemSizeProperty =
         AvaloniaProperty.RegisterAttached<CompactSpace, Control, CompactSpaceSize>(
@@ -61,7 +61,7 @@ public class CompactSpace : TemplatedControl,
         set => SetValue(OrientationProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
@@ -219,7 +219,7 @@ public class CompactSpace : TemplatedControl,
                 compactSpaceItem.ZIndex = ACTIVE_ZINDEX;
             }
 
-            if (target is ISizeTypeAware)
+            if (target is ICustomizableSizeTypeAware)
             {
                 target[!SizeTypeProperty] = this[!SizeTypeProperty];
             }

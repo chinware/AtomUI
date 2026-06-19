@@ -101,7 +101,7 @@
         <Style Selector="^[SizeType=Large]">
             <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSizeLG}" />
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="FontSize" Value="{atom:SharedTokenResource FontSize}" />
         </Style>
         <Style Selector="^[SizeType=Small]">

@@ -11,14 +11,14 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-internal class ColorBlock : TemplatedControl, ISizeTypeAware
+internal class ColorBlock : TemplatedControl, ICustomizableSizeTypeAware
 {
     private static readonly IPen EmptyColorPen = new ImmutablePen(Colors.Red.ToUInt32(), 2);
 
     #region 公共属性定义
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<ColorBlock>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<ColorBlock>();
 
     public static readonly StyledProperty<double> SizeProperty =
         AvaloniaProperty.Register<ColorBlock, double>(nameof(Size), Double.NaN);
@@ -26,7 +26,7 @@ internal class ColorBlock : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<bool> IsEmptyColorModeProperty =
         AvaloniaProperty.Register<ColorBlock, bool>(nameof(IsEmptyColorMode));
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

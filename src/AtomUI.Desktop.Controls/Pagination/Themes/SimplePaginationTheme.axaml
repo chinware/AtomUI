@@ -55,7 +55,7 @@
                         Value="{atom:PaginationTokenResource PaginationLayoutSpacing}" />
             </Style>
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style Selector="^ /template/ StackPanel#PART_RootLayoutPart">
                 <Setter Property="Spacing"
                         Value="{atom:PaginationTokenResource PaginationLayoutSpacing}" />

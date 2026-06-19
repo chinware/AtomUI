@@ -131,9 +131,9 @@ public class SelectViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _maxTagCountOptions, value);
     }
 
-    private SizeType _selectSizeType;
+    private CustomizableSizeType _selectSizeType;
 
-    public SizeType SelectSizeType
+    public CustomizableSizeType SelectSizeType
     {
         get => _selectSizeType;
         set => this.RaiseAndSetIfChanged(ref _selectSizeType, value);
@@ -177,7 +177,7 @@ public class SelectViewModel : ReactiveObject, IRoutableViewModel
             new SelectApiRow("OptionsLoader", Lang(SelectShowCaseLangResourceKind.ApiPropertyOptionsLoader), "ISelectOptionsAsyncLoader?", "cyan", "null"),
             new SelectApiRow("StyleVariant", Lang(SelectShowCaseLangResourceKind.ApiPropertyStyleVariant), "InputControlStyleVariant", "purple", "Outlined"),
             new SelectApiRow("Status", Lang(SelectShowCaseLangResourceKind.ApiPropertyStatus), "InputControlStatus", "purple", "Default"),
-            new SelectApiRow("SizeType", Lang(SelectShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "purple", "Middle")
+            new SelectApiRow("SizeType", Lang(SelectShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "purple", "Middle")
         ];
     }
 

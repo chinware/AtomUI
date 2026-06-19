@@ -11,12 +11,12 @@ namespace AtomUI.Desktop.Controls;
 
 using AvaloniaMenu = Avalonia.Controls.Menu;
 
-public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
+public class Menu : AvaloniaMenu, ICustomizableSizeTypeAware, IMotionAwareControl
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Menu>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<Menu>();
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Menu>();
@@ -27,7 +27,7 @@ public class Menu : AvaloniaMenu, ISizeTypeAware, IMotionAwareControl
     public static readonly StyledProperty<bool> ShouldUseOverlayPopupProperty =
         Flyout.ShouldUseOverlayPopupProperty.AddOwner<Menu>();
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

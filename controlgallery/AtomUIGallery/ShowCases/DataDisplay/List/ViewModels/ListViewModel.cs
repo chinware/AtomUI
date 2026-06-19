@@ -139,7 +139,7 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
         ApiRows =
         [
             new ListApiRow("IsSelectable", Lang(ListShowCaseLangResourceKind.ApiPropertyIsSelectable), "bool", "purple", "true"),
-            new ListApiRow("SizeType", Lang(ListShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new ListApiRow("SizeType", Lang(ListShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new ListApiRow("IsBorderless", Lang(ListShowCaseLangResourceKind.ApiPropertyIsBorderless), "bool", "purple", "false"),
             new ListApiRow("SelectionMode", Lang(ListShowCaseLangResourceKind.ApiPropertySelectionMode), "SelectionMode", "blue", "Single"),
             new ListApiRow("IsShowSelectedIndicator", Lang(ListShowCaseLangResourceKind.ApiPropertyIsShowSelectedIndicator), "bool", "purple", "false"),

@@ -21,7 +21,7 @@ namespace AtomUI.Controls;
 
 [TemplatePart("PART_SwitchKnob", typeof(SwitchKnob))]
 public abstract class AbstractToggleSwitch : ToggleButton,
-                                             ISizeTypeAware,
+                                             ICustomizableSizeTypeAware,
                                              ICustomHitTest,
                                              IWaveSpiritAwareControl,
                                              IFormItemAware
@@ -44,8 +44,8 @@ public abstract class AbstractToggleSwitch : ToggleButton,
     public static readonly StyledProperty<IDataTemplate?> OffContentTemplateProperty = 
         AvaloniaProperty.Register<AbstractToggleSwitch, IDataTemplate?>(nameof(OffContentTemplate));
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractToggleSwitch>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractToggleSwitch>();
     
     public static readonly StyledProperty<bool> IsLoadingProperty =
         AvaloniaProperty.Register<AbstractToggleSwitch, bool>(nameof(IsLoading));
@@ -82,7 +82,7 @@ public abstract class AbstractToggleSwitch : ToggleButton,
         set => SetValue(OffContentTemplateProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

@@ -144,7 +144,7 @@
         <Style Selector="^[SizeType=Large]">
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeightLG}" />
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeight}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
@@ -157,7 +157,7 @@
         <Style Selector="^[SizeType=Large]">
             <Setter Property="FontSize" Value="{atom:TextAreaTokenResource FontSizeLG}" />
         </Style>
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="FontSize" Value="{atom:TextAreaTokenResource FontSize}" />
         </Style>
         <Style Selector="^[SizeType=Small]">

@@ -72,7 +72,7 @@ public class ToggleSwitchViewModel : ReactiveObject, IRoutableViewModel
             new ToggleSwitchApiRow("OnContentTemplate", Lang(ToggleSwitchShowCaseLangResourceKind.ApiPropertyOnContentTemplate), "IDataTemplate?", "cyan", "null"),
             new ToggleSwitchApiRow("OffContent", Lang(ToggleSwitchShowCaseLangResourceKind.ApiPropertyOffContent), "object?", "cyan", "null"),
             new ToggleSwitchApiRow("OffContentTemplate", Lang(ToggleSwitchShowCaseLangResourceKind.ApiPropertyOffContentTemplate), "IDataTemplate?", "cyan", "null"),
-            new ToggleSwitchApiRow("SizeType", Lang(ToggleSwitchShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new ToggleSwitchApiRow("SizeType", Lang(ToggleSwitchShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new ToggleSwitchApiRow("IsLoading", Lang(ToggleSwitchShowCaseLangResourceKind.ApiPropertyIsLoading), "bool", "purple", "false"),
             new ToggleSwitchApiRow("IsMotionEnabled", Lang(ToggleSwitchShowCaseLangResourceKind.ApiPropertyIsMotionEnabled), "bool", "purple", "token"),
             new ToggleSwitchApiRow("IsWaveSpiritEnabled", Lang(ToggleSwitchShowCaseLangResourceKind.ApiPropertyIsWaveSpiritEnabled), "bool", "purple", "token")

@@ -34,9 +34,9 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
     }
 
-    private SizeType _pickerSizeType = SizeType.Middle;
+    private CustomizableSizeType _pickerSizeType = CustomizableSizeType.Middle;
 
-    public SizeType PickerSizeType
+    public CustomizableSizeType PickerSizeType
     {
         get => _pickerSizeType;
         set => this.RaiseAndSetIfChanged(ref _pickerSizeType, value);
@@ -59,15 +59,15 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
     {
         if (args.Index == 0)
         {
-            PickerSizeType = SizeType.Large;
+            PickerSizeType = CustomizableSizeType.Large;
         }
         else if (args.Index == 1)
         {
-            PickerSizeType = SizeType.Middle;
+            PickerSizeType = CustomizableSizeType.Middle;
         }
         else
         {
-            PickerSizeType = SizeType.Small;
+            PickerSizeType = CustomizableSizeType.Small;
         }
     }
 

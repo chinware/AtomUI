@@ -14,7 +14,7 @@ namespace AtomUI.Desktop.Controls;
 public abstract class AbstractTransfer: TemplatedControl,
                                         IMotionAwareControl,
                                         IInputControlStatusAware,
-                                        ISizeTypeAware
+                                        ICustomizableSizeTypeAware
 {
     #region 公共属性定义
     
@@ -24,8 +24,8 @@ public abstract class AbstractTransfer: TemplatedControl,
     public static readonly StyledProperty<InputControlStatus> StatusProperty =
         InputControlStatusProperty.StatusProperty.AddOwner<AbstractTransfer>();
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractTransfer>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractTransfer>();
     
     public static readonly StyledProperty<double> ListWidthProperty =
         AvaloniaProperty.Register<AbstractTransfer, double>(nameof(ListWidth), double.NaN);
@@ -122,7 +122,7 @@ public abstract class AbstractTransfer: TemplatedControl,
         set => SetValue(StatusProperty, value);
     }
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

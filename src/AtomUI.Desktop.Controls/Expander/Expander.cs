@@ -43,8 +43,8 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
 
     #region 公共属性定义
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<Expander>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<Expander>();
 
     public static readonly StyledProperty<bool> IsShowExpandIconProperty =
         AvaloniaProperty.Register<Expander, bool>(nameof(IsShowExpandIcon), true);
@@ -79,7 +79,7 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Expander>();
     
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

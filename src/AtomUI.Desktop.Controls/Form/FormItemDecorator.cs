@@ -13,7 +13,7 @@ public class FormItemDecorator : TemplatedControl,
                                  IInputControlStatusAware,
                                  IInputControlStyleVariantAware,
                                  IMotionAwareControl,
-                                 ISizeTypeAware,
+                                 ICustomizableSizeTypeAware,
                                  IFormItemAware,
                                  IFormItemFeedbackAware
 {
@@ -28,8 +28,8 @@ public class FormItemDecorator : TemplatedControl,
     public static readonly StyledProperty<InputControlStatus> StatusProperty =
         InputControlStatusProperty.StatusProperty.AddOwner<FormItemDecorator>();
     
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<FormItemDecorator>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<FormItemDecorator>();
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty = 
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<FormItemDecorator>();
@@ -62,7 +62,7 @@ public class FormItemDecorator : TemplatedControl,
         set => SetValue(StatusProperty, value);
     }
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
@@ -116,10 +116,7 @@ public class FormItemDecorator : TemplatedControl,
             newFormItemAware.ValueChanged += HandleContentValueChanged;
             if (e.NewValue is Control newChild)
             {
-                if (newChild is ISizeTypeAware)
-                {
-                    _disposables.Add(BindUtils.RelayBind(this, SizeTypeProperty, newChild, SizeTypeProperty));
-                }
+                _disposables.Add(FormSizeTypeBindingHelper.RelaySizeType(this, SizeTypeProperty, newChild));
                 if (newChild is IMotionAwareControl)
                 {
                     _disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, newChild, IsMotionEnabledProperty));

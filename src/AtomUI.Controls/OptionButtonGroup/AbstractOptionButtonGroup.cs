@@ -14,14 +14,14 @@ using Avalonia.Media;
 namespace AtomUI.Controls.Commons;
 
 public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
-                                                  ISizeTypeAware,
+                                                  ICustomizableSizeTypeAware,
                                                   IWaveSpiritAwareControl,
                                                   IFormItemAware
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractOptionButtonGroup>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractOptionButtonGroup>();
 
     public static readonly StyledProperty<OptionButtonStyle> ButtonStyleProperty =
         AvaloniaProperty.Register<AbstractOptionButtonGroup, OptionButtonStyle>(nameof(ButtonStyle));
@@ -32,7 +32,7 @@ public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
     public static readonly StyledProperty<bool> IsWaveSpiritEnabledProperty =
         WaveSpiritAwareControlProperty.IsWaveSpiritEnabledProperty.AddOwner<AbstractOptionButtonGroup>();
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

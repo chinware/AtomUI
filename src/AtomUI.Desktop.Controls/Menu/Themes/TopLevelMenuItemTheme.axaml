@@ -83,7 +83,7 @@
                 </Style>
             </Style>
 
-            <Style Selector="^[SizeType=Middle]">
+            <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
                 <Setter Property="CornerRadius"
                         Value="{atom:MenuTokenResource TopLevelItemBorderRadius}" />
                 <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeight}" />

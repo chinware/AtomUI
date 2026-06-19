@@ -142,7 +142,7 @@ public class SpaceViewModel : ReactiveObject, IRoutableViewModel
             new SpaceApiRow("Space.ItemHeight", Lang(SpaceShowCaseLangResourceKind.ApiPropertySpaceItemHeight), "double", "cyan", "NaN"),
             new SpaceApiRow("Space.SplitTemplate", Lang(SpaceShowCaseLangResourceKind.ApiPropertySpaceSplitTemplate), "ITemplate<Control>?", "cyan", "null"),
             new SpaceApiRow("CompactSpace.Orientation", Lang(SpaceShowCaseLangResourceKind.ApiPropertyCompactSpaceOrientation), "Orientation", "cyan", "Horizontal"),
-            new SpaceApiRow("CompactSpace.SizeType", Lang(SpaceShowCaseLangResourceKind.ApiPropertyCompactSpaceSizeType), "SizeType", "cyan", "Middle"),
+            new SpaceApiRow("CompactSpace.SizeType", Lang(SpaceShowCaseLangResourceKind.ApiPropertyCompactSpaceSizeType), "CustomizableSizeType", "cyan", "Middle"),
             new SpaceApiRow("CompactSpace.ItemSize", Lang(SpaceShowCaseLangResourceKind.ApiPropertyCompactSpaceItemSize), "CompactSpaceSize", "cyan", "Auto")
         ];
     }

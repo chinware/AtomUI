@@ -71,7 +71,7 @@ public class NumberUpDownViewModel : ReactiveObject, IRoutableViewModel
             new NumberUpDownApiRow("IsKeyboardEnabled", Lang(NumberUpDownShowCaseLangResourceKind.ApiPropertyIsKeyboardEnabled), "bool", "green", "true"),
             new NumberUpDownApiRow("IsAllowClear", Lang(NumberUpDownShowCaseLangResourceKind.ApiPropertyIsAllowClear), "bool", "green", "false"),
             new NumberUpDownApiRow("ClearIcon", Lang(NumberUpDownShowCaseLangResourceKind.ApiPropertyClearIcon), "PathIcon?", "cyan", "CloseCircleFilled"),
-            new NumberUpDownApiRow("SizeType", Lang(NumberUpDownShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
+            new NumberUpDownApiRow("SizeType", Lang(NumberUpDownShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new NumberUpDownApiRow("StyleVariant", Lang(NumberUpDownShowCaseLangResourceKind.ApiPropertyStyleVariant), "InputControlStyleVariant", "purple", "Outlined"),
             new NumberUpDownApiRow("Status", Lang(NumberUpDownShowCaseLangResourceKind.ApiPropertyStatus), "InputControlStatus", "purple", "Default"),
             new NumberUpDownApiRow("LeftAddOn", Lang(NumberUpDownShowCaseLangResourceKind.ApiPropertyLeftAddOn), "object?", "cyan", "null"),
