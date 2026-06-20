@@ -24,7 +24,7 @@ internal partial class zh_CN : LanguageProvider
     public const string DisabledTitle = "禁用状态";
     public const string DisabledDescription = "禁用状态的组合框。";
     public const string ThreeSizesTitle = "三种尺寸";
-    public const string ThreeSizesDescription = "ComboBox 提供三种尺寸：大号（40px）、默认（32px）和小号（24px）。";
+    public const string ThreeSizesDescription = "ComboBox 支持大号（40px）、默认（32px）、小号（24px），也支持通过 Custom 配合本地尺寸属性自定义。";
     public const string VariantsTitle = "不同形态";
     public const string VariantsDescription = "输入框的不同形态。";
     public const string PrePostTabTitle = "前置/后置标签";
@@ -34,6 +34,10 @@ internal partial class zh_CN : LanguageProvider
     public const string StatusTitle = "状态";
     public const string StatusDescription = "通过 status 为输入框添加错误或警告状态。";
     public const string P2PlaceholderTextPleaseSelect = "请选择";
+    public const string P2PlaceholderSizeTypeLarge = "SizeType：Large";
+    public const string P2PlaceholderSizeTypeMiddle = "SizeType：Middle";
+    public const string P2PlaceholderSizeTypeSmall = "SizeType：Small";
+    public const string P2PlaceholderSizeTypeCustom = "SizeType：Custom";
     public const string P2ContentPoemLine1 = "床前明月光";
     public const string P2ContentPoemLine2 = "疑是地上霜";
     public const string P2ContentPoemLine3 = "举头望明月";

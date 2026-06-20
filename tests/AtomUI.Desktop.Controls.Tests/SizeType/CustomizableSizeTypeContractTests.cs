@@ -127,4 +127,12 @@ public class CustomizableSizeTypeContractTests
             typeof(StyledProperty<CustomizableSizeType>),
             $"{controlType.FullName}.SizeTypeProperty should use CustomizableSizeType.");
     }
+
+    [Fact]
+    public void ButtonSpinner_Implements_Customizable_SizeType_Aware()
+    {
+        typeof(ICustomizableSizeTypeAware)
+            .IsAssignableFrom(typeof(ButtonSpinner))
+            .ShouldBeTrue();
+    }
 }

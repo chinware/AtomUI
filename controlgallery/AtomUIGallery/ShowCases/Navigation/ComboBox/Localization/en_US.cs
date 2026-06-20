@@ -24,7 +24,7 @@ internal partial class en_US : LanguageProvider
     public const string DisabledTitle = "Disabled";
     public const string DisabledDescription = "Disabled button spinner.";
     public const string ThreeSizesTitle = "Three sizes of Input";
-    public const string ThreeSizesDescription = "There are three sizes of an ComboBox: large (40px), default (32px) and small (24px).";
+    public const string ThreeSizesDescription = "ComboBox supports large (40px), default (32px), small (24px), and Custom sizes with local size properties.";
     public const string VariantsTitle = "Variants";
     public const string VariantsDescription = "Variants of Input.";
     public const string PrePostTabTitle = "Pre / Post tab";
@@ -34,6 +34,10 @@ internal partial class en_US : LanguageProvider
     public const string StatusTitle = "Status";
     public const string StatusDescription = "Add status to Input with status, which could be error or warning.";
     public const string P2PlaceholderTextPleaseSelect = "Please select";
+    public const string P2PlaceholderSizeTypeLarge = "SizeType: Large";
+    public const string P2PlaceholderSizeTypeMiddle = "SizeType: Middle";
+    public const string P2PlaceholderSizeTypeSmall = "SizeType: Small";
+    public const string P2PlaceholderSizeTypeCustom = "SizeType: Custom";
     public const string P2ContentPoemLine1 = "床前明月光";
     public const string P2ContentPoemLine2 = "疑是地上霜";
     public const string P2ContentPoemLine3 = "举头望明月";

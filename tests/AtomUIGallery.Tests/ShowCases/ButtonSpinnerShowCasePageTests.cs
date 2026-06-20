@@ -52,6 +52,11 @@ public class ButtonSpinnerShowCasePageTests
         CountOccurrences(source, "DataTemplate x:DataType=\"vm:ButtonSpinnerViewModel\"").ShouldBe(7);
         source.ShouldContain("ButtonSpinnerShowCaseLangResource BasicTitle");
         source.ShouldContain("ButtonSpinnerShowCaseLangResource ThreeSizesTitle");
+        source.ShouldContain("ButtonSpinnerShowCaseLangResource P2LabelSizeTypeLarge");
+        source.ShouldContain("ButtonSpinnerShowCaseLangResource P2LabelSizeTypeMiddle");
+        source.ShouldContain("ButtonSpinnerShowCaseLangResource P2LabelSizeTypeSmall");
+        source.ShouldContain("ButtonSpinnerShowCaseLangResource P2LabelSizeTypeCustom");
+        source.ShouldContain("SizeType=\"Custom\"");
         source.ShouldContain("ButtonSpinnerShowCaseLangResource StatusTitle");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
@@ -138,6 +143,10 @@ public class ButtonSpinnerShowCasePageTests
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
             source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldContain("P2LabelSizeTypeLarge");
+            source.ShouldContain("P2LabelSizeTypeMiddle");
+            source.ShouldContain("P2LabelSizeTypeSmall");
+            source.ShouldContain("P2LabelSizeTypeCustom");
             source.ShouldContain("ApiPropertyIsSpinEnabled");
             source.ShouldContain("ApiPropertyButtonSpinnerLocation");
             source.ShouldContain("ApiPropertyInnerLeftContent");

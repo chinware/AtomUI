@@ -87,7 +87,7 @@ internal partial class en_US : LanguageProvider
     public const string StatusTitle = "Status";
     public const string StatusDescription = "Add status to Cascader with status, which could be error or warning.";
     public const string SizeTitle = "Size";
-    public const string SizeDescription = "Cascade selection box of different sizes.";
+    public const string SizeDescription = "Cascader supports large, middle, small, and Custom sizes with local height overrides.";
     public const string BasicCascaderViewTitle = "Basic CascaderView";
     public const string BasicCascaderViewDescription = "The most basic usage.";
     public const string GenerateByTemplateTitle = "Generate by template";
@@ -99,6 +99,10 @@ internal partial class en_US : LanguageProvider
     public const string DefaultExpandedTitle = "Default expanded";
     public const string DefaultExpandedDescription = "You can set the default expansion path..";
     public const string P2PlaceholderTextPleaseSelect = "Please select";
+    public const string P2PlaceholderSizeTypeLarge = "SizeType: Large";
+    public const string P2PlaceholderSizeTypeMiddle = "SizeType: Middle";
+    public const string P2PlaceholderSizeTypeSmall = "SizeType: Small";
+    public const string P2PlaceholderSizeTypeCustom = "SizeType: Custom";
     public const string P2TitleShowcheckedstrategyAll = "ShowCheckedStrategy=All";
     public const string P2TitleShowcheckedstrategyShowparent = "ShowCheckedStrategy=ShowParent";
     public const string P2HeaderZhejiang = "Zhejiang";

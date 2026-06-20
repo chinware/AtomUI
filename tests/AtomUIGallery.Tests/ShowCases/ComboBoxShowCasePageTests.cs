@@ -52,6 +52,14 @@ public class ComboBoxShowCasePageTests
         CountOccurrences(source, "DataTemplate x:DataType=\"vm:ComboBoxViewModel\"").ShouldBe(8);
         source.ShouldContain("ComboBoxShowCaseLangResource BasicTitle");
         source.ShouldContain("ComboBoxShowCaseLangResource ItemsSourceTitle");
+        source.ShouldContain("ComboBoxShowCaseLangResource ThreeSizesTitle");
+        source.ShouldContain("PlaceholderText=\"{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeLarge}\"");
+        source.ShouldContain("PlaceholderText=\"{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeMiddle}\"");
+        source.ShouldContain("PlaceholderText=\"{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeSmall}\"");
+        source.ShouldContain("PlaceholderText=\"{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeCustom}\"");
+        source.ShouldContain("SizeType=\"Custom\"");
+        source.ShouldContain("Height=\"36\"");
+        source.ShouldContain("FontSize=\"15\"");
         source.ShouldContain("ComboBoxShowCaseLangResource StatusTitle");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
@@ -136,6 +144,12 @@ public class ComboBoxShowCasePageTests
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
             source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldContain("ThreeSizesDescription");
+            source.ShouldContain("Custom");
+            source.ShouldContain("P2PlaceholderSizeTypeLarge");
+            source.ShouldContain("P2PlaceholderSizeTypeMiddle");
+            source.ShouldContain("P2PlaceholderSizeTypeSmall");
+            source.ShouldContain("P2PlaceholderSizeTypeCustom");
             source.ShouldContain("ApiPropertyDropDownDisplayPageSize");
             source.ShouldContain("ApiPropertyShouldUseOverlayPopup");
             source.ShouldContain("ApiPropertyContentLeftAddOn");

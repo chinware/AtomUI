@@ -19,8 +19,12 @@ internal partial class en_US : LanguageProvider
 
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Basic button spinner.";
-    public const string ThreeSizesTitle = "Three sizes of Input";
-    public const string ThreeSizesDescription = "There are three sizes of an button spinner: large (40px), default (32px) and small (24px).";
+    public const string ThreeSizesTitle = "ButtonSpinner sizes";
+    public const string ThreeSizesDescription = "ButtonSpinner supports large (40px), default (32px), small (24px), and Custom with local size values.";
+    public const string P2LabelSizeTypeLarge = "Large";
+    public const string P2LabelSizeTypeMiddle = "Middle";
+    public const string P2LabelSizeTypeSmall = "Small";
+    public const string P2LabelSizeTypeCustom = "Custom";
     public const string VariantsTitle = "Variants";
     public const string VariantsDescription = "Variants of Input.";
     public const string DisabledTitle = "Disabled";

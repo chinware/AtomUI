@@ -172,16 +172,21 @@ internal class ButtonSpinnerDecoratedBox : AddOnDecoratedBox
     {
         if (IsShowHandle && !IsHandleFloatable)
         {
-            var padding = SpinnerHandleWidth * 1.1;
             if (ButtonSpinnerLocation == ButtonSpinnerLocation.Right)
             {
-                SetCurrentValue(EffectiveContentPaddingProperty, new Thickness(ContentPadding.Left, ContentPadding.Top, padding,
-                    ContentPadding.Bottom));
+                SetCurrentValue(EffectiveContentPaddingProperty,
+                    new Thickness(ContentPadding.Left,
+                        ContentPadding.Top,
+                        SpinnerHandleWidth + ContentPadding.Right,
+                        ContentPadding.Bottom));
             }
             else
             {
-                SetCurrentValue(EffectiveContentPaddingProperty, new Thickness(padding, ContentPadding.Top, ContentPadding.Right,
-                    ContentPadding.Bottom));
+                SetCurrentValue(EffectiveContentPaddingProperty,
+                    new Thickness(SpinnerHandleWidth + ContentPadding.Left,
+                        ContentPadding.Top,
+                        ContentPadding.Right,
+                        ContentPadding.Bottom));
             }
         }
         else

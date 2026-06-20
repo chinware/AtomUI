@@ -21,6 +21,8 @@ internal partial class en_US : LanguageProvider
     public const string BasicDescription = "The most basic dropdown menu.";
     public const string ButtonTypesTitle = "Button Types";
     public const string ButtonTypesDescription = "Support centralized button type.";
+    public const string SizeTypeTitle = "Size type";
+    public const string SizeTypeDescription = "DropdownButton supports large, middle, small, and Custom sizes with local size properties.";
     public const string ArrowTitle = "Arrow";
     public const string ArrowDescription = "You could display an arrow.";
     public const string PlacementTitle = "Placement";
@@ -32,6 +34,10 @@ internal partial class en_US : LanguageProvider
     public const string P2HeaderPasteFromHistory = "Paste from History";
     public const string P2ContentHoverMe = "Hover me";
     public const string P2ContentEditFile = "Edit File";
+    public const string P2ContentLarge = "Large";
+    public const string P2ContentMiddle = "Middle";
+    public const string P2ContentSmall = "Small";
+    public const string P2ContentCustom = "Custom";
     public const string P2ContentBottomLeft = "BottomLeft";
     public const string P2ContentBottom = "Bottom";
     public const string P2ContentBottomRight = "BottomRight";
