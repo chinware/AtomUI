@@ -24,8 +24,14 @@ internal partial class zh_TW : LanguageProvider
     public const string VariantsDescription = "可選擇描邊、填充、無邊框和下划線等變體。";
     public const string CustomizeClearButtonTitle = "自定義清除按鈕";
     public const string CustomizeClearButtonDescription = "自定義清除按鈕。";
+    public const string SizeTypeTitle = "SizeType";
+    public const string SizeTypeDescription = "AutoComplete 支持大號、中號、小號，也支持通過 Custom 配合本地高度自定義。";
     public const string P2PlaceholderTextInputHere = "在此輸入";
     public const string P2PlaceholderTextTryAOrB = "try 'a' or 'b'";
+    public const string P2PlaceholderSizeTypeLarge = "SizeType：Large";
+    public const string P2PlaceholderSizeTypeMiddle = "SizeType：Middle";
+    public const string P2PlaceholderSizeTypeSmall = "SizeType：Small";
+    public const string P2PlaceholderSizeTypeCustom = "SizeType：Custom";
     public const string P2TextResults = "results";
     public const string P2PlaceholderTextTryToTypeB = "try to type `b`";
     public const string P2PlaceholderTextOutline = "Outline";

@@ -24,7 +24,7 @@ internal partial class zh_TW : LanguageProvider
     public const string DisabledTitle = "禁用狀態";
     public const string DisabledDescription = "禁用狀態的組合框。";
     public const string ThreeSizesTitle = "三種尺寸";
-    public const string ThreeSizesDescription = "ComboBox 提供三種尺寸：大號（40px）、默認（32px）和小號（24px）。";
+    public const string ThreeSizesDescription = "ComboBox 支持大號（40px）、默認（32px）、小號（24px），也支持通過 Custom 配合本地尺寸屬性自定義。";
     public const string VariantsTitle = "不同形態";
     public const string VariantsDescription = "輸入框的不同形態。";
     public const string PrePostTabTitle = "前置/後置標籤";
@@ -34,6 +34,10 @@ internal partial class zh_TW : LanguageProvider
     public const string StatusTitle = "狀態";
     public const string StatusDescription = "通過 status 為輸入框添加錯誤或警告狀態。";
     public const string P2PlaceholderTextPleaseSelect = "請選擇";
+    public const string P2PlaceholderSizeTypeLarge = "SizeType：Large";
+    public const string P2PlaceholderSizeTypeMiddle = "SizeType：Middle";
+    public const string P2PlaceholderSizeTypeSmall = "SizeType：Small";
+    public const string P2PlaceholderSizeTypeCustom = "SizeType：Custom";
     public const string P2ContentPoemLine1 = "床前明月光";
     public const string P2ContentPoemLine2 = "疑是地上霜";
     public const string P2ContentPoemLine3 = "舉頭望明月";

@@ -24,8 +24,14 @@ internal partial class en_US : LanguageProvider
     public const string VariantsDescription = "There are outlined, filled, borderless, and underlined variants to choose from.";
     public const string CustomizeClearButtonTitle = "Customize clear button";
     public const string CustomizeClearButtonDescription = "Customize clear button.";
+    public const string SizeTypeTitle = "SizeType";
+    public const string SizeTypeDescription = "AutoComplete supports large, middle, small, and Custom sizes with local height overrides.";
     public const string P2PlaceholderTextInputHere = "input here";
     public const string P2PlaceholderTextTryAOrB = "try 'a' or 'b'";
+    public const string P2PlaceholderSizeTypeLarge = "SizeType: Large";
+    public const string P2PlaceholderSizeTypeMiddle = "SizeType: Middle";
+    public const string P2PlaceholderSizeTypeSmall = "SizeType: Small";
+    public const string P2PlaceholderSizeTypeCustom = "SizeType: Custom";
     public const string P2TextResults = "results";
     public const string P2PlaceholderTextTryToTypeB = "try to type `b`";
     public const string P2PlaceholderTextOutline = "Outline";

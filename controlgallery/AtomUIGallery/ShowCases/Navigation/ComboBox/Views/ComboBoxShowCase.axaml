@@ -226,19 +226,28 @@
             <gallery:ShowCaseItem.DeferredContentTemplate>
                 <DataTemplate x:DataType="vm:ComboBoxViewModel">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <atom:ComboBox SizeType="Large" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}">
+                <atom:ComboBox SizeType="Large" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeLarge}">
                     <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
                     <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
                     <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
                     <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
                 </atom:ComboBox>
-                <atom:ComboBox SizeType="Middle" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}">
+                <atom:ComboBox SizeType="Middle" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeMiddle}">
                     <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
                     <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
                     <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
                     <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
                 </atom:ComboBox>
-                <atom:ComboBox SizeType="Small" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}">
+                <atom:ComboBox SizeType="Small" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeSmall}">
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+                </atom:ComboBox>
+                <atom:ComboBox SizeType="Custom"
+                               Height="36"
+                               FontSize="15"
+                               PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeCustom}">
                     <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
                     <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
                     <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />

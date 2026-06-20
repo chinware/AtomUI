@@ -195,6 +195,38 @@
             </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
+        <gallery:ShowCaseItem Title="{gallery:AutoCompleteShowCaseLangResource SizeTypeTitle}"
+                              Description="{gallery:AutoCompleteShowCaseLangResource SizeTypeDescription}"
+                              IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:AutoCompleteViewModel">
+            <StackPanel Spacing="10">
+                <atom:AutoComplete Width="220"
+                                   Name="LargeAutoComplete"
+                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                                   SizeType="Large"
+                                   PlaceholderText="{gallery:AutoCompleteShowCaseLangResource P2PlaceholderSizeTypeLarge}" />
+                <atom:AutoComplete Width="220"
+                                   Name="MiddleAutoComplete"
+                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                                   SizeType="Middle"
+                                   PlaceholderText="{gallery:AutoCompleteShowCaseLangResource P2PlaceholderSizeTypeMiddle}" />
+                <atom:AutoComplete Width="220"
+                                   Name="SmallAutoComplete"
+                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                                   SizeType="Small"
+                                   PlaceholderText="{gallery:AutoCompleteShowCaseLangResource P2PlaceholderSizeTypeSmall}" />
+                <atom:AutoComplete Width="220"
+                                   Name="CustomAutoComplete"
+                                   OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"
+                                   SizeType="Custom"
+                                   Height="36"
+                                   PlaceholderText="{gallery:AutoCompleteShowCaseLangResource P2PlaceholderSizeTypeCustom}" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
         <gallery:ShowCaseItem Title="{gallery:AutoCompleteShowCaseLangResource LookupPatternsUncertainCategoryTitle}"
                               Description="{gallery:AutoCompleteShowCaseLangResource LookupPatternsUncertainCategoryDescription}"
                               IsDeferredContentEnabled="True">

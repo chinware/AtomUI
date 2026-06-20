@@ -555,7 +555,7 @@
             <StackPanel Spacing="15">
                 <atom:Cascader
                     Name="SizeCascader1"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeLarge}"
                     OptionsSource="{Binding SizeCascaderNodes}"
                     IsAllowClear="True"
                     SizeType="Large">
@@ -569,7 +569,7 @@
 
                 <atom:Cascader
                     Name="SizeCascader2"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeMiddle}"
                     OptionsSource="{Binding SizeCascaderNodes}"
                     IsAllowClear="True"
                     SizeType="Middle">
@@ -583,10 +583,25 @@
 
                 <atom:Cascader
                     Name="SizeCascader3"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeSmall}"
                     OptionsSource="{Binding SizeCascaderNodes}"
                     IsAllowClear="True"
                     SizeType="Small">
+                    <atom:Cascader.OptionTemplate>
+                        <TreeDataTemplate ItemsSource="{Binding Children}"
+                                          x:DataType="atom:ICascaderOption">
+                            <atom:TextBlock Text="{Binding Header}" />
+                        </TreeDataTemplate>
+                    </atom:Cascader.OptionTemplate>
+                </atom:Cascader>
+
+                <atom:Cascader
+                    Name="SizeCascader4"
+                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeCustom}"
+                    OptionsSource="{Binding SizeCascaderNodes}"
+                    IsAllowClear="True"
+                    SizeType="Custom"
+                    Height="36">
                     <atom:Cascader.OptionTemplate>
                         <TreeDataTemplate ItemsSource="{Binding Children}"
                                           x:DataType="atom:ICascaderOption">

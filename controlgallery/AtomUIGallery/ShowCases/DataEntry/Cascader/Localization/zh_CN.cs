@@ -87,7 +87,7 @@ internal partial class zh_CN : LanguageProvider
     public const string StatusTitle = "状态";
     public const string StatusDescription = "通过 status 为 Cascader 添加状态，可设置为错误或警告。";
     public const string SizeTitle = "尺寸";
-    public const string SizeDescription = "不同尺寸的级联选择框。";
+    public const string SizeDescription = "Cascader 支持大号、中号、小号，也支持通过 Custom 配合本地高度自定义。";
     public const string BasicCascaderViewTitle = "基础 CascaderView";
     public const string BasicCascaderViewDescription = "最基础的用法。";
     public const string GenerateByTemplateTitle = "使用模板生成";
@@ -99,6 +99,10 @@ internal partial class zh_CN : LanguageProvider
     public const string DefaultExpandedTitle = "默认展开";
     public const string DefaultExpandedDescription = "可以设置默认展开路径。";
     public const string P2PlaceholderTextPleaseSelect = "请选择";
+    public const string P2PlaceholderSizeTypeLarge = "SizeType：Large";
+    public const string P2PlaceholderSizeTypeMiddle = "SizeType：Middle";
+    public const string P2PlaceholderSizeTypeSmall = "SizeType：Small";
+    public const string P2PlaceholderSizeTypeCustom = "SizeType：Custom";
     public const string P2TitleShowcheckedstrategyAll = "ShowCheckedStrategy=All";
     public const string P2TitleShowcheckedstrategyShowparent = "ShowCheckedStrategy=ShowParent";
     public const string P2HeaderZhejiang = "浙江";

@@ -154,24 +154,57 @@
             <gallery:ShowCaseItem.DeferredContentTemplate>
                 <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
             <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <atom:ButtonSpinner SizeType="Large">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-                <atom:ButtonSpinner SizeType="Middle">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-                <atom:ButtonSpinner SizeType="Small">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <atom:TextBlock Width="64"
+                                    VerticalAlignment="Center"
+                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                    Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeLarge}" />
+                    <atom:ButtonSpinner SizeType="Large">
+                        <atom:TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="床前明月光" />
+                    </atom:ButtonSpinner>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <atom:TextBlock Width="64"
+                                    VerticalAlignment="Center"
+                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                    Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeMiddle}" />
+                    <atom:ButtonSpinner SizeType="Middle">
+                        <atom:TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="床前明月光" />
+                    </atom:ButtonSpinner>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <atom:TextBlock Width="64"
+                                    VerticalAlignment="Center"
+                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                    Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeSmall}" />
+                    <atom:ButtonSpinner SizeType="Small">
+                        <atom:TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Text="床前明月光" />
+                    </atom:ButtonSpinner>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <atom:TextBlock Width="64"
+                                    VerticalAlignment="Center"
+                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                    Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeCustom}" />
+                    <atom:ButtonSpinner SizeType="Custom"
+                                        Height="36"
+                                        SpinnerHandleWidth="28">
+                        <atom:TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            FontSize="15"
+                            Text="床前明月光" />
+                    </atom:ButtonSpinner>
+                </StackPanel>
             </StackPanel>
                 </DataTemplate>
             </gallery:ShowCaseItem.DeferredContentTemplate>

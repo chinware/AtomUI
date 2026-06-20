@@ -24,6 +24,7 @@ public enum ButtonSpinnerLocation
 public class ButtonSpinner : Spinner,
                              IMotionAwareControl,
                              ICompactSpaceAware,
+                             ICustomizableSizeTypeAware,
                              IInputControlStatusAware,
                              IInputControlStyleVariantAware
 {

@@ -21,6 +21,8 @@ internal partial class zh_CN : LanguageProvider
     public const string BasicDescription = "最基础的下拉菜单。";
     public const string ButtonTypesTitle = "按钮类型";
     public const string ButtonTypesDescription = "支持统一的按钮类型。";
+    public const string SizeTypeTitle = "尺寸类型";
+    public const string SizeTypeDescription = "DropdownButton 支持大号、中号、小号，也支持通过 Custom 配合本地尺寸属性自定义。";
     public const string ArrowTitle = "箭头";
     public const string ArrowDescription = "可以显示箭头。";
     public const string PlacementTitle = "弹出位置";
@@ -32,6 +34,10 @@ internal partial class zh_CN : LanguageProvider
     public const string P2HeaderPasteFromHistory = "从历史记录粘贴";
     public const string P2ContentHoverMe = "悬停";
     public const string P2ContentEditFile = "编辑文件";
+    public const string P2ContentLarge = "大号";
+    public const string P2ContentMiddle = "中号";
+    public const string P2ContentSmall = "小号";
+    public const string P2ContentCustom = "自定义";
     public const string P2ContentBottomLeft = "左下方";
     public const string P2ContentBottom = "下方";
     public const string P2ContentBottomRight = "右下方";

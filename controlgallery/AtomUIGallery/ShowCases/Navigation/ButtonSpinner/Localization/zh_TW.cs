@@ -19,8 +19,12 @@ internal partial class zh_TW : LanguageProvider
 
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "基礎的按鈕微調器。";
-    public const string ThreeSizesTitle = "三種尺寸";
-    public const string ThreeSizesDescription = "按鈕微調器提供三種尺寸：大號（40px）、默認（32px）和小號（24px）。";
+    public const string ThreeSizesTitle = "按鈕微調器尺寸";
+    public const string ThreeSizesDescription = "按鈕微調器支持大號（40px）、默認（32px）、小號（24px）和使用本地尺寸值的 Custom。";
+    public const string P2LabelSizeTypeLarge = "大號";
+    public const string P2LabelSizeTypeMiddle = "中號";
+    public const string P2LabelSizeTypeSmall = "小號";
+    public const string P2LabelSizeTypeCustom = "Custom";
     public const string VariantsTitle = "不同形態";
     public const string VariantsDescription = "輸入框的不同形態。";
     public const string DisabledTitle = "禁用狀態";
