@@ -240,6 +240,7 @@ public class ListBox : AvaloniaListBox,
     #endregion
     
     private protected readonly Dictionary<object, bool> _filterContext = new();
+    private protected readonly Dictionary<int, bool> _filterResults = new();
     private protected readonly Dictionary<object, IDictionary<object, object?>> _virtualRestoreContext = new();
 
     static ListBox()
@@ -298,7 +299,9 @@ public class ListBox : AvaloniaListBox,
             ConfigureEffectiveBorderThickness();
         }
         else if (change.Property == FilterValueProperty ||
-                 change.Property == FilterProperty)
+                 change.Property == FilterProperty ||
+                 change.Property == FilterValueSelectorProperty ||
+                 change.Property == FilterHighlightStrategyProperty)
         {
             ConfigureIsFiltering();
             FilterItems();
@@ -387,6 +390,8 @@ public class ListBox : AvaloniaListBox,
                         _virtualRestoreContext.Remove(index);
                     }
                 }
+
+                ApplyCurrentFilterState(listBoxItem, index);
             }
             finally
             {
@@ -436,6 +441,11 @@ public class ListBox : AvaloniaListBox,
 
     protected bool FilterItem(ListBoxItem item)
     {
+        return FilterDataItem(item.Content);
+    }
+
+    private bool FilterDataItem(object? item)
+    {
         if (Filter == null)
         {
             return false;
@@ -444,73 +454,47 @@ public class ListBox : AvaloniaListBox,
         return Filter.Filter(value, FilterValue);
     }
 
-    private object? SelectFilterValue(ListBoxItem item)
+    private object? SelectFilterValue(object? item)
     {
+        var content = item is ListBoxItem listBoxItem ? listBoxItem.Content : item;
         var selector = FilterValueSelector;
         if (selector != null)
         {
-            return selector(item.Content);
+            return selector(content);
         }
-        if (item.Content is IListItemData listItemData)
+        if (content is IListItemData listItemData)
         {
             return listItemData.Content?.ToString();
         }
-        if (item.Content is string header)
+        if (content is string header)
         {
             return header;
         }
-        return item.Content;
+        return content;
     }
 
     private void FilterItems()
     {
         if (Filter != null && FilterValue != null && IsLoaded)
         {
-            var hideUnmatched =
-                (FilterHighlightStrategy & TextBlockHighlightStrategy.HideUnMatched) == TextBlockHighlightStrategy.HideUnMatched;
-            if (hideUnmatched)
-            {
-                if (_filterContext.Count == 0)
-                {
-                    foreach (var item in Items)
-                    {
-                        if (item != null)
-                        {
-                            var container = ContainerFromItem(item);
-                            if (container is ListBoxItem listBoxItem)
-                            {
-                                _filterContext[listBoxItem] = listBoxItem.IsVisible;
-                            }
-                        }
-                    }
-                }
-            }
-            IsFiltering = true;
+            _filterResults.Clear();
             var count = 0;
-            foreach (var item in Items)
+            for (var index = 0; index < Items.Count; ++index)
             {
+                var item = Items[index];
                 if (item != null)
                 {
-                    var container    = ContainerFromItem(item);
-                    if (container is ListBoxItem listBoxItem)
+                    var filterResult = FilterDataItem(item);
+                    _filterResults[index] = filterResult;
+                    if (filterResult)
                     {
-                        var filterResult = FilterItem(listBoxItem);
-                        if (filterResult)
-                        {
-                            ++count;
-                        }
-
-                        if (hideUnmatched)
-                        {
-                            listBoxItem.SetCurrentValue(ListBoxItem.IsVisibleProperty, filterResult);
-                        }
-
-                        listBoxItem.IsFiltering = true;
-                        listBoxItem.FilterValue = FilterValue;
+                        ++count;
                     }
                 }
             }
             FilterResultCount = count;
+            IsFiltering       = true;
+            ApplyFilterResultsToRealizedContainers();
         }
         else
         {
@@ -520,24 +504,84 @@ public class ListBox : AvaloniaListBox,
 
     private void ClearFilter()
     {
-        foreach (var item in Items)
+        for (var index = 0; index < Items.Count; ++index)
         {
-            if (item != null)
+            if (ContainerFromIndex(index) is ListBoxItem listBoxItem)
             {
-                var container = ContainerFromItem(item);
-                if (container is ListBoxItem listBoxItem)
-                {
-                    if (_filterContext.TryGetValue(listBoxItem, out bool value))
-                    {
-                        listBoxItem.SetCurrentValue(ListBoxItem.IsVisibleProperty, value);
-                    }
-                    listBoxItem.IsFiltering = false;
-                    listBoxItem.FilterValue = null;
-                }
+                ClearFilterState(listBoxItem);
             }
         }
-        IsFiltering = false;
+        FilterResultCount = 0;
+        IsFiltering       = false;
         _filterContext.Clear();
+        _filterResults.Clear();
+    }
+
+    private void ApplyFilterResultsToRealizedContainers()
+    {
+        for (var index = 0; index < Items.Count; ++index)
+        {
+            if (_filterResults.TryGetValue(index, out var filterResult) &&
+                ContainerFromIndex(index) is ListBoxItem listBoxItem)
+            {
+                ApplyFilterState(listBoxItem, filterResult);
+            }
+        }
+    }
+
+    private void ApplyCurrentFilterState(ListBoxItem listBoxItem, int index)
+    {
+        if (Filter != null &&
+            FilterValue != null &&
+            IsLoaded &&
+            _filterResults.TryGetValue(index, out var filterResult))
+        {
+            ApplyFilterState(listBoxItem, filterResult);
+        }
+        else
+        {
+            ClearFilterState(listBoxItem);
+        }
+    }
+
+    private void ApplyFilterState(ListBoxItem listBoxItem, bool filterResult)
+    {
+        if (IsHideUnmatchedFilterEnabled())
+        {
+            if (!_filterContext.ContainsKey(listBoxItem))
+            {
+                _filterContext[listBoxItem] = listBoxItem.IsVisible;
+            }
+            listBoxItem.SetCurrentValue(ListBoxItem.IsVisibleProperty, filterResult);
+        }
+        else
+        {
+            RestoreFilterVisibility(listBoxItem);
+        }
+
+        listBoxItem.IsFiltering = true;
+        listBoxItem.FilterValue = FilterValue;
+    }
+
+    private void ClearFilterState(ListBoxItem listBoxItem)
+    {
+        RestoreFilterVisibility(listBoxItem);
+        listBoxItem.IsFiltering = false;
+        listBoxItem.FilterValue = null;
+    }
+
+    private void RestoreFilterVisibility(ListBoxItem listBoxItem)
+    {
+        if (_filterContext.TryGetValue(listBoxItem, out var value))
+        {
+            listBoxItem.SetCurrentValue(ListBoxItem.IsVisibleProperty, value);
+            _filterContext.Remove(listBoxItem);
+        }
+    }
+
+    private bool IsHideUnmatchedFilterEnabled()
+    {
+        return (FilterHighlightStrategy & TextBlockHighlightStrategy.HideUnMatched) == TextBlockHighlightStrategy.HideUnMatched;
     }
     
     private void HandleListBoxItemClicked(RoutedEventArgs args)
@@ -635,9 +679,14 @@ public class ListBox : AvaloniaListBox,
 
     protected virtual void NotifyClearContainerForVirtualizingContext(ListBoxItem item)
     {
+        _filterContext.Remove(item);
         item.ClearValue(ListBoxItem.ContentProperty);
         item.ClearValue(ListBoxItem.ContentTemplateProperty);
         item.ClearValue(ListBoxItem.IsEnabledProperty);
+        item.ClearValue(ListBoxItem.IsVisibleProperty);
+        item.IsFiltering          = false;
+        item.FilterValue          = null;
+        item.FilterHighlightWords = null;
     }
     
     protected virtual void NotifySaveVirtualizingContext(ListBoxItem item, IDictionary<object, object?> context)
