@@ -130,6 +130,7 @@ public class ToggleSwitchShowCasePageTests
             source.ShouldContain("ApiPropertyOffContent");
             source.ShouldContain("ApiPropertySizeType");
             source.ShouldContain("ApiPropertyIsLoading");
+            source.ShouldContain("P2ContentCustom");
             source.ShouldContain("TokenNameTrackHeight");
             source.ShouldContain("TokenNameSwitchColor");
         }
@@ -143,6 +144,31 @@ public class ToggleSwitchShowCasePageTests
 
         NormalizeMarkup(ExtractToggleSwitchExampleItems(source))
             .ShouldBe(NormalizeMarkup(approved));
+    }
+
+    [Fact]
+    public void ToggleSwitch_ShowCase_Toggle_Action_Buttons_Do_Not_Disable_Themselves_During_Click()
+    {
+        var source          = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml");
+        var viewModelSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/ViewModels/ToggleSwitchViewModel.cs");
+
+        source.ShouldContain("Click=\"HandleToggleDisabledButtonClick\"");
+        source.ShouldContain("Click=\"HandleToggleLoadingButtonClick\"");
+        source.ShouldNotContain("Command=\"{Binding ToggleDisabledCommand}\"");
+        source.ShouldNotContain("Command=\"{Binding ToggleLoadingCommand}\"");
+
+        viewModelSource.ShouldNotContain("ToggleDisabledCommand");
+        viewModelSource.ShouldNotContain("ToggleLoadingCommand");
+    }
+
+    [Fact]
+    public void ToggleSwitch_ShowCase_Includes_Custom_SizeType_Example()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/ToggleSwitch/Views/ToggleSwitchShowCase.axaml");
+
+        source.ShouldContain("Name=\"CustomSizeTypeToggleSwitch\"");
+        source.ShouldContain("SizeType=\"Custom\"");
+        source.ShouldContain("P2ContentCustom");
     }
 
     private static string ExtractToggleSwitchExampleItems(string source)

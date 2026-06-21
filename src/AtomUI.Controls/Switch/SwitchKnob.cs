@@ -131,18 +131,6 @@ internal class SwitchKnob : TemplatedControl
     {
         UseLayoutRounding = false;
     }
-    
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        this.DisableTransitions();
-    }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        Dispatcher.UIThread.Post(this.EnableTransitions);
-    }
 
     public void NotifyStartLoading()
     {
@@ -156,6 +144,119 @@ internal class SwitchKnob : TemplatedControl
         if (this.IsAttachedToVisualTree())
         {
             StartLoadingAnimation();
+        }
+    }
+
+    public void NotifyStopLoading()
+    {
+        if (!_isLoading)
+        {
+            return;
+        }
+
+        _cancellationTokenSource?.Cancel();
+        _cancellationTokenSource?.Dispose();
+        _cancellationTokenSource = null;
+        _isLoading               = false;
+        IsEnabled                = true;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.DisableTransitions();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        Dispatcher.UIThread.Post(this.EnableTransitions);
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        if (_isLoading)
+        {
+            StartLoadingAnimation();
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        if (_isLoading)
+        {
+            _cancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Dispose();
+            _cancellationTokenSource = null;
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == KnobSizeProperty)
+        {
+            KnobRenderWidth = KnobSize.Width;
+        }
+        else if (change.Property == KnobBoxShadowProperty)
+        {
+            if (KnobBoxShadow != null)
+            {
+                Effect = new DropShadowEffect
+                {
+                    OffsetX    = KnobBoxShadow.Value.OffsetX,
+                    OffsetY    = KnobBoxShadow.Value.OffsetY,
+                    Color      = KnobBoxShadow.Value.Color,
+                    BlurRadius = KnobBoxShadow.Value.Blur
+                };
+            }
+            else
+            {
+                Effect = null;
+            }
+        }
+    }
+
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        return KnobSize;
+    }
+
+    public sealed override void Render(DrawingContext context)
+    {
+        var offsetX = 0d;
+        var offsetY = 0d;
+        if (IsCheckedState)
+        {
+            offsetX = Bounds.Width - KnobRenderWidth;
+        }
+
+        var targetRect = new Rect(offsetX, offsetY, KnobRenderWidth, Bounds.Height);
+        if (MathUtils.AreClose(KnobRenderWidth, DesiredSize.Height))
+        {
+            context.DrawEllipse(KnobBackgroundColor, null, targetRect);
+        }
+        else
+        {
+            context.DrawPilledRect(KnobBackgroundColor, null, targetRect);
+        }
+
+        if (_isLoading)
+        {
+            var delta           = 2.5;
+            var loadingRectSize = targetRect.Size.Deflate(new Thickness(delta));
+            var loadingRect = new Rect(new Point(-loadingRectSize.Width / 2, -loadingRectSize.Height / 2),
+                loadingRectSize);
+            var       pen                     = GetLoadIndicatorPen();
+            var       translateToCenterMatrix = Matrix.CreateTranslation(targetRect.Center.X, targetRect.Center.Y);
+            var       rotationMatrix          = Matrix.CreateRotation(Rotation * Math.PI / 180);
+            using var translateToCenterState  = context.PushTransform(translateToCenterMatrix);
+            using var rotationMatrixState     = context.PushTransform(rotationMatrix);
+            using var bgOpacity               = context.PushOpacity(_loadingBgOpacity);
+
+            context.DrawArc(pen, loadingRect, 0, 90);
         }
     }
 
@@ -193,107 +294,6 @@ internal class SwitchKnob : TemplatedControl
         _cancellationTokenSource = new CancellationTokenSource();
         var token = _cancellationTokenSource.Token;
         Dispatcher.UIThread.InvokeAsync(async () => await loadingAnimation.RunInfiniteAsync(this, token));
-    }
-
-    public void NotifyStopLoading()
-    {
-        if (!_isLoading)
-        {
-            return;
-        }
-
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        _cancellationTokenSource = null;
-        _isLoading               = false;
-        IsEnabled                = true;
-    }
-
-    protected override Size MeasureOverride(Size availableSize)
-    {
-        return KnobSize;
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == KnobSizeProperty)
-        {
-            KnobRenderWidth = KnobSize.Width;
-        }
-        else if (change.Property == KnobBoxShadowProperty)
-        {
-            if (KnobBoxShadow != null)
-            {
-                Effect = new DropShadowEffect
-                {
-                    OffsetX    = KnobBoxShadow.Value.OffsetX,
-                    OffsetY    = KnobBoxShadow.Value.OffsetY,
-                    Color      = KnobBoxShadow.Value.Color,
-                    BlurRadius = KnobBoxShadow.Value.Blur
-                };
-            }
-            else
-            {
-                Effect = null;
-            }
-        }
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        if (_isLoading)
-        {
-            StartLoadingAnimation();
-        }
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        if (_isLoading)
-        {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _cancellationTokenSource = null;
-        }
-    }
-
-    public sealed override void Render(DrawingContext context)
-    {
-        var offsetX = 0d;
-        var offsetY = 0d;
-        if (IsCheckedState)
-        {
-            offsetX = Bounds.Width - KnobRenderWidth;
-        }
-
-        var targetRect = new Rect(offsetX, offsetY, KnobRenderWidth, Bounds.Height);
-        if (MathUtils.AreClose(KnobRenderWidth, DesiredSize.Height))
-        {
-            context.DrawEllipse(KnobBackgroundColor, null, targetRect);
-        }
-        else
-        {
-            context.DrawPilledRect(KnobBackgroundColor, null, targetRect);
-        }
-
-        if (_isLoading)
-        {
-            var delta           = 2.5;
-            var loadingRectSize = targetRect.Size.Deflate(new Thickness(delta));
-            var loadingRect = new Rect(new Point(-loadingRectSize.Width / 2, -loadingRectSize.Height / 2),
-                loadingRectSize);
-            var       pen                     = GetLoadIndicatorPen();
-            var       translateToCenterMatrix = Matrix.CreateTranslation(targetRect.Center.X, targetRect.Center.Y);
-            var       rotationMatrix          = Matrix.CreateRotation(Rotation * Math.PI / 180);
-            using var translateToCenterState  = context.PushTransform(translateToCenterMatrix);
-            using var rotationMatrixState     = context.PushTransform(rotationMatrix);
-            using var bgOpacity               = context.PushOpacity(_loadingBgOpacity);
-
-            context.DrawArc(pen, loadingRect, 0, 90);
-        }
     }
 
     private Pen GetLoadIndicatorPen()

@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUIGallery.Localization;
@@ -46,15 +45,9 @@ public class ToggleSwitchViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _isLoadingDemoLoading, value);
     }
 
-    public ReactiveCommand<Unit, Unit> ToggleDisabledCommand { get; }
-
-    public ReactiveCommand<Unit, Unit> ToggleLoadingCommand { get; }
-
     public ToggleSwitchViewModel(IScreen screen)
     {
-        HostScreen             = screen;
-        ToggleDisabledCommand  = ReactiveCommand.Create(() => { IsDisabledDemoEnabled = !IsDisabledDemoEnabled; });
-        ToggleLoadingCommand   = ReactiveCommand.Create(() => { IsLoadingDemoLoading = !IsLoadingDemoLoading; });
+        HostScreen = screen;
     }
 
     public void EnsureApiRows()

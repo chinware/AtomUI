@@ -21490,6 +21490,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.LoadingTitle;
+                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentToggleDisabled] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.P2ContentToggleDisabled;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentToggleLoading] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.P2ContentToggleLoading;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2OffContentOff] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.P2OffContentOff;
@@ -21583,6 +21584,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.LoadingTitle;
+                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentToggleDisabled] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.P2ContentToggleDisabled;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentToggleLoading] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.P2ContentToggleLoading;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2OffContentOff] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.P2OffContentOff;
@@ -21676,6 +21678,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.LoadingTitle;
+                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentToggleDisabled] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.P2ContentToggleDisabled;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentToggleLoading] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.P2ContentToggleLoading;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2OffContentOff] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.P2OffContentOff;
