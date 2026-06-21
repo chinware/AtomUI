@@ -25,8 +25,8 @@ internal partial class zh_CN : LanguageProvider
     public const string MinMaxDescription = "限制输入值范围。";
     public const string DecimalStepTitle = "小数步长";
     public const string DecimalStepDescription = "通过 Increment 使用小数步长。";
-    public const string SizesTitle = "NumberUpDown 三种尺寸";
-    public const string SizesDescription = "输入框有三种尺寸：大号（40px）、默认（32px）和小号（24px）。";
+    public const string SizesTitle = "NumberUpDown 尺寸";
+    public const string SizesDescription = "NumberUpDown 支持大号（40px）、默认（32px）、小号（24px）和自定义尺寸。";
     public const string VariantsTitle = "变体";
     public const string VariantsDescription = "NumberUpDown 的变体。";
     public const string DisabledTitle = "禁用";

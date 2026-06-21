@@ -10,7 +10,7 @@ NumericUpDown 的实现基于 Avalonia `NumericUpDown`，AtomUI 负责输入壳�
 
 主要源码：
 
-- `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDown.cs`：public API、数值同步、string mode、清除按钮、键盘处理、Form / CompactSpace / Motion 接口。
+- `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDown.cs`：public API、数值同步、custom size、string mode、清除按钮、键盘处理、Form / CompactSpace / Motion 接口。
 - `src/AtomUI.Desktop.Controls/NumericUpDown/NumericUpDownToken.cs`：NumericUpDown Token scope。
 - `src/AtomUI.Desktop.Controls/NumericUpDown/Themes/NumericUpDownTheme.axaml`：输入模式和 spinner 模式模板、ButtonSpinner / TextBox 状态传递。
 - `src/AtomUI.Desktop.Controls/ButtonSpinner/ButtonSpinner.cs`：输入壳体和 spin 入口。
@@ -54,7 +54,8 @@ IsStringMode=true
 
 输入壳体状态：
 
-- `SizeType` 传递给 `ButtonSpinner`、`TextBox` 和内部 Handle。
+- `SizeType` 类型为 `CustomizableSizeType`，传递给 `ButtonSpinner`、`TextBox` 和内部 Handle；`Custom` 由主题按 `Middle` 默认分支处理。
+- `IsCustomFontSize` 通过模板接入后的 relay binding 传递给内部 `TextBox`，只参与字号覆盖判断，不参与数值状态计算。
 - `StyleVariant` 传递给 `ButtonSpinner` 和 Handle。
 - `Status` 传递给 `ButtonSpinner`，由 AddOnDecoratedBox 体系映射错误和警告状态。
 - `Mode` 只驱动模板选择和模式专用 part 接入，不参与数值状态计算。
@@ -62,9 +63,11 @@ IsStringMode=true
 
 ## 5. 生命周期与模板接入
 
-`OnApplyTemplate` 获取跨模式稳定 part：`PART_Spinner`、`PART_TextBox`、`PART_ClearButton`、`PART_InnerRightContentPresenter`。`Mode=Spinner` 模板额外提供 `PART_DecreaseButton` 和 `PART_IncreaseButton`。
+`OnApplyTemplate` 获取跨模式稳定 part：`PART_Spinner`、`PART_TextBox`、`PART_ClearButton`、`PART_InnerRightContentPresenter`。`Mode=Spinner` 模板中的 `PART_DecreaseButton` 和 `PART_IncreaseButton` 属于嵌入的 `ButtonSpinner` 模板，由 `ButtonSpinner` 的 spin 语义接入；NumericUpDown 本体不直接持有或订阅这两个按钮。
 
-模板替换时必须解除旧 TextBox、清除按钮和 spinner 模式按钮的事件订阅。运行时切换 `Mode` 会触发模板重建，控件本体上的 `Value`、`Text`、`StringValue`、`Status` 等状态通过绑定保留；旧 TextBox 的焦点、光标位置和选区属于旧模板实例，不作为跨模板强契约。
+模板替换时必须解除旧 `TextBox.KeyDown`、清除按钮 `Click` 和内容区 relay binding。运行时切换 `Mode` 会触发模板重建，控件本体上的 `Value`、`Text`、`StringValue`、`Status`、`SizeType` 和 `IsCustomFontSize` 等状态通过绑定保留；旧 TextBox 的焦点、光标位置和选区属于旧模板实例，不作为跨模板强契约。
+
+`SetupTemplatePartBindings` 统一接入清除按钮图标、清除按钮动效、清除按钮可见性、内部右侧内容、内部右侧模板和内部 `TextBox.IsCustomFontSize`。这些绑定在下一次模板接入前必须通过 `CompositeDisposable` 释放。清除按钮和内部 `TextBox` 的事件订阅由成对 part setter 负责，避免在 `OnApplyTemplate` 中散落重复解绑逻辑。
 
 `Mode=Input` 默认模板不能创建 spinner 模式左右按钮。`Mode=Spinner` 的按钮、分隔线和专用布局节点只在启用 spinner 模式时实例化。
 
@@ -125,14 +128,20 @@ NumericUpDown 不通过反射访问 ButtonSpinner、TextBox 或 AddOnDecoratedBo
 
 Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前值、文本、按钮 enabled 状态或模板切换状态写入 Token。
 
+`IsCustomFontSize` 只通过局部绑定影响内部 `TextBox` 的字号样式选择，不应引入全局资源、反射访问或跨模板缓存。
+
 ## 9. 维护不变量
 
 内部重构必须保持以下不变量：
 
 - `Value`、`Text`、`StringValue` 同步不递归、不丢失 raw text。
+- string mode 内部同步标志必须通过成对 helper 设置和恢复，不能在多个调用点手写进入/退出逻辑。
+- `SizeType=Custom` 以 `Middle` 作为未显式覆盖时的默认视觉基线。
+- `IsCustomFontSize=true` 不能被内部 `TextBox` 的 `SizeType` 字体样式覆盖。
 - `IsKeyboardEnabled=false` 只影响步进快捷键。
 - `Mode=Input` 不承担 spinner 模式成本。
 - `Mode=Spinner` 不复制数值增减算法。
+- NumericUpDown 本体不直接订阅 spinner 模式左右按钮事件。
 - 清除按钮和 `InnerRightContent` 顺序不变。
 - 禁用态隐藏浮动 Handle，并命中 disabled 文本色。
 - Filled Handle 背景来自 `FilledHandleBg`。
@@ -143,6 +152,8 @@ Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前
 验证范围：
 
 - `IsStringMode` 开关时 `TextConverter` 保存与恢复。
+- Large / Middle / Small / Custom 尺寸下 `ButtonSpinner`、内部 `TextBox`、Handle 和 spinner action 对齐。
+- `IsCustomFontSize=true` 时用户设置的 `FontSize` 不被内部 `TextBox` 的 `SizeType` 样式覆盖。
 - `StringValue`、`Text`、`Value` 的双向同步和高精度 raw text 保留。
 - `IsKeyboardEnabled=false` 对方向键和 PageUp / PageDown 的拦截。
 - 清除按钮可见性和清除行为。

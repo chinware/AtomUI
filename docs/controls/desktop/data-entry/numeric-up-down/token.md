@@ -28,7 +28,7 @@ NumericUpDownToken 当前继承 ButtonSpinnerToken 的 Token 集合，按 Numeri
 - `InputFontSizeLG`
 - `InputFontSizeSM`
 
-用于 NumericUpDown 默认宽度和不同 `SizeType` 下的输入文本字号。字号语义来自输入控件家族，不直接依赖 NumericUpDown 的数值精度或格式化状态。
+用于 NumericUpDown 默认宽度和不同 `CustomizableSizeType` 下的输入文本字号。`Custom` 不新增专属字号 Token，未显式覆盖时复用 `Middle` 分支；用户显式接管字号时由 `IsCustomFontSize` 控制内部 `TextBox` 是否接受 `SizeType` 字号样式。字号语义来自输入控件家族，不直接依赖 NumericUpDown 的数值精度或格式化状态。
 
 ### 2.2 浮动 Stepper Handle 尺寸 Token
 
@@ -131,6 +131,6 @@ Token 变更要求：
 | --- | --- |
 | 新增 NumericUpDownToken | 检查生成的 `NumericUpDownTokenKind`、AXAML 引用、Gallery Token 表和默认值计算。 |
 | 修改 Handle Token 默认值 | 覆盖 NumericUpDown、ButtonSpinner、ComboBox 的普通、Filled、Disabled、hover 和 pressed 状态；`Mode=Spinner` 需额外验证分隔线、hover 图标色和 pressed 背景。 |
-| 修改尺寸 Token | 验证 `Large`、`Middle`、`Small` 尺寸下的文本、Handle、内容避让和 CompactSpace 边框折叠。 |
+| 修改尺寸 Token | 验证 `Large`、`Middle`、`Small`、`Custom` 尺寸下的文本、Handle、内容避让和 CompactSpace 边框折叠。 |
 | 删除或重命名 Token | 默认不允许；如获授权，需同步所有 AXAML 引用、生成文件、Gallery Token 表和控件文档。 |
 | 调整数值输入状态 | 不应修改 Token；应通过 C# 状态模型或主题变量验证。 |

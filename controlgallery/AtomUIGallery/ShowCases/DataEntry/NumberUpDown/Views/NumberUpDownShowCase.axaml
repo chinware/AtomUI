@@ -271,6 +271,12 @@
                 <atom:NumericUpDown SizeType="Large" Value="3" />
                 <atom:NumericUpDown SizeType="Middle" Value="3" />
                 <atom:NumericUpDown SizeType="Small" Value="3" />
+                <atom:NumericUpDown Name="CustomSizeTypeNumberUpDown"
+                                    SizeType="Custom"
+                                    Height="38"
+                                    FontSize="15"
+                                    IsCustomFontSize="True"
+                                    Value="3" />
             </StackPanel>
                 </DataTemplate>
             </gallery:ShowCaseItem.DeferredContentTemplate>

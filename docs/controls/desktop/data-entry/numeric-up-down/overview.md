@@ -17,7 +17,7 @@ NumericUpDown 的设计语言来自输入框与微调按钮的组合。
 | 维度 | 含义 | 典型表达 |
 | --- | --- | --- |
 | 数值语义 | 输入值是可增减的数值，而不是普通文本。 | `Value`、`Minimum`、`Maximum`、`Increment`、`FormatString`。 |
-| 输入密度 | 控件在表单、工具栏或紧凑布局中的尺寸等级。 | `Large`、`Middle`、`Small`。 |
+| 输入密度 | 控件在表单、工具栏或紧凑布局中的尺寸等级。 | `Large`、`Middle`、`Small`、`Custom`。 |
 | 输入表面 | 控件边框和背景的视觉强度。 | `Outlined`、`Filled`、`Borderless`。 |
 | 反馈状态 | 输入的校验和业务状态。 | `Default`、`Error`、`Warning`。 |
 | 展示模式 | 控件以输入框或三段式拨轮呈现。 | `Mode=Input`、`Mode=Spinner`。 |
@@ -56,7 +56,8 @@ AtomUI 输入扩展 API：
 | API | 类型 | 语义 |
 | --- | --- | --- |
 | `Mode` | `NumericUpDownMode` | 控件展示模式，默认 `Input`，可设置为 `Spinner`。 |
-| `SizeType` | `SizeType` | 输入框尺寸密度。 |
+| `SizeType` | `CustomizableSizeType` | 输入框尺寸密度；`Custom` 未显式覆盖时以 `Middle` 为视觉基线。 |
+| `IsCustomFontSize` | `bool` | 为 `true` 时内部 `TextBox` 不由 `SizeType` 字号样式覆盖 `FontSize`。 |
 | `StyleVariant` | `InputControlStyleVariant` | 输入表面样式。 |
 | `Status` | `InputControlStatus` | 输入反馈状态。 |
 | `IsAllowClear` | `bool` | 是否展示清除按钮。 |
@@ -64,9 +65,9 @@ AtomUI 输入扩展 API：
 | `IsKeyboardEnabled` | `bool` | 是否允许方向键和 PageUp / PageDown 触发步进。 |
 | `IsMotionEnabled` | `bool` | 是否启用输入壳体、Handle 和清除按钮相关动效。 |
 | `LeftAddOn` / `RightAddOn` | `object?` | 外部前后附加内容。 |
-| `LeftAddOnTemplate` / `RightAddOnTemplate` | `IDataTemplate?` | 外部附加内容模板。 |
-| `InnerLeftContent` / `InnerRightContent` | inherited | 内部前后缀内容。 |
-| `InnerLeftContentTemplate` / `InnerRightContentTemplate` | `IDataTemplate?` | 内部前后缀模板。 |
+| `LeftAddOnTemplate` / `RightAddOnTemplate` | `object?` | 外部附加内容模板；实际模板契约为 `IDataTemplate?`。 |
+| `InnerLeftContent` / `InnerRightContent` | `object?` | 内部前后缀内容。 |
+| `InnerLeftContentTemplate` / `InnerRightContentTemplate` | `object?` | 内部前后缀模板；实际模板契约为 `IDataTemplate?`。 |
 
 稳定 template part：
 
@@ -120,6 +121,8 @@ IsEffectiveShowClearButton =
 
 `Mode` 只改变展示结构，不改变 `Value`、`Text`、`Minimum`、`Maximum`、`Increment`、`AllowSpin`、键盘、滚轮、Form 或 string mode 的数值语义。
 
+`SizeType=Custom` 进入自定义尺寸路径。用户未显式设置 `Height`、`FontSize`、`Padding` 等尺寸属性时，主题层应以 `Middle` 作为默认视觉基线；用户显式接管 `FontSize` 时，应通过 `IsCustomFontSize=true` 防止内部 `TextBox` 的 `SizeType` 字号样式覆盖用户设置。
+
 ## 5. 视觉与主题模型
 
 NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模板，以 `ButtonSpinner` 作为输入壳体；`Mode=Spinner` 使用独立三段式拨轮模板，只在用户显式启用 spinner 模式时创建左右步进按钮和分隔视觉。
@@ -156,6 +159,7 @@ NumericUpDown 属于 Data Entry 控件，与 LineEdit、TextBox、TextArea、Sel
 - `IFormItemAware`：允许 Form 读取、设置、清空 `Value`，并把校验状态映射到 `Status`。
 - `ICompactSpaceAware`：允许 CompactSpace 统一边框折叠和圆角。
 - `IMotionAwareControl`：统一动效开关。
+- `ICustomizableSizeTypeAware`：接入支持 `Custom` 的输入尺寸模型。
 
 ## 7. 兼容性不变量
 
@@ -166,6 +170,8 @@ NumericUpDown 属于 Data Entry 控件，与 LineEdit、TextBox、TextArea、Sel
 - 不擅自新增、删除、重命名或改变 AtomUI public API。
 - `Mode=Input` 默认行为和渲染效果不变；spinner 模式不能让默认用户承担额外视觉树或额外交互订阅成本。
 - `Mode=Spinner` 只改变展示结构，不改变数值解析、格式化、步进、Form、CompactSpace 或 string mode 语义。
+- `SizeType=Custom` 必须以 `Middle` 作为未显式覆盖时的默认视觉基线。
+- `IsCustomFontSize=true` 时不得由内部 `TextBox` 的 `SizeType` 字体样式覆盖用户设置的 `FontSize`。
 - `IsStringMode=true` 时必须保留原始 `StringValue`。
 - `IsKeyboardEnabled=false` 只屏蔽步进快捷键，不屏蔽普通文本输入。
 - 清除按钮只在允许清除、非只读且文本非空时显示。
@@ -179,19 +185,25 @@ NumericUpDown 属于 Data Entry 控件，与 LineEdit、TextBox、TextArea、Sel
 
 ## 8. 专项模型
 
-### 8.1 String Mode 模型
+### 8.1 Custom SizeType 模型
+
+`CustomizableSizeType.Custom` 表示用户接管 NumericUpDown 的尺寸属性。主题层仍把 `Custom` 归入 `Middle` 的 line height、corner radius 和 font size 默认分支；用户显式设置 `Height`、`FontSize`、`Padding` 等属性时，由 Avalonia 属性优先级和 `IsCustomFontSize` 控制最终效果。
+
+`SizeType` 必须同时传递给 `ButtonSpinner`、内部 `TextBox` 和 Handle 相关主题，使 `Input` 与 `Spinner` 两种模式在 Large / Middle / Small / Custom 下共享同一输入尺寸语义。
+
+### 8.2 String Mode 模型
 
 String mode 的核心目标是保存用户输入文本，同时尽可能同步可计算数值。`StringValue` 是原始输入状态，`Value` 是可计算状态，仅在文本能解析为 `decimal` 时同步。
 
-### 8.2 浮动 Handle 模型
+### 8.3 浮动 Handle 模型
 
 NumericUpDown 使用 ButtonSpinner 的浮动 Handle 模型。Handle normal 状态默认隐藏，pointer hover 输入壳体时显示；禁用态不显示 Handle；Filled 状态的 Handle 背景由 `FilledHandleBg` 控制。
 
-### 8.3 Spinner Mode 模型
+### 8.4 Spinner Mode 模型
 
 Spinner mode 对齐 Ant Design InputNumber 的 `mode="spinner"` 设计：同一个数值输入控件在保留数值语义的前提下，切换为左减号、中间输入、右加号的三段式展示。
 
-### 8.4 Form 集成模型
+### 8.5 Form 集成模型
 
 NumericUpDown 通过 `IFormItemAware` 暴露表单值能力。Form 集成只以 `Value` 作为表单值，不直接使用 `StringValue`。
 
@@ -208,7 +220,7 @@ NumericUpDown 通过 `IFormItemAware` 暴露表单值能力。Form 集成只以 
 | 层次 | 验证内容 |
 | --- | --- |
 | 文档 | `overview.md`、`implementation.md`、`token.md`、`changelog.md` 链接有效。 |
-| C# 状态 | string mode、键盘步进开关、清除按钮、Form、CompactSpace 状态同步。 |
+| C# 状态 | custom size、string mode、键盘步进开关、清除按钮、Form、CompactSpace 状态同步。 |
 | AXAML/Theme | template part、variant、disabled、error、warning、Input / Spinner 模板切换、Handle 和 clear button。 |
 | Token | `NumericUpDownToken`、ButtonSpinnerToken 复用和 Gallery Token 表一致。 |
-| Gallery | 走查基础用法、string mode、键盘行为、鼠标滚轮、最小最大值、小数步进、尺寸、变体、禁用、前后缀、清除按钮和状态示例。 |
+| Gallery | 走查基础用法、custom size、string mode、键盘行为、鼠标滚轮、最小最大值、小数步进、尺寸、变体、禁用、前后缀、清除按钮和状态示例。 |
