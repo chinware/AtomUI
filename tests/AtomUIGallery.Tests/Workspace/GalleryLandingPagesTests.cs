@@ -137,7 +137,10 @@ public class GalleryLandingPagesTests
         source.ShouldContain("atomui-wechat.png");
         source.ShouldContain("atomui-qq.png");
         source.ShouldContain("TelegramGroup");
-        source.ShouldContain("TelegramGroupDescription");
+        source.ShouldNotContain("WeChatOfficialDescription");
+        source.ShouldNotContain("TelegramGroupDescription");
+        source.ShouldNotContain("WeChatGroupDescription");
+        source.ShouldNotContain("QQGroupDescription");
         File.Exists(GetRepoFile("controlgallery/AtomUIGallery/Assets/atomui-telegram.png")).ShouldBeTrue();
         source.ShouldNotContain("AtomUIOSS-release-banner.png");
         source.ShouldNotContain("dotnet add package AtomUI.Desktop.Controls");

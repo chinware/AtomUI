@@ -215,6 +215,24 @@ internal class AddOnDecoratedBox : ContentControl,
     
     internal static readonly StyledProperty<bool> IsUsedInCompactSpaceProperty = 
         CompactSpaceAwareControlProperty.IsUsedInCompactSpaceProperty.AddOwner<AddOnDecoratedBox>();
+
+    internal static readonly StyledProperty<double> CustomControlHeightProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, double>(nameof(CustomControlHeight), double.NaN);
+
+    internal static readonly StyledProperty<Thickness> ContentFramePaddingProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, Thickness>(nameof(ContentFramePadding));
+
+    internal static readonly StyledProperty<Thickness> CompactContentFramePaddingProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, Thickness>(nameof(CompactContentFramePadding));
+
+    internal static readonly StyledProperty<double> ContentMinHeightProperty =
+        AvaloniaProperty.Register<AddOnDecoratedBox, double>(nameof(ContentMinHeight), double.NaN);
+
+    internal static readonly DirectProperty<AddOnDecoratedBox, Thickness> EffectiveContentFramePaddingProperty =
+        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, Thickness>(
+            nameof(EffectiveContentFramePadding),
+            o => o.EffectiveContentFramePadding,
+            (o, v) => o.EffectiveContentFramePadding = v);
     
     private Thickness _innerBoxBorderThickness;
 
@@ -297,6 +315,38 @@ internal class AddOnDecoratedBox : ContentControl,
         get => GetValue(IsUsedInCompactSpaceProperty);
         set => SetValue(IsUsedInCompactSpaceProperty, value);
     }
+
+    internal double CustomControlHeight
+    {
+        get => GetValue(CustomControlHeightProperty);
+        set => SetValue(CustomControlHeightProperty, value);
+    }
+
+    internal Thickness ContentFramePadding
+    {
+        get => GetValue(ContentFramePaddingProperty);
+        set => SetValue(ContentFramePaddingProperty, value);
+    }
+
+    internal Thickness CompactContentFramePadding
+    {
+        get => GetValue(CompactContentFramePaddingProperty);
+        set => SetValue(CompactContentFramePaddingProperty, value);
+    }
+
+    internal double ContentMinHeight
+    {
+        get => GetValue(ContentMinHeightProperty);
+        set => SetValue(ContentMinHeightProperty, value);
+    }
+
+    private Thickness _effectiveContentFramePadding;
+
+    internal Thickness EffectiveContentFramePadding
+    {
+        get => _effectiveContentFramePadding;
+        set => SetAndRaise(EffectiveContentFramePaddingProperty, ref _effectiveContentFramePadding, value);
+    }
     
     #endregion
     
@@ -321,7 +371,8 @@ internal class AddOnDecoratedBox : ContentControl,
             ContentLeftAddOnProperty,
             ContentLeftAddOnTemplateProperty,
             ContentRightAddOnProperty,
-            ContentRightAddOnTemplateProperty);
+            ContentRightAddOnTemplateProperty,
+            EffectiveContentFramePaddingProperty);
     }
 
     public AddOnDecoratedBox()
@@ -349,6 +400,16 @@ internal class AddOnDecoratedBox : ContentControl,
             change.Property == BorderThicknessProperty)
         {
             _borderThicknessDirty = true;
+        }
+
+        if (change.Property == SizeTypeProperty ||
+            change.Property == CustomControlHeightProperty ||
+            change.Property == ContentFramePaddingProperty ||
+            change.Property == CompactContentFramePaddingProperty ||
+            change.Property == ContentMinHeightProperty ||
+            change.Property == InnerBoxBorderThicknessProperty)
+        {
+            ConfigureEffectiveContentFramePadding();
         }
 
         if (change.Property == LeftAddOnProperty ||
@@ -381,6 +442,29 @@ internal class AddOnDecoratedBox : ContentControl,
         }
 
         ScheduleLayoutUpdate();
+    }
+
+    private void ConfigureEffectiveContentFramePadding()
+    {
+        var effectivePadding = ContentFramePadding;
+        if (CustomizableSizeLayoutHelper.ShouldUseCompactVerticalPadding(
+                SizeType,
+                CustomControlHeight,
+                ContentFramePadding,
+                InnerBoxBorderThickness,
+                ContentMinHeight))
+        {
+            effectivePadding = new Thickness(
+                ContentFramePadding.Left,
+                CompactContentFramePadding.Top,
+                ContentFramePadding.Right,
+                CompactContentFramePadding.Bottom);
+        }
+
+        if (EffectiveContentFramePadding != effectivePadding)
+        {
+            EffectiveContentFramePadding = effectivePadding;
+        }
     }
 
     private void ScheduleLayoutUpdate()

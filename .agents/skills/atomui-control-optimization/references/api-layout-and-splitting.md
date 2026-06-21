@@ -78,63 +78,73 @@ public class ControlName ...
     {
     }
 
-    core public operation APIs, if any
+    control API members, organized by control flow
+        public operation APIs
+        protected / protected virtual extensibility hooks
+        protected override lifecycle, template, and property hooks
+        protected layout / measurement / sizing hooks
+        protected visual state / pseudo-class / theme sync hooks
+        protected domain feature hooks
+        protected input / pointer / keyboard hooks
+        protected event notification hooks
 
     #region 实现 Xxx 接口
         explicit interface implementation
-        directly paired protected virtual Notify/Hook methods
+        directly paired protected virtual Notify/Hook methods, if they exist only for the interface adapter
     #endregion
 
-    lifecycle overrides
-    template part wiring
-    property changed handlers
-    layout / measurement / sizing
-    visual state / pseudo-class / theme sync
-    domain feature methods
-    input / pointer / keyboard handlers
-    async / data loading
-    collection / view refresh
-    event notification hooks
+    private implementation methods, organized by control flow
+        template part wiring helpers
+        property changed handlers
+        private layout / measurement / sizing helpers
+        private visual state / pseudo-class / theme sync helpers
+        private domain feature methods
+        private input / pointer / keyboard handlers
+        async / data loading helpers
+        collection / view refresh helpers
+        private event notification helpers
 }
 ```
 
-## Constructor-To-Interface Gap
+## Control API Before Interface Regions
 
-After the static constructor and instance constructor, and before `#region 实现 Xxx 接口`, only place optional core public operation APIs.
+After the static constructor and instance constructor, place the control's own API members before any `#region 实现 Xxx 接口`.
 
-Allowed there:
+Control API members include:
 
 - public or protected operations that are primary user-facing capabilities of the control
+- protected methods and protected virtual hooks that are part of the control's extensibility contract
+- protected overrides that are the natural entry points for lifecycle, template, property, layout, visual state, input, or domain behavior
 - examples: `Open()`, `Close()`, `ClearSelection()`, `ScrollToNode(...)`, `FocusInput()`
-- a small number of methods that users naturally look for immediately after construction and contract declarations
 
-Not allowed there:
+The region between constructors and explicit interface implementations is not only for `public` methods. A protected API is still part of the control API and must not be pushed below explicit interface implementations merely because it is not public.
+
+Not allowed before interface regions:
 
 - private helpers
-- event handlers
-- layout calculations
-- visual state sync
-- collection refresh
-- async implementation details
-- `NotifyXxx` methods unless they are directly paired with the interface region below
+- private event handlers
+- private layout calculations
+- private visual state sync
+- private collection refresh
+- private async implementation details
+- `NotifyXxx` methods unless they are protected/protected virtual control API hooks or directly paired with the interface region below
 
-If a public method is mainly part of a feature flow, keep it near that flow instead of forcing it before the interface region. For example, a public `PopulateComplete()` can live in the async/data loading section when it is part of the populate pipeline. When unsure, do not place the method before the interface region.
+If a public or protected API method is mainly part of a feature flow, keep it near that flow inside the control API section instead of forcing every API method into a flat block immediately after constructors. For example, a public `PopulateComplete()` can live in the async/data loading part of the control API section when it is part of the populate pipeline.
 
 The ordering priority is:
 
 ```text
 constructors
-core public operation APIs, optional and rare
+control API members: public/protected/protected virtual/protected override
 interface contract regions
-lifecycle
-implementation flow
+private implementation flow
 ```
 
 ## Interface Regions
 
 - Explicit implementations of public interfaces belong in `#region 实现 Xxx 接口`.
-- Interface regions go after constructors and optional core public operation APIs, before lifecycle overrides and private implementation.
-- Keep directly paired protected virtual hooks in the same interface region, such as `IFormItemAware.SetFormValue(...)` with `NotifySetFormValue(...)`.
+- Interface regions go after the control's own public/protected API members and before private implementation methods.
+- Keep directly paired protected virtual hooks in the same interface region when their main purpose is adapting the explicit interface, such as `IFormItemAware.SetFormValue(...)` with `NotifySetFormValue(...)`.
 - If the interface appears on the public control type declaration, treat it as an external capability even when the implementation is explicit.
 - Internal-only collaboration interfaces may be placed with internal implementation details, but only when they are not part of the public type contract.
 

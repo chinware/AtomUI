@@ -54,6 +54,11 @@ public class SelectShowCasePageTests
         source.ShouldContain("SelectShowCaseLangResource CustomDropdownOptionsTitle");
         source.ShouldContain("SelectShowCaseLangResource SizesTitle");
         source.ShouldContain("OptionCheckedChanged=\"HandleSizeTypeChanged\"");
+        source.ShouldContain("CustomizableSizeType.Custom");
+        source.ShouldContain("SelectShowCaseLangResource P2ContentCustom");
+        source.ShouldContain("atom|Select.size-demo-select[SizeType=Custom]");
+        source.ShouldContain("Property=\"Height\" Value=\"38\"");
+        source.ShouldContain("Property=\"FontSize\" Value=\"15\"");
         source.ShouldContain("AttachedToVisualTree=\"HandleCustomSearchSelectAttached\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
@@ -149,6 +154,7 @@ public class SelectShowCasePageTests
             source.ShouldContain("TokenNameOptionSelectedColor");
             source.ShouldContain("TokenNameOptionPadding");
             source.ShouldContain("TokenNamePopupContentPadding");
+            source.ShouldContain("P2ContentCustom");
         }
     }
 

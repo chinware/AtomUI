@@ -68,7 +68,7 @@ internal partial class en_US : LanguageProvider
     public const string TagsTitle = "Tags";
     public const string TagsDescription = "Allow user to select tags from list or input custom tag.";
     public const string SizesTitle = "Sizes";
-    public const string SizesDescription = "The height of the input field for the select defaults to 32px. If size is set to large, the height will be 40px, and if set to small, 24px.";
+    public const string SizesDescription = "The height of the input field for the select defaults to 32px. If size is set to large, the height will be 40px, and if set to small, 24px. Custom can use local size properties.";
     public const string CustomDropdownOptionsTitle = "Custom dropdown options";
     public const string CustomDropdownOptionsDescription = "Use optionRender to customize the rendering dropdown options";
     public const string OptionGroupTitle = "Option Group";
@@ -125,6 +125,7 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentLarge = "Large";
     public const string P2ContentDefault = "Default";
     public const string P2ContentSmall = "Small";
+    public const string P2ContentCustom = "Custom";
     public const string P2GroupManager = "Manager";
     public const string P2GroupEngineer = "Engineer";
     public const string P2ContentUser = "User";

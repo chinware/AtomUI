@@ -11,24 +11,33 @@
         <Style Selector="^:is(atom|SelectAddOnDecoratedBox)">
             <Style Selector="^:not(^[Mode=Single])">
                 <Style Selector="^[IsSelectionEmpty=False]">
+                    <Style Selector="^ /template/ Border#PART_ContentFrame">
+                        <Setter Property="Padding"
+                                Value="{Binding (atom:AddOnDecoratedBox).EffectiveContentFramePadding, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Style>
                     <Style Selector="^[SizeType=Large]">
-                        <Style Selector="^ /template/ Border#PART_ContentFrame">
-                            <Setter Property="Padding"
-                                    Value="{atom:SelectTokenResource MultiModePaddingLG}" />
-                        </Style>
+                        <Setter Property="ContentFramePadding"
+                                Value="{atom:SelectTokenResource MultiModePaddingLG}" />
+                        <Setter Property="CompactContentFramePadding"
+                                Value="{atom:SelectTokenResource MultiModePaddingSM}" />
+                        <Setter Property="ContentMinHeight"
+                                Value="{atom:SelectTokenResource MultipleItemHeightLG}" />
                     </Style>
                     <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-                        <Style Selector="^ /template/ Border#PART_ContentFrame">
-                            <Setter Property="Padding"
-                                    Value="{atom:SelectTokenResource MultiModePadding}" />
-                        </Style>
-
+                        <Setter Property="ContentFramePadding"
+                                Value="{atom:SelectTokenResource MultiModePadding}" />
+                        <Setter Property="CompactContentFramePadding"
+                                Value="{atom:SelectTokenResource MultiModePaddingSM}" />
+                        <Setter Property="ContentMinHeight"
+                                Value="{atom:SelectTokenResource MultipleItemHeight}" />
                     </Style>
                     <Style Selector="^[SizeType=Small]">
-                        <Style Selector="^ /template/ Border#PART_ContentFrame">
-                            <Setter Property="Padding"
-                                    Value="{atom:SelectTokenResource MultiModePaddingSM}" />
-                        </Style>
+                        <Setter Property="ContentFramePadding"
+                                Value="{atom:SelectTokenResource MultiModePaddingSM}" />
+                        <Setter Property="CompactContentFramePadding"
+                                Value="{atom:SelectTokenResource MultiModePaddingSM}" />
+                        <Setter Property="ContentMinHeight"
+                                Value="{atom:SelectTokenResource MultipleItemHeightSM}" />
                     </Style>
                 </Style>
 

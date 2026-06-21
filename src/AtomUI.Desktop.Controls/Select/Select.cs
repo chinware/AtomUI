@@ -8,7 +8,6 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
@@ -201,7 +200,7 @@ public partial class Select : AbstractSelect
     }
     #endregion
 
-    #region 公共属性定义
+    #region 公共事件定义
 
     public event EventHandler<SelectOptionsLoadingEventArgs>? OptionsLoading;
     public event EventHandler<SelectOptionsLoadedEventArgs>? OptionsLoaded;
@@ -254,7 +253,7 @@ public partial class Select : AbstractSelect
     private SelectCandidateList? _candidateList;
     private Border? _popupFrame;
     private SelectFilterTextBox? _singleFilterInput;
-    private CompositeDisposable? _contentRightAddOnBindings;
+    private CompositeDisposable? _selectHandleInputStateBindings;
     private bool _ignoreSyncSelection;
     private bool _candidateListActivated;
     private bool _syncingSingleFilterInputText;
@@ -279,6 +278,12 @@ public partial class Select : AbstractSelect
         this.RegisterTokenResourceScope(SelectToken.ScopeProvider);
     }
 
+    public void ClearValue()
+    {
+        SelectedOptions = null;
+        SelectedOption  = null;
+    }
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -288,11 +293,357 @@ public partial class Select : AbstractSelect
         }
     }
 
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        ConfigureDefaultValues();
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         ClearPopupContent();
         base.OnDetachedFromVisualTree(e);
     }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        ClearPopupContent();
+        base.OnApplyTemplate(e);
+
+        _singleFilterInput = e.NameScope.Get<SelectFilterTextBox>("PART_SingleFilterInput");
+        if (Popup != null)
+        {
+            Popup.OverlayInputPassThroughElement =
+                e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        }
+
+        ConfigurePlaceholderVisible();
+        ConfigureSelectionIsEmpty();
+        ConfigureSingleResultVisible();
+        UpdatePseudoClasses();
+        ConfigureSingleFilterTextBox();
+        ConfigureEffectiveSearchEnabled();
+        SetupSelectHandleInputStateBindings(e);
+        if (IsDropDownOpen)
+        {
+            EnsurePopupContent();
+        }
+    }
+
+    protected override void EnsurePopupContent()
+    {
+        if (Popup == null)
+        {
+            return;
+        }
+
+        if (_popupFrame == null)
+        {
+            _popupFrame = new Border
+            {
+                Name = "PopupFrame"
+            };
+            _popupFrame.SetTemplatedParent(this);
+            _popupFrame[!Layoutable.MaxHeightProperty] = this[!MaxPopupHeightProperty];
+            _popupFrame[!Layoutable.MinWidthProperty]  = this[!EffectivePopupWidthProperty];
+            _popupFrame[!Border.PaddingProperty]       = this[!PopupContentPaddingProperty];
+        }
+
+        if (_candidateList == null)
+        {
+            _candidateList = new SelectCandidateList
+            {
+                Name                 = "PART_CandidateList",
+                BorderThickness      = new Thickness(0),
+                IsShowEmptyIndicator = true,
+                ItemsSource          = Options
+            };
+            _candidateList.SetTemplatedParent(this);
+            _candidateList[!ListView.FilterProperty]                    = this[!FilterProperty];
+            _candidateList[!ListView.FilterValueProperty]               = this[!FilterValueProperty];
+            _candidateList[!ListView.FilterValueSelectorProperty]       = this[!FilterValueSelectorProperty];
+            _candidateList[!ListView.IsGroupEnabledProperty]            = this[!IsGroupEnabledProperty];
+            _candidateList[!ListView.GroupPropertySelectorProperty]     = this[!GroupPropertySelectorProperty];
+            _candidateList[!ListView.IsMotionEnabledProperty]           = this[!IsMotionEnabledProperty];
+            _candidateList[!SelectCandidateList.IsHideSelectedOptionsProperty] = this[!IsHideSelectedOptionsProperty];
+            _candidateList[!SelectCandidateList.MaxCountProperty]       = this[!MaxCountProperty];
+            _candidateList[!ListView.AutoScrollToSelectedItemProperty]  = this[!AutoScrollToSelectedOptionsProperty];
+            _candidateList[!ItemsControl.ItemTemplateProperty]          = this[!OptionTemplateProperty];
+            _candidateList.SelectionChanged += HandleCandidateListSelectionChanged;
+            _candidateList.Commit           += HandleCandidateListComplete;
+            _candidateList.Cancel           += HandleCandidateListCanceled;
+            ConfigureOptionsBoxSelectionMode();
+            SyncSelectionToCandidateList();
+        }
+
+        if (!ReferenceEquals(_popupFrame.Child, _candidateList))
+        {
+            _popupFrame.Child = _candidateList;
+        }
+        if (!ReferenceEquals(Popup.Child, _popupFrame))
+        {
+            Popup.Child = _popupFrame;
+        }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsDropDownOpenProperty)
+        {
+            ConfigureSingleResultVisible();
+            ConfigureSingleFilterTextBox();
+        }
+        else if (change.Property == IsPopupMatchSelectWidthProperty)
+        {
+            ConfigurePopupMinWith(DesiredSize.Width);
+        }
+        else if (change.Property == StyleVariantProperty ||
+                 change.Property == StatusProperty)
+        {
+            UpdatePseudoClasses();
+        }
+        if (change.Property == SelectedOptionsProperty ||
+            change.Property == SelectedOptionProperty)
+        {
+            ConfigureSelectionIsEmpty();
+            ConfigurePlaceholderVisible();
+            ConfigureSingleResultVisible();
+            SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count ?? 0);
+            CleanDynamicAddedOptions();
+            ConfigureSingleFilterTextBox();
+        }
+        else if (change.Property == ModeProperty)
+        {
+            ConfigureOptionsBoxSelectionMode();
+            ConfigureSingleResultVisible();
+            ConfigureSingleFilterTextBox();
+        }
+        else if (change.Property == FilterValueProperty)
+        {
+            ConfigurePlaceholderVisible();
+            ConfigureSingleResultVisible();
+            if (!IsDropDownOpen)
+            {
+                ConfigureSingleFilterTextBox();
+            }
+        }
+        else if (change.Property == PlaceholderTextProperty)
+        {
+            ConfigureSingleFilterTextBox();
+        }
+
+        if (change.Property == IsFilterEnabledProperty ||
+            change.Property == ModeProperty)
+        {
+            ConfigureEffectiveSearchEnabled();
+            ConfigureSingleFilterTextBox();
+        }
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        base.OnKeyDown(e);
+        if (e.Handled)
+        {
+            return;
+        }
+
+        if (IsDropDownOpen)
+        {
+            if (_candidateList != null)
+            {
+                _candidateList.HandleKeyDown(e);
+                if (e.Handled)
+                {
+                    return;
+                }
+            }
+        }
+
+        if ((e.Key == Key.F4 && e.KeyModifiers.HasAllFlags(KeyModifiers.Alt) == false) ||
+            ((e.Key == Key.Down || e.Key == Key.Up) && e.KeyModifiers.HasAllFlags(KeyModifiers.Alt)))
+        {
+            SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
+            e.Handled = true;
+        }
+        else if (!IsDropDownOpen && (e.Key == Key.Down || e.Key == Key.Up))
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
+            e.Handled = true;
+        }
+        else if (IsDropDownOpen && e.Key == Key.Escape)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, false);
+            e.Handled = true;
+        }
+        else if (!IsDropDownOpen && (e.Key == Key.Enter || e.Key == Key.Space))
+        {
+            SetCurrentValue(IsDropDownOpenProperty, true);
+            e.Handled = true;
+        }
+    }
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        if(!e.Handled && e.Source is Visual source)
+        {
+            if (Popup?.IsInsidePopup(source) == true)
+            {
+                e.Handled = true;
+                return;
+            }
+        }
+
+        if (IsDropDownOpen)
+        {
+            // When a drop-down is open with OverlayDismissEventPassThrough enabled and the control
+            // is pressed, close the drop-down
+            if (e.Source is Control sourceControl)
+            {
+                var filterTextBox = sourceControl.FindAncestorOfType<SelectFilterTextBox>(includeSelf: true);
+                if (filterTextBox != null)
+                {
+                    return;
+                }
+
+                if (SelectTag.IsCloseButtonSource(sourceControl))
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            SetCurrentValue(IsDropDownOpenProperty, false);
+            e.Handled = true;
+        }
+        else
+        {
+            PseudoClasses.Set(StdPseudoClass.Pressed, true);
+        }
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        if (!e.Handled && e.Source is Visual source)
+        {
+            if (Popup?.IsInsidePopup(source) == true)
+            {
+                e.Handled = true;
+            }
+            else if (PseudoClasses.Contains(StdPseudoClass.Pressed))
+            {
+                var clickInTagCloseButton = false;
+                if (e.Source is Control sourceControl)
+                {
+                    clickInTagCloseButton = SelectTag.IsCloseButtonSource(sourceControl);
+                }
+
+                if (!clickInTagCloseButton)
+                {
+                    if (!IsDropDownOpen)
+                    {
+                        HandleOpenDropRequest();
+                    }
+                    else
+                    {
+                        SetCurrentValue(IsDropDownOpenProperty, false);
+                    }
+                }
+
+                e.Handled = true;
+            }
+        }
+
+        PseudoClasses.Set(StdPseudoClass.Pressed, false);
+        base.OnPointerReleased(e);
+    }
+
+    protected override void PopupClosed(object? sender, EventArgs e)
+    {
+        if (Mode == SelectMode.Single)
+        {
+            FilterValue = null;
+            ConfigureSingleFilterTextBox();
+        }
+
+        _candidateListActivated = false;
+        base.PopupClosed(sender, e);
+    }
+
+    protected override void PopupOpened(object? sender, EventArgs e)
+    {
+        _candidateListActivated = true;
+        if (_candidateList != null)
+        {
+            if (Mode == SelectMode.Single)
+            {
+                _candidateList.SelectedItem = SelectedOption;
+            }
+            else
+            {
+                if (SelectedOptions != null && SelectedOptions.Count > 0)
+                {
+                    _candidateList.SelectedItems = CopySelectedOptions(SelectedOptions);
+                }
+            }
+        }
+
+        if (Mode == SelectMode.Single && IsEffectiveFilterEnabled)
+        {
+            _singleFilterInput?.Focus();
+        }
+        base.PopupOpened(sender, e);
+    }
+
+    protected virtual void NotifyOptionsLoading(SelectOptionsLoadingEventArgs e)
+    {
+        IsLoading = true;
+        OptionsLoading?.Invoke(this, e);
+    }
+
+    protected virtual void NotifyOptionsLoaded(SelectOptionsLoadedEventArgs e)
+    {
+        IsLoading = false;
+        OptionsLoaded?.Invoke(this, e);
+    }
+
+    #region 实现 FormItem 接口
+
+    protected override void NotifySetFormValue(object? value)
+    {
+        if (Mode == SelectMode.Single)
+        {
+            SelectedOption = value as ISelectOption;
+        }
+        else
+        {
+            SelectedOptions = value as IList<ISelectOption>;
+        }
+    }
+
+    protected override object? NotifyGetFormValue()
+    {
+        if (Mode == SelectMode.Single)
+        {
+            return SelectedOption;
+        }
+        return SelectedOptions;
+    }
+
+    protected override void NotifyClearFormValue()
+    {
+        if (Mode == SelectMode.Single)
+        {
+            SelectedOption = null;
+        }
+        else
+        {
+            SelectedOptions = null;
+        }
+    }
+    #endregion
 
     private void HandleSelectedOptionsChanged(AvaloniaPropertyChangedEventArgs args)
     {
@@ -376,131 +727,12 @@ public partial class Select : AbstractSelect
         return true;
     }
 
-    protected override void OnKeyDown(KeyEventArgs e)
-    {
-        base.OnKeyDown(e);
-        if (e.Handled)
-        {
-            return;
-        }
-
-        if (IsDropDownOpen)
-        {
-            if (_candidateList != null)
-            {
-                _candidateList.HandleKeyDown(e);
-                if (e.Handled)
-                {
-                    return;
-                }
-            }
-        }
-
-        if ((e.Key == Key.F4 && e.KeyModifiers.HasAllFlags(KeyModifiers.Alt) == false) ||
-            ((e.Key == Key.Down || e.Key == Key.Up) && e.KeyModifiers.HasAllFlags(KeyModifiers.Alt)))
-        {
-            SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
-            e.Handled = true;
-        }
-        else if (!IsDropDownOpen && (e.Key == Key.Down || e.Key == Key.Up))
-        {
-            SetCurrentValue(IsDropDownOpenProperty, true);
-            e.Handled = true;
-        }
-        else if (IsDropDownOpen && e.Key == Key.Escape)
-        {
-            SetCurrentValue(IsDropDownOpenProperty, false);
-            e.Handled = true;
-        }
-        else if (!IsDropDownOpen && (e.Key == Key.Enter || e.Key == Key.Space))
-        {
-            SetCurrentValue(IsDropDownOpenProperty, true);
-            e.Handled = true;
-        }
-    }
-
     private void HandleFilterInputKeyDown(KeyEventArgs e)
     {
         if (TryHandleDeleteKey(e))
         {
             return;
         }
-    }
-
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        base.OnPointerPressed(e);
-        if(!e.Handled && e.Source is Visual source)
-        {
-            if (Popup?.IsInsidePopup(source) == true)
-            {
-                e.Handled = true;
-                return;
-            }
-        }
-
-        if (IsDropDownOpen)
-        {
-            // When a drop-down is open with OverlayDismissEventPassThrough enabled and the control
-            // is pressed, close the drop-down
-            if (e.Source is Control sourceControl)
-            {
-                var filterTextBox = sourceControl.FindAncestorOfType<SelectFilterTextBox>(includeSelf: true);
-                if (filterTextBox != null)
-                {
-                    return;
-                }
-
-                if (SelectTag.IsCloseButtonSource(sourceControl))
-                {
-                    e.Handled = true;
-                    return;
-                }
-            }
-
-            SetCurrentValue(IsDropDownOpenProperty, false);
-            e.Handled = true;
-        }
-        else
-        {
-            PseudoClasses.Set(StdPseudoClass.Pressed, true);
-        }
-    }
-
-    protected override void OnPointerReleased(PointerReleasedEventArgs e)
-    {
-        if (!e.Handled && e.Source is Visual source)
-        {
-            if (Popup?.IsInsidePopup(source) == true)
-            {
-                e.Handled = true;
-            }
-            else if (PseudoClasses.Contains(StdPseudoClass.Pressed))
-            {
-                var clickInTagCloseButton = false;
-                if (e.Source is Control sourceControl)
-                {
-                    clickInTagCloseButton = SelectTag.IsCloseButtonSource(sourceControl);
-                }
-
-                if (!clickInTagCloseButton)
-                {
-                    if (!IsDropDownOpen)
-                    {
-                        HandleOpenDropRequest();
-                    }
-                    else
-                    {
-                        SetCurrentValue(IsDropDownOpenProperty, false);
-                    }
-                }
-
-                e.Handled = true;
-            }
-        }
-
-        PseudoClasses.Set(StdPseudoClass.Pressed, false);
-        base.OnPointerReleased(e);
     }
 
     private void HandleOpenDropRequest()
@@ -513,87 +745,6 @@ public partial class Select : AbstractSelect
         else
         {
             SetCurrentValue(IsDropDownOpenProperty, true);
-        }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        ClearPopupContent();
-        base.OnApplyTemplate(e);
-
-        _singleFilterInput = e.NameScope.Get<SelectFilterTextBox>("PART_SingleFilterInput");
-        if (Popup != null)
-        {
-            Popup.OverlayInputPassThroughElement =
-                e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
-        }
-
-        ConfigurePlaceholderVisible();
-        ConfigureSelectionIsEmpty();
-        ConfigureSingleResultVisible();
-        UpdatePseudoClasses();
-        ConfigureSingleFilterTextBox();
-        ConfigureEffectiveSearchEnabled();
-        SetupContentRightAddOnBindings(e);
-        if (IsDropDownOpen)
-        {
-            EnsurePopupContent();
-        }
-    }
-
-    protected override void EnsurePopupContent()
-    {
-        if (Popup == null)
-        {
-            return;
-        }
-
-        if (_popupFrame == null)
-        {
-            _popupFrame = new Border
-            {
-                Name = "PopupFrame"
-            };
-            _popupFrame.SetTemplatedParent(this);
-            _popupFrame[!Layoutable.MaxHeightProperty] = this[!MaxPopupHeightProperty];
-            _popupFrame[!Layoutable.MinWidthProperty]  = this[!EffectivePopupWidthProperty];
-            _popupFrame[!Border.PaddingProperty]       = this[!PopupContentPaddingProperty];
-        }
-
-        if (_candidateList == null)
-        {
-            _candidateList = new SelectCandidateList
-            {
-                Name                 = "PART_CandidateList",
-                BorderThickness      = new Thickness(0),
-                IsShowEmptyIndicator = true,
-                ItemsSource          = Options
-            };
-            _candidateList.SetTemplatedParent(this);
-            _candidateList[!ListView.FilterProperty]                    = this[!FilterProperty];
-            _candidateList[!ListView.FilterValueProperty]               = this[!FilterValueProperty];
-            _candidateList[!ListView.FilterValueSelectorProperty]       = this[!FilterValueSelectorProperty];
-            _candidateList[!ListView.IsGroupEnabledProperty]            = this[!IsGroupEnabledProperty];
-            _candidateList[!ListView.GroupPropertySelectorProperty]     = this[!GroupPropertySelectorProperty];
-            _candidateList[!ListView.IsMotionEnabledProperty]           = this[!IsMotionEnabledProperty];
-            _candidateList[!SelectCandidateList.IsHideSelectedOptionsProperty] = this[!IsHideSelectedOptionsProperty];
-            _candidateList[!SelectCandidateList.MaxCountProperty]       = this[!MaxCountProperty];
-            _candidateList[!ListView.AutoScrollToSelectedItemProperty]  = this[!AutoScrollToSelectedOptionsProperty];
-            _candidateList[!ItemsControl.ItemTemplateProperty]          = this[!OptionTemplateProperty];
-            _candidateList.SelectionChanged += HandleCandidateListSelectionChanged;
-            _candidateList.Commit           += HandleCandidateListComplete;
-            _candidateList.Cancel           += HandleCandidateListCanceled;
-            ConfigureOptionsBoxSelectionMode();
-            SyncSelectionToCandidateList();
-        }
-
-        if (!ReferenceEquals(_popupFrame.Child, _candidateList))
-        {
-            _popupFrame.Child = _candidateList;
-        }
-        if (!ReferenceEquals(Popup.Child, _popupFrame))
-        {
-            Popup.Child = _popupFrame;
         }
     }
 
@@ -627,82 +778,65 @@ public partial class Select : AbstractSelect
         _candidateListActivated = false;
     }
 
-    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
+    private void SetupSelectHandleInputStateBindings(TemplateAppliedEventArgs e)
     {
-        _contentRightAddOnBindings?.Dispose();
-        _contentRightAddOnBindings = new CompositeDisposable();
+        _selectHandleInputStateBindings?.Dispose();
+        _selectHandleInputStateBindings = null;
 
-        if (e.NameScope.Find<SelectMaxCountIndicator>("PART_SelectMaxCountIndicator") is { } indicator)
+        var handle   = e.NameScope.Find<SelectHandle>("PART_SelectHandle");
+        var addOnBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        if (handle == null || addOnBox == null)
         {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, MaxCountProperty, indicator,
-                SelectMaxCountIndicator.MaxCountProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, SelectedCountProperty, indicator,
-                SelectMaxCountIndicator.SelectedCountProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsShowMaxCountIndicatorProperty, indicator,
-                Visual.IsVisibleProperty));
+            return;
         }
 
-        if (e.NameScope.Find<ContentPresenter>("PART_ContentRightAddOnPresenter") is { } contentPresenter)
-        {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnProperty, contentPresenter,
-                ContentPresenter.ContentProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnTemplateProperty,
-                contentPresenter, ContentPresenter.ContentTemplateProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnProperty, contentPresenter,
-                Visual.IsVisibleProperty, value => value is not null));
-        }
-
-        if (e.NameScope.Find<SelectHandle>("PART_SelectHandle") is { } handle)
-        {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, FormFeedbackProperty, handle,
-                SelectHandle.FormFeedbackProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, SuffixLoadingIconProperty, handle,
-                SelectHandle.LoadingIconProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, SuffixIconProperty, handle,
-                SelectHandle.OpenIndicatorProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEffectiveFilterEnabledProperty, handle,
-                SelectHandle.IsFilterEnabledProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEnabledProperty, handle,
-                InputElement.IsEnabledProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, handle,
-                SelectHandle.IsMotionEnabledProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsLoadingProperty, handle,
-                SelectHandle.IsLoadingProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsAllowClearProperty, handle,
-                SelectHandle.IsAllowClearProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsSelectionEmptyProperty, handle,
-                SelectHandle.IsSelectionEmptyProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsDropDownOpenProperty, handle,
-                SelectHandle.IsDropDownOpenProperty));
-
-            var addOnBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
-            if (addOnBox != null)
-            {
-                _contentRightAddOnBindings.Add(BindUtils.RelayBind(addOnBox,
-                    AddOnDecoratedBox.IsInnerBoxHoverProperty, handle, SelectHandle.IsInputHoverProperty));
-                _contentRightAddOnBindings.Add(BindUtils.RelayBind(addOnBox,
-                    AddOnDecoratedBox.IsInnerBoxPressedProperty, handle, SelectHandle.IsInputPressedProperty));
-            }
-        }
+        _selectHandleInputStateBindings = new CompositeDisposable();
+        _selectHandleInputStateBindings.Add(BindUtils.RelayBind(addOnBox,
+            AddOnDecoratedBox.IsInnerBoxHoverProperty, handle, SelectHandle.IsInputHoverProperty));
+        _selectHandleInputStateBindings.Add(BindUtils.RelayBind(addOnBox,
+            AddOnDecoratedBox.IsInnerBoxPressedProperty, handle, SelectHandle.IsInputPressedProperty));
     }
 
     private void HandleCandidateListComplete(object? sender, RoutedEventArgs e)
     {
         if (_candidateList != null)
         {
-            _ignoreSyncSelection = true;
-            if (Mode == SelectMode.Single)
-            {
-                SelectedOption = (ISelectOption?)_candidateList.SelectedItem;
-            }
-            else
-            {
-                SelectedOptions = BuildSelectedOptionsList(_candidateList.SelectedItems);
-            }
+            SetSelectionFromCandidateListWithoutSyncBack();
         }
         if (IsDropDownOpen)
         {
             SetCurrentValue(IsDropDownOpenProperty, false);
+        }
+    }
+
+    private void SetSelectionFromCandidateListWithoutSyncBack()
+    {
+        RunWithoutSyncingCandidateSelection(() =>
+        {
+            if (Mode == SelectMode.Single)
+            {
+                SelectedOption = (ISelectOption?)_candidateList?.SelectedItem;
+            }
+            else
+            {
+                SelectedOptions = BuildSelectedOptionsList(_candidateList?.SelectedItems);
+            }
+        });
+    }
+
+    private void RunWithoutSyncingCandidateSelection(Action updateSelection)
+    {
+        _ignoreSyncSelection = true;
+        try
+        {
+            updateSelection();
+        }
+        finally
+        {
+            if (_ignoreSyncSelection)
+            {
+                _ignoreSyncSelection = false;
+            }
         }
     }
 
@@ -771,98 +905,6 @@ public partial class Select : AbstractSelect
         }
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == IsDropDownOpenProperty)
-        {
-            ConfigureSingleResultVisible();
-            ConfigureSingleFilterTextBox();
-        }
-        else if (change.Property == IsPopupMatchSelectWidthProperty)
-        {
-            ConfigurePopupMinWith(DesiredSize.Width);
-        }
-        else if (change.Property == StyleVariantProperty ||
-                 change.Property == StatusProperty)
-        {
-            UpdatePseudoClasses();
-        }
-        if (change.Property == SelectedOptionsProperty ||
-            change.Property == SelectedOptionProperty)
-        {
-            ConfigureSelectionIsEmpty();
-            ConfigurePlaceholderVisible();
-            ConfigureSingleResultVisible();
-            SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count ?? 0);
-            CleanDynamicAddedOptions();
-            ConfigureSingleFilterTextBox();
-        }
-        else if (change.Property == ModeProperty)
-        {
-            ConfigureOptionsBoxSelectionMode();
-            ConfigureSingleResultVisible();
-            ConfigureSingleFilterTextBox();
-        }
-        else if (change.Property == FilterValueProperty)
-        {
-            ConfigurePlaceholderVisible();
-            ConfigureSingleResultVisible();
-            if (!IsDropDownOpen)
-            {
-                ConfigureSingleFilterTextBox();
-            }
-        }
-        else if (change.Property == PlaceholderTextProperty)
-        {
-            ConfigureSingleFilterTextBox();
-        }
-
-        if (change.Property == IsFilterEnabledProperty ||
-            change.Property == ModeProperty)
-        {
-            ConfigureEffectiveSearchEnabled();
-            ConfigureSingleFilterTextBox();
-        }
-    }
-
-    protected override void PopupClosed(object? sender, EventArgs e)
-    {
-        if (Mode == SelectMode.Single)
-        {
-            FilterValue = null;
-            ConfigureSingleFilterTextBox();
-        }
-
-        _candidateListActivated = false;
-        base.PopupClosed(sender, e);
-    }
-
-    protected override void PopupOpened(object? sender, EventArgs e)
-    {
-        _candidateListActivated = true;
-        if (_candidateList != null)
-        {
-            if (Mode == SelectMode.Single)
-            {
-                _candidateList.SelectedItem = SelectedOption;
-            }
-            else
-            {
-                if (SelectedOptions != null && SelectedOptions.Count > 0)
-                {
-                    _candidateList.SelectedItems = CopySelectedOptions(SelectedOptions);
-                }
-            }
-        }
-
-        if (Mode == SelectMode.Single && IsEffectiveFilterEnabled)
-        {
-            _singleFilterInput?.Focus();
-        }
-        base.PopupOpened(sender, e);
-    }
-
     private void SyncSelectionToCandidateList()
     {
         if (_candidateList != null)
@@ -887,12 +929,6 @@ public partial class Select : AbstractSelect
 
         _candidateList.SetCurrentValue(ListView.SelectionModeProperty,
             Mode == SelectMode.Single ? SelectionMode.Single : SelectionMode.Multiple);
-    }
-
-    public void ClearValue()
-    {
-        SelectedOptions = null;
-        SelectedOption  = null;
     }
 
     private void ConfigurePlaceholderVisible()
@@ -1078,7 +1114,7 @@ public partial class Select : AbstractSelect
         }
         e.Handled = true;
     }
-    
+
     private void HandleOptionsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         var selectedOptionIdentity  = Mode == SelectMode.Single ? BuildOptionIdentity(SelectedOption) : null;
@@ -1223,12 +1259,6 @@ public partial class Select : AbstractSelect
         }
     }
 
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        ConfigureDefaultValues();
-    }
-
     private void ConfigureEffectiveSearchEnabled()
     {
         if (Mode == SelectMode.Tags)
@@ -1285,42 +1315,6 @@ public partial class Select : AbstractSelect
             }
         }
     }
-
-    #region 实现 FormItem 接口
-
-    protected override void NotifySetFormValue(object? value)
-    {
-        if (Mode == SelectMode.Single)
-        {
-            SelectedOption = value as ISelectOption;
-        }
-        else
-        {
-            SelectedOptions = value as IList<ISelectOption>;
-        }
-    }
-
-    protected override object? NotifyGetFormValue()
-    {
-        if (Mode == SelectMode.Single)
-        {
-            return SelectedOption;
-        }
-        return SelectedOptions;
-    }
-
-    protected override void NotifyClearFormValue()
-    {
-        if (Mode == SelectMode.Single)
-        {
-            SelectedOption = null;
-        }
-        else
-        {
-            SelectedOptions = null;
-        }
-    }
-    #endregion
 
     private static List<ISelectOption>? BuildSelectedOptionsList(IEnumerable? source)
     {

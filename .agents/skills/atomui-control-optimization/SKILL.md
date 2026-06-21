@@ -34,6 +34,7 @@ Classify the request before editing.
 | Messy implementation, boundary-condition bugs, tangled state, architecture root optimization | Read `references/deep-control-optimization.md` |
 | DynamicResource, token resource binding, subscriptions, owner/container lifecycle | Also use `atomui-resource-lifecycle` |
 | Performance claims, lazy visuals, binding cost, template optimization | Also use `atomui-control-performance` |
+| `BindUtils.RelayBind`, C#-created bindings, or template-owned binding relationships | Prove AXAML cannot express the binding before keeping C# binding; define disposal owner |
 | Bug fix or behavior change | Reproduce/trace root cause and add or update regression tests |
 | Gallery-visible examples or docs | Check Gallery/docs impact and update only when required |
 | AOT-sensitive binding, reflection, dynamic registration | Check `docs/engineering/aot-programming-guidelines.md` |
@@ -52,6 +53,11 @@ Classify the request before editing.
 - Do not scatter a control into many small partial files. Public API contracts must remain in the main control file.
 - Do not move lifecycle entry points out of the main control file unless the control is already deliberately partial and the entry remains easy to find.
 - Do not introduce performance-oriented dynamic C# visual creation unless `atomui-control-performance` allows it.
+- AXAML-first binding is a hard boundary. For template-owned visual state, template part state, style state, and fixed control-to-template relationships, use AXAML binding, `TemplateBinding`, style selectors, or existing theme/resource mechanisms before considering C# binding.
+- `BindUtils.RelayBind` is the last binding creation mechanism, not the default convenience API. Before adding or keeping it, prove why the same relationship cannot be expressed in AXAML without changing API, behavior, rendered result, binding mode, binding priority, or template contract.
+- Allowed `BindUtils.RelayBind` cases are limited to relationships AXAML cannot naturally express, such as dynamically created runtime targets, sibling/template-part coordination that cannot be represented by `TemplateBinding` or selectors, runtime-selected source objects, or bindings whose lifecycle is owned by a non-template runtime object.
+- Every accepted `BindUtils.RelayBind` must have an explicit release path matching its acquisition path, such as re-template cleanup, detach, owner disposal, popup/content clear, or container recycle. Do not create relay bindings without a matching dispose owner.
+- Do not use `BindUtils.RelayBind` to work around inconvenient AXAML. If the binding source and target are both stable parts of the control template, move the relationship into AXAML unless doing so would require an approved contract or behavior change.
 
 ## Intake Checklist
 
@@ -67,6 +73,7 @@ Contract change needed: No / L1 / L2 / L3
 File split decision: No / Yes, reason:
 Other required skills:
 Behavior changes mixed into layout-only work: No
+C# relay binding inventory: None / Reviewed, exceptions documented
 Verification commands:
 ```
 
@@ -88,6 +95,7 @@ For any non-trivial control optimization, check:
 - implemented public interfaces
 - template parts, pseudo-classes, theme selectors, token/resource keys
 - Gallery examples and docs that expose usage
+- C# relay bindings: for each `BindUtils.RelayBind`, record source, target, why AXAML cannot express it, binding mode/priority, and disposal owner
 - bindings, subscriptions, timers, popup hosts, cached views, lazy-created objects
 
 ## Completion Report

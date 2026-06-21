@@ -5176,6 +5176,7 @@ namespace AtomUIGallery.Localization
         MultipleSelectionTitle,
         OptionGroupDescription,
         OptionGroupTitle,
+        P2ContentCustom,
         P2ContentDefault,
         P2ContentLarge,
         P2ContentSmall,

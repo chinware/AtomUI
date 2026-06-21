@@ -68,7 +68,7 @@ internal partial class zh_TW : LanguageProvider
     public const string TagsTitle = "標籤";
     public const string TagsDescription = "允許用戶從列表中選擇標籤或輸入自定義標籤。";
     public const string SizesTitle = "尺寸";
-    public const string SizesDescription = "選擇器輸入區域默認高度為 32px。size 設置為 large 時高度為 40px，設置為 small 時高度為 24px。";
+    public const string SizesDescription = "選擇器輸入區域默認高度為 32px。size 設置為 large 時高度為 40px，設置為 small 時高度為 24px。Custom 可配合本地尺寸屬性自定義。";
     public const string CustomDropdownOptionsTitle = "自定義下拉選項";
     public const string CustomDropdownOptionsDescription = "使用 optionRender 自定義下拉選項渲染。";
     public const string OptionGroupTitle = "選項分組";
@@ -125,6 +125,7 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentLarge = "大號";
     public const string P2ContentDefault = "默認";
     public const string P2ContentSmall = "小號";
+    public const string P2ContentCustom = "自定義";
     public const string P2GroupManager = "經理";
     public const string P2GroupEngineer = "工程師";
     public const string P2ContentUser = "用戶";

@@ -23,18 +23,6 @@ public partial class Select
         }
     }
 
-    protected virtual void NotifyOptionsLoading(SelectOptionsLoadingEventArgs e)
-    {
-        IsLoading = true;
-        OptionsLoading?.Invoke(this, e);
-    }
-
-    protected virtual void NotifyOptionsLoaded(SelectOptionsLoadedEventArgs e)
-    {
-        IsLoading = false;
-        OptionsLoaded?.Invoke(this, e);
-    }
-
     private bool TryLoadOptionsAsync(object? context)
     {
         if (OptionsLoader == null)
@@ -103,8 +91,7 @@ public partial class Select
         bool isDropDownOpen = loadResult?.Data?.Count > 0;
         if (isDropDownOpen != IsDropDownOpen)
         {
-            IgnorePropertyChange = true;
-            SetCurrentValue(IsDropDownOpenProperty, isDropDownOpen);
+            SetDropDownOpenWithoutPropertyHandling(isDropDownOpen);
         }
         if (IsDropDownOpen)
         {
