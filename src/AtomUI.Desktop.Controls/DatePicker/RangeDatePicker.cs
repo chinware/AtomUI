@@ -173,6 +173,7 @@ public class RangeDatePicker : RangeInfoPickerInput
 
     static RangeDatePicker()
     {
+        AffectsMeasure<RangeDatePicker>(PreferredWidthProperty);
         RangeStartSelectedDateProperty.Changed.AddClassHandler<RangeDatePicker>((picker, args) => picker.HandleSelectedValueChanged(args));
         RangeEndSelectedDateProperty.Changed.AddClassHandler<RangeDatePicker>((picker, args) => picker.HandleSelectedValueChanged(args));
     }
@@ -419,24 +420,14 @@ public class RangeDatePicker : RangeInfoPickerInput
                 }
             }
         }
-        else if (change.Property == FontSizeProperty ||
-                 change.Property == FontFamilyProperty ||
-                 change.Property == FontFamilyProperty ||
-                 change.Property == FontStyleProperty ||
-                 change.Property == ClockIdentifierProperty ||
-                 change.Property == MinWidthProperty ||
-                 change.Property == WidthProperty ||
-                 change.Property == MaxWidthProperty ||
-                 change.Property == HorizontalAlignmentProperty)
+
+        if (IsFormattedTextAffectingProperty(change.Property))
         {
+            RefreshRangeTexts();
             CalculatePreferredWidth();
         }
-
-        if (change.Property == AmTextProperty ||
-            change.Property == PmTextProperty)
+        else if (IsPreferredWidthAffectingProperty(change.Property))
         {
-            Text          = FormatDateTime(RangeStartSelectedDate);
-            SecondaryText = FormatDateTime(RangeEndSelectedDate);
             CalculatePreferredWidth();
         }
 
@@ -452,12 +443,42 @@ public class RangeDatePicker : RangeInfoPickerInput
             }
         }
     }
+
+    private void RefreshRangeTexts()
+    {
+        Text          = FormatDateTime(RangeStartSelectedDate);
+        SecondaryText = FormatDateTime(RangeEndSelectedDate);
+    }
+
+    private static bool IsFormattedTextAffectingProperty(AvaloniaProperty property)
+    {
+        return property == IsShowTimeProperty ||
+               property == FormatProperty ||
+               property == ClockIdentifierProperty ||
+               property == AmTextProperty ||
+               property == PmTextProperty;
+    }
+
+    private static bool IsPreferredWidthAffectingProperty(AvaloniaProperty property)
+    {
+        return property == FontSizeProperty ||
+               property == FontFamilyProperty ||
+               property == FontStyleProperty ||
+               property == FontWeightProperty ||
+               property == PlaceholderTextProperty ||
+               property == SecondaryPlaceholderTextProperty ||
+               property == MinWidthProperty ||
+               property == WidthProperty ||
+               property == MaxWidthProperty ||
+               property == HorizontalAlignmentProperty;
+    }
     
     private void CalculatePreferredWidth()
     {
         if (!double.IsNaN(Width) || HorizontalAlignment == HorizontalAlignment.Stretch)
         {
             PreferredInputWidth = double.NaN;
+            PreferredWidth      = 0;
         }
         else
         {
@@ -502,6 +523,7 @@ public class RangeDatePicker : RangeInfoPickerInput
                 preferredInputWidth = Math.Min(MaxWidth, preferredInputWidth);
             }
             PreferredInputWidth = preferredInputWidth;
+            PreferredWidth      = preferredInputWidth;
         }
     }
     
@@ -614,8 +636,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         {
             SetValue(InfoIconProperty, new CalendarOutlined(), BindingPriority.Template);
         }
-        Text          = FormatDateTime(RangeStartSelectedDate);
-        SecondaryText = FormatDateTime(RangeEndSelectedDate);
+        RefreshRangeTexts();
         CalculatePreferredWidth();
     }
     

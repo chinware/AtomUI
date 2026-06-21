@@ -401,6 +401,7 @@ public class RangeTimePicker : RangeInfoPickerInput
         if (!double.IsNaN(Width) || HorizontalAlignment == HorizontalAlignment.Stretch)
         {
             PreferredInputWidth = double.NaN;
+            PreferredWidth      = 0;
         }
         else
         {
@@ -429,6 +430,7 @@ public class RangeTimePicker : RangeInfoPickerInput
                 preferredInputWidth = Math.Min(MaxWidth, preferredInputWidth);
             }
             PreferredInputWidth = preferredInputWidth;
+            PreferredWidth      = preferredInputWidth;
         }
     }
     
