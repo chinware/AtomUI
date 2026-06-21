@@ -16,15 +16,6 @@ public class SliderThumb : TemplatedControl
 {
     #region 公共属性定义
 
-    public static readonly RoutedEvent<VectorEventArgs> DragStartedEvent =
-        RoutedEvent.Register<SliderThumb, VectorEventArgs>(nameof(DragStarted), RoutingStrategies.Bubble);
-
-    public static readonly RoutedEvent<VectorEventArgs> DragDeltaEvent =
-        RoutedEvent.Register<SliderThumb, VectorEventArgs>(nameof(DragDelta), RoutingStrategies.Bubble);
-
-    public static readonly RoutedEvent<VectorEventArgs> DragCompletedEvent =
-        RoutedEvent.Register<SliderThumb, VectorEventArgs>(nameof(DragCompleted), RoutingStrategies.Bubble);
-
     public static readonly StyledProperty<IBrush?> OutlineBrushProperty =
         AvaloniaProperty.Register<SliderThumb, IBrush?>(nameof(OutlineBrush));
 
@@ -36,34 +27,16 @@ public class SliderThumb : TemplatedControl
 
     #endregion
 
-    #region 内部属性定义
+    #region 公共事件定义
 
-    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SliderThumb>();
-    
-    internal bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
+    public static readonly RoutedEvent<VectorEventArgs> DragStartedEvent =
+        RoutedEvent.Register<SliderThumb, VectorEventArgs>(nameof(DragStarted), RoutingStrategies.Bubble);
 
-    #endregion
+    public static readonly RoutedEvent<VectorEventArgs> DragDeltaEvent =
+        RoutedEvent.Register<SliderThumb, VectorEventArgs>(nameof(DragDelta), RoutingStrategies.Bubble);
 
-    private Point? _lastPoint;
-    private IPen? _circlePen;
-    private IPen? _outlinePen;
-
-    static SliderThumb()
-    {
-        DragStartedEvent.AddClassHandler<SliderThumb>((x, e) => x.OnDragStarted(e), RoutingStrategies.Bubble);
-        DragDeltaEvent.AddClassHandler<SliderThumb>((x, e) => x.OnDragDelta(e), RoutingStrategies.Bubble);
-        DragCompletedEvent.AddClassHandler<SliderThumb>((x, e) => x.OnDragCompleted(e), RoutingStrategies.Bubble);
-        AffectsRender<SliderThumb>(ThumbCircleSizeProperty,
-            OutlineThicknessProperty,
-            BorderThicknessProperty,
-            OutlineBrushProperty,
-            BorderBrushProperty);
-    }
+    public static readonly RoutedEvent<VectorEventArgs> DragCompletedEvent =
+        RoutedEvent.Register<SliderThumb, VectorEventArgs>(nameof(DragCompleted), RoutingStrategies.Bubble);
 
     public event EventHandler<VectorEventArgs>? DragStarted
     {
@@ -83,6 +56,19 @@ public class SliderThumb : TemplatedControl
         remove => RemoveHandler(DragCompletedEvent, value);
     }
 
+    #endregion
+
+    #region 内部属性定义
+
+    internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<SliderThumb>();
+
+    internal bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
     internal IBrush? OutlineBrush
     {
         get => GetValue(OutlineBrushProperty);
@@ -99,6 +85,24 @@ public class SliderThumb : TemplatedControl
     {
         get => GetValue(ThumbCircleSizeProperty);
         set => SetValue(ThumbCircleSizeProperty, value);
+    }
+
+    #endregion
+
+    private Point? _lastPoint;
+    private IPen? _circlePen;
+    private IPen? _outlinePen;
+
+    static SliderThumb()
+    {
+        DragStartedEvent.AddClassHandler<SliderThumb>((x, e) => x.OnDragStarted(e), RoutingStrategies.Bubble);
+        DragDeltaEvent.AddClassHandler<SliderThumb>((x, e) => x.OnDragDelta(e), RoutingStrategies.Bubble);
+        DragCompletedEvent.AddClassHandler<SliderThumb>((x, e) => x.OnDragCompleted(e), RoutingStrategies.Bubble);
+        AffectsRender<SliderThumb>(ThumbCircleSizeProperty,
+            OutlineThicknessProperty,
+            BorderThicknessProperty,
+            OutlineBrushProperty,
+            BorderBrushProperty);
     }
 
     internal void AdjustDrag(Vector v)

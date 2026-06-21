@@ -175,7 +175,7 @@ public class SliderTrack : TemplatedControl
     public FontFamily MarkLabelFontFamily
     {
         get => GetValue(MarkLabelFontFamilyProperty);
-        set => SetValue(MarkLabelFontSizeProperty, value);
+        set => SetValue(MarkLabelFontFamilyProperty, value);
     }
 
     public IBrush? MarkLabelBrush
@@ -291,7 +291,9 @@ public class SliderTrack : TemplatedControl
     {
         StartSliderThumbProperty.Changed.AddClassHandler<SliderTrack>((x, e) => x.ThumbChanged(e));
         EndSliderThumbProperty.Changed.AddClassHandler<SliderTrack>((x, e) => x.ThumbChanged(e));
-        AffectsMeasure<SliderTrack>(MarksProperty);
+        AffectsMeasure<SliderTrack>(MarksProperty,
+            MarkLabelFontSizeProperty,
+            MarkLabelFontFamilyProperty);
         AffectsArrange<SliderTrack>(IsDirectionReversedProperty,
             MinimumProperty,
             MaximumProperty,
@@ -311,46 +313,17 @@ public class SliderTrack : TemplatedControl
         UpdatePseudoClasses(Orientation);
     }
 
-    private static SliderRangeValue CoerceRangeValue(AvaloniaObject sender, SliderRangeValue value)
+    public virtual double ValueFromDistance(double horizontal, double vertical)
     {
-        if (ValidateRangeValue(ref value))
+        double scale = IsDirectionReversed ? -1 : 1;
+
+        if (Orientation == Orientation.Horizontal)
         {
-            var startValue = Math.Clamp(value.StartValue, sender.GetValue(MinimumProperty),
-                sender.GetValue(MaximumProperty));
-            var endValue = Math.Clamp(value.EndValue, sender.GetValue(MinimumProperty),
-                sender.GetValue(MaximumProperty));
-            return new SliderRangeValue
-            {
-                StartValue = startValue,
-                EndValue   = endValue
-            };
+            return scale * horizontal * Density;
         }
 
-        return sender.GetValue(RangeValueProperty);
-    }
-
-    private static bool ValidateRangeValue(ref SliderRangeValue value)
-    {
-        return !double.IsInfinity(value.StartValue) && !double.IsNaN(value.StartValue) &&
-               !double.IsInfinity(value.EndValue) && !double.IsNaN(value.EndValue);
-    }
-
-    private void HandleRangeModeChanged()
-    {
-        if (IsRangeMode)
-        {
-            if (EndSliderThumb is not null)
-            {
-                EndSliderThumb.IsVisible = true;
-            }
-        }
-        else
-        {
-            if (EndSliderThumb is not null)
-            {
-                EndSliderThumb.IsVisible = false;
-            }
-        }
+        // Increases in y cause decreases in Sliders value
+        return -1 * scale * vertical * Density;
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -383,70 +356,6 @@ public class SliderTrack : TemplatedControl
         base.OnDetachedFromVisualTree(e);
         _focusProcessDisposable?.Dispose();
         _focusProcessDisposable = null;
-    }
-
-    private void HandleGlobalMousePressed(Point point)
-    {
-        var globalOffset = GetGlobalOffset();
-        var trailGlobalBounds = new Rect(globalOffset + _renderContextData!.RailRect.Position,
-            _renderContextData.RailRect.Size);
-        if (trailGlobalBounds.Contains(point))
-        {
-            // 点击在轨道上，要不设置值，要不本身就在 Thumb 上，所以不需要处理
-            return;
-        }
-
-        if (StartSliderThumb is not null && StartSliderThumb.IsVisible)
-        {
-            HandleThumbFocus(StartSliderThumb, point);
-        }
-
-        if (EndSliderThumb is not null && EndSliderThumb.IsVisible)
-        {
-            HandleThumbFocus(EndSliderThumb, point);
-        }
-    }
-
-    private Point GetGlobalOffset()
-    {
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is null)
-        {
-            return default;
-        }
-
-        return this.TranslatePoint(Bounds.Position, topLevel) ?? default;
-    }
-
-    private void HandleThumbFocus(SliderThumb sliderThumb, Point point)
-    {
-        var topLevel = TopLevel.GetTopLevel(this);
-        if (topLevel is null)
-        {
-            return;
-        }
-
-        var offset = GetGlobalOffset();
-
-        var thumbGOffset = offset + sliderThumb.Bounds.Position;
-        var thumbGBounds = new Rect(thumbGOffset, sliderThumb.Bounds.Size);
-        if (!thumbGBounds.Contains(point) && sliderThumb.IsFocused)
-        {
-            topLevel.FocusManager?.Focus(null);
-        }
-    }
-    
-    public virtual double ValueFromDistance(double horizontal, double vertical)
-    {
-        double scale = IsDirectionReversed ? -1 : 1;
-
-        if (Orientation == Orientation.Horizontal)
-        {
-            return scale * horizontal * Density;
-        }
-
-        // Increases in y cause decreases in Sliders value
-        return -1 * scale * vertical * Density;
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -575,26 +484,6 @@ public class SliderTrack : TemplatedControl
         return arrangeSize;
     }
 
-    private (Point, Point) CalculateThumbCenterOffset(Size arrangeSize)
-    {
-        CalculateThumbValuePivotOffset(arrangeSize,
-            Orientation == Orientation.Vertical,
-            out var startThumbPivotOffset,
-            out var endThumbPivotOffset);
-        if (Orientation == Orientation.Horizontal)
-        {
-            var offsetY = Marks?.Count > 0
-                ? Padding.Top
-                : arrangeSize.Height / 2;
-            return (new Point(startThumbPivotOffset, offsetY), new Point(endThumbPivotOffset, offsetY));
-        }
-
-        var offsetX = Marks?.Count > 0
-            ? Padding.Left
-            : arrangeSize.Width / 2;
-        return (new Point(offsetX, startThumbPivotOffset), new Point(offsetX, endThumbPivotOffset));
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -615,16 +504,10 @@ public class SliderTrack : TemplatedControl
             HandleRangeModeChanged();
         }
 
-        if (change.Property == IsEnabledProperty)
+        if (IsMarkTextProperty(change.Property))
         {
-            CalculateMaxMarkSize(true);
+            RefreshMarkTextMetrics();
         }
-        else if (change.Property == MarksProperty)
-        {
-            CalculateMaxMarkSize();
-        }
-        
-        
     }
 
     protected override void OnInitialized()
@@ -639,6 +522,148 @@ public class SliderTrack : TemplatedControl
         Dispatcher.Post(this.EnableTransitions);
     }
     
+    public override void Render(DrawingContext context)
+    {
+        PrepareRenderInfo();
+        DrawGroove(context);
+        DrawTrackBar(context);
+        DrawMark(context);
+    }
+
+    internal SliderMark? GetMarkForPosition(Point point)
+    {
+        if (Marks is not null)
+        {
+            if (_renderContextData!.MarkTextRects is not null)
+            {
+                var entries = _renderContextData.MarkTextRects!;
+                for (var i = 0; i < entries.Count; i++)
+                {
+                    var textEntry = entries[i];
+                    if (textEntry.Item1.Contains(point))
+                    {
+                        return Marks[i];
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static SliderRangeValue CoerceRangeValue(AvaloniaObject sender, SliderRangeValue value)
+    {
+        if (ValidateRangeValue(ref value))
+        {
+            var startValue = Math.Clamp(value.StartValue, sender.GetValue(MinimumProperty),
+                sender.GetValue(MaximumProperty));
+            var endValue = Math.Clamp(value.EndValue, sender.GetValue(MinimumProperty),
+                sender.GetValue(MaximumProperty));
+            return new SliderRangeValue
+            {
+                StartValue = startValue,
+                EndValue   = endValue
+            };
+        }
+
+        return sender.GetValue(RangeValueProperty);
+    }
+
+    private static bool ValidateRangeValue(ref SliderRangeValue value)
+    {
+        return !double.IsInfinity(value.StartValue) && !double.IsNaN(value.StartValue) &&
+               !double.IsInfinity(value.EndValue) && !double.IsNaN(value.EndValue);
+    }
+
+    private void HandleRangeModeChanged()
+    {
+        if (IsRangeMode)
+        {
+            if (EndSliderThumb is not null)
+            {
+                EndSliderThumb.IsVisible = true;
+            }
+        }
+        else
+        {
+            if (EndSliderThumb is not null)
+            {
+                EndSliderThumb.IsVisible = false;
+            }
+        }
+    }
+
+    private void HandleGlobalMousePressed(Point point)
+    {
+        var globalOffset = GetGlobalOffset();
+        var trailGlobalBounds = new Rect(globalOffset + _renderContextData!.RailRect.Position,
+            _renderContextData.RailRect.Size);
+        if (trailGlobalBounds.Contains(point))
+        {
+            // 点击在轨道上，要不设置值，要不本身就在 Thumb 上，所以不需要处理
+            return;
+        }
+
+        if (StartSliderThumb is not null && StartSliderThumb.IsVisible)
+        {
+            HandleThumbFocus(StartSliderThumb, point);
+        }
+
+        if (EndSliderThumb is not null && EndSliderThumb.IsVisible)
+        {
+            HandleThumbFocus(EndSliderThumb, point);
+        }
+    }
+
+    private Point GetGlobalOffset()
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null)
+        {
+            return default;
+        }
+
+        return this.TranslatePoint(Bounds.Position, topLevel) ?? default;
+    }
+
+    private void HandleThumbFocus(SliderThumb sliderThumb, Point point)
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        if (topLevel is null)
+        {
+            return;
+        }
+
+        var offset = GetGlobalOffset();
+
+        var thumbGOffset = offset + sliderThumb.Bounds.Position;
+        var thumbGBounds = new Rect(thumbGOffset, sliderThumb.Bounds.Size);
+        if (!thumbGBounds.Contains(point) && sliderThumb.IsFocused)
+        {
+            topLevel.FocusManager?.Focus(null);
+        }
+    }
+
+    private (Point, Point) CalculateThumbCenterOffset(Size arrangeSize)
+    {
+        CalculateThumbValuePivotOffset(arrangeSize,
+            Orientation == Orientation.Vertical,
+            out var startThumbPivotOffset,
+            out var endThumbPivotOffset);
+        if (Orientation == Orientation.Horizontal)
+        {
+            var offsetY = Marks?.Count > 0
+                ? Padding.Top
+                : arrangeSize.Height / 2;
+            return (new Point(startThumbPivotOffset, offsetY), new Point(endThumbPivotOffset, offsetY));
+        }
+
+        var offsetX = Marks?.Count > 0
+            ? Padding.Left
+            : arrangeSize.Width / 2;
+        return (new Point(offsetX, startThumbPivotOffset), new Point(offsetX, endThumbPivotOffset));
+    }
+
     private Vector CalculateThumbAdjustment(SliderThumb thumb, Rect newThumbBounds)
     {
         var thumbDelta = newThumbBounds.Position - thumb.Bounds.Position;
@@ -838,25 +863,20 @@ public class SliderTrack : TemplatedControl
         }
     }
 
-    internal SliderMark? GetMarkForPosition(Point point)
+    private static bool IsMarkTextProperty(AvaloniaProperty property)
     {
-        if (Marks is not null)
-        {
-            if (_renderContextData!.MarkTextRects is not null)
-            {
-                var entries = _renderContextData.MarkTextRects!;
-                for (var i = 0; i < entries.Count; i++)
-                {
-                    var textEntry = entries[i];
-                    if (textEntry.Item1.Contains(point))
-                    {
-                        return Marks[i];
-                    }
-                }
-            }
-        }
+        return property == IsEnabledProperty ||
+               property == MarksProperty ||
+               property == MarkLabelFontSizeProperty ||
+               property == MarkLabelFontFamilyProperty ||
+               property == MarkLabelBrushProperty;
+    }
 
-        return null;
+    private void RefreshMarkTextMetrics()
+    {
+        CalculateMaxMarkSize(true);
+        InvalidateMeasure();
+        InvalidateVisual();
     }
 
     private void PrepareRenderInfo()
@@ -1009,14 +1029,6 @@ public class SliderTrack : TemplatedControl
                 }
             }
         }
-    }
-
-    public override void Render(DrawingContext context)
-    {
-        PrepareRenderInfo();
-        DrawGroove(context);
-        DrawTrackBar(context);
-        DrawMark(context);
     }
 
     private void DrawGroove(DrawingContext context)

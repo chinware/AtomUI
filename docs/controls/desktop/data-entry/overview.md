@@ -25,3 +25,7 @@
 - [NumericUpDown 桌面版实现原理](numeric-up-down/implementation.md)
 - [NumericUpDown Token 设计](numeric-up-down/token.md)
 - [NumericUpDown Changelog](numeric-up-down/changelog.md)
+- [Slider 桌面版架构设计](slider/overview.md)
+- [Slider 桌面版实现原理](slider/implementation.md)
+- [Slider Token 设计](slider/token.md)
+- [Slider Changelog](slider/changelog.md)
