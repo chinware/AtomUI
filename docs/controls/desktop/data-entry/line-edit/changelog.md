@@ -16,3 +16,4 @@
   - Add LineEdit Token documentation for `LineEditToken` and `TextAreaToken`.
   - Add LineEdit changelog and link the document set from the Data Entry category entry.
   - Document `CustomizableSizeType.Custom` as a Middle-baseline custom size path for LineEdit family controls.
+  - Link SearchEdit's dedicated control documentation and clarify that SearchEdit's right external add-on slot is occupied by the search button.
