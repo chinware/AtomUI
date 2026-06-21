@@ -25,8 +25,8 @@ internal partial class en_US : LanguageProvider
     public const string MinMaxDescription = "Restrict the input value range.";
     public const string DecimalStepTitle = "Step (decimal)";
     public const string DecimalStepDescription = "Use decimal steps with Increment.";
-    public const string SizesTitle = "Three sizes of NumberUpDown";
-    public const string SizesDescription = "There are three sizes of an Input box: large (40px), default (32px) and small (24px).";
+    public const string SizesTitle = "Sizes of NumberUpDown";
+    public const string SizesDescription = "NumberUpDown supports large (40px), default (32px), small (24px) and custom size.";
     public const string VariantsTitle = "Variants";
     public const string VariantsDescription = "Variants of NumberUpDown.";
     public const string DisabledTitle = "Disabled";

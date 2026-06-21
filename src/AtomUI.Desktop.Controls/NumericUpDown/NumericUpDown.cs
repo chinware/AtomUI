@@ -248,7 +248,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     
     private IconButton? _clearButton;
     private TextBox? _textBoxPart;
-    private CompositeDisposable? _contentRightAddOnBindings;
+    private CompositeDisposable? _templatePartBindings;
     private readonly NumericUpDownTextConverter _textConverter;
     private IValueConverter? _userTextConverter;
     private bool _suppressTextConverterTracking;
@@ -257,6 +257,54 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     private bool _isUpdatingText;
     private bool _isParsingText;
     private ButtonSpinner? _buttonSpinner;
+
+    private IconButton? ClearButtonPart
+    {
+        get => _clearButton;
+        set
+        {
+            if (ReferenceEquals(_clearButton, value))
+            {
+                return;
+            }
+
+            if (_clearButton is not null)
+            {
+                _clearButton.Click -= HandleClearButtonClicked;
+            }
+
+            _clearButton = value;
+
+            if (_clearButton is not null)
+            {
+                _clearButton.Click += HandleClearButtonClicked;
+            }
+        }
+    }
+
+    private TextBox? TextBoxPart
+    {
+        get => _textBoxPart;
+        set
+        {
+            if (ReferenceEquals(_textBoxPart, value))
+            {
+                return;
+            }
+
+            if (_textBoxPart is not null)
+            {
+                _textBoxPart.KeyDown -= HandleTextBoxKeyDown;
+            }
+
+            _textBoxPart = value;
+
+            if (_textBoxPart is not null)
+            {
+                _textBoxPart.KeyDown += HandleTextBoxKeyDown;
+            }
+        }
+    }
 
     static NumericUpDown()
     {
@@ -268,6 +316,121 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         this.RegisterTokenResourceScope(NumericUpDownToken.ScopeProvider);
         _textConverter = new NumericUpDownTextConverter(this);
     }
+
+    #region 实现 CompactSpace 接口
+
+    void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
+    {
+        var isUsedInCompactSpace = position != null;
+        if (IsUsedInCompactSpace != isUsedInCompactSpace)
+        {
+            IsUsedInCompactSpace = isUsedInCompactSpace;
+        }
+
+        if (CompactSpaceItemPosition != position)
+        {
+            CompactSpaceItemPosition = position;
+        }
+    }
+
+    void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
+    {
+        if (CompactSpaceOrientation != orientation)
+        {
+            CompactSpaceOrientation = orientation;
+        }
+    }
+
+    double ICompactSpaceAware.GetBorderThickness()
+    {
+        if (!IsUsedInCompactSpace)
+        {
+            return 0.0;
+        }
+
+        var addOnDecoratedBox = _buttonSpinner?.DecoratedBox;
+        if (addOnDecoratedBox == null)
+        {
+            var topLevel = TopLevel.GetTopLevel(this);
+            if (topLevel != null)
+            {
+                var layoutManager = topLevel.GetLayoutManager();
+                layoutManager?.ExecuteLayoutPass();
+                addOnDecoratedBox = _buttonSpinner?.DecoratedBox;
+            }
+        }
+
+        if (addOnDecoratedBox == null || StyleVariant != InputControlStyleVariant.Outlined)
+        {
+            return 0.0;
+        }
+
+        // 都一样宽
+        return addOnDecoratedBox.InnerBoxBorderThickness.Left;
+    }
+
+    #endregion
+
+    #region 实现 FormItem 接口
+
+    private EventHandler? _formValueChanged;
+    event EventHandler? IFormItemAware.ValueChanged
+    {
+        add => _formValueChanged += value;
+        remove => _formValueChanged -= value;
+    }
+
+    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value as decimal?);
+
+    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
+    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
+    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
+
+    private void HandleValueChanged()
+    {
+        _formValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    protected virtual void NotifySetFormValue(decimal? value)
+    {
+        SetCurrentValue(ValueProperty, value);
+    }
+
+    protected virtual decimal? NotifyGetFormValue()
+    {
+        return Value;
+    }
+
+    protected virtual void NotifyClearFormValue()
+    {
+        SetCurrentValue(ValueProperty, null);
+    }
+
+    protected virtual void NotifyValidateStatus(FormValidateStatus status)
+    {
+        if (status == FormValidateStatus.Error)
+        {
+            SetStatusIfChanged(InputControlStatus.Error);
+        }
+        else if (status == FormValidateStatus.Warning)
+        {
+            SetStatusIfChanged(InputControlStatus.Warning);
+        }
+        else
+        {
+            SetStatusIfChanged(InputControlStatus.Default);
+        }
+    }
+
+    private void SetStatusIfChanged(InputControlStatus status)
+    {
+        if (Status != status)
+        {
+            SetCurrentValue(StatusProperty, status);
+        }
+    }
+
+    #endregion
 
     protected override void OnInitialized()
     {
@@ -281,21 +444,11 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (_clearButton is not null)
-        {
-            _clearButton.Click -= HandleClearButtonClicked;
-        }
-
-        _clearButton      = e.NameScope.Find<IconButton>("PART_ClearButton");
-        if (_clearButton is not null)
-        {
-            _clearButton.Click -= HandleClearButtonClicked;
-            _clearButton.Click += HandleClearButtonClicked;
-        }
-        SetTextBoxPart(e.NameScope.Find<TextBox>("PART_TextBox"));
+        ClearButtonPart = e.NameScope.Find<IconButton>("PART_ClearButton");
+        TextBoxPart     = e.NameScope.Find<TextBox>("PART_TextBox");
         ConfigureEffectiveShowClearButton();
-        _buttonSpinner =  e.NameScope.Find<ButtonSpinner>("PART_Spinner");
-        SetupContentRightAddOnBindings(e);
+        _buttonSpinner = e.NameScope.Find<ButtonSpinner>("PART_Spinner");
+        SetupTemplatePartBindings(e);
     }
 
     private void HandleClearButtonClicked(object? sender, RoutedEventArgs args)
@@ -303,34 +456,34 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         NotifyClearButtonClicked();
     }
 
-    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
+    private void SetupTemplatePartBindings(TemplateAppliedEventArgs e)
     {
-        _contentRightAddOnBindings?.Dispose();
-        _contentRightAddOnBindings = new CompositeDisposable();
+        _templatePartBindings?.Dispose();
+        _templatePartBindings = new CompositeDisposable();
 
         if (e.NameScope.Find<InputClearIconButton>("PART_ClearButton") is { } clearButton)
         {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ClearIconProperty, clearButton,
+            _templatePartBindings.Add(BindUtils.RelayBind(this, ClearIconProperty, clearButton,
                 AbstractIconButton.IconProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, clearButton,
+            _templatePartBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, clearButton,
                 AbstractIconButton.IsMotionEnabledProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEffectiveShowClearButtonProperty, clearButton,
+            _templatePartBindings.Add(BindUtils.RelayBind(this, IsEffectiveShowClearButtonProperty, clearButton,
                 Visual.IsVisibleProperty));
         }
 
         if (e.NameScope.Find<ContentPresenter>("PART_InnerRightContentPresenter") is { } innerRightContent)
         {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
+            _templatePartBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
                 ContentPresenter.ContentProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentTemplateProperty,
+            _templatePartBindings.Add(BindUtils.RelayBind(this, InnerRightContentTemplateProperty,
                 innerRightContent, ContentPresenter.ContentTemplateProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
+            _templatePartBindings.Add(BindUtils.RelayBind(this, InnerRightContentProperty, innerRightContent,
                 Visual.IsVisibleProperty, value => value is not null));
         }
 
         if (e.NameScope.Find<TextBox>("PART_TextBox") is { } textBox)
         {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsCustomFontSizeProperty, textBox,
+            _templatePartBindings.Add(BindUtils.RelayBind(this, IsCustomFontSizeProperty, textBox,
                 TextBox.IsCustomFontSizeProperty));
         }
     }
@@ -364,7 +517,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
 
         if (change.Property == IsStringModeProperty)
         {
-            if (change.Property == IsStringModeProperty && IsStringMode)
+            if (IsStringMode)
             {
                 UpdateStringValueFromValue(Value, CultureInfo.CurrentCulture);
             }
@@ -381,8 +534,14 @@ public class NumericUpDown : AvaloniaNumericUpDown,
     protected override void OnTextChanged(string? oldValue, string? newValue)
     {
         _isParsingText = true;
-        base.OnTextChanged(oldValue, newValue);
-        _isParsingText = false;
+        try
+        {
+            base.OnTextChanged(oldValue, newValue);
+        }
+        finally
+        {
+            _isParsingText = false;
+        }
 
         if (IsStringMode)
         {
@@ -415,19 +574,6 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         }
 
         base.OnKeyDown(e);
-    }
-
-    private void SetTextBoxPart(TextBox? textBox)
-    {
-        if (_textBoxPart != null)
-        {
-            _textBoxPart.KeyDown -= HandleTextBoxKeyDown;
-        }
-        _textBoxPart = textBox;
-        if (_textBoxPart != null)
-        {
-            _textBoxPart.KeyDown += HandleTextBoxKeyDown;
-        }
     }
 
     private void HandleTextBoxKeyDown(object? sender, KeyEventArgs e)
@@ -464,15 +610,24 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         {
             if (TextConverter != _textConverter)
             {
-                _suppressTextConverterTracking = true;
-                SetCurrentValue(TextConverterProperty, _textConverter);
-                _suppressTextConverterTracking = false;
+                SetTextConverterWithoutTracking(_textConverter);
             }
         }
         else if (TextConverter == _textConverter)
         {
-            _suppressTextConverterTracking = true;
-            SetCurrentValue(TextConverterProperty, _userTextConverter);
+            SetTextConverterWithoutTracking(_userTextConverter);
+        }
+    }
+
+    private void SetTextConverterWithoutTracking(IValueConverter? converter)
+    {
+        _suppressTextConverterTracking = true;
+        try
+        {
+            SetCurrentValue(TextConverterProperty, converter);
+        }
+        finally
+        {
             _suppressTextConverterTracking = false;
         }
     }
@@ -490,9 +645,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
             return;
         }
 
-        _isUpdatingText = true;
-        SetCurrentValue(TextProperty, displayText);
-        _isUpdatingText = false;
+        SetTextWhileUpdating(displayText);
     }
 
     private void ApplyStringValue(string? raw)
@@ -505,21 +658,41 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         var displayText = FormatDisplayText(raw, CultureInfo.CurrentCulture);
         if (!_isUpdatingText && displayText != Text)
         {
-            _isUpdatingText = true;
-            SetCurrentValue(TextProperty, displayText);
-            _isUpdatingText = false;
+            SetTextWhileUpdating(displayText);
         }
 
         if (TryParseDecimal(raw, CultureInfo.CurrentCulture, out var value))
         {
-            _isUpdatingFromValue = true;
-            SetCurrentValue(ValueProperty, value);
-            _isUpdatingFromValue = false;
+            SetValueWhileUpdatingFromString(value);
         }
         else
         {
-            _isUpdatingFromValue = true;
-            SetCurrentValue(ValueProperty, null);
+            SetValueWhileUpdatingFromString(null);
+        }
+    }
+
+    private void SetTextWhileUpdating(string text)
+    {
+        _isUpdatingText = true;
+        try
+        {
+            SetCurrentValue(TextProperty, text);
+        }
+        finally
+        {
+            _isUpdatingText = false;
+        }
+    }
+
+    private void SetValueWhileUpdatingFromString(decimal? value)
+    {
+        _isUpdatingFromValue = true;
+        try
+        {
+            SetCurrentValue(ValueProperty, value);
+        }
+        finally
+        {
             _isUpdatingFromValue = false;
         }
     }
@@ -585,9 +758,7 @@ public class NumericUpDown : AvaloniaNumericUpDown,
             return;
         }
 
-        _isUpdatingFromText = true;
-        SetCurrentValue(StringValueProperty, string.IsNullOrEmpty(raw) ? null : raw);
-        _isUpdatingFromText = false;
+        SetStringValueWhileUpdatingFromText(string.IsNullOrEmpty(raw) ? null : raw);
     }
 
     private void UpdateStringValueFromValue(decimal? value, CultureInfo culture)
@@ -597,9 +768,33 @@ public class NumericUpDown : AvaloniaNumericUpDown,
             return;
         }
 
+        SetStringValueWhileUpdatingFromValue(value.HasValue ? FormatRawValue(value.Value, culture) : null);
+    }
+
+    private void SetStringValueWhileUpdatingFromText(string? value)
+    {
+        _isUpdatingFromText = true;
+        try
+        {
+            SetCurrentValue(StringValueProperty, value);
+        }
+        finally
+        {
+            _isUpdatingFromText = false;
+        }
+    }
+
+    private void SetStringValueWhileUpdatingFromValue(string? value)
+    {
         _isUpdatingFromValue = true;
-        SetCurrentValue(StringValueProperty, value.HasValue ? FormatRawValue(value.Value, culture) : null);
-        _isUpdatingFromValue = false;
+        try
+        {
+            SetCurrentValue(StringValueProperty, value);
+        }
+        finally
+        {
+            _isUpdatingFromValue = false;
+        }
     }
 
     private bool IsTextInputFocused()
@@ -655,112 +850,4 @@ public class NumericUpDown : AvaloniaNumericUpDown,
         }
     }
     
-    void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
-    {
-        var isUsedInCompactSpace = position != null;
-        if (IsUsedInCompactSpace != isUsedInCompactSpace)
-        {
-            IsUsedInCompactSpace = isUsedInCompactSpace;
-        }
-
-        if (CompactSpaceItemPosition != position)
-        {
-            CompactSpaceItemPosition = position;
-        }
-    }
-    
-    void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
-    {
-        if (CompactSpaceOrientation != orientation)
-        {
-            CompactSpaceOrientation = orientation;
-        }
-    }
-    
-    double ICompactSpaceAware.GetBorderThickness()
-    {
-        if (!IsUsedInCompactSpace)
-        {
-            return 0.0;
-        }
-
-        var addOnDecoratedBox = _buttonSpinner?.DecoratedBox;
-        if (addOnDecoratedBox == null)
-        {
-            var topLevel = TopLevel.GetTopLevel(this);
-            if (topLevel != null)
-            {
-                var layoutManager = topLevel.GetLayoutManager();
-                layoutManager?.ExecuteLayoutPass();
-                addOnDecoratedBox = _buttonSpinner?.DecoratedBox;
-            }
-        }
-
-        if (addOnDecoratedBox == null || StyleVariant != InputControlStyleVariant.Outlined)
-        {
-            return 0.0;
-        }
-
-        // 都一样宽
-        return addOnDecoratedBox.InnerBoxBorderThickness.Left;
-    }
-    
-    #region 实现 FormItem 接口
-    private EventHandler? _formValueChanged;
-    event EventHandler? IFormItemAware.ValueChanged
-    {
-        add => _formValueChanged += value;
-        remove => _formValueChanged -= value;
-    }
-
-    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value as decimal?);
-
-    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
-    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
-    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
-    
-    private void HandleValueChanged()
-    {
-        _formValueChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    protected virtual void NotifySetFormValue(decimal? value)
-    {
-        SetCurrentValue(ValueProperty, value);
-    }
-
-    protected virtual decimal? NotifyGetFormValue()
-    {
-        return Value;
-    }
-
-    protected virtual void NotifyClearFormValue()
-    {
-        SetCurrentValue(ValueProperty, null);
-    }
-
-    protected virtual void NotifyValidateStatus(FormValidateStatus status)
-    {
-        if (status == FormValidateStatus.Error)
-        {
-            SetStatusIfChanged(InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetStatusIfChanged(InputControlStatus.Warning);
-        }
-        else
-        {
-            SetStatusIfChanged(InputControlStatus.Default);
-        }
-    }
-
-    private void SetStatusIfChanged(InputControlStatus status)
-    {
-        if (Status != status)
-        {
-            SetCurrentValue(StatusProperty, status);
-        }
-    }
-    #endregion
 }

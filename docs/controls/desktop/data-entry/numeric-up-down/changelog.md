@@ -8,6 +8,17 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-06-21
+
+- Docs
+  - Align NumericUpDown documentation with `ICustomizableSizeTypeAware`, `CustomizableSizeType.Custom` and `IsCustomFontSize` contracts.
+  - Clarify template ownership for spinner mode action buttons and the lifecycle of NumericUpDown relay bindings.
+  - Document custom size validation points for `ButtonSpinner`, the inner `TextBox`, floating Handle and spinner actions.
+- Implementation
+  - Reorder `ICompactSpaceAware` and `IFormItemAware` contract regions after constructors without changing public API.
+  - Consolidate template part event subscriptions and relay bindings into paired part setters and `SetupTemplatePartBindings`.
+  - Centralize string mode synchronization flag enter/exit paths with paired helpers.
+
 ## 2026-06-19
 
 - Docs

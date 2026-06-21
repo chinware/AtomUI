@@ -62,6 +62,11 @@ public class NumberUpDownShowCasePageTests
         source.ShouldContain("StyleVariant=\"Filled\"");
         source.ShouldContain("NumberUpDownShowCaseLangResource StringModeTitle");
         source.ShouldContain("NumberUpDownShowCaseLangResource DecimalStepTitle");
+        source.ShouldContain("Name=\"CustomSizeTypeNumberUpDown\"");
+        source.ShouldContain("SizeType=\"Custom\"");
+        source.ShouldContain("Height=\"38\"");
+        source.ShouldContain("FontSize=\"15\"");
+        source.ShouldContain("IsCustomFontSize=\"True\"");
         source.ShouldContain("NumberUpDownShowCaseLangResource StatusTitle");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
