@@ -44,6 +44,12 @@ public class DatePickerShowCasePageTests
         source.ShouldContain("DatePickerShowCaseLangResource BasicTitle");
         source.ShouldContain("DatePickerShowCaseLangResource PlacementTitle");
         source.ShouldContain("Name=\"PickerSizeTypeOptionGroup\"");
+        source.ShouldContain("DatePickerShowCaseLangResource P2ContentCustom");
+        source.ShouldContain("SizeType=\"{Binding PickerSizeType}\"");
+        source.ShouldContain("Selector=\"atom|DatePicker.size-demo-picker[SizeType=Custom]\"");
+        source.ShouldContain("Selector=\"atom|RangeDatePicker.size-demo-picker[SizeType=Custom]\"");
+        source.ShouldContain("Property=\"Height\" Value=\"38\"");
+        source.ShouldContain("Property=\"FontSize\" Value=\"15\"");
         source.ShouldContain("Name=\"PickerPlacementOptionGroup\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
@@ -129,6 +135,7 @@ public class DatePickerShowCasePageTests
             source.ShouldContain("ScenarioExamples");
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
+            source.ShouldContain("P2ContentCustom");
             source.ShouldContain("PageSubtitle");
             source.ShouldContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertySelectedDateTime");

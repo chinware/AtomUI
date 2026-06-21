@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
@@ -47,5 +48,13 @@ public partial class TimePickerShowCase : GalleryReactiveUserControl<TimePickerV
             DesignTokenScenario => new TimePickerDesignTokenDataGrid(),
             _                   => throw new InvalidOperationException($"Unknown TimePicker scenario: {scenario}")
         };
+    }
+
+    private void HandlePickerSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is TimePickerViewModel viewModel)
+        {
+            viewModel.HandlePickerSizeTypeOptionCheckedChanged(sender, args);
+        }
     }
 }

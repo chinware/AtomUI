@@ -10,6 +10,10 @@ internal partial class zh_TW : LanguageProvider
     public const string BasicDescription = "基礎用法。";
     public const string TriggerSizeTitle = "觸發器尺寸";
     public const string TriggerSizeDescription = "Ant Design 支持小號、默認和大號三種觸發器尺寸。需要大號或小號觸發器時分別設置 size 屬性；省略 size 屬性時使用默認尺寸。";
+    public const string P2LabelSizeTypeSmall = "小號";
+    public const string P2LabelSizeTypeMiddle = "中號";
+    public const string P2LabelSizeTypeLarge = "大號";
+    public const string P2LabelSizeTypeCustom = "Custom";
     public const string LineGradientTitle = "線性漸變";
     public const string LineGradientDescription = "通過 mode 將顏色設置為單色或漸變色。";
     public const string RenderingTriggerTextTitle = "渲染觸發器文本";

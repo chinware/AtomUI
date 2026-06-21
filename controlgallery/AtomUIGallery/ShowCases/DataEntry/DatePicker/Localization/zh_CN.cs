@@ -35,6 +35,7 @@ internal partial class zh_CN : LanguageProvider
     public const string P2ContentLarge = "大号";
     public const string P2ContentDefault = "默认";
     public const string P2ContentSmall = "小号";
+    public const string P2ContentCustom = "自定义";
     public const string P2TextPlacement = "弹出位置：";
     public const string P2ContentTopleft = "左上";
     public const string P2ContentTopright = "右上";

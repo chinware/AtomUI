@@ -247,25 +247,39 @@ public class TimePicker : InfoPickerInput
         {
             Text = DateTimeUtils.FormatTimeSpan(SelectedTime,
                 ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
+            CalculatePreferredWidth();
         }
-        else if (change.Property == AmTextProperty ||
-                 change.Property == PmTextProperty)
+        else if (IsFormattedTextAffectingProperty(change.Property))
         {
             Text = DateTimeUtils.FormatTimeSpan(SelectedTime,
                 ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
             CalculatePreferredWidth();
         }
-        else if (change.Property == FontSizeProperty ||
-                 change.Property == FontFamilyProperty ||
-                 change.Property == FontFamilyProperty ||
-                 change.Property == FontStyleProperty ||
-                 change.Property == ClockIdentifierProperty ||
-                 change.Property == MinWidthProperty ||
-                 change.Property == WidthProperty ||
-                 change.Property == MaxWidthProperty)
+        else if (IsPreferredWidthAffectingProperty(change.Property))
         {
             CalculatePreferredWidth();
         }
+    }
+
+    private static bool IsFormattedTextAffectingProperty(AvaloniaProperty property)
+    {
+        return property == ClockIdentifierProperty ||
+               property == AmTextProperty ||
+               property == PmTextProperty;
+    }
+
+    private static bool IsPreferredWidthAffectingProperty(AvaloniaProperty property)
+    {
+        return property == FontSizeProperty ||
+               property == FontFamilyProperty ||
+               property == FontStyleProperty ||
+               property == FontWeightProperty ||
+               property == PlaceholderTextProperty ||
+               property == SizeTypeProperty ||
+               property == MinWidthProperty ||
+               property == WidthProperty ||
+               property == MaxWidthProperty ||
+               property == HorizontalAlignmentProperty;
     }
 
     private static int CoerceMinuteIncrement(AvaloniaObject sender, int value)
@@ -296,16 +310,8 @@ public class TimePicker : InfoPickerInput
         }
         else
         {
-            var preferredInputWidth = DateTimeUtils.CalculateWidestFormattedTimeSpanSize(
-                ClockIdentifier == ClockIdentifierType.HourClock12,
-                AmText, PmText,
-                FontSize, FontFamily, FontStyle, FontWeight).Width;
-            if (PlaceholderText != null)
-            {
-                preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(PlaceholderText, FontSize, FontFamily, FontStyle, FontWeight).Width);
-            }
+            var preferredInputWidth = CalculateContentPreferredWidth(Text, PlaceholderText);
 
-            preferredInputWidth *= 1.1;
             if (!double.IsNaN(MinWidth))
             {
                 preferredInputWidth = Math.Max(MinWidth, preferredInputWidth);
@@ -317,6 +323,24 @@ public class TimePicker : InfoPickerInput
             }
             PreferredInputWidth = preferredInputWidth;
         }
+    }
+
+    private double CalculateContentPreferredWidth(string? text, string? placeholderText)
+    {
+        if (!string.IsNullOrEmpty(text))
+        {
+            return TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+        }
+
+        if (!string.IsNullOrEmpty(placeholderText))
+        {
+            return TextUtils.CalculateTextSize(placeholderText, FontSize, FontFamily, FontStyle, FontWeight).Width;
+        }
+
+        return DateTimeUtils.CalculateWidestFormattedTimeSpanSize(
+            ClockIdentifier == ClockIdentifierType.HourClock12,
+            AmText, PmText,
+            FontSize, FontFamily, FontStyle, FontWeight).Width;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

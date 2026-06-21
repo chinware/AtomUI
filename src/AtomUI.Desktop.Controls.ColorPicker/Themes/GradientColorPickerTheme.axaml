@@ -16,11 +16,12 @@
                             BorderThickness="{TemplateBinding BorderThickness}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                            Padding="{TemplateBinding Padding}"
+                            Padding="{TemplateBinding TriggerPadding}"
                             Background="{TemplateBinding Background}">
                         <DockPanel LastChildFill="True">
                             <atom:ColorBlock Name="PART_ColorIndicator"
                                              SizeType="{TemplateBinding SizeType}"
+                                             Size="{TemplateBinding ColorBlockSize}"
                                              Background="{TemplateBinding ColorBlockBackground}"
                                              VerticalAlignment="Top"
                                              DockPanel.Dock="Left"/>

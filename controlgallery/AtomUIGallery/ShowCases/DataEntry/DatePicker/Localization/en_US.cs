@@ -35,6 +35,7 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentLarge = "Large";
     public const string P2ContentDefault = "Default";
     public const string P2ContentSmall = "Small";
+    public const string P2ContentCustom = "Custom";
     public const string P2TextPlacement = "Placement:";
     public const string P2ContentTopleft = "TopLeft";
     public const string P2ContentTopright = "TopRight";

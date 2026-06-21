@@ -1,6 +1,11 @@
 using System;
 using System.Linq;
+using AtomUI;
+using AtomUI.Media;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Presenters;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -11,6 +16,8 @@ namespace AtomUI.Desktop.Controls.Tests.DatePickers;
 
 public class RangePickerPreferredWidthTests
 {
+    private const double WidthTolerance = 1d;
+
     static RangePickerPreferredWidthTests()
     {
         AvaloniaTestApp.EnsureInitialized();
@@ -51,6 +58,175 @@ public class RangePickerPreferredWidthTests
             Dispatcher.UIThread.RunJobs();
 
             picker.PreferredInputWidth.ShouldBeGreaterThan(dateOnlyWidth);
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Empty_Input_Uses_Placeholder_As_Preferred_Width()
+    {
+        const string placeholder = "Select date";
+        var picker = new DatePicker
+        {
+            PlaceholderText = placeholder
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var placeholderWidth = MeasureTextWidth(picker, placeholder);
+
+            picker.PreferredInputWidth.ShouldBeGreaterThanOrEqualTo(placeholderWidth);
+            picker.PreferredInputWidth.ShouldBeLessThanOrEqualTo(placeholderWidth + WidthTolerance);
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Empty_Time_Input_Uses_Placeholder_As_Preferred_Width()
+    {
+        const string placeholder = "Select date";
+        var picker = new DatePicker
+        {
+            IsShowTime      = true,
+            PlaceholderText = placeholder
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var placeholderWidth = MeasureTextWidth(picker, placeholder);
+
+            picker.PreferredInputWidth.ShouldBeGreaterThanOrEqualTo(placeholderWidth);
+            picker.PreferredInputWidth.ShouldBeLessThanOrEqualTo(placeholderWidth + WidthTolerance);
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Selected_Input_Uses_Current_Text_As_Preferred_Width()
+    {
+        var picker = new DatePicker
+        {
+            IsShowTime       = true,
+            ClockIdentifier  = ClockIdentifierType.HourClock12,
+            SelectedDateTime = new DateTime(2026, 6, 26, 0, 0, 0),
+            PlaceholderText  = "Select date"
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var input     = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var textWidth = MeasureTextWidth(picker, input.Text!);
+
+            picker.PreferredInputWidth.ShouldBeGreaterThanOrEqualTo(textWidth);
+            picker.PreferredInputWidth.ShouldBeLessThanOrEqualTo(textWidth + WidthTolerance);
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Custom_Font_Size_Is_Applied_To_Input_And_Preferred_Width()
+    {
+        var picker = new DatePicker
+        {
+            SizeType         = CustomizableSizeType.Custom,
+            FontSize         = 18,
+            SelectedDateTime = new DateTime(2026, 6, 26)
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var input     = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var textWidth = MeasureTextWidth(input, input.Text!);
+
+            input.FontSize.ShouldBe(picker.FontSize);
+            picker.PreferredInputWidth.ShouldBeGreaterThanOrEqualTo(textWidth);
+            picker.PreferredInputWidth.ShouldBeLessThanOrEqualTo(textWidth + WidthTolerance);
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Inner_Text_Presenter_Does_Not_Add_Picker_Width_Reserve()
+    {
+        var picker = new DatePicker
+        {
+            SelectedDateTime = new DateTime(2026, 6, 26)
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var input     = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var presenter = input.GetVisualDescendants()
+                                 .OfType<TextPresenter>()
+                                 .Single(part => part.Name == "PART_TextPresenter");
+
+            presenter.Margin.ShouldBe(new Thickness(0));
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Recalculates_Preferred_Input_Width_When_Selected_Value_Changes()
+    {
+        const string placeholder = "Select date";
+        var picker = new DatePicker
+        {
+            IsShowTime      = true,
+            PlaceholderText = placeholder
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var emptyWidth = picker.PreferredInputWidth;
+
+            picker.SelectedDateTime = new DateTime(2026, 6, 26, 0, 0, 0);
+            Dispatcher.UIThread.RunJobs();
+
+            var input     = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var textWidth = MeasureTextWidth(picker, input.Text!);
+
+            picker.PreferredInputWidth.ShouldBeGreaterThan(emptyWidth);
+            picker.PreferredInputWidth.ShouldBeGreaterThanOrEqualTo(textWidth);
+            picker.PreferredInputWidth.ShouldBeLessThanOrEqualTo(textWidth + WidthTolerance);
+        });
+    }
+
+    [Fact]
+    public void RangeDatePicker_Empty_Input_Uses_Placeholders_As_Preferred_Width()
+    {
+        const string placeholder          = "Select date";
+        const string secondaryPlaceholder = "End date";
+        var picker = new RangeDatePicker
+        {
+            PlaceholderText          = placeholder,
+            SecondaryPlaceholderText = secondaryPlaceholder
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var expectedWidth = Math.Max(
+                MeasureTextWidth(picker, placeholder),
+                MeasureTextWidth(picker, secondaryPlaceholder));
+
+            picker.PreferredWidth.ShouldBeGreaterThanOrEqualTo(expectedWidth);
+            picker.PreferredWidth.ShouldBeLessThanOrEqualTo(expectedWidth + WidthTolerance);
+        });
+    }
+
+    [Fact]
+    public void RangeDatePicker_Empty_Time_Input_Uses_Placeholders_As_Preferred_Width()
+    {
+        const string placeholder          = "Select date";
+        const string secondaryPlaceholder = "End date";
+        var picker = new RangeDatePicker
+        {
+            IsShowTime               = true,
+            PlaceholderText          = placeholder,
+            SecondaryPlaceholderText = secondaryPlaceholder
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var expectedWidth = Math.Max(
+                MeasureTextWidth(picker, placeholder),
+                MeasureTextWidth(picker, secondaryPlaceholder));
+
+            picker.PreferredWidth.ShouldBeGreaterThanOrEqualTo(expectedWidth);
+            picker.PreferredWidth.ShouldBeLessThanOrEqualTo(expectedWidth + WidthTolerance);
         });
     }
 
@@ -128,6 +304,46 @@ public class RangePickerPreferredWidthTests
     }
 
     [Fact]
+    public void TimePicker_Selected_Input_Uses_Current_Text_As_Preferred_Width()
+    {
+        var picker = new TimePicker
+        {
+            SelectedTime = new TimeSpan(12, 8, 23)
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var input     = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var textWidth = MeasureTextWidth(input, input.Text!);
+
+            picker.PreferredInputWidth.ShouldBeGreaterThanOrEqualTo(textWidth);
+            picker.PreferredInputWidth.ShouldBeLessThanOrEqualTo(textWidth + WidthTolerance);
+        });
+    }
+
+    [Fact]
+    public void RangeTimePicker_Selected_Input_Uses_Current_Text_As_Preferred_Width()
+    {
+        var picker = new RangeTimePicker
+        {
+            RangeStartSelectedTime = new TimeSpan(10, 9, 20),
+            RangeEndSelectedTime   = new TimeSpan(12, 12, 20)
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var startInput = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var endInput   = FindPart(picker, "PART_SecondaryInfoInputBox").ShouldBeOfType<TextBox>();
+            var textWidth  = Math.Max(
+                MeasureTextWidth(startInput, startInput.Text!),
+                MeasureTextWidth(endInput, endInput.Text!));
+
+            picker.PreferredWidth.ShouldBeGreaterThanOrEqualTo(textWidth);
+            picker.PreferredWidth.ShouldBeLessThanOrEqualTo(textWidth + WidthTolerance);
+        });
+    }
+
+    [Fact]
     public void RangeDatePicker_Constrained_Layout_Does_Not_Overlap_Range_Input_Parts()
     {
         var picker = new RangeDatePicker
@@ -160,6 +376,16 @@ public class RangePickerPreferredWidthTests
         return control.GetVisualDescendants()
                       .OfType<Control>()
                       .Single(part => part.Name == name);
+    }
+
+    private static double MeasureTextWidth(Control control, string text)
+    {
+        return TextUtils.CalculateTextSize(
+            text,
+            control.GetValue(TemplatedControl.FontSizeProperty),
+            control.GetValue(TemplatedControl.FontFamilyProperty),
+            control.GetValue(TemplatedControl.FontStyleProperty),
+            control.GetValue(TemplatedControl.FontWeightProperty)).Width;
     }
 
     private static void ShowInWindow(Control content, Action assertion)

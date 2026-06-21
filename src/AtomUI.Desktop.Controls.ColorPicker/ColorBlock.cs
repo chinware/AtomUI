@@ -102,6 +102,8 @@ internal class ColorBlock : TemplatedControl, ICustomizableSizeTypeAware
     }
 
     private bool _isCustomSize;
+    private IDisposable? _widthValue;
+    private IDisposable? _heightValue;
 
     internal bool IsCustomSize
     {
@@ -159,11 +161,16 @@ internal class ColorBlock : TemplatedControl, ICustomizableSizeTypeAware
 
     private void ConfigureSize()
     {
+        _widthValue?.Dispose();
+        _widthValue = null;
+        _heightValue?.Dispose();
+        _heightValue = null;
+
         if (!double.IsNaN(Size))
         {
             // 不影响模板设置
-            SetValue(WidthProperty, Size, BindingPriority.Template);
-            SetValue(HeightProperty, Size, BindingPriority.Template);
+            _widthValue  = SetValue(WidthProperty, Size, BindingPriority.Template);
+            _heightValue = SetValue(HeightProperty, Size, BindingPriority.Template);
         }
     }
 

@@ -41,6 +41,11 @@
                                   TextWrapping="NoWrap"
                                   AcceptsReturn="False"
                                   Width="{TemplateBinding PreferredInputWidth}"
+                                  FontSize="{TemplateBinding FontSize}"
+                                  FontFamily="{TemplateBinding FontFamily}"
+                                  FontStyle="{TemplateBinding FontStyle}"
+                                  FontWeight="{TemplateBinding FontWeight}"
+                                  IsCustomFontSize="True"
                                   IsAllowClear="False"
                                   IsEnableRevealButton="False"
                                   Text="{TemplateBinding Text}"
@@ -82,6 +87,9 @@
         <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox">
             <Setter Property="Foreground"
                     Value="{atom:SharedTokenResource ColorText}" />
+        </Style>
+        <Style Selector="^ /template/ atom|TextBox#PART_InfoInputBox /template/ TextPresenter#PART_TextPresenter">
+            <Setter Property="Margin" Value="0" />
         </Style>
 
         <Style Selector="^:flyout-open">

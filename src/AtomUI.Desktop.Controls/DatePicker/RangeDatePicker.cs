@@ -292,6 +292,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         {
             SecondaryText = FormatDateTime(_pickerPresenter?.SecondarySelectedDateTime ?? RangeEndSelectedDate);
         }
+        CalculatePreferredWidth();
     }
     
     private string GetEffectiveFormat()
@@ -358,6 +359,7 @@ public class RangeDatePicker : RangeInfoPickerInput
             {
                 SecondaryText = FormatDateTime(args.Date);
             }
+            CalculatePreferredWidth();
         }
     }
 
@@ -436,10 +438,12 @@ public class RangeDatePicker : RangeInfoPickerInput
             if (change.Property == RangeStartSelectedDateProperty)
             {
                 Text = FormatDateTime(RangeStartSelectedDate);
+                CalculatePreferredWidth();
             }
             else if (change.Property == RangeEndSelectedDateProperty)
             {
                 SecondaryText = FormatDateTime(RangeEndSelectedDate);
+                CalculatePreferredWidth();
             }
         }
     }
@@ -467,6 +471,7 @@ public class RangeDatePicker : RangeInfoPickerInput
                property == FontWeightProperty ||
                property == PlaceholderTextProperty ||
                property == SecondaryPlaceholderTextProperty ||
+               property == SizeTypeProperty ||
                property == MinWidthProperty ||
                property == WidthProperty ||
                property == MaxWidthProperty ||
@@ -499,19 +504,9 @@ public class RangeDatePicker : RangeInfoPickerInput
                     };
                 }
             }
-            var preferredInputWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(
-                format, FontSize, FontFamily, FontStyle, FontWeight, formatInfo).Width;
-            if (PlaceholderText != null)
-            {
-                preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(PlaceholderText, FontSize, FontFamily, FontStyle, FontWeight).Width);
-            }
-
-            if (SecondaryPlaceholderText != null)
-            {
-                preferredInputWidth = Math.Max(preferredInputWidth, TextUtils.CalculateTextSize(SecondaryPlaceholderText, FontSize, FontFamily, FontStyle, FontWeight).Width);
-            }
-
-            preferredInputWidth *= 1.1;
+            var preferredInputWidth = Math.Max(
+                CalculateContentPreferredWidth(Text, PlaceholderText, format, formatInfo),
+                CalculateContentPreferredWidth(SecondaryText, SecondaryPlaceholderText, format, formatInfo));
 
             if (!double.IsNaN(MinWidth))
             {
@@ -525,6 +520,26 @@ public class RangeDatePicker : RangeInfoPickerInput
             PreferredInputWidth = preferredInputWidth;
             PreferredWidth      = preferredInputWidth;
         }
+    }
+
+    private double CalculateContentPreferredWidth(
+        string? text,
+        string? placeholderText,
+        string format,
+        DateTimeFormatInfo? formatInfo)
+    {
+        if (!string.IsNullOrEmpty(text))
+        {
+            return TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+        }
+
+        if (!string.IsNullOrEmpty(placeholderText))
+        {
+            return TextUtils.CalculateTextSize(placeholderText, FontSize, FontFamily, FontStyle, FontWeight).Width;
+        }
+
+        return DateTimeUtils.CalculateWidestFormattedDateTimeSize(
+            format, FontSize, FontFamily, FontStyle, FontWeight, formatInfo).Width;
     }
     
     protected override void NotifyRangeActivatedPartChanged()

@@ -57,18 +57,13 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
 
     public void HandlePickerSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
-        if (args.Index == 0)
+        PickerSizeType = args.Index switch
         {
-            PickerSizeType = CustomizableSizeType.Large;
-        }
-        else if (args.Index == 1)
-        {
-            PickerSizeType = CustomizableSizeType.Middle;
-        }
-        else
-        {
-            PickerSizeType = CustomizableSizeType.Small;
-        }
+            0 => CustomizableSizeType.Large,
+            2 => CustomizableSizeType.Small,
+            3 => CustomizableSizeType.Custom,
+            _ => CustomizableSizeType.Middle
+        };
     }
 
     public void HandlePickerPlacementCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)

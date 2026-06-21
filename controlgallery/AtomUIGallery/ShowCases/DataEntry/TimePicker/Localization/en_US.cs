@@ -30,6 +30,11 @@ internal partial class en_US : LanguageProvider
     public const string P2PlaceholderTextBorderless = "Borderless";
     public const string P2PlaceholderTextStartTime = "Start time";
     public const string P2SecondaryPlaceholderTextEndTime = "End time";
+    public const string P2TextExpandDirection = "Picker size:";
+    public const string P2ContentLarge = "Large";
+    public const string P2ContentDefault = "Default";
+    public const string P2ContentSmall = "Small";
+    public const string P2ContentCustom = "Custom";
     public const string PageSubtitle = "Select a time or a time range from a popup time panel.";
     public const string PageDescription = "TimePicker supports 12-hour and 24-hour clocks, size variants, disabled states, stepped minute and second options, visual variants, validation status, and range selection.";
     public const string ComponentCategory = "Data Entry";

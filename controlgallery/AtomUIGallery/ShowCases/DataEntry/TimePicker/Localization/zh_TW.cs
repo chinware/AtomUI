@@ -30,6 +30,11 @@ internal partial class zh_TW : LanguageProvider
     public const string P2PlaceholderTextBorderless = "無邊框";
     public const string P2PlaceholderTextStartTime = "開始時間";
     public const string P2SecondaryPlaceholderTextEndTime = "結束時間";
+    public const string P2TextExpandDirection = "選擇器尺寸：";
+    public const string P2ContentLarge = "大號";
+    public const string P2ContentDefault = "默認";
+    public const string P2ContentSmall = "小號";
+    public const string P2ContentCustom = "自定義";
     public const string PageSubtitle = "從彈出時間面板中選擇單個時間或時間範圍。";
     public const string PageDescription = "TimePicker 支援 12 小時和 24 小時制、尺寸變體、禁用狀態、分鐘和秒的步進選項、視覺變體、校驗狀態以及範圍選擇。";
     public const string ComponentCategory = "資料錄入";

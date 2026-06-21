@@ -159,11 +159,42 @@
             Description="{gallery:TimePickerShowCaseLangResource ThreeSizesDescription}">
             <gallery:ShowCaseItem.DeferredContentTemplate>
                 <DataTemplate x:DataType="vm:TimePickerViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" SizeType="Large" DefaultTime="12:08:23" />
-                <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" SizeType="Middle" DefaultTime="12:08:23" />
-                <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}" SizeType="Small" DefaultTime="12:08:23" />
-            </StackPanel>
+            <DockPanel Margin="0, 0, 0, 0">
+                <DockPanel.Styles>
+                    <Style Selector="atom|TimePicker.size-demo-picker[SizeType=Custom]">
+                        <Setter Property="Height" Value="38" />
+                        <Setter Property="FontSize" Value="15" />
+                    </Style>
+                    <Style Selector="atom|RangeTimePicker.size-demo-picker[SizeType=Custom]">
+                        <Setter Property="Height" Value="38" />
+                        <Setter Property="FontSize" Value="15" />
+                    </Style>
+                </DockPanel.Styles>
+                <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TimePickerShowCaseLangResource P2TextExpandDirection}" />
+                    <atom:OptionButtonGroup ButtonStyle="Outline"
+                                            Name="PickerSizeTypeOptionGroup"
+                                            OptionCheckedChanged="HandlePickerSizeTypeOptionCheckedChanged">
+                        <atom:OptionButton Content="{gallery:TimePickerShowCaseLangResource P2ContentLarge}" />
+                        <atom:OptionButton IsChecked="True" Content="{gallery:TimePickerShowCaseLangResource P2ContentDefault}" />
+                        <atom:OptionButton Content="{gallery:TimePickerShowCaseLangResource P2ContentSmall}" />
+                        <atom:OptionButton Content="{gallery:TimePickerShowCaseLangResource P2ContentCustom}" />
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+
+                <StackPanel Orientation="Vertical" Margin="0, 20, 0, 0" Spacing="10">
+                    <atom:TimePicker Classes="size-demo-picker"
+                                     PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}"
+                                     SizeType="{Binding PickerSizeType}"
+                                     DefaultTime="12:08:23" />
+                    <atom:RangeTimePicker Classes="size-demo-picker"
+                                          PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextStartTime}"
+                                          SecondaryPlaceholderText="{gallery:TimePickerShowCaseLangResource P2SecondaryPlaceholderTextEndTime}"
+                                          RangeStartDefaultTime="10:09:20"
+                                          RangeEndDefaultTime="12:12:20"
+                                          SizeType="{Binding PickerSizeType}" />
+                </StackPanel>
+            </DockPanel>
                 </DataTemplate>
             </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
