@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
@@ -144,6 +145,22 @@ public class TreeSelectViewModel : ReactiveObject, IRoutableViewModel
     {
         get => _maxCheckedTreeNodes;
         set => this.RaiseAndSetIfChanged(ref _maxCheckedTreeNodes, value);
+    }
+
+    private List<ITreeItemNode>? _sizeTypeTreeNodes = [];
+
+    public List<ITreeItemNode>? SizeTypeTreeNodes
+    {
+        get => _sizeTypeTreeNodes;
+        set => this.RaiseAndSetIfChanged(ref _sizeTypeTreeNodes, value);
+    }
+
+    private CustomizableSizeType _treeSelectSizeType = CustomizableSizeType.Middle;
+
+    public CustomizableSizeType TreeSelectSizeType
+    {
+        get => _treeSelectSizeType;
+        set => this.RaiseAndSetIfChanged(ref _treeSelectSizeType, value);
     }
 
     public TreeSelectViewModel(IScreen screen)

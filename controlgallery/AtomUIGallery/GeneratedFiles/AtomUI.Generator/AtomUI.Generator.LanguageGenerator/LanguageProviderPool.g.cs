@@ -22728,6 +22728,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2AddOnPrefix] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.P2AddOnPrefix;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentBottomleft] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.P2ContentBottomleft;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentBottomright] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.P2ContentBottomright;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.P2ContentCustom;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.P2ContentDefault;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.P2ContentLarge;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentSmall] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.P2ContentSmall;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentTopleft] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.P2ContentTopleft;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentTopright] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.P2ContentTopright;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2HeaderChildNode] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.P2HeaderChildNode;
@@ -22777,6 +22781,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ShowTreeLineDescription] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.ShowTreeLineDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ShowTreeLineTitle] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.ShowTreeLineTitle;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.SizeTypeDescription] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.SizeTypeDescription;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.SizeTypeTitle] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.SizeTypeTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.StatusDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.StatusTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.TokenColumnDescription;
@@ -22850,6 +22856,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2AddOnPrefix] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.P2AddOnPrefix;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentBottomleft] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.P2ContentBottomleft;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentBottomright] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.P2ContentBottomright;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.P2ContentCustom;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.P2ContentDefault;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.P2ContentLarge;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentSmall] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.P2ContentSmall;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentTopleft] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.P2ContentTopleft;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentTopright] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.P2ContentTopright;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2HeaderChildNode] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.P2HeaderChildNode;
@@ -22899,6 +22909,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ShowTreeLineDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.ShowTreeLineDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ShowTreeLineTitle] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.ShowTreeLineTitle;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.SizeTypeDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.SizeTypeDescription;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.SizeTypeTitle] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.SizeTypeTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.StatusDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.StatusTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.TokenColumnDescription;
@@ -22972,6 +22984,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2AddOnPrefix] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.P2AddOnPrefix;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentBottomleft] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.P2ContentBottomleft;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentBottomright] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.P2ContentBottomright;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.P2ContentCustom;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.P2ContentDefault;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.P2ContentLarge;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentSmall] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.P2ContentSmall;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentTopleft] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.P2ContentTopleft;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2ContentTopright] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.P2ContentTopright;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.P2HeaderChildNode] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.P2HeaderChildNode;
@@ -23021,6 +23037,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.ScenarioExamples;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ShowTreeLineDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.ShowTreeLineDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ShowTreeLineTitle] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.ShowTreeLineTitle;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.SizeTypeDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.SizeTypeDescription;
+                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.SizeTypeTitle] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.SizeTypeTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.StatusDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.StatusTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.TokenColumnDescription;

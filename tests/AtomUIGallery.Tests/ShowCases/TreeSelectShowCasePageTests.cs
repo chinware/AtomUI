@@ -46,12 +46,16 @@ public class TreeSelectShowCasePageTests
         source.ShouldContain("LineHeight=\"22\"");
         source.ShouldContain("Text=\"{gallery:TreeSelectShowCaseLangResource PageDescription}\"");
         source.ShouldContain("HorizontalAlignment=\"Left\"");
-        CountShowCaseItemElements(source).ShouldBe(11);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(11);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(11);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TreeSelectViewModel\"").ShouldBe(11);
+        CountShowCaseItemElements(source).ShouldBe(12);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(12);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(12);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TreeSelectViewModel\"").ShouldBe(12);
         source.ShouldContain("TreeSelectShowCaseLangResource BasicTitle");
         source.ShouldContain("TreeSelectShowCaseLangResource PlacementTitle");
+        source.ShouldContain("TreeSelectShowCaseLangResource SizeTypeTitle");
+        source.ShouldContain("OptionCheckedChanged=\"HandleSizeTypeChanged\"");
+        source.ShouldContain("SizeType=\"{Binding TreeSelectSizeType}\"");
+        source.ShouldContain("Selector=\"atom|TreeSelect.size-demo-tree-select[SizeType=Custom]\"");
         source.ShouldContain("TreeSelectShowCaseLangResource VariantsTitle");
         source.ShouldContain("TreeSelectShowCaseLangResource PrefixAndSuffixTitle");
         source.ShouldContain("OptionCheckedChanged=\"HandlePlacementOptionCheckedChanged\"");
@@ -147,6 +151,12 @@ public class TreeSelectShowCasePageTests
             source.ShouldContain("ApiPropertyPlacement");
             source.ShouldContain("ApiPropertyStatus");
             source.ShouldContain("TokenNameMinPopupWidth");
+            source.ShouldContain("SizeTypeTitle");
+            source.ShouldContain("SizeTypeDescription");
+            source.ShouldContain("P2ContentLarge");
+            source.ShouldContain("P2ContentDefault");
+            source.ShouldContain("P2ContentSmall");
+            source.ShouldContain("P2ContentCustom");
         }
     }
 

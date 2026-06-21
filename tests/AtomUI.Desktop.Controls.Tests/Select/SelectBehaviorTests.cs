@@ -180,6 +180,43 @@ public class SelectBehaviorTests
     }
 
     [Fact]
+    public void Custom_Size_Single_Selected_Text_Is_Vertically_Centered()
+    {
+        var jack = new SelectOption
+        {
+            Header  = "Jack",
+            Content = "jack"
+        };
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            Height          = 38,
+            FontSize        = 15,
+            SizeType        = CustomizableSizeType.Custom,
+            IsAllowClear    = true,
+            OptionsSource   = [jack],
+            SelectedOption  = jack,
+            PlaceholderText = "Please select"
+        };
+
+        ShowInWindow(select, () =>
+        {
+            var addOnBox = GetVisualDescendant<AddOnDecoratedBox>(
+                select,
+                AddOnDecoratedBox.AddOnDecoratedBoxPart);
+            var textPresenter = GetVisualDescendant<TextPresenter>(select, "PART_TextPresenter");
+
+            var textTop = textPresenter.TranslatePoint(default, addOnBox);
+            textTop.ShouldNotBeNull();
+
+            var textCenterY = textTop.Value.Y + textPresenter.Bounds.Height / 2;
+            var boxCenterY  = addOnBox.Bounds.Height / 2;
+
+            Math.Abs(textCenterY - boxCenterY).ShouldBeLessThanOrEqualTo(1.0);
+        });
+    }
+
+    [Fact]
     public void Custom_Size_Multiple_Tag_Uses_Input_Content_Height()
     {
         var jack = new SelectOption

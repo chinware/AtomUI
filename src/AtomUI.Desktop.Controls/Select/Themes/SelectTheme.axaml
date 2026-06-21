@@ -66,6 +66,7 @@
                                 Foreground="{TemplateBinding PlaceholderForeground}" />
                             <atom:SelectFilterTextBox Name="PART_SingleFilterInput"
                                                       IsVisible="False"
+                                                      VerticalAlignment="Stretch"
                                                       SizeType="{TemplateBinding SizeType}"
                                                       PlaceholderForeground="{TemplateBinding PlaceholderForeground}" />
                             <atom:SelectResultOptionsBox

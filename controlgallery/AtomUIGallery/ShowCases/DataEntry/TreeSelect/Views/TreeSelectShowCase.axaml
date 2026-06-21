@@ -297,6 +297,48 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource SizeTypeTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource SizeTypeDescription}" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TreeSelectViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel.Styles>
+                    <Style Selector="atom|TreeSelect.size-demo-tree-select[SizeType=Custom]">
+                        <Setter Property="Height" Value="38" />
+                        <Setter Property="FontSize" Value="15" />
+                    </Style>
+                </StackPanel.Styles>
+                <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleSizeTypeChanged">
+                    <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Large}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentLarge}" />
+                    <atom:OptionButton IsChecked="True" Tag="{x:Static atom:CustomizableSizeType.Middle}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentDefault}" />
+                    <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Small}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentSmall}" />
+                    <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Custom}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentCustom}" />
+                </atom:OptionButtonGroup>
+                <atom:TreeSelect Classes="size-demo-tree-select"
+                                 Name="SizeTypeTreeSelectSingle"
+                                 Width="220"
+                                 SizeType="{Binding TreeSelectSizeType}"
+                                 IsAllowClear="True"
+                                 IsDefaultExpandAll="True"
+                                 IsFilterEnabled="False"
+                                 ItemsSource="{Binding SizeTypeTreeNodes}"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+                <atom:TreeSelect Classes="size-demo-tree-select"
+                                 Name="SizeTypeTreeSelectMultiple"
+                                 HorizontalAlignment="Stretch"
+                                 SizeType="{Binding TreeSelectSizeType}"
+                                 IsAllowClear="True"
+                                 IsDefaultExpandAll="True"
+                                 IsFilterEnabled="False"
+                                 IsMultiple="True"
+                                 ItemsSource="{Binding SizeTypeTreeNodes}"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:TreeSelectShowCaseLangResource VariantsTitle}"
             Description="{gallery:TreeSelectShowCaseLangResource VariantsDescription}" IsDeferredContentEnabled="True">
             <gallery:ShowCaseItem.DeferredContentTemplate>

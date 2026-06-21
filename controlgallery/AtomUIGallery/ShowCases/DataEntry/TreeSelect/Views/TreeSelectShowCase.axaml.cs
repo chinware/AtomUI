@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
+using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
@@ -55,6 +56,7 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
                     viewModel.PlacementTreeNodes      = null;
                     viewModel.MaxSelectedTreeNodes    = null;
                     viewModel.MaxCheckedTreeNodes     = null;
+                    viewModel.SizeTypeTreeNodes       = null;
                 }).DisposeWith(disposables);
             }
         });
@@ -107,6 +109,15 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
         };
     }
 
+    private void HandleSizeTypeChanged(object? sender, OptionCheckedChangedEventArgs e)
+    {
+        if (DataContext is TreeSelectViewModel viewModel &&
+            e.CheckedOption.Tag is CustomizableSizeType sizeType)
+        {
+            viewModel.TreeSelectSizeType = sizeType;
+        }
+    }
+
     private void RefreshLocalizedTreeNodes(TreeSelectViewModel viewModel)
     {
         InitBasicTreeNodes(viewModel);
@@ -120,6 +131,7 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
         InitPlacementTreeNodes(viewModel);
         InitMaxSelectedTreeNodes(viewModel);
         InitMaxCheckedTreeNodes(viewModel);
+        InitSizeTypeTreeNodes(viewModel);
     }
 
     private static string Lang(TreeSelectShowCaseLangResourceKind resourceKind, string fallback)
@@ -270,6 +282,11 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
     private void InitMaxCheckedTreeNodes(TreeSelectViewModel viewModel)
     {
         viewModel.MaxCheckedTreeNodes = CreateLineTreeNodes(false);
+    }
+
+    private void InitSizeTypeTreeNodes(TreeSelectViewModel viewModel)
+    {
+        viewModel.SizeTypeTreeNodes = CreatePersonalLeafTreeNodes();
     }
 
     private static List<ITreeItemNode> CreateBasicTreeNodes()
