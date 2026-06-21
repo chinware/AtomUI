@@ -20,6 +20,7 @@
                         ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
                         ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
                         IsMultiple="{TemplateBinding IsMultiple}"
+                        CustomControlHeight="{TemplateBinding Height}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         IsSelectionEmpty="{TemplateBinding IsSelectionEmpty}"
@@ -58,6 +59,10 @@
                                                         IsDropDownOpen="{TemplateBinding IsDropDownOpen}"
                                                         MaxTagCount="{TemplateBinding MaxTagCount}"
                                                         IsResponsiveTagMode="{TemplateBinding IsResponsiveTagMode}"
+                                                        CustomControlHeight="{TemplateBinding Height}"
+                                                        ContentFramePadding="{CompiledBinding $parent[atom:TreeSelectAddOnDecoratedBox].ContentFramePadding}"
+                                                        ContentMinHeight="{CompiledBinding $parent[atom:TreeSelectAddOnDecoratedBox].ContentMinHeight}"
+                                                        InputBorderThickness="{CompiledBinding $parent[atom:TreeSelectAddOnDecoratedBox].InnerBoxBorderThickness}"
                                                         IsVisible="False"
                                                         Focusable="True" />
                         </Panel>

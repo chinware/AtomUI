@@ -377,13 +377,21 @@
                 <DataTemplate x:DataType="vm:SelectViewModel">
 
             <StackPanel Orientation="Vertical" Spacing="10">
+                <StackPanel.Styles>
+                    <Style Selector="atom|Select.size-demo-select[SizeType=Custom]">
+                        <Setter Property="Height" Value="38" />
+                        <Setter Property="FontSize" Value="15" />
+                    </Style>
+                </StackPanel.Styles>
                 <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleSizeTypeChanged">
                     <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Large}" Content="{gallery:SelectShowCaseLangResource P2ContentLarge}" />
                     <atom:OptionButton IsChecked="True" Tag="{x:Static atom:CustomizableSizeType.Middle}" Content="{gallery:SelectShowCaseLangResource P2ContentDefault}" />
                     <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Small}" Content="{gallery:SelectShowCaseLangResource P2ContentSmall}" />
+                    <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Custom}" Content="{gallery:SelectShowCaseLangResource P2ContentCustom}" />
                 </atom:OptionButtonGroup>
 
-                <atom:Select Name="SizeSelect1"
+                <atom:Select Classes="size-demo-select"
+                             Name="SizeSelect1"
                              Mode="Single"
                              SizeType="{Binding SelectSizeType}"
                              PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
@@ -392,7 +400,8 @@
                              Width="200"
                              OptionsSource="{Binding RandomOptions}" />
 
-                <atom:Select Mode="Multiple"
+                <atom:Select Classes="size-demo-select"
+                             Mode="Multiple"
                              Name="SizeSelect2"
                              SizeType="{Binding SelectSizeType}"
                              PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"

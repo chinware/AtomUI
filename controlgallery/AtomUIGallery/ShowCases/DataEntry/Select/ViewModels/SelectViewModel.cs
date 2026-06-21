@@ -131,7 +131,7 @@ public class SelectViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _maxTagCountOptions, value);
     }
 
-    private CustomizableSizeType _selectSizeType;
+    private CustomizableSizeType _selectSizeType = CustomizableSizeType.Middle;
 
     public CustomizableSizeType SelectSizeType
     {

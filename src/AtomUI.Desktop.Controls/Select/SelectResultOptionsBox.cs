@@ -29,6 +29,18 @@ internal class SelectResultOptionsBox : TemplatedControl
     public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
         CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<SelectResultOptionsBox>();
 
+    internal static readonly StyledProperty<double> CustomControlHeightProperty =
+        AddOnDecoratedBox.CustomControlHeightProperty.AddOwner<SelectResultOptionsBox>();
+
+    internal static readonly StyledProperty<Thickness> ContentFramePaddingProperty =
+        AddOnDecoratedBox.ContentFramePaddingProperty.AddOwner<SelectResultOptionsBox>();
+
+    internal static readonly StyledProperty<double> ContentMinHeightProperty =
+        AddOnDecoratedBox.ContentMinHeightProperty.AddOwner<SelectResultOptionsBox>();
+
+    internal static readonly StyledProperty<Thickness> InputBorderThicknessProperty =
+        AvaloniaProperty.Register<SelectResultOptionsBox, Thickness>(nameof(InputBorderThickness));
+
     public static readonly StyledProperty<int?> MaxTagCountProperty =
         Select.MaxTagCountProperty.AddOwner<SelectResultOptionsBox>();
 
@@ -67,6 +79,30 @@ internal class SelectResultOptionsBox : TemplatedControl
         set => SetValue(SizeTypeProperty, value);
     }
 
+    internal double CustomControlHeight
+    {
+        get => GetValue(CustomControlHeightProperty);
+        set => SetValue(CustomControlHeightProperty, value);
+    }
+
+    internal Thickness ContentFramePadding
+    {
+        get => GetValue(ContentFramePaddingProperty);
+        set => SetValue(ContentFramePaddingProperty, value);
+    }
+
+    internal double ContentMinHeight
+    {
+        get => GetValue(ContentMinHeightProperty);
+        set => SetValue(ContentMinHeightProperty, value);
+    }
+
+    internal Thickness InputBorderThickness
+    {
+        get => GetValue(InputBorderThicknessProperty);
+        set => SetValue(InputBorderThicknessProperty, value);
+    }
+
     public int? MaxTagCount
     {
         get => GetValue(MaxTagCountProperty);
@@ -80,6 +116,20 @@ internal class SelectResultOptionsBox : TemplatedControl
     }
 
     #endregion
+
+    internal static readonly DirectProperty<SelectResultOptionsBox, double> EffectiveTagHeightProperty =
+        AvaloniaProperty.RegisterDirect<SelectResultOptionsBox, double>(
+            nameof(EffectiveTagHeight),
+            o => o.EffectiveTagHeight,
+            (o, v) => o.EffectiveTagHeight = v);
+
+    private double _effectiveTagHeight = double.NaN;
+
+    internal double EffectiveTagHeight
+    {
+        get => _effectiveTagHeight;
+        set => SetAndRaise(EffectiveTagHeightProperty, ref _effectiveTagHeight, value);
+    }
 
     private WrapPanel? _defaultPanel;
     private SelectMaxTagAwarePanel? _maxCountAwarePanel;
@@ -102,12 +152,20 @@ internal class SelectResultOptionsBox : TemplatedControl
         {
             ConfigureSearchTextReadOnly();
         }
-
         else if (change.Property == IsResponsiveTagModeProperty)
         {
             _defaultPanel?.Children.Clear();
             _maxCountAwarePanel?.Children.Clear();
             HandleSelectedOptionsChanged();
+        }
+
+        if (change.Property == SizeTypeProperty ||
+            change.Property == CustomControlHeightProperty ||
+            change.Property == ContentFramePaddingProperty ||
+            change.Property == ContentMinHeightProperty ||
+            change.Property == InputBorderThicknessProperty)
+        {
+            ConfigureEffectiveTagHeight();
         }
 
         if (change.Property == MaxTagCountProperty ||
@@ -151,6 +209,7 @@ internal class SelectResultOptionsBox : TemplatedControl
         {
             IsClosable = false
         };
+        BindTagMetrics(_collapsedInfoTag);
 
         _searchTextBox[!SizeTypeProperty] = this[!SizeTypeProperty];
         if (IsFilterEnabled)
@@ -187,7 +246,7 @@ internal class SelectResultOptionsBox : TemplatedControl
                             Text = option.Header?.ToString(),
                             Item    = option
                         };
-                        tag[!SizeTypeProperty] = this[!SizeTypeProperty];
+                        BindTagMetrics(tag);
                         _defaultPanel.Children.Add(tag);
                     }
                 }
@@ -213,7 +272,7 @@ internal class SelectResultOptionsBox : TemplatedControl
                             Text = option.Header?.ToString(),
                             Item    = option
                         };
-                        tag[!SizeTypeProperty] = this[!SizeTypeProperty];
+                        BindTagMetrics(tag);
                         _maxCountAwarePanel.Children.Add(tag);
                     }
                 }
@@ -229,6 +288,32 @@ internal class SelectResultOptionsBox : TemplatedControl
                 }
             }
         }
+    }
+
+    private void ConfigureEffectiveTagHeight()
+    {
+        var effectiveHeight = double.NaN;
+        if (CustomizableSizeLayoutHelper.TryCalculateCustomContentHeight(
+                SizeType,
+                CustomControlHeight,
+                ContentFramePadding,
+                InputBorderThickness,
+                ContentMinHeight,
+                out var customHeight))
+        {
+            effectiveHeight = customHeight;
+        }
+
+        if (!DoubleEquals(EffectiveTagHeight, effectiveHeight))
+        {
+            EffectiveTagHeight = effectiveHeight;
+        }
+    }
+
+    private void BindTagMetrics(SelectTag tag)
+    {
+        tag[!SizeTypeProperty]                  = this[!SizeTypeProperty];
+        tag[!SelectTag.CustomTagHeightProperty] = this[!EffectiveTagHeightProperty];
     }
 
     private void ConfigureSearchTextControl()
@@ -275,5 +360,11 @@ internal class SelectResultOptionsBox : TemplatedControl
                 }
             }
         }
+    }
+
+    private static bool DoubleEquals(double lhs, double rhs)
+    {
+        return double.IsNaN(lhs) && double.IsNaN(rhs) ||
+               Math.Abs(lhs - rhs) < 0.001;
     }
 }

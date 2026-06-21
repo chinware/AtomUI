@@ -54,9 +54,10 @@ API 和主题契约包括但不限于：
 - 普通 runtime 字段建议放在契约区之后、构造函数之前，包括 template part、helper、disposable、运行时状态标志等。
 - 构造函数区建议保持 `static` 构造函数在前，实例构造函数在后。
 - 构造函数之后的方法不强制按访问级别排序。优先按控件功能流组织，例如 template 接入、属性变更分发、交互处理、布局计算、状态同步、渲染、表单适配等。
-- `public` 方法可以靠近对应功能流，不要求全部放在构造函数后面；但如果是核心用户操作 API，应放在相对靠前且容易发现的位置。
-- 控件实现的 public interface 也是对外能力契约。显式接口实现虽然语法上不是普通 public 成员，但应作为“接口契约区”组织，位置通常在构造函数之后、普通 `protected override` / `private` 实现之前。
-- 接口契约区的优先级低于真正的 public 属性、事件和方法，但高于普通 protected 生命周期方法和 private helper。
+- 控件自身 API 成员应放在显式接口实现之前。这里的 API 成员不仅包括 `public` 方法，也包括作为控件扩展契约或生命周期入口的 `protected`、`protected virtual`、`protected override` 方法。
+- `public` / `protected` API 方法可以靠近对应功能流，不要求全部放在构造函数后面；但如果是核心用户操作 API，应放在相对靠前且容易发现的位置。
+- 控件实现的 public interface 也是对外能力契约。显式接口实现虽然语法上不是普通 public 成员，但应作为“接口契约区”组织，位置通常在控件自身 public/protected API 成员之后、private 实现方法之前。
+- 接口契约区的优先级低于真正的 public/protected 控件 API 成员，但高于 private helper。
 - 与显式接口实现直接配套的 protected virtual hook 可以留在同一个接口契约区，例如 `IFormItemAware.SetFormValue(...)` 与 `NotifySetFormValue(...)`。
 - 如果接口只是纯内部协作接口，且不会作为控件对外能力被用户感知，可以按 internal 实现细节处理；但出现在控件 public 类型声明上的接口，默认按接口契约区处理。
 - `protected override`、`protected virtual` 方法可以靠近其服务的功能块，不强制集中到一个 protected 区。

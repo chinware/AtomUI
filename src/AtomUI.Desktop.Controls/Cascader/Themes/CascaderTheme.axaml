@@ -21,6 +21,7 @@
                         ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
                         ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
                         IsMultiple="{TemplateBinding IsMultiple}"
+                        CustomControlHeight="{TemplateBinding Height}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         IsSelectionEmpty="{TemplateBinding IsSelectionEmpty}"
@@ -63,6 +64,10 @@
                                                         IsDropDownOpen="{TemplateBinding IsDropDownOpen}"
                                                         MaxTagCount="{TemplateBinding MaxTagCount}"
                                                         IsResponsiveTagMode="{TemplateBinding IsResponsiveTagMode}"
+                                                        CustomControlHeight="{TemplateBinding Height}"
+                                                        ContentFramePadding="{CompiledBinding $parent[atom:CascaderAddOnDecoratedBox].ContentFramePadding}"
+                                                        ContentMinHeight="{CompiledBinding $parent[atom:CascaderAddOnDecoratedBox].ContentMinHeight}"
+                                                        InputBorderThickness="{CompiledBinding $parent[atom:CascaderAddOnDecoratedBox].InnerBoxBorderThickness}"
                                                         IsVisible="False"
                                                         Focusable="True" />
                         </Panel>

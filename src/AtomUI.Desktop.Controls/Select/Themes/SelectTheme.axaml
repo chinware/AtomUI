@@ -20,6 +20,7 @@
                         ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
                         ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
                         Mode="{TemplateBinding Mode}"
+                        CustomControlHeight="{TemplateBinding Height}"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
                         IsSelectionEmpty="{TemplateBinding IsSelectionEmpty}"
@@ -30,9 +31,28 @@
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{atom:SharedTokenResource SpacingXS}">
-                                <atom:SelectMaxCountIndicator Name="PART_SelectMaxCountIndicator" />
-                                <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
-                                <atom:SelectHandle Name="PART_SelectHandle" />
+                                <atom:SelectMaxCountIndicator
+                                    Name="PART_SelectMaxCountIndicator"
+                                    MaxCount="{CompiledBinding $parent[atom:Select].MaxCount}"
+                                    SelectedCount="{CompiledBinding $parent[atom:Select].SelectedCount}"
+                                    IsVisible="{CompiledBinding $parent[atom:Select].IsShowMaxCountIndicator}" />
+                                <ContentPresenter
+                                    Name="PART_ContentRightAddOnPresenter"
+                                    Content="{CompiledBinding $parent[atom:Select].ContentRightAddOn}"
+                                    ContentTemplate="{CompiledBinding $parent[atom:Select].ContentRightAddOnTemplate}"
+                                    IsVisible="{CompiledBinding $parent[atom:Select].ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <atom:SelectHandle
+                                    Name="PART_SelectHandle"
+                                    FormFeedback="{CompiledBinding $parent[atom:Select].FormFeedback}"
+                                    LoadingIcon="{CompiledBinding $parent[atom:Select].SuffixLoadingIcon}"
+                                    OpenIndicator="{CompiledBinding $parent[atom:Select].SuffixIcon}"
+                                    IsFilterEnabled="{CompiledBinding $parent[atom:Select].IsEffectiveFilterEnabled}"
+                                    IsEnabled="{CompiledBinding $parent[atom:Select].IsEnabled}"
+                                    IsMotionEnabled="{CompiledBinding $parent[atom:Select].IsMotionEnabled}"
+                                    IsLoading="{CompiledBinding $parent[atom:Select].IsLoading}"
+                                    IsAllowClear="{CompiledBinding $parent[atom:Select].IsAllowClear}"
+                                    IsSelectionEmpty="{CompiledBinding $parent[atom:Select].IsSelectionEmpty}"
+                                    IsDropDownOpen="{CompiledBinding $parent[atom:Select].IsDropDownOpen}" />
                             </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Panel>
@@ -59,6 +79,10 @@
                                 IsDropDownOpen="{TemplateBinding IsDropDownOpen}"
                                 MaxTagCount="{TemplateBinding MaxTagCount}"
                                 IsResponsiveTagMode="{TemplateBinding IsResponsiveTagMode}"
+                                CustomControlHeight="{TemplateBinding Height}"
+                                ContentFramePadding="{CompiledBinding $parent[atom:SelectAddOnDecoratedBox].ContentFramePadding}"
+                                ContentMinHeight="{CompiledBinding $parent[atom:SelectAddOnDecoratedBox].ContentMinHeight}"
+                                InputBorderThickness="{CompiledBinding $parent[atom:SelectAddOnDecoratedBox].InnerBoxBorderThickness}"
                                 IsVisible="False"
                                 Focusable="True" />
                         </Panel>
