@@ -33,7 +33,8 @@ internal partial class zh_CN : LanguageProvider
     public const string ApiPropertyButtonType = "设置按钮的视觉类型，例如主要、默认、虚线、文本或链接。";
     public const string ApiPropertySizeType = "控制按钮高度和内间距密度。";
     public const string ApiPropertyShape = "设置按钮形状，可在默认、圆角和圆形之间切换。";
-    public const string ApiPropertyIcon = "在内容前显示图标，也可以作为纯图标按钮使用。";
+    public const string ApiPropertyIcon = "在内容前或内容后显示图标，也可以作为纯图标按钮使用。";
+    public const string ApiPropertyIconPlacement = "设置图标显示在内容起始侧还是结束侧。";
     public const string ApiPropertyLoading = "显示加载指示，表达当前操作正在执行。";
     public const string ApiPropertyDanger = "为删除或高风险动作应用危险样式。";
     public const string ApiPropertyColor = "设置 Color 和 Variant 模型使用的语义颜色。";
@@ -61,7 +62,9 @@ internal partial class zh_CN : LanguageProvider
     public const string SizeTitle = "按钮尺寸";
     public const string SizeDescription = "AtomUI 支持小号、默认和大号三种按钮尺寸。需要大号或小号按钮时可设置 size 属性；省略 size 属性时使用默认尺寸。";
     public const string IconTitle = "图标";
-    public const string IconDescription = "可以通过 icon 属性添加图标，并使用 iconPosition 调整图标位置。";
+    public const string IconDescription = "可以通过 Icon 属性添加图标，并使用 IconPlacement 调整图标位置。";
+    public const string IconPlacementTitle = "按钮图标位置";
+    public const string IconPlacementDescription = "通过设置 IconPlacement 为 Start 或 End 分别设置按钮图标的位置。";
     public const string LoadingTitle = "加载状态";
     public const string LoadingDescription = "通过设置 Button 的 loading 属性，可以为按钮添加加载指示。";
     public const string BlockButtonTitle = "通栏按钮";
@@ -94,9 +97,12 @@ internal partial class zh_CN : LanguageProvider
     public const string P2ColorCyan = "青色";
     public const string P2ContentAa = "AA";
     public const string P2TextExpandDirection = "按钮尺寸：";
+    public const string P2TextIconPlacement = "图标位置：";
     public const string P2ContentLarge = "大号";
     public const string P2ContentSmall = "小号";
     public const string P2ContentCustom = "自定义";
+    public const string P2ContentStart = "start";
+    public const string P2ContentEnd = "end";
     public const string P2ContentDownload = "下载";
     public const string P2ContentSearch = "搜索";
     public const string P2ContentLoading = "加载中";

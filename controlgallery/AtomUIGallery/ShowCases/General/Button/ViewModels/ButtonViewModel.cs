@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Threading;
@@ -19,6 +20,7 @@ public class ButtonViewModel : ReactiveObject, IRoutableViewModel, IActivatableV
     public string? UrlPathSegment => ID.ToString();
 
     private CustomizableSizeType _buttonSizeType;
+    private ButtonIconPlacement _buttonIconPlacement;
     private ObservableCollection<ButtonApiRow>? _apiRows;
     private ObservableCollection<ButtonDesignTokenRow>? _designTokenRows;
 
@@ -26,6 +28,12 @@ public class ButtonViewModel : ReactiveObject, IRoutableViewModel, IActivatableV
     {
         get => _buttonSizeType;
         set => this.RaiseAndSetIfChanged(ref _buttonSizeType, value);
+    }
+
+    public ButtonIconPlacement ButtonIconPlacement
+    {
+        get => _buttonIconPlacement;
+        set => this.RaiseAndSetIfChanged(ref _buttonIconPlacement, value);
     }
 
     public ObservableCollection<ButtonApiRow>? ApiRows
@@ -59,6 +67,7 @@ public class ButtonViewModel : ReactiveObject, IRoutableViewModel, IActivatableV
             new ButtonApiRow("SizeType", Lang(ButtonShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new ButtonApiRow("Shape", Lang(ButtonShowCaseLangResourceKind.ApiPropertyShape), "ButtonShape", "blue", "Default"),
             new ButtonApiRow("Icon", Lang(ButtonShowCaseLangResourceKind.ApiPropertyIcon), "Icon?", "cyan", "null"),
+            new ButtonApiRow("IconPlacement", Lang(ButtonShowCaseLangResourceKind.ApiPropertyIconPlacement), "ButtonIconPlacement", "blue", "Start"),
             new ButtonApiRow("IsLoading", Lang(ButtonShowCaseLangResourceKind.ApiPropertyLoading), "bool", "green", "false"),
             new ButtonApiRow("IsDanger", Lang(ButtonShowCaseLangResourceKind.ApiPropertyDanger), "bool", "green", "false"),
             new ButtonApiRow("Color", Lang(ButtonShowCaseLangResourceKind.ApiPropertyColor), "ButtonColor?", "purple", "null"),
@@ -118,6 +127,7 @@ public class ButtonViewModel : ReactiveObject, IRoutableViewModel, IActivatableV
             ButtonShowCaseLangResourceKind.ApiPropertySizeType         => en_US.ApiPropertySizeType,
             ButtonShowCaseLangResourceKind.ApiPropertyShape            => en_US.ApiPropertyShape,
             ButtonShowCaseLangResourceKind.ApiPropertyIcon             => en_US.ApiPropertyIcon,
+            ButtonShowCaseLangResourceKind.ApiPropertyIconPlacement    => en_US.ApiPropertyIconPlacement,
             ButtonShowCaseLangResourceKind.ApiPropertyLoading          => en_US.ApiPropertyLoading,
             ButtonShowCaseLangResourceKind.ApiPropertyDanger           => en_US.ApiPropertyDanger,
             ButtonShowCaseLangResourceKind.ApiPropertyColor            => en_US.ApiPropertyColor,

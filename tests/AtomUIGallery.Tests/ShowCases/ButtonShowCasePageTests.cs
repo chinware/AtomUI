@@ -66,6 +66,7 @@ public class ButtonShowCasePageTests
         source.ShouldContain("ButtonShowCaseLangResource GradientButtonTitle");
         source.ShouldContain("ButtonShowCaseLangResource ButtonShapeTitle");
         source.ShouldContain("ButtonShowCaseLangResource SizeTitle");
+        source.ShouldContain("ButtonShowCaseLangResource IconPlacementTitle");
         source.ShouldContain("ButtonShowCaseLangResource LoadingTitle");
         source.ShouldContain("Name=\"ScenarioTabs\"");
         source.ShouldContain("Text=\"{gallery:ButtonShowCaseLangResource PageDescription}\"");
@@ -157,6 +158,31 @@ public class ButtonShowCasePageTests
     }
 
     [Fact]
+    public void Button_Icon_Placement_Example_Is_Separate_ShowCase_With_V606_Badge()
+    {
+        var source           = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml");
+        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml.cs");
+        var viewModelSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/ViewModels/ButtonViewModel.cs");
+        var examples         = ExtractButtonExampleItems(source);
+
+        var iconItem          = ExtractShowCaseItemByTitle(examples, "ButtonShowCaseLangResource IconTitle");
+        var iconPlacementItem = ExtractShowCaseItemByTitle(examples, "ButtonShowCaseLangResource IconPlacementTitle");
+
+        iconItem.ShouldNotContain("IconPlacement=\"End\"");
+        iconPlacementItem.ShouldContain("BadgeText=\"v6.0.6\"");
+        iconPlacementItem.ShouldContain("ButtonShowCaseLangResource IconPlacementDescription");
+        iconPlacementItem.ShouldContain("ButtonShowCaseLangResource P2TextIconPlacement");
+        iconPlacementItem.ShouldContain("OptionCheckedChanged=\"HandleButtonIconPlacementOptionCheckedChanged\"");
+        iconPlacementItem.ShouldContain("IconPlacement=\"{Binding ButtonIconPlacement}\"");
+        CountOccurrences(iconPlacementItem, "IconPlacement=\"{Binding ButtonIconPlacement}\"").ShouldBe(8);
+
+        codeBehindSource.ShouldContain("HandleButtonIconPlacementOptionCheckedChanged");
+        codeBehindSource.ShouldContain("ButtonIconPlacement.Start");
+        codeBehindSource.ShouldContain("ButtonIconPlacement.End");
+        viewModelSource.ShouldContain("ButtonIconPlacement ButtonIconPlacement");
+    }
+
+    [Fact]
     public void Button_ShowCase_Lazy_Loads_Api_And_DesignToken_DataGrids()
     {
         var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonShowCase.axaml");
@@ -241,8 +267,11 @@ public class ButtonShowCasePageTests
             source.ShouldContain("ApiPropertyCustomBackground");
             source.ShouldContain("GradientButtonTitle");
             source.ShouldContain("GradientButtonDescription");
+            source.ShouldContain("IconPlacementTitle");
+            source.ShouldContain("IconPlacementDescription");
             source.ShouldContain("ApiPropertyLoading");
             source.ShouldContain("ApiPropertyIcon");
+            source.ShouldContain("P2TextIconPlacement");
             source.ShouldContain("P2ContentCustom");
             source.ShouldContain("TokenNameColorPrimary");
             source.ShouldContain("TokenNameControlHeight");

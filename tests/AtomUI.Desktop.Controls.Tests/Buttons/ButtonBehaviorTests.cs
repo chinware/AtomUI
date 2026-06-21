@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -147,6 +148,44 @@ public class ButtonBehaviorTests
                 .ShouldBeFalse();
             GetInternalPropertyValue<Thickness>(button, "EffectiveBorderThickness")
                 .ShouldBe(new Thickness(0));
+        });
+    }
+
+    [Fact]
+    public void Button_IconPlacement_Defaults_To_Start_And_Can_Move_Icon_To_End()
+    {
+        var iconPlacementProperty = typeof(AtomUIButton).GetProperty(
+            "IconPlacement",
+            BindingFlags.Instance | BindingFlags.Public);
+        iconPlacementProperty.ShouldNotBeNull();
+        iconPlacementProperty!.PropertyType.IsEnum.ShouldBeTrue();
+        Enum.GetNames(iconPlacementProperty.PropertyType).ShouldBe(["Start", "End"], ignoreOrder: false);
+
+        var startButton = CreateIconPlacementButton();
+        var endButton   = CreateIconPlacementButton();
+        var endValue    = Enum.Parse(iconPlacementProperty.PropertyType, "End");
+        iconPlacementProperty.SetValue(endButton, endValue);
+
+        var host = new StackPanel
+        {
+            Children =
+            {
+                startButton,
+                endButton
+            }
+        };
+
+        ShowInWindow(host, () =>
+        {
+            iconPlacementProperty.GetValue(startButton)!.ToString().ShouldBe("Start");
+
+            var startIcon = FindTemplateIcon(startButton);
+            var endIcon   = FindTemplateIcon(endButton);
+
+            DockPanel.GetDock(startIcon).ShouldBe(Dock.Left);
+            DockPanel.GetDock(endIcon).ShouldBe(Dock.Right);
+            endIcon.Margin.Left.ShouldBe(startIcon.Margin.Right);
+            endIcon.Margin.Right.ShouldBe(startIcon.Margin.Left);
         });
     }
 
@@ -408,6 +447,16 @@ public class ButtonBehaviorTests
         };
     }
 
+    private static AtomUIButton CreateIconPlacementButton()
+    {
+        return new AtomUIButton
+        {
+            Content         = "Search",
+            Icon            = new PathIcon { Data = Geometry.Parse("M0,0 L10,0 L10,10 Z") },
+            IsMotionEnabled = false
+        };
+    }
+
     private static object GetInternalPropertyValue(object target, string propertyName)
     {
         var property = target.GetType().GetProperty(
@@ -451,6 +500,15 @@ public class ButtonBehaviorTests
                             .SingleOrDefault(item => item.Name == name);
         border.ShouldNotBeNull();
         return border;
+    }
+
+    private static IconPresenter FindTemplateIcon(Control control)
+    {
+        var icon = control.GetVisualDescendants()
+                          .OfType<IconPresenter>()
+                          .SingleOrDefault(item => item.Name == "PART_ButtonIcon");
+        icon.ShouldNotBeNull();
+        return icon!;
     }
 
     private static void BrushShouldBeTransparent(IBrush? brush)

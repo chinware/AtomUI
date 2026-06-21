@@ -169,6 +169,7 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         GhostBg,
         GroupBorderColor,
         GutterToFlyout,
+        IconEndMargin,
         IconMargin,
         IconOnyPadding,
         IconOnyPaddingLG,
