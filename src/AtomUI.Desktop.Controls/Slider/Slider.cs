@@ -203,6 +203,7 @@ public class Slider : RangeBase,
     private IDisposable? _pointerPressDispose;
     private IDisposable? _pointerReleaseDispose;
     private double _tipHostWidth;
+    private EventHandler? _formValueChanged;
 
     private const double Tolerance = 0.0001;
     
@@ -230,9 +231,7 @@ public class Slider : RangeBase,
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _pointerMovedDispose?.Dispose();
-        _pointerPressDispose?.Dispose();
-        _pointerReleaseDispose?.Dispose();
+        DisposePointerHandlers();
 
         SliderTrack = e.NameScope.Find<SliderTrack>("PART_Track");
 
@@ -334,6 +333,137 @@ public class Slider : RangeBase,
         e.Handled = handled;
     }
 
+    protected override void UpdateDataValidation(
+        AvaloniaProperty property,
+        BindingValueType state,
+        Exception? error)
+    {
+        if (property == ValueProperty)
+        {
+            DataValidationErrors.SetError(this, error);
+        }
+    }
+
+    protected override AutomationPeer OnCreateAutomationPeer()
+    {
+        return new SliderAutomationPeer(this);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == OrientationProperty)
+        {
+            UpdatePseudoClasses(change.GetNewValue<Orientation>());
+            SetupSliderThumbPlacement();
+        }
+        else if (change.Property == ValueProperty)
+        {
+            if (SliderTrack is not null && SliderTrack.StartSliderThumb is not null)
+            {
+                ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(Value));
+            }
+        }
+        else if (change.Property == RangeValueProperty)
+        {
+            if (SliderTrack is not null)
+            {
+                if (SliderTrack.StartSliderThumb is not null)
+                {
+                    ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(RangeValue.StartValue));
+                }
+
+                if (SliderTrack.EndSliderThumb is not null)
+                {
+                    ToolTip.SetTip(SliderTrack.EndSliderThumb, FormatValue(RangeValue.EndValue));
+                }
+            }
+        }
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == MaximumProperty ||
+                change.Property == ValueFormatTemplateProperty)
+            {
+                ConfigureTipHostWidth();
+            }
+        }
+    }
+
+    protected virtual void OnThumbDragStarted(VectorEventArgs e)
+    {
+        IsDragging = true;
+    }
+
+    protected virtual void OnThumbDragCompleted(VectorEventArgs e)
+    {
+        IsDragging = false;
+    }
+
+    #region 实现 FormItem 接口
+
+    event EventHandler? IFormItemAware.ValueChanged
+    {
+        add => _formValueChanged += value;
+        remove => _formValueChanged -= value;
+    }
+
+    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value);
+
+    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
+    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
+    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
+
+    protected virtual void NotifyFormValueChanged(object? value)
+    {
+        _formValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    protected virtual void NotifySetFormValue(object? value)
+    {
+        if (IsRangeMode)
+        {
+            if (value is SliderRangeValue rangeValue)
+            {
+                RangeValue = rangeValue;
+            }
+            else
+            {
+                RangeValue = default;
+            }
+        }
+        else
+        {
+            Value = value != null ? (double)value : 0.0;
+        }
+    }
+
+    protected virtual object? NotifyGetFormValue()
+    {
+        return IsRangeMode ? RangeValue : Value;
+    }
+
+    protected virtual void NotifyClearFormValue()
+    {
+        RangeValue = default;
+    }
+
+    protected virtual void NotifyValidateStatus(FormValidateStatus status)
+    {
+    }
+    #endregion
+
+    private void DisposePointerHandlers()
+    {
+        _pointerMovedDispose?.Dispose();
+        _pointerMovedDispose = null;
+        _pointerPressDispose?.Dispose();
+        _pointerPressDispose = null;
+        _pointerReleaseDispose?.Dispose();
+        _pointerReleaseDispose = null;
+    }
+
     private void MoveToNextTick(double direction)
     {
         if (direction == 0.0)
@@ -367,7 +497,7 @@ public class Slider : RangeBase,
                     tickNumber -= 1.0;
                 }
 
-                next = Minimum + tickNumber * TickFrequency;
+                next = CalculateTickValue(tickNumber);
             }
         }
 
@@ -541,22 +671,6 @@ public class Slider : RangeBase,
 
         return SliderTrack.EndSliderThumb;
     }
-    
-    protected override void UpdateDataValidation(
-        AvaloniaProperty property,
-        BindingValueType state,
-        Exception? error)
-    {
-        if (property == ValueProperty)
-        {
-            DataValidationErrors.SetError(this, error);
-        }
-    }
-
-    protected override AutomationPeer OnCreateAutomationPeer()
-    {
-        return new SliderAutomationPeer(this);
-    }
 
     private void SetupSliderThumbPlacement()
     {
@@ -588,62 +702,10 @@ public class Slider : RangeBase,
             }
         }
     }
-    
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-
-        if (change.Property == OrientationProperty)
-        {
-            UpdatePseudoClasses(change.GetNewValue<Orientation>());
-            SetupSliderThumbPlacement();
-        }
-        else if (change.Property == ValueProperty)
-        {
-            if (SliderTrack is not null && SliderTrack.StartSliderThumb is not null)
-            {
-                ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(Value));
-            }
-        }
-        else if (change.Property == RangeValueProperty)
-        {
-            if (SliderTrack is not null)
-            {
-                if (SliderTrack.StartSliderThumb is not null)
-                {
-                    ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(RangeValue.StartValue));
-                }
-
-                if (SliderTrack.EndSliderThumb is not null)
-                {
-                    ToolTip.SetTip(SliderTrack.EndSliderThumb, FormatValue(RangeValue.EndValue));
-                }
-            }
-        }
-
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == MaximumProperty ||
-                change.Property == ValueFormatTemplateProperty)
-            {
-                ConfigureTipHostWidth();
-            }
-        }
-    }
 
     private string FormatValue(double value)
     {
         return string.Format(ValueFormatTemplate, value);
-    }
-    
-    protected virtual void OnThumbDragStarted(VectorEventArgs e)
-    {
-        IsDragging = true;
-    }
-
-    protected virtual void OnThumbDragCompleted(VectorEventArgs e)
-    {
-        IsDragging = false;
     }
 
     private double SnapToTick(double value)
@@ -655,8 +717,9 @@ public class Slider : RangeBase,
 
             if (MathUtils.GreaterThan(TickFrequency, 0.0))
             {
-                previous = Minimum + Math.Round((value - Minimum) / TickFrequency) * TickFrequency;
-                next     = Math.Min(Maximum, previous + TickFrequency);
+                var tickNumber = Math.Round((value - Minimum) / TickFrequency);
+                previous = CalculateTickValue(tickNumber);
+                next     = CalculateTickValue(tickNumber + 1.0);
             }
 
             // Choose the closest value between previous and next. If tie, snap to 'next'.
@@ -664,6 +727,43 @@ public class Slider : RangeBase,
         }
 
         return value;
+    }
+
+    private double CalculateTickValue(double tickNumber)
+    {
+        if (TryCalculateDecimalTickValue(tickNumber, out var decimalTickValue))
+        {
+            return ClampToRange(decimalTickValue);
+        }
+
+        return ClampToRange(Minimum + tickNumber * TickFrequency);
+    }
+
+    private bool TryCalculateDecimalTickValue(double tickNumber, out double value)
+    {
+        value = default;
+        if (!double.IsFinite(Minimum) ||
+            !double.IsFinite(Maximum) ||
+            !double.IsFinite(TickFrequency) ||
+            !double.IsFinite(tickNumber))
+        {
+            return false;
+        }
+
+        try
+        {
+            value = (double)((decimal)Minimum + (decimal)tickNumber * (decimal)TickFrequency);
+            return true;
+        }
+        catch (OverflowException)
+        {
+            return false;
+        }
+    }
+
+    private double ClampToRange(double value)
+    {
+        return Math.Max(Minimum, Math.Min(Maximum, value));
     }
 
     private void UpdatePseudoClasses(Orientation o)
@@ -700,58 +800,4 @@ public class Slider : RangeBase,
             }
         }
     }
-    
-    #region 实现 FormItem 接口
-    
-    private EventHandler? _formValueChanged;
-    event EventHandler? IFormItemAware.ValueChanged
-    {
-        add => _formValueChanged += value;
-        remove => _formValueChanged -= value;
-    }
-
-    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value);
-
-    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
-    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
-    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
-    
-    protected virtual void NotifyFormValueChanged(object? value)
-    {
-        _formValueChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    protected virtual void NotifySetFormValue(object? value)
-    {
-        if (IsRangeMode)
-        {
-            if (value is SliderRangeValue rangeValue)
-            {
-                RangeValue = rangeValue;
-            }
-            else
-            {
-                RangeValue = default;
-            }
-        }
-        else
-        {
-            Value = value != null ? (double)value : 0.0;
-        }
-    }
-
-    protected virtual object? NotifyGetFormValue()
-    {
-        return IsRangeMode ? RangeValue : Value;
-    }
-
-    protected virtual void NotifyClearFormValue()
-    {
-        RangeValue = default;
-    }
-
-    protected virtual void NotifyValidateStatus(FormValidateStatus status)
-    {
-    }
-    #endregion
 }
