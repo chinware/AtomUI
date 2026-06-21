@@ -522,13 +522,17 @@ public class Mentions : TemplatedControl,
     private DispatcherTimer? _delayTimer;
     private List<IMentionOption>? _items;
     private IList<IMentionOption>? _view;
-    private bool _cancelRequested;
-    private bool _filterInAction;
-    private bool _popupHasOpened;
-    private bool _ignorePropertyChange;
+    private DropDownOpenChangeReason _dropDownOpenChangeReason;
+    private long _populateRequestId;
     private IDisposable? _collectionChangeSubscription;
     private readonly AsyncSearchLoadCoordinator<string?, MentionOptionsLoadResult> _asyncLoadCoordinator = new();
     private IDisposable? _deactivationSubscription;
+
+    private enum DropDownOpenChangeReason
+    {
+        None,
+        InternalSync
+    }
     
     static Mentions()
     {
@@ -548,148 +552,85 @@ public class Mentions : TemplatedControl,
         this.RegisterTokenResourceScope(MentionsToken.ScopeProvider);
     }
 
-    private void HandleIsDropDownOpenChanged(AvaloniaPropertyChangedEventArgs e)
+    #region 实现 FormItem 接口
+
+    private EventHandler? _formValueChanged;
+
+    event EventHandler? IFormItemAware.ValueChanged
     {
-        // Ignore the change if requested
-        if (_ignorePropertyChange)
-        {
-            _ignorePropertyChange = false;
-            return;
-        }
-
-        bool oldValue = (bool)e.OldValue!;
-        bool newValue = (bool)e.NewValue!;
-        
-        if (!newValue)
-        {
-            ClosingDropDown(oldValue);
-        }
-
-        UpdatePseudoClasses();
-    }
-    
-    private void HandleAsyncLoadDebounceChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        var newValue = (TimeSpan)e.NewValue!;
-
-        // Always clean up the old timer first
-        if (_delayTimer != null)
-        {
-            _delayTimer.Stop();
-            _delayTimer.Tick -= PopulateDropDown;
-            _delayTimer      =  null;
-        }
-
-        // Create a new timer with the new delay value if needed
-        if (newValue > TimeSpan.Zero)
-        {
-            _delayTimer           =  new DispatcherTimer();
-            _delayTimer.Interval  =  newValue;
-            _delayTimer.Tick      += PopulateDropDown;
-        }
-    }
-    
-    private void HandleItemsSourceChanged(IEnumerable? newValue)
-    {
-        // Remove handler for oldValue.CollectionChanged (if present)
-        _collectionChangeSubscription?.Dispose();
-        _collectionChangeSubscription = null;
-        
-        // Add handler for newValue.CollectionChanged (if possible)
-        if (newValue is INotifyCollectionChanged newValueINotifyCollectionChanged)
-        {
-            _collectionChangeSubscription = newValueINotifyCollectionChanged.WeakSubscribe(ItemsCollectionChanged);
-        }
-        
-        // Store a local cached copy of the data
-        _items = newValue == null ? null : BuildItemsCache(newValue);
-        
-        // Clear and set the view on the selection adapter
-        ClearView();
+        add => _formValueChanged += value;
+        remove => _formValueChanged -= value;
     }
 
-    private void HandleFilterValueChanged()
+    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value?.ToString());
+
+    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
+    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
+    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
+    void IFormItemFeedbackAware.SetFeedbackControl(FormValidateFeedback? value) => NotifySetFeedBackControl(value);
+    private void HandleValueChanged()
     {
-        if (IsDropDownOpen)
-        {
-            RefreshView();
-        }
-    }
-    
-    private void ItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        // Update the cache
-        if (e.Action == NotifyCollectionChangedAction.Remove && e.OldItems != null)
-        {
-            for (int index = 0; index < e.OldItems.Count; index++)
-            {
-                _items!.RemoveAt(e.OldStartingIndex);
-            }
-        }
-        if (e.Action == NotifyCollectionChangedAction.Add && e.NewItems != null && _items!.Count >= e.NewStartingIndex)
-        {
-            for (int index = 0; index < e.NewItems.Count; index++)
-            {
-                var newItem = e.NewItems[index] as IMentionOption;
-                _items.Insert(e.NewStartingIndex + index, newItem!);
-            }
-        }
-        if (e.Action == NotifyCollectionChangedAction.Replace && e.NewItems != null && e.OldItems != null)
-        {
-            for (int index = 0; index < e.NewItems.Count; index++)
-            {
-                var newItem = e.NewItems[index] as IMentionOption;
-                _items![e.NewStartingIndex] = newItem!;
-            }
-        }
-
-        // Update the view
-        if ((e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Replace) && e.OldItems != null)
-        {
-            for (int index = 0; index < e.OldItems.Count; index++)
-            {
-                var oldItem = e.OldItems[index] as IMentionOption;
-                _view!.Remove(oldItem!);
-            }
-        }
-
-        if (e.Action == NotifyCollectionChangedAction.Reset)
-        {
-            // Significant changes to the underlying data.
-            ClearView();
-            if (OptionsSource != null)
-            {
-                _items = BuildItemsCache(OptionsSource);
-            }
-        }
-
-        // Refresh the observable collection used in the selection adapter.
-        RefreshView();
+        _formValueChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private static List<IMentionOption> BuildItemsCache(IEnumerable source)
+    protected virtual void NotifySetFormValue(string? value)
     {
-        var items = source switch
-        {
-            ICollection collection => new List<IMentionOption>(collection.Count),
-            IReadOnlyCollection<IMentionOption> collection => new List<IMentionOption>(collection.Count),
-            _ => new List<IMentionOption>()
-        };
-        foreach (var item in source)
-        {
-            items.Add((IMentionOption)item!);
-        }
-        return items;
+        SetCurrentValue(ValueProperty, value);
     }
-    
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+
+    protected virtual string? NotifyGetFormValue()
     {
-        base.OnPropertyChanged(change);
-        if (change.Property == DisplayCandidateCountProperty ||
-            change.Property == ItemHeightProperty)
+        return Value;
+    }
+
+    protected virtual void NotifyClearFormValue()
+    {
+        SetCurrentValue(ValueProperty, null);
+    }
+
+    protected virtual void NotifyValidateStatus(FormValidateStatus status)
+    {
+        if (status == FormValidateStatus.Error)
         {
-            ConfigureMaxPopupHeight();
+            SetCurrentValue(StatusProperty, InputControlStatus.Error);
         }
+        else if (status == FormValidateStatus.Warning)
+        {
+            SetCurrentValue(StatusProperty, InputControlStatus.Warning);
+        }
+        else
+        {
+            SetCurrentValue(StatusProperty, InputControlStatus.Default);
+        }
+    }
+
+    protected virtual void NotifySetFeedBackControl(FormValidateFeedback? value)
+    {
+        FormFeedback = value;
+    }
+
+    #endregion
+
+    #region 生命周期
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (Value == null)
+        {
+            SetCurrentValue(ValueProperty, DefaultValue);
+        }
+
+        if (TriggerPrefix == null)
+        {
+            SetCurrentValue(TriggerPrefixProperty, ["@"]);
+        }
+
+        if (ClearIcon == null)
+        {
+            SetCurrentValue(ClearIconProperty, new CloseCircleFilled());
+        }
+        ConfigurePopupPlacement();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -699,6 +640,7 @@ public class Mentions : TemplatedControl,
         {
             _textArea.CandidateOpenRequest  -= HandleCandidateOpenRequest;
             _textArea.CandidateCloseRequest -= HandleCandidateCloseRequest;
+            _textArea.Owner                 =  null;
         }
 
         if (_popup != null)
@@ -726,32 +668,333 @@ public class Mentions : TemplatedControl,
         }
         
         ConfigurePopupPlacement();
-    }
-
-    private void HandleCandidateListComplete(object? sender, RoutedEventArgs e)
-    {
-        if (CandidateList!.SelectedItem is IMentionOption option)
+        if (IsDropDownOpen)
         {
-            InsertCandidateOption(option);
+            OpenDropDown();
+            if (_view == null && !IsLoading)
+            {
+                SchedulePopulateDropDown();
+            }
         }
-        SetCurrentValue(IsDropDownOpenProperty, false);
-        _textArea!.Focus();
     }
 
-    private void HandleCandidateListCanceled(object? sender, RoutedEventArgs e)
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        FilterValue = null;
+        base.OnAttachedToVisualTree(e);
+        if (_collectionChangeSubscription == null && OptionsSource is INotifyCollectionChanged notifyCollectionChanged)
+        {
+            _collectionChangeSubscription = notifyCollectionChanged.WeakSubscribe(ItemsCollectionChanged);
+        }
+        _items = OptionsSource == null ? null : BuildItemsCache(OptionsSource);
+
+        _deactivationSubscription =
+            TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        CancelPendingPopulate();
+        _subscriptionsOnOpen?.Dispose();
+        _subscriptionsOnOpen = null;
+        _collectionChangeSubscription?.Dispose();
+        _collectionChangeSubscription = null;
+        _deactivationSubscription?.Dispose();
+        _deactivationSubscription = null;
+        if (_popup?.IsOpen == true)
+        {
+            _popup.IsOpen = false;
+        }
+        if (IsDropDownOpen)
+        {
+            SetDropDownOpenFromInternalSync(false);
+        }
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        if (IsAutoFocus)
+        {
+            Dispatcher.Post(() => _textArea?.Focus());
+        }
+
+        UpdatePseudoClasses();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == DisplayCandidateCountProperty ||
+            change.Property == ItemHeightProperty)
+        {
+            ConfigureMaxPopupHeight();
+        }
+    }
+
+    #endregion
+
+    #region 属性变更处理
+
+    private void HandleIsDropDownOpenChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        bool oldValue = (bool)e.OldValue!;
+        bool newValue = (bool)e.NewValue!;
+
+        if (_dropDownOpenChangeReason == DropDownOpenChangeReason.InternalSync)
+        {
+            UpdatePseudoClasses();
+            return;
+        }
+
+        if (newValue)
+        {
+            if (OpeningDropDown(oldValue))
+            {
+                SchedulePopulateDropDown();
+            }
+        }
+        else
+        {
+            ClosingDropDown(oldValue);
+        }
+
+        UpdatePseudoClasses();
+    }
+
+    private void HandleAsyncLoadDebounceChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        var newValue = (TimeSpan)e.NewValue!;
+
+        // Always clean up the old timer first
+        if (_delayTimer != null)
+        {
+            _delayTimer.Stop();
+            _delayTimer.Tick -= PopulateDropDown;
+            _delayTimer      =  null;
+        }
+
+        // Create a new timer with the new delay value if needed
+        if (newValue > TimeSpan.Zero)
+        {
+            _delayTimer           =  new DispatcherTimer();
+            _delayTimer.Interval  =  newValue;
+            _delayTimer.Tick      += PopulateDropDown;
+        }
+    }
+
+    private void HandleItemsSourceChanged(IEnumerable? newValue)
+    {
+        // Remove handler for oldValue.CollectionChanged (if present)
+        _collectionChangeSubscription?.Dispose();
+        _collectionChangeSubscription = null;
+
+        // Add handler for newValue.CollectionChanged (if possible)
+        if (newValue is INotifyCollectionChanged newValueINotifyCollectionChanged)
+        {
+            _collectionChangeSubscription = newValueINotifyCollectionChanged.WeakSubscribe(ItemsCollectionChanged);
+        }
+
+        // Store a local cached copy of the data
+        _items = newValue == null ? null : BuildItemsCache(newValue);
+
+        // Clear and set the view on the selection adapter
+        ClearView();
+        if (IsDropDownOpen)
+        {
+            RefreshView();
+        }
+    }
+
+    private void HandleFilterValueChanged()
+    {
+        if (IsDropDownOpen)
+        {
+            RefreshView();
+        }
+    }
+
+    #endregion
+
+    #region 布局和状态同步
+
+    private void ConfigurePopupPlacement()
+    {
+        if (Placement == MentionsPlacementMode.Bottom)
+        {
+            PopupPlacement = PlacementMode.BottomEdgeAlignedLeft;
+        }
+        else
+        {
+            PopupPlacement = PlacementMode.TopEdgeAlignedLeft;
+        }
+    }
+
+    protected virtual void ConfigureMaxPopupHeight()
+    {
+        MaxPopupHeight = ItemHeight * DisplayCandidateCount + PopupContentPadding.Top + PopupContentPadding.Bottom;
+    }
+
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(MentionPseudoClass.CandidatePopupOpen, IsDropDownOpen);
+    }
+
+    #endregion
+
+    #region 下拉状态管理
+
+    private void SetDropDownOpenFromInternalSync(bool value)
+    {
+        if (IsDropDownOpen == value)
+        {
+            UpdatePseudoClasses();
+            return;
+        }
+
+        _dropDownOpenChangeReason = DropDownOpenChangeReason.InternalSync;
+        try
+        {
+            SetCurrentValue(IsDropDownOpenProperty, value);
+        }
+        finally
+        {
+            _dropDownOpenChangeReason = DropDownOpenChangeReason.None;
+        }
+        UpdatePseudoClasses();
+    }
+
+    private void CancelPendingPopulate()
+    {
+        _delayTimer?.Stop();
+        Interlocked.Increment(ref _populateRequestId);
+        _asyncLoadCoordinator.Cancel();
+        IsLoading = false;
+    }
+
+    private bool OpeningDropDown(bool oldValue)
+    {
+        var args = new CancelEventArgs();
+
+        // Opening
+        NotifyDropDownOpening(args);
+
+        if (args.Cancel)
+        {
+            SetDropDownOpenFromInternalSync(oldValue);
+            UpdatePseudoClasses();
+            return false;
+        }
+
+        OpenDropDown();
+
+        UpdatePseudoClasses();
+        return true;
+    }
+
+    private void OpenDropDown()
+    {
+        if (_popup != null && !_popup.IsOpen)
+        {
+            _popup.IsOpen = true;
+        }
+    }
+
+    private void ClosingDropDown(bool oldValue)
+    {
+        var args = new CancelEventArgs();
+        NotifyDropDownClosing(args);
+
+        if (args.Cancel)
+        {
+            SetDropDownOpenFromInternalSync(oldValue);
+        }
+        else
+        {
+            CloseDropDown();
+        }
+
+        UpdatePseudoClasses();
+    }
+
+    private void CloseDropDown()
+    {
+        CancelPendingPopulate();
+        if (_popup?.IsOpen == true)
+        {
+            _popup.IsOpen = false;
+        }
+    }
+
+    private void HandlePopupOpened(object? sender, EventArgs e)
+    {
+        _subscriptionsOnOpen?.Dispose();
+        _subscriptionsOnOpen = new CompositeDisposable(2);
+        this.GetObservable(IsVisibleProperty).Subscribe(HandleIsVisibleChanged).DisposeWith(_subscriptionsOnOpen);
+        this.GetObservable(IsEnabledProperty).Subscribe(HandleIsEnabledChanged).DisposeWith(_subscriptionsOnOpen);
+        this.SubscribeAncestorIsVisible(HandleIsVisibleChanged, _subscriptionsOnOpen);
+        NotifyDropDownOpened(EventArgs.Empty);
+        _textArea?.Focus();
+    }
+
+    private void HandlePopupClosed(object? sender, EventArgs e)
+    {
+        _subscriptionsOnOpen?.Dispose();
+        _subscriptionsOnOpen = null;
+        CancelPendingPopulate();
+        if (IsDropDownOpen)
+        {
+            SetDropDownOpenFromInternalSync(false);
+        }
+
+        NotifyDropDownClosed(EventArgs.Empty);
+    }
+
+    private void HandleIsVisibleChanged(bool isVisible)
+    {
+        if (!isVisible && IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, false);
+        }
+    }
+
+    private void HandleIsEnabledChanged(bool isEnabled)
+    {
+        if (!isEnabled && IsDropDownOpen)
+        {
+            SetCurrentValue(IsDropDownOpenProperty, false);
+        }
+    }
+
+    private void HandleWindowDeactivated(object? sender, EventArgs e)
+    {
         SetCurrentValue(IsDropDownOpenProperty, false);
-        _textArea!.Focus();
     }
-    
-    private void InsertCandidateOption(IMentionOption option)
+
+    protected virtual void NotifyDropDownOpening(CancelEventArgs eventArgs)
     {
-        Debug.Assert(_textArea != null);
-        var value = option.Value?.ToString() ?? option.Header?.ToString() ?? string.Empty;
-        _textArea?.InsertMentionOption(value, Split);
+        DropDownOpening?.Invoke(this, eventArgs);
     }
-    
+
+    protected virtual void NotifyDropDownOpened(EventArgs eventArgs)
+    {
+        DropDownOpened?.Invoke(this, eventArgs);
+    }
+
+    protected virtual void NotifyDropDownClosing(CancelEventArgs eventArgs)
+    {
+        DropDownClosing?.Invoke(this, eventArgs);
+    }
+
+    protected virtual void NotifyDropDownClosed(EventArgs eventArgs)
+    {
+        DropDownClosed?.Invoke(this, eventArgs);
+    }
+
+    #endregion
+
+    #region 候选交互
+
     private void HandleCandidateOpenRequest(object? sender, ShowMentionCandidateRequestEventArgs eventArgs)
     {
         CandidateTriggered?.Invoke(this, new MentionCandidateTriggeredEventArgs(eventArgs.TriggerChar));
@@ -770,125 +1013,7 @@ public class Mentions : TemplatedControl,
             }
         }
 
-        _ignorePropertyChange = true;
-        var oldIsDropDownOpen = IsDropDownOpen;
         SetCurrentValue(IsDropDownOpenProperty, true);
-        OpeningDropDown(oldIsDropDownOpen);
-        
-        if (_delayTimer != null)
-        {
-            _delayTimer.Start();
-        }
-        else
-        {
-            PopulateDropDown(this, EventArgs.Empty);
-        }
-    }
-    
-    private void PopulateDropDown(object? sender, EventArgs e)
-    {
-        _delayTimer?.Stop();
-        
-        if (TryPopulateAsync(FilterValue))
-        {
-            return;
-        }
-        
-        // The Populated event enables advanced, custom filtering. The
-        // client needs to directly update the ItemsSource collection or
-        // call the Populate method on the control to continue the
-        // display process if Cancel is set to true.
-        var populating = new MentionsPopulatingEventArgs(FilterValue);
-        NotifyPopulating(populating);
-        if (!populating.Cancel)
-        {
-            PopulateComplete();
-        }
-    }
-    
-    private bool TryPopulateAsync(string? searchText)
-    {
-        if (OptionsAsyncLoader == null)
-        {
-            return false;
-        }
-
-        _asyncLoadCoordinator.Timeout = AsyncLoadTimeout;
-        IsLoading = true;
-        _ = PopulateAsync(searchText);
-        return true;
-    }
-
-    private async Task PopulateAsync(string? filterValue)
-    {
-        var loader = OptionsAsyncLoader;
-        if (loader == null)
-        {
-            IsLoading = false;
-            return;
-        }
-
-        var outcome = await _asyncLoadCoordinator.LoadAsync(
-            filterValue,
-            (ctx, token) => loader.LoadAsync(ctx, token));
-
-        if (outcome.IsSkipped)
-        {
-            return;
-        }
-
-        IsLoading = false;
-
-        if (outcome.IsSuccess && outcome.Result != null)
-        {
-            var result = outcome.Result;
-            OptionsLoaded?.Invoke(this, new MentionOptionsLoadedEventArgs(filterValue, result));
-
-            await Dispatcher.InvokeAsync(() =>
-            {
-                if (result.IsSuccess)
-                {
-                    SetCurrentValue(OptionsSourceProperty, result.Data);
-                    PopulateComplete();
-                }
-            });
-            return;
-        }
-
-        var statusCode = outcome.Status switch
-        {
-            AsyncLoadStatus.TimedOut  => RpcStatusCode.Timeout,
-            AsyncLoadStatus.Cancelled => RpcStatusCode.Cancelled,
-            _                         => RpcStatusCode.Unknown
-        };
-
-        OptionsLoaded?.Invoke(this, new MentionOptionsLoadedEventArgs(filterValue, new MentionOptionsLoadResult()
-        {
-            UserFriendlyMessage = outcome.Error?.Message,
-            StatusCode          = statusCode
-        }));
-    }
-    
-    public void PopulateComplete()
-    {
-        // Apply the search filter
-        RefreshView();
-        
-        // Fire the Populated event containing the read-only view data.
-        var populated = new MentionsPopulatedEventArgs(_view);
-        NotifyPopulated(populated);
-    }
-    
-    protected virtual void NotifyPopulating(MentionsPopulatingEventArgs e)
-    {
-        IsLoading = true;
-        Populating?.Invoke(this, e);
-    }
-
-    protected virtual void NotifyPopulated(MentionsPopulatedEventArgs e)
-    {
-        IsLoading = false;
-        Populated?.Invoke(this, e);
     }
 
     private void HandleCandidateCloseRequest(object? sender, EventArgs eventArgs)
@@ -898,73 +1023,34 @@ public class Mentions : TemplatedControl,
         _textArea!.Focus();
     }
 
-    protected override void OnInitialized()
+    private void HandleCandidateListComplete(object? sender, RoutedEventArgs e)
     {
-        base.OnInitialized();
-        if (Value == null)
+        if (CandidateList!.SelectedItem is IMentionOption option)
         {
-            SetCurrentValue(ValueProperty, DefaultValue);
+            InsertCandidateOption(option);
         }
-
-        if (TriggerPrefix == null)
-        {
-            SetCurrentValue(TriggerPrefixProperty, ["@"]);
-        }
-
-        if (ClearIcon == null)
-        {
-            SetCurrentValue(ClearIconProperty, new CloseCircleFilled());
-        }
-        ConfigurePopupPlacement();
-    }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        if (IsAutoFocus)
-        {
-            Dispatcher.Post(() => _textArea?.Focus());
-        }
-
-        UpdatePseudoClasses();
-    }
-
-    private void ConfigurePopupPlacement()
-    {
-        if (Placement == MentionsPlacementMode.Bottom)
-        {
-            PopupPlacement = PlacementMode.BottomEdgeAlignedLeft;
-        }
-        else
-        {
-            PopupPlacement = PlacementMode.TopEdgeAlignedLeft;
-        }
-    }
-    
-    protected virtual void ConfigureMaxPopupHeight()
-    {
-        MaxPopupHeight = ItemHeight * DisplayCandidateCount + PopupContentPadding.Top + PopupContentPadding.Bottom;
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _deactivationSubscription =
-            TopLevelDeactivation.Subscribe(TopLevel.GetTopLevel(this), HandleWindowDeactivated);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _deactivationSubscription?.Dispose();
-        _deactivationSubscription = null;
-    }
-    
-    private void HandleWindowDeactivated(object? sender, EventArgs e)
-    {
         SetCurrentValue(IsDropDownOpenProperty, false);
+        _textArea!.Focus();
     }
-    
+
+    private void HandleCandidateListCanceled(object? sender, RoutedEventArgs e)
+    {
+        FilterValue = null;
+        SetCurrentValue(IsDropDownOpenProperty, false);
+        _textArea!.Focus();
+    }
+
+    private void InsertCandidateOption(IMentionOption option)
+    {
+        Debug.Assert(_textArea != null);
+        var value = option.Value?.ToString() ?? option.Header?.ToString() ?? string.Empty;
+        _textArea?.InsertMentionOption(value, Split);
+    }
+
+    #endregion
+
+    #region 键盘交互
+
     protected override void OnKeyDown(KeyEventArgs e)
     {
         _ = e ?? throw new ArgumentNullException(nameof(e));
@@ -1027,58 +1113,271 @@ public class Mentions : TemplatedControl,
                 break;
         }
     }
-    
-    private void UpdatePseudoClasses()
-    {
-        PseudoClasses.Set(MentionPseudoClass.CandidatePopupOpen, IsDropDownOpen);
-    }
-    
-    private void HandlePopupClosed(object? sender, EventArgs e)
-    {
-        _subscriptionsOnOpen?.Dispose();
-        _subscriptionsOnOpen = null;
-        // Force the drop down dependency property to be false.
-        if (IsDropDownOpen)
-        {
-            _ignorePropertyChange = true;
-            SetCurrentValue(IsDropDownOpenProperty, false);
-        }
 
-        // Fire the DropDownClosed event
-        if (_popupHasOpened)
+    #endregion
+
+    #region 异步加载
+
+    private void SchedulePopulateDropDown()
+    {
+        if (_delayTimer != null)
         {
-            NotifyDropDownClosed(EventArgs.Empty);
+            _delayTimer.Stop();
+            _delayTimer.Start();
         }
-        NotifyDropDownClosed(EventArgs.Empty);
+        else
+        {
+            PopulateDropDown(this, EventArgs.Empty);
+        }
     }
 
-    private void HandlePopupOpened(object? sender, EventArgs e)
+    private void PopulateDropDown(object? sender, EventArgs e)
     {
-        _subscriptionsOnOpen?.Dispose();
-        _subscriptionsOnOpen = new CompositeDisposable(2);
-        this.GetObservable(IsVisibleProperty).Subscribe(HandleIsVisibleChanged).DisposeWith(_subscriptionsOnOpen);
-        this.GetObservable(IsEnabledProperty).Subscribe(HandleIsEnabledChanged).DisposeWith(_subscriptionsOnOpen);
-        this.SubscribeAncestorIsVisible(HandleIsVisibleChanged, _subscriptionsOnOpen);
-        NotifyDropDownOpened(EventArgs.Empty);
-        _textArea?.Focus();
-    }
-    
-    private void HandleIsVisibleChanged(bool isVisible)
-    {
-        if (!isVisible && IsDropDownOpen)
+        _delayTimer?.Stop();
+
+        if (TryPopulateAsync(FilterValue))
         {
-            SetCurrentValue(IsDropDownOpenProperty, false);
+            return;
+        }
+
+        // The Populated event enables advanced, custom filtering. The
+        // client needs to directly update the ItemsSource collection or
+        // call the Populate method on the control to continue the
+        // display process if Cancel is set to true.
+        var populating = new MentionsPopulatingEventArgs(FilterValue);
+        NotifyPopulating(populating);
+        if (!populating.Cancel)
+        {
+            PopulateComplete();
         }
     }
-    
-    private void HandleIsEnabledChanged(bool isEnabled)
+
+    private bool TryPopulateAsync(string? searchText)
     {
-        if (!isEnabled && IsDropDownOpen)
+        var loader = OptionsAsyncLoader;
+        if (loader == null)
         {
-            SetCurrentValue(IsDropDownOpenProperty, false);
+            return false;
+        }
+
+        var requestId = Interlocked.Increment(ref _populateRequestId);
+        _asyncLoadCoordinator.Timeout = AsyncLoadTimeout;
+        IsLoading = true;
+        _ = PopulateAsync(searchText, loader, requestId);
+        return true;
+    }
+
+    private async Task PopulateAsync(string? filterValue, IMentionOptionsAsyncLoader loader, long requestId)
+    {
+        var outcome = await _asyncLoadCoordinator.LoadAsync(
+            filterValue,
+            (ctx, token) => loader.LoadAsync(ctx, token));
+
+        if (outcome.IsSkipped)
+        {
+            return;
+        }
+
+        await Dispatcher.InvokeAsync(() => CompleteAsyncPopulate(filterValue, loader, requestId, outcome));
+    }
+
+    private void CompleteAsyncPopulate(
+        string? filterValue,
+        IMentionOptionsAsyncLoader loader,
+        long requestId,
+        AsyncLoadOutcome<MentionOptionsLoadResult> outcome)
+    {
+        if (Interlocked.Read(ref _populateRequestId) != requestId ||
+            !ReferenceEquals(OptionsAsyncLoader, loader))
+        {
+            return;
+        }
+
+        IsLoading = false;
+
+        if (outcome.IsSuccess && outcome.Result != null)
+        {
+            var result = outcome.Result;
+            OptionsLoaded?.Invoke(this, new MentionOptionsLoadedEventArgs(filterValue, result));
+
+            if (result.IsSuccess)
+            {
+                SetCurrentValue(OptionsSourceProperty, result.Data);
+                PopulateComplete();
+            }
+            return;
+        }
+
+        var statusCode = outcome.Status switch
+        {
+            AsyncLoadStatus.TimedOut  => RpcStatusCode.Timeout,
+            AsyncLoadStatus.Cancelled => RpcStatusCode.Cancelled,
+            _                         => RpcStatusCode.Unknown
+        };
+
+        OptionsLoaded?.Invoke(this, new MentionOptionsLoadedEventArgs(filterValue, new MentionOptionsLoadResult()
+        {
+            UserFriendlyMessage = outcome.Error?.Message,
+            StatusCode          = statusCode
+        }));
+    }
+
+    public void PopulateComplete()
+    {
+        // Apply the search filter
+        RefreshView();
+
+        // Fire the Populated event containing the read-only view data.
+        var populated = new MentionsPopulatedEventArgs(_view);
+        NotifyPopulated(populated);
+    }
+
+    protected virtual void NotifyPopulating(MentionsPopulatingEventArgs e)
+    {
+        IsLoading = true;
+        Populating?.Invoke(this, e);
+    }
+
+    protected virtual void NotifyPopulated(MentionsPopulatedEventArgs e)
+    {
+        IsLoading = false;
+        Populated?.Invoke(this, e);
+    }
+
+    #endregion
+
+    #region 数据视图
+
+    private void ItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (_items == null)
+        {
+            _items = OptionsSource == null ? null : BuildItemsCache(OptionsSource);
+            RefreshView();
+            return;
+        }
+
+        switch (e.Action)
+        {
+            case NotifyCollectionChangedAction.Remove when e.OldItems != null:
+                for (var index = 0; index < e.OldItems.Count; index++)
+                {
+                    _items.RemoveAt(e.OldStartingIndex);
+                }
+                break;
+            case NotifyCollectionChangedAction.Add when e.NewItems != null:
+                for (var index = 0; index < e.NewItems.Count; index++)
+                {
+                    _items.Insert(e.NewStartingIndex + index, (IMentionOption)e.NewItems[index]!);
+                }
+                break;
+            case NotifyCollectionChangedAction.Replace when e.NewItems != null:
+                for (var index = 0; index < e.NewItems.Count; index++)
+                {
+                    _items[e.NewStartingIndex + index] = (IMentionOption)e.NewItems[index]!;
+                }
+                break;
+            case NotifyCollectionChangedAction.Move when e.OldItems != null:
+                var movedItems = e.OldItems.Cast<IMentionOption>().ToList();
+                for (var index = 0; index < movedItems.Count; index++)
+                {
+                    _items.RemoveAt(e.OldStartingIndex);
+                }
+                for (var index = 0; index < movedItems.Count; index++)
+                {
+                    _items.Insert(e.NewStartingIndex + index, movedItems[index]);
+                }
+                break;
+            case NotifyCollectionChangedAction.Reset:
+                _items = OptionsSource == null ? null : BuildItemsCache(OptionsSource);
+                break;
+        }
+
+        // Refresh the observable collection used in the selection adapter.
+        RefreshView();
+    }
+
+    private static List<IMentionOption> BuildItemsCache(IEnumerable source)
+    {
+        var items = source switch
+        {
+            ICollection collection => new List<IMentionOption>(collection.Count),
+            IReadOnlyCollection<IMentionOption> collection => new List<IMentionOption>(collection.Count),
+            _ => new List<IMentionOption>()
+        };
+        foreach (var item in source)
+        {
+            items.Add((IMentionOption)item!);
+        }
+        return items;
+    }
+
+    private void ClearView()
+    {
+        _view = null;
+        if (_candidateList != null)
+        {
+            _candidateList.ItemsSource = null;
+            _candidateList.SelectedItem = null;
         }
     }
-    
+
+    private void RefreshView()
+    {
+        if (_items == null)
+        {
+            ClearView();
+            return;
+        }
+
+        // Determine if any filtering mode is on
+        var filter = Filter ?? ValueFilterFactory.BuildFilter(ValueFilterMode.Contains);
+        Debug.Assert(filter != null);
+        var items = _items;
+
+        // cache properties
+        var newViewItems = new Collection<IMentionOption>();
+
+        foreach (var item in items)
+        {
+            bool inResults = string.IsNullOrWhiteSpace(FilterValue) || filter.Filter(GetValueByOption(item), FilterValue);
+
+            if (inResults)
+            {
+                newViewItems.Add(item);
+            }
+        }
+
+        _view = newViewItems;
+
+        if (_candidateList != null)
+        {
+            if (_candidateList.ItemsSource != _view)
+            {
+                _candidateList.ItemsSource = _view;
+            }
+            _candidateList.SelectedItem = _view.Count > 0 ? _view[0] : null;
+        }
+    }
+
+    private string? GetValueByOption(IMentionOption option)
+    {
+        string? value = null;
+        if (FilterValueSelector != null)
+        {
+            value = FilterValueSelector(option)?.ToString();
+        }
+        else
+        {
+            value = option.Header?.ToString() ?? option.Value?.ToString() ?? option.Key;
+        }
+        return value;
+    }
+
+    #endregion
+
+    #region 文本区域指针协作
+
     internal void NotifyTextAreaPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
@@ -1090,7 +1389,7 @@ public class Mentions : TemplatedControl,
                 return;
             }
         }
-    
+
         if (IsDropDownOpen)
         {
             if (e.Source is Control sourceControl)
@@ -1112,7 +1411,7 @@ public class Mentions : TemplatedControl,
             PseudoClasses.Set(StdPseudoClass.Pressed, true);
         }
     }
-    
+
     internal void NotifyTextAreaPointerReleased(PointerReleasedEventArgs e)
     {
         if (!e.Handled && e.Source is Visual source)
@@ -1122,228 +1421,10 @@ public class Mentions : TemplatedControl,
                 e.Handled = true;
             }
         }
-    
+
         PseudoClasses.Set(StdPseudoClass.Pressed, false);
         base.OnPointerReleased(e);
     }
-    
-    private void ClearView()
-    {
-        _view = null;
-    }
-    
-    private void RefreshView()
-    {
-        // If we have a running filter, trigger a request first
-        if (_filterInAction)
-        {
-            _cancelRequested = true;
-        }
-        
-        // Indicate that filtering is ongoing
-        _filterInAction = true;
-        
-        try
-        {
-            if (_items == null)
-            {
-                ClearView();
-                return;
-            }
-        
-            // Determine if any filtering mode is on
-            var filter = Filter ?? ValueFilterFactory.BuildFilter(ValueFilterMode.Contains);
-            Debug.Assert(filter != null);
-            var items = _items;
-        
-            // cache properties
-            var newViewItems = new Collection<IMentionOption>();
-        
-            foreach (var item in items)
-            {
-                // Exit the fitter when requested if cancellation is requested
-                if (_cancelRequested)
-                {
-                    return;
-                }
 
-                bool inResults = string.IsNullOrWhiteSpace(FilterValue) || filter.Filter(GetValueByOption(item), FilterValue);
-              
-                if (inResults)
-                {
-                    newViewItems.Add(item);
-                }
-            }
-        
-            _view = newViewItems;
-            
-            if (_candidateList != null)
-            {
-                if (_candidateList.ItemsSource != _view)
-                {
-                    _candidateList.ItemsSource = _view;
-                }
-            }
-            if (_candidateList != null && _view?.Count > 0)
-            {
-                _candidateList.SelectedItem = _view[0];
-            }
-        }
-        finally
-        {
-            // indicate that filtering is not ongoing anymore
-            _filterInAction  = false;
-            _cancelRequested = false;
-        }
-    }
-    
-    private string? GetValueByOption(IMentionOption option)
-    {
-        string? value = null;
-        if (FilterValueSelector != null)
-        {
-            value = FilterValueSelector(option)?.ToString();
-        }
-        else
-        {
-            value = option.Header?.ToString() ?? option.Value?.ToString() ?? option.Key;
-        }
-        return value;
-    }
-    
-    private void ClosingDropDown(bool oldValue)
-    {
-        var args = new CancelEventArgs();
-        NotifyDropDownClosing(args);
-
-        if (args.Cancel)
-        {
-            _ignorePropertyChange = true;
-            SetCurrentValue(IsDropDownOpenProperty, oldValue);
-        }
-        else
-        {
-            CloseDropDown();
-        }
-
-        UpdatePseudoClasses();
-    }
-    
-    private void CloseDropDown()
-    {
-        if (_popupHasOpened)
-        {
-            if (_popup != null)
-            {
-                _popup.IsOpen = false;
-            }
-            NotifyDropDownClosed(EventArgs.Empty);
-        }
-    }
-    
-    private void OpeningDropDown(bool oldValue)
-    {
-        var args = new CancelEventArgs();
-
-        // Opening
-        NotifyDropDownOpening(args);
-
-        if (args.Cancel)
-        {
-            _ignorePropertyChange = true;
-            SetCurrentValue(IsDropDownOpenProperty, oldValue);
-        }
-        else
-        {
-            OpenDropDown();
-        }
-
-        UpdatePseudoClasses();
-    }
-    
-    private void OpenDropDown()
-    {
-        if (_popup != null)
-        {
-            _popup.IsOpen = true;
-        }
-        _popupHasOpened = true;
-        NotifyDropDownOpened(EventArgs.Empty);
-    }
-    
-    protected virtual void NotifyDropDownOpening(CancelEventArgs eventArgs)
-    {
-        DropDownOpening?.Invoke(this, eventArgs);
-    }
-    
-    protected virtual void NotifyDropDownOpened(EventArgs eventArgs)
-    {
-        DropDownOpened?.Invoke(this, eventArgs);
-    }
-    
-    protected virtual void NotifyDropDownClosing(CancelEventArgs eventArgs)
-    {
-        DropDownClosing?.Invoke(this, eventArgs);
-    }
-
-    protected virtual void NotifyDropDownClosed(EventArgs eventArgs)
-    {
-        DropDownClosed?.Invoke(this, eventArgs);
-    }
-    
-    #region 实现 FormItem 接口
-    private EventHandler? _formValueChanged;
-    event EventHandler? IFormItemAware.ValueChanged
-    {
-        add => _formValueChanged += value;
-        remove => _formValueChanged -= value;
-    }
-
-    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value?.ToString());
-
-    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
-    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
-    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
-    void IFormItemFeedbackAware.SetFeedbackControl(FormValidateFeedback? value) => NotifySetFeedBackControl(value);
-    private void HandleValueChanged()
-    {
-        _formValueChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    protected virtual void NotifySetFormValue(string? value)
-    {
-        SetCurrentValue(ValueProperty, value);
-    }
-
-    protected virtual string? NotifyGetFormValue()
-    {
-        return Value;
-    }
-
-    protected virtual void NotifyClearFormValue()
-    {
-        SetCurrentValue(ValueProperty, null);
-    }
-
-    protected virtual void NotifyValidateStatus(FormValidateStatus status)
-    {
-        if (status == FormValidateStatus.Error)
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Error);
-        }
-        else if (status == FormValidateStatus.Warning)
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Warning);
-        }
-        else
-        {
-            SetCurrentValue(StatusProperty, InputControlStatus.Default);
-        }
-    }
-    
-    protected virtual void NotifySetFeedBackControl(FormValidateFeedback? value)
-    {
-        FormFeedback = value;
-    }
     #endregion
 }
