@@ -1,10 +1,13 @@
 using System;
 using System.Linq;
 using System.Threading;
+using Avalonia.Layout;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AtomHighlightStrategy = AtomUI.Desktop.Controls.TextBlockHighlightStrategy;
+using AtomHighlightableTextBlock = AtomUI.Desktop.Controls.HighlightableTextBlock;
 using AtomListBox = AtomUI.Desktop.Controls.ListBox;
 using AtomListBoxItem = AtomUI.Desktop.Controls.ListBoxItem;
 using AvaloniaWindow = Avalonia.Controls.Window;
@@ -176,6 +179,48 @@ public class ListBoxFilteringTests
 
             unmatchedItem.IsVisible.ShouldBeTrue(
                 "turning off HideUnMatched should restore the item's original visibility.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Filtering_Highlight_Text_Uses_Item_Vertical_Content_Alignment()
+    {
+        var listBox = new AtomListBox
+        {
+            Width       = 360,
+            Height      = 96,
+            FilterValue = "car",
+            ItemsSource = new[]
+            {
+                "Racing car sprays burning fuel into crowd.",
+                "Japanese princess to wed commoner."
+            }
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 420,
+            Height  = 160,
+            Content = listBox
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var matchedItem = (AtomListBoxItem)listBox.ContainerFromIndex(0)!;
+            var highlightText = matchedItem.GetVisualDescendants()
+                                           .OfType<AtomHighlightableTextBlock>()
+                                           .Single();
+
+            matchedItem.VerticalContentAlignment.ShouldBe(VerticalAlignment.Center);
+            highlightText.VerticalAlignment.ShouldBe(
+                matchedItem.VerticalContentAlignment,
+                "filter result text should keep the same vertical alignment as normal item content.");
         }
         finally
         {

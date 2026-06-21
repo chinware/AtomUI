@@ -27,6 +27,8 @@
                                                      HighlightStrategy="{TemplateBinding FilterHighlightStrategy}"
                                                      IsVisible="{TemplateBinding IsFiltering}"
                                                      HighlightWords="{TemplateBinding FilterHighlightWords}"
+                                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                                      Text="{TemplateBinding ContentText}"/>
                     </Panel>
                 </DockPanel>

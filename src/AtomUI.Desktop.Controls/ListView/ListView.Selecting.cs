@@ -1222,6 +1222,7 @@ public partial class ListView
         {
             model.PropertyChanged  -= OnSelectionModelPropertyChanged;
             model.SelectionChanged -= OnSelectionModelSelectionChanged;
+            model.LostSelection    -= OnSelectionModelLostSelection;
         }
     }
 
