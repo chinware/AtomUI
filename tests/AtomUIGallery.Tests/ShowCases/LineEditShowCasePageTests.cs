@@ -153,6 +153,22 @@ public class LineEditShowCasePageTests
     }
 
     [Fact]
+    public void LineEdit_ShowCase_SearchEdit_SizeType_Item_Demonstrates_All_Size_Modes()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
+        var item   = ExtractShowCaseItem(source, "LineEditShowCaseLangResource SearchEditSizeTypeTitle");
+
+        CountOccurrences(item, "<atom:SearchEdit").ShouldBe(4);
+        item.ShouldContain("Name=\"CustomSizeTypeSearchEdit\"");
+        item.ShouldContain("SizeType=\"Large\"");
+        item.ShouldContain("SizeType=\"Middle\"");
+        item.ShouldContain("SizeType=\"Small\"");
+        item.ShouldContain("SizeType=\"Custom\"");
+        item.ShouldContain("Height=\"38\"");
+        item.ShouldContain("FontSize=\"15\"");
+    }
+
+    [Fact]
     public void LineEdit_ShowCase_Examples_Match_Approved_Control_Demo_Content()
     {
         var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
@@ -175,6 +191,23 @@ public class LineEditShowCasePageTests
         panelCloseStart.ShouldBeGreaterThan(firstItemStart);
 
         return StripDeferredLoadingMarkup(source[firstItemStart..panelCloseStart]);
+    }
+
+    private static string ExtractShowCaseItem(string source, string titleMarker)
+    {
+        var titleIndex = source.IndexOf(titleMarker, StringComparison.Ordinal);
+        titleIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+        const string itemStartMarker = "<gallery:ShowCaseItem";
+        const string itemEndMarker   = "</gallery:ShowCaseItem>";
+
+        var itemStart = source.LastIndexOf(itemStartMarker, titleIndex, StringComparison.Ordinal);
+        itemStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemEnd = source.IndexOf(itemEndMarker, titleIndex, StringComparison.Ordinal);
+        itemEnd.ShouldBeGreaterThan(titleIndex);
+
+        return source[itemStart..(itemEnd + itemEndMarker.Length)];
     }
 
     private static string StripDeferredLoadingMarkup(string source)
