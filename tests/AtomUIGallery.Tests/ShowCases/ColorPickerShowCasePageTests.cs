@@ -43,6 +43,11 @@ public class ColorPickerShowCasePageTests
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("ColorPickerShowCaseLangResource BasicTitle");
         source.ShouldContain("ColorPickerShowCaseLangResource PresetColorsTitle");
+        source.ShouldContain("SizeType=\"Custom\"");
+        source.ShouldContain("ColorPickerShowCaseLangResource P2LabelSizeTypeSmall");
+        source.ShouldContain("ColorPickerShowCaseLangResource P2LabelSizeTypeMiddle");
+        source.ShouldContain("ColorPickerShowCaseLangResource P2LabelSizeTypeLarge");
+        source.ShouldContain("ColorPickerShowCaseLangResource P2LabelSizeTypeCustom");
         source.ShouldContain("IsOccupyEntireRow=\"True\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
@@ -124,6 +129,10 @@ public class ColorPickerShowCasePageTests
             source.ShouldContain("ScenarioExamples");
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
+            source.ShouldContain("P2LabelSizeTypeSmall");
+            source.ShouldContain("P2LabelSizeTypeMiddle");
+            source.ShouldContain("P2LabelSizeTypeLarge");
+            source.ShouldContain("P2LabelSizeTypeCustom");
             source.ShouldContain("PageSubtitle");
             source.ShouldContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyDefaultValue");

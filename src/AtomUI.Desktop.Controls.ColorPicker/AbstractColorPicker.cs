@@ -249,6 +249,14 @@ public abstract class AbstractColorPicker : AvaloniaButton,
             o => o.EffectiveCornerRadius,
             (o, v) => o.EffectiveCornerRadius = v);
 
+    internal static readonly DirectProperty<AbstractColorPicker, double> ColorBlockSizeProperty =
+        AvaloniaProperty.RegisterDirect<AbstractColorPicker, double>(nameof(ColorBlockSize),
+            o => o.ColorBlockSize,
+            (o, v) => o.ColorBlockSize = v);
+
+    internal static readonly StyledProperty<Thickness> TriggerPaddingProperty =
+        AvaloniaProperty.Register<AbstractColorPicker, Thickness>(nameof(TriggerPadding));
+
     internal static readonly StyledProperty<SpaceItemPosition?> CompactSpaceItemPositionProperty =
         CompactSpaceAwareControlProperty.CompactSpaceItemPositionProperty.AddOwner<AbstractColorPicker>();
 
@@ -301,6 +309,20 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         get => _effectiveCornerRadius;
         set => SetAndRaise(EffectiveCornerRadiusProperty, ref _effectiveCornerRadius, value);
+    }
+
+    private double _colorBlockSize = double.NaN;
+
+    internal double ColorBlockSize
+    {
+        get => _colorBlockSize;
+        private set => SetAndRaise(ColorBlockSizeProperty, ref _colorBlockSize, value);
+    }
+
+    internal Thickness TriggerPadding
+    {
+        get => GetValue(TriggerPaddingProperty);
+        set => SetValue(TriggerPaddingProperty, value);
     }
 
     internal SpaceItemPosition? CompactSpaceItemPosition
@@ -408,7 +430,9 @@ public abstract class AbstractColorPicker : AvaloniaButton,
     {
         AffectsMeasure<AbstractColorPicker>(IsTextVisibleProperty,
             FormatProperty,
-            ColorBlockBackgroundProperty);
+            ColorBlockBackgroundProperty,
+            ColorBlockSizeProperty,
+            TriggerPaddingProperty);
         IsPickerOpenProperty.Changed.AddClassHandler<AbstractColorPicker>((picker, args) => picker.HandleIsPickerOpenChanged(args));
         TriggerTypeProperty.Changed.AddClassHandler<AbstractColorPicker>((picker, _) => picker.SetupTriggerHandler());
         InputElement.PointerPressedEvent.AddClassHandler<AbstractColorPicker>(
@@ -866,6 +890,14 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         {
             ConfigurePopupMotion();
         }
+
+        if (change.Property == SizeTypeProperty ||
+            change.Property == HeightProperty ||
+            change.Property == TriggerPaddingProperty ||
+            change.Property == BorderThicknessProperty)
+        {
+            ConfigureColorBlockSize();
+        }
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -887,6 +919,23 @@ public abstract class AbstractColorPicker : AvaloniaButton,
         SetupPopupProperties();
         ConfigureShowArrowEffective();
         ConfigureArrowPosition();
+        ConfigureColorBlockSize();
+    }
+
+    private void ConfigureColorBlockSize()
+    {
+        if (SizeType != CustomizableSizeType.Custom || double.IsNaN(Height))
+        {
+            ColorBlockSize = double.NaN;
+            return;
+        }
+
+        var colorBlockSize = Height -
+                             TriggerPadding.Top -
+                             TriggerPadding.Bottom -
+                             BorderThickness.Top -
+                             BorderThickness.Bottom;
+        ColorBlockSize = Math.Max(0, colorBlockSize);
     }
 
     private void DetachPopupHandlers()

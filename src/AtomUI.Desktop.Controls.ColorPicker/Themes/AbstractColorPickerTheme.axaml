@@ -15,6 +15,7 @@
         <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgElevated}" />
         <Setter Property="Padding" Value="{atom:ColorPickerTokenResource TriggerPadding}" />
+        <Setter Property="TriggerPadding" Value="{atom:ColorPickerTokenResource TriggerPadding}" />
         <Setter Property="EmptyColorText" Value="{atom:ColorPickerLangResource EmptyColorText}" />
         <Setter Property="IsArrowVisible" Value="True" />
         <Setter Property="ShouldUseOverlayPopup" Value="True" />

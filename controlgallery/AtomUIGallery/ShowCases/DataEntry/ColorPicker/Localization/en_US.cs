@@ -10,6 +10,10 @@ internal partial class en_US : LanguageProvider
     public const string BasicDescription = "Basic Usage.";
     public const string TriggerSizeTitle = "Trigger size";
     public const string TriggerSizeDescription = "Ant Design supports three trigger sizes: small, default and large.If a large or small trigger is desired, set the size property to either large or small.respectively. Omit the size property for a trigger with the default size.";
+    public const string P2LabelSizeTypeSmall = "Small";
+    public const string P2LabelSizeTypeMiddle = "Middle";
+    public const string P2LabelSizeTypeLarge = "Large";
+    public const string P2LabelSizeTypeCustom = "Custom";
     public const string LineGradientTitle = "Line Gradient";
     public const string LineGradientDescription = "Set the color to a single or a gradient color via mode.";
     public const string RenderingTriggerTextTitle = "Rendering Trigger Text";

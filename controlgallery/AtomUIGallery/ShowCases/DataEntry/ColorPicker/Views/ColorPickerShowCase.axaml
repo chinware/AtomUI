@@ -148,19 +148,55 @@
             <gallery:ShowCaseItem.DeferredContentTemplate>
                 <DataTemplate x:DataType="vm:ColorPickerViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small"/>
-                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small" IsTextVisible="True"/>
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <atom:TextBlock Width="64"
+                                    VerticalAlignment="Center"
+                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                    Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeSmall}" />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small"/>
+                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small" IsTextVisible="True"/>
+                    </StackPanel>
                 </StackPanel>
         
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle"/>
-                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle" IsTextVisible="True"/>
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <atom:TextBlock Width="64"
+                                    VerticalAlignment="Center"
+                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                    Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeMiddle}" />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle"/>
+                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle" IsTextVisible="True"/>
+                    </StackPanel>
                 </StackPanel>
         
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large"/>
-                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large" IsTextVisible="True"/>
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <atom:TextBlock Width="64"
+                                    VerticalAlignment="Center"
+                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                    Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeLarge}" />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large"/>
+                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large" IsTextVisible="True"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                    <atom:TextBlock Width="64"
+                                    VerticalAlignment="Center"
+                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                    Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeCustom}" />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <atom:ColorPicker DefaultValue="#1677ff"
+                                          SizeType="Custom"
+                                          Width="48"
+                                          Height="48" />
+                        <atom:ColorPicker DefaultValue="#1677ff"
+                                          SizeType="Custom"
+                                          IsTextVisible="True"
+                                          Height="48"
+                                          FontSize="18" />
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
                 </DataTemplate>

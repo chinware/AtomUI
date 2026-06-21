@@ -51,6 +51,18 @@ public class TimePickerShowCasePageTests
         CountOccurrences(source, "DataTemplate x:DataType=\"vm:TimePickerViewModel\"").ShouldBe(9);
         source.ShouldContain("TimePickerShowCaseLangResource BasicTitle");
         source.ShouldContain("TimePickerShowCaseLangResource HourFormatsTitle");
+        source.ShouldContain("Name=\"PickerSizeTypeOptionGroup\"");
+        source.ShouldContain("OptionCheckedChanged=\"HandlePickerSizeTypeOptionCheckedChanged\"");
+        source.ShouldContain("TimePickerShowCaseLangResource P2TextExpandDirection");
+        source.ShouldContain("TimePickerShowCaseLangResource P2ContentLarge");
+        source.ShouldContain("TimePickerShowCaseLangResource P2ContentDefault");
+        source.ShouldContain("TimePickerShowCaseLangResource P2ContentSmall");
+        source.ShouldContain("TimePickerShowCaseLangResource P2ContentCustom");
+        source.ShouldContain("SizeType=\"{Binding PickerSizeType}\"");
+        source.ShouldContain("Selector=\"atom|TimePicker.size-demo-picker[SizeType=Custom]\"");
+        source.ShouldContain("Selector=\"atom|RangeTimePicker.size-demo-picker[SizeType=Custom]\"");
+        source.ShouldContain("Property=\"Height\" Value=\"38\"");
+        source.ShouldContain("Property=\"FontSize\" Value=\"15\"");
         source.ShouldContain("TimePickerShowCaseLangResource VariantsTitle");
         source.ShouldContain("TimePickerShowCaseLangResource TimeRangePickerTitle");
         source.ShouldNotContain("<atom:TabControl");
@@ -82,6 +94,7 @@ public class TimePickerShowCasePageTests
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new TimePickerApiDataGrid()");
         codeBehindSource.ShouldContain("new TimePickerDesignTokenDataGrid()");
+        codeBehindSource.ShouldContain("HandlePickerSizeTypeOptionCheckedChanged");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:TimePickerApiRow\"");
@@ -132,6 +145,8 @@ public class TimePickerShowCasePageTests
             source.ShouldContain("ScenarioExamples");
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
+            source.ShouldContain("P2TextExpandDirection");
+            source.ShouldContain("P2ContentCustom");
             source.ShouldContain("PageSubtitle");
             source.ShouldContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertySelectedTime");

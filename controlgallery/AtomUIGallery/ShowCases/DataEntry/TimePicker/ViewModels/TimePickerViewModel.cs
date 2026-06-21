@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUIGallery.Localization;
@@ -31,9 +32,28 @@ public class TimePickerViewModel : ReactiveObject, IRoutableViewModel
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
     }
 
+    private CustomizableSizeType _pickerSizeType = CustomizableSizeType.Middle;
+
+    public CustomizableSizeType PickerSizeType
+    {
+        get => _pickerSizeType;
+        set => this.RaiseAndSetIfChanged(ref _pickerSizeType, value);
+    }
+
     public TimePickerViewModel(IScreen screen)
     {
         HostScreen = screen;
+    }
+
+    public void HandlePickerSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        PickerSizeType = args.Index switch
+        {
+            0 => CustomizableSizeType.Large,
+            2 => CustomizableSizeType.Small,
+            3 => CustomizableSizeType.Custom,
+            _ => CustomizableSizeType.Middle
+        };
     }
 
     public void EnsureApiRows()

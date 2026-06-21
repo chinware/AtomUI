@@ -263,6 +263,7 @@ public class DatePicker : InfoPickerInput
         {
             Text = null;
         }
+        CalculatePreferredWidth();
     }
 
     private void HandleConfirmed(object? sender, EventArgs args)
@@ -274,6 +275,7 @@ public class DatePicker : InfoPickerInput
     private void ClearHoverSelectedInfo()
     {
         Text = FormatDateTime(_pickerPresenter?.SelectedDateTime ?? SelectedDateTime);
+        CalculatePreferredWidth();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -299,6 +301,7 @@ public class DatePicker : InfoPickerInput
         if (change.Property == SelectedDateTimeProperty)
         {
             Text = FormatDateTime(SelectedDateTime);
+            CalculatePreferredWidth();
         }
         else if (IsFormattedTextAffectingProperty(change.Property))
         {
@@ -327,6 +330,7 @@ public class DatePicker : InfoPickerInput
                property == FontStyleProperty ||
                property == FontWeightProperty ||
                property == PlaceholderTextProperty ||
+               property == SizeTypeProperty ||
                property == MinWidthProperty ||
                property == WidthProperty ||
                property == MaxWidthProperty ||
@@ -358,15 +362,7 @@ public class DatePicker : InfoPickerInput
                     };
                 }
             }
-            var preferredInputWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(
-                format, FontSize, FontFamily, FontStyle, FontWeight, formatInfo).Width;
-            if (PlaceholderText != null)
-            {
-                preferredInputWidth = Math.Max(preferredInputWidth,
-                    TextUtils.CalculateTextSize(PlaceholderText, FontSize, FontFamily, FontStyle, FontWeight).Width);
-            }
-
-            preferredInputWidth *= 1.1;
+            var preferredInputWidth = CalculateContentPreferredWidth(Text, PlaceholderText, format, formatInfo);
 
             if (!double.IsNaN(MinWidth))
             {
@@ -379,6 +375,26 @@ public class DatePicker : InfoPickerInput
             }
             PreferredInputWidth = preferredInputWidth;
         }
+    }
+
+    private double CalculateContentPreferredWidth(
+        string? text,
+        string? placeholderText,
+        string format,
+        DateTimeFormatInfo? formatInfo)
+    {
+        if (!string.IsNullOrEmpty(text))
+        {
+            return TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
+        }
+
+        if (!string.IsNullOrEmpty(placeholderText))
+        {
+            return TextUtils.CalculateTextSize(placeholderText, FontSize, FontFamily, FontStyle, FontWeight).Width;
+        }
+
+        return DateTimeUtils.CalculateWidestFormattedDateTimeSize(
+            format, FontSize, FontFamily, FontStyle, FontWeight, formatInfo).Width;
     }
 
     protected override bool ShowClearButtonPredicate()
