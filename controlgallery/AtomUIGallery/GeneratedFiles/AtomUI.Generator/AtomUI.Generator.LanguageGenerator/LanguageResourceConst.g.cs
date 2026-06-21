@@ -6744,6 +6744,7 @@ namespace AtomUIGallery.Localization
         InfoPackageLabel,
         LoadingDescription,
         LoadingTitle,
+        P2ContentCustom,
         P2ContentToggleDisabled,
         P2ContentToggleLoading,
         P2OffContentOff,

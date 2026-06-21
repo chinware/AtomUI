@@ -12,7 +12,7 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentCategory = "數據錄入";
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "在兩個互斥狀態之間切換，並支持文本、圖標、加載和尺寸變體。";
-    public const string PageDescription = "ToggleSwitch 用於即時的開關選擇，支持禁用、加載、自定義開關內容、圖標內容、兩種尺寸、動效和波紋反饋。";
+    public const string PageDescription = "ToggleSwitch 用於即時的開關選擇，支持禁用、加載、自定義開關內容、圖標內容、尺寸變體、動效和波紋反饋。";
     public const string InfoNamespaceLabel = "命名空間：";
     public const string InfoPackageLabel = "包：";
     public const string InfoBaseClassLabel = "基類：";
@@ -26,7 +26,7 @@ internal partial class zh_TW : LanguageProvider
     public const string ApiPropertyOnContentTemplate = "用於渲染 OnContent 的模板。";
     public const string ApiPropertyOffContent = "開關未選中時顯示的內容。";
     public const string ApiPropertyOffContentTemplate = "用於渲染 OffContent 的模板。";
-    public const string ApiPropertySizeType = "控制中號或小號開關尺寸。";
+    public const string ApiPropertySizeType = "控制 Large、Middle、Small 或 Custom 開關尺寸。";
     public const string ApiPropertyIsLoading = "顯示加載指示器和等待交互狀態。";
     public const string ApiPropertyIsMotionEnabled = "啟用或禁用開關動效。";
     public const string ApiPropertyIsWaveSpiritEnabled = "啟用或禁用波紋反饋。";
@@ -63,12 +63,13 @@ internal partial class zh_TW : LanguageProvider
     public const string DisabledDescription = "Switch 的禁用狀態。";
     public const string TextAndIconTitle = "文本和圖標";
     public const string TextAndIconDescription = "帶文本和圖標。";
-    public const string TwoSizesTitle = "兩種尺寸";
-    public const string TwoSizesDescription = "size=Small 表示小尺寸開關。";
+    public const string TwoSizesTitle = "尺寸";
+    public const string TwoSizesDescription = "SizeType 控制預設和 Custom 開關尺寸模式。";
     public const string LoadingTitle = "加載中";
     public const string LoadingDescription = "標記開關的等待狀態。";
     public const string P2ContentToggleDisabled = "切換禁用";
     public const string P2ContentToggleLoading = "切換加載";
+    public const string P2ContentCustom = "自定義";
 
     public const string P2OnContentOn = "開";
 

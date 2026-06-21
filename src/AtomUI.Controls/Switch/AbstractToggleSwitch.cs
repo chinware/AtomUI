@@ -238,6 +238,7 @@ public abstract class AbstractToggleSwitch : ToggleButton,
     private WaveSpiritDecorator? _waveSpiritDecorator;
     private Canvas? _mainLayout;
     private IDisposable? _loadingCursorValue;
+    private EventHandler? _formValueChanged;
     
     static AbstractToggleSwitch()
     {
@@ -250,6 +251,75 @@ public abstract class AbstractToggleSwitch : ToggleButton,
             OffContentOffsetProperty);
         AffectsRender<AbstractToggleSwitch>(GrooveBackgroundProperty, SwitchOpacityProperty);
         IsCheckedProperty.Changed.AddClassHandler<AbstractToggleSwitch>((toggleSwitch, args) => toggleSwitch.NotifyFormValueChanged(args.NewValue as bool?));
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.DisableTransitions();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        this.Dispatcher.Post(this.EnableTransitions);
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        var scope = e.NameScope;
+        _switchKnob  = scope.Find<SwitchKnob>("PART_SwitchKnob");
+        if (_switchKnob is not null)
+        {
+            _switchKnob.KnobSize = KnobSize;
+        }
+
+        _onContentPresenter  = scope.Find<ContentPresenter>("PART_OnContentPresenter");
+        _offContentPresenter = scope.Find<ContentPresenter>("PART_OffContentPresenter");
+        _waveSpiritDecorator = scope.Find<WaveSpiritDecorator>("PART_WaveSpirit");
+        _mainLayout          = scope.Find<Canvas>("PART_MainContainer");
+        HandleLoadingState(IsLoading);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsLoadingProperty)
+        {
+            HandleLoadingState(IsLoading);
+        }
+        else if ((change.Property == IsPointerOverProperty && !IsLoading) ||
+                 change.Property == IsCheckedProperty ||
+                 change.Property == IsEnabledProperty)
+        {
+            if (change.Property == IsCheckedProperty && IsMotionEnabled)
+            {
+                CalculateElementsOffset(GrooveRect().Size);
+                if (IsWaveSpiritEnabled)
+                {
+                    _waveSpiritDecorator?.Play();
+                }
+            }
+        }
+        else if (change.Property == KnobSizeProperty)
+        {
+            if (_switchKnob is not null)
+            {
+                _switchKnob.KnobSize = KnobSize;
+            }
+        }
+
+        if (change.Property == OffContentProperty ||
+            change.Property == OnContentProperty)
+        {
+            SetupContent(change.OldValue, change.NewValue, change.Property == OnContentProperty);
+        }
+        else if (change.Property == IsCheckedProperty)
+        {
+            _isCheckedChanged = true;
+        }
+
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -302,48 +372,23 @@ public abstract class AbstractToggleSwitch : ToggleButton,
         
         return finalSize;
     }
-    
-    private void AdjustOffsetOnPressed()
+
+    public sealed override void Render(DrawingContext context)
     {
-        var handleRect = HandleRect();
-        var handleSize = handleRect.Width;
-
-        var contentOffsetDelta = handleSize * (STRETCH_FACTOR - 1);
-
-        if (IsChecked.HasValue && IsChecked.Value)
-        {
-            // 点击的时候如果是选中，需要调整坐标
-            OnContentOffset = new Point(OnContentOffset.X - contentOffsetDelta, OffContentOffset.Y);
-        }
-        else
-        {
-            OffContentOffset = new Point(OffContentOffset.X + contentOffsetDelta, OffContentOffset.Y);
-        }
-
-        if (_switchKnob is not null)
-        {
-            _switchKnob.KnobSize = new Size(handleSize, KnobSize.Height);
-        }
-
-        KnobRect       = handleRect;
-        KnobMovingRect = KnobRect;
+        using var state = context.PushOpacity(SwitchOpacity);
+        var       size  = DesiredSize.Deflate(Margin);
+        context.DrawPilledRect(GrooveBackground, null, new Rect(new Point(0, 0), size));
     }
 
-    private void AdjustOffsetOnReleased()
+    public bool HitTest(Point point)
     {
-        CalculateElementsOffset(GrooveRect().Size);
-
-        if (_switchKnob is not null)
+        if (!IsEnabled || IsLoading)
         {
-            // 延迟更新 KnobSize，让 Transition 动画有时间完成
-            this.Dispatcher.InvokeAsync(() =>
-            {
-                if (_switchKnob is not null)
-                {
-                    _switchKnob.KnobSize = KnobSize;
-                }
-            });
+            return false;
         }
+
+        var grooveRect = GrooveRect();
+        return grooveRect.Contains(point);
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -371,80 +416,45 @@ public abstract class AbstractToggleSwitch : ToggleButton,
         }
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    #region 实现 FormItem 接口
+
+    event EventHandler? IFormItemAware.ValueChanged
     {
-        base.OnPropertyChanged(change);
-        if (change.Property == IsLoadingProperty)
-        {
-            HandleLoadingState(IsLoading);
-        }
-        else if ((change.Property == IsPointerOverProperty && !IsLoading) ||
-                 change.Property == IsCheckedProperty ||
-                 change.Property == IsEnabledProperty)
-        {
-            if (change.Property == IsCheckedProperty && IsMotionEnabled)
-            {
-                CalculateElementsOffset(GrooveRect().Size);
-                if (IsWaveSpiritEnabled)
-                {
-                    _waveSpiritDecorator?.Play();
-                }
-            }
-        }
-        else if (change.Property == KnobSizeProperty)
-        {
-            if (_switchKnob is not null)
-            {
-                _switchKnob.KnobSize = KnobSize;
-            }
-        }
-
-        if (change.Property == OffContentProperty ||
-            change.Property == OnContentProperty)
-        {
-            SetupContent(change.OldValue, change.NewValue, change.Property == OnContentProperty);
-        }
-        else if (change.Property == IsCheckedProperty)
-        {
-            _isCheckedChanged = true;
-        }
-
+        add => _formValueChanged += value;
+        remove => _formValueChanged -= value;
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        var scope = e.NameScope;
-        _switchKnob  = scope.Find<SwitchKnob>("PART_SwitchKnob");
-        if (_switchKnob is not null)
-        {
-            _switchKnob.KnobSize = KnobSize;
-        }
+    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value as bool?);
 
-        _onContentPresenter  = scope.Find<ContentPresenter>("PART_OnContentPresenter");
-        _offContentPresenter = scope.Find<ContentPresenter>("PART_OffContentPresenter");
-        _waveSpiritDecorator = scope.Find<WaveSpiritDecorator>("PART_WaveSpirit");
-        _mainLayout          = scope.Find<Canvas>("PART_MainContainer");
-        HandleLoadingState(IsLoading);
+    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
+    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
+    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
+
+    protected virtual void NotifyFormValueChanged(object? value)
+    {
+        _formValueChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    public sealed override void Render(DrawingContext context)
+    protected virtual void NotifySetFormValue(bool? value)
     {
-        using var state = context.PushOpacity(SwitchOpacity);
-        var       size  = DesiredSize.Deflate(Margin);
-        context.DrawPilledRect(GrooveBackground, null, new Rect(new Point(0, 0), size));
+        SetCurrentValue(IsCheckedProperty, value);
     }
 
-    public bool HitTest(Point point)
+    protected virtual object? NotifyGetFormValue()
     {
-        if (!IsEnabled || IsLoading)
-        {
-            return false;
-        }
-
-        var grooveRect = GrooveRect();
-        return grooveRect.Contains(point);
+        return IsChecked;
     }
+
+    protected virtual void NotifyClearFormValue()
+    {
+        SetCurrentValue(IsCheckedProperty, null);
+    }
+
+    protected virtual void NotifyValidateStatus(FormValidateStatus status)
+    {
+    }
+
+    #endregion
 
     private void SetupContent(object? oldContent, object? newContent, bool isOnContent)
     {
@@ -581,56 +591,47 @@ public abstract class AbstractToggleSwitch : ToggleButton,
 
         return targetRect;
     }
-    
-    #region 实现 FormItem 接口
-    
-    private EventHandler? _formValueChanged;
-    event EventHandler? IFormItemAware.ValueChanged
+
+    private void AdjustOffsetOnPressed()
     {
-        add => _formValueChanged += value;
-        remove => _formValueChanged -= value;
+        var handleRect = HandleRect();
+        var handleSize = handleRect.Width;
+
+        var contentOffsetDelta = handleSize * (STRETCH_FACTOR - 1);
+
+        if (IsChecked.HasValue && IsChecked.Value)
+        {
+            // 点击的时候如果是选中，需要调整坐标
+            OnContentOffset = new Point(OnContentOffset.X - contentOffsetDelta, OffContentOffset.Y);
+        }
+        else
+        {
+            OffContentOffset = new Point(OffContentOffset.X + contentOffsetDelta, OffContentOffset.Y);
+        }
+
+        if (_switchKnob is not null)
+        {
+            _switchKnob.KnobSize = new Size(handleSize, KnobSize.Height);
+        }
+
+        KnobRect       = handleRect;
+        KnobMovingRect = KnobRect;
     }
 
-    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value as bool?);
-
-    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
-    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
-    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
-    
-    protected virtual void NotifyFormValueChanged(object? value)
+    private void AdjustOffsetOnReleased()
     {
-        _formValueChanged?.Invoke(this, EventArgs.Empty);
-    }
+        CalculateElementsOffset(GrooveRect().Size);
 
-    protected virtual void NotifySetFormValue(bool? value)
-    {
-        SetCurrentValue(IsCheckedProperty, value);
-    }
-
-    protected virtual object? NotifyGetFormValue()
-    {
-        return IsChecked;
-    }
-
-    protected virtual void NotifyClearFormValue()
-    {
-        SetCurrentValue(IsCheckedProperty, null);
-    }
-
-    protected virtual void NotifyValidateStatus(FormValidateStatus status)
-    {
-    }
-    #endregion
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        this.DisableTransitions();
-    }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        this.Dispatcher.Post(this.EnableTransitions);
+        if (_switchKnob is not null)
+        {
+            // 延迟更新 KnobSize，让 Transition 动画有时间完成
+            this.Dispatcher.InvokeAsync(() =>
+            {
+                if (_switchKnob is not null)
+                {
+                    _switchKnob.KnobSize = KnobSize;
+                }
+            });
+        }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace AtomUIGallery.ShowCases.ToggleSwitch;
 
@@ -36,6 +37,22 @@ public partial class ToggleSwitchShowCase : GalleryReactiveUserControl<ToggleSwi
     {
         base.OnDataContextChanged(e);
         _scenarioController.UpdateDataContext(DataContext);
+    }
+
+    public void HandleToggleDisabledButtonClick(object? sender, RoutedEventArgs args)
+    {
+        if (sender is Control { DataContext: ToggleSwitchViewModel viewModel })
+        {
+            viewModel.IsDisabledDemoEnabled = !viewModel.IsDisabledDemoEnabled;
+        }
+    }
+
+    public void HandleToggleLoadingButtonClick(object? sender, RoutedEventArgs args)
+    {
+        if (sender is Control { DataContext: ToggleSwitchViewModel viewModel })
+        {
+            viewModel.IsLoadingDemoLoading = !viewModel.IsLoadingDemoLoading;
+        }
     }
 
     private static Control CreateScenarioContent(string scenario)

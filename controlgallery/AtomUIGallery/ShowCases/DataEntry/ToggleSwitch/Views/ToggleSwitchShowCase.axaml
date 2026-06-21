@@ -155,7 +155,8 @@
                             <atom:ToggleSwitch x:Name="ToggleDisabledSwitch"
                                                IsEnabled="{Binding IsDisabledDemoEnabled}" />
                             <atom:Button ButtonType="Primary"
-                                         Command="{Binding ToggleDisabledCommand}" Content="{gallery:ToggleSwitchShowCaseLangResource P2ContentToggleDisabled}" />
+                                         Click="HandleToggleDisabledButtonClick"
+                                         Content="{gallery:ToggleSwitchShowCaseLangResource P2ContentToggleDisabled}" />
                         </StackPanel>
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
@@ -204,6 +205,11 @@
                         <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
                             <atom:ToggleSwitch />
                             <atom:ToggleSwitch SizeType="Small" />
+                            <atom:ToggleSwitch Name="CustomSizeTypeToggleSwitch"
+                                               SizeType="Custom"
+                                               IsChecked="True"
+                                               OnContent="{gallery:ToggleSwitchShowCaseLangResource P2ContentCustom}"
+                                               OffContent="{gallery:ToggleSwitchShowCaseLangResource P2ContentCustom}" />
                         </StackPanel>
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
@@ -219,7 +225,8 @@
                             <atom:ToggleSwitch IsLoading="{Binding IsLoadingDemoLoading}" IsChecked="true" x:Name="ToggleSwitchDefault" />
                             <atom:ToggleSwitch SizeType="Small" IsLoading="{Binding IsLoadingDemoLoading}" x:Name="ToggleSwitchSmall" />
                             <atom:Button ButtonType="Primary"
-                                         Command="{Binding ToggleLoadingCommand}" Content="{gallery:ToggleSwitchShowCaseLangResource P2ContentToggleLoading}" />
+                                         Click="HandleToggleLoadingButtonClick"
+                                         Content="{gallery:ToggleSwitchShowCaseLangResource P2ContentToggleLoading}" />
                         </StackPanel>
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
