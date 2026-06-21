@@ -10,11 +10,14 @@ namespace AtomUI.Performance;
 
 internal static partial class Program
 {
-    private static readonly DescriptionsMediaBreakInfo DescriptionSpan2 = new(2);
-    private static readonly DescriptionsMediaBreakInfo DescriptionSpan3 = new(3);
-    private static readonly DescriptionsMediaBreakInfo DescriptionResponsiveColumns = new(1, 2, 3, 3, 4, 4);
-    private static readonly DescriptionsMediaBreakInfo DescriptionResponsiveHalfSpan = new(1, 1, 1, 1, 2, 2);
-    private static readonly DescriptionsMediaBreakInfo DescriptionResponsiveFullSpan = new(1, 2, 3, 3, 2, 2);
+    private static readonly ResponsiveInt DescriptionSpan2 = new(2);
+    private static readonly ResponsiveInt DescriptionSpan3 = new(3);
+    private static readonly ResponsiveInt DescriptionResponsiveColumns =
+        ResponsiveInt.Parse("xs:1, sm:2, md:3, lg:3, xl:4, xxl:4");
+    private static readonly ResponsiveInt DescriptionResponsiveHalfSpan =
+        ResponsiveInt.Parse("xs:1, sm:1, md:1, lg:1, xl:2, xxl:2");
+    private static readonly ResponsiveInt DescriptionResponsiveFullSpan =
+        ResponsiveInt.Parse("xs:1, sm:2, md:3, lg:3, xl:2, xxl:2");
 
     private static IReadOnlyList<PerfScenario> CreateDescriptionsScenarios()
     {

@@ -52,6 +52,8 @@
                                     IsLoading="{CompiledBinding $parent[atom:Select].IsLoading}"
                                     IsAllowClear="{CompiledBinding $parent[atom:Select].IsAllowClear}"
                                     IsSelectionEmpty="{CompiledBinding $parent[atom:Select].IsSelectionEmpty}"
+                                    IsInputHover="{CompiledBinding $parent[atom:SelectAddOnDecoratedBox].IsInnerBoxHover}"
+                                    IsInputPressed="{CompiledBinding $parent[atom:SelectAddOnDecoratedBox].IsInnerBoxPressed}"
                                     IsDropDownOpen="{CompiledBinding $parent[atom:Select].IsDropDownOpen}" />
                             </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>

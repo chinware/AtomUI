@@ -30,7 +30,7 @@ internal static partial class Program
             new PerfScenario("SplitButton.Small.Danger.Closed", _ => new AtomSplitButton
             {
                 Content  = "Danger",
-                SizeType = SizeType.Small,
+                SizeType = CustomizableSizeType.Small,
                 IsDanger = true,
                 Flyout   = CreateSplitButtonMenuFlyout()
             }),
@@ -106,7 +106,7 @@ internal static partial class Program
         panel.Children.Add(new AtomSplitButton
         {
             Content  = "Small",
-            SizeType = SizeType.Small,
+            SizeType = CustomizableSizeType.Small,
             Flyout   = CreateSplitButtonMenuFlyout()
         });
         panel.Children.Add(new AtomSplitButton

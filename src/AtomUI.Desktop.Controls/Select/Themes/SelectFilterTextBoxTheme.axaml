@@ -21,6 +21,10 @@
             </Style>
         </Style>
 
+        <Style Selector="^ /template/ :is(TextPresenter)#PART_TextPresenter">
+            <Setter Property="Margin" Value="2 0 2 0" />
+        </Style>
+
         <Style Selector="^ /template/ atom|TextBlock#Placeholder">
             <Setter Property="Margin" Value="2 0 2 0" />
         </Style>

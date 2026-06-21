@@ -16,10 +16,10 @@ internal static partial class Program
             new PerfScenario("OptionButtonGroup.Text.Solid4", _ => CreateTextGroup(OptionButtonStyle.Solid, 4)),
             new PerfScenario("OptionButtonGroup.Text.Outline4", _ => CreateTextGroup(OptionButtonStyle.Outline, 4)),
             new PerfScenario("OptionButtonGroup.Text.Outline4.Disabled", _ => CreateTextGroup(OptionButtonStyle.Outline, 4, disabledIndex: 2)),
-            new PerfScenario("OptionButtonGroup.Icon.Solid3", _ => CreateIconGroup(OptionButtonStyle.Solid, SizeType.Middle)),
-            new PerfScenario("OptionButtonGroup.Icon.Outline3", _ => CreateIconGroup(OptionButtonStyle.Outline, SizeType.Middle)),
-            new PerfScenario("OptionButtonGroup.Icon.Outline3.Large", _ => CreateIconGroup(OptionButtonStyle.Outline, SizeType.Large)),
-            new PerfScenario("OptionButtonGroup.Icon.Outline3.Small", _ => CreateIconGroup(OptionButtonStyle.Outline, SizeType.Small)),
+            new PerfScenario("OptionButtonGroup.Icon.Solid3", _ => CreateIconGroup(OptionButtonStyle.Solid, CustomizableSizeType.Middle)),
+            new PerfScenario("OptionButtonGroup.Icon.Outline3", _ => CreateIconGroup(OptionButtonStyle.Outline, CustomizableSizeType.Middle)),
+            new PerfScenario("OptionButtonGroup.Icon.Outline3.Large", _ => CreateIconGroup(OptionButtonStyle.Outline, CustomizableSizeType.Large)),
+            new PerfScenario("OptionButtonGroup.Icon.Outline3.Small", _ => CreateIconGroup(OptionButtonStyle.Outline, CustomizableSizeType.Small)),
             new PerfScenario("OptionButtonGroup.GalleryShape.RadioButtonShowCase", _ => CreateRadioButtonShowCaseOptionShape())
         ];
     }
@@ -28,7 +28,7 @@ internal static partial class Program
                                                      int count,
                                                      int checkedIndex = 0,
                                                      int disabledIndex = -1,
-                                                     SizeType sizeType = SizeType.Middle)
+                                                     CustomizableSizeType sizeType = CustomizableSizeType.Middle)
     {
         var group = new OptionButtonGroup
         {
@@ -49,7 +49,7 @@ internal static partial class Program
         return group;
     }
 
-    private static OptionButtonGroup CreateIconGroup(OptionButtonStyle style, SizeType sizeType)
+    private static OptionButtonGroup CreateIconGroup(OptionButtonStyle style, CustomizableSizeType sizeType)
     {
         var group = new OptionButtonGroup
         {
@@ -86,20 +86,20 @@ internal static partial class Program
 
         panel.Children.Add(CreateTextGroup(OptionButtonStyle.Solid, 3));
         panel.Children.Add(CreateTextGroup(OptionButtonStyle.Outline, 3, checkedIndex: 1, disabledIndex: 2));
-        panel.Children.Add(CreateIconGroup(OptionButtonStyle.Solid, SizeType.Middle));
-        panel.Children.Add(CreateIconGroup(OptionButtonStyle.Outline, SizeType.Middle));
+        panel.Children.Add(CreateIconGroup(OptionButtonStyle.Solid, CustomizableSizeType.Middle));
+        panel.Children.Add(CreateIconGroup(OptionButtonStyle.Outline, CustomizableSizeType.Middle));
 
-        var disabledSolid = CreateIconGroup(OptionButtonStyle.Solid, SizeType.Middle);
+        var disabledSolid = CreateIconGroup(OptionButtonStyle.Solid, CustomizableSizeType.Middle);
         disabledSolid.IsEnabled = false;
         panel.Children.Add(disabledSolid);
 
-        var disabledOutline = CreateIconGroup(OptionButtonStyle.Outline, SizeType.Middle);
+        var disabledOutline = CreateIconGroup(OptionButtonStyle.Outline, CustomizableSizeType.Middle);
         disabledOutline.IsEnabled = false;
         panel.Children.Add(disabledOutline);
 
-        panel.Children.Add(CreateIconGroup(OptionButtonStyle.Outline, SizeType.Large));
-        panel.Children.Add(CreateIconGroup(OptionButtonStyle.Outline, SizeType.Middle));
-        panel.Children.Add(CreateIconGroup(OptionButtonStyle.Outline, SizeType.Small));
+        panel.Children.Add(CreateIconGroup(OptionButtonStyle.Outline, CustomizableSizeType.Large));
+        panel.Children.Add(CreateIconGroup(OptionButtonStyle.Outline, CustomizableSizeType.Middle));
+        panel.Children.Add(CreateIconGroup(OptionButtonStyle.Outline, CustomizableSizeType.Small));
 
         panel.Children.Add(CreateTextGroup(OptionButtonStyle.Outline, 4));
         panel.Children.Add(CreateTextGroup(OptionButtonStyle.Outline, 4, disabledIndex: 1));
@@ -107,9 +107,9 @@ internal static partial class Program
         panel.Children.Add(CreateTextGroup(OptionButtonStyle.Solid, 4));
         panel.Children.Add(CreateTextGroup(OptionButtonStyle.Solid, 4, disabledIndex: 1));
         panel.Children.Add(CreateTextGroup(OptionButtonStyle.Solid, 4, disabledIndex: 0));
-        panel.Children.Add(CreateTextGroup(OptionButtonStyle.Outline, 4, sizeType: SizeType.Large));
-        panel.Children.Add(CreateTextGroup(OptionButtonStyle.Outline, 4, sizeType: SizeType.Middle));
-        panel.Children.Add(CreateTextGroup(OptionButtonStyle.Outline, 4, sizeType: SizeType.Small));
+        panel.Children.Add(CreateTextGroup(OptionButtonStyle.Outline, 4, sizeType: CustomizableSizeType.Large));
+        panel.Children.Add(CreateTextGroup(OptionButtonStyle.Outline, 4, sizeType: CustomizableSizeType.Middle));
+        panel.Children.Add(CreateTextGroup(OptionButtonStyle.Outline, 4, sizeType: CustomizableSizeType.Small));
 
         return panel;
     }

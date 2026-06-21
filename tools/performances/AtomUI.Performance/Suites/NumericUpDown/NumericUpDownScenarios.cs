@@ -18,8 +18,8 @@ internal static partial class Program
             new PerfScenario("NumericUpDown.AllowClear.Value", _ => CreateNumericUpDown(value: 12, isAllowClear: true)),
             new PerfScenario("NumericUpDown.StringMode", _ => CreateNumericUpDown(isStringMode: true, stringValue: "0.123456789012345678901234")),
             new PerfScenario("NumericUpDown.KeyboardDisabled", _ => CreateNumericUpDown(value: 1.2m, increment: 0.1m, isKeyboardEnabled: false)),
-            new PerfScenario("NumericUpDown.SizeLarge", _ => CreateNumericUpDown(sizeType: SizeType.Large)),
-            new PerfScenario("NumericUpDown.SizeSmall", _ => CreateNumericUpDown(sizeType: SizeType.Small)),
+            new PerfScenario("NumericUpDown.SizeLarge", _ => CreateNumericUpDown(sizeType: CustomizableSizeType.Large)),
+            new PerfScenario("NumericUpDown.SizeSmall", _ => CreateNumericUpDown(sizeType: CustomizableSizeType.Small)),
             new PerfScenario("NumericUpDown.Filled", _ => CreateNumericUpDown(styleVariant: InputControlStyleVariant.Filled)),
             new PerfScenario("NumericUpDown.Borderless", _ => CreateNumericUpDown(styleVariant: InputControlStyleVariant.Borderless)),
             new PerfScenario("NumericUpDown.Disabled", _ => CreateNumericUpDown(isEnabled: false)),
@@ -42,7 +42,7 @@ internal static partial class Program
         decimal? value = 3,
         double width = 160,
         decimal increment = 1,
-        SizeType sizeType = SizeType.Middle,
+        CustomizableSizeType sizeType = CustomizableSizeType.Middle,
         InputControlStyleVariant styleVariant = InputControlStyleVariant.Outlined,
         InputControlStatus status = InputControlStatus.Default,
         bool isEnabled = true,
@@ -92,9 +92,9 @@ internal static partial class Program
         panel.Children.Add(CreateNumericUpDown(value: 3, increment: 1));
         panel.Children.Add(CreateNumericUpDown(value: 1.2m, increment: 0.25m));
 
-        panel.Children.Add(CreateNumericUpDown(sizeType: SizeType.Large));
-        panel.Children.Add(CreateNumericUpDown(sizeType: SizeType.Middle));
-        panel.Children.Add(CreateNumericUpDown(sizeType: SizeType.Small));
+        panel.Children.Add(CreateNumericUpDown(sizeType: CustomizableSizeType.Large));
+        panel.Children.Add(CreateNumericUpDown(sizeType: CustomizableSizeType.Middle));
+        panel.Children.Add(CreateNumericUpDown(sizeType: CustomizableSizeType.Small));
 
         panel.Children.Add(CreateNumericUpDown(styleVariant: InputControlStyleVariant.Outlined));
         panel.Children.Add(CreateNumericUpDown(styleVariant: InputControlStyleVariant.Filled));

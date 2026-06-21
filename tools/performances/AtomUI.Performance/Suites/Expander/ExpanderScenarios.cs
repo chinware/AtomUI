@@ -30,7 +30,7 @@ internal static partial class Program
         bool hasAddOn = false,
         bool isBorderless = false,
         bool isGhostStyle = false,
-        SizeType sizeType = SizeType.Middle,
+        CustomizableSizeType sizeType = CustomizableSizeType.Middle,
         ExpandDirection expandDirection = ExpandDirection.Down,
         ExpanderIconPosition expandIconPosition = ExpanderIconPosition.Start,
         ExpanderTriggerType triggerType = ExpanderTriggerType.Header,
@@ -124,9 +124,9 @@ internal static partial class Program
             Spacing     = 20,
             Children =
             {
-                CreateExpander(sizeType: SizeType.Middle),
-                CreateExpander(sizeType: SizeType.Small),
-                CreateExpander(sizeType: SizeType.Large)
+                CreateExpander(sizeType: CustomizableSizeType.Middle),
+                CreateExpander(sizeType: CustomizableSizeType.Small),
+                CreateExpander(sizeType: CustomizableSizeType.Large)
             }
         };
     }

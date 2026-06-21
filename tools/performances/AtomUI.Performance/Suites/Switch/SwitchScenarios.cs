@@ -15,7 +15,7 @@ internal static partial class Program
         [
             new PerfScenario("Switch.Default", _ => new AtomSwitch()),
             new PerfScenario("Switch.Checked", _ => new AtomSwitch { IsChecked = true }),
-            new PerfScenario("Switch.Small", _ => new AtomSwitch { SizeType = SizeType.Small }),
+            new PerfScenario("Switch.Small", _ => new AtomSwitch { SizeType = CustomizableSizeType.Small }),
             new PerfScenario("Switch.NoWave", _ => new AtomSwitch { IsWaveSpiritEnabled = false }),
             new PerfScenario("Switch.Text", _ => new AtomSwitch { OnContent = "On", OffContent = "Off", IsChecked = true }),
             new PerfScenario("Switch.Icon", _ => new AtomSwitch { OnContent = new TwitterOutlined(), OffContent = new WechatOutlined() }),
@@ -44,14 +44,14 @@ internal static partial class Program
             new AtomSwitch { OnContent = "On", OffContent = "Off", IsChecked = true },
             new AtomSwitch { OnContent = "开", OffContent = "关" },
             new AtomSwitch { OnContent = new TwitterOutlined(), OffContent = new WechatOutlined() },
-            new AtomSwitch { SizeType = SizeType.Small, OnContent = new CheckOutlined(), OffContent = new WechatOutlined() },
-            new AtomSwitch { SizeType = SizeType.Small, OnContent = new CheckOutlined(), OffContent = new CloseOutlined() }));
+            new AtomSwitch { SizeType = CustomizableSizeType.Small, OnContent = new CheckOutlined(), OffContent = new WechatOutlined() },
+            new AtomSwitch { SizeType = CustomizableSizeType.Small, OnContent = new CheckOutlined(), OffContent = new CloseOutlined() }));
         root.Children.Add(CreateSwitchColumn(
             new AtomSwitch(),
-            new AtomSwitch { SizeType = SizeType.Small }));
+            new AtomSwitch { SizeType = CustomizableSizeType.Small }));
         root.Children.Add(CreateSwitchColumn(
             new AtomSwitch { IsLoading = true, IsChecked = true },
-            new AtomSwitch { SizeType = SizeType.Small, IsLoading = true },
+            new AtomSwitch { SizeType = CustomizableSizeType.Small, IsLoading = true },
             new AtomUI.Desktop.Controls.Button
             {
                 ButtonType = ButtonType.Primary,

@@ -25,6 +25,10 @@ internal static partial class Program
         {
             return RunSwitchInteractionBenchmarks(options.Count, options.MarkdownOutputPath);
         }
+        if (options.MeasureSelectInteractions)
+        {
+            return RunSelectInteractionBenchmarks(options.Count, options.MarkdownOutputPath);
+        }
 
         if (options.VerifyAdornerLayerStates ||
             options.VerifyAccessories ||

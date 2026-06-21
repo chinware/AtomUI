@@ -336,6 +336,43 @@ public class SelectBehaviorTests
         });
     }
 
+    [Fact]
+    public void Detaching_Select_Cancels_Pending_Async_Options_Load()
+    {
+        var loader = new PendingSelectOptionsLoader();
+        var select = new Desktop.Controls.Select
+        {
+            Width         = 240,
+            OptionsLoader = loader
+        };
+        var window = CreateWindow(select);
+        var cancellationObserved = false;
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            InvokeHandleOpenDropRequest(select);
+
+            loader.Started.Wait(TimeSpan.FromSeconds(1), TestContext.Current.CancellationToken).ShouldBeTrue();
+
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+
+            cancellationObserved =
+                loader.Cancelled.Wait(TimeSpan.FromMilliseconds(500), TestContext.Current.CancellationToken);
+        }
+        finally
+        {
+            loader.Complete();
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+
+        cancellationObserved.ShouldBeTrue();
+    }
+
     private static T GetVisualDescendant<T>(Control control, string name)
         where T : Control
     {
@@ -357,6 +394,22 @@ public class SelectBehaviorTests
 
     private static void ShowInWindow(Control content, Action assertion)
     {
+        var window = CreateWindow(content);
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            assertion();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    private static AvaloniaWindow CreateWindow(Control content)
+    {
         var overlayPanel = new ScopeAwareOverlayLayerPanel
         {
             Width  = 420,
@@ -377,16 +430,7 @@ public class SelectBehaviorTests
             Content = visualLayerManager
         };
 
-        try
-        {
-            window.Show();
-            Dispatcher.UIThread.RunJobs();
-            assertion();
-        }
-        finally
-        {
-            window.Close();
-        }
+        return window;
     }
 
     private static SelectCandidateList GetCandidateList(Desktop.Controls.Select select)
@@ -401,6 +445,16 @@ public class SelectBehaviorTests
         return candidateList;
     }
 
+    private static void InvokeHandleOpenDropRequest(Desktop.Controls.Select select)
+    {
+        var method = typeof(Desktop.Controls.Select).GetMethod(
+            "HandleOpenDropRequest",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        method.ShouldNotBeNull();
+        method.Invoke(select, null);
+    }
+
     private static void EnablePopupOverlayLayer(VisualLayerManager visualLayerManager)
     {
         var property = typeof(VisualLayerManager).GetProperty(
@@ -409,5 +463,29 @@ public class SelectBehaviorTests
 
         property.ShouldNotBeNull();
         property.SetValue(visualLayerManager, true);
+    }
+
+    private sealed class PendingSelectOptionsLoader : ISelectOptionsAsyncLoader
+    {
+        private readonly TaskCompletionSource<SelectOptionsLoadResult> _completion =
+            new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public ManualResetEventSlim Started { get; } = new();
+        public ManualResetEventSlim Cancelled { get; } = new();
+
+        public Task<SelectOptionsLoadResult> LoadAsync(object? context, CancellationToken token)
+        {
+            Started.Set();
+            token.Register(static state => ((ManualResetEventSlim)state!).Set(), Cancelled);
+            return _completion.Task;
+        }
+
+        public void Complete()
+        {
+            _completion.TrySetResult(new SelectOptionsLoadResult
+            {
+                Data = []
+            });
+        }
     }
 }

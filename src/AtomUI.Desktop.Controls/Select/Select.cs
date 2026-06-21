@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Reactive.Disposables;
 using AtomUI.Controls.Utils;
-using AtomUI.Data;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Utils;
@@ -253,7 +251,6 @@ public partial class Select : AbstractSelect
     private SelectCandidateList? _candidateList;
     private Border? _popupFrame;
     private SelectFilterTextBox? _singleFilterInput;
-    private CompositeDisposable? _selectHandleInputStateBindings;
     private bool _ignoreSyncSelection;
     private bool _candidateListActivated;
     private bool _syncingSingleFilterInputText;
@@ -301,6 +298,7 @@ public partial class Select : AbstractSelect
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        CancelPendingOptionsLoad();
         ClearPopupContent();
         base.OnDetachedFromVisualTree(e);
     }
@@ -323,7 +321,6 @@ public partial class Select : AbstractSelect
         UpdatePseudoClasses();
         ConfigureSingleFilterTextBox();
         ConfigureEffectiveSearchEnabled();
-        SetupSelectHandleInputStateBindings(e);
         if (IsDropDownOpen)
         {
             EnsurePopupContent();
@@ -776,25 +773,6 @@ public partial class Select : AbstractSelect
         _candidateList          = null;
         _popupFrame             = null;
         _candidateListActivated = false;
-    }
-
-    private void SetupSelectHandleInputStateBindings(TemplateAppliedEventArgs e)
-    {
-        _selectHandleInputStateBindings?.Dispose();
-        _selectHandleInputStateBindings = null;
-
-        var handle   = e.NameScope.Find<SelectHandle>("PART_SelectHandle");
-        var addOnBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
-        if (handle == null || addOnBox == null)
-        {
-            return;
-        }
-
-        _selectHandleInputStateBindings = new CompositeDisposable();
-        _selectHandleInputStateBindings.Add(BindUtils.RelayBind(addOnBox,
-            AddOnDecoratedBox.IsInnerBoxHoverProperty, handle, SelectHandle.IsInputHoverProperty));
-        _selectHandleInputStateBindings.Add(BindUtils.RelayBind(addOnBox,
-            AddOnDecoratedBox.IsInnerBoxPressedProperty, handle, SelectHandle.IsInputPressedProperty));
     }
 
     private void HandleCandidateListComplete(object? sender, RoutedEventArgs e)

@@ -16,7 +16,7 @@ internal static partial class Program
             new PerfScenario("Pagination.SizeChanger", _ => CreatePagination(total: 85, pageSize: 20, showSizeChanger: true)),
             new PerfScenario("Pagination.QuickJumper", _ => CreatePagination(total: 500, currentPage: 3, showSizeChanger: true, showQuickJumper: true)),
             new PerfScenario("Pagination.TotalInfo", _ => CreatePagination(total: 85, pageSize: 20, showSizeChanger: true, showTotalInfo: true)),
-            new PerfScenario("Pagination.Small", _ => CreatePagination(total: 50, sizeType: SizeType.Small)),
+            new PerfScenario("Pagination.Small", _ => CreatePagination(total: 50, sizeType: CustomizableSizeType.Small)),
             new PerfScenario("SimplePagination.ReadOnly", _ => CreateSimplePagination()),
             new PerfScenario("SimplePagination.Editable", _ => CreateSimplePagination(readOnly: false)),
             new PerfScenario("Pagination.GalleryShape.PaginationShowCase", _ => CreatePaginationShowCaseShape())
@@ -30,7 +30,7 @@ internal static partial class Program
                                                bool showQuickJumper = false,
                                                bool showTotalInfo = false,
                                                bool isEnabled = true,
-                                               SizeType sizeType = SizeType.Middle,
+                                               CustomizableSizeType sizeType = CustomizableSizeType.Middle,
                                                PaginationAlign align = PaginationAlign.Start,
                                                string? totalInfoTemplate = null)
     {
@@ -57,7 +57,7 @@ internal static partial class Program
 
     private static SimplePagination CreateSimplePagination(bool readOnly = true,
                                                            bool isEnabled = true,
-                                                           SizeType sizeType = SizeType.Middle)
+                                                           CustomizableSizeType sizeType = CustomizableSizeType.Middle)
     {
         return new SimplePagination
         {
@@ -87,10 +87,10 @@ internal static partial class Program
             CreatePagination(total: 500, currentPage: 3, showSizeChanger: true, showQuickJumper: true, isEnabled: false)));
 
         panel.Children.Add(CreateVerticalPanel(
-            CreatePagination(total: 50, sizeType: SizeType.Small),
-            CreatePagination(total: 50, sizeType: SizeType.Small, showSizeChanger: true, showQuickJumper: true),
-            CreatePagination(total: 50, sizeType: SizeType.Small, showTotalInfo: true),
-            CreatePagination(total: 50, sizeType: SizeType.Small, showSizeChanger: true, showQuickJumper: true, showTotalInfo: true, isEnabled: false)));
+            CreatePagination(total: 50, sizeType: CustomizableSizeType.Small),
+            CreatePagination(total: 50, sizeType: CustomizableSizeType.Small, showSizeChanger: true, showQuickJumper: true),
+            CreatePagination(total: 50, sizeType: CustomizableSizeType.Small, showTotalInfo: true),
+            CreatePagination(total: 50, sizeType: CustomizableSizeType.Small, showSizeChanger: true, showQuickJumper: true, showTotalInfo: true, isEnabled: false)));
 
         panel.Children.Add(CreateVerticalPanel(
             CreatePagination(total: 85, pageSize: 20, showSizeChanger: true, showTotalInfo: true),
@@ -104,10 +104,10 @@ internal static partial class Program
             CreateSimplePagination(),
             CreateSimplePagination(readOnly: false),
             CreateSimplePagination(readOnly: false, isEnabled: false),
-            CreateSimplePagination(sizeType: SizeType.Small),
-            CreateSimplePagination(sizeType: SizeType.Small),
-            CreateSimplePagination(readOnly: false, sizeType: SizeType.Small),
-            CreateSimplePagination(readOnly: false, isEnabled: false, sizeType: SizeType.Small)));
+            CreateSimplePagination(sizeType: CustomizableSizeType.Small),
+            CreateSimplePagination(sizeType: CustomizableSizeType.Small),
+            CreateSimplePagination(readOnly: false, sizeType: CustomizableSizeType.Small),
+            CreateSimplePagination(readOnly: false, isEnabled: false, sizeType: CustomizableSizeType.Small)));
 
         return panel;
     }

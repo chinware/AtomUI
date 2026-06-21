@@ -99,9 +99,9 @@ internal static partial class Program
 
         root.Children.Add(CreateBadgeRow(
             new CountBadge { Count = 5, OverflowCount = 99, DecoratedTarget = CreateBadgeTarget() },
-            new AtomUI.Desktop.Controls.Button { Content = "Add", SizeType = SizeType.Small },
-            new AtomUI.Desktop.Controls.Button { Content = "Sub", SizeType = SizeType.Small },
-            new AtomUI.Desktop.Controls.Button { Content = "Random", SizeType = SizeType.Small }));
+            new AtomUI.Desktop.Controls.Button { Content = "Add", SizeType = CustomizableSizeType.Small },
+            new AtomUI.Desktop.Controls.Button { Content = "Sub", SizeType = CustomizableSizeType.Small },
+            new AtomUI.Desktop.Controls.Button { Content = "Random", SizeType = CustomizableSizeType.Small }));
 
         root.Children.Add(CreateBadgeRow(
             new CountBadge { Count = 9, DecoratedTarget = CreateBadgeTarget() },

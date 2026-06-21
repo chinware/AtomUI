@@ -37,7 +37,7 @@ internal static partial class Program
 
     private static AtomButtonSpinner CreateButtonSpinner(
         double width = 160,
-        SizeType sizeType = SizeType.Middle,
+        CustomizableSizeType sizeType = CustomizableSizeType.Middle,
         InputControlStyleVariant styleVariant = InputControlStyleVariant.Outlined,
         InputControlStatus status = InputControlStatus.Default,
         bool isEnabled = true,
@@ -78,9 +78,9 @@ internal static partial class Program
 
         panel.Children.Add(CreateButtonSpinner(width: 400));
 
-        panel.Children.Add(CreateButtonSpinner(sizeType: SizeType.Large, width: 400));
-        panel.Children.Add(CreateButtonSpinner(sizeType: SizeType.Middle, width: 400));
-        panel.Children.Add(CreateButtonSpinner(sizeType: SizeType.Small, width: 400));
+        panel.Children.Add(CreateButtonSpinner(sizeType: CustomizableSizeType.Large, width: 400));
+        panel.Children.Add(CreateButtonSpinner(sizeType: CustomizableSizeType.Middle, width: 400));
+        panel.Children.Add(CreateButtonSpinner(sizeType: CustomizableSizeType.Small, width: 400));
 
         panel.Children.Add(CreateButtonSpinner(styleVariant: InputControlStyleVariant.Outlined, width: 400));
         panel.Children.Add(CreateButtonSpinner(styleVariant: InputControlStyleVariant.Filled, width: 400));
