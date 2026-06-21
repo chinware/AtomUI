@@ -68,6 +68,12 @@ internal class MentionTextArea : TextArea
     private Rect? _currentTriggerBounds;
     private string? _currentTriggerText;
     private string? _currentPredicate;
+
+    private readonly record struct MentionTriggerState(
+        int TriggerIndex,
+        string TriggerText,
+        string Predicate,
+        Rect TriggerBounds);
     
     static MentionTextArea()
     {
@@ -99,42 +105,14 @@ internal class MentionTextArea : TextArea
 
     private void CheckTriggerState()
     {
-        if (!string.IsNullOrEmpty(Text) && CaretIndex >= 1)
+        if (TryGetCurrentTriggerState(out var triggerState))
         {
-            var  triggerFound = false;
-            var  index        = CaretIndex;
-            while (index > 0)
-            {
-                var ch = Text[index - 1];
-                if (char.IsControl(ch) || char.IsWhiteSpace(ch))
-                {
-                    break;
-                }
-                if (TryGetTriggerPrefix(ch, out var triggerText))
-                {
-                    _currentTriggerText = triggerText;
-                    triggerFound        = true;
-                    break;
-                }
-              
-                index--;
-            }
-            var length = CaretIndex - index;
-            if (triggerFound)
-            {
-                var triggerIndex = index - 1;
-                var presenter    = this.GetTextPresenter();
-                var textLayout   = presenter.TextLayout;
-                _currentTriggerBounds = textLayout.HitTestTextPosition(triggerIndex);
-                _currentPredicate     = Text.Substring(index, length);
-                TriggerState          = true;
-            }
-            else
-            {
-                TriggerState = false;
-            }
+            _currentTriggerBounds = triggerState.TriggerBounds;
+            _currentPredicate     = triggerState.Predicate;
+            _currentTriggerText   = triggerState.TriggerText;
+            TriggerState          = true;
         }
-        else if (CaretIndex == 0 || string.IsNullOrWhiteSpace(Text))
+        else
         {
             TriggerState = false;
         }
@@ -163,38 +141,9 @@ internal class MentionTextArea : TextArea
 
     private void HandleCaretIndexChanged()
     {
-        if (string.IsNullOrWhiteSpace(Text))
+        if (TryGetCurrentTriggerState(out var triggerState))
         {
-            SetCurrentValue(FilterValueProperty, null);
-            return;
-        }
-        var triggerFound = false;
-        var index        = CaretIndex;
-        var triggerIndex = -1;
-        while (index > 0)
-        {
-            var ch = Text[index - 1];
-            if (char.IsControl(ch) || char.IsWhiteSpace(ch))
-            {
-                break;
-            }
-            if (TryGetTriggerPrefix(ch, out _))
-            {
-                triggerFound = true;
-                triggerIndex = index - 1;
-                break;
-            }
-            index--;
-        }
-
-        if (triggerFound)
-        {
-            
-            var valueIndex = triggerIndex + 1;
-            if (valueIndex <= Text.Length)
-            {
-                SetCurrentValue(FilterValueProperty, Text.Substring(valueIndex, CaretIndex - valueIndex));
-            }
+            SetCurrentValue(FilterValueProperty, triggerState.Predicate);
         }
         else
         {
@@ -232,6 +181,40 @@ internal class MentionTextArea : TextArea
         return false;
     }
 
+    private bool TryGetCurrentTriggerState(out MentionTriggerState state)
+    {
+        state = default;
+        var text = Text;
+        if (string.IsNullOrEmpty(text) || CaretIndex < 1 || CaretIndex > text.Length)
+        {
+            return false;
+        }
+
+        var index = CaretIndex;
+        while (index > 0)
+        {
+            var ch = text[index - 1];
+            if (char.IsControl(ch) || char.IsWhiteSpace(ch))
+            {
+                break;
+            }
+            if (TryGetTriggerPrefix(ch, out var triggerText))
+            {
+                var triggerIndex  = index - 1;
+                var presenter     = this.GetTextPresenter();
+                var textLayout    = presenter.TextLayout;
+                var triggerBounds = textLayout.HitTestTextPosition(triggerIndex);
+                var predicate     = text.Substring(index, CaretIndex - index);
+                state = new MentionTriggerState(triggerIndex, triggerText, predicate, triggerBounds);
+                return true;
+            }
+
+            index--;
+        }
+
+        return false;
+    }
+
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
@@ -246,49 +229,32 @@ internal class MentionTextArea : TextArea
 
     internal void InsertMentionOption(string value, string? split)
     {
+        if (!TryGetCurrentTriggerState(out var triggerState))
+        {
+            return;
+        }
+
         this.SnapshotUndoRedo();
-        var  triggerIndex = -1;
+        var  triggerIndex = triggerState.TriggerIndex;
         var  foundSplit   = false;
         var  foundSpace   = false;
         var  text         = Text ?? string.Empty;
-        char triggerCh    = default;
-        if (!string.IsNullOrEmpty(Text))
+        char triggerCh    = text[triggerIndex];
+        if (triggerIndex > 0)
         {
-            var currentIndex = CaretIndex;
-            while (currentIndex > 0)
+            var previousCh = text[triggerIndex - 1];
+            if (split is { Length: 1 } && previousCh == split[0])
             {
-                var ch = Text[currentIndex - 1];
-                if (char.IsWhiteSpace(ch))
-                {
-                    break;
-                }
-                if (TryGetTriggerPrefix(ch, out _))
-                {
-                    triggerCh    = ch;
-                    triggerIndex = currentIndex - 1;
-                    break;
-                }
-                currentIndex--;
+                foundSplit = true;
             }
-            if (triggerIndex > 0)
+            else if (previousCh == ' ')
             {
-                var previousCh = Text[triggerIndex - 1];
-                if (split is { Length: 1 } && previousCh == split[0])
-                {
-                    foundSplit = true;
-                }
-                else if (previousCh == ' ')
-                {
-                    foundSpace = true;
-                }
+                foundSpace = true;
             }
         }
 
-        if (triggerIndex != -1)
-        {
-            SetCurrentValue(SelectionStartProperty, triggerIndex);
-            SetCurrentValue(SelectionEndProperty, CaretIndex);
-        }
+        SetCurrentValue(SelectionStartProperty, triggerIndex);
+        SetCurrentValue(SelectionEndProperty, CaretIndex);
         
         if (!string.IsNullOrWhiteSpace(split))
         {
