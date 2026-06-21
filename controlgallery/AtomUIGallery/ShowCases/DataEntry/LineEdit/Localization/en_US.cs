@@ -31,6 +31,8 @@ internal partial class en_US : LanguageProvider
     public const string InputStatusDescription = "Add status to Input with status, which could be error or warning.";
     public const string SearchBoxTitle = "Search box";
     public const string SearchBoxDescription = "Example of creating a search box by grouping a standard input with a search button.";
+    public const string SearchEditSizeTypeTitle = "SearchEdit size";
+    public const string SearchEditSizeTypeDescription = "SearchEdit supports large, middle, small, and Custom sizes with local height and font overrides.";
     public const string DisabledSearchBoxTitle = "Disabled search box";
     public const string DisabledSearchBoxDescription = "Example of creating a search box by grouping a standard input with a search button.";
     public const string SearchBoxWithLoadingTitle = "Search box with loading";
@@ -47,6 +49,7 @@ internal partial class en_US : LanguageProvider
     public const string P2PlaceholderTextLarge = "Large";
     public const string P2PlaceholderTextMiddle = "Middle";
     public const string P2PlaceholderTextSmall = "Small";
+    public const string P2PlaceholderTextCustom = "Custom";
     public const string P2TitleNormal = "Normal";
     public const string P2PlaceholderTextOutlined = "Outlined";
     public const string P2PlaceholderTextFilled = "Filled";

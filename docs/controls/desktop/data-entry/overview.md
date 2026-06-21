@@ -6,6 +6,10 @@
 
 ## 控件文档
 
+- [LineEdit 桌面版架构设计](line-edit/overview.md)
+- [LineEdit 桌面版实现原理](line-edit/implementation.md)
+- [LineEdit Token 设计](line-edit/token.md)
+- [LineEdit Changelog](line-edit/changelog.md)
 - [NumericUpDown 桌面版架构设计](numeric-up-down/overview.md)
 - [NumericUpDown 桌面版实现原理](numeric-up-down/implementation.md)
 - [NumericUpDown Token 设计](numeric-up-down/token.md)
