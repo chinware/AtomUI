@@ -61,6 +61,20 @@ public partial class ButtonShowCase : GalleryReactiveUserControl<ButtonViewModel
         }
     }
 
+    public void HandleButtonIconPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (_viewModel != null)
+        {
+            var iconPlacement = args.Index switch
+            {
+                0 => ButtonIconPlacement.Start,
+                1 => ButtonIconPlacement.End,
+                _ => _viewModel.ButtonIconPlacement
+            };
+            _viewModel.ButtonIconPlacement = iconPlacement;
+        }
+    }
+
     public void HandleLoadingBtnClick(object? sender, RoutedEventArgs args)
     {
         if (sender is AtomUIButton button)

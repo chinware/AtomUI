@@ -33,7 +33,7 @@ Button 的公共 API 是控件最重要的稳定契约。公共属性、事件�
 - `ButtonType`: `Default`、`Dashed`、`Primary`、`Link`、`Text`。
 - `ButtonShape`: `Default`、`Circle`、`Round`。
 - `IsDanger`、`IsGhost`、`IsLoading`。
-- `SizeType`、`Icon`。
+- `SizeType`、`Icon`、`IconPlacement`。
 - `IsMotionEnabled`、`IsWaveSpiritEnabled`。
 - `CustomBackground`。
 
@@ -71,6 +71,18 @@ public ButtonVariant? Variant { get; set; }
 
 `SizeType` 使用可自定义尺寸模型，支持 `Large`、`Middle`、`Small` 和 `Custom`。`Large`、`Middle`、`Small` 是 Button 预设尺寸档，完全由 Token 和主题决定。`Custom` 表示用户希望基于 Button 现有属性进行实例级尺寸定制，而不是引入 Button 专属的 `CustomHeight`、`CustomPadding` 或尺寸对象。
 
+`IconPlacement` 控制 `Icon` 相对内容的位置，支持 `Start` 和 `End`。默认值必须是 `Start`，以保持既有 `Icon` 使用方式不变。`End` 只改变用户图标与内容的排列方向，不改变 loading、icon-only、尺寸、颜色、变体或交互状态语义。
+
+```csharp
+public enum ButtonIconPlacement
+{
+    Start,
+    End
+}
+
+public ButtonIconPlacement IconPlacement { get; set; }
+```
+
 Template part 与主题入口：
 
 | 节点 | 职责 |
@@ -79,9 +91,9 @@ Template part 与主题入口：
 | `ShadowsFrame` | 承载按钮阴影。 |
 | `Frame` | 承载主体背景、边框、圆角和尺寸基底。 |
 | `CustomBackgroundLayer` | 主题内部自定义背景覆层，不作为用户 template part。 |
-| `PART_RootLayout` | 排列 loading icon、icon 和 content。 |
+| `PART_RootLayout` | 排列 loading icon、icon 和 content，并根据 `IconPlacement` 调整用户 icon 位置。 |
 | `PART_LoadingIcon` | 展示 loading 状态图标。 |
-| `PART_ButtonIcon` | 展示用户设置的 icon。 |
+| `PART_ButtonIcon` | 展示用户设置的 icon，位置由 `IconPlacement` 控制。 |
 | `PART_ContentPresenter` | 展示用户内容。 |
 
 ## 4. 行为与状态模型
@@ -153,6 +165,7 @@ Button 与 CompactSpace、FormItem、Wave、Browser 主题协同。`Color + Vari
 - `IsGhost` 与现有按钮类型的组合行为不变。
 - loading icon、opacity、原 icon 隐藏逻辑不变。
 - icon-only 判断与布局不变。
+- `IconPlacement` 默认值必须保持 `Start`；`IconPlacement=End` 只允许改变用户 icon 的内容侧位置和间距方向。
 - `Shape=Circle`、`Shape=Round` 的尺寸和圆角计算不变。
 - `SizeType=Large/Middle/Small` 的预设尺寸、字体、内边距、圆角和 icon 尺寸不变。
 - `SizeType=Custom` 未显式设置尺寸相关属性时必须按 `Middle` 默认值渲染；用户在 Button 上设置的本地 `Height`、`Padding`、`FontSize`、`CornerRadius` 等现有属性必须覆盖 Custom 默认值。
@@ -192,6 +205,18 @@ Button 的尺寸模型由预设档和实例定制组成。预设档 `Large`、`M
 - 主题只能以 Style 默认值或可被 Button 本地属性覆盖的模板绑定提供 Custom 默认值，不得用更高优先级写入覆盖用户本地值。
 - Button 不提供 `CustomHeight`、`CustomPadding`、`CustomFontSize`、`CustomIconSize`、`CustomOnlyIconSize` 或 `ButtonSizeMetrics`。
 - Custom 模式下 icon 与 loading icon 默认沿用 `Middle` Token；需要特殊 icon 尺寸时，应通过现有 icon 或样式能力定制，不扩展 Button 公共 API。
+
+### 8.4 Icon 位置模型
+
+Button 的 `Icon` 是单一用户图标入口，`IconPlacement` 只描述这个图标相对内容的位置。
+
+- `Start` 表示图标位于内容起始侧，是默认值和兼容行为。
+- `End` 表示图标位于内容结束侧，适用于下一步、跳转、查看更多等需要尾随图标的动作。
+- `IconPlacement` 不创建第二个图标 slot，也不改变 `Icon` 类型、图标创建方式或 template part 名称。
+- 图标和内容之间的间距继续由 Button token 管理；结束侧图标使用起始侧间距的镜像方向。
+- icon-only 按钮没有文本内容侧差异，`IconPlacement` 不应改变 icon-only 的尺寸、padding 或居中行为。
+- loading icon 仍由 `IsLoading` 状态控制，不作为 `IconPlacement` 的目标；loading 状态下原用户 icon 隐藏逻辑保持不变。
+- `DropdownButton`、`SplitButton`、`IconButton`、`HyperLinkButton` 是否暴露同名能力应按各自模板职责单独评估，不由 Button 本体隐式要求。
 
 ## 9. 文档导航与验证策略
 

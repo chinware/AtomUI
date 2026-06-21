@@ -33,7 +33,8 @@ internal partial class en_US : LanguageProvider
     public const string ApiPropertyButtonType = "Sets the visual button type, such as primary, default, dashed, text, or link.";
     public const string ApiPropertySizeType = "Controls button height and padding density.";
     public const string ApiPropertyShape = "Changes button shape between default, round, and circle.";
-    public const string ApiPropertyIcon = "Displays an icon before the content or as an icon-only button.";
+    public const string ApiPropertyIcon = "Displays an icon before or after the content, or as an icon-only button.";
+    public const string ApiPropertyIconPlacement = "Sets whether the icon appears at the start or end of the content.";
     public const string ApiPropertyLoading = "Shows a loading indicator and communicates that the action is in progress.";
     public const string ApiPropertyDanger = "Applies danger styling for destructive or high-risk actions.";
     public const string ApiPropertyColor = "Sets the semantic color used by the Color and Variant model.";
@@ -61,7 +62,9 @@ internal partial class en_US : LanguageProvider
     public const string SizeTitle = "Size";
     public const string SizeDescription = "AtomUI supports three sizes of buttons: small, default and large. If a large or small button is desired, set the size property to either large or small respectively. Omit the size property for a button with the default size.";
     public const string IconTitle = "Icon";
-    public const string IconDescription = "You can add an icon through the icon property and adjust the position of the icon using iconPosition.";
+    public const string IconDescription = "You can add an icon through the Icon property and adjust the position of the icon using IconPlacement.";
+    public const string IconPlacementTitle = "Button icon placement";
+    public const string IconPlacementDescription = "Set IconPlacement to Start or End to place the button icon before or after the content.";
     public const string LoadingTitle = "Loading";
     public const string LoadingDescription = "A loading indicator can be added to a button by setting the loading property on the Button.";
     public const string BlockButtonTitle = "Block Button";
@@ -94,9 +97,12 @@ internal partial class en_US : LanguageProvider
     public const string P2ColorCyan = "Cyan";
     public const string P2ContentAa = "AA";
     public const string P2TextExpandDirection = "Button size:";
+    public const string P2TextIconPlacement = "Icon placement:";
     public const string P2ContentLarge = "Large";
     public const string P2ContentSmall = "Small";
     public const string P2ContentCustom = "Custom";
+    public const string P2ContentStart = "start";
+    public const string P2ContentEnd = "end";
     public const string P2ContentDownload = "Download";
     public const string P2ContentSearch = "Search";
     public const string P2ContentLoading = "Loading";

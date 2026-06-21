@@ -41,8 +41,7 @@
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
                                     Icon="{TemplateBinding Icon}"
-                                    IconBrush="{TemplateBinding Foreground}"
-                                    DockPanel.Dock="Left">
+                                    IconBrush="{TemplateBinding Foreground}">
                                     <atom:IconPresenter.IsVisible>
                                         <MultiBinding
                                             Converter="{x:Static atom:ButtonTheme.IconVisibleConverter}">
@@ -102,8 +101,7 @@
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
                                     Icon="{TemplateBinding Icon}"
-                                    IconBrush="{TemplateBinding Foreground}"
-                                    DockPanel.Dock="Left">
+                                    IconBrush="{TemplateBinding Foreground}">
                                     <atom:IconPresenter.IsVisible>
                                         <MultiBinding
                                             Converter="{x:Static atom:ButtonTheme.IconVisibleConverter}">
@@ -162,8 +160,7 @@
                                 <atom:IconPresenter
                                     Name="PART_ButtonIcon"
                                     Icon="{TemplateBinding Icon}"
-                                    IconBrush="{TemplateBinding Foreground}"
-                                    DockPanel.Dock="Left">
+                                    IconBrush="{TemplateBinding Foreground}">
                                     <atom:IconPresenter.IsVisible>
                                         <MultiBinding
                                             Converter="{x:Static atom:ButtonTheme.IconVisibleConverter}">
@@ -364,9 +361,24 @@
             </Style>
         </Style>
 
+        <Style Selector="^[IconPlacement=Start]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="DockPanel.Dock" Value="Left" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IconPlacement=End]">
+            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="DockPanel.Dock" Value="Right" />
+            </Style>
+        </Style>
+
         <Style Selector="^:not(:icononly)">
-            <Style Selector="^ /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
+            <Style Selector="^[IconPlacement=Start] /template/ atom|IconPresenter#PART_ButtonIcon, ^ /template/ atom|Icon#PART_LoadingIcon">
                 <Setter Property="Margin" Value="{atom:ButtonTokenResource IconMargin}" />
+            </Style>
+            <Style Selector="^[IconPlacement=End] /template/ atom|IconPresenter#PART_ButtonIcon">
+                <Setter Property="Margin" Value="{atom:ButtonTokenResource IconEndMargin}" />
             </Style>
         </Style>
 

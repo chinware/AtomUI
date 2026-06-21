@@ -151,6 +151,67 @@
 </gallery:ShowCaseItem>
 
 <gallery:ShowCaseItem
+    Title="{gallery:ButtonShowCaseLangResource IconPlacementTitle}"
+    Description="{gallery:ButtonShowCaseLangResource IconPlacementDescription}"
+    BadgeText="v6.0.6">
+    <StackPanel Orientation="Vertical"
+                Spacing="16">
+        <StackPanel Orientation="Horizontal"
+                    Spacing="5">
+            <atom:TextBlock VerticalAlignment="Center"
+                            Text="{gallery:ButtonShowCaseLangResource P2TextIconPlacement}" />
+            <atom:OptionButtonGroup ButtonStyle="Outline"
+                                    OptionCheckedChanged="HandleButtonIconPlacementOptionCheckedChanged">
+                <atom:OptionButton IsChecked="True"
+                                   Content="{gallery:ButtonShowCaseLangResource P2ContentStart}" />
+                <atom:OptionButton Content="{gallery:ButtonShowCaseLangResource P2ContentEnd}" />
+            </atom:OptionButtonGroup>
+        </StackPanel>
+
+        <WrapPanel HorizontalAlignment="Left"
+                   Orientation="Horizontal">
+            <atom:Button ButtonType="Primary"
+                         Shape="Circle"
+                         Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}"
+                         IconPlacement="{Binding ButtonIconPlacement}" />
+            <atom:Button ButtonType="Primary"
+                         Shape="Round"
+                         Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}"
+                         IconPlacement="{Binding ButtonIconPlacement}"
+                         Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
+            <atom:Button ButtonType="Default"
+                         Shape="Circle"
+                         Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}"
+                         IconPlacement="{Binding ButtonIconPlacement}" />
+            <atom:Button ButtonType="Default"
+                         Shape="Round"
+                         Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}"
+                         IconPlacement="{Binding ButtonIconPlacement}"
+                         Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
+            <atom:Button ButtonType="Text"
+                         Shape="Default"
+                         Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}"
+                         IconPlacement="{Binding ButtonIconPlacement}"
+                         Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
+            <atom:Button ButtonType="Link"
+                         Shape="Default"
+                         Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}"
+                         IconPlacement="{Binding ButtonIconPlacement}"
+                         Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
+            <atom:Button ButtonType="Dashed"
+                         Shape="Circle"
+                         Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}"
+                         IconPlacement="{Binding ButtonIconPlacement}" />
+            <atom:Button ButtonType="Dashed"
+                         Shape="Default"
+                         Icon="{antdicons:AntDesignIconProvider Kind=SearchOutlined}"
+                         IconPlacement="{Binding ButtonIconPlacement}"
+                         Content="{gallery:ButtonShowCaseLangResource P2ContentSearch}" />
+        </WrapPanel>
+    </StackPanel>
+</gallery:ShowCaseItem>
+
+<gallery:ShowCaseItem
     Title="{gallery:ButtonShowCaseLangResource LoadingTitle}"
     Description="{gallery:ButtonShowCaseLangResource LoadingDescription}">
     <StackPanel HorizontalAlignment="Stretch" Orientation="Vertical" Margin="10">

@@ -36,6 +36,12 @@ public enum ButtonShape
     Round
 }
 
+public enum ButtonIconPlacement
+{
+    Start,
+    End
+}
+
 public enum ButtonColor
 {
     Default,
@@ -104,6 +110,11 @@ public class Button : AvaloniaButton,
     public static readonly StyledProperty<PathIcon?> IconProperty =
         AvaloniaProperty.Register<Button, PathIcon?>(nameof(Icon));
 
+    public static readonly StyledProperty<ButtonIconPlacement> IconPlacementProperty =
+        AvaloniaProperty.Register<Button, ButtonIconPlacement>(
+            nameof(IconPlacement),
+            ButtonIconPlacement.Start);
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Button>();
 
@@ -159,6 +170,12 @@ public class Button : AvaloniaButton,
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
+    }
+
+    public ButtonIconPlacement IconPlacement
+    {
+        get => GetValue(IconPlacementProperty);
+        set => SetValue(IconPlacementProperty, value);
     }
 
     public bool IsMotionEnabled
@@ -439,6 +456,7 @@ public class Button : AvaloniaButton,
         AffectsMeasure<Button>(SizeTypeProperty,
             ShapeProperty,
             IconProperty,
+            IconPlacementProperty,
             CompactSpaceItemPositionProperty,
             CompactSpaceOrientationProperty);
         AffectsRender<Button>(ButtonTypeProperty,
