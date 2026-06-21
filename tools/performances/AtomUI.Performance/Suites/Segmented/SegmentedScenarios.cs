@@ -108,7 +108,7 @@ internal static partial class Program
                     CreateSegmentedItem("Satellite", isEnabled: false)),
                 CreateDisabledMixedSegmented(),
                 CreateSegmented(
-                    sizeType: SizeType.Large,
+                    sizeType: CustomizableSizeType.Large,
                     CreateSegmentedItem("Daily"),
                     CreateSegmentedItem("Weekly"),
                     CreateSegmentedItem("Monthly"),
@@ -116,7 +116,7 @@ internal static partial class Program
                     CreateSegmentedItem("Yearly")),
                 CreateTextOnlySegmented(),
                 CreateSegmented(
-                    sizeType: SizeType.Small,
+                    sizeType: CustomizableSizeType.Small,
                     CreateSegmentedItem("Daily"),
                     CreateSegmentedItem("Weekly"),
                     CreateSegmentedItem("Monthly"),
@@ -131,7 +131,7 @@ internal static partial class Program
                     CreateSegmentedItem("Wechat", new WechatOutlined(), isEnabled: false),
                     CreateSegmentedItem("Windows", new WindowsOutlined())),
                 CreateSegmented(
-                    sizeType: SizeType.Large,
+                    sizeType: CustomizableSizeType.Large,
                     CreateSegmentedItem("Ava", new BarsOutlined()),
                     CreateSegmentedItem("Wechat", new WechatOutlined()),
                     CreateSegmentedItem("Windows", new WindowsOutlined()))
@@ -184,7 +184,7 @@ internal static partial class Program
     }
 
     private static AtomSegmented CreateSegmented(
-        SizeType sizeType,
+        CustomizableSizeType sizeType,
         params AtomSegmentedItem[] items)
     {
         return CreateSegmented(isExpanding: false, sizeType, items);
@@ -192,7 +192,7 @@ internal static partial class Program
 
     private static AtomSegmented CreateSegmented(
         bool isExpanding,
-        SizeType? sizeType,
+        CustomizableSizeType? sizeType,
         params AtomSegmentedItem[] items)
     {
         var segmented = new AtomSegmented

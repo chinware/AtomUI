@@ -104,7 +104,7 @@ internal static partial class Program
             Content = "Large",
             Icon    = new BarsOutlined()
         };
-        var largeSegmented = CreateVerificationSegmented(SizeType.Large, largeItem);
+        var largeSegmented = CreateVerificationSegmented(CustomizableSizeType.Large, largeItem);
         using var _ = RealizeControl(largeSegmented);
         var largePresenter = FindVisualByName<IconPresenter>(largeItem, "PART_IconPresenter");
         Expect(largePresenter is { Width: > 0, Height: > 0 } &&
@@ -117,7 +117,7 @@ internal static partial class Program
             Content = "Small",
             Icon    = new BarsOutlined()
         };
-        var smallSegmented = CreateVerificationSegmented(SizeType.Small, smallItem);
+        var smallSegmented = CreateVerificationSegmented(CustomizableSizeType.Small, smallItem);
         using var __ = RealizeControl(smallSegmented);
         var smallPresenter = FindVisualByName<IconPresenter>(smallItem, "PART_IconPresenter");
         Expect(smallPresenter is { Width: > 0, Height: > 0 } &&
@@ -220,12 +220,12 @@ internal static partial class Program
         return CreateVerificationSegmented(sizeType: null, items);
     }
 
-    private static AtomSegmented CreateVerificationSegmented(SizeType sizeType, params AtomSegmentedItem[] items)
+    private static AtomSegmented CreateVerificationSegmented(CustomizableSizeType sizeType, params AtomSegmentedItem[] items)
     {
-        return CreateVerificationSegmented((SizeType?)sizeType, items);
+        return CreateVerificationSegmented((CustomizableSizeType?)sizeType, items);
     }
 
-    private static AtomSegmented CreateVerificationSegmented(SizeType? sizeType, params AtomSegmentedItem[] items)
+    private static AtomSegmented CreateVerificationSegmented(CustomizableSizeType? sizeType, params AtomSegmentedItem[] items)
     {
         var segmented = new AtomSegmented();
         if (sizeType is { } value)

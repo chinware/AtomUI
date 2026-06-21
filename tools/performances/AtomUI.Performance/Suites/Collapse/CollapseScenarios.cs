@@ -38,7 +38,7 @@ internal static partial class Program
         bool hasAddOn = false,
         Avalonia.Thickness? itemHeaderPadding = null,
         Avalonia.Thickness? itemContentPadding = null,
-        SizeType sizeType = SizeType.Middle,
+        CustomizableSizeType sizeType = CustomizableSizeType.Middle,
         CollapseExpandIconPosition expandIconPosition = CollapseExpandIconPosition.Start,
         CollapseTriggerType triggerType = CollapseTriggerType.Header,
         bool isEnabled = true)
@@ -175,9 +175,9 @@ internal static partial class Program
             Spacing     = 20,
             Children =
             {
-                CreateCollapse(itemCount: 1, sizeType: SizeType.Middle),
-                CreateCollapse(itemCount: 1, sizeType: SizeType.Small),
-                CreateCollapse(itemCount: 1, sizeType: SizeType.Large)
+                CreateCollapse(itemCount: 1, sizeType: CustomizableSizeType.Middle),
+                CreateCollapse(itemCount: 1, sizeType: CustomizableSizeType.Small),
+                CreateCollapse(itemCount: 1, sizeType: CustomizableSizeType.Large)
             }
         };
     }

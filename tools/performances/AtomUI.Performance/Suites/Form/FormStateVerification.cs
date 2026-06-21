@@ -78,7 +78,7 @@ internal static partial class Program
             "FormItem should provide feedback control when Form.IsValidateFeedbackEnabled=true.",
             failures);
 
-        form.SizeType = SizeType.Large;
+        form.SizeType = CustomizableSizeType.Large;
         form.StyleVariant = InputControlStyleVariant.Filled;
         form.IsMotionEnabled = true;
         form.ValidateTrigger = FormValidateTrigger.OnBlur;
@@ -199,7 +199,7 @@ internal static partial class Program
         formItemAware.ValueChanged += (_, _) => valueChangedCount++;
 
         using var realized = RealizeControl(decorator);
-        decorator.SizeType = SizeType.Small;
+        decorator.SizeType = CustomizableSizeType.Small;
         decorator.StyleVariant = InputControlStyleVariant.Borderless;
         decorator.IsMotionEnabled = true;
         RefreshLayout(realized.Window);

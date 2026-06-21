@@ -190,7 +190,7 @@ internal static partial class Program
             Content             = "Split",
             IsPrimaryButtonType = true,
             IsMotionEnabled     = false,
-            SizeType            = SizeType.Large,
+            SizeType            = CustomizableSizeType.Large,
             Flyout              = CreateSplitButtonMenuFlyout()
         };
 

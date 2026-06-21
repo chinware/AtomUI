@@ -97,13 +97,13 @@ internal static partial class Program
             new AtomUI.Desktop.Controls.Button
             {
                 ButtonType = ButtonType.Default,
-                SizeType   = SizeType.Small,
+                SizeType   = CustomizableSizeType.Small,
                 Content    = "ChangeUser"
             },
             new AtomUI.Desktop.Controls.Button
             {
                 ButtonType = ButtonType.Default,
-                SizeType   = SizeType.Small,
+                SizeType   = CustomizableSizeType.Small,
                 Content    = "ChangeGap"
             }));
 

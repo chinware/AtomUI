@@ -153,7 +153,7 @@ internal static partial class Program
                BrushEquals(offIcon.Foreground, Brushes.Coral),
             "Switch icon content should mirror Foreground.",
             failures);
-        toggleSwitch.SizeType = SizeType.Small;
+        toggleSwitch.SizeType = CustomizableSizeType.Small;
         RefreshLayout(realized.Window);
         iconSize = GetSwitchIconSize(toggleSwitch);
         Expect(MathUtils.AreClose(onIcon.Width, iconSize) &&

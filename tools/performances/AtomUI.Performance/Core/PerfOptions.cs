@@ -6,6 +6,7 @@ internal sealed record PerfOptions(
     string? MarkdownOutputPath,
     bool MeasureColorPickerInteractions,
     bool MeasureSwitchInteractions,
+    bool MeasureSelectInteractions,
     bool VerifyAdornerLayerStates,
     bool VerifyAccessories,
     bool VerifyEffectiveBrushes,
@@ -91,6 +92,7 @@ internal sealed record PerfOptions(
         string? markdownOutput     = null;
         var measureColorPickerInteractions = false;
         var measureSwitchInteractions = false;
+        var measureSelectInteractions = false;
         var verifyAdornerLayerStates = false;
         var verifyAccessories      = false;
         var verifyEffectiveBrushes = false;
@@ -190,6 +192,9 @@ internal sealed record PerfOptions(
                     break;
                 case "--measure-switch-interactions":
                     measureSwitchInteractions = true;
+                    break;
+                case "--measure-select-interactions":
+                    measureSelectInteractions = true;
                     break;
                 case "--verify-adornerlayer-states":
                     verifyAdornerLayerStates = true;
@@ -431,6 +436,7 @@ internal sealed record PerfOptions(
             markdownOutput,
             measureColorPickerInteractions,
             measureSwitchInteractions,
+            measureSelectInteractions,
             verifyAdornerLayerStates,
             verifyAccessories,
             verifyEffectiveBrushes,

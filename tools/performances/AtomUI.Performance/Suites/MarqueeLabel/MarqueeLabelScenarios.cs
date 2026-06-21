@@ -128,16 +128,16 @@ internal static partial class Program
             "Success Tips",
             isShowIcon: true,
             isClosable: true,
-            extraAction: new AtomButton { ButtonType = ButtonType.Text, SizeType = SizeType.Small, Content = "UNDO" }));
+            extraAction: new AtomButton { ButtonType = ButtonType.Text, SizeType = CustomizableSizeType.Small, Content = "UNDO" }));
         panel.Children.Add(CreateAlert(AlertType.Error,
             "Error Text",
             "Error Description Error Description Error Description Error Description",
             isShowIcon: true,
-            extraAction: new AtomButton { ButtonType = ButtonType.Default, SizeType = SizeType.Small, IsDanger = true, Content = "Detail" }));
+            extraAction: new AtomButton { ButtonType = ButtonType.Default, SizeType = CustomizableSizeType.Small, IsDanger = true, Content = "Detail" }));
         panel.Children.Add(CreateAlert(AlertType.Warning,
             "Warning Text",
             isClosable: true,
-            extraAction: new AtomButton { ButtonType = ButtonType.Text, SizeType = SizeType.Small, Content = "Done" }));
+            extraAction: new AtomButton { ButtonType = ButtonType.Text, SizeType = CustomizableSizeType.Small, Content = "Done" }));
         panel.Children.Add(CreateAlert(AlertType.Info,
             "Info Text",
             "Info Description Info Description Info Description Info Description",
@@ -148,8 +148,8 @@ internal static partial class Program
                 Spacing     = 5,
                 Children =
                 {
-                    new AtomButton { ButtonType = ButtonType.Primary, SizeType = SizeType.Small, Content = "Accept" },
-                    new AtomButton { SizeType = SizeType.Small, IsDanger = true, IsGhost = true, Content = "Decline" }
+                    new AtomButton { ButtonType = ButtonType.Primary, SizeType = CustomizableSizeType.Small, Content = "Accept" },
+                    new AtomButton { SizeType = CustomizableSizeType.Small, IsDanger = true, IsGhost = true, Content = "Decline" }
                 }
             }));
 

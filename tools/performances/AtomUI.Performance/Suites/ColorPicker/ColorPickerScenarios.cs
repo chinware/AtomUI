@@ -19,8 +19,8 @@ internal static partial class Program
             new PerfScenario("ColorPicker.Empty", _ => CreateEmptyColorPicker()),
             new PerfScenario("ColorPicker.Empty.Text", _ => CreateEmptyColorPicker(isTextVisible: true)),
             new PerfScenario("ColorPicker.Text", _ => CreateColorPicker(isTextVisible: true)),
-            new PerfScenario("ColorPicker.Small.Text", _ => CreateColorPicker(sizeType: SizeType.Small, isTextVisible: true)),
-            new PerfScenario("ColorPicker.Large.Text", _ => CreateColorPicker(sizeType: SizeType.Large, isTextVisible: true)),
+            new PerfScenario("ColorPicker.Small.Text", _ => CreateColorPicker(sizeType: CustomizableSizeType.Small, isTextVisible: true)),
+            new PerfScenario("ColorPicker.Large.Text", _ => CreateColorPicker(sizeType: CustomizableSizeType.Large, isTextVisible: true)),
             new PerfScenario("ColorPicker.Clear.Text", _ => CreateColorPicker(isTextVisible: true, isClearEnabled: true)),
             new PerfScenario("ColorPicker.Format.Rgba", _ => CreateColorPicker(isTextVisible: true, format: ColorFormat.Rgba)),
             new PerfScenario("ColorPicker.Format.Hsva", _ => CreateColorPicker(isTextVisible: true, format: ColorFormat.Hsva)),
@@ -44,7 +44,7 @@ internal static partial class Program
     }
 
     private static AtomColorPicker CreateColorPicker(
-        SizeType sizeType = SizeType.Middle,
+        CustomizableSizeType sizeType = CustomizableSizeType.Middle,
         bool isTextVisible = false,
         bool isClearEnabled = false,
         bool isEnabled = true,
@@ -116,14 +116,14 @@ internal static partial class Program
         root.Children.Add(CreateColorPicker());
         root.Children.Add(CreateColorPickerVerticalPanel(
             CreateColorPickerRow(
-                CreateColorPicker(sizeType: SizeType.Small),
-                CreateColorPicker(sizeType: SizeType.Small, isTextVisible: true)),
+                CreateColorPicker(sizeType: CustomizableSizeType.Small),
+                CreateColorPicker(sizeType: CustomizableSizeType.Small, isTextVisible: true)),
             CreateColorPickerRow(
-                CreateColorPicker(sizeType: SizeType.Middle),
-                CreateColorPicker(sizeType: SizeType.Middle, isTextVisible: true)),
+                CreateColorPicker(sizeType: CustomizableSizeType.Middle),
+                CreateColorPicker(sizeType: CustomizableSizeType.Middle, isTextVisible: true)),
             CreateColorPickerRow(
-                CreateColorPicker(sizeType: SizeType.Large),
-                CreateColorPicker(sizeType: SizeType.Large, isTextVisible: true))));
+                CreateColorPicker(sizeType: CustomizableSizeType.Large),
+                CreateColorPicker(sizeType: CustomizableSizeType.Large, isTextVisible: true))));
         root.Children.Add(CreateColorPickerVerticalPanel(CreateGradientColorPicker(isTextVisible: true)));
         root.Children.Add(CreateColorPickerVerticalPanel(
             CreateColorPicker(isTextVisible: true, isClearEnabled: true),

@@ -100,6 +100,20 @@ dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.cs
   --markdown /tmp/atomui-buttonspinner-control.md
 ```
 
+控件级 Select 基准与 handle 输入状态传播测量：
+
+```bash
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --suite select --count 60 \
+  --markdown /tmp/atomui-select-control.md
+
+dotnet run --project tools/performances/AtomUI.Performance/AtomUI.Performance.csproj \
+  -c Debug --framework net10.0 --no-build -- \
+  --measure-select-interactions --count 1000 \
+  --markdown /tmp/select-interactions-current.md
+```
+
 控件级 Breadcrumb 基准与状态验证：
 
 ```bash
