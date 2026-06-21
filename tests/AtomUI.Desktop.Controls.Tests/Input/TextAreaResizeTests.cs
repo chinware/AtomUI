@@ -1,7 +1,10 @@
 using System.Linq;
 using System.Reflection;
+using AtomUI.Desktop.Controls.DesignTokens;
+using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -118,6 +121,33 @@ public class TextAreaResizeTests
         }
     }
 
+    [Fact]
+    public void Inner_Left_Content_Uses_Token_Margin_Before_Text_Content()
+    {
+        var textArea = new AtomUI.Desktop.Controls.TextArea
+        {
+            Width            = 240,
+            Height           = 80,
+            InnerLeftContent = "L",
+            Text             = "content",
+            IsMotionEnabled  = false
+        };
+        var window = CreateWindow(textArea);
+
+        try
+        {
+            var leftAddOn      = FindTemplatePart<ContentPresenter>(textArea, "PART_ContentLeftAddOn");
+            var expectedMargin = GetThemeResource<Thickness>(AddOnDecoratedBoxTokenKind.LeftInnerAddOnMargin);
+
+            leftAddOn.Margin.ShouldBe(expectedMargin);
+            leftAddOn.Margin.Right.ShouldBeGreaterThan(0);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static AvaloniaWindow CreateWindow(Control content)
     {
         var window = new AvaloniaWindow
@@ -137,6 +167,25 @@ public class TextAreaResizeTests
         return textArea.GetVisualDescendants()
                        .OfType<Control>()
                        .Single(item => item.Name == "PART_ResizeHandle");
+    }
+
+    private static T FindTemplatePart<T>(Control control, string name)
+        where T : Control
+    {
+        var part = control.GetVisualDescendants()
+                          .OfType<T>()
+                          .SingleOrDefault(item => item.Name == name);
+        part.ShouldNotBeNull();
+        return part!;
+    }
+
+    private static T GetThemeResource<T>(object key)
+    {
+        var application = Application.Current;
+        application.ShouldNotBeNull();
+        application!.TryGetResource(key, application.ActualThemeVariant, out var value).ShouldBeTrue();
+        value.ShouldBeAssignableTo<T>();
+        return (T)value!;
     }
 
     private static void InvokeInternal(object instance, string methodName, params object[] args)

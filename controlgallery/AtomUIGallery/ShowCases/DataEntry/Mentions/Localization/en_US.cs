@@ -8,6 +8,8 @@ internal partial class en_US : LanguageProvider
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The simplest use.";
+    public const string SizeTypeTitle = "Mentions size";
+    public const string SizeTypeDescription = "Mentions supports large, middle, small, and Custom sizes with local height and font overrides.";
     public const string VariantsTitle = "Variants";
     public const string VariantsDescription = "Variants of Mentions, there are four variants: outlined filled borderless and underlined.";
     public const string AsynchronousLoadingTitle = "Asynchronous loading";
@@ -24,6 +26,10 @@ internal partial class en_US : LanguageProvider
     public const string AutoSizeDescription = "Height autoSize.";
     public const string WithClearIconTitle = "With clear icon";
     public const string WithClearIconDescription = "Customize clear button.";
+    public const string P2PlaceholderTextLarge = "Large";
+    public const string P2PlaceholderTextMiddle = "Middle";
+    public const string P2PlaceholderTextSmall = "Small";
+    public const string P2PlaceholderTextCustom = "Custom";
     public const string P2PlaceholderTextOutlined = "Outlined";
     public const string P2PlaceholderTextFilled = "Filled";
     public const string P2PlaceholderTextBorderless = "Borderless";
