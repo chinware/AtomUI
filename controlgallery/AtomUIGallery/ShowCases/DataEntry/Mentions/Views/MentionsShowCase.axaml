@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.Mentions.MentionsShowCase"
              xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.Mentions"
              x:DataType="vm:MentionsViewModel">
@@ -140,6 +141,41 @@
                            HorizontalAlignment="Stretch"
                            OptionsSource="{Binding BasicMentionOptions}"
                            DefaultValue="@afc163"/>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:MentionsShowCaseLangResource SizeTypeTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:MentionsShowCaseLangResource SizeTypeDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:MentionsViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:Mentions HorizontalAlignment="Stretch"
+                               OptionsSource="{Binding BasicMentionOptions}"
+                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextLarge}"
+                               SizeType="Large"
+                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+                <atom:Mentions HorizontalAlignment="Stretch"
+                               OptionsSource="{Binding BasicMentionOptions}"
+                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextMiddle}"
+                               SizeType="Middle"
+                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+                <atom:Mentions HorizontalAlignment="Stretch"
+                               OptionsSource="{Binding BasicMentionOptions}"
+                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextSmall}"
+                               SizeType="Small"
+                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+                <atom:Mentions Name="CustomSizeTypeMentions"
+                               HorizontalAlignment="Stretch"
+                               OptionsSource="{Binding BasicMentionOptions}"
+                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextCustom}"
+                               SizeType="Custom"
+                               Height="38"
+                               FontSize="15"
+                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+            </StackPanel>
                 </DataTemplate>
             </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>

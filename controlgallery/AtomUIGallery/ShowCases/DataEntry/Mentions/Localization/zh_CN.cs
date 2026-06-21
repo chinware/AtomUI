@@ -8,6 +8,8 @@ internal partial class zh_CN : LanguageProvider
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "最简单的用法。";
+    public const string SizeTypeTitle = "Mentions 尺寸";
+    public const string SizeTypeDescription = "Mentions 支持大号、中号、小号，也支持通过 Custom 配合本地高度和字号自定义。";
     public const string VariantsTitle = "变体";
     public const string VariantsDescription = "Mentions 提供四种变体：描边、填充、无边框和下划线。";
     public const string AsynchronousLoadingTitle = "异步加载";
@@ -24,6 +26,10 @@ internal partial class zh_CN : LanguageProvider
     public const string AutoSizeDescription = "高度自动调整。";
     public const string WithClearIconTitle = "带清除图标";
     public const string WithClearIconDescription = "自定义清除按钮。";
+    public const string P2PlaceholderTextLarge = "大号";
+    public const string P2PlaceholderTextMiddle = "中号";
+    public const string P2PlaceholderTextSmall = "小号";
+    public const string P2PlaceholderTextCustom = "自定义";
     public const string P2PlaceholderTextOutlined = "线框风格";
     public const string P2PlaceholderTextFilled = "填充风格";
     public const string P2PlaceholderTextBorderless = "无边框";

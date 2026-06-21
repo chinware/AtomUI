@@ -67,6 +67,9 @@
             <Setter Property="ClipToBounds" Value="True" />
             <Setter Property="ResizeIndicatorLineBrush"
                     Value="{atom:TextAreaTokenResource ResizeIndicatorLineColor}" />
+            <Style Selector="^ /template/ ContentPresenter#PART_ContentLeftAddOn">
+                <Setter Property="Margin" Value="{atom:AddOnDecoratedBoxTokenResource LeftInnerAddOnMargin}" />
+            </Style>
             <Style Selector="^[SizeType=Large]">
                 <Style Selector="^ /template/ Border#PART_ContentFrame">
                     <Setter Property="Padding" Value="0" />
