@@ -31,6 +31,8 @@ internal partial class zh_TW : LanguageProvider
     public const string InputStatusDescription = "通過 status 為 Input 添加狀態，可設置為錯誤或警告。";
     public const string SearchBoxTitle = "搜索框";
     public const string SearchBoxDescription = "將標準輸入框和搜索按鈕組合創建搜索框的示例。";
+    public const string SearchEditSizeTypeTitle = "SearchEdit 尺寸";
+    public const string SearchEditSizeTypeDescription = "SearchEdit 支持大號、中號、小號，也支持通過 Custom 配合本地高度和字號自定義。";
     public const string DisabledSearchBoxTitle = "禁用搜索框";
     public const string DisabledSearchBoxDescription = "將標準輸入框和搜索按鈕組合創建搜索框的示例。";
     public const string SearchBoxWithLoadingTitle = "帶加載狀態的搜索框";
@@ -47,6 +49,7 @@ internal partial class zh_TW : LanguageProvider
     public const string P2PlaceholderTextLarge = "大號";
     public const string P2PlaceholderTextMiddle = "中號";
     public const string P2PlaceholderTextSmall = "小號";
+    public const string P2PlaceholderTextCustom = "自定義";
     public const string P2TitleNormal = "普通";
     public const string P2PlaceholderTextOutlined = "線框風格";
     public const string P2PlaceholderTextFilled = "填充風格";

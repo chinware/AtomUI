@@ -10732,6 +10732,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextBasicUsage] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextBasicUsage;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextBorderless] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextBorderless;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextCanResize] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextCanResize;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextCustom] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextCustom;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextDisabled] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextDisabled;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextDisableResize] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextDisableResize;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextEnterYourUsername] = global::AtomUIGallery.ShowCases.LineEdit.en_US.P2PlaceholderTextEnterYourUsername;
@@ -10780,6 +10781,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchBoxTitle] = global::AtomUIGallery.ShowCases.LineEdit.en_US.SearchBoxTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchBoxWithLoadingDescription] = global::AtomUIGallery.ShowCases.LineEdit.en_US.SearchBoxWithLoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchBoxWithLoadingTitle] = global::AtomUIGallery.ShowCases.LineEdit.en_US.SearchBoxWithLoadingTitle;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchEditSizeTypeDescription] = global::AtomUIGallery.ShowCases.LineEdit.en_US.SearchEditSizeTypeDescription;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchEditSizeTypeTitle] = global::AtomUIGallery.ShowCases.LineEdit.en_US.SearchEditSizeTypeTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaDescription] = global::AtomUIGallery.ShowCases.LineEdit.en_US.TextAreaDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusDescription] = global::AtomUIGallery.ShowCases.LineEdit.en_US.TextAreaStatusDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusTitle] = global::AtomUIGallery.ShowCases.LineEdit.en_US.TextAreaStatusTitle;
@@ -10877,6 +10880,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextBasicUsage] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextBasicUsage;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextBorderless] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextBorderless;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextCanResize] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextCanResize;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextCustom] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextCustom;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextDisabled] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextDisabled;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextDisableResize] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextDisableResize;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextEnterYourUsername] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.P2PlaceholderTextEnterYourUsername;
@@ -10925,6 +10929,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchBoxTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.SearchBoxTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchBoxWithLoadingDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.SearchBoxWithLoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchBoxWithLoadingTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.SearchBoxWithLoadingTitle;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchEditSizeTypeDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.SearchEditSizeTypeDescription;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchEditSizeTypeTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.SearchEditSizeTypeTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.TextAreaDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.TextAreaStatusDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.TextAreaStatusTitle;
@@ -11022,6 +11028,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextBasicUsage] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextBasicUsage;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextBorderless] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextBorderless;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextCanResize] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextCanResize;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextCustom] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextCustom;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextDisabled] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextDisabled;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextDisableResize] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextDisableResize;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.P2PlaceholderTextEnterYourUsername] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.P2PlaceholderTextEnterYourUsername;
@@ -11070,6 +11077,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchBoxTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.SearchBoxTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchBoxWithLoadingDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.SearchBoxWithLoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchBoxWithLoadingTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.SearchBoxWithLoadingTitle;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchEditSizeTypeDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.SearchEditSizeTypeDescription;
+                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.SearchEditSizeTypeTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.SearchEditSizeTypeTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.TextAreaDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.TextAreaStatusDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.TextAreaStatusTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.TextAreaStatusTitle;

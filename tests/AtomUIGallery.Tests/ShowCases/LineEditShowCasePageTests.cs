@@ -46,11 +46,19 @@ public class LineEditShowCasePageTests
         source.ShouldContain("Text=\"{gallery:LineEditShowCaseLangResource PageDescription}\"");
         source.ShouldContain("HorizontalAlignment=\"Left\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(16);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(16);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(17);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(17);
         source.ShouldContain("LineEditShowCaseLangResource BasicUsageTitle");
+        source.ShouldContain("LineEditShowCaseLangResource InputSizesTitle");
+        source.ShouldContain("LineEditShowCaseLangResource P2PlaceholderTextCustom");
+        source.ShouldContain("SizeType=\"Custom\"");
+        source.ShouldContain("Height=\"38\"");
+        source.ShouldContain("FontSize=\"15\"");
         source.ShouldContain("LineEditShowCaseLangResource InputStatusTitle");
         source.ShouldContain("LineEditShowCaseLangResource SearchBoxTitle");
+        source.ShouldContain("LineEditShowCaseLangResource SearchEditSizeTypeTitle");
+        source.ShouldContain("LineEditShowCaseLangResource SearchEditSizeTypeDescription");
+        source.ShouldContain("Name=\"CustomSizeTypeSearchEdit\"");
         source.ShouldContain("LineEditShowCaseLangResource TextAreaTitle");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
@@ -136,6 +144,9 @@ public class LineEditShowCasePageTests
             source.ShouldContain("ApiPropertyIsAllowClear");
             source.ShouldContain("ApiPropertySearchButtonStyle");
             source.ShouldContain("ApiPropertyIsAutoSize");
+            source.ShouldContain("SearchEditSizeTypeTitle");
+            source.ShouldContain("SearchEditSizeTypeDescription");
+            source.ShouldContain("P2PlaceholderTextCustom");
             source.ShouldContain("TokenNameInputFontSize");
             source.ShouldContain("TokenNameRightAddOnPadding");
         }

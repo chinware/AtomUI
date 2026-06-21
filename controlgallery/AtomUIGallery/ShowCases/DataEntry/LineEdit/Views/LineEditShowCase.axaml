@@ -155,6 +155,9 @@
                                InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
                 <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextSmall}" SizeType="Small"
                                InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+                <atom:LineEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextCustom}" SizeType="Custom"
+                               Height="38" FontSize="15"
+                               InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
             </StackPanel>
                 </DataTemplate>
             </gallery:ShowCaseItem.DeferredContentTemplate>
@@ -428,6 +431,42 @@
                 <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextInputSearchText}" HorizontalAlignment="Stretch"
                                  LeftAddOn="https://"
                                  StyleVariant="Underlined" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:LineEditShowCaseLangResource SearchEditSizeTypeTitle}"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:LineEditShowCaseLangResource SearchEditSizeTypeDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:LineEditViewModel">
+            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextLarge}"
+                                 Width="360"
+                                 HorizontalAlignment="Left"
+                                 SizeType="Large"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextMiddle}"
+                                 Width="360"
+                                 HorizontalAlignment="Left"
+                                 SizeType="Middle"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" />
+                <atom:SearchEdit PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextSmall}"
+                                 Width="360"
+                                 HorizontalAlignment="Left"
+                                 SizeType="Small"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" />
+                <atom:SearchEdit Name="CustomSizeTypeSearchEdit"
+                                 PlaceholderText="{gallery:LineEditShowCaseLangResource P2PlaceholderTextCustom}"
+                                 Width="360"
+                                 HorizontalAlignment="Left"
+                                 SizeType="Custom"
+                                 Height="38"
+                                 FontSize="15"
+                                 SearchButtonStyle="Primary"
+                                 SearchButtonText="{gallery:LineEditShowCaseLangResource P2SearchButtonTextSearch}" />
             </StackPanel>
                 </DataTemplate>
             </gallery:ShowCaseItem.DeferredContentTemplate>
