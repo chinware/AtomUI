@@ -52,20 +52,23 @@ internal static partial class Program
         }
 
         Expect(FindSelectedIndicatorPresenter(selectedItem) != null,
-            "Selected ListView item should materialize selected indicator presenter.",
+            "Selected ListView item should keep selected indicator presenter in the static template.",
+            failures);
+        Expect(FindSelectedIndicatorPresenter(selectedItem)?.IsVisible == true,
+            "Selected ListView item should show selected indicator presenter.",
             failures);
 
         listView.SelectedIndex = -1;
         RefreshLayout(realized.Window);
-        Expect(FindSelectedIndicatorPresenter(selectedItem) == null,
-            "Unselected ListView item should detach selected indicator presenter.",
+        Expect(FindSelectedIndicatorPresenter(selectedItem)?.IsVisible == false,
+            "Unselected ListView item should hide selected indicator presenter.",
             failures);
 
         listView.SelectedIndex = 1;
         RefreshLayout(realized.Window);
         var nextSelectedItem = listView.ContainerFromIndex(1) as ListViewItem;
-        Expect(nextSelectedItem != null && FindSelectedIndicatorPresenter(nextSelectedItem) != null,
-            "Selecting another ListView item should materialize selected indicator presenter again.",
+        Expect(nextSelectedItem != null && FindSelectedIndicatorPresenter(nextSelectedItem)?.IsVisible == true,
+            "Selecting another ListView item should show selected indicator presenter again.",
             failures);
     }
 
@@ -106,14 +109,14 @@ internal static partial class Program
         var listView = CreateListView(CreateListViewItems(5));
         using var realized = RealizeControl(listView);
 
-        Expect(FindVisualByType<Empty>(listView) == null,
-            "Non-empty ListView should not materialize the default Empty indicator.",
+        Expect(FindVisualByType<Empty>(listView)?.IsVisible == false,
+            "Non-empty ListView should keep the default Empty indicator hidden.",
             failures);
 
         listView.ItemsSource = Array.Empty<IListItemData>();
         RefreshLayout(realized.Window);
-        Expect(FindVisualByType<Empty>(listView) != null,
-            "Empty ListView should lazily materialize the default Empty indicator.",
+        Expect(FindVisualByType<Empty>(listView)?.IsVisible == true,
+            "Empty ListView should show the default Empty indicator.",
             failures);
     }
 

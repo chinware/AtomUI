@@ -383,6 +383,8 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
     private IListCollectionView? _collectionView;
     /// <summary>Indicates whether _collectionView was created by ListView (and should be disposed by it).</summary>
     private bool _ownsCollectionView;
+    private IListCollectionView? _defaultFilterOwner;
+    private Func<object, bool>? _defaultFilterCallback;
     
     static ListView()
     {
@@ -430,6 +432,7 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
                 oldCollectionView.CollectionChanged -= HandleCollectionViewChanged;
                 oldCollectionView.PageChanging      -= HandlePageChanging;
                 oldCollectionView.PageChanged       -= HandlePageChanged;
+                ClearDefaultFilterCallback(oldCollectionView);
                 // Dispose only if we created this view (not user-provided)
                 if (_ownsCollectionView)
                 {
@@ -444,8 +447,6 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
                 newCollectionView.PageChanged       += HandlePageChanged;
                 IsEmptyDataSource                   =  newCollectionView.IsEmpty;
                 TotalItemCount                      =  newCollectionView.TotalItemCount;
-       
-                newCollectionView.Filter ??= new ListDefaultFilter(newCollectionView);
             }
             else
             {
@@ -484,6 +485,7 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
         {
             IsEmptyDataSource = view.IsEmpty;
             TotalItemCount    = view.TotalItemCount;
+            SyncPaginationState();
         }
     }
     
@@ -865,6 +867,11 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
                     FilterConditions       = [FilterValue],
                     Filter                 = Filter.Filter
                 });
+                EnsureDefaultFilterCallback(_collectionView);
+            }
+            else
+            {
+                ClearDefaultFilterCallback(_collectionView);
             }
             IsFiltering = _collectionView.FilterDescriptions.Count > 0;
         }
@@ -886,6 +893,37 @@ public partial class ListView : ItemsControl, ICustomizableSizeTypeAware, IMotio
             {
                 _collectionView.SortDescriptions.AddRange(SortDescriptions);
             }
+        }
+    }
+
+    private void EnsureDefaultFilterCallback(IListCollectionView collectionView)
+    {
+        if (ReferenceEquals(_defaultFilterOwner, collectionView) &&
+            ReferenceEquals(collectionView.Filter, _defaultFilterCallback))
+        {
+            return;
+        }
+
+        if (collectionView.Filter == null)
+        {
+            _defaultFilterOwner    = collectionView;
+            _defaultFilterCallback = new ListDefaultFilter(collectionView);
+            collectionView.Filter  = _defaultFilterCallback;
+        }
+    }
+
+    private void ClearDefaultFilterCallback(IListCollectionView collectionView)
+    {
+        if (ReferenceEquals(_defaultFilterOwner, collectionView) &&
+            ReferenceEquals(collectionView.Filter, _defaultFilterCallback))
+        {
+            collectionView.Filter = null;
+        }
+
+        if (ReferenceEquals(_defaultFilterOwner, collectionView))
+        {
+            _defaultFilterOwner    = null;
+            _defaultFilterCallback = null;
         }
     }
 }
