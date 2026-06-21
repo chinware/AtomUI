@@ -16,6 +16,14 @@ public abstract class AbstractTransfer: TemplatedControl,
                                         IInputControlStatusAware,
                                         ICustomizableSizeTypeAware
 {
+    [Flags]
+    protected enum FilterChangeType
+    {
+        Source = 0x01,
+        Target = 0x02,
+        Both = Source | Target
+    }
+
     #region 公共属性定义
     
     public static readonly StyledProperty<IEnumerable<IItemKey>?> ItemsSourceProperty =
@@ -451,41 +459,6 @@ public abstract class AbstractTransfer: TemplatedControl,
         }
     }
 
-    private void HandleTransferViewCreated(object? sender, TransferViewCreatedEventArgs args)
-    {
-        if (args.TransferView.ViewType == TransferViewType.Source)
-        {
-            _sourceView = args.TransferView;
-        }
-        else
-        {
-            _targetView              =  args.TransferView;
-            _targetView.ItemsRemoved += HandleItemRemoved;
-        }
-    }
-
-    private void HandleItemRemoved(object? sender, TransferItemsRemovedEventArgs args)
-    {
-        var currentSet = new HashSet<EntityKey>(TargetKeys?.Count ?? 0);
-        if (TargetKeys != null)
-        {
-            foreach (var targetKey in TargetKeys)
-            {
-                currentSet.Add(targetKey);
-            }
-        }
-        _sourceViewDecorator?.NotifyAboutToTransfer(TransferDirection.ToSource);
-        if (args.Items != null)
-        {
-            foreach (var item in args.Items)
-            {
-                currentSet.Remove(item.ItemKey ?? default);
-            }
-        }
-        SetCurrentValue(TargetKeysProperty, BuildEntityKeyList(currentSet));
-        _sourceViewDecorator?.NotifyTransferCompleted(TransferDirection.ToSource);
-    }
-
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -596,26 +569,9 @@ public abstract class AbstractTransfer: TemplatedControl,
         return items;
     }
 
-    private bool IsFilterMatched(IItemKey item, string? filterValue)
-    {
-        return !IsFilterEnabled ||
-               string.IsNullOrEmpty(filterValue) ||
-               (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item,
-                   filterValue) ?? false);
-    }
-
     protected void NotifySelectionChanged(IList<EntityKey>? sourceItemKeys, IList<EntityKey>? targetItemKeys)
     {
         SelectionChanged?.Invoke(this, new TransferSelectionChangedEventArgs(sourceItemKeys, targetItemKeys));
-    }
-    
-    private void HandleTransferRequest(RoutedEventArgs args)
-    {
-        if (args.Source is Button button && button.Tag is TransferDirection transferDirection)
-        {
-            TransferItems(transferDirection);
-        }
-        args.Handled = true;
     }
 
     protected virtual void TransferItems(TransferDirection transferDirection)
@@ -656,16 +612,6 @@ public abstract class AbstractTransfer: TemplatedControl,
         }
         _sourceViewDecorator?.NotifyTransferCompleted(transferDirection);
         _targetViewDecorator?.NotifyTransferCompleted(transferDirection);
-    }
-    
-    private void HandleSelectActionRequest(TransferSelectActionEventArgs args)
-    {
-        if (args.Action == TransferSelectAction.RemoveAll)
-        {
-            _sourceViewDecorator?.NotifyAboutToTransfer(TransferDirection.ToSource);
-            SetCurrentValue(TargetKeysProperty, null);
-            _sourceViewDecorator?.NotifyTransferCompleted(TransferDirection.ToSource);
-        }
     }
 
     protected static HashSet<EntityKey>? BuildTargetKeySet(ICollection<EntityKey>? keys)
@@ -713,6 +659,68 @@ public abstract class AbstractTransfer: TemplatedControl,
         return keyList;
     }
 
+    private bool IsFilterMatched(IItemKey item, string? filterValue)
+    {
+        return !IsFilterEnabled ||
+               string.IsNullOrEmpty(filterValue) ||
+               (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item,
+                   filterValue) ?? false);
+    }
+
+    private void HandleTransferViewCreated(object? sender, TransferViewCreatedEventArgs args)
+    {
+        if (args.TransferView.ViewType == TransferViewType.Source)
+        {
+            _sourceView = args.TransferView;
+        }
+        else
+        {
+            _targetView              =  args.TransferView;
+            _targetView.ItemsRemoved += HandleItemRemoved;
+        }
+    }
+
+    private void HandleItemRemoved(object? sender, TransferItemsRemovedEventArgs args)
+    {
+        var currentSet = new HashSet<EntityKey>(TargetKeys?.Count ?? 0);
+        if (TargetKeys != null)
+        {
+            foreach (var targetKey in TargetKeys)
+            {
+                currentSet.Add(targetKey);
+            }
+        }
+        _sourceViewDecorator?.NotifyAboutToTransfer(TransferDirection.ToSource);
+        if (args.Items != null)
+        {
+            foreach (var item in args.Items)
+            {
+                currentSet.Remove(item.ItemKey ?? default);
+            }
+        }
+        SetCurrentValue(TargetKeysProperty, BuildEntityKeyList(currentSet));
+        _sourceViewDecorator?.NotifyTransferCompleted(TransferDirection.ToSource);
+    }
+
+    private void HandleTransferRequest(RoutedEventArgs args)
+    {
+        if (args.Source is Button button && button.Tag is TransferDirection transferDirection)
+        {
+            TransferItems(transferDirection);
+        }
+        args.Handled = true;
+    }
+
+    private void HandleSelectActionRequest(TransferSelectActionEventArgs args)
+    {
+        if (args.Action == TransferSelectAction.RemoveAll)
+        {
+            _sourceViewDecorator?.NotifyAboutToTransfer(TransferDirection.ToSource);
+            SetCurrentValue(TargetKeysProperty, null);
+            _sourceViewDecorator?.NotifyTransferCompleted(TransferDirection.ToSource);
+        }
+    }
+
     private void HandleTransferFilterChanged(TextChangedEventArgs args)
     {
         if (!IsFilterEnabled)
@@ -751,13 +759,5 @@ public abstract class AbstractTransfer: TemplatedControl,
                 _rootLayout.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
             }
         }
-    }
-    
-    [Flags]
-    protected enum FilterChangeType
-    {
-        Source = 0x01,
-        Target = 0x02,
-        Both = Source | Target
     }
 }

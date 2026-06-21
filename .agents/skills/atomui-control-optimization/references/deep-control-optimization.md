@@ -35,6 +35,41 @@ API, behavior, render contract impact:
 
 Do not start from a preferred refactor. Start from the failing state, the hard-to-maintain responsibility boundary, or the repeated class of bug.
 
+For broad optimization requests, the investigation checklist is mandatory output before editing. A broad request includes "整体优化", "重新优化", "代码乱", "按控件优化 skill 优化", or any request that does not name one specific bug or one specific mechanical change. If the investigation exposes potential behavior bugs, report them as findings and either add regression tests before fixing them or leave them as explicit residual risks.
+
+## Mandatory Deep Audit Areas
+
+For complex controls, inspect these areas before deciding the implementation shape:
+
+| Area | What to find | Failure signs |
+| --- | --- | --- |
+| State ownership | Which object owns selected value, selected keys, checked items, current item, filter text, popup state, validation state, and visual state | two-way state loops, `_ignoreXxx`, stale local values, duplicated backing collections |
+| Data/key flow | How `ItemsSource`, keys, display items, filters, target/source collections, and collection views are transformed | top-level-only traversal, lost nested items, stale filtered results, mismatched key defaults |
+| Template lifecycle | What is acquired in `OnApplyTemplate`, content presenter changes, generated containers, popup open, attach, and detach | missing unsubscribe, container state not prepared, relay binding without owner |
+| Collection changes | Add/remove/replace/move/reset, empty source, source replacement, filtered source replacement | selection not pruned, item counts stale, page index invalid |
+| Interface capabilities | Public or internal interfaces and their no-op/default implementations | hidden unsupported features, behavior split between interface and concrete type |
+| Repeated implementation | Base/subclass overrides and copied helpers | same algorithm in multiple places, subclass override identical to base |
+| Dead code | Files/classes/helpers with no references from source, AXAML, tests, generator, reflection, or AOT registration paths | unused selection model, stale helper, untested private pipeline |
+| Render/lifecycle risk | Size type, custom size, status, disabled/read-only, theme switch, token update, language/resource update | visual state owned only by C# trigger, stale theme resource, inconsistent size sync |
+
+If any area is intentionally out of scope, say so in the plan or completion report.
+
+## Escalation From Cleanup
+
+Do not continue treating work as pure cleanup when any of these are found:
+
+- a property change handler is suppressing another handler with `_ignoreXxx`, `_suppressXxx`, or backup fields
+- a generated/recycled container stores domain state that is also stored on the item or control
+- a base class and subclass both calculate the same domain source, key list, count, filter, or layout state
+- an interface method is implemented as empty/default in a concrete control that is used through the interface
+- a test would need nested data, template reapply, detach, collection reset, or source replacement to prove safety
+- a runtime-created target uses C# binding or event subscription
+
+When escalation happens, stop mechanical reordering and either:
+
+1. Split the work into a behavior fix with tests.
+2. Report the finding as residual risk if the current pass is intentionally layout-only.
+
 ## Edge-Case Matrix
 
 For controls with non-trivial state, check the relevant cases before claiming an optimization is safe:
@@ -50,6 +85,9 @@ For controls with non-trivial state, check the relevant cases before claiming an
 - selection/current item preservation after filtering or source replacement
 - size type, custom size, placeholder, clear button, validation feedback, status, add-ons
 - theme switch, token update, pseudo-class change, and language/resource update
+- generated or recycled item containers before/after realization, especially tree/list/checkable containers
+- nested data traversal for tree, grouped, hierarchical, or virtualized controls
+- pagination after transfer/remove/filter/source replacement and page index clamping
 
 Only check relevant rows, but record what was intentionally out of scope.
 
@@ -69,11 +107,11 @@ Only check relevant rows, but record what was intentionally out of scope.
 
 Prefer this sequence:
 
-1. Characterize current expected behavior and the failing edge case.
-2. Add or update focused regression tests where feasible.
+1. Characterize current expected behavior, failing edge cases, and structural risks.
+2. Add or update focused regression tests where behavior can change.
 3. Map state ownership and lifecycle acquire/release pairs.
-4. Move code toward clearer responsibilities without changing contracts.
-5. Remove obsolete code only after the replacement behavior is covered.
+4. Remove duplicated algorithms or dead code only after proving they are not contract paths.
+5. Move code toward clearer responsibilities without changing contracts.
 6. Re-run targeted tests, owning project tests, and `git diff --check`.
 
 For large controls, split work into reviewable phases:
@@ -105,6 +143,9 @@ Mode: cleanup / edge-case correctness / architecture root fix
 Root cause:
 Contracts changed: No / Yes, approved by:
 Behavior/render changed: No / Yes, approved by:
+Audit findings:
+Findings fixed:
+Findings deferred:
 Edge cases covered:
 Lifecycle/performance/leak risk:
 Tests:

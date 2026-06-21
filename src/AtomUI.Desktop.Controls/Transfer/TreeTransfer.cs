@@ -25,6 +25,16 @@ public class TreeTransfer : AbstractTransfer
         {
             SetCurrentValue(SourceViewProperty, new TransferTreeView());
         }
+        SyncSourceViewMask();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == SourceViewProperty)
+        {
+            SyncSourceViewMask();
+        }
     }
 
     protected override void ConfigurePanelItemsSourceForFilter(FilterChangeType changeType)
@@ -101,6 +111,11 @@ public class TreeTransfer : AbstractTransfer
                string.IsNullOrEmpty(TargetFilterValue) ||
                (Filter?.Filter(FilterValueSelector != null ? FilterValueSelector(item) : item,
                    TargetFilterValue) ?? false);
+    }
+
+    private void SyncSourceViewMask()
+    {
+        SourceView?.SetMaskedItems(TargetKeys);
     }
     
 }

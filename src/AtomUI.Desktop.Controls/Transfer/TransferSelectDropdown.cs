@@ -149,6 +149,22 @@ internal class TransferSelectDropdown : IconButton
         base.OnClick();
     }
 
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsOneWayProperty ||
+            change.Property == ViewTypeProperty)
+        {
+            ResetFlyout();
+        }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        ResetFlyout();
+    }
+
     private void NotifyCreateFlyout()
     {
         if (Flyout == null)
@@ -219,16 +235,6 @@ internal class TransferSelectDropdown : IconButton
         }
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == IsOneWayProperty ||
-            change.Property == ViewTypeProperty)
-        {
-            ResetFlyout();
-        }
-    }
-
     private void ResetFlyout()
     {
         if (Flyout is MenuFlyout menuFlyout)
@@ -238,12 +244,6 @@ internal class TransferSelectDropdown : IconButton
         _disposables?.Dispose();
         _disposables = null;
         Flyout       = null;
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        ResetFlyout();
     }
 
     private void HandleMenuItemClicked(object? sender, FlyoutMenuItemClickedEventArgs args)

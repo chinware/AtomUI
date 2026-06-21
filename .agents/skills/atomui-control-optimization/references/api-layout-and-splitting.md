@@ -156,6 +156,8 @@ private implementation flow
 - Do not separate `NotifyXxx` hooks from the interface or event flow they belong to.
 - Do not mix member reordering with bug fixes, semantic changes, or formatting churn.
 - If reordering exposes a correctness issue, stop and classify it as a separate behavior fix.
+- Member reordering is not a substitute for broad control optimization. If the request says "重新优化", "整体优化", "代码乱", or "按照控件优化 skill 优化", perform the deep audit first and report structural findings before applying layout-only edits.
+- If layout cleanup reveals state suppression, duplicated algorithms, no-op interface implementations, unreferenced helper classes, generated container state, C# runtime bindings, or collection/selection edge cases, escalate to `deep-control-optimization` and record the finding even if it is deferred.
 
 ## File Splitting Rules
 

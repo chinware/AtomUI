@@ -1,4 +1,3 @@
-using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 
@@ -61,34 +60,4 @@ public class ListTransfer : AbstractTransfer
         }
     }
     
-    protected override void ConfigurePanelItemsSourceForFilter(FilterChangeType changeType)
-    {
-        var               sourcePanelSourceChanged = false;
-        var               targetPanelSourceChanged = false;
-        IList<EntityKey>? sourceItemKeys           = null;
-        IList<EntityKey>? targetItemKeys           = null;
-        var               targetKeySet             = BuildTargetKeySet(TargetKeys);
-        var               sourceChanged            = (changeType & FilterChangeType.Source) == FilterChangeType.Source;
-        var               targetChanged            = (changeType & FilterChangeType.Target) == FilterChangeType.Target;
-        if (sourceChanged)
-        {
-            var sourcePanelSource = BuildSourcePanelSource(targetKeySet);
-            sourcePanelSourceChanged = SourceViewSource != sourcePanelSource;
-            SourceViewSource         = sourcePanelSource;
-            sourceItemKeys           = BuildItemKeyList(sourcePanelSource);
-        }
-
-        if (targetChanged)
-        {
-            var targetPanelSource = BuildTargetPanelSource(targetKeySet);
-            targetPanelSourceChanged = TargetViewSource != targetPanelSource;
-            TargetViewSource         = targetPanelSource;
-            targetItemKeys           = BuildItemKeyList(targetPanelSource);
-        }
-
-        if (sourcePanelSourceChanged || targetPanelSourceChanged)
-        {
-            NotifySelectionChanged(sourceItemKeys, targetItemKeys);
-        }
-    }
 }
