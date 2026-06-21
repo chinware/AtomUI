@@ -9,7 +9,6 @@ using AtomUI.Reflection;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
@@ -27,182 +26,182 @@ using AvaloniaTreeView = Avalonia.Controls.TreeView;
 public class TreeSelect : AbstractSelect
 {
     #region 公共属性定义
-    
+
     public static readonly StyledProperty<TreeSelectCheckedStrategy> ShowCheckedStrategyProperty =
         AvaloniaProperty.Register<TreeSelect, TreeSelectCheckedStrategy>(
             nameof(ShowCheckedStrategy), TreeSelectCheckedStrategy.All);
-    
+
     public static readonly StyledProperty<bool> AutoScrollToSelectedItemProperty =
         SelectingItemsControl.AutoScrollToSelectedItemProperty.AddOwner<TreeSelect>();
 
     public static readonly StyledProperty<bool> IsShowIconProperty =
         TreeView.IsShowIconProperty.AddOwner<TreeSelect>();
-    
+
     public static readonly StyledProperty<bool> IsShowLeafIconProperty =
         TreeView.IsShowLeafIconProperty.AddOwner<TreeSelect>();
-    
+
     public static readonly StyledProperty<bool> IsShowLineProperty =
         TreeView.IsShowLineProperty.AddOwner<TreeSelect>();
-    
+
     public static readonly StyledProperty<bool> IsTreeCheckableProperty =
         AvaloniaProperty.Register<TreeSelect, bool>(
             nameof(IsTreeCheckable));
-    
+
     public static readonly StyledProperty<bool> IsMultipleProperty =
         AvaloniaProperty.Register<TreeSelect, bool>(
             nameof(IsMultiple));
-    
+
     public static readonly StyledProperty<bool> IsDefaultExpandAllProperty =
         AvaloniaProperty.Register<TreeSelect, bool>(
             nameof(IsDefaultExpandAll));
-    
+
     public static readonly StyledProperty<bool> IsShowTreeLineProperty =
         AvaloniaProperty.Register<TreeSelect, bool>(
             nameof(IsShowTreeLine));
-    
-    public static readonly StyledProperty<bool> IsSwitcherRotationProperty = 
+
+    public static readonly StyledProperty<bool> IsSwitcherRotationProperty =
         TreeView.IsSwitcherRotationProperty.AddOwner<TreeSelect>();
-    
-    public static readonly StyledProperty<bool> IsTreeCheckStrictlyProperty = 
+
+    public static readonly StyledProperty<bool> IsTreeCheckStrictlyProperty =
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsTreeCheckStrictly), false);
-    
+
     public static readonly DirectProperty<TreeSelect, IList<TreeNodePath>?> TreeDefaultExpandedPathsProperty =
         AvaloniaProperty.RegisterDirect<TreeSelect, IList<TreeNodePath>?>(
             nameof(TreeDefaultExpandedPaths),
             o => o.TreeDefaultExpandedPaths,
             (o, v) => o.TreeDefaultExpandedPaths = v);
-    
+
     public static readonly StyledProperty<IEnumerable<ITreeItemNode>?> ItemsSourceProperty =
         AvaloniaProperty.Register<TreeSelect, IEnumerable<ITreeItemNode>?>(nameof(ItemsSource));
-    
+
     public static readonly StyledProperty<IDataTemplate?> ItemTemplateProperty =
         AvaloniaProperty.Register<TreeSelect, IDataTemplate?>(nameof(ItemTemplate));
-    
+
     public static readonly StyledProperty<ITreeItemNodeLoader?> DataLoaderProperty =
         AvaloniaProperty.Register<TreeSelect, ITreeItemNodeLoader?>(
             nameof(DataLoader));
-    
+
     public static readonly StyledProperty<IValueFilter?> FilterProperty =
         AvaloniaProperty.Register<TreeSelect, IValueFilter?>(
             nameof(Filter));
 
     public static readonly StyledProperty<DefaultFilterValueSelector?> FilterValueSelectorProperty =
         AvaloniaProperty.Register<TreeSelect, DefaultFilterValueSelector?>(nameof(FilterValueSelector));
-    
+
     public static readonly DirectProperty<TreeSelect, TreeFilterStrategy> FilterStrategyProperty =
         AvaloniaProperty.RegisterDirect<TreeSelect, TreeFilterStrategy>(
             nameof(FilterStrategy),
             o => o.FilterStrategy,
             (o, v) => o.FilterStrategy = v);
-    
+
     public static readonly StyledProperty<IBrush?> FilterHighlightForegroundProperty =
         AvaloniaProperty.Register<TreeSelect, IBrush?>(nameof(FilterHighlightForeground));
-    
+
     public static readonly DirectProperty<TreeSelect, ITreeItemNode?> SelectedItemProperty =
         AvaloniaProperty.RegisterDirect<TreeSelect, ITreeItemNode?>(
             nameof(SelectedItem),
             o => o.SelectedItem,
             (o, v) => o.SelectedItem = v);
-    
+
     public static readonly DirectProperty<TreeSelect, IList<ITreeItemNode>?> SelectedItemsProperty =
         AvaloniaProperty.RegisterDirect<TreeSelect, IList<ITreeItemNode>?>(
             nameof(SelectedItems),
             o => o.SelectedItems,
             (o, v) => o.SelectedItems = v);
-    
+
     public TreeSelectCheckedStrategy ShowCheckedStrategy
     {
         get => GetValue(ShowCheckedStrategyProperty);
         set => SetValue(ShowCheckedStrategyProperty, value);
     }
-    
+
     public bool AutoScrollToSelectedItem
     {
         get => GetValue(AutoScrollToSelectedItemProperty);
         set => SetValue(AutoScrollToSelectedItemProperty, value);
     }
-    
+
     public bool IsShowIcon
     {
         get => GetValue(IsShowIconProperty);
         set => SetValue(IsShowIconProperty, value);
     }
-    
+
     public bool IsShowLeafIcon
     {
         get => GetValue(IsShowLeafIconProperty);
         set => SetValue(IsShowLeafIconProperty, value);
     }
-    
+
     public bool IsShowLine
     {
         get => GetValue(IsShowLineProperty);
         set => SetValue(IsShowLineProperty, value);
     }
-    
+
     public bool IsTreeCheckable
     {
         get => GetValue(IsTreeCheckableProperty);
         set => SetValue(IsTreeCheckableProperty, value);
     }
-    
+
     public bool IsMultiple
     {
         get => GetValue(IsMultipleProperty);
         set => SetValue(IsMultipleProperty, value);
     }
-    
+
     public bool IsDefaultExpandAll
     {
         get => GetValue(IsDefaultExpandAllProperty);
         set => SetValue(IsDefaultExpandAllProperty, value);
     }
-    
+
     public bool IsShowTreeLine
     {
         get => GetValue(IsShowTreeLineProperty);
         set => SetValue(IsShowTreeLineProperty, value);
     }
-    
+
     public bool IsSwitcherRotation
     {
         get => GetValue(IsSwitcherRotationProperty);
         set => SetValue(IsSwitcherRotationProperty, value);
     }
-    
+
     public bool IsTreeCheckStrictly
     {
         get => GetValue(IsTreeCheckStrictlyProperty);
         set => SetValue(IsTreeCheckStrictlyProperty, value);
     }
-    
+
     private IList<TreeNodePath>? _treeDefaultExpandedPaths;
-    
+
     public IList<TreeNodePath>? TreeDefaultExpandedPaths
     {
         get => _treeDefaultExpandedPaths;
         set => SetAndRaise(TreeDefaultExpandedPathsProperty, ref _treeDefaultExpandedPaths, value);
     }
-    
+
     public IEnumerable<ITreeItemNode>? ItemsSource
     {
         get => GetValue(ItemsSourceProperty);
         set => SetValue(ItemsSourceProperty, value);
     }
-    
+
     [InheritDataTypeFromItems(nameof(ItemsSource))]
     public IDataTemplate? ItemTemplate
     {
         get => GetValue(ItemTemplateProperty);
         set => SetValue(ItemTemplateProperty, value);
     }
-    
+
     public ITreeItemNodeLoader? DataLoader
     {
         get => GetValue(DataLoaderProperty);
         set => SetValue(DataLoaderProperty, value);
     }
-    
+
     public IValueFilter? Filter
     {
         get => GetValue(FilterProperty);
@@ -219,13 +218,13 @@ public class TreeSelect : AbstractSelect
                                                  TreeFilterStrategy.BoldedMatch |
                                                  TreeFilterStrategy.ExpandPath |
                                                  TreeFilterStrategy.HideUnMatched;
-    
+
     public TreeFilterStrategy FilterStrategy
     {
         get => _filterStrategy;
         set => SetAndRaise(FilterStrategyProperty, ref _filterStrategy, value);
     }
-    
+
     public IBrush? FilterHighlightForeground
     {
         get => GetValue(FilterHighlightForegroundProperty);
@@ -233,15 +232,15 @@ public class TreeSelect : AbstractSelect
     }
 
     private ITreeItemNode? _selectedItem;
-    
+
     public ITreeItemNode? SelectedItem
     {
         get => _selectedItem;
         set => SetAndRaise(SelectedItemProperty, ref _selectedItem, value);
     }
-    
+
     private IList<ITreeItemNode>? _selectedItems;
-    
+
     public IList<ITreeItemNode>? SelectedItems
     {
         get => _selectedItems;
@@ -249,45 +248,45 @@ public class TreeSelect : AbstractSelect
     }
 
     public ItemsSourceView ItemsView => ItemsSourceView.GetOrCreate(_items);
-    
+
     [Content]
     public ItemCollection Items => _items;
     #endregion
-    
+
     #region 内部属性定义
-    
-    internal static readonly StyledProperty<SelectionMode> TreeViewSelectionModeProperty = 
+
+    internal static readonly StyledProperty<SelectionMode> TreeViewSelectionModeProperty =
         AvaloniaProperty.Register<TreeSelect, SelectionMode>(nameof (TreeViewSelectionMode));
-    
+
     internal static readonly DirectProperty<TreeSelect, ItemToggleType> TreeViewToggleTypeProperty =
         AvaloniaProperty.RegisterDirect<TreeSelect, ItemToggleType>(
             nameof(TreeViewToggleType),
             o => o.TreeViewToggleType,
             (o, v) => o.TreeViewToggleType = v);
-    
+
     internal static readonly DirectProperty<TreeSelect, bool> IsTreeViewSelectableProperty =
         AvaloniaProperty.RegisterDirect<TreeSelect, bool>(
             nameof(IsTreeViewSelectable),
             o => o.IsTreeViewSelectable,
             (o, v) => o.IsTreeViewSelectable = v);
-    
+
     internal static readonly DirectProperty<TreeSelect, bool> IsMaxSelectReachedProperty =
         AvaloniaProperty.RegisterDirect<TreeSelect, bool>(nameof(IsMaxSelectReached),
             o => o.IsMaxSelectReached,
             (o, v) => o.IsMaxSelectReached = v);
-    
+
     internal static readonly DirectProperty<TreeSelect, IList<ITreeItemNode>?> EffectiveSelectedItemsProperty =
         AvaloniaProperty.RegisterDirect<TreeSelect, IList<ITreeItemNode>?>(
             nameof(EffectiveSelectedItems),
             o => o.EffectiveSelectedItems,
             (o, v) => o.EffectiveSelectedItems = v);
-    
+
     internal SelectionMode TreeViewSelectionMode
     {
         get => GetValue(TreeViewSelectionModeProperty);
         set => SetValue(TreeViewSelectionModeProperty, value);
     }
-    
+
     private ItemToggleType _treeViewToggleType = ItemToggleType.None;
 
     internal ItemToggleType TreeViewToggleType
@@ -303,7 +302,7 @@ public class TreeSelect : AbstractSelect
         get => _isTreeViewSelectable;
         set => SetAndRaise(IsTreeViewSelectableProperty, ref _isTreeViewSelectable, value);
     }
-        
+
     private bool _isMaxSelectReached;
 
     internal bool IsMaxSelectReached
@@ -311,7 +310,7 @@ public class TreeSelect : AbstractSelect
         get => _isMaxSelectReached;
         set => SetAndRaise(IsMaxSelectReachedProperty, ref _isMaxSelectReached, value);
     }
-    
+
     private IList<ITreeItemNode>? _effectiveSelectedItems;
 
     internal IList<ITreeItemNode>? EffectiveSelectedItems
@@ -319,18 +318,18 @@ public class TreeSelect : AbstractSelect
         get => _effectiveSelectedItems;
         set => SetAndRaise(EffectiveSelectedItemsProperty, ref _effectiveSelectedItems, value);
     }
-    
+
     #endregion
-    
+
     private SelectFilterTextBox? _singleFilterInput;
     private Border? _popupFrame;
     private TreeView? _treeView;
-    private CompositeDisposable? _contentRightAddOnBindings;
+    private CompositeDisposable? _selectHandleInputStateBindings;
     private bool _needSkipSyncSelection;
     private bool _needSkipCollectionChangedEvent;
     private bool _syncingSingleFilterInputText;
     private readonly ItemCollection _items = new();
-    
+
     static TreeSelect()
     {
         FocusableProperty.OverrideDefaultValue<TreeSelect>(true);
@@ -350,55 +349,17 @@ public class TreeSelect : AbstractSelect
         SelectedItemsProperty.Changed.AddClassHandler<TreeSelect>((view, args) =>
             view.NotifyFormValueChanged(args.NewValue));
     }
-    
+
     public TreeSelect()
     {
         this.RegisterTokenResourceScope(TreeSelectToken.ScopeProvider);
         Items.CollectionChanged += HandleItemsChanged;
     }
-    
-    private void HandleItemsSourceChanged(AvaloniaPropertyChangedEventArgs args)
+
+    public void Clear()
     {
-        var selectedItemPath  = !IsMultiple ? BuildNodeIdentityPath(SelectedItem) : null;
-        var selectedItemPaths = IsMultiple ? BuildSelectedNodeIdentityPaths(SelectedItems) : null;
-
-        _items.SetItemsSource(args.GetNewValue<IEnumerable<ITreeItemNode>?>());
-
-        if (!IsMultiple)
-        {
-            if (selectedItemPath != null &&
-                TryParseNodePath(selectedItemPath, out var selectedItems) &&
-                selectedItems.Count > 0)
-            {
-                SelectedItem = selectedItems[^1];
-            }
-            else
-            {
-                SelectedItem = null;
-            }
-        }
-        else if (selectedItemPaths != null)
-        {
-            var remappedItems = new List<ITreeItemNode>(selectedItemPaths.Count);
-            foreach (var path in selectedItemPaths)
-            {
-                if (TryParseNodePath(path, out var selectedItems) &&
-                    selectedItems.Count > 0)
-                {
-                    remappedItems.Add(selectedItems[^1]);
-                }
-            }
-
-            SelectedItems = remappedItems.Count > 0 ? remappedItems : null;
-        }
-    }
-    
-    private void HandleItemsChanged(object? sender, NotifyCollectionChangedEventArgs args)
-    {
-        if (_treeView != null)
-        {
-            _treeView.ItemsSource = BuildItemsSourceList(Items);
-        }
+        SelectedItems = null;
+        SelectedItem  = null;
     }
 
     protected override void OnInitialized()
@@ -421,17 +382,6 @@ public class TreeSelect : AbstractSelect
     {
         ClearPopupContent();
         base.OnDetachedFromVisualTree(e);
-    }
-
-    private void HandleClearRequest()
-    {
-        Clear();
-    }
-    
-    public void Clear()
-    {
-        SelectedItems = null;
-        SelectedItem  = null;
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -512,26 +462,12 @@ public class TreeSelect : AbstractSelect
         {
             ConfigureMaxSelectReached();
         }
-        
+
         if (change.Property == SelectedItemsProperty ||
             change.Property == ShowCheckedStrategyProperty)
         {
             BuildEffectiveSelectedItems();
         }
-    }
-    
-    private void ConfigurePlaceholderVisible()
-    {
-        SetCurrentValue(IsPlaceholderTextVisibleProperty,
-            IsMultiple &&
-            SelectedItem == null &&
-            (SelectedItems == null || SelectedItems?.Count == 0) &&
-            string.IsNullOrEmpty(FilterValue?.ToString()));
-    }
-
-    private void ConfigureSingleResultVisible()
-    {
-        SetCurrentValue(IsSingleResultVisibleProperty, false);
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -552,7 +488,7 @@ public class TreeSelect : AbstractSelect
         ConfigurePlaceholderVisible();
         ConfigureSingleResultVisible();
         UpdatePseudoClasses();
-        SetupContentRightAddOnBindings(e);
+        SetupSelectHandleInputStateBindings(e);
         if (IsDropDownOpen)
         {
             EnsurePopupContent();
@@ -624,6 +560,196 @@ public class TreeSelect : AbstractSelect
         }
     }
 
+    protected override void PopupClosed(object? sender, EventArgs e)
+    {
+        base.PopupClosed(sender, e);
+        if (!IsMultiple)
+        {
+            FilterValue = null;
+            ConfigureSingleFilterTextBox();
+        }
+    }
+
+    protected override void PopupOpened(object? sender, EventArgs e)
+    {
+        base.PopupOpened(sender, e);
+        if (!IsMultiple)
+        {
+            SyncSelectedItemToTreeView();
+            if (IsFilterEnabled)
+            {
+                _singleFilterInput?.Focus();
+            }
+        }
+    }
+
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+        if(!e.Handled && e.Source is Visual source)
+        {
+            if (Popup?.IsInsidePopup(source) == true)
+            {
+                e.Handled = true;
+                return;
+            }
+        }
+
+        if (IsDropDownOpen)
+        {
+            // When a drop-down is open with OverlayDismissEventPassThrough enabled and the control
+            // is pressed, close the drop-down
+            if (e.Source is Control sourceControl)
+            {
+                var filterTextBox = sourceControl.FindAncestorOfType<SelectFilterTextBox>(includeSelf: true);
+                if (filterTextBox != null)
+                {
+                    return;
+                }
+
+                if (SelectTag.IsCloseButtonSource(sourceControl))
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
+
+            SetCurrentValue(IsDropDownOpenProperty, false);
+            e.Handled = true;
+        }
+        else
+        {
+            PseudoClasses.Set(StdPseudoClass.Pressed, true);
+        }
+    }
+
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        if (!e.Handled && e.Source is Visual source)
+        {
+            if (Popup?.IsInsidePopup(source) == true)
+            {
+                e.Handled = true;
+            }
+            else if (PseudoClasses.Contains(StdPseudoClass.Pressed))
+            {
+                var clickInTagCloseButton = false;
+                if (e.Source is Control sourceControl)
+                {
+                    clickInTagCloseButton = SelectTag.IsCloseButtonSource(sourceControl);
+                }
+
+                if (!clickInTagCloseButton)
+                {
+                    SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
+                }
+                e.Handled = true;
+            }
+        }
+
+        PseudoClasses.Set(StdPseudoClass.Pressed, false);
+        base.OnPointerReleased(e);
+    }
+
+    #region 实现 FormItem 接口
+
+    protected override void NotifySetFormValue(object? value)
+    {
+        if (!IsMultiple)
+        {
+            SelectedItem = value as ITreeItemNode;
+        }
+        else
+        {
+            SelectedItems = value as IList<ITreeItemNode>;
+        }
+    }
+
+    protected override object? NotifyGetFormValue()
+    {
+        if (!IsMultiple)
+        {
+            return SelectedItem;
+        }
+        return SelectedItems;
+    }
+
+    protected override void NotifyClearFormValue()
+    {
+        if (!IsMultiple)
+        {
+            SelectedItem = null;
+        }
+        else
+        {
+            SelectedItems = null;
+        }
+    }
+    #endregion
+
+    private void HandleItemsSourceChanged(AvaloniaPropertyChangedEventArgs args)
+    {
+        var selectedItemPath  = !IsMultiple ? BuildNodeIdentityPath(SelectedItem) : null;
+        var selectedItemPaths = IsMultiple ? BuildSelectedNodeIdentityPaths(SelectedItems) : null;
+
+        _items.SetItemsSource(args.GetNewValue<IEnumerable<ITreeItemNode>?>());
+
+        if (!IsMultiple)
+        {
+            if (selectedItemPath != null &&
+                TryParseNodePath(selectedItemPath, out var selectedItems) &&
+                selectedItems.Count > 0)
+            {
+                SelectedItem = selectedItems[^1];
+            }
+            else
+            {
+                SelectedItem = null;
+            }
+        }
+        else if (selectedItemPaths != null)
+        {
+            var remappedItems = new List<ITreeItemNode>(selectedItemPaths.Count);
+            foreach (var path in selectedItemPaths)
+            {
+                if (TryParseNodePath(path, out var selectedItems) &&
+                    selectedItems.Count > 0)
+                {
+                    remappedItems.Add(selectedItems[^1]);
+                }
+            }
+
+            SelectedItems = remappedItems.Count > 0 ? remappedItems : null;
+        }
+    }
+
+    private void HandleItemsChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (_treeView != null)
+        {
+            _treeView.ItemsSource = BuildItemsSourceList(Items);
+        }
+    }
+
+    private void HandleClearRequest()
+    {
+        Clear();
+    }
+
+    private void ConfigurePlaceholderVisible()
+    {
+        SetCurrentValue(IsPlaceholderTextVisibleProperty,
+            IsMultiple &&
+            SelectedItem == null &&
+            (SelectedItems == null || SelectedItems?.Count == 0) &&
+            string.IsNullOrEmpty(FilterValue?.ToString()));
+    }
+
+    private void ConfigureSingleResultVisible()
+    {
+        SetCurrentValue(IsSingleResultVisibleProperty, false);
+    }
+
     private void ClearPopupContent()
     {
         if (_treeView != null)
@@ -652,86 +778,23 @@ public class TreeSelect : AbstractSelect
         _popupFrame = null;
     }
 
-    private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)
+    private void SetupSelectHandleInputStateBindings(TemplateAppliedEventArgs e)
     {
-        _contentRightAddOnBindings?.Dispose();
-        _contentRightAddOnBindings = new CompositeDisposable();
+        _selectHandleInputStateBindings?.Dispose();
+        _selectHandleInputStateBindings = null;
 
-        if (e.NameScope.Find<SelectMaxCountIndicator>("PART_SelectMaxCountIndicator") is { } indicator)
+        var handle   = e.NameScope.Find<SelectHandle>("PART_SelectHandle");
+        var addOnBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
+        if (handle == null || addOnBox == null)
         {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, MaxCountProperty, indicator,
-                SelectMaxCountIndicator.MaxCountProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, SelectedCountProperty, indicator,
-                SelectMaxCountIndicator.SelectedCountProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsShowMaxCountIndicatorProperty, indicator,
-                Visual.IsVisibleProperty));
+            return;
         }
 
-        if (e.NameScope.Find<ContentPresenter>("PART_ContentRightAddOnPresenter") is { } contentPresenter)
-        {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnProperty, contentPresenter,
-                ContentPresenter.ContentProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnTemplateProperty,
-                contentPresenter, ContentPresenter.ContentTemplateProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, ContentRightAddOnProperty, contentPresenter,
-                Visual.IsVisibleProperty, value => value is not null));
-        }
-
-        if (e.NameScope.Find<SelectHandle>("PART_SelectHandle") is { } handle)
-        {
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, FormFeedbackProperty, handle,
-                SelectHandle.FormFeedbackProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, SuffixLoadingIconProperty, handle,
-                SelectHandle.LoadingIconProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, SuffixIconProperty, handle,
-                SelectHandle.OpenIndicatorProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsFilterEnabledProperty, handle,
-                SelectHandle.IsFilterEnabledProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsEnabledProperty, handle,
-                InputElement.IsEnabledProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, handle,
-                SelectHandle.IsMotionEnabledProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsLoadingProperty, handle,
-                SelectHandle.IsLoadingProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsAllowClearProperty, handle,
-                SelectHandle.IsAllowClearProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsSelectionEmptyProperty, handle,
-                SelectHandle.IsSelectionEmptyProperty));
-            _contentRightAddOnBindings.Add(BindUtils.RelayBind(this, IsDropDownOpenProperty, handle,
-                SelectHandle.IsDropDownOpenProperty));
-
-            var addOnBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
-            if (addOnBox != null)
-            {
-                _contentRightAddOnBindings.Add(BindUtils.RelayBind(addOnBox,
-                    AddOnDecoratedBox.IsInnerBoxHoverProperty, handle, SelectHandle.IsInputHoverProperty));
-                _contentRightAddOnBindings.Add(BindUtils.RelayBind(addOnBox,
-                    AddOnDecoratedBox.IsInnerBoxPressedProperty, handle, SelectHandle.IsInputPressedProperty));
-            }
-        }
-    }
-    
-    protected override void PopupClosed(object? sender, EventArgs e)
-    {
-        base.PopupClosed(sender, e);
-        if (!IsMultiple)
-        {
-            FilterValue = null;
-            ConfigureSingleFilterTextBox();
-        }
-    }
-
-    protected override void PopupOpened(object? sender, EventArgs e)
-    {
-        base.PopupOpened(sender, e);
-        if (!IsMultiple)
-        {
-            SyncSelectedItemToTreeView();
-            if (IsFilterEnabled)
-            {
-                _singleFilterInput?.Focus();
-            }
-        }
+        _selectHandleInputStateBindings = new CompositeDisposable();
+        _selectHandleInputStateBindings.Add(BindUtils.RelayBind(addOnBox,
+            AddOnDecoratedBox.IsInnerBoxHoverProperty, handle, SelectHandle.IsInputHoverProperty));
+        _selectHandleInputStateBindings.Add(BindUtils.RelayBind(addOnBox,
+            AddOnDecoratedBox.IsInnerBoxPressedProperty, handle, SelectHandle.IsInputPressedProperty));
     }
 
     private void HandleTreeViewSelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -740,7 +803,7 @@ public class TreeSelect : AbstractSelect
         {
             return;
         }
-        
+
         var needSync = false;
 
         if (IsMultiple)
@@ -758,7 +821,7 @@ public class TreeSelect : AbstractSelect
                     needSync = true;
                 }
             }
-        
+
             if (needSync)
             {
                 try
@@ -792,7 +855,7 @@ public class TreeSelect : AbstractSelect
         {
             return;
         }
-        
+
         var needSync = false;
 
         if (_selectedItems == null || _selectedItems?.Count != _treeView.CheckedItems.Count)
@@ -808,7 +871,7 @@ public class TreeSelect : AbstractSelect
                 needSync = true;
             }
         }
-        
+
         if (needSync)
         {
             try
@@ -827,7 +890,7 @@ public class TreeSelect : AbstractSelect
     {
         SetCurrentValue(IsSelectionEmptyProperty, SelectedItem == null && (SelectedItems == null || SelectedItems?.Count == 0));
     }
-    
+
     private void ConfigureSingleFilterTextBox()
     {
         if (_singleFilterInput == null)
@@ -895,74 +958,6 @@ public class TreeSelect : AbstractSelect
 
         _singleFilterInput.ResetCaretToStart();
     }
-    
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        base.OnPointerPressed(e);
-        if(!e.Handled && e.Source is Visual source)
-        {
-            if (Popup?.IsInsidePopup(source) == true)
-            {
-                e.Handled = true;
-                return;
-            }
-        }
-    
-        if (IsDropDownOpen)
-        {
-            // When a drop-down is open with OverlayDismissEventPassThrough enabled and the control
-            // is pressed, close the drop-down
-            if (e.Source is Control sourceControl)
-            {
-                var filterTextBox = sourceControl.FindAncestorOfType<SelectFilterTextBox>(includeSelf: true);
-                if (filterTextBox != null)
-                {
-                    return;
-                }
-       
-                if (SelectTag.IsCloseButtonSource(sourceControl))
-                {
-                    e.Handled = true;
-                    return;
-                }
-            }
-
-            SetCurrentValue(IsDropDownOpenProperty, false);
-            e.Handled = true;
-        }
-        else
-        {
-            PseudoClasses.Set(StdPseudoClass.Pressed, true);
-        }
-    }
-    
-    protected override void OnPointerReleased(PointerReleasedEventArgs e)
-    {
-        if (!e.Handled && e.Source is Visual source)
-        {
-            if (Popup?.IsInsidePopup(source) == true)
-            {
-                e.Handled = true;
-            }
-            else if (PseudoClasses.Contains(StdPseudoClass.Pressed))
-            {
-                var clickInTagCloseButton = false;
-                if (e.Source is Control sourceControl)
-                {
-                    clickInTagCloseButton = SelectTag.IsCloseButtonSource(sourceControl);
-                }
-    
-                if (!clickInTagCloseButton)
-                {
-                    SetCurrentValue(IsDropDownOpenProperty, !IsDropDownOpen);
-                }
-                e.Handled = true;
-            }
-        }
-    
-        PseudoClasses.Set(StdPseudoClass.Pressed, false);
-        base.OnPointerReleased(e);
-    }
 
     private void HandleTreeViewItemClicked(TreeViewItem viewItem)
     {
@@ -971,7 +966,7 @@ public class TreeSelect : AbstractSelect
             SetCurrentValue(IsDropDownOpenProperty, false);
         }
     }
-    
+
     private void HandleSearchInputTextChanged(TextChangedEventArgs e)
     {
         if (Filter != null)
@@ -1050,7 +1045,7 @@ public class TreeSelect : AbstractSelect
             }
         }
     }
-    
+
     private void HandleTagCloseRequest(RoutedEventArgs e)
     {
         if (!IsMultiple)
@@ -1092,7 +1087,7 @@ public class TreeSelect : AbstractSelect
             }
         }
     }
-    
+
     private void SyncSelectedItemsToTreeView()
     {
         if (!_needSkipSyncSelection)
@@ -1122,7 +1117,7 @@ public class TreeSelect : AbstractSelect
                                 var treeViewItems = BuildTreeNodeList(_treeView.SelectedItems);
                                 var treeViewSet   = BuildTreeNodeSet(treeViewItems);
                                 var currentSet    = BuildTreeNodeSet(SelectedItems);
-                       
+
                                 foreach (var item in treeViewItems)
                                 {
                                     if (!currentSet.Contains(item))
@@ -1185,7 +1180,7 @@ public class TreeSelect : AbstractSelect
             }
         }
     }
-    
+
     private void BuildEffectiveSelectedItems()
     {
         if (SelectedItems != null)
@@ -1426,41 +1421,4 @@ public class TreeSelect : AbstractSelect
         }
         return false;
     }
-    
-     
-    #region 实现 FormItem 接口
-    
-    protected override void NotifySetFormValue(object? value)
-    {
-        if (!IsMultiple)
-        {
-           SelectedItem = value as ITreeItemNode;
-        }
-        else
-        {
-            SelectedItems = value as IList<ITreeItemNode>;
-        }
-    }
-
-    protected override object? NotifyGetFormValue()
-    {
-        if (!IsMultiple)
-        {
-            return SelectedItem;
-        }
-        return SelectedItems;
-    }
-
-    protected override void NotifyClearFormValue()
-    {
-        if (!IsMultiple)
-        {
-            SelectedItem = null;
-        }
-        else
-        {
-            SelectedItems = null;
-        }
-    }
-    #endregion
 }

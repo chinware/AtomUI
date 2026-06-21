@@ -64,12 +64,18 @@ internal partial class zh_CN : LanguageProvider
     public const string PrefixAndSuffixDescription = "自定义 prefix 和 suffixIcon。";
     public const string MaxCountTitle = "最大数量";
     public const string MaxCountDescription = "可以设置 maxCount 属性控制最多可选项数量。超过限制后，选项会变为禁用状态。";
+    public const string SizeTypeTitle = "尺寸";
+    public const string SizeTypeDescription = "TreeSelect 支持大号、中号、小号，也支持通过 Custom 配合本地高度和字号自定义。";
     public const string P2PlaceholderTextPleaseSelect = "请选择";
     public const string P2TextPlacement = "弹出位置：";
     public const string P2ContentTopleft = "左上";
     public const string P2ContentTopright = "右上";
     public const string P2ContentBottomleft = "左下";
     public const string P2ContentBottomright = "右下";
+    public const string P2ContentLarge = "大号";
+    public const string P2ContentDefault = "默认";
+    public const string P2ContentSmall = "小号";
+    public const string P2ContentCustom = "自定义";
 
     public const string P2OnContentShowIcon = "显示图标";
 

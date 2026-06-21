@@ -64,12 +64,18 @@ internal partial class en_US : LanguageProvider
     public const string PrefixAndSuffixDescription = "Custom prefix and suffixIcon.";
     public const string MaxCountTitle = "Max Count";
     public const string MaxCountDescription = "You can set the maxCount prop to control the max number of items can be selected. When the limit is exceeded, the options will become disabled.";
+    public const string SizeTypeTitle = "Sizes";
+    public const string SizeTypeDescription = "TreeSelect supports large, middle, small, and Custom sizes with local height and font overrides.";
     public const string P2PlaceholderTextPleaseSelect = "Please select";
     public const string P2TextPlacement = "Placement:";
     public const string P2ContentTopleft = "Top Left";
     public const string P2ContentTopright = "Top Right";
     public const string P2ContentBottomleft = "Bottom Left";
     public const string P2ContentBottomright = "Bottom Right";
+    public const string P2ContentLarge = "Large";
+    public const string P2ContentDefault = "Default";
+    public const string P2ContentSmall = "Small";
+    public const string P2ContentCustom = "Custom";
 
     public const string P2OnContentShowIcon = "Show icon";
 

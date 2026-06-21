@@ -31,9 +31,28 @@
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{atom:SharedTokenResource SpacingXS}">
-                                <atom:SelectMaxCountIndicator Name="PART_SelectMaxCountIndicator" />
-                                <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
-                                <atom:SelectHandle Name="PART_SelectHandle" />
+                                <atom:SelectMaxCountIndicator
+                                    Name="PART_SelectMaxCountIndicator"
+                                    MaxCount="{CompiledBinding $parent[atom:TreeSelect].MaxCount}"
+                                    SelectedCount="{CompiledBinding $parent[atom:TreeSelect].SelectedCount}"
+                                    IsVisible="{CompiledBinding $parent[atom:TreeSelect].IsShowMaxCountIndicator}" />
+                                <ContentPresenter
+                                    Name="PART_ContentRightAddOnPresenter"
+                                    Content="{CompiledBinding $parent[atom:TreeSelect].ContentRightAddOn}"
+                                    ContentTemplate="{CompiledBinding $parent[atom:TreeSelect].ContentRightAddOnTemplate}"
+                                    IsVisible="{CompiledBinding $parent[atom:TreeSelect].ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <atom:SelectHandle
+                                    Name="PART_SelectHandle"
+                                    FormFeedback="{CompiledBinding $parent[atom:TreeSelect].FormFeedback}"
+                                    LoadingIcon="{CompiledBinding $parent[atom:TreeSelect].SuffixLoadingIcon}"
+                                    OpenIndicator="{CompiledBinding $parent[atom:TreeSelect].SuffixIcon}"
+                                    IsFilterEnabled="{CompiledBinding $parent[atom:TreeSelect].IsFilterEnabled}"
+                                    IsEnabled="{CompiledBinding $parent[atom:TreeSelect].IsEnabled}"
+                                    IsMotionEnabled="{CompiledBinding $parent[atom:TreeSelect].IsMotionEnabled}"
+                                    IsLoading="{CompiledBinding $parent[atom:TreeSelect].IsLoading}"
+                                    IsAllowClear="{CompiledBinding $parent[atom:TreeSelect].IsAllowClear}"
+                                    IsSelectionEmpty="{CompiledBinding $parent[atom:TreeSelect].IsSelectionEmpty}"
+                                    IsDropDownOpen="{CompiledBinding $parent[atom:TreeSelect].IsDropDownOpen}" />
                             </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Panel>
@@ -48,6 +67,7 @@
                             <atom:SelectFilterTextBox
                                 Name="PART_SingleFilterInput"
                                 IsVisible="False"
+                                VerticalAlignment="Stretch"
                                 SizeType="{TemplateBinding SizeType}"
                                 PlaceholderForeground="{TemplateBinding PlaceholderForeground}" />
                             <atom:SelectTagAwareTextBox Name="SelectedItemsBox"
