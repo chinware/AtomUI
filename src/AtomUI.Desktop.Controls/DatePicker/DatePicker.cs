@@ -300,24 +300,37 @@ public class DatePicker : InfoPickerInput
         {
             Text = FormatDateTime(SelectedDateTime);
         }
-        else if (change.Property == AmTextProperty ||
-                 change.Property == PmTextProperty)
+        else if (IsFormattedTextAffectingProperty(change.Property))
         {
             Text = FormatDateTime(SelectedDateTime);
             CalculatePreferredWidth();
         }
-        else if (change.Property == FontSizeProperty ||
-                 change.Property == FontFamilyProperty ||
-                 change.Property == FontFamilyProperty ||
-                 change.Property == FontStyleProperty ||
-                 change.Property == ClockIdentifierProperty ||
-                 change.Property == MinWidthProperty ||
-                 change.Property == WidthProperty ||
-                 change.Property == MaxWidthProperty ||
-                 change.Property == HorizontalAlignmentProperty)
+        else if (IsPreferredWidthAffectingProperty(change.Property))
         {
             CalculatePreferredWidth();
         }
+    }
+
+    private static bool IsFormattedTextAffectingProperty(AvaloniaProperty property)
+    {
+        return property == IsShowTimeProperty ||
+               property == FormatProperty ||
+               property == ClockIdentifierProperty ||
+               property == AmTextProperty ||
+               property == PmTextProperty;
+    }
+
+    private static bool IsPreferredWidthAffectingProperty(AvaloniaProperty property)
+    {
+        return property == FontSizeProperty ||
+               property == FontFamilyProperty ||
+               property == FontStyleProperty ||
+               property == FontWeightProperty ||
+               property == PlaceholderTextProperty ||
+               property == MinWidthProperty ||
+               property == WidthProperty ||
+               property == MaxWidthProperty ||
+               property == HorizontalAlignmentProperty;
     }
 
     private void CalculatePreferredWidth()
