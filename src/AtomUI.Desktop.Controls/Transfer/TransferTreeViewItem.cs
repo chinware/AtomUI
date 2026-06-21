@@ -26,4 +26,14 @@ public class TransferTreeViewItem : TreeViewItem
     {
         return NeedsContainer<TransferTreeViewItem>(item, out recycleKey);
     }
+
+    protected override void PrepareTreeViewItem(TreeViewItem treeViewItem, object? item, int index)
+    {
+        base.PrepareTreeViewItem(treeViewItem, item, index);
+        if (treeViewItem is TransferTreeViewItem transferTreeViewItem &&
+            OwnerTreeView is TransferTreeView transferTreeView)
+        {
+            transferTreeView.PrepareTransferTreeViewItem(transferTreeViewItem, item);
+        }
+    }
 }

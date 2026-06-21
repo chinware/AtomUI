@@ -89,6 +89,129 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
         }
     }
 
+    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
+    {
+        return new TransferTreeViewItem();
+    }
+
+    protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
+    {
+        return NeedsContainer<TransferTreeViewItem>(item, out recycleKey);
+    }
+
+    protected override void PrepareTreeViewItem(TreeViewItem treeViewItem, object? item, int index)
+    {
+        base.PrepareTreeViewItem(treeViewItem, item, index);
+        if (treeViewItem is TransferTreeViewItem transferTreeViewItem)
+        {
+            PrepareTransferTreeViewItem(transferTreeViewItem, item);
+        }
+    }
+
+    protected override bool RecursiveCheckNodePredicate(TreeViewItem treeViewItem)
+    {
+        if (treeViewItem is TransferTreeViewItem transferTreeViewItem)
+        {
+            return !transferTreeViewItem.IsMasked;
+        }
+        return true;
+    }
+
+    protected override bool RecursiveUnCheckNodePredicate(TreeViewItem treeViewItem)
+    {
+        if (treeViewItem is TransferTreeViewItem transferTreeViewItem)
+        {
+            return !transferTreeViewItem.IsMasked;
+        }
+        return true;
+    }
+
+    public new void SelectAll()
+    {
+        for (var i = 0; i < ItemCount; i++)
+        {
+            if (ContainerFromIndex(i) is TreeViewItem treeItem)
+            {
+                CheckedSubTree(treeItem);
+            }
+        }
+    }
+
+    public void DeselectAll()
+    {
+        for (var i = 0; i < ItemCount; i++)
+        {
+            if (ContainerFromIndex(i) is TreeViewItem treeItem)
+            {
+                UnCheckedSubTree(treeItem);
+            }
+        }
+    }
+
+    #region 实现 ITransferView
+
+    void ITransferView.SetItemsSource(IEnumerable? itemsSource)
+    {
+        SetCurrentValue(ItemsSourceProperty, itemsSource);
+    }
+
+    void ITransferView.NotifyAboutToTransfer(TransferDirection transferDirection)
+    {
+    }
+
+    void ITransferView.NotifyTransferCompleted(TransferDirection transferDirection)
+    {
+    }
+
+    void ITransferView.SetSelectionEnabled(bool enabled)
+    {
+    }
+
+    void ITransferView.SetPageSize(int pageSize)
+    {
+    }
+
+    void ITransferView.SetItemTemplate(IDataTemplate? itemTemplate)
+    {
+        if (itemTemplate is ITreeDataTemplate treeDataTemplate)
+        {
+            SetCurrentValue(ItemTemplateProperty, treeDataTemplate);
+        }
+        else
+        {
+            SetCurrentValue(ItemTemplateProperty, itemTemplate);
+        }
+    }
+
+    void ITransferView.NotifySelectAction(TransferSelectAction selectAction)
+    {
+    }
+
+    #endregion
+
+    #region 实现 ITransferTreeView
+
+    void ITransferTreeView.SetMaskedItems(IList<EntityKey>? maskedItems)
+    {
+        SetCurrentValue(MaskKeysProperty, BuildEntityKeySet(maskedItems));
+    }
+
+    #endregion
+
+    #region 实现 ITransferDecoratorProvider
+
+    void ITransferDecoratorProvider.ProvideTransferDecorator(TransferItemDecorator decorator)
+    {
+        decorator.IsShowSelectDropdownMenu = false;
+    }
+
+    #endregion
+
+    internal void PrepareTransferTreeViewItem(TransferTreeViewItem treeViewItem, object? item)
+    {
+        treeViewItem.IsMasked = IsMaskedItem(item);
+    }
+
     private void HandleItemCountChanged()
     {
         var totalCount = 0;
@@ -165,56 +288,6 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
         return count;
     }
 
-    protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
-    {
-        return new TransferTreeViewItem();
-    }
-
-    protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
-    {
-        return NeedsContainer<TransferTreeViewItem>(item, out recycleKey);
-    }
-    
-    protected override bool RecursiveCheckNodePredicate(TreeViewItem treeViewItem)
-    {
-        if (treeViewItem is TransferTreeViewItem transferTreeViewItem)
-        {
-            return !transferTreeViewItem.IsMasked;
-        }
-        return true;
-    }
-    
-    protected override bool RecursiveUnCheckNodePredicate(TreeViewItem treeViewItem)
-    {
-        if (treeViewItem is TransferTreeViewItem transferTreeViewItem)
-        {
-            return !transferTreeViewItem.IsMasked;
-        }
-        return true;
-    }
-    
-    public new void SelectAll()
-    {
-        for (var i = 0; i < ItemCount; i++)
-        {
-            if (ContainerFromIndex(i) is TreeViewItem treeItem)
-            {
-                CheckedSubTree(treeItem);
-            }
-        }
-    }
-
-    public void DeselectAll()
-    {
-        for (var i = 0; i < ItemCount; i++)
-        {
-            if (ContainerFromIndex(i) is TreeViewItem treeItem)
-            {
-                UnCheckedSubTree(treeItem);
-            }
-        }
-    }
-
     private void MaskNodes()
     {
         foreach (var item in Items)
@@ -229,66 +302,12 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
         var container = TreeContainerFromItem(item);
         if (container is TransferTreeViewItem treeItem)
         {
-            if (MaskKeys?.Contains(item.ItemKey ?? default) == true)
-            {
-                treeItem.IsMasked = true;
-            }
-            else
-            {
-                treeItem.IsMasked = false;
-            }
+            PrepareTransferTreeViewItem(treeItem, item);
         }
         foreach (var child in item.Children)
         {
             MaskNodeRecursively(child);
         }
-    }
-
-    void ITransferView.SetItemsSource(IEnumerable? itemsSource)
-    {
-        SetCurrentValue(ItemsSourceProperty, itemsSource);
-    }
-    
-    void ITransferView.NotifyAboutToTransfer(TransferDirection transferDirection)
-    {
-    }
-    
-    void ITransferView.NotifyTransferCompleted(TransferDirection transferDirection)
-    {
-    }
-
-    void ITransferView.SetSelectionEnabled(bool enabled)
-    {
-    }
-
-    void ITransferView.SetPageSize(int pageSize)
-    {
-    }
-
-    void ITransferView.SetItemTemplate(IDataTemplate? itemTemplate)
-    {
-        if (itemTemplate is ITreeDataTemplate treeDataTemplate)
-        {
-            SetCurrentValue(ItemTemplateProperty, treeDataTemplate);
-        }
-        else
-        {
-            SetCurrentValue(ItemTemplateProperty, itemTemplate);
-        }
-    }
-    
-    void ITransferView.NotifySelectAction(TransferSelectAction selectAction)
-    {
-    }
-
-    void ITransferTreeView.SetMaskedItems(IList<EntityKey>? maskedItems)
-    {
-        SetCurrentValue(MaskKeysProperty, BuildEntityKeySet(maskedItems));
-    }
-    
-    void ITransferDecoratorProvider.ProvideTransferDecorator(TransferItemDecorator decorator)
-    {
-        decorator.IsShowSelectDropdownMenu = false;
     }
 
     private void HandleItemClicked(RoutedEventArgs e)
@@ -341,15 +360,31 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
 
         var selectedKeySet = BuildEntityKeySet(selectedKeys);
         var checkedItems   = new List<ITreeItemNode>(selectedKeys.Count);
+        CollectCheckedItems(source, selectedKeySet!, checkedItems);
+        return checkedItems;
+    }
+
+    private bool IsMaskedItem(object? item)
+    {
+        return item is ITreeItemNode treeItemNode &&
+               MaskKeys?.Contains(treeItemNode.ItemKey ?? default) == true;
+    }
+
+    private static void CollectCheckedItems(
+        IEnumerable source,
+        ISet<EntityKey> selectedKeySet,
+        IList<ITreeItemNode> checkedItems)
+    {
         foreach (var item in source)
         {
             var treeItem = (ITreeItemNode)item!;
-            if (selectedKeySet!.Contains(treeItem.ItemKey ?? default))
+            if (selectedKeySet.Contains(treeItem.ItemKey ?? default))
             {
                 checkedItems.Add(treeItem);
             }
+
+            CollectCheckedItems(treeItem.Children, selectedKeySet, checkedItems);
         }
-        return checkedItems;
     }
 
     private static HashSet<EntityKey>? BuildEntityKeySet(ICollection<EntityKey>? keys)

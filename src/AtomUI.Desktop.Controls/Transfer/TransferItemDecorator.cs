@@ -386,7 +386,12 @@ internal class TransferItemDecorator : TemplatedControl,
         }
         else if (change.Property == SelectionsIconTemplateProperty)
         {
-            SelectionsIcon = SelectionsIconTemplate?.Build();
+            var selectionsIcon = SelectionsIconTemplate?.Build();
+            SelectionsIcon = selectionsIcon;
+            if (_transferView is ITransferView transferView)
+            {
+                transferView.SetSelectionsIcon(selectionsIcon);
+            }
         }
         else if (change.Property == IsAllSelectedProperty)
         {
@@ -410,14 +415,6 @@ internal class TransferItemDecorator : TemplatedControl,
             }
             
         }
-        else if (change.Property == SelectionsIconTemplateProperty)
-        {
-            if (_transferView is ITransferView transferView)
-            {
-                transferView.SetSelectionsIcon(SelectionsIconTemplate?.Build());
-            }
-        }
-
         if (change.Property == ViewTypeProperty ||
             change.Property == IsOneWayProperty)
         {
@@ -477,56 +474,90 @@ internal class TransferItemDecorator : TemplatedControl,
         }
     }
 
+    public void NotifyAboutToTransfer(TransferDirection transferDirection)
+    {
+        if (_transferView is ITransferView transferView)
+        {
+            transferView.NotifyAboutToTransfer(transferDirection);
+        }
+    }
+
+    public void NotifyTransferCompleted(TransferDirection transferDirection)
+    {
+        if (_transferView is ITransferView transferView)
+        {
+            transferView.NotifyTransferCompleted(transferDirection);
+        }
+    }
+
     private void HandleContentPresenterPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
     {
         if (e.Property == ContentPresenter.ChildProperty)
         {
-            if (e.NewValue != null && e.NewValue is not ITransferView)
-            {
-                throw new Exception("Transfer panel must implement ITransferItem.");
-            }
-
-            {
-                if (_transferView is ITransferView transferView)
-                {
-                    transferView.SetItemsSource(null);
-                    transferView.ItemCountChanged      -= HandleItemsCountChanged;
-                    transferView.SelectionCountChanged -= HandleSelectionCountChanged;
-                    _disposables?.Dispose();
-                    _disposables = null;
-                }
-            }
+            ValidateTransferViewContent(e.NewValue);
+            DetachTransferView();
             _transferView = e.NewValue as Control;
-            {
-                if (_transferView is ITransferView transferView)
-                {
-                    _disposables = new CompositeDisposable(2);
-                    if (transferView.IsSupportPagination)
-                    {
-                        transferView.SetPaginationEnabled(IsPaginationEnabled);
-                        transferView.SetPageSize(PageSize);
-                    }
-                    transferView.SetItemsSource(ItemsSource);
-                    transferView.SetSelectionsIcon(SelectionsIconTemplate?.Build());
-                    transferView.NotifyIsOneWay(IsOneWay);
-                    transferView.ItemCountChanged      += HandleItemsCountChanged;
-                    transferView.SelectionCountChanged += HandleSelectionCountChanged;
-                    transferView.ViewType              =  ViewType;
-                    TransferViewCreated?.Invoke(this, new TransferViewCreatedEventArgs(transferView));
-                    ConfigureTransferViewSelectionMode();
-                    if (transferView.IsSupportItemTemplate)
-                    {
-                        transferView.SetItemTemplate(ItemTemplate);
-                    }
-                    _disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, _transferView, IsMotionEnabledProperty));
-                }
-
-                if (_transferView is ITransferDecoratorProvider transferDecoratorProvider)
-                {
-                    transferDecoratorProvider.ProvideTransferDecorator(this);
-                }
-            }
+            AttachTransferView(_transferView);
         }
+    }
+
+    private static void ValidateTransferViewContent(object? content)
+    {
+        if (content != null && content is not ITransferView)
+        {
+            throw new Exception("Transfer panel must implement ITransferItem.");
+        }
+    }
+
+    private void DetachTransferView()
+    {
+        if (_transferView is ITransferView transferView)
+        {
+            transferView.SetItemsSource(null);
+            transferView.ItemCountChanged      -= HandleItemsCountChanged;
+            transferView.SelectionCountChanged -= HandleSelectionCountChanged;
+        }
+
+        _disposables?.Dispose();
+        _disposables = null;
+    }
+
+    private void AttachTransferView(Control? transferControl)
+    {
+        if (transferControl is ITransferView transferView)
+        {
+            ConfigureTransferView(transferView, transferControl);
+        }
+
+        if (transferControl is ITransferDecoratorProvider transferDecoratorProvider)
+        {
+            transferDecoratorProvider.ProvideTransferDecorator(this);
+        }
+    }
+
+    private void ConfigureTransferView(ITransferView transferView, Control transferControl)
+    {
+        _disposables = new CompositeDisposable(2);
+        if (transferView.IsSupportPagination)
+        {
+            transferView.SetPaginationEnabled(IsPaginationEnabled);
+            transferView.SetPageSize(PageSize);
+        }
+
+        transferView.SetItemsSource(ItemsSource);
+        transferView.SetSelectionsIcon(SelectionsIconTemplate?.Build());
+        transferView.NotifyIsOneWay(IsOneWay);
+        transferView.ItemCountChanged      += HandleItemsCountChanged;
+        transferView.SelectionCountChanged += HandleSelectionCountChanged;
+        transferView.ViewType              =  ViewType;
+        TransferViewCreated?.Invoke(this, new TransferViewCreatedEventArgs(transferView));
+        ConfigureTransferViewSelectionMode();
+        if (transferView.IsSupportItemTemplate)
+        {
+            transferView.SetItemTemplate(ItemTemplate);
+        }
+
+        _disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, transferControl, IsMotionEnabledProperty));
     }
 
     private void HandleItemsCountChanged(object? sender, ItemCountChangedEventArgs args)
@@ -598,22 +629,6 @@ internal class TransferItemDecorator : TemplatedControl,
         if (_transferView is ITransferView transferView)
         {
             transferView.NotifySelectAction(args.Action);
-        }
-    }
-
-    public void NotifyAboutToTransfer(TransferDirection transferDirection)
-    {
-        if (_transferView is ITransferView transferView)
-        {
-            transferView.NotifyAboutToTransfer(transferDirection);
-        }
-    }
-
-    public void NotifyTransferCompleted(TransferDirection transferDirection)
-    {
-        if (_transferView is ITransferView transferView)
-        {
-            transferView.NotifyTransferCompleted(transferDirection);
         }
     }
 

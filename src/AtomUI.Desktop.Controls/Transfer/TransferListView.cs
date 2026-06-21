@@ -85,26 +85,6 @@ public class TransferListView : ListView, ITransferView
         }
     }
 
-    private void HandleItemsSourceChange()
-    {
-        if (SelectedKeys != null)
-        {
-            var newSelectedKeys = new List<EntityKey>(SelectedKeys.Count);
-            if (SelectedKeys.Count > 0 && ItemsSource != null)
-            {
-                var allItems = BuildItemKeySet(ItemsSource);
-                foreach (var selectedKey in SelectedKeys)
-                {
-                    if (allItems.Contains(selectedKey))
-                    {
-                        newSelectedKeys.Add(selectedKey);
-                    }
-                }
-            }
-            SetCurrentValue(SelectedKeysProperty, newSelectedKeys);
-        }
-    }
-
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
         return new TransferListItem();
@@ -124,41 +104,57 @@ public class TransferListView : ListView, ITransferView
         }
     }
 
-    private void HandleSelectionChanged(SelectionChangedEventArgs e)
+    public void DeselectAll() => Selection.Clear();
+
+    public void SelectAll() => Selection.SelectAll();
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
-        _ignoreSyncSelection = true;
-        if (SelectedItems == null || SelectedItems.Count == 0)
+        base.OnApplyTemplate(e);
+        SetCurrentValue(BottomPaginationProperty, new SimplePagination()
         {
-            SetCurrentValue(SelectedKeysProperty, null);
-        }
-        else
+            IsReadOnly = false,
+            SizeType = CustomizableSizeType.Small
+        });
+    }
+
+    public void NotifySelectAction(TransferSelectAction selectAction)
+    {
+        if (selectAction == TransferSelectAction.SelectCurrentPage)
         {
-            var selectedKeys = new List<EntityKey>(SelectedItems.Count);
-            foreach (var item in SelectedItems)
+            if (IsPaginationEnabled)
             {
-                if (item is IListItemData listItemData && listItemData.IsEnabled)
+                var startIndex = GlobalIndex(0);
+                var endIndex = GlobalIndex(ItemCount - 1);
+                Selection.SelectRange(startIndex, endIndex);
+            }
+            else
+            {
+                Selection.SelectAll();
+            }
+        }
+        else if (selectAction == TransferSelectAction.InvertSelectCurrentPage)
+        {
+            for (var i = 0; i < ItemCount; i++)
+            {
+                var globalIndex = GlobalIndex(i);
+                if (Selection.IsSelected(globalIndex))
                 {
-                    selectedKeys.Add(listItemData.ItemKey ?? default);
+                    Selection.Deselect(globalIndex);
+                }
+                else
+                {
+                    Selection.Select(globalIndex);
                 }
             }
-            SetCurrentValue(SelectedKeysProperty, selectedKeys);
+        }
+        else if (selectAction == TransferSelectAction.RemoveCurrentPage)
+        {
+            ItemsRemoved?.Invoke(this, new TransferItemsRemovedEventArgs(BuildItemsList(Items)));
         }
     }
 
-    private void HandleSelectedKeysChanged()
-    {
-        SelectedKeyChanged?.Invoke(this, EventArgs.Empty);
-        SelectionCountChanged?.Invoke(this, new SelectionCountChangedEventArgs(SelectedKeys?.Count ?? 0));
-        if (_ignoreSyncSelection)
-        {
-            _ignoreSyncSelection = false;
-            return;
-        }
-        var selectedItems = BuildSelectedItemsList(ItemsSource, SelectedKeys);
-        SetCurrentValue(SelectedItemsProperty, selectedItems);
-    }
-    
-    public void DeselectAll() => Selection.Clear();
+    #region 实现 ITransferView
 
     void ITransferView.SetPaginationEnabled(bool enabled)
     {
@@ -230,6 +226,62 @@ public class TransferListView : ListView, ITransferView
         SetCurrentValue(PageSizeProperty, pageSize);
     }
 
+    #endregion
+
+    private void HandleItemsSourceChange()
+    {
+        if (SelectedKeys != null)
+        {
+            var newSelectedKeys = new List<EntityKey>(SelectedKeys.Count);
+            if (SelectedKeys.Count > 0 && ItemsSource != null)
+            {
+                var allItems = BuildItemKeySet(ItemsSource);
+                foreach (var selectedKey in SelectedKeys)
+                {
+                    if (allItems.Contains(selectedKey))
+                    {
+                        newSelectedKeys.Add(selectedKey);
+                    }
+                }
+            }
+            SetCurrentValue(SelectedKeysProperty, newSelectedKeys);
+        }
+    }
+
+    private void HandleSelectionChanged(SelectionChangedEventArgs e)
+    {
+        _ignoreSyncSelection = true;
+        if (SelectedItems == null || SelectedItems.Count == 0)
+        {
+            SetCurrentValue(SelectedKeysProperty, null);
+        }
+        else
+        {
+            var selectedKeys = new List<EntityKey>(SelectedItems.Count);
+            foreach (var item in SelectedItems)
+            {
+                if (item is IListItemData listItemData && listItemData.IsEnabled)
+                {
+                    selectedKeys.Add(listItemData.ItemKey ?? default);
+                }
+            }
+            SetCurrentValue(SelectedKeysProperty, selectedKeys);
+        }
+    }
+
+    private void HandleSelectedKeysChanged()
+    {
+        SelectedKeyChanged?.Invoke(this, EventArgs.Empty);
+        SelectionCountChanged?.Invoke(this, new SelectionCountChangedEventArgs(SelectedKeys?.Count ?? 0));
+        if (_ignoreSyncSelection)
+        {
+            _ignoreSyncSelection = false;
+            return;
+        }
+        var selectedItems = BuildSelectedItemsList(ItemsSource, SelectedKeys);
+        SetCurrentValue(SelectedItemsProperty, selectedItems);
+    }
+
     private void HandleRemoveButtonClicked(RoutedEventArgs e)
     {
         if (e.Source is TransferRemoveItemButton && GetContainerFromEventSource(e.Source) is TransferListItem listItem)
@@ -257,54 +309,6 @@ public class TransferListView : ListView, ITransferView
                     Selection.Deselect(index);
                 }
             }
-        }
-    }
-
-    public void SelectAll() => Selection.SelectAll();
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        SetCurrentValue(BottomPaginationProperty, new SimplePagination()
-        {
-            IsReadOnly = false,
-            SizeType = CustomizableSizeType.Small
-        });
-    }
-
-    public void NotifySelectAction(TransferSelectAction selectAction)
-    {
-        if (selectAction == TransferSelectAction.SelectCurrentPage)
-        {
-            if (IsPaginationEnabled)
-            {
-                var startIndex = GlobalIndex(0);
-                var endIndex = GlobalIndex(ItemCount - 1);
-                Selection.SelectRange(startIndex, endIndex);
-            }
-            else
-            {
-                Selection.SelectAll();   
-            }
-        }
-        else if (selectAction == TransferSelectAction.InvertSelectCurrentPage)
-        {
-            for (var i = 0; i < ItemCount; i++)
-            {
-                var globalIndex = GlobalIndex(i);
-                if (Selection.IsSelected(globalIndex))
-                {
-                    Selection.Deselect(globalIndex);
-                }
-                else
-                {
-                    Selection.Select(globalIndex);
-                }
-            }
-        }
-        else if (selectAction == TransferSelectAction.RemoveCurrentPage)
-        {
-            ItemsRemoved?.Invoke(this, new TransferItemsRemovedEventArgs(BuildItemsList(Items)));
         }
     }
 

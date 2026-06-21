@@ -28,6 +28,8 @@ For messy implementation, repeated edge-case bugs, unclear state ownership, or a
 
 Classify the request before editing.
 
+For broad optimization requests, routing is a blocking gate. Requests phrased as "重新优化", "整体优化", "代码比较乱", "按照控件优化 skill 优化", "评估整体正确性", or similar must not go directly to code edits. First perform an optimization audit and report findings, phase plan, contract impact, and residual risks. Only skip the audit when the user names one narrow bug or one narrow mechanical edit.
+
 | If the work involves | Required handling |
 | --- | --- |
 | API contracts, member order, method layout, partial split | Read `references/api-layout-and-splitting.md` |
@@ -38,6 +40,27 @@ Classify the request before editing.
 | Bug fix or behavior change | Reproduce/trace root cause and add or update regression tests |
 | Gallery-visible examples or docs | Check Gallery/docs impact and update only when required |
 | AOT-sensitive binding, reflection, dynamic registration | Check `docs/engineering/aot-programming-guidelines.md` |
+
+## Mandatory Audit Gate
+
+Before editing a control for broad optimization, write a short audit in the working notes or user-facing plan. The audit must answer:
+
+```text
+Optimization request type: broad / narrow
+Control:
+Primary responsibilities:
+State owners:
+Lifecycle acquire/release pairs:
+Data/selection/key flows:
+Template parts and generated containers:
+Existing tests / missing regression:
+Dead or duplicate implementation scan:
+Potential API/behavior/render changes:
+Recommended phases:
+What will not be changed in this pass:
+```
+
+If the audit finds no issues beyond member order, say that explicitly. If it finds behavior risks, do not hide them behind "cleanup"; classify them as edge-case correctness or architecture root fix and add tests before changing behavior.
 
 ## Hard Boundaries
 
@@ -58,6 +81,7 @@ Classify the request before editing.
 - Allowed `BindUtils.RelayBind` cases are limited to relationships AXAML cannot naturally express, such as dynamically created runtime targets, sibling/template-part coordination that cannot be represented by `TemplateBinding` or selectors, runtime-selected source objects, or bindings whose lifecycle is owned by a non-template runtime object.
 - Every accepted `BindUtils.RelayBind` must have an explicit release path matching its acquisition path, such as re-template cleanup, detach, owner disposal, popup/content clear, or container recycle. Do not create relay bindings without a matching dispose owner.
 - Do not use `BindUtils.RelayBind` to work around inconvenient AXAML. If the binding source and target are both stable parts of the control template, move the relationship into AXAML unless doing so would require an approved contract or behavior change.
+- Do not report broad control optimization as complete after only member reordering. If deeper risks are found but not fixed in the current pass, report them as residual risks or propose a phased follow-up.
 
 ## Intake Checklist
 
@@ -77,14 +101,33 @@ C# relay binding inventory: None / Reviewed, exceptions documented
 Verification commands:
 ```
 
+## Escalation Signals
+
+Seeing any of these in a control during broad optimization forces a deep-control audit before editing:
+
+- `_ignoreXxx`, `_suppressXxx`, backup fields, delayed refreshes, or forced sync paths around state changes
+- more than one owner for the same state, such as `SelectedItems`, `SelectedKeys`, checked nodes, current item, filter text, popup state, or validation state
+- two-way sync between styled properties, template parts, collection views, and domain objects
+- public interfaces with no-op/default implementations that hide capability differences
+- runtime-created controls, popups, flyouts, dynamic menu items, or C# bindings
+- generated/recycled containers carrying domain state, especially tree/list nodes, selection, masked/disabled state, or checked state
+- custom pagination, collection view movement, filtering, source replacement, or key translation
+- repeated algorithms across base/subclass implementations
+- unreferenced files/classes, unused helpers, or copied selection models
+- missing tests for property changes before template apply, after template reapply, after detach, collection reset, and nested/tree data
+
+When an escalation signal appears, list it in the audit even if the current pass will only fix a subset.
+
 ## Execution Flow
 
 1. Inspect the target control and 2-3 comparable controls in the same package.
-2. Inventory the exposed contract before deciding the edit shape.
-3. Classify API risk, file split need, and optimization mode.
-4. Make the smallest scoped change that matches existing control style.
-5. Run targeted tests first, then broaden based on risk.
-6. Always run `git diff --check` before reporting completion.
+2. For broad optimization, perform the mandatory audit gate before editing.
+3. Inventory the exposed contract before deciding the edit shape.
+4. Classify API risk, file split need, and optimization mode.
+5. Present findings and phases when behavior, render, architecture, or broad cleanup risks exist.
+6. Make the smallest scoped change that matches existing control style.
+7. Run targeted tests first, then broaden based on risk.
+8. Always run `git diff --check` before reporting completion.
 
 ## Contract Inventory
 
@@ -98,6 +141,17 @@ For any non-trivial control optimization, check:
 - C# relay bindings: for each `BindUtils.RelayBind`, record source, target, why AXAML cannot express it, binding mode/priority, and disposal owner
 - bindings, subscriptions, timers, popup hosts, cached views, lazy-created objects
 
+## Required Scans
+
+For broad optimization, run focused searches before deciding the implementation shape:
+
+- state suppression: `_ignore`, `_suppress`, `_isUpdating`, `Backup`, `Reset`, `Refresh`, `Dispatcher`
+- dynamic lifecycle: `+=`, `-=`, `IDisposable`, `CompositeDisposable`, `RelayBind`, `DynamicResource`
+- data flow: `ItemsSource`, `Selected`, `Checked`, `Current`, `TargetKeys`, `SelectedKeys`, `Filter`, `Page`
+- dead/duplicate code: class references, copied methods, override methods matching the base implementation
+
+Do not treat these scans as proof by themselves. Use them to identify ownership and edge-case paths that must be reviewed.
+
 ## Completion Report
 
 Report the result in terms of contract safety and verification:
@@ -106,6 +160,8 @@ Report the result in terms of contract safety and verification:
 API/theme contract changed: No / Yes
 Behavior changed: No / Yes
 Files split: No / Yes
+Audit performed: No / Yes
+Residual risks:
 Tests:
 Diff hygiene:
 Commit created: No unless explicitly requested
