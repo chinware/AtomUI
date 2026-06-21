@@ -12,7 +12,7 @@ LineEdit 家族包含以下稳定入口：
 | --- | --- |
 | `TextBox` | AtomUI 基础文本框，提供尺寸、清除、密码 reveal、字数统计、Form 和 CompactSpace 能力。 |
 | `LineEdit` | 标准单行输入框，在 `TextBox` 基础上加入输入表面、校验状态和外部 AddOn。 |
-| `SearchEdit` | 搜索输入框，在 `LineEdit` 基础上加入搜索按钮、搜索按钮样式、加载态和搜索事件。 |
+| `SearchEdit` | 搜索输入框，在 `LineEdit` 基础上加入搜索按钮、搜索按钮样式、加载态和搜索事件；独立契约见 [SearchEdit 桌面版架构设计](../search-edit/overview.md)。 |
 | `TextArea` | 多行输入框，独立继承 Avalonia `TextBox`，复用输入状态、尺寸、清除、字数统计、Form 和 TextArea 专属 resize 模型。 |
 
 LineEdit 家族只负责文本输入与文本相关辅助操作，不负责结构化选择、日期时间选择、数值步进、异步候选数据管理、富文本编辑或表达式计算。
@@ -60,8 +60,8 @@ AtomUI 输入扩展 API：
 | `IsMotionEnabled` | 全家族 | 是否启用内部按钮动效。 |
 | `StyleVariant` | `LineEdit`、`SearchEdit`、`TextArea` | 输入表面样式。 |
 | `Status` | `LineEdit`、`SearchEdit`、`TextArea` | 输入校验状态。 |
-| `LeftAddOn` / `RightAddOn` | `LineEdit`、`SearchEdit` | 外部前后附加内容。 |
-| `LeftAddOnTemplate` / `RightAddOnTemplate` | `LineEdit`、`SearchEdit` | 外部附加内容模板。 |
+| `LeftAddOn` / `LeftAddOnTemplate` | `LineEdit`、`SearchEdit` | 外部左侧附加内容和模板。 |
+| `RightAddOn` / `RightAddOnTemplate` | `LineEdit` | 外部右侧附加内容和模板；SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。 |
 | `InnerLeftContentTemplate` / `InnerRightContentTemplate` | `LineEdit`、`TextArea` | 内部前后缀模板。 |
 
 SearchEdit 专项 API：
