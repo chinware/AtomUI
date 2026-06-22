@@ -100,12 +100,5 @@ public class SkeletonAvatar : AbstractSkeleton, ICustomizableSizeTypeAware
         base.OnApplyTemplate(e);
         ConfigureShape();
         ConfigureSize();
-        if (!IsFollowMode)
-        {
-            if (IsActive)
-            {
-                StartActiveAnimation();
-            }
-        }
     }
 }

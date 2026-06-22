@@ -12,19 +12,19 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:SkeletonNode">
                 <Panel Name="PART_RootLayout">
+                    <Border Name="PART_ContentLayer"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            IsVisible="{TemplateBinding IsActive, Converter={x:Static BoolConverters.Not}}" />
                     <Border Name="PART_ActiveAnimationLayer"
                             Background="{TemplateBinding AnimationLayerFill}"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             IsVisible="{TemplateBinding IsActive}" />
-                    <Border Name="PART_ContentLayer"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}">
-                        <ContentPresenter Name="ContentPresenter"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"/>
-                    </Border>
+                    <ContentPresenter Name="ContentPresenter"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"/>
                 </Panel>
             </ControlTemplate>
         </Setter>

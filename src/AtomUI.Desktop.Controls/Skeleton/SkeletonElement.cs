@@ -9,7 +9,7 @@ public abstract class SkeletonElement : AbstractSkeleton, ICustomizableSizeTypeA
     #region 公共属性定义
     
     public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
-        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<SkeletonButton>();
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<SkeletonElement>();
     
     public static readonly StyledProperty<bool> IsBlockProperty =
         AvaloniaProperty.Register<SkeletonElement, bool>(nameof(IsBlock));
