@@ -1,6 +1,8 @@
 using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Data;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -208,6 +210,7 @@ public class Card : HeaderedContentControl,
     #endregion
 
     private CardActionPanel? _cardActionPanel;
+    private CompositeDisposable? _contentStateBindings;
     
     static Card()
     {
@@ -250,6 +253,7 @@ public class Card : HeaderedContentControl,
 
     private void ConfigureContentType()
     {
+        DisposeContentStateBindings();
         // 暂时只能探测 Content 直接指定的情况
         if (Content is CardMetaContent)
         {
@@ -258,15 +262,41 @@ public class Card : HeaderedContentControl,
         else if (Content is CardTabsContent cardTabsContent)
         {
             SetCurrentValue(ContentTypeProperty, CardContentType.Tabs);
-            cardTabsContent[!IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            cardTabsContent[!SizeTypeProperty]        = this[!SizeTypeProperty];
+            BindContentState(cardTabsContent);
         }
         else if (Content is CardGridContent cardGridContent)
         {
             SetCurrentValue(ContentTypeProperty, CardContentType.Grid);
-            cardGridContent[!IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
-            cardGridContent[!SizeTypeProperty]        = this[!SizeTypeProperty];
+            BindContentState(cardGridContent);
         }
+        else
+        {
+            SetCurrentValue(ContentTypeProperty, CardContentType.Default);
+        }
+    }
+
+    private void BindContentState(CardTabsContent cardTabsContent)
+    {
+        _contentStateBindings = new CompositeDisposable(2)
+        {
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, cardTabsContent, CardTabsContent.IsMotionEnabledProperty),
+            BindUtils.RelayBind(this, SizeTypeProperty, cardTabsContent, CardTabsContent.SizeTypeProperty)
+        };
+    }
+
+    private void BindContentState(CardGridContent cardGridContent)
+    {
+        _contentStateBindings = new CompositeDisposable(2)
+        {
+            BindUtils.RelayBind(this, IsMotionEnabledProperty, cardGridContent, CardGridContent.IsMotionEnabledProperty),
+            BindUtils.RelayBind(this, SizeTypeProperty, cardGridContent, CardGridContent.SizeTypeProperty)
+        };
+    }
+
+    private void DisposeContentStateBindings()
+    {
+        _contentStateBindings?.Dispose();
+        _contentStateBindings = null;
     }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
