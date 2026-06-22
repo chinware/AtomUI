@@ -1,4 +1,3 @@
-using System.Collections.Specialized;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Theme;
@@ -218,7 +217,6 @@ public class Steps : SelectingItemsControl,
     public Steps()
     {
         this.RegisterTokenResourceScope(StepsToken.ScopeProvider);
-        LogicalChildren.CollectionChanged += HandleCollectionChanged;
         SelectionMode                     =  SelectionMode.Single;
     }
     
@@ -233,12 +231,6 @@ public class Steps : SelectingItemsControl,
             return 100.0;
         }
         return value;
-    }
-    
-    private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        ConfigureItemsPanel();
-        ConfigureCurrentStepsItem();
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -286,6 +278,12 @@ public class Steps : SelectingItemsControl,
             throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type StepsItem.");
         }
     }
+
+    protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
+    {
+        base.ContainerForItemPreparedOverride(container, item, index);
+        ConfigureItemsLayout();
+    }
     
     protected virtual void PrepareStepsItem(StepsItem stepsItem, object? item, int index)
     {
@@ -298,7 +296,7 @@ public class Steps : SelectingItemsControl,
         if (change.Property == OrientationProperty)
         {
             UpdatePseudoClasses();
-            ConfigureItemsPanel();
+            ConfigureItemsLayout();
         }
 
         if (this.IsAttachedToVisualTree())
@@ -354,7 +352,7 @@ public class Steps : SelectingItemsControl,
     {
         if (_grid != null)
         {
-            var count = _grid.Children.Count;
+            var count = ItemCount;
             _grid.RowDefinitions.Clear();
             _grid.ColumnDefinitions.Clear();
             if (Orientation == Orientation.Horizontal)
@@ -400,6 +398,12 @@ public class Steps : SelectingItemsControl,
                 _grid.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
             }
         }
+    }
+
+    private void ConfigureItemsLayout()
+    {
+        ConfigureItemsPanel();
+        ConfigureCurrentStepsItem();
     }
 
     private void ConfigureCurrentStepsItem()
@@ -473,12 +477,15 @@ public class Steps : SelectingItemsControl,
         {
             UpdateCurrentContent();
         }
+
+        ConfigureItemsLayout();
     }
-    
+
     protected override void ClearContainerForItemOverride(Control element)
     {
         base.ClearContainerForItemOverride(element);
         UpdateCurrentContent();
+        ConfigureItemsLayout();
     }
     
     private void UpdateCurrentContent(Control? container = null)
