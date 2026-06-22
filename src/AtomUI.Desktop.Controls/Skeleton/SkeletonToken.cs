@@ -63,7 +63,7 @@ internal class SkeletonToken : AbstractControlDesignToken
     /// </summary>
     public TimeSpan LoadingMotionDuration { get; set; }
     
-    // 流光动画背景定义
+    // 流光动画背景定义，等价于 Ant Design 的 400% 背景平移动效。
     public IBrush? LoadingBackgroundStart { get; set; }
     public IBrush? LoadingBackgroundMiddle { get; set; }
     public IBrush? LoadingBackgroundEnd { get; set; }
@@ -89,47 +89,30 @@ internal class SkeletonToken : AbstractControlDesignToken
         ParagraphLineHeight   = SharedToken.ControlHeight / 2;
         ParagraphLineRoundCornerRadius = new CornerRadius(ParagraphLineHeight / 2);
         LoadingMotionDuration = TimeSpan.FromSeconds(1.4);
-        LoadingBackgroundStart     = new LinearGradientBrush()
-        {
-            StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
-            EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
-            GradientStops =
-            {
-                new GradientStop { Offset = 0.0, Color = GradientFromColor },
-                new GradientStop { Offset = 0.0, Color = GradientToColor },
-                new GradientStop { Offset = 1.0, Color = GradientFromColor }
-            }
-        };
-        
-        LoadingBackgroundMiddle     = new LinearGradientBrush()
-        {
-            StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
-            EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
-            GradientStops =
-            {
-                new GradientStop { Offset = 0.0, Color = GradientFromColor },
-                new GradientStop { Offset = 1.0, Color = GradientToColor },
-                new GradientStop { Offset = 1.0, Color = GradientFromColor }
-            }
-        };
-        
-        LoadingBackgroundEnd     = new LinearGradientBrush()
-        {
-            StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
-            EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
-            GradientStops =
-            {
-                new GradientStop { Offset = 0.0, Color = GradientFromColor },
-                new GradientStop { Offset = 1.0, Color = GradientFromColor },
-                new GradientStop { Offset = 1.0, Color = GradientFromColor }
-            }
-        };
+        LoadingBackgroundStart  = CreateLoadingBackground(-3.0, 1.0);
+        LoadingBackgroundMiddle = CreateLoadingBackground(-1.5, 2.5);
+        LoadingBackgroundEnd    = CreateLoadingBackground(0.0, 4.0);
 
         var imageSizeBase = SharedToken.ControlHeight * 1.5;
         ImageSize             = imageSizeBase;
         ImageContainerSize    = imageSizeBase * 2;
         ImageContainerMaxSize = imageSizeBase * 4;
     }
-    
+
     protected override Type GetTokenKindType() => typeof(SkeletonTokenKind);
+
+    private LinearGradientBrush CreateLoadingBackground(double startX, double endX)
+    {
+        return new LinearGradientBrush
+        {
+            StartPoint = new RelativePoint(startX, 0.5, RelativeUnit.Relative),
+            EndPoint   = new RelativePoint(endX, 0.5, RelativeUnit.Relative),
+            GradientStops =
+            {
+                new GradientStop { Offset = 0.25, Color = GradientFromColor },
+                new GradientStop { Offset = 0.37, Color = GradientToColor },
+                new GradientStop { Offset = 0.63, Color = GradientFromColor }
+            }
+        };
+    }
 }

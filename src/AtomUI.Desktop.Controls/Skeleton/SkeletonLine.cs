@@ -63,13 +63,6 @@ public class SkeletonLine : AbstractSkeleton
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        _rootLayout               = e.NameScope.Find<Panel>("PART_RootLayout");
-        if (!IsFollowMode)
-        {
-            if (IsActive)
-            {
-                StartActiveAnimation();
-            }
-        }
+        _rootLayout = e.NameScope.Find<Panel>("PART_RootLayout");
     }
 }

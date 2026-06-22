@@ -1,10 +1,8 @@
-using System.Reactive.Disposables;
-using AtomUI.Animations;
 using AtomUI.Controls;
-using AtomUI.Data;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Styling;
@@ -57,7 +55,7 @@ public abstract class AbstractSkeleton : TemplatedControl
         AvaloniaProperty.Register<AbstractSkeleton, IBrush?>(nameof(LoadingBackgroundEnd));
     
     internal static readonly StyledProperty<IBrush?> AnimationLayerFillProperty =
-        AvaloniaProperty.Register<AbstractSkeleton, IBrush?>(nameof (AnimationLayerFill));
+        AvaloniaProperty.Register<AbstractSkeleton, IBrush?>(nameof(AnimationLayerFill));
     
     internal IBrush? LoadingBackgroundStart
     {
@@ -84,167 +82,95 @@ public abstract class AbstractSkeleton : TemplatedControl
     }
     #endregion
 
-    private Animation? _animation;
-    private CancellationTokenSource? _cancellationTokenSource;
-    private AbstractSkeleton? _followTarget;
-    private CompositeDisposable? _followDisposables;
+    private static readonly Easing DefaultActiveMotionEasing = new SplineEasing
+    {
+        X1 = 0.25,
+        Y1 = 0.1,
+        X2 = 0.25,
+        Y2 = 1.0
+    };
     
-    internal bool IsFollowMode => _followTarget != null;
+    private Animation? _animation;
+    private CancellationTokenSource? _animationCancellationTokenSource;
+    private Control? _activeAnimationLayer;
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (change.Property == IsActiveProperty)
         {
-            if (!IsFollowMode)
-            {
-                if (change.Property == IsActiveProperty)
-                {
-                    if (IsActive)
-                    {
-                        StartActiveAnimation();
-                    }
-                    else
-                    {
-                        StopActiveAnimation();
-                    }
-                }
-            }
-            
-            if (change.Property == LoadingBackgroundStartProperty ||
-                change.Property == LoadingBackgroundMiddleProperty ||
-                change.Property == LoadingBackgroundEndProperty ||
-                change.Property == MotionDurationProperty ||
-                change.Property == MotionEasingCurveProperty)
-            {
-                if (!IsFollowMode)
-                {
-                    RebuildMaterializedActiveAnimation();
-                }
-            }
+            UpdateActiveAnimationState();
+        }
+        else if (change.Property == LoadingBackgroundStartProperty ||
+                 change.Property == LoadingBackgroundMiddleProperty ||
+                 change.Property == LoadingBackgroundEndProperty ||
+                 change.Property == MotionDurationProperty ||
+                 change.Property == MotionEasingCurveProperty)
+        {
+            RestartActiveAnimation();
         }
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        if (!IsFollowMode)
-        {
-            if (IsActive)
-            {
-                StartActiveAnimation();
-            }
-        }
+        UpdateActiveAnimationState();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        if (!IsFollowMode)
-        {
-            StopActiveAnimation();
-        }
-    }
-
-    protected void StartActiveAnimation()
-    {
-        if (_cancellationTokenSource is not null)
-        {
-            return;
-        }
-
-        BuildActiveAnimation();
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        _cancellationTokenSource = new CancellationTokenSource();
-        if (_animation != null)
-        {
-            Dispatcher.InvokeAsync(async () =>
-                await _animation.RunInfiniteAsync(this, _cancellationTokenSource.Token));
-        }
-    }
-
-    protected void StopActiveAnimation()
-    {
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        _cancellationTokenSource = null;
+        StopActiveAnimation();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        _activeAnimationLayer = e.NameScope.Find<Control>("PART_ActiveAnimationLayer");
+        UpdateActiveAnimationState();
     }
 
-    private void BuildActiveAnimation(bool force = false)
+    protected void StartActiveAnimation()
     {
-        if (force || _animation is null)
+        if (!ShouldRunActiveAnimation())
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _animation = new Animation
-            {
-                Easing         = MotionEasingCurve ?? new CubicEaseOut(),
-                Duration       = MotionDuration,
-                Children =
-                {
-                    new KeyFrame
-                    {
-                        Setters = { new Setter(AnimationLayerFillProperty, LoadingBackgroundStart) }, 
-                        Cue     = new Cue(0.0d)
-                    },
-                    new KeyFrame
-                    {
-                        Setters = { new Setter(AnimationLayerFillProperty, LoadingBackgroundMiddle) }, 
-                        Cue     = new Cue(0.8d)
-                    },
-                    new KeyFrame
-                    {
-                        Setters = { new Setter(AnimationLayerFillProperty, LoadingBackgroundEnd) }, 
-                        Cue     = new Cue(1.0d)
-                    }
-                }
-            };
-            _cancellationTokenSource = null;
+            StopActiveAnimation();
+            return;
         }
-    }
 
-    private void RebuildMaterializedActiveAnimation()
-    {
-        if (_animation is null)
+        if (_animationCancellationTokenSource is not null)
         {
             return;
         }
 
-        var restart = IsActive && this.IsAttachedToVisualTree() && _cancellationTokenSource is not null;
-        BuildActiveAnimation(force: true);
-        if (restart)
+        _animation ??= BuildActiveAnimation();
+        SetCurrentValue(AnimationLayerFillProperty, LoadingBackgroundStart);
+
+        _animationCancellationTokenSource = new CancellationTokenSource();
+        var cancellationTokenSource = _animationCancellationTokenSource;
+        var animation               = _animation;
+        Dispatcher.InvokeAsync(async () =>
         {
-            StartActiveAnimation();
-        }
+            try
+            {
+                await animation.RunAsync(this, cancellationTokenSource.Token);
+            }
+            catch (OperationCanceledException) when (cancellationTokenSource.IsCancellationRequested)
+            {
+            }
+        });
     }
 
-    internal void Follow(AbstractSkeleton followTarget)
+    protected void StopActiveAnimation()
     {
-        if (_followTarget != null)
-        {
-            _followDisposables?.Dispose();
-        }
-        StopActiveAnimation();
-        _animation     = null;
-        _followTarget = followTarget;
-
-        _followDisposables = new CompositeDisposable(2);
-        _followDisposables.Add(BindUtils.RelayBind(followTarget, AnimationLayerFillProperty, this, AnimationLayerFillProperty));
-        _followDisposables.Add(BindUtils.RelayBind(followTarget, IsActiveProperty, this, IsActiveProperty));
+        _animationCancellationTokenSource?.Cancel();
+        _animationCancellationTokenSource?.Dispose();
+        _animationCancellationTokenSource = null;
     }
 
-    internal void UnFollow(bool startStandaloneAnimation = true)
+    private void UpdateActiveAnimationState()
     {
-        _followDisposables?.Dispose();
-        _followDisposables = null;
-        _followTarget      = null;
-        if (startStandaloneAnimation && IsActive && this.IsAttachedToVisualTree())
+        if (ShouldRunActiveAnimation())
         {
             StartActiveAnimation();
         }
@@ -252,5 +178,52 @@ public abstract class AbstractSkeleton : TemplatedControl
         {
             StopActiveAnimation();
         }
+    }
+
+    private void RestartActiveAnimation()
+    {
+        var shouldRestart = _animationCancellationTokenSource is not null;
+        StopActiveAnimation();
+        _animation = null;
+        if (shouldRestart)
+        {
+            StartActiveAnimation();
+        }
+    }
+
+    private Animation BuildActiveAnimation()
+    {
+        return new Animation
+        {
+            Easing         = MotionEasingCurve ?? DefaultActiveMotionEasing,
+            Duration       = MotionDuration,
+            IterationCount = IterationCount.Infinite,
+            Children =
+            {
+                new KeyFrame
+                {
+                    Setters = { new Setter(AnimationLayerFillProperty, LoadingBackgroundStart) },
+                    Cue     = new Cue(0.0d)
+                },
+                new KeyFrame
+                {
+                    Setters = { new Setter(AnimationLayerFillProperty, LoadingBackgroundMiddle) },
+                    Cue     = new Cue(0.5d)
+                },
+                new KeyFrame
+                {
+                    Setters = { new Setter(AnimationLayerFillProperty, LoadingBackgroundEnd) },
+                    Cue     = new Cue(1.0d)
+                }
+            }
+        };
+    }
+
+    private bool ShouldRunActiveAnimation()
+    {
+        return IsActive &&
+               _activeAnimationLayer is not null &&
+               MotionDuration > TimeSpan.Zero &&
+               this.IsAttachedToVisualTree();
     }
 }

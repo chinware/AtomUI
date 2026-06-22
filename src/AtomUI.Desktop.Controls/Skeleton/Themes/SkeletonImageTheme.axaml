@@ -15,18 +15,18 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:AbstractSkeleton">
             <Panel Name="PART_RootLayout">
+                <Border Name="PART_ContentLayer"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        IsVisible="{TemplateBinding IsActive, Converter={x:Static BoolConverters.Not}}" />
                 <Border Name="PART_ActiveAnimationLayer"
                         Background="{TemplateBinding AnimationLayerFill}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         IsVisible="{TemplateBinding IsActive}" />
-                <Border Name="PART_ContentLayer"
-                        Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
-                    <antdicons:ImageFilled Name="Image"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           FillBrush="#bfbfbf" />
-                </Border>
+                <antdicons:ImageFilled Name="Image"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FillBrush="#bfbfbf" />
             </Panel>
         </ControlTemplate>
     </Setter>

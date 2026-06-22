@@ -2,7 +2,6 @@ using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -58,20 +57,30 @@ public class SkeletonParagraph : AbstractSkeleton
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (this.IsAttachedToVisualTree())
+        if (_linesLayout is null)
         {
-            if (change.Property == RowsProperty)
-            {
-                BuildLines();
-            }
-            else if (change.Property == LastLineWidthProperty)
-            {
-                ConfigureLastLineWidth();
-            }
-            else if (change.Property == LineWidthsProperty)
-            {
-                ConfigureLastLineWidths();
-            }
+            return;
+        }
+
+        if (change.Property == RowsProperty)
+        {
+            BuildLines();
+        }
+        else if (change.Property == LastLineWidthProperty)
+        {
+            ConfigureLastLineWidth();
+        }
+        else if (change.Property == LineWidthsProperty)
+        {
+            ConfigureLastLineWidths();
+        }
+        else if (change.Property == IsActiveProperty)
+        {
+            ConfigureLinesActiveState();
+        }
+        else if (change.Property == IsRoundProperty)
+        {
+            ConfigureLinesRoundness();
         }
     }
 
@@ -80,40 +89,21 @@ public class SkeletonParagraph : AbstractSkeleton
         base.OnApplyTemplate(e);
         _linesLayout = e.NameScope.Find<StackPanel>("PART_LineLayout");
         BuildLines();
-        if (!IsFollowMode)
-        {
-            if (IsActive)
-            {
-                StartActiveAnimation();
-            }
-        }
     }
 
     private void BuildLines()
     {
         if (_linesLayout != null)
         {
-            for (var i = 0; i < _linesLayout.Children.Count; i++)
-            {
-                if (_linesLayout.Children[i] is SkeletonLine oldLine)
-                {
-                    oldLine.UnFollow(startStandaloneAnimation: false);
-                }
-            }
-
             _linesLayout.Children.Clear();
             for (var i = 0; i < Rows; i++)
             {
-                var line = new SkeletonLine();
-                if (LineWidths != null && i < LineWidths.Count)
+                var line = new SkeletonLine
                 {
-                    line.LineWidth = LineWidths[i];
-                }
-                else if (i == Rows - 1)
-                {
-                    line.LineWidth = LastLineWidth;
-                }
-                line.Follow(this);
+                    IsActive = IsActive,
+                    IsRound  = IsRound
+                };
+                ConfigureLineWidth(line, i);
                 _linesLayout.Children.Add(line);
             }
         }
@@ -125,14 +115,7 @@ public class SkeletonParagraph : AbstractSkeleton
         {
             if (_linesLayout.Children[_linesLayout.Children.Count - 1] is SkeletonLine lastLine)
             {
-                if (LineWidths != null && LineWidths.Count >= _linesLayout.Children.Count)
-                {
-                    lastLine.LineWidth = LineWidths[_linesLayout.Children.Count - 1];
-                }
-                else
-                {
-                    lastLine.LineWidth = LastLineWidth;
-                }
+                ConfigureLineWidth(lastLine, _linesLayout.Children.Count - 1);
             }
         }
     }
@@ -145,18 +128,51 @@ public class SkeletonParagraph : AbstractSkeleton
             {
                 if (_linesLayout.Children[i] is SkeletonLine line)
                 {
-                    if (LineWidths != null && i < LineWidths.Count)
-                    {
-                        line.LineWidth = LineWidths[i];
-                    }
-                    else if (i == Rows - 1)
-                    {
-                        line.LineWidth = LastLineWidth;
-                    }
-                    else
-                    {
-                        line.ClearValue(SkeletonLine.LineWidthProperty);
-                    }
+                    ConfigureLineWidth(line, i);
+                }
+            }
+        }
+    }
+
+    private void ConfigureLineWidth(SkeletonLine line, int index)
+    {
+        if (LineWidths != null && index < LineWidths.Count)
+        {
+            line.LineWidth = LineWidths[index];
+        }
+        else if (index == Rows - 1)
+        {
+            line.LineWidth = LastLineWidth;
+        }
+        else
+        {
+            line.ClearValue(SkeletonLine.LineWidthProperty);
+        }
+    }
+
+    private void ConfigureLinesActiveState()
+    {
+        if (_linesLayout != null)
+        {
+            foreach (var child in _linesLayout.Children)
+            {
+                if (child is SkeletonLine line)
+                {
+                    line.IsActive = IsActive;
+                }
+            }
+        }
+    }
+
+    private void ConfigureLinesRoundness()
+    {
+        if (_linesLayout != null)
+        {
+            foreach (var child in _linesLayout.Children)
+            {
+                if (child is SkeletonLine line)
+                {
+                    line.IsRound = IsRound;
                 }
             }
         }

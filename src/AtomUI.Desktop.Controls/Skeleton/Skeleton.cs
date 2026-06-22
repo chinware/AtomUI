@@ -1,9 +1,7 @@
-using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;
@@ -188,32 +186,7 @@ public class Skeleton : AbstractSkeleton
     public Skeleton()
     {
         this.RegisterTokenResourceScope(SkeletonToken.ScopeProvider);
-    }
-
-    private SkeletonAvatar? _avatar;
-    private SkeletonTitle? _title;
-    private SkeletonParagraph? _paragraph;
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _avatar?.UnFollow(startStandaloneAnimation: false);
-        _title?.UnFollow(startStandaloneAnimation: false);
-        _paragraph?.UnFollow(startStandaloneAnimation: false);
-
-        _avatar = e.NameScope.Find<SkeletonAvatar>("PART_Avatar");
-        _title = e.NameScope.Find<SkeletonTitle>("PART_Title");
-        _paragraph = e.NameScope.Find<SkeletonParagraph>("PART_Paragraph");
-
-        Debug.Assert(_avatar != null);
-        Debug.Assert(_title != null);
-        Debug.Assert(_paragraph != null);
-        
-        _avatar.Follow(this);
-        _title.Follow(this);
-        _paragraph.Follow(this);
-
-        IsContentVisible = !IsLoading;
+        UpdateContentVisibility();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -223,10 +196,15 @@ public class Skeleton : AbstractSkeleton
             change.Property == ContentProperty || 
             change.Property == ContentTemplateProperty)
         {
-            IsContentVisible = !IsLoading;
+            UpdateContentVisibility();
         }
     }
-    
+
+    private void UpdateContentVisibility()
+    {
+        IsContentVisible = !IsLoading;
+    }
+
     private void HandleContentChanged(AvaloniaPropertyChangedEventArgs e)
     {
         if (e.OldValue is ILogical oldChild)
