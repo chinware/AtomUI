@@ -45,10 +45,18 @@ Descriptions 的公共 API 分为控件级属性、内容集合入口和描述�
 
 | API | 类型 | 语义 |
 | --- | --- | --- |
-| `DescriptionItem.Label` | `string` | 字段标签文本。 |
-| `DescriptionItem.Content` | `object?` | 字段内容，允许普通文本或复杂 Avalonia 内容。 |
-| `DescriptionItem.IsFilled` | `bool` | 当前项是否填满本行剩余列。 |
-| `DescriptionItem.Span` | `ResponsiveInt` | 当前项跨列数，默认 `1`，支持响应式配置。 |
+| `DescriptionItem.Label` | `string` | 字段标签文本，作为 Avalonia 属性支持 XAML 绑定。 |
+| `DescriptionItem.Content` | `object?` | 字段内容，作为 Avalonia 属性支持 XAML 绑定，允许普通文本或复杂 Avalonia 内容。 |
+| `DescriptionItem.IsFilled` | `bool` | 当前项是否填满本行剩余列，作为 Avalonia 属性参与布局刷新。 |
+| `DescriptionItem.Span` | `ResponsiveInt` | 当前项跨列数，默认 `1`，作为 Avalonia 属性支持响应式配置和布局刷新。 |
+
+`DescriptionItem` 是非视觉 `AvaloniaObject` 描述对象，不是 `Control`、`StyledElement` 或 template part。它的职责是承载 item 级 Avalonia 属性，让下面这种 XAML 绑定成为稳定契约：
+
+```xml
+<atom:DescriptionItem Label="Name" Content="{Binding Name}" />
+```
+
+Descriptions 仍然负责把 `DescriptionItem` 转换成内部视觉控件。`DescriptionItem` 自身不能直接进入视觉树，也不能承载需要视觉树生命周期才能安全释放的主题或资源状态。
 
 稳定 template part：
 
@@ -143,7 +151,10 @@ Descriptions 是 Data Display 分类下的独立展示控件，不属于输入�
 维护 Descriptions 时必须保持以下不变量：
 
 - `Items` 是布局主数据源，`ItemsSource` 只物化其中的 `DescriptionItem`。
-- `DescriptionItem` 是 record，布局必须按集合位置定位生成视觉，不能用值相等查找 item index。
+- `DescriptionItem` 是非视觉 `AvaloniaObject` 描述对象，布局必须按集合位置和对象引用维护生成视觉，不能依赖值相等或重新构造对象后的隐式匹配。
+- `DescriptionItem` 属性变化必须刷新对应生成视觉；影响布局的 `Span`、`IsFilled` 变化必须触发布局重算。
+- `DescriptionItem` 被移除、集合替换、模板重建或控件 detach 时，item 属性订阅、binding 转接、item 到视觉控件映射必须成对释放。
+- `DescriptionItem` 不允许直接使用 `DynamicResource` 或 token-resource binding，除非它拥有经过测试的 scoped `IResourceHost` / `IThemeVariantHost` 生命周期。
 - `IsBordered` 或 `Layout` 改变时，必须按新视觉模式重建生成子控件。
 - 水平边框模式必须为每个 item 生成 label/content 两个 cell。
 - 普通水平和纵向非边框模式必须保持 `IsShowColon` 到冒号显示状态的绑定。
@@ -171,6 +182,26 @@ Descriptions 是 Data Display 分类下的独立展示控件，不属于输入�
 
 纵向边框模式不拆分 cell，而是在 `DescriptionDefaultItem` 模板内显示 label/content 分隔线，并通过 `IsLastRow`、`IsLastColumn` 计算有效边框厚度。
 
+### 8.4 DescriptionItem 绑定与资源生命周期模型
+
+`DescriptionItem` 继承 `AvaloniaObject` 的目的是让 item 属性成为明确的 Avalonia binding target。它仍然是 Descriptions 管理的非视觉描述对象，生命周期由 `Items` 集合、`ItemsSource` 物化和控件模板共同决定。
+
+必须重点防范的泄露类型：
+
+- item 属性变化订阅在 item remove、collection reset、Items 替换、template reapply 或 detach 后没有解除，导致旧 `DescriptionItem` 和旧生成视觉互相保留。
+- `Content` / `Label` 的 binding 转接到生成控件后，旧 binding expression 或旧 generated control 没有随 item 移除释放。
+- 非视觉 `DescriptionItem` 上使用 `DynamicResource` 或 token-resource binding，资源宿主退化到 `Application`，通过 `Application.ResourcesChanged` 保留旧 ShowCase。
+- 为了资源查找把 owner、container 或 generated control 永久挂回 `DescriptionItem`，导致非视觉对象反向持有视觉树。
+- item 到 generated control 的字典、列表或缓存只追加不清理，集合重建后保留过期视觉控件。
+
+防范要求：
+
+- 所有 item 级订阅必须有同路径释放点，覆盖 remove、reset、Items 替换、template reapply、detach。
+- 主题、Token 和 `DynamicResource` 应优先放在生成出来的视觉控件和 AXAML 主题中，而不是放在 `DescriptionItem` 上。
+- 如果必须让 `DescriptionItem` 承载 `DynamicResource`，它必须实现 scoped `IResourceHost` / `IThemeVariantHost`，资源查找先走 owning `Descriptions`，owner 变化先释放旧 owner，再订阅新 owner，并补 WeakReference 生命周期测试。
+- item 与视觉控件之间只能保存当前生成周期需要的映射；重建视觉前必须清空旧映射和旧订阅。
+- 不允许通过清空 Gallery DataContext、强制路由释放或改静态资源值来掩盖泄露。
+
 ## 9. 文档导航与验证策略
 
 关联文档：
@@ -184,8 +215,9 @@ Descriptions 是 Data Display 分类下的独立展示控件，不属于输入�
 | 层次 | 验证内容 |
 | --- | --- |
 | Public API | `IsBordered`、`IsShowColon`、`ColumnInfo`、`Header`、`Extra`、`Layout`、`SizeType`、`ItemsSource`、`Items` 和 `DescriptionItem` 属性语义。 |
-| 状态行为 | 集合增删清空、Items 替换、Header/Extra 显隐、媒体断点变化、边框切换、布局切换、冒号绑定。 |
+| 状态行为 | 集合增删清空、Items 替换、item 属性变化、Header/Extra 显隐、媒体断点变化、边框切换、布局切换、冒号绑定。 |
 | AXAML / Template | 稳定 template part、固定 HeaderLayout、ContentFrame 边框、默认项三种模板和水平边框 cell 模板。 |
 | Token | label 背景/颜色、标题/内容/extra 颜色、Header margin、item padding、冒号 margin。 |
+| 生命周期 | item remove/reset/template reapply/detach 后旧 item、旧 generated control、binding expression 和资源订阅不被保留。 |
 | Gallery | Basic、Border、Custom Size、Responsive、Vertical、Vertical Border、Row 示例。 |
 | 文档 | 运行 `git diff --check`，检查相对链接存在。 |

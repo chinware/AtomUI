@@ -1,9 +1,13 @@
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
+using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using Xunit;
 using AvaloniaGrid = Avalonia.Controls.Grid;
 using AvaloniaWindow = Avalonia.Controls.Window;
@@ -107,7 +111,7 @@ public class DescriptionsResponsiveLayoutTests
     }
 
     [Fact]
-    public void Descriptions_Layouts_Value_Equal_Items_By_Position()
+    public void Descriptions_Layouts_Repeated_Content_Items_By_Position()
     {
         var descriptions = new AtomUI.Desktop.Controls.Descriptions
         {
@@ -125,6 +129,146 @@ public class DescriptionsResponsiveLayoutTests
             generatedItems.Count.ShouldBe(2);
             AvaloniaGrid.GetRow(generatedItems[0]).ShouldBe(0);
             AvaloniaGrid.GetRow(generatedItems[1]).ShouldBe(1);
+        });
+    }
+
+    [Fact]
+    public void DescriptionItem_Property_Changes_Update_Generated_Default_Item()
+    {
+        var item = new DescriptionItem
+        {
+            Label   = "Product",
+            Content = "Cloud Database"
+        };
+        var descriptions = new AtomUI.Desktop.Controls.Descriptions();
+        descriptions.Items.Add(item);
+
+        ShowInWindow(descriptions, () =>
+        {
+            var generatedItem = descriptions.GetSelfAndVisualDescendants()
+                                            .OfType<DescriptionDefaultItem>()
+                                            .Single();
+
+            item.Label   = "Billing";
+            item.Content = "Prepaid";
+            Dispatcher.UIThread.RunJobs();
+
+            generatedItem.Header.ShouldBe("Billing");
+            generatedItem.Content.ShouldBe("Prepaid");
+        });
+    }
+
+    [Fact]
+    public void DescriptionItem_Property_Changes_Update_Generated_Bordered_Items()
+    {
+        var item = new DescriptionItem
+        {
+            Label   = "Product",
+            Content = "Cloud Database"
+        };
+        var descriptions = new AtomUI.Desktop.Controls.Descriptions
+        {
+            IsBordered = true
+        };
+        descriptions.Items.Add(item);
+
+        ShowInWindow(descriptions, () =>
+        {
+            var label = descriptions.GetSelfAndVisualDescendants()
+                                    .OfType<DescriptionBorderedItemLabel>()
+                                    .Single();
+            var content = descriptions.GetSelfAndVisualDescendants()
+                                      .OfType<DescriptionBorderedItemContent>()
+                                      .Single();
+
+            item.Label   = "Billing";
+            item.Content = "Prepaid";
+            Dispatcher.UIThread.RunJobs();
+
+            label.Content.ShouldBe("Billing");
+            content.Content.ShouldBe("Prepaid");
+        });
+    }
+
+    [Fact]
+    public void DescriptionItem_Span_Change_Recalculates_Layout()
+    {
+        var firstItem = new DescriptionItem { Label = "A", Content = "A", Span = 1 };
+        var secondItem = new DescriptionItem { Label = "B", Content = "B" };
+        var descriptions = new AtomUI.Desktop.Controls.Descriptions
+        {
+            ColumnInfo = 2
+        };
+        descriptions.Items.Add(firstItem);
+        descriptions.Items.Add(secondItem);
+
+        ShowInWindow(descriptions, () =>
+        {
+            var generatedItems = descriptions.GetSelfAndVisualDescendants()
+                                             .OfType<DescriptionDefaultItem>()
+                                             .ToList();
+            AvaloniaGrid.GetRow(generatedItems[1]).ShouldBe(0);
+
+            firstItem.Span = 2;
+            Dispatcher.UIThread.RunJobs();
+
+            AvaloniaGrid.GetColumnSpan(generatedItems[0]).ShouldBe(2);
+            AvaloniaGrid.GetRow(generatedItems[1]).ShouldBe(1);
+        });
+    }
+
+    [Fact]
+    public void DescriptionItem_Replacement_Detaches_Old_Item_Property_Subscriptions()
+    {
+        var oldItem = new DescriptionItem { Label = "Old", Content = "Old content" };
+        var newItem = new DescriptionItem { Label = "New", Content = "New content" };
+        var descriptions = new AtomUI.Desktop.Controls.Descriptions();
+        descriptions.Items.Add(oldItem);
+
+        ShowInWindow(descriptions, () =>
+        {
+            descriptions.Items = [newItem];
+            Dispatcher.UIThread.RunJobs();
+
+            oldItem.Label   = "Stale";
+            oldItem.Content = "Stale content";
+            Dispatcher.UIThread.RunJobs();
+
+            var generatedItem = descriptions.GetSelfAndVisualDescendants()
+                                            .OfType<DescriptionDefaultItem>()
+                                            .Single();
+            generatedItem.Header.ShouldBe("New");
+            generatedItem.Content.ShouldBe("New content");
+        });
+    }
+
+    [Fact]
+    public void Dynamic_Resource_Content_Does_Not_Root_Removed_DescriptionItem()
+    {
+        var itemReference = CreateRemovedItemReference(CreateResourceKey());
+
+        CollectGarbage();
+
+        itemReference.IsAlive.ShouldBeFalse(
+            "DescriptionItem dynamic resources must not keep a removed item alive through Application.ResourcesChanged");
+    }
+
+    [Fact]
+    public void Dynamic_Resource_Content_Uses_Owner_Descriptions_Resources()
+    {
+        var resourceKey = CreateResourceKey();
+        Application.Current!.Resources[resourceKey] = "Application content";
+
+        var item = new DescriptionItem { Label = "Content" };
+        BindDynamicResource(item, DescriptionItem.ContentProperty, resourceKey, Application.Current);
+
+        var descriptions = new AtomUI.Desktop.Controls.Descriptions();
+        descriptions.Resources[resourceKey] = "Descriptions content";
+        descriptions.Items.Add(item);
+
+        ShowInWindow(descriptions, () =>
+        {
+            item.Content.ShouldBe("Descriptions content");
         });
     }
 
@@ -163,6 +307,77 @@ public class DescriptionsResponsiveLayoutTests
         where T : Control
     {
         return root.GetSelfAndVisualDescendants().OfType<T>().Count();
+    }
+
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    private static WeakReference CreateRemovedItemReference(string resourceKey)
+    {
+        Application.Current!.Resources[resourceKey] = "Application content";
+
+        var item = new DescriptionItem { Label = "Content" };
+        BindDynamicResource(item, DescriptionItem.ContentProperty, resourceKey, Application.Current);
+
+        var descriptions = new AtomUI.Desktop.Controls.Descriptions();
+        descriptions.Items.Add(item);
+
+        var window = new AvaloniaWindow
+        {
+            Width   = 800,
+            Height  = 600,
+            Content = descriptions
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            item.Content.ShouldBe("Application content");
+            descriptions.Items.Remove(item);
+            Dispatcher.UIThread.RunJobs();
+            return new WeakReference(item);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    private static string CreateResourceKey()
+    {
+        return $"DescriptionsResponsiveLayoutTests.Content.{Guid.NewGuid():N}";
+    }
+
+    private static void BindDynamicResource(AvaloniaObject target, AvaloniaProperty property, object key, object? anchor)
+    {
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
+        var bindMethod = typeof(AvaloniaObject).GetMethod(
+            "Bind",
+            flags,
+            binder: null,
+            types: [typeof(AvaloniaProperty), typeof(BindingBase), typeof(object)],
+            modifiers: null);
+
+        bindMethod.ShouldNotBeNull();
+
+        var extension = new DynamicResourceExtension(key);
+        var anchorField = typeof(DynamicResourceExtension).GetField("_anchor", flags);
+        anchorField.ShouldNotBeNull();
+        anchorField.SetValue(extension, anchor);
+
+        bindMethod.Invoke(target, [property, extension, anchor]);
+    }
+
+    private static void CollectGarbage()
+    {
+        for (var i = 0; i < 3; i++)
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        Dispatcher.UIThread.RunJobs();
     }
 
     private sealed class TestMediaBreakHost : Panel, IMediaBreakAwareControl

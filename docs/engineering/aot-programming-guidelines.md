@@ -33,6 +33,7 @@
 | 语言资源 | generated provider wrapper | `GetFields(...)` 枚举资源字段 | 缺字段、异常、日志语义是否不变 |
 | 图标创建 | generated factory 或 virtual factory | 扫描 icon assembly 后反射创建 | 非法 kind 的异常包装是否不变 |
 | DataGrid 动态 path | `[GenerateDataMemberAccessors]` 或手写 descriptor | 对用户模型直接 `GetProperty(path)` | sort/filter/group/AddNew 是否走 descriptor |
+| 非 Visual AvaloniaObject 资源宿主 | `[GenerateScopedResourceHost]` 生成 scoped host 生命周期 | 每个对象手写 `IResourceHost` / `IThemeVariantHost` 样板代码 | owner attach/release、WeakReference、资源更新测试 |
 | ReactiveUI view activation | AtomUI/Gallery 自己管理 activation scope | view-side `WhenActivated` extension 反射路径 | Loaded/Unloaded 和 VM 切换释放 |
 | 发布配置 | analyzer 加真实 NativeAOT publish | 只看普通 build | linker、root、generator 项目是否被错误发布 |
 
@@ -152,8 +153,11 @@ _relayBindingDisposables.Add(BindUtils.BindVisualAncestor(
 - 把资源字段写入 dictionary。
 - 根据数据模型生成属性 accessor。
 - 为 closed generic 或具体类型生成 factory。
+- 为 owner-managed 非 Visual `AvaloniaObject` 生成 scoped `IResourceHost` / `IThemeVariantHost` 生命周期样板代码。
 
 SG 的价值不是“把反射挪个地方”，而是让运行时代码变成普通的强类型 C#。这样 trimmer 能看见类型、构造函数和成员，NativeAOT 也不需要动态代码生成。
+
+非 Visual `AvaloniaObject` 资源宿主类需求统一遵循 [Scoped Resource Host Source Generator 范式](../modules/generator/scoped-resource-host-generator.md)。不要在每个描述对象中复制手写资源宿主代码；业务属性保留在主文件，资源宿主生命周期由 generator 生成，owner 控件只负责 attach/release。
 
 ### Generator 项目边界
 

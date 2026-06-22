@@ -122,8 +122,14 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
             }
 
             _items.CollectionChanged -= HandleCollectionChanged;
+            DetachAllDescriptionItems();
             _items = value ?? new DescriptionItems();
             _items.CollectionChanged += HandleCollectionChanged;
+            if (this.IsAttachedToVisualTree())
+            {
+                AttachDescriptionItems(_items);
+            }
+
             if (_gridLayout != null && this.IsAttachedToVisualTree())
             {
                 _gridLayout.Children.Clear();
@@ -157,6 +163,7 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     private MediaBreakPoint? _breakPoint;
     private int _effectiveColumns;
     private IMediaBreakAwareControl? _mediaOwner;
+    private readonly Dictionary<DescriptionItem, DescriptionItemAttachment> _itemAttachments = new(ReferenceEqualityComparer.Instance);
 
     static Descriptions()
     {
@@ -173,12 +180,14 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     {
         base.OnAttachedToVisualTree(e);
         AttachMediaOwner(MediaQueryHost.FindOwner(this));
+        AttachDescriptionItems(Items);
         UpdateGridColumnsForCurrentBreakPoint(true);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
+        DetachAllDescriptionItems();
         DetachMediaOwner();
     }
 
@@ -222,7 +231,21 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
 
     protected virtual void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        if (_gridLayout == null || !this.IsAttachedToVisualTree())
+        var isAttached       = this.IsAttachedToVisualTree();
+        var canUpdateVisuals = _gridLayout != null && isAttached;
+        if (canUpdateVisuals &&
+            (e.Action == NotifyCollectionChangedAction.Move ||
+             e.Action == NotifyCollectionChangedAction.Replace))
+        {
+            throw new NotSupportedException();
+        }
+
+        if (isAttached)
+        {
+            UpdateDescriptionItemAttachments(e);
+        }
+
+        if (!canUpdateVisuals)
         {
             return;
         }
@@ -243,16 +266,180 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
                 }
 
                 break;
-            case NotifyCollectionChangedAction.Move:
-            case NotifyCollectionChangedAction.Replace:
-                throw new NotSupportedException();
             case NotifyCollectionChangedAction.Reset:
-                _gridLayout.Children.Clear();
+                _gridLayout!.Children.Clear();
+                AddDescriptionItems(Items);
                 break;
         }
 
         DoLayoutChildren();
         InvalidateMeasure();
+    }
+
+    private void AttachDescriptionItems(IEnumerable<DescriptionItem> items)
+    {
+        foreach (var item in items)
+        {
+            AttachDescriptionItem(item);
+        }
+    }
+
+    private void AttachDescriptionItemsFromList(IList items)
+    {
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (items[i] is DescriptionItem item)
+            {
+                AttachDescriptionItem(item);
+            }
+        }
+    }
+
+    private void DetachDescriptionItemsFromList(IList items)
+    {
+        for (var i = 0; i < items.Count; i++)
+        {
+            if (items[i] is DescriptionItem item)
+            {
+                DetachDescriptionItem(item);
+            }
+        }
+    }
+
+    private void AttachDescriptionItem(DescriptionItem item)
+    {
+        if (_itemAttachments.TryGetValue(item, out var attachment))
+        {
+            attachment.ReferenceCount++;
+            return;
+        }
+
+        item.PropertyChanged += HandleDescriptionItemPropertyChanged;
+        _itemAttachments.Add(item, new DescriptionItemAttachment(item.AttachResourceHost(this)));
+    }
+
+    private void DetachDescriptionItem(DescriptionItem item)
+    {
+        if (!_itemAttachments.TryGetValue(item, out var attachment))
+        {
+            return;
+        }
+
+        attachment.ReferenceCount--;
+        if (attachment.ReferenceCount > 0)
+        {
+            return;
+        }
+
+        item.PropertyChanged -= HandleDescriptionItemPropertyChanged;
+        attachment.Dispose();
+        _itemAttachments.Remove(item);
+    }
+
+    private void DetachAllDescriptionItems()
+    {
+        foreach (var (item, attachment) in _itemAttachments)
+        {
+            item.PropertyChanged -= HandleDescriptionItemPropertyChanged;
+            attachment.Dispose();
+        }
+
+        _itemAttachments.Clear();
+    }
+
+    private void ResetDescriptionItemAttachments()
+    {
+        DetachAllDescriptionItems();
+        AttachDescriptionItems(Items);
+    }
+
+    private void UpdateDescriptionItemAttachments(NotifyCollectionChangedEventArgs e)
+    {
+        switch (e.Action)
+        {
+            case NotifyCollectionChangedAction.Add:
+                if (e.NewItems != null)
+                {
+                    AttachDescriptionItemsFromList(e.NewItems);
+                }
+
+                break;
+            case NotifyCollectionChangedAction.Remove:
+                if (e.OldItems != null)
+                {
+                    DetachDescriptionItemsFromList(e.OldItems);
+                }
+
+                break;
+            case NotifyCollectionChangedAction.Reset:
+                ResetDescriptionItemAttachments();
+                break;
+        }
+    }
+
+    private void HandleDescriptionItemPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+    {
+        if (sender is not DescriptionItem item)
+        {
+            return;
+        }
+
+        if (e.Property == DescriptionItem.LabelProperty ||
+            e.Property == DescriptionItem.ContentProperty)
+        {
+            UpdateGeneratedDescriptionItem(item);
+        }
+        else if (e.Property == DescriptionItem.SpanProperty ||
+                 e.Property == DescriptionItem.IsFilledProperty)
+        {
+            DoLayoutChildren();
+            InvalidateMeasure();
+        }
+    }
+
+    private void UpdateGeneratedDescriptionItem(DescriptionItem item)
+    {
+        if (_gridLayout == null)
+        {
+            return;
+        }
+
+        for (var i = 0; i < Items.Count; i++)
+        {
+            if (!ReferenceEquals(Items[i], item))
+            {
+                continue;
+            }
+
+            UpdateGeneratedDescriptionItem(i, item);
+        }
+    }
+
+    private void UpdateGeneratedDescriptionItem(int itemIndex, DescriptionItem item)
+    {
+        Debug.Assert(_gridLayout != null);
+        if (UsesHorizontalBorderedLayout())
+        {
+            var gridChildIndex = itemIndex * 2;
+            if (gridChildIndex < _gridLayout.Children.Count &&
+                _gridLayout.Children[gridChildIndex] is DescriptionBorderedItemLabel itemLabel)
+            {
+                itemLabel.Content = item.Label;
+            }
+
+            var contentChildIndex = gridChildIndex + 1;
+            if (contentChildIndex < _gridLayout.Children.Count &&
+                _gridLayout.Children[contentChildIndex] is DescriptionBorderedItemContent itemContent)
+            {
+                itemContent.Content = item.Content;
+            }
+        }
+        else if (itemIndex < _gridLayout.Children.Count &&
+                 _gridLayout.Children[itemIndex] is DescriptionDefaultItem defaultItem)
+        {
+            defaultItem.Header  = item.Label;
+            defaultItem.Content = item.Content;
+        }
     }
 
     private void AttachMediaOwner(IMediaBreakAwareControl? mediaOwner)
@@ -743,5 +930,22 @@ public class Descriptions : TemplatedControl, ISizeTypeAware
     {
         Debug.Assert(_breakPoint != null);
         return breakInfo.Resolve(_breakPoint.Value, 1);
+    }
+
+    private sealed class DescriptionItemAttachment : IDisposable
+    {
+        private readonly IDisposable _resourceHostAttachment;
+
+        public int ReferenceCount { get; set; } = 1;
+
+        public DescriptionItemAttachment(IDisposable resourceHostAttachment)
+        {
+            _resourceHostAttachment = resourceHostAttachment;
+        }
+
+        public void Dispose()
+        {
+            _resourceHostAttachment.Dispose();
+        }
     }
 }
