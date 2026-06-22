@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reactive.Disposables;
 using AtomUI.Controls;
 using Avalonia;
@@ -20,9 +21,17 @@ public class CardGridContent : ItemsControl
     public static readonly StyledProperty<bool> IsHoverableProperty = 
         AvaloniaProperty.Register<CardGridContent, bool>(nameof (IsHoverable), true);
 
-    public ColumnDefinitions ColumnDefinitions { get; set; } = new();
+    public ColumnDefinitions ColumnDefinitions
+    {
+        get => GetValue(ColumnDefinitionsProperty);
+        set => SetValue(ColumnDefinitionsProperty, value);
+    }
 
-    public RowDefinitions RowDefinitions { get; set; } = new();
+    public RowDefinitions RowDefinitions
+    {
+        get => GetValue(RowDefinitionsProperty);
+        set => SetValue(RowDefinitionsProperty, value);
+    }
     
     public bool IsHoverable
     {
@@ -55,6 +64,13 @@ public class CardGridContent : ItemsControl
     #endregion
 
     private ItemsPresenter? _itemsPresenter;
+    private readonly Dictionary<CardGridItem, CompositeDisposable> _cardGridItemDisposables = new();
+
+    public CardGridContent()
+    {
+        SetCurrentValue(ColumnDefinitionsProperty, new ColumnDefinitions());
+        SetCurrentValue(RowDefinitionsProperty, new RowDefinitions());
+    }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
@@ -71,7 +87,9 @@ public class CardGridContent : ItemsControl
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is CardGridItem gridItem)
         {
+            DisposeCardGridItemState(gridItem);
             var disposables = new CompositeDisposable(8);
+            _cardGridItemDisposables[gridItem] = disposables;
             if (item != null && item is not Visual)
             {
                 if (!gridItem.IsSet(CardGridItem.ContentProperty))
@@ -93,6 +111,16 @@ public class CardGridContent : ItemsControl
         {
             throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type CardGridItem.");
         }
+    }
+
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is CardGridItem gridItem)
+        {
+            DisposeCardGridItemState(gridItem);
+        }
+
+        base.ClearContainerForItemOverride(container);
     }
     
     protected virtual void PrepareCardGridItem(CardGridItem cardGridItem, object? item, int index, CompositeDisposable compositeDisposable)
@@ -130,6 +158,14 @@ public class CardGridContent : ItemsControl
                 gridPanel.ColumnDefinitions = ColumnDefinitions;
                 gridPanel.RowDefinitions = RowDefinitions;
             }
+        }
+    }
+
+    private void DisposeCardGridItemState(CardGridItem gridItem)
+    {
+        if (_cardGridItemDisposables.Remove(gridItem, out var disposables))
+        {
+            disposables.Dispose();
         }
     }
 }
