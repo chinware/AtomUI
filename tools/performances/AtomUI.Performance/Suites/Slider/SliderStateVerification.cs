@@ -13,8 +13,8 @@ internal static partial class Program
     private static bool RunSliderStateVerification()
     {
         var failures = new List<string>();
-        VerifySingleSliderAvoidsEndThumb(failures);
-        VerifyRangeEndThumbLifecycle(failures);
+        VerifySingleSliderKeepsEndThumbHidden(failures);
+        VerifyRangeEndThumbVisibilityLifecycle(failures);
         VerifyRangeEndThumbTooltipConfiguration(failures);
         VerifySliderSharedMarksDoNotMutateModels(failures);
 
@@ -32,7 +32,7 @@ internal static partial class Program
         return false;
     }
 
-    private static void VerifySingleSliderAvoidsEndThumb(ICollection<string> failures)
+    private static void VerifySingleSliderKeepsEndThumbHidden(ICollection<string> failures)
     {
         var slider = new AtomSlider
         {
@@ -51,15 +51,18 @@ internal static partial class Program
         Expect(track?.StartSliderThumb is not null,
             "Single Slider should create PART_StartThumb.",
             failures);
-        Expect(track?.EndSliderThumb is null,
-            "Single Slider should not create PART_EndThumb before range mode is enabled.",
+        Expect(track?.EndSliderThumb is not null,
+            "Single Slider should keep static PART_EndThumb in the template.",
             failures);
-        Expect(CountSliderThumbs(slider, "PART_EndThumb") == 0,
-            "Single Slider visual tree should not contain PART_EndThumb.",
+        Expect(track?.EndSliderThumb?.IsVisible == false,
+            "Single Slider should hide PART_EndThumb before range mode is enabled.",
+            failures);
+        Expect(CountSliderThumbs(slider, "PART_EndThumb") == 1,
+            "Single Slider visual tree should contain one static PART_EndThumb.",
             failures);
     }
 
-    private static void VerifyRangeEndThumbLifecycle(ICollection<string> failures)
+    private static void VerifyRangeEndThumbVisibilityLifecycle(ICollection<string> failures)
     {
         var slider = new AtomSlider
         {
@@ -82,40 +85,49 @@ internal static partial class Program
         RefreshLayout(realized.Window);
         var firstEndThumb = track.EndSliderThumb;
         Expect(firstEndThumb is not null,
-            "Enabling range mode should materialize PART_EndThumb.",
+            "Enabling range mode should keep PART_EndThumb available.",
             failures);
         Expect(firstEndThumb?.Name == "PART_EndThumb",
-            "Materialized range thumb should keep the PART_EndThumb name.",
+            "Range thumb should keep the PART_EndThumb name.",
+            failures);
+        Expect(firstEndThumb?.IsVisible == true,
+            "Enabling range mode should show PART_EndThumb.",
             failures);
         Expect(firstEndThumb?.GetVisualParent() == track,
-            "Materialized range thumb should be a visual child of SliderTrack.",
+            "PART_EndThumb should be a visual child of SliderTrack.",
             failures);
         Expect(firstEndThumb?.TemplatedParent == slider,
-            "Materialized range thumb should keep Slider as templated parent so Slider template selectors still apply.",
+            "PART_EndThumb should keep Slider as templated parent so Slider template selectors still apply.",
             failures);
         Expect(CountSliderThumbs(slider, "PART_EndThumb") == 1,
-            "Enabling range mode should create exactly one PART_EndThumb.",
+            "Enabling range mode should keep exactly one PART_EndThumb.",
             failures);
 
         slider.IsRangeMode = false;
         RefreshLayout(realized.Window);
-        Expect(track.EndSliderThumb is null,
-            "Disabling range mode should release PART_EndThumb from SliderTrack.",
+        Expect(ReferenceEquals(track.EndSliderThumb, firstEndThumb),
+            "Disabling range mode should keep the static PART_EndThumb instance.",
             failures);
-        Expect(firstEndThumb?.GetVisualParent() == null,
-            "Released PART_EndThumb should not keep a visual parent.",
+        Expect(firstEndThumb?.IsVisible == false,
+            "Disabling range mode should hide PART_EndThumb.",
             failures);
-        Expect(firstEndThumb?.TemplatedParent == null,
-            "Released PART_EndThumb should clear TemplatedParent.",
+        Expect(firstEndThumb?.GetVisualParent() == track,
+            "Hidden PART_EndThumb should remain a visual child of SliderTrack.",
             failures);
-        Expect(CountSliderThumbs(slider, "PART_EndThumb") == 0,
-            "Disabling range mode should remove PART_EndThumb from the visual tree.",
+        Expect(firstEndThumb?.TemplatedParent == slider,
+            "Hidden PART_EndThumb should keep Slider as templated parent.",
+            failures);
+        Expect(CountSliderThumbs(slider, "PART_EndThumb") == 1,
+            "Disabling range mode should keep one static PART_EndThumb in the visual tree.",
             failures);
 
         slider.IsRangeMode = true;
         RefreshLayout(realized.Window);
-        Expect(track.EndSliderThumb is not null,
-            "Re-enabling range mode should materialize PART_EndThumb again.",
+        Expect(ReferenceEquals(track.EndSliderThumb, firstEndThumb),
+            "Re-enabling range mode should reuse the static PART_EndThumb instance.",
+            failures);
+        Expect(track.EndSliderThumb?.IsVisible == true,
+            "Re-enabling range mode should show PART_EndThumb again.",
             failures);
         Expect(CountSliderThumbs(slider, "PART_EndThumb") == 1,
             "Re-enabling range mode should still keep exactly one PART_EndThumb.",
