@@ -27,6 +27,7 @@
 写代码时必须遵守下面的硬规则：
 
 - 非 Visual `AvaloniaObject` 只要承载 `DynamicResource` / token-resource binding，就必须实现 scoped `IResourceHost` / `IThemeVariantHost`，或者提供显式 attach/release token。
+- 新增或改造 owner-managed 非 Visual `AvaloniaObject` 时，默认按 [Scoped Resource Host Source Generator 范式](../modules/generator/scoped-resource-host-generator.md) 生成资源宿主生命周期样板代码，不在每个对象中复制手写实现。
 - scoped resource host 必须先查 owner control，再 fallback 到 `Application.Current`。
 - owner change、container clear、detach、unregister 必须能释放 owner 订阅。
 - 构造函数里默认禁止创建 global token binding；需要首次使用时创建，并在 close/detach/unregister/dispose 时释放。
@@ -184,9 +185,19 @@ Avalonia 12 的 `DynamicResourceExpression` 会在启动时寻找资源宿主。
 
 ## 修复范式
 
-### 原则 1：非 Visual AvaloniaObject 需要代理资源宿主
+### 原则 1：非 Visual AvaloniaObject 使用 Source Generator 生成资源宿主
 
-当非 Visual 对象会承载动态资源时，让它实现：
+当 owner-managed 非 Visual 对象会承载动态资源时，默认使用 [Scoped Resource Host Source Generator 范式](../modules/generator/scoped-resource-host-generator.md)：
+
+```csharp
+[GenerateScopedResourceHost]
+public partial class DescriptionItem : AvaloniaObject
+{
+    // 业务 Avalonia 属性保留在主文件
+}
+```
+
+生成器负责让目标类型实现：
 
 ```csharp
 IResourceHost, IThemeVariantHost
@@ -197,11 +208,11 @@ IResourceHost, IThemeVariantHost
 1. 先查自己的 owner control，例如 `OwningGrid`、`NavMenu`。
 2. 再 fallback 到 `Application.Current`。
 
-这样可以保留全局资源 fallback，同时让动态资源表达式优先订阅当前控件树的宿主，而不是直接订阅 `Application`。
+这样可以保留全局资源 fallback，同时让动态资源表达式优先订阅当前控件树的宿主，而不是直接订阅 `Application`。业务对象主文件不再手写 `_resourceHost`、事件转发、attach count 和 owner subscribe/unsubscribe 代码。
 
 ### 原则 2：owner 变化必须对称 unsubscribe
 
-DataGrid 类对象的标准形态：
+历史手写修复中的 DataGrid 类对象使用下面的标准形态。新增同类对象不再复制该样板代码，应由 generator 生成等价逻辑。
 
 ```csharp
 private DataGrid? _owningGrid;
@@ -424,7 +435,7 @@ RSS 分桶：
 3. 用 `createdump --withheap` 和 `gcroot` 找到强引用链。
 4. 如果根链经过 `DynamicResourceExpression`，检查 target 是否为非 Visual `AvaloniaObject` 且不是 `IResourceHost`。
 5. 为目标对象补 WeakReference 红测。
-6. 实现资源宿主代理或显式 attach/release 生命周期。
+6. 对 owner-managed 非 Visual `AvaloniaObject`，优先用 `GenerateScopedResourceHost` 生成资源宿主代理；只有不适用时才手写显式 attach/release 生命周期，并说明原因。
 7. 补资源更新测试，确保主题和资源响应不退化。
 8. 跑相关控件测试、Gallery 测试和 `git diff --check`。
 9. 再跑一轮 F5 随机导航，确认 ShowCase 存活数回到 1。

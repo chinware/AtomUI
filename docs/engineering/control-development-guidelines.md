@@ -37,6 +37,20 @@ API 和主题契约包括但不限于：
 
 控件级研发文档必须遵循 [AtomUI 控件文档规范](control-documentation-guidelines.md)。控件设计文档只描述最新设计状态；设计、API、主题契约、Token 和实现结构的历史变化记录在对应控件目录下的 `changelog.md`。
 
+## 非 Visual AvaloniaObject 资源宿主范式
+
+当控件需要引入或改造 owner-managed 的非 Visual `AvaloniaObject`，并且该对象暴露 Avalonia 属性用于 XAML binding、`DynamicResource` 或 token-resource binding 时，默认必须按 [Scoped Resource Host Source Generator 范式](../modules/generator/scoped-resource-host-generator.md) 处理。
+
+要求：
+
+- 对象主文件只保留业务 API、Avalonia 属性注册和 CLR wrapper。
+- scoped `IResourceHost` / `IThemeVariantHost` 生命周期样板代码由 Source Generator 生成。
+- owner 控件负责 attach/detach、属性订阅释放和 generated visual 映射清理。
+- 不允许复制粘贴 `IResourceHost` / `IThemeVariantHost` 样板代码到每个描述对象中。
+- 不允许为了规避泄露而删除动态资源能力、改成静态资源或清空 Gallery DataContext。
+
+例外情况必须在方案或 PR 中说明原因、替代生命周期、测试覆盖和 AOT 影响。
+
 ## 控件 Token 设计
 
 控件 Token 的分层、命名、计算、Theme Variables 边界、预设色和兼容性规则见 [AtomUI 控件 Token 设计规范](control-token-guidelines.md)。单个控件的 `token.md` 只记录该控件专属的 Token 语义、分类、使用范围和兼容边界，不重复全局 Token 系统规则。

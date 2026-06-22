@@ -15,6 +15,8 @@
 |---|---|
 | `TokenResourceKeyGenerator` | 扫描全局 Token 与 Control Token，生成资源键和 Token 类型池 |
 | `LanguageGenerator` | 扫描语言 Provider，生成语言资源键和 Provider 池 |
+| `DataMemberAccessorGenerator` | 根据数据模型 Attribute 生成 AOT 友好的数据成员访问器注册 |
+| `ScopedResourceHostGenerator` | 根据 `[GenerateScopedResourceHost]` 为非 Visual `AvaloniaObject` 生成 scoped 资源宿主生命周期样板代码 |
 
 ## 关键目录
 
@@ -22,9 +24,16 @@
 |---|---|
 | `DesignToken/` | Token Walker、TokenInfo、资源键和类型池 Writer |
 | `Language/` | LanguageProvider Walker、语言键和 Provider 池 Writer |
+| `DataMemberAccessors/` | 数据成员访问器 Generator、Analyzer 和 SourceWriter |
+| `ResourceHost/` | 非 Visual `AvaloniaObject` scoped resource host Generator、TypeInfo 和 SourceWriter |
 | `TargetMarkConstants.cs` | 生成器识别的 Attribute 元数据名 |
+
+## 统一开发范式
+
+- [Scoped Resource Host Source Generator 范式](scoped-resource-host-generator.md)：非 Visual `AvaloniaObject` 需要承载 Avalonia 属性绑定和动态资源时，默认通过 Source Generator 生成 scoped `IResourceHost` / `IThemeVariantHost` 生命周期样板代码。
 
 ## 维护注意
 
 新增控件 Token 或语言 Provider 后，应检查对应项目的 `GeneratedFiles/AtomUI.Generator/` 输出，确认生成器已识别目标类型。由于生成目录被 `<Compile Remove=...>` 排除，不应把生成文件当成普通源码维护。
 
+新增或修改 Generator 时，应同时检查 writer 代码、诊断规则和生成物稳定性。对于非 Visual `AvaloniaObject` 资源宿主类需求，不要在控件对象中复制手写资源宿主代码，应优先按 [Scoped Resource Host Source Generator 范式](scoped-resource-host-generator.md) 落地。

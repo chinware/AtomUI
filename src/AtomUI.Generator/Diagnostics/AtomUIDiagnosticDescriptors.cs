@@ -31,5 +31,41 @@ internal static class AtomUIDiagnosticDescriptors
         DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ScopedResourceHostInvalidClassShape = new(
+        AtomUIDiagnosticIds.ScopedResourceHostInvalidClassShape,
+        "Scoped resource host target must be a non-generic partial class",
+        "Type '{0}' must be a non-generic partial top-level class to use [GenerateScopedResourceHost]",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ScopedResourceHostRequiresAvaloniaObject = new(
+        AtomUIDiagnosticIds.ScopedResourceHostRequiresAvaloniaObject,
+        "Scoped resource host target must inherit AvaloniaObject",
+        "Type '{0}' must inherit AvaloniaObject to use [GenerateScopedResourceHost]",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ScopedResourceHostRejectsVisualTarget = new(
+        AtomUIDiagnosticIds.ScopedResourceHostRejectsVisualTarget,
+        "Scoped resource host target must be non-visual",
+        "Type '{0}' inherits a visual type and must not use [GenerateScopedResourceHost]",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
+
+    public static readonly DiagnosticDescriptor ScopedResourceHostRejectsExistingResourceHost = new(
+        AtomUIDiagnosticIds.ScopedResourceHostRejectsExistingResourceHost,
+        "Scoped resource host target already implements resource host interfaces",
+        "Type '{0}' already implements IResourceHost or IThemeVariantHost and must not use [GenerateScopedResourceHost]",
+        AtomUIDiagnosticCategories.Generator,
+        DiagnosticSeverity.Warning,
+        isEnabledByDefault: true,
+        customTags: [WellKnownDiagnosticTags.Telemetry]);
 }
 #pragma warning restore RS2008

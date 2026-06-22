@@ -84,6 +84,7 @@ Read the relevant document before touching the corresponding area:
 - Gallery page structure: [docs/gallery/gallery-showcase-design-pattern.md](docs/gallery/gallery-showcase-design-pattern.md)
 - Gallery organization: [docs/gallery/organization.md](docs/gallery/organization.md)
 - Resource lifecycle case study: [docs/engineering/avalonia-dynamic-resource-memory-leak-case-study.md](docs/engineering/avalonia-dynamic-resource-memory-leak-case-study.md)
+- Non-Visual AvaloniaObject scoped resource host generator: [docs/modules/generator/scoped-resource-host-generator.md](docs/modules/generator/scoped-resource-host-generator.md)
 
 ## Agent Behavior
 

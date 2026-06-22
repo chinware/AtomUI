@@ -59,6 +59,7 @@ Gallery 改动时注意：
 - `OnApplyTemplate` 重新应用时释放旧 part 绑定。
 - detach、owner 变更、container recycle 时解绑事件和资源宿主。
 - 非 Visual 对象使用动态资源时，需要明确资源宿主生命周期。
+- owner-managed 非 Visual `AvaloniaObject` 需要 scoped resource host 时，默认遵循 [Scoped Resource Host Source Generator 范式](../modules/generator/scoped-resource-host-generator.md)，不要复制手写 `IResourceHost` / `IThemeVariantHost` 样板代码。
 - 修复内存保留问题时，按同类对象成组审计，不只修 dump 中看到的第一个类型。
 
 参考：[avalonia-dynamic-resource-memory-leak-case-study.md](avalonia-dynamic-resource-memory-leak-case-study.md)。
