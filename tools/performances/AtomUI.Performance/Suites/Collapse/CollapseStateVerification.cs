@@ -211,9 +211,13 @@ internal static partial class Program
     {
         var normalItem = CreateVerificationItem();
         var explicitItem = CreateVerificationItem();
+        var lastItem = CreateVerificationItem();
         explicitItem.HeaderPadding = new Thickness(3);
         explicitItem.ContentPadding = new Thickness(4);
-        var collapse = CreateVerificationCollapse(normalItem, explicitItem);
+        explicitItem.IsSelected = true;
+        lastItem.IsSelected = true;
+        var collapse = CreateVerificationCollapse(normalItem, explicitItem, lastItem);
+        collapse.IsMotionEnabled = false;
         using var realized = RealizeControl(collapse);
 
         collapse.ItemHeaderPadding = new Thickness(7);
@@ -230,6 +234,24 @@ internal static partial class Program
             failures);
         Expect(explicitItem.EffectiveContentPadding == new Thickness(4),
             "Collapse should not override an item-level ContentPadding local value.",
+            failures);
+        Expect(normalItem.HeaderBorderThickness == new Thickness(0, 0, 0, 1),
+            $"Collapsed non-last CollapseItem should keep a header bottom separator, actual {DescribeThickness(normalItem.HeaderBorderThickness)}.",
+            failures);
+        Expect(normalItem.ContentBorderThickness == new Thickness(0),
+            $"Collapsed CollapseItem should not keep a content border, actual {DescribeThickness(normalItem.ContentBorderThickness)}.",
+            failures);
+        Expect(explicitItem.HeaderBorderThickness == new Thickness(0),
+            $"Expanded non-last CollapseItem should not draw the header/content separator on the header, actual {DescribeThickness(explicitItem.HeaderBorderThickness)}.",
+            failures);
+        Expect(explicitItem.ContentBorderThickness == new Thickness(0, 1, 0, 1),
+            $"Expanded non-last CollapseItem should use content top and bottom borders, actual {DescribeThickness(explicitItem.ContentBorderThickness)}.",
+            failures);
+        Expect(lastItem.HeaderBorderThickness == new Thickness(0),
+            $"Expanded last CollapseItem should not keep a header bottom border, actual {DescribeThickness(lastItem.HeaderBorderThickness)}.",
+            failures);
+        Expect(lastItem.ContentBorderThickness == new Thickness(0, 1, 0, 0),
+            $"Expanded last CollapseItem should keep only the content top separator, actual {DescribeThickness(lastItem.ContentBorderThickness)}.",
             failures);
 
         collapse.ItemHeaderPadding = new Thickness(11);

@@ -70,6 +70,9 @@ If the audit finds no issues beyond member order, say that explicitly. If it fin
 - Rendered result includes visual tree semantics, layout size, spacing, alignment, colors, typography, animations, theme response, pseudo-class visuals, and template selector behavior.
 - Control optimization must not introduce logic bugs, performance regressions, or resource leaks. If a proposed optimization cannot preserve correctness, performance, and lifecycle safety, stop and redesign before editing.
 - Fix root causes instead of patching trigger points. Do not use flag variables, delayed refreshes, forced sync, or suppression paths to hide broken state flow; patch-style fixes make controls harder to maintain and are a blocker unless explicitly justified as a deterministic state machine.
+- Do not introduce unnecessary classes, helpers, abstractions, boolean-switch parameters, marker fields, or local marker variables while fixing a control. Every new artifact must have durable ownership and a reason beyond making the current patch convenient.
+- If investigation or review finds an unnecessary class, duplicate helper, speculative abstraction, patch flag, or stale artifact introduced by the current change, remove it before reporting completion. Do not leave it as harmless cleanup for later.
+- Prefer existing shared primitives and comparable-control implementations over one-off private classes. A private class is allowed only when no existing primitive expresses the behavior correctly and the class removes real duplication or clarifies a stable responsibility.
 - Do not mix pure member reordering with behavior fixes. If a bug is found during reordering, split it into a behavior fix with tests.
 - Do not split files just because a file looks long. Under about `2000` lines, prefer method order, regions, and private helper extraction.
 - Do not treat the `2000` line threshold as an automatic split rule. Even after the threshold is crossed, split only when the control has real, stable responsibility boundaries.
@@ -98,6 +101,7 @@ File split decision: No / Yes, reason:
 Other required skills:
 Behavior changes mixed into layout-only work: No
 C# relay binding inventory: None / Reviewed, exceptions documented
+New artifact audit: None / necessary classes/helpers/fields/flags listed with reason
 Verification commands:
 ```
 
@@ -110,6 +114,7 @@ Seeing any of these in a control during broad optimization forces a deep-control
 - two-way sync between styled properties, template parts, collection views, and domain objects
 - public interfaces with no-op/default implementations that hide capability differences
 - runtime-created controls, popups, flyouts, dynamic menu items, or C# bindings
+- newly introduced private classes, helpers, boolean parameters, marker fields, or local marker variables that duplicate existing primitives or only serve the current patch shape
 - generated/recycled containers carrying domain state, especially tree/list nodes, selection, masked/disabled state, or checked state
 - custom pagination, collection view movement, filtering, source replacement, or key translation
 - repeated algorithms across base/subclass implementations
@@ -148,9 +153,22 @@ For broad optimization, run focused searches before deciding the implementation 
 - state suppression: `_ignore`, `_suppress`, `_isUpdating`, `Backup`, `Reset`, `Refresh`, `Dispatcher`
 - dynamic lifecycle: `+=`, `-=`, `IDisposable`, `CompositeDisposable`, `RelayBind`, `DynamicResource`
 - data flow: `ItemsSource`, `Selected`, `Checked`, `Current`, `TargetKeys`, `SelectedKeys`, `Filter`, `Page`
-- dead/duplicate code: class references, copied methods, override methods matching the base implementation
+- dead/duplicate code: class references, copied methods, override methods matching the base implementation, new helpers/classes that duplicate existing primitives
+- patch artifacts: new boolean-switch parameters, marker fields, local marker variables, stale fallback branches, and cleanup-only helper classes
 
 Do not treat these scans as proof by themselves. Use them to identify ownership and edge-case paths that must be reviewed.
+
+## New Artifact Review
+
+Before reporting any control fix complete, inspect what the change added:
+
+- New class / helper: prove it represents a stable responsibility or remove it.
+- New field / local marker variable: prove it is the single owner of a real state machine or remove it.
+- New boolean parameter: split into clearly named methods unless the boolean is part of an existing public contract.
+- New fallback branch: prove the fallback is reachable and part of the control contract or remove it.
+- Existing primitive with equivalent behavior: use the primitive instead of keeping one-off code.
+
+This review applies even when tests pass. Passing tests do not justify unused abstractions, duplicated motion classes, stale flags, or patch-shaped control flow.
 
 ## Completion Report
 
@@ -162,6 +180,7 @@ Behavior changed: No / Yes
 Files split: No / Yes
 Audit performed: No / Yes
 Residual risks:
+New artifacts introduced and why:
 Tests:
 Diff hygiene:
 Commit created: No unless explicitly requested
