@@ -227,7 +227,7 @@ public class Slider : RangeBase,
     {
         this.RegisterTokenResourceScope(SliderToken.ScopeProvider);
     }
-    
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -245,32 +245,16 @@ public class Slider : RangeBase,
             this.AddDisposableHandler(PointerReleasedEvent, TrackReleased, RoutingStrategies.Tunnel);
         _pointerMovedDispose = this.AddDisposableHandler(PointerMovedEvent, TrackMoved, RoutingStrategies.Tunnel);
         ConfigureTipHostWidth();
-
-        if (SliderTrack is not null)
-        {
-            if (!IsRangeMode)
-            {
-                if (SliderTrack.StartSliderThumb is not null)
-                {
-                    ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(Value));
-                }
-            }
-            else
-            {
-                if (SliderTrack.StartSliderThumb is not null)
-                {
-                    ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(RangeValue.StartValue));
-                }
-
-                if (SliderTrack.EndSliderThumb is not null)
-                {
-                    ToolTip.SetTip(SliderTrack.EndSliderThumb, FormatValue(RangeValue.EndValue));
-                }
-            }
-        }
+        ConfigureTemplateThumbTips();
     
         SetupSliderThumbPlacement();
         UpdatePseudoClasses(Orientation);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        DisposePointerHandlers();
     }
 
     // TODO 在 rangemode 下可能没有用
@@ -358,27 +342,19 @@ public class Slider : RangeBase,
             UpdatePseudoClasses(change.GetNewValue<Orientation>());
             SetupSliderThumbPlacement();
         }
+        else if (change.Property == IsRangeModeProperty)
+        {
+            ConfigureTipHostWidth();
+            ConfigureTemplateThumbTips();
+            SetupSliderThumbPlacement();
+        }
         else if (change.Property == ValueProperty)
         {
-            if (SliderTrack is not null && SliderTrack.StartSliderThumb is not null)
-            {
-                ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(Value));
-            }
+            UpdateValueThumbTip();
         }
         else if (change.Property == RangeValueProperty)
         {
-            if (SliderTrack is not null)
-            {
-                if (SliderTrack.StartSliderThumb is not null)
-                {
-                    ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(RangeValue.StartValue));
-                }
-
-                if (SliderTrack.EndSliderThumb is not null)
-                {
-                    ToolTip.SetTip(SliderTrack.EndSliderThumb, FormatValue(RangeValue.EndValue));
-                }
-            }
+            UpdateRangeThumbTips();
         }
 
         if (this.IsAttachedToVisualTree())
@@ -462,6 +438,23 @@ public class Slider : RangeBase,
         _pointerPressDispose = null;
         _pointerReleaseDispose?.Dispose();
         _pointerReleaseDispose = null;
+    }
+
+    private void ConfigureTemplateThumbTips()
+    {
+        if (SliderTrack is null)
+        {
+            return;
+        }
+
+        if (IsRangeMode)
+        {
+            UpdateRangeThumbTips();
+        }
+        else
+        {
+            UpdateValueThumbTip();
+        }
     }
 
     private void MoveToNextTick(double direction)
@@ -700,6 +693,32 @@ public class Slider : RangeBase,
                     ToolTip.SetPlacement(SliderTrack.EndSliderThumb, PlacementMode.Right);
                 }
             }
+        }
+    }
+
+    private void UpdateValueThumbTip()
+    {
+        if (SliderTrack?.StartSliderThumb is not null)
+        {
+            ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(Value));
+        }
+    }
+
+    private void UpdateRangeThumbTips()
+    {
+        if (SliderTrack is null)
+        {
+            return;
+        }
+
+        if (SliderTrack.StartSliderThumb is not null)
+        {
+            ToolTip.SetTip(SliderTrack.StartSliderThumb, FormatValue(RangeValue.StartValue));
+        }
+
+        if (SliderTrack.EndSliderThumb is not null)
+        {
+            ToolTip.SetTip(SliderTrack.EndSliderThumb, FormatValue(RangeValue.EndValue));
         }
     }
 
