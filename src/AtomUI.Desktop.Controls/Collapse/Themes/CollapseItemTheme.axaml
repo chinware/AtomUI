@@ -13,7 +13,7 @@
                     <Border Name="PART_HeaderDecorator"
                             DockPanel.Dock="Top"
                             BorderThickness="{TemplateBinding HeaderBorderThickness}"
-                            Padding="{TemplateBinding HeaderPadding}">
+                            Padding="{TemplateBinding EffectiveHeaderPadding}">
                         <Grid ColumnDefinitions="Auto, *, Auto, Auto">
                             <atom:IconButton
                                 Name="PART_ExpandButton"
@@ -51,7 +51,7 @@
                                           Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           BorderThickness="{TemplateBinding ContentBorderThickness}"
-                                          Padding="{TemplateBinding ContentPadding}"/>
+                                          Padding="{TemplateBinding EffectiveContentPadding}"/>
                     </atom:LayoutAwareMotionActor>
                 </DockPanel>
             </ControlTemplate>
@@ -83,21 +83,21 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Setter Property="HeaderPadding"
+            <Setter Property="DefaultHeaderPadding"
                     Value="{atom:CollapseTokenResource CollapseHeaderPaddingLG}" />
-            <Setter Property="ContentPadding"
+            <Setter Property="DefaultContentPadding"
                     Value="{atom:CollapseTokenResource CollapseContentPaddingLG}" />
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Setter Property="HeaderPadding"
+            <Setter Property="DefaultHeaderPadding"
                     Value="{atom:CollapseTokenResource HeaderPadding}" />
-            <Setter Property="ContentPadding"
+            <Setter Property="DefaultContentPadding"
                     Value="{atom:CollapseTokenResource ContentPadding}" />
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Setter Property="HeaderPadding"
+            <Setter Property="DefaultHeaderPadding"
                     Value="{atom:CollapseTokenResource CollapseHeaderPaddingSM}" />
-            <Setter Property="ContentPadding"
+            <Setter Property="DefaultContentPadding"
                     Value="{atom:CollapseTokenResource CollapseContentPaddingSM}" />
         </Style>
 

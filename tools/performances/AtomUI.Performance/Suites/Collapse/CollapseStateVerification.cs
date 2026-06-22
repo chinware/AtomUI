@@ -39,14 +39,26 @@ internal static partial class Program
         var collapse = CreateVerificationCollapse(item);
         using var _ = RealizeControl(collapse);
 
-        Expect(FindVisualByName<Control>(item, "PART_ContentMotionActor") == null,
-            "Closed CollapseItem should not create PART_ContentMotionActor before first expand.",
+        var motionActor = FindVisualByName<Control>(item, "PART_ContentMotionActor");
+        Expect(motionActor != null,
+            "Closed CollapseItem should keep static PART_ContentMotionActor in the template.",
             failures);
-        Expect(FindVisualByName<ContentPresenter>(item, "PART_ContentPresenter") == null,
-            "Closed CollapseItem should not create PART_ContentPresenter before first expand.",
+        Expect(motionActor?.IsVisible == false,
+            "Closed CollapseItem should hide PART_ContentMotionActor before first expand.",
             failures);
-        Expect(FindVisualByName<ContentPresenter>(item, "PART_AddOnContentPresenter") == null,
-            "CollapseItem without AddOnContent should not create PART_AddOnContentPresenter.",
+        var contentPresenter = (motionActor as ContentControl)?.Content as ContentPresenter;
+        Expect(contentPresenter != null,
+            "Closed CollapseItem should keep static PART_ContentPresenter in the template.",
+            failures);
+        Expect(contentPresenter == null || contentPresenter.TemplatedParent == item,
+            "Closed CollapseItem content presenter should use CollapseItem as templated parent.",
+            failures);
+        var addonPresenter = FindCollapseItemTemplatePart<ContentPresenter>(item, "PART_AddOnContentPresenter");
+        Expect(addonPresenter != null,
+            "CollapseItem without AddOnContent should keep static PART_AddOnContentPresenter.",
+            failures);
+        Expect(addonPresenter?.Content is null,
+            "CollapseItem without AddOnContent should keep addon presenter empty.",
             failures);
         Expect(FindVisualByName<IconButton>(item, "PART_ExpandButton") != null,
             "Default CollapseItem should still create PART_ExpandButton.",
@@ -60,43 +72,46 @@ internal static partial class Program
         var collapse = CreateVerificationCollapse(item);
         using var realized = RealizeControl(collapse);
 
-        Expect(FindVisualByName<IconButton>(item, "PART_ExpandButton") == null,
-            "No-arrow CollapseItem should not create PART_ExpandButton.",
+        var firstButton = FindCollapseItemTemplatePart<IconButton>(item, "PART_ExpandButton");
+        Expect(firstButton != null,
+            "No-arrow CollapseItem should keep static PART_ExpandButton in the template.",
             failures);
-        Expect(item.ExpandIcon == null,
-            "No-arrow CollapseItem should not create the default expand icon.",
+        Expect(firstButton?.IsVisible == false,
+            "No-arrow CollapseItem should hide PART_ExpandButton.",
+            failures);
+        Expect(item.ExpandIcon is RightOutlined,
+            "No-arrow CollapseItem keeps the default expand icon for static template reuse.",
             failures);
 
         item.IsShowExpandIcon = true;
         RefreshLayout(realized.Window);
-        var firstButton = FindVisualByName<IconButton>(item, "PART_ExpandButton");
-        Expect(firstButton != null,
-            "CollapseItem should create PART_ExpandButton when IsShowExpandIcon becomes true.",
+        Expect(ReferenceEquals(firstButton, FindCollapseItemTemplatePart<IconButton>(item, "PART_ExpandButton")),
+            "CollapseItem should reuse the static PART_ExpandButton when IsShowExpandIcon becomes true.",
+            failures);
+        Expect(firstButton?.IsVisible == true,
+            "CollapseItem should show PART_ExpandButton when IsShowExpandIcon becomes true.",
             failures);
         Expect(item.ExpandIcon is RightOutlined,
-            "CollapseItem should create the default RightOutlined icon when expand button is needed.",
+            "CollapseItem should keep the default RightOutlined icon when expand button is visible.",
             failures);
 
         item.IsShowExpandIcon = false;
         RefreshLayout(realized.Window);
-        Expect(FindVisualByName<IconButton>(item, "PART_ExpandButton") == null,
-            "CollapseItem should remove PART_ExpandButton when IsShowExpandIcon becomes false.",
+        Expect(ReferenceEquals(firstButton, FindCollapseItemTemplatePart<IconButton>(item, "PART_ExpandButton")),
+            "CollapseItem should keep the static PART_ExpandButton when IsShowExpandIcon becomes false.",
             failures);
-        Expect(firstButton?.GetVisualParent() == null,
-            "Removed PART_ExpandButton should not keep a visual parent.",
+        Expect(firstButton?.IsVisible == false,
+            "CollapseItem should hide PART_ExpandButton when IsShowExpandIcon becomes false.",
             failures);
-        Expect(firstButton == null || firstButton.TemplatedParent == null,
-            "Removed PART_ExpandButton should clear templated parent.",
-            failures);
-        Expect(item.ExpandIcon == null,
-            "CollapseItem should release the generated default expand icon when no arrow is shown.",
+        Expect(item.ExpandIcon is RightOutlined,
+            "CollapseItem should keep the default expand icon for static template reuse.",
             failures);
 
         item.IsShowExpandIcon = true;
         RefreshLayout(realized.Window);
-        var secondButton = FindVisualByName<IconButton>(item, "PART_ExpandButton");
-        Expect(secondButton != null && !ReferenceEquals(firstButton, secondButton),
-            "CollapseItem should recreate PART_ExpandButton cleanly after it was removed.",
+        var secondButton = FindCollapseItemTemplatePart<IconButton>(item, "PART_ExpandButton");
+        Expect(ReferenceEquals(firstButton, secondButton),
+            "CollapseItem should reuse PART_ExpandButton across visibility toggles.",
             failures);
     }
 
@@ -106,16 +121,19 @@ internal static partial class Program
         var collapse = CreateVerificationCollapse(item);
         using var realized = RealizeControl(collapse);
 
-        Expect(FindVisualByName<ContentPresenter>(item, "PART_AddOnContentPresenter") == null,
-            "CollapseItem without addon should not create addon presenter.",
+        var firstPresenter = FindCollapseItemTemplatePart<ContentPresenter>(item, "PART_AddOnContentPresenter");
+        Expect(firstPresenter != null,
+            "CollapseItem without addon should keep static addon presenter.",
+            failures);
+        Expect(firstPresenter?.Content is null,
+            "CollapseItem without addon should keep addon presenter empty.",
             failures);
 
         var addOn = new SettingOutlined();
         item.AddOnContent = addOn;
         RefreshLayout(realized.Window);
-        var firstPresenter = FindVisualByName<ContentPresenter>(item, "PART_AddOnContentPresenter");
-        Expect(firstPresenter != null,
-            "CollapseItem should create addon presenter when AddOnContent is assigned.",
+        Expect(ReferenceEquals(firstPresenter, FindCollapseItemTemplatePart<ContentPresenter>(item, "PART_AddOnContentPresenter")),
+            "CollapseItem should reuse the static addon presenter when AddOnContent is assigned.",
             failures);
         Expect(ReferenceEquals(firstPresenter?.Content, addOn),
             "Addon presenter should bind to AddOnContent.",
@@ -123,27 +141,21 @@ internal static partial class Program
 
         item.AddOnContent = null;
         RefreshLayout(realized.Window);
-        Expect(FindVisualByName<ContentPresenter>(item, "PART_AddOnContentPresenter") == null,
-            "CollapseItem should remove addon presenter when AddOnContent is cleared.",
-            failures);
-        Expect(firstPresenter?.GetVisualParent() == null,
-            "Removed addon presenter should not keep a visual parent.",
-            failures);
-        Expect(firstPresenter == null || firstPresenter.TemplatedParent == null,
-            "Removed addon presenter should clear templated parent.",
+        Expect(ReferenceEquals(firstPresenter, FindCollapseItemTemplatePart<ContentPresenter>(item, "PART_AddOnContentPresenter")),
+            "CollapseItem should keep the static addon presenter when AddOnContent is cleared.",
             failures);
         Expect(firstPresenter?.Content == null,
-            "Removed addon presenter should clear Content.",
+            "Addon presenter should clear Content.",
             failures);
         Expect(addOn.GetVisualParent() == null,
-            "Removed addon content should not keep a visual parent.",
+            "Cleared addon content should not keep a visual parent.",
             failures);
 
         item.AddOnContent = new SettingOutlined();
         RefreshLayout(realized.Window);
-        var secondPresenter = FindVisualByName<ContentPresenter>(item, "PART_AddOnContentPresenter");
-        Expect(secondPresenter != null && !ReferenceEquals(firstPresenter, secondPresenter),
-            "CollapseItem should recreate addon presenter cleanly after removal.",
+        var secondPresenter = FindCollapseItemTemplatePart<ContentPresenter>(item, "PART_AddOnContentPresenter");
+        Expect(ReferenceEquals(firstPresenter, secondPresenter),
+            "CollapseItem should reuse addon presenter across Content toggles.",
             failures);
     }
 
@@ -154,19 +166,25 @@ internal static partial class Program
         collapse.IsMotionEnabled = false;
         using var realized = RealizeControl(collapse);
 
-        Expect(FindVisualByName<Control>(item, "PART_ContentMotionActor") == null,
-            "Closed CollapseItem should not create content motion actor before first expand.",
+        var firstActor = FindCollapseItemTemplatePart<Control>(item, "PART_ContentMotionActor");
+        Expect(firstActor != null,
+            "Closed CollapseItem should keep static content motion actor.",
+            failures);
+        Expect(firstActor?.IsVisible == false,
+            "Closed CollapseItem should hide content motion actor before first expand.",
             failures);
 
         item.IsSelected = true;
         RefreshLayout(realized.Window);
-        var firstActor = FindVisualByName<Control>(item, "PART_ContentMotionActor");
         var firstPresenter = (firstActor as ContentControl)?.Content as ContentPresenter;
         Expect(firstActor != null,
-            "CollapseItem should create content motion actor on first expand.",
+            "CollapseItem should keep content motion actor on first expand.",
             failures);
         Expect(firstPresenter != null,
-            "CollapseItem should create content presenter on first expand.",
+            "CollapseItem should keep content presenter on first expand.",
+            failures);
+        Expect(firstActor?.IsVisible == true,
+            "Expanded CollapseItem should show content motion actor.",
             failures);
 
         item.IsSelected = false;
@@ -177,7 +195,7 @@ internal static partial class Program
 
         item.IsSelected = true;
         RefreshLayout(realized.Window);
-        var secondActor = FindVisualByName<Control>(item, "PART_ContentMotionActor");
+        var secondActor = FindCollapseItemTemplatePart<Control>(item, "PART_ContentMotionActor");
         Expect(ReferenceEquals(firstActor, secondActor),
             "CollapseItem should reuse the materialized motion actor on second expand.",
             failures);
@@ -201,26 +219,26 @@ internal static partial class Program
         collapse.ItemHeaderPadding = new Thickness(7);
         collapse.ItemContentPadding = new Thickness(9);
         RefreshLayout(realized.Window);
-        Expect(normalItem.HeaderPadding == new Thickness(7),
+        Expect(normalItem.EffectiveHeaderPadding == new Thickness(7),
             "Collapse.ItemHeaderPadding should update prepared items dynamically.",
             failures);
-        Expect(normalItem.ContentPadding == new Thickness(9),
+        Expect(normalItem.EffectiveContentPadding == new Thickness(9),
             "Collapse.ItemContentPadding should update prepared items dynamically.",
             failures);
-        Expect(explicitItem.HeaderPadding == new Thickness(3),
+        Expect(explicitItem.EffectiveHeaderPadding == new Thickness(3),
             "Collapse should not override an item-level HeaderPadding local value.",
             failures);
-        Expect(explicitItem.ContentPadding == new Thickness(4),
+        Expect(explicitItem.EffectiveContentPadding == new Thickness(4),
             "Collapse should not override an item-level ContentPadding local value.",
             failures);
 
         collapse.ItemHeaderPadding = new Thickness(11);
         collapse.ItemContentPadding = new Thickness(13);
         RefreshLayout(realized.Window);
-        Expect(normalItem.HeaderPadding == new Thickness(11),
+        Expect(normalItem.EffectiveHeaderPadding == new Thickness(11),
             "Collapse.ItemHeaderPadding binding should update after the first assignment.",
             failures);
-        Expect(normalItem.ContentPadding == new Thickness(13),
+        Expect(normalItem.EffectiveContentPadding == new Thickness(13),
             "Collapse.ItemContentPadding binding should update after the first assignment.",
             failures);
 
@@ -255,25 +273,25 @@ internal static partial class Program
         collapse.ItemHeaderPadding = new Thickness(7);
         collapse.ItemContentPadding = new Thickness(9);
         RefreshLayout(realized.Window);
-        Expect(item.HeaderPadding == new Thickness(7),
+        Expect(item.EffectiveHeaderPadding == new Thickness(7),
             "Collapse.ItemHeaderPadding should bind to a realized item before removal.",
             failures);
-        Expect(item.ContentPadding == new Thickness(9),
+        Expect(item.EffectiveContentPadding == new Thickness(9),
             "Collapse.ItemContentPadding should bind to a realized item before removal.",
             failures);
 
         collapse.Items.Remove(item);
         RefreshLayout(realized.Window);
-        var detachedHeaderPadding  = item.HeaderPadding;
-        var detachedContentPadding = item.ContentPadding;
+        var detachedHeaderPadding  = item.EffectiveHeaderPadding;
+        var detachedContentPadding = item.EffectiveContentPadding;
 
         collapse.ItemHeaderPadding = new Thickness(21);
         collapse.ItemContentPadding = new Thickness(23);
         RefreshLayout(realized.Window);
-        Expect(item.HeaderPadding == detachedHeaderPadding,
+        Expect(item.EffectiveHeaderPadding == detachedHeaderPadding,
             "Removed CollapseItem should not keep a live ItemHeaderPadding binding.",
             failures);
-        Expect(item.ContentPadding == detachedContentPadding,
+        Expect(item.EffectiveContentPadding == detachedContentPadding,
             "Removed CollapseItem should not keep a live ItemContentPadding binding.",
             failures);
     }
@@ -302,6 +320,15 @@ internal static partial class Program
         return root.GetSelfAndVisualDescendants()
                    .OfType<Control>()
                    .Count(control => control.Name == name);
+    }
+
+    private static T? FindCollapseItemTemplatePart<T>(CollapseItem item, string name)
+        where T : Control
+    {
+        return item.GetSelfAndVisualDescendants()
+                   .OfType<T>()
+                   .FirstOrDefault(control => control.Name == name &&
+                                              ReferenceEquals(control.TemplatedParent, item));
     }
 
     private static string DescribeThickness(Thickness? thickness)
