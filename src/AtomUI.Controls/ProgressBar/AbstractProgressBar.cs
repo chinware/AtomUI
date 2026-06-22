@@ -284,7 +284,8 @@ public abstract class AbstractProgressBar : RangeBase,
         {
             UpdateProgress();
         }
-        else if (change.Property == IsIndeterminateProperty)
+
+        if (change.Property == IsIndeterminateProperty)
         {
             UpdatePseudoClasses();
         }
@@ -324,10 +325,15 @@ public abstract class AbstractProgressBar : RangeBase,
         CalculateStrokeThickness();
     }
 
+    private protected double CalculateProgressRatio(double value)
+    {
+        var range = Maximum - Minimum;
+        return Math.Abs(range) < double.Epsilon ? 1.0 : (value - Minimum) / range;
+    }
+
     private void UpdateProgress()
     {
-        var percent = Math.Abs(Maximum - Minimum) < double.Epsilon ? 1.0 : (Value - Minimum) / (Maximum - Minimum);
-        Percentage = percent * 100;
+        Percentage = CalculateProgressRatio(Value) * 100;
         NotifyUpdateProgress();
     }
 

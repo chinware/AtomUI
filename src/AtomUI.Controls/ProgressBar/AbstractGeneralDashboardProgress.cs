@@ -136,7 +136,7 @@ public abstract class AbstractGeneralDashboardProgress : AbstractCircleProgress
                 SuccessStrokeBrush,
                 StrokeThickness,
                 lineCap: PenLineCap.Flat);
-            successSteps = (int)Math.Round(StepCount * SuccessThreshold / (Maximum - Minimum));
+            successSteps = (int)Math.Round(StepCount * CalculateProgressRatio(SuccessThreshold));
         }
 
         IPen? currentPen;
@@ -205,6 +205,6 @@ public abstract class AbstractGeneralDashboardProgress : AbstractCircleProgress
 
     private double CalculateAngle(double value)
     {
-        return (360 - GapDegree) * value / (Maximum - Minimum);
+        return (360 - GapDegree) * CalculateProgressRatio(value);
     }
 }
