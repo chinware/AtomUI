@@ -8,6 +8,8 @@ Deep optimization is not permission to rewrite. It must preserve API, behavior, 
 
 Root-cause repair is mandatory. Trigger-point patches that add flag variables or suppress paths without fixing ownership, ordering, or lifecycle are blockers because they increase complexity and make later bugs harder to reason about.
 
+Root-cause repair also requires artifact discipline. A fix that introduces unused classes, duplicate helpers, speculative abstractions, boolean-switch methods, or marker variables is not complete merely because the visible bug disappears. If the artifact does not model a real stable responsibility, remove it in the same pass.
+
 There are three modes:
 
 | Mode | Use when | Required gate |
@@ -31,6 +33,7 @@ Template parts involved:
 Subscriptions / bindings / timers:
 Popup / async / collection paths:
 API, behavior, render contract impact:
+New classes/helpers/fields/flags needed and why:
 ```
 
 Do not start from a preferred refactor. Start from the failing state, the hard-to-maintain responsibility boundary, or the repeated class of bug.
@@ -50,6 +53,7 @@ For complex controls, inspect these areas before deciding the implementation sha
 | Interface capabilities | Public or internal interfaces and their no-op/default implementations | hidden unsupported features, behavior split between interface and concrete type |
 | Repeated implementation | Base/subclass overrides and copied helpers | same algorithm in multiple places, subclass override identical to base |
 | Dead code | Files/classes/helpers with no references from source, AXAML, tests, generator, reflection, or AOT registration paths | unused selection model, stale helper, untested private pipeline |
+| Patch artifacts | New classes, helpers, boolean parameters, marker fields, local marker variables, fallback branches, and copied motion/state helpers | duplicates an existing primitive, exists only for the current patch, hides ordering/state ownership, or has no durable owner |
 | Render/lifecycle risk | Size type, custom size, status, disabled/read-only, theme switch, token update, language/resource update | visual state owned only by C# trigger, stale theme resource, inconsistent size sync |
 
 If any area is intentionally out of scope, say so in the plan or completion report.
@@ -61,6 +65,8 @@ Do not continue treating work as pure cleanup when any of these are found:
 - a property change handler is suppressing another handler with `_ignoreXxx`, `_suppressXxx`, or backup fields
 - a generated/recycled container stores domain state that is also stored on the item or control
 - a base class and subclass both calculate the same domain source, key list, count, filter, or layout state
+- a new private class/helper duplicates an existing AtomUI primitive or comparable-control implementation
+- a new flag, marker variable, or boolean-switch parameter exists only to steer around broken ordering or a partial fix
 - an interface method is implemented as empty/default in a concrete control that is used through the interface
 - a test would need nested data, template reapply, detach, collection reset, or source replacement to prove safety
 - a runtime-created target uses C# binding or event subscription
@@ -96,8 +102,12 @@ Only check relevant rows, but record what was intentionally out of scope.
 - Fix the owner of state, not only the event that exposed stale state.
 - Prefer existing AtomUI primitives, interfaces, helpers, token patterns, and comparable control architecture.
 - Introduce a new abstraction only when it removes real duplication, clarifies ownership, or prevents a repeated class of bugs.
+- Do not add one-off private classes when an existing motion, layout, selection, lifecycle, or resource primitive already expresses the behavior.
+- Do not add boolean-switch methods to hide two operations behind one helper. Split into explicit methods unless the boolean is an existing public contract.
+- Do not keep local marker variables or fields just to coordinate a patch path. Use the real state owner, cancellation token, lifecycle owner, binding owner, or collection owner as the source of truth.
+- If review discovers a useless class, duplicated helper, stale flag, or speculative abstraction introduced in the current fix, delete it immediately. Do not defer it as unrelated cleanup.
 - Do not use suppression flags such as `_ignoreXxx`, `_isUpdating`, `_suppressChange`, `_isInternalChange`, or `IgnorePropertyChange` to patch over broken event flow.
-- A flag-like state is acceptable only when it models a real deterministic state machine, has one clear owner, has guaranteed entry and exit paths, and is covered by tests for normal, cancel, async, detach, and re-template paths when relevant.
+- A flag-like state is acceptable only when it models a real deterministic state machine, has one clear owner, has guaranteed entry and exit paths, cannot be represented by an existing owner object, and is covered by tests for normal, cancel, async, detach, and re-template paths when relevant.
 - Do not add timers, dispatcher delays, forced refreshes, or catch-and-ignore blocks to mask ordering bugs.
 - If the proposed fix says "skip this handler once", "ignore the next change", "delay until later", or "force refresh", stop and trace the state ownership/order problem first.
 - Do not merge unrelated cleanup into an architecture fix. Keep mechanical layout changes, behavior fixes, and architecture changes reviewable.
@@ -110,9 +120,10 @@ Prefer this sequence:
 1. Characterize current expected behavior, failing edge cases, and structural risks.
 2. Add or update focused regression tests where behavior can change.
 3. Map state ownership and lifecycle acquire/release pairs.
-4. Remove duplicated algorithms or dead code only after proving they are not contract paths.
-5. Move code toward clearer responsibilities without changing contracts.
-6. Re-run targeted tests, owning project tests, and `git diff --check`.
+4. Reuse existing primitives before adding new private helpers or classes.
+5. Remove duplicated algorithms, dead code, useless helpers, and patch artifacts after proving they are not contract paths.
+6. Move code toward clearer responsibilities without changing contracts.
+7. Re-run targeted tests, owning project tests, and `git diff --check`.
 
 For large controls, split work into reviewable phases:
 
@@ -146,6 +157,8 @@ Behavior/render changed: No / Yes, approved by:
 Audit findings:
 Findings fixed:
 Findings deferred:
+New artifacts introduced and why:
+Artifacts removed:
 Edge cases covered:
 Lifecycle/performance/leak risk:
 Tests:

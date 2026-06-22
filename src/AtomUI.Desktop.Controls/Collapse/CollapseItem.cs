@@ -263,6 +263,9 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     private BaseMotionActor? _motionActor;
     private Border? _headerDecorator;
     private IconButton? _expandButton;
+    private CancellationTokenSource? _contentMotionCancellation;
+
+    internal event EventHandler? MotionStateChanged;
 
     internal bool InAnimating { get; private set; }
 
@@ -294,6 +297,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         {
             _expandButton.Click -= HandleExpandButtonClick;
         }
+        CancelContentMotionAndClearValues();
 
         _motionActor           = e.NameScope.Find<BaseMotionActor>("PART_ContentMotionActor");
         _headerDecorator       = e.NameScope.Find<Border>("PART_HeaderDecorator");
@@ -322,7 +326,7 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        InAnimating = false;
+        CancelContentMotionAndClearValues();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -395,7 +399,14 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
     private void HandleExpandButtonClick(object? sender, RoutedEventArgs args)
     {
-        IsSelected = !IsSelected;
+        if (SelectingItemsControl.ItemsControlFromItemContainer(this) is Collapse collapse)
+        {
+            args.Handled = collapse.UpdateSelectionFromEvent(this, args);
+        }
+        else
+        {
+            IsSelected = !IsSelected;
+        }
     }
 
     private void SetupDefaultExpandIcon()
@@ -435,46 +446,156 @@ public class CollapseItem : HeaderedContentControl, ISelectable
 
     private void ExpandItemContent(bool forceDisabledMotion = false)
     {
-        if (_motionActor is null || InAnimating)
-        {
-            return;
-        }
-
-        if (!IsMotionEnabled || forceDisabledMotion)
-        {
-            _motionActor.IsVisible = true;
-            return;
-        }
-
-        InAnimating = true;
-        var motion = new SlideUpInMotion(MotionDuration, DefaultExpandMotionEasing);
-        Dispatcher.InvokeAsync(async () =>
-        {
-            await motion.RunAsync(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); });
-            InAnimating = false;
-        });
+        UpdateContentVisibility(isVisible: true, forceDisabledMotion);
     }
 
     private void CollapseItemContent(bool forceDisabledMotion = false)
     {
-        if (_motionActor is null || InAnimating)
+        UpdateContentVisibility(isVisible: false, forceDisabledMotion);
+    }
+
+    private void UpdateContentVisibility(bool isVisible, bool forceDisabledMotion)
+    {
+        var motionActor = _motionActor;
+        if (motionActor is null)
         {
             return;
         }
 
         if (!IsMotionEnabled || forceDisabledMotion)
         {
-            _motionActor.IsVisible = false;
+            ApplyContentStableState(motionActor, isVisible);
             return;
         }
 
-        InAnimating = true;
-        var motion = new SlideUpOutMotion(MotionDuration, DefaultCollapseMotionEasing);
-        Dispatcher.InvokeAsync(async () =>
+        if (!isVisible && !motionActor.IsVisible && !InAnimating)
         {
-            await motion.RunAsync(_motionActor);
-            _motionActor.SetCurrentValue(IsVisibleProperty, false);
-            InAnimating = false;
-        });
+            ApplyContentStableState(motionActor, false);
+            return;
+        }
+
+        var cancellation = BeginContentMotion();
+        Dispatcher.InvokeAsync(async () => await RunContentMotionAsync(motionActor, isVisible, cancellation));
+    }
+
+    private async Task RunContentMotionAsync(BaseMotionActor motionActor,
+                                             bool targetVisible,
+                                             CancellationTokenSource cancellation)
+    {
+        try
+        {
+            await RunContentLayoutMotionAsync(motionActor, targetVisible, cancellation.Token);
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+        }
+        finally
+        {
+            CompleteContentMotion(motionActor, targetVisible, cancellation);
+        }
+    }
+
+    private async Task RunContentLayoutMotionAsync(BaseMotionActor motionActor,
+                                                   bool targetVisible,
+                                                   CancellationToken cancellationToken)
+    {
+        ClearContentMotionValues(motionActor);
+        AbstractMotion motion = targetVisible
+            ? new ExpandMotion(Direction.Bottom, MotionDuration, DefaultExpandMotionEasing)
+            : new CollapseMotion(Direction.Bottom, MotionDuration, DefaultCollapseMotionEasing);
+        await motion.RunAsync(motionActor,
+            targetVisible ? () => motionActor.SetCurrentValue(IsVisibleProperty, true) : null,
+            cancellationToken);
+    }
+
+    private CancellationTokenSource BeginContentMotion()
+    {
+        CancelContentMotion();
+        var cancellation = new CancellationTokenSource();
+        _contentMotionCancellation = cancellation;
+        SetInAnimating(true);
+        return cancellation;
+    }
+
+    private void CompleteContentMotion(BaseMotionActor motionActor,
+                                       bool targetVisible,
+                                       CancellationTokenSource cancellation)
+    {
+        if (!IsCurrentContentMotion(cancellation))
+        {
+            cancellation.Dispose();
+            return;
+        }
+
+        _contentMotionCancellation = null;
+        SetInAnimating(false);
+
+        if (!ReferenceEquals(_motionActor, motionActor) || cancellation.IsCancellationRequested)
+        {
+            cancellation.Dispose();
+            return;
+        }
+
+        cancellation.Dispose();
+        if (IsSelected == targetVisible)
+        {
+            ApplyContentStableState(motionActor, targetVisible);
+        }
+        else
+        {
+            UpdateContentVisibility(IsSelected, forceDisabledMotion: false);
+        }
+    }
+
+    private void CancelContentMotion()
+    {
+        var cancellation = _contentMotionCancellation;
+        if (cancellation is not null)
+        {
+            _contentMotionCancellation = null;
+            cancellation.Cancel();
+            SetInAnimating(false);
+        }
+    }
+
+    private void CancelContentMotionAndClearValues()
+    {
+        CancelContentMotion();
+        if (_motionActor is { } motionActor)
+        {
+            ClearContentMotionValues(motionActor);
+        }
+    }
+
+    private bool IsCurrentContentMotion(CancellationTokenSource cancellation)
+    {
+        return ReferenceEquals(_contentMotionCancellation, cancellation);
+    }
+
+    private void ApplyContentStableState(BaseMotionActor motionActor, bool isVisible)
+    {
+        CancelContentMotion();
+        ClearContentMotionValues(motionActor);
+        motionActor.Opacity   = isVisible ? 1.0 : 0.0;
+        motionActor.IsVisible = isVisible;
+    }
+
+    private static void ClearContentMotionValues(BaseMotionActor motionActor)
+    {
+        motionActor.Transitions               = null;
+        motionActor.MotionTransform           = null;
+        motionActor.MotionTransformOperations = null;
+        motionActor.ClearValue(HeightProperty);
+    }
+
+    private void SetInAnimating(bool value)
+    {
+        if (InAnimating == value)
+        {
+            return;
+        }
+
+        InAnimating = value;
+        MotionStateChanged?.Invoke(this, EventArgs.Empty);
     }
 }
