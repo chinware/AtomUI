@@ -10,12 +10,12 @@ using Avalonia.Threading;
 
 namespace AtomUI.Controls.Commons;
 
-public abstract class AbstractSpin : ContentControl, IMotionAwareControl
+public abstract class AbstractSpin : ContentControl, ICustomizableSizeTypeAware, IMotionAwareControl
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractSpin>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractSpin>();
 
     public static readonly StyledProperty<string?> TipProperty =
         AvaloniaProperty.Register<AbstractSpin, string?>(nameof(Tip));
@@ -47,7 +47,7 @@ public abstract class AbstractSpin : ContentControl, IMotionAwareControl
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractSpin>();
 
-    public SizeType SizeType
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);

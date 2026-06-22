@@ -1,3 +1,4 @@
+using AtomUI;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Theme.Styling;
@@ -102,13 +103,13 @@ internal static partial class Program
             failures);
 
         var updatedIcon = new LoadingOutlined();
-        spin.SizeType        = SizeType.Large;
+        spin.SizeType        = CustomizableSizeType.Large;
         spin.Tip             = "Still loading...";
         spin.IsTipVisible    = false;
         spin.CustomIndicator = updatedIcon;
         RefreshLayout(realized.Window);
 
-        Expect(indicator?.SizeType == SizeType.Large,
+        Expect(indicator?.SizeType == CustomizableSizeType.Large,
             "Static SpinIndicator should sync SizeType changes from Spin.",
             failures);
         Expect(ReferenceEquals(indicator?.CustomIndicator, updatedIcon),
@@ -230,7 +231,7 @@ internal static partial class Program
     {
         var indicator = new SpinIndicator
         {
-            SizeType         = SizeType.Large,
+            SizeType         = CustomizableSizeType.Large,
             CustomIndicator = new LoadingOutlined()
         };
 
@@ -245,7 +246,7 @@ internal static partial class Program
         }
 
         var largeWidth = icon.Width;
-        indicator.SizeType = SizeType.Small;
+        indicator.SizeType = CustomizableSizeType.Small;
         RefreshLayout(realized.Window);
         Expect(icon.Width < largeWidth && icon.Height < largeWidth,
             $"Custom SpinIndicator icon should shrink on SizeType change, large {largeWidth}, actual {icon.Width}x{icon.Height}.",

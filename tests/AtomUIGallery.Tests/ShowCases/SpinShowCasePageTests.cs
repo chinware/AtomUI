@@ -46,6 +46,9 @@ public class SpinShowCasePageTests
         source.ShouldContain("SpinShowCaseLangResource CustomIndicatorTitle");
         source.ShouldContain("SpinShowCaseLangResource CustomizedDescriptionTitle");
         source.ShouldContain("SpinShowCaseLangResource EmbeddedModeTitle");
+        source.ShouldContain("SizeType=\"Custom\"");
+        source.ShouldContain("IndicatorSize=\"44\"");
+        source.ShouldContain("DotSize=\"14\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
@@ -60,6 +63,7 @@ public class SpinShowCasePageTests
         var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinApiDataGrid.axaml.cs");
         var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinDesignTokenDataGrid.axaml");
         var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/Views/SpinDesignTokenDataGrid.axaml.cs");
+        var viewModelSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Spin/ViewModels/SpinViewModel.cs");
 
         pageSource.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         pageSource.ShouldContain("Name=\"ScenarioContentHost\"");
@@ -110,6 +114,7 @@ public class SpinShowCasePageTests
         tokenSource.ShouldContain("Width=\"*\"");
         tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
         tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
+        viewModelSource.ShouldContain("CustomizableSizeType");
     }
 
     [Fact]
@@ -130,6 +135,8 @@ public class SpinShowCasePageTests
             source.ShouldContain("ApiPropertyTip");
             source.ShouldContain("ApiPropertyCustomIndicator");
             source.ShouldContain("ApiPropertySizeType");
+            source.ShouldContain("ApiPropertyIndicatorSize");
+            source.ShouldContain("ApiPropertyIndicatorDotSize");
             source.ShouldContain("TokenNameDotSize");
             source.ShouldContain("TokenNameIndicatorSize");
             source.ShouldContain("TokenNameIndicatorDuration");

@@ -9,7 +9,7 @@ internal partial class en_US : LanguageProvider
     public const string BasicUsageTitle = "Basic Usage";
     public const string BasicUsageDescription = "A simple loading status.";
     public const string SizeTitle = "Size";
-    public const string SizeDescription = "A small SpinIndicator is used for loading text, default sized SpinIndicator for loading a card-level block, and large SpinIndicator used for loading a page.";
+    public const string SizeDescription = "SpinIndicator supports small, middle, large, and custom size types; the custom type follows the middle metrics by default and can override indicator metrics.";
     public const string CustomIndicatorTitle = "Custom spinning indicator";
     public const string CustomIndicatorDescription = "Use custom loading indicator.";
     public const string CustomizedDescriptionTitle = "Customized description";
@@ -43,6 +43,8 @@ internal partial class en_US : LanguageProvider
     public const string ApiPropertyIsMotionEnabled = "Controls whether motion transitions are enabled.";
     public const string ApiPropertyContent = "Embedded content covered by Spin while loading.";
     public const string ApiPropertyIndicatorSizeType = "Preset size for standalone SpinIndicator.";
+    public const string ApiPropertyIndicatorSize = "Overall standalone indicator size, commonly used with the custom size type.";
+    public const string ApiPropertyIndicatorDotSize = "Built-in dot size, commonly used with the custom size type.";
     public const string ApiPropertyIndicatorCustomIndicator = "Custom standalone indicator content.";
     public const string ApiPropertyIndicatorCustomIndicatorTemplate = "Template used to render standalone custom indicator content.";
     public const string ApiPropertyIndicatorMotionDuration = "Duration of the standalone indicator spin motion.";

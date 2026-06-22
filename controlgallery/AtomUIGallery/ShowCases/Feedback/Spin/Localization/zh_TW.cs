@@ -9,7 +9,7 @@ internal partial class zh_TW : LanguageProvider
     public const string BasicUsageTitle = "基礎用法";
     public const string BasicUsageDescription = "簡單的加載狀態。";
     public const string SizeTitle = "尺寸";
-    public const string SizeDescription = "小號 SpinIndicator 用於加載文本，默認尺寸用於卡片級區塊加載，大號用於頁面加載。";
+    public const string SizeDescription = "SpinIndicator 支持小號、中號、大號和自定義尺寸類型；自定義類型默認沿用中號尺寸指標，也可以覆蓋指示器尺寸指標。";
     public const string CustomIndicatorTitle = "自定義加載指示器";
     public const string CustomIndicatorDescription = "使用自定義加載指示器。";
     public const string CustomizedDescriptionTitle = "自定義描述";
@@ -43,6 +43,8 @@ internal partial class zh_TW : LanguageProvider
     public const string ApiPropertyIsMotionEnabled = "控制是否啟用動效過渡。";
     public const string ApiPropertyContent = "加載時被 Spin 覆蓋的嵌入內容。";
     public const string ApiPropertyIndicatorSizeType = "獨立 SpinIndicator 的預設尺寸。";
+    public const string ApiPropertyIndicatorSize = "獨立指示器的整體尺寸，通常與自定義尺寸類型配合使用。";
+    public const string ApiPropertyIndicatorDotSize = "內置圓點尺寸，通常與自定義尺寸類型配合使用。";
     public const string ApiPropertyIndicatorCustomIndicator = "獨立指示器的自定義內容。";
     public const string ApiPropertyIndicatorCustomIndicatorTemplate = "用於渲染獨立自定義指示器內容的模板。";
     public const string ApiPropertyIndicatorMotionDuration = "獨立指示器旋轉動畫的持續時間。";
