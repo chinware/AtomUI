@@ -70,6 +70,33 @@
                     <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}" />
                     <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentYearly}" />
                 </atom:Segmented>
+
+                <atom:Segmented SizeType="Custom"
+                                Margin="20"
+                                Padding="3"
+                                CornerRadius="8">
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentDaily}"
+                                        MinHeight="36"
+                                        Padding="16,0"
+                                        FontSize="15"
+                                        CornerRadius="6" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentWeekly}"
+                                        IsSelected="True"
+                                        MinHeight="36"
+                                        Padding="16,0"
+                                        FontSize="15"
+                                        CornerRadius="6" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentMonthly}"
+                                        MinHeight="36"
+                                        Padding="16,0"
+                                        FontSize="15"
+                                        CornerRadius="6" />
+                    <atom:SegmentedItem Content="{gallery:SegmentedShowCaseLangResource P2ContentQuarterly}"
+                                        MinHeight="36"
+                                        Padding="16,0"
+                                        FontSize="15"
+                                        CornerRadius="6" />
+                </atom:Segmented>
             </StackPanel>
         </gallery:ShowCaseItem>
 

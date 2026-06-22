@@ -1,3 +1,4 @@
+using AtomUI.Controls;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
@@ -50,6 +51,56 @@ public class SegmentedSelectionInitializationTests
         var segmented = CreateSegmented();
 
         ShowInWindow(segmented, () => segmented.SelectedIndex.ShouldBe(0));
+    }
+
+    [Fact]
+    public void Form_Item_Set_Value_Selects_Provided_Item()
+    {
+        var segmented = CreateSegmented();
+        var formItem  = (IFormItemAware)segmented;
+
+        ShowInWindow(segmented, () =>
+        {
+            formItem.SetFormValue("History");
+
+            segmented.SelectedItem.ShouldBe("History");
+            segmented.SelectedIndex.ShouldBe(2);
+            formItem.GetFormValue().ShouldBe("History");
+        });
+    }
+
+    [Fact]
+    public void Expanding_Layout_Distributes_Width_To_Visible_Items()
+    {
+        var first = new AtomUI.Desktop.Controls.SegmentedItem
+        {
+            Content = "First"
+        };
+        var hidden = new AtomUI.Desktop.Controls.SegmentedItem
+        {
+            Content   = "Hidden",
+            IsVisible = false
+        };
+        var second = new AtomUI.Desktop.Controls.SegmentedItem
+        {
+            Content = "Second"
+        };
+        var segmented = new AtomUI.Desktop.Controls.Segmented
+        {
+            IsExpanding     = true,
+            IsMotionEnabled = false,
+            Width           = 300
+        };
+        segmented.Items.Add(first);
+        segmented.Items.Add(hidden);
+        segmented.Items.Add(second);
+
+        ShowInWindow(segmented, () =>
+        {
+            var expectedItemWidth = (segmented.Bounds.Width - segmented.Padding.Left - segmented.Padding.Right) / 2;
+            first.Bounds.Width.ShouldBe(expectedItemWidth, 0.5);
+            second.Bounds.Width.ShouldBe(expectedItemWidth, 0.5);
+        });
     }
 
     private static AtomUI.Desktop.Controls.Segmented CreateSegmented()

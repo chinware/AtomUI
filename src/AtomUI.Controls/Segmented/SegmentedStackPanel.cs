@@ -32,23 +32,21 @@ internal class SegmentedStackPanel : Panel
     {
         var layoutSlotSize = availableSize;
         layoutSlotSize = layoutSlotSize.WithWidth(double.PositiveInfinity);
-        var hasVisibleChild = false;
-        var targetWidth     = 0d;
-        var targetHeight    = 0d;
+        var targetWidth  = 0d;
+        var targetHeight = 0d;
         foreach (var child in Children)
         {
             if (child is AbstractSegmentedItem box)
             {
-                var isVisible = box.IsVisible;
-                if (isVisible && !hasVisibleChild)
+                if (!box.IsVisible)
                 {
-                    hasVisibleChild = true;
+                    continue;
                 }
 
                 box.Measure(layoutSlotSize);
                 var childDesiredSize = box.DesiredSize;
                 targetWidth  += childDesiredSize.Width;
-                targetHeight =  Math.Max(targetHeight, childDesiredSize.Height);
+                targetHeight = Math.Max(targetHeight, childDesiredSize.Height);
             }
         }
 
@@ -57,13 +55,18 @@ internal class SegmentedStackPanel : Panel
 
     private Size MeasureOverrideExpanding(Size availableSize)
     {
+        var visibleCount = CountVisibleSegmentedItems();
+        if (visibleCount == 0)
+        {
+            return new Size(double.IsInfinity(availableSize.Width) ? 0 : availableSize.Width, 0);
+        }
+
         var maxHeight          = 0d;
-        var columns            = Children.Count;
         var availableWidth     = availableSize.Width;
-        var childAvailableSize = new Size(availableWidth / columns, availableSize.Height);
+        var childAvailableSize = new Size(availableWidth / visibleCount, availableSize.Height);
         foreach (var child in Children)
         {
-            if (child is AbstractSegmentedItem box)
+            if (child is AbstractSegmentedItem { IsVisible: true } box)
             {
                 box.Measure(childAvailableSize);
                 if (box.DesiredSize.Height > maxHeight)
@@ -92,9 +95,7 @@ internal class SegmentedStackPanel : Panel
 
     private Size ArrangeOverrideNoExpanding(Size finalSize)
     {
-        var previousChildSize = 0.0;
-        var offsetX           = 0d;
-        var offsetY           = 0d;
+        var offsetX = 0d;
         foreach (var child in Children)
         {
             if (child is AbstractSegmentedItem box)
@@ -104,10 +105,8 @@ internal class SegmentedStackPanel : Panel
                     continue;
                 }
 
-                previousChildSize = box.DesiredSize.Width;
-
-                box.Arrange(new Rect(new Point(offsetX, offsetY), box.DesiredSize));
-                offsetX += previousChildSize;
+                box.Arrange(new Rect(new Point(offsetX, 0), box.DesiredSize));
+                offsetX += box.DesiredSize.Width;
             }
         }
 
@@ -116,28 +115,37 @@ internal class SegmentedStackPanel : Panel
 
     private Size ArrangeOverrideExpanding(Size finalSize)
     {
-        var offsetX        = 0d;
-        var offsetY        = 0d;
-        var columns        = Children.Count;
-        var availableWidth = finalSize.Width;
-        var width          = availableWidth / columns;
+        var visibleCount = CountVisibleSegmentedItems();
+        if (visibleCount == 0)
+        {
+            return finalSize;
+        }
 
-        var x = 0;
-
+        var width   = finalSize.Width / visibleCount;
+        var offsetX = 0d;
         foreach (var child in Children)
         {
-            if (child is AbstractSegmentedItem box)
+            if (child is AbstractSegmentedItem { IsVisible: true } box)
             {
-                if (!box.IsVisible)
-                {
-                    continue;
-                }
-
-                box.Arrange(new Rect(x * width + offsetX, offsetY, width, box.DesiredSize.Height));
-                x++;
+                box.Arrange(new Rect(offsetX, 0, width, box.DesiredSize.Height));
+                offsetX += width;
             }
         }
 
         return finalSize;
+    }
+
+    private int CountVisibleSegmentedItems()
+    {
+        var count = 0;
+        foreach (var child in Children)
+        {
+            if (child is AbstractSegmentedItem { IsVisible: true })
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 }
