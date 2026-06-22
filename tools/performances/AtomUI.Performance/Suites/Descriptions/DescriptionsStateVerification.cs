@@ -1,3 +1,4 @@
+using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -38,18 +39,19 @@ internal static partial class Program
         var descriptions = CreateVerificationDescriptions(itemCount: 1);
         using var realized = RealizeControl(descriptions);
 
-        Expect(FindVisualByName<DockPanel>(descriptions, "HeaderLayout") == null,
-            "Descriptions without Header/Extra should not create HeaderLayout.",
+        var initialHeaderLayout = FindVisualByName<DockPanel>(descriptions, "HeaderLayout");
+        Expect(initialHeaderLayout is { IsVisible: false },
+            "Descriptions without Header/Extra should keep HeaderLayout hidden.",
             failures);
 
         descriptions.Header = "User Info";
         RefreshLayout(realized.Window);
         var firstHeaderLayout = FindVisualByName<DockPanel>(descriptions, "HeaderLayout");
-        Expect(firstHeaderLayout != null,
-            "Descriptions should create HeaderLayout when Header is assigned.",
+        Expect(firstHeaderLayout is { IsVisible: true },
+            "Descriptions should show HeaderLayout when Header is assigned.",
             failures);
         Expect(FindVisualByName<ContentPresenter>(descriptions, "HeaderPresenter") != null,
-            "Descriptions should create HeaderPresenter when Header is assigned.",
+            "Descriptions should keep HeaderPresenter available when Header is assigned.",
             failures);
 
         descriptions.Extra = new AtomButton { Content = "Edit" };
@@ -61,11 +63,12 @@ internal static partial class Program
         descriptions.Header = null;
         descriptions.Extra  = null;
         RefreshLayout(realized.Window);
-        Expect(FindVisualByName<DockPanel>(descriptions, "HeaderLayout") == null,
-            "Clearing Header/Extra should remove HeaderLayout.",
+        var clearedHeaderLayout = FindVisualByName<DockPanel>(descriptions, "HeaderLayout");
+        Expect(clearedHeaderLayout is { IsVisible: false },
+            "Clearing Header/Extra should hide HeaderLayout.",
             failures);
-        Expect(firstHeaderLayout == null || !firstHeaderLayout.IsAttachedToVisualTree(),
-            "Removed HeaderLayout should be detached from the active visual tree.",
+        Expect(ReferenceEquals(firstHeaderLayout, clearedHeaderLayout),
+            "Clearing Header/Extra should not churn the fixed HeaderLayout template part.",
             failures);
     }
 
@@ -183,15 +186,18 @@ internal static partial class Program
     private static void VerifyDescriptionsWindowSubscriptionLifecycle(ICollection<string> failures)
     {
         var descriptions = CreateVerificationDescriptions(itemCount: 1);
-        object? attachedWindow;
-        using (RealizeControl(descriptions))
+        var mediaHost    = new DescriptionMediaBreakHost();
+        mediaHost.Children.Add(descriptions);
+        object? mediaOwner;
+        using (RealizeControl(mediaHost))
         {
-            attachedWindow = GetPrivateField(descriptions, "AtomUI.Desktop.Controls.Descriptions", "_attachedWindow");
+            mediaOwner = GetPrivateField(descriptions, "AtomUI.Desktop.Controls.Descriptions", "_mediaOwner");
         }
 
-        Expect(attachedWindow == null ||
-               GetPrivateField(descriptions, "AtomUI.Desktop.Controls.Descriptions", "_attachedWindow") == null,
-            "Detached Descriptions should clear Window.MediaBreakPointChanged subscription state.",
+        Expect(mediaOwner != null &&
+               GetPrivateField(descriptions, "AtomUI.Desktop.Controls.Descriptions", "_mediaOwner") == null &&
+               mediaHost.SubscriptionCount == 0,
+            "Detached Descriptions should clear MediaBreakPointChanged subscription state.",
             failures);
     }
 
@@ -219,5 +225,17 @@ internal static partial class Program
         return root.GetSelfAndVisualDescendants()
                    .OfType<Control>()
                    .Count(control => control.GetType().Name == typeName);
+    }
+
+    private sealed class DescriptionMediaBreakHost : Panel, IMediaBreakAwareControl
+    {
+        public MediaBreakPoint MediaBreakPoint { get; } = MediaBreakPoint.Large;
+        public int SubscriptionCount { get; private set; }
+
+        public event EventHandler<MediaBreakPointChangedEventArgs>? MediaBreakPointChanged
+        {
+            add => SubscriptionCount++;
+            remove => SubscriptionCount--;
+        }
     }
 }
