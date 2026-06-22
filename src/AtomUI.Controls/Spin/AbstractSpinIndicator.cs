@@ -1,17 +1,15 @@
-﻿using AtomUI.Animations;
-using AtomUI.Utils;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Media;
-using Avalonia.Media.Transformation;
+using Avalonia.Interactivity;
 using Avalonia.Metadata;
-using Avalonia.Styling;
-using Avalonia.Threading;
+using Avalonia.Media;
+using Avalonia.Rendering.Composition;
+using Avalonia.Rendering.Composition.Animations;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
@@ -40,14 +38,14 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
-    
+
     [DependsOn(nameof(CustomIndicatorTemplate))]
     public object? CustomIndicator
     {
         get => GetValue(CustomIndicatorProperty);
         set => SetValue(CustomIndicatorProperty, value);
     }
-    
+
     public IDataTemplate? CustomIndicatorTemplate
     {
         get => GetValue(CustomIndicatorTemplateProperty);
@@ -70,27 +68,25 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<double> DotSizeProperty =
-        AvaloniaProperty.Register<AbstractSpinIndicator, double>(
-            nameof(DotSize));
+    internal static readonly StyledProperty<double> IndicatorSizeProperty =
+        AvaloniaProperty.Register<AbstractSpinIndicator, double>(nameof(IndicatorSize), double.NaN);
 
     internal static readonly StyledProperty<IBrush?> DotBgBrushProperty =
-        AvaloniaProperty.Register<AbstractSpinIndicator, IBrush?>(
-            nameof(DotBgBrush));
+        AvaloniaProperty.Register<AbstractSpinIndicator, IBrush?>(nameof(DotBgBrush));
 
-    internal static readonly DirectProperty<AbstractSpinIndicator, double> IndicatorAngleProperty =
-        AvaloniaProperty.RegisterDirect<AbstractSpinIndicator, double>(
-            nameof(IndicatorAngle),
-            o => o.IndicatorAngle,
-            (o, v) => o.IndicatorAngle = v);
-    
     internal static readonly StyledProperty<double> CustomIndicatorSizeProperty =
         AvaloniaProperty.Register<AbstractSpinIndicator, double>(nameof(CustomIndicatorSize), double.NaN);
 
-    internal double DotSize
+    internal static readonly DirectProperty<AbstractSpinIndicator, bool> IsCustomIndicatorProperty =
+        AvaloniaProperty.RegisterDirect<AbstractSpinIndicator, bool>(
+            nameof(IsCustomIndicator),
+            o => o.IsCustomIndicator,
+            (o, v) => o.IsCustomIndicator = v);
+
+    internal double IndicatorSize
     {
-        get => GetValue(DotSizeProperty);
-        set => SetValue(DotSizeProperty, value);
+        get => GetValue(IndicatorSizeProperty);
+        set => SetValue(IndicatorSizeProperty, value);
     }
 
     internal IBrush? DotBgBrush
@@ -99,185 +95,70 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
         set => SetValue(DotBgBrushProperty, value);
     }
 
-    private double _indicatorAngle;
-
-    internal double IndicatorAngle
-    {
-        get => _indicatorAngle;
-        set => SetAndRaise(IndicatorAngleProperty, ref _indicatorAngle, value);
-    }
-    
     internal double CustomIndicatorSize
     {
         get => GetValue(CustomIndicatorSizeProperty);
         set => SetValue(CustomIndicatorSizeProperty, value);
     }
 
+    private bool _isCustomIndicator;
+
+    internal bool IsCustomIndicator
+    {
+        get => _isCustomIndicator;
+        set => SetAndRaise(IsCustomIndicatorProperty, ref _isCustomIndicator, value);
+    }
+
     #endregion
 
-    private Animation? _animation;
+    private const double DOT_START_OPACITY     = 0.3;
+    private const float FULL_ROTATION_RADIANS  = (float)(Math.PI * 2);
+    private const string ROTATION_PROPERTY     = "RotationAngle";
+    private const string OPACITY_PROPERTY      = "Opacity";
+
+    private SpinIndicatorDotPanel? _builtInIndicatorLayout;
     private ContentPresenter? _customIndicatorPresenter;
-    private CancellationTokenSource? _cancellationTokenSource;
-    
-    internal const double DOT_START_OPACITY = 0.3;
+    private Control? _animatedIndicatorTarget;
 
     static AbstractSpinIndicator()
     {
         AffectsMeasure<AbstractSpinIndicator>(SizeTypeProperty,
             CustomIndicatorProperty,
             CustomIndicatorTemplateProperty,
+            IndicatorSizeProperty,
             CustomIndicatorSizeProperty);
-        AffectsRender<AbstractSpinIndicator>(IndicatorAngleProperty);
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    protected override void OnLoaded(RoutedEventArgs e)
     {
-        base.OnAttachedToVisualTree(e);
-        if (IsVisible)
-        {
-            StartIndicatorAnimation();
-        }
+        base.OnLoaded(e);
+        StartIndicatorAnimation();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        StopIndicatorAnimation();
+        ReleaseTemplateParts();
     }
 
-    private void StartIndicatorAnimation()
-    {
-        BuildIndicatorAnimation();
-        if (_animation is null)
-        {
-            return;
-        }
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        _cancellationTokenSource = new CancellationTokenSource();
-        var token = _cancellationTokenSource.Token;
-        Dispatcher.UIThread.InvokeAsync(async () =>
-        {
-            await _animation.RunInfiniteAsync(this, token);
-        });
-    }
-
-    private void StopIndicatorAnimation()
-    {
-        _cancellationTokenSource?.Cancel();
-        _cancellationTokenSource?.Dispose();
-        _cancellationTokenSource = null;
-    }
-    
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        if (_customIndicatorPresenter != null)
-        {
-            _customIndicatorPresenter.PropertyChanged -= HandleIndicatorPresenterPropertyChanged;
-        }
+        ReleaseTemplateParts();
 
+        _builtInIndicatorLayout = e.NameScope.Find<SpinIndicatorDotPanel>("BuiltInIndicatorLayout");
         _customIndicatorPresenter = e.NameScope.Find<ContentPresenter>("PART_CustomIndicatorPresenter");
 
-        if (_customIndicatorPresenter != null)
+        if (_customIndicatorPresenter is not null)
         {
             _customIndicatorPresenter.PropertyChanged += HandleIndicatorPresenterPropertyChanged;
             UpdateCustomIndicatorSize();
         }
-    }
-    
-    private void HandleIndicatorAngleChanged()
-    {
-        if (_customIndicatorPresenter is not null && _customIndicatorPresenter.IsVisible)
-        {
-            var builder = new TransformOperations.Builder(1);
-            builder.AppendRotate(MathUtils.Deg2Rad(IndicatorAngle));
-            _customIndicatorPresenter.RenderTransform = builder.Build();
-            _customIndicatorPresenter.RenderTransformOrigin = RelativePoint.Center;
-        }
-    }
 
-    private void BuildIndicatorAnimation(bool force = false)
-    {
-        if (force || _animation is null)
+        SyncCustomIndicatorState();
+        if (IsLoaded)
         {
-            _cancellationTokenSource?.Cancel();
-            _cancellationTokenSource?.Dispose();
-            _animation = new Animation
-            {
-                Easing         = MotionEasingCurve ?? new LinearEasing(),
-                Duration       = MotionDuration,
-                Children =
-                {
-                    new KeyFrame
-                    {
-                        Setters = { new Setter(IndicatorAngleProperty, 0d) }, Cue = new Cue(0.0d)
-                    },
-                    new KeyFrame
-                    {
-                        Setters = { new Setter(IndicatorAngleProperty, 360d) }, Cue = new Cue(1.0d)
-                    }
-                }
-            };
-            _cancellationTokenSource = null;
-        }
-    }
-    
-    private static double GetOpacityForAngle(double degree)
-    {
-        var mappedValue = (Math.Sin(MathUtils.Deg2Rad(degree)) + 1) / 2; // 将正弦波的范围从[-1, 1]映射到[0, 1]
-        return DOT_START_OPACITY + (1 - DOT_START_OPACITY) * mappedValue;
-    }
-
-    public override void Render(DrawingContext context)
-    {
-        if (CustomIndicator is null)
-        {
-            RenderBuiltInIndicator(context);
-        }
-    }
-
-    private void RenderBuiltInIndicator(DrawingContext context)
-    {
-        var rightItemOpacity  = GetOpacityForAngle(_indicatorAngle);
-        var bottomItemOpacity = GetOpacityForAngle(_indicatorAngle + 90);
-        var leftItemOpacity   = GetOpacityForAngle(_indicatorAngle + 180);
-        var topItemOpacity    = GetOpacityForAngle(_indicatorAngle + 270);
-            
-        var indicatorRect = new Rect(DesiredSize);
-        var centerPoint   = indicatorRect.Center;
-
-        var rightItemOffset =
-            new Point(indicatorRect.Right - DotSize, centerPoint.Y - DotSize / 2);
-        var bottomItemOffset =
-            new Point(centerPoint.X - DotSize / 2, indicatorRect.Bottom - DotSize);
-        var leftItemOffset = new Point(indicatorRect.Left, centerPoint.Y - DotSize / 2);
-        var topItemOffset  = new Point(centerPoint.X - DotSize / 2, indicatorRect.Top);
-
-        var matrix = Matrix.CreateTranslation(-indicatorRect.Center.X, -indicatorRect.Center.Y);
-        matrix *= Matrix.CreateRotation(MathUtils.Deg2Rad(IndicatorAngle));
-        matrix *= Matrix.CreateTranslation(indicatorRect.Center.X, indicatorRect.Center.Y);
-        using var translateState = context.PushTransform(matrix);
-
-        {
-            using var opacityState = context.PushOpacity(rightItemOpacity);
-            var       itemRect     = new Rect(rightItemOffset, new Size(DotSize, DotSize));
-            context.DrawEllipse(DotBgBrush, null, itemRect);
-        }
-        {
-            using var opacityState = context.PushOpacity(bottomItemOpacity);
-            var       itemRect     = new Rect(bottomItemOffset, new Size(DotSize, DotSize));
-            context.DrawEllipse(DotBgBrush, null, itemRect);
-        }
-        {
-            using var opacityState = context.PushOpacity(leftItemOpacity);
-            var       itemRect     = new Rect(leftItemOffset, new Size(DotSize, DotSize));
-            context.DrawEllipse(DotBgBrush, null, itemRect);
-        }
-        {
-            using var opacityState = context.PushOpacity(topItemOpacity);
-            var       itemRect     = new Rect(topItemOffset, new Size(DotSize, DotSize));
-            context.DrawEllipse(DotBgBrush, null, itemRect);
+            StartIndicatorAnimation();
         }
     }
 
@@ -287,45 +168,257 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
         if (change.Property == CustomIndicatorSizeProperty)
         {
             UpdateCustomIndicatorSize();
+            UpdateAnimatedTargetCenterPoint();
         }
-        else if (change.Property == IndicatorAngleProperty)
+        else if (change.Property == IndicatorSizeProperty)
         {
-            HandleIndicatorAngleChanged();
+            UpdateAnimatedTargetCenterPoint();
+        }
+        else if (change.Property == CustomIndicatorProperty ||
+                 change.Property == CustomIndicatorTemplateProperty)
+        {
+            SyncCustomIndicatorState();
+            RestartIndicatorAnimation();
         }
         else if (change.Property == IsVisibleProperty)
         {
-            if (this.IsAttachedToVisualTree())
+            if (change.GetNewValue<bool>())
             {
-                if (change.GetNewValue<bool>())
-                {
-                    StartIndicatorAnimation();
-                }
-                else
-                {
-                    StopIndicatorAnimation();
-                }
+                StartIndicatorAnimation();
+            }
+            else
+            {
+                StopIndicatorAnimation();
             }
         }
         else if (change.Property == MotionDurationProperty ||
                  change.Property == MotionEasingCurveProperty)
         {
-            RebuildMaterializedIndicatorAnimation();
+            RestartIndicatorAnimation();
         }
     }
 
-    private void RebuildMaterializedIndicatorAnimation()
+    private void SyncCustomIndicatorState()
     {
-        if (_animation is null)
+        SetCurrentValue(IsCustomIndicatorProperty, CustomIndicator is not null);
+    }
+
+    private void StartIndicatorAnimation()
+    {
+        if (!IsVisible || !IsLoaded || !this.IsAttachedToVisualTree())
         {
             return;
         }
 
-        var restart = IsVisible && this.IsAttachedToVisualTree() && _cancellationTokenSource is not null;
-        BuildIndicatorAnimation(force: true);
-        if (restart)
+        var target = GetActiveAnimationTarget();
+        if (target is null)
         {
-            StartIndicatorAnimation();
+            return;
         }
+
+        if (ReferenceEquals(_animatedIndicatorTarget, target))
+        {
+            StartTargetAnimation(target);
+            return;
+        }
+
+        StopIndicatorAnimation();
+        if (StartTargetAnimation(target))
+        {
+            _animatedIndicatorTarget = target;
+        }
+    }
+
+    private void StopIndicatorAnimation()
+    {
+        if (_animatedIndicatorTarget is not null)
+        {
+            StopTargetAnimation(_animatedIndicatorTarget);
+            _animatedIndicatorTarget = null;
+            return;
+        }
+
+        StopTargetAnimation(_builtInIndicatorLayout);
+        StopTargetAnimation(_customIndicatorPresenter);
+    }
+
+    private void RestartIndicatorAnimation()
+    {
+        StopIndicatorAnimation();
+        StartIndicatorAnimation();
+    }
+
+    private Control? GetActiveAnimationTarget()
+    {
+        return IsCustomIndicator ? _customIndicatorPresenter : _builtInIndicatorLayout;
+    }
+
+    private bool StartTargetAnimation(Control target)
+    {
+        var visual = ElementComposition.GetElementVisual(target);
+        if (visual?.Compositor is null)
+        {
+            return false;
+        }
+
+        UpdateTargetCenterPoint(target, visual);
+        var easing = MotionEasingCurve ?? new LinearEasing();
+        var rotationAnimation = visual.Compositor.CreateScalarKeyFrameAnimation();
+        rotationAnimation.Target            = ROTATION_PROPERTY;
+        rotationAnimation.Duration          = GetCompositionDuration();
+        rotationAnimation.IterationBehavior = AnimationIterationBehavior.Forever;
+        rotationAnimation.StopBehavior      = AnimationStopBehavior.SetToInitialValue;
+        rotationAnimation.InsertKeyFrame(0, 0, easing);
+        rotationAnimation.InsertKeyFrame(1, FULL_ROTATION_RADIANS, easing);
+        visual.StartAnimation(ROTATION_PROPERTY, rotationAnimation);
+
+        if (ReferenceEquals(target, _builtInIndicatorLayout))
+        {
+            StartBuiltInDotOpacityAnimations(visual.Compositor);
+        }
+
+        return true;
+    }
+
+    private void StopTargetAnimation(Control? target)
+    {
+        if (target is null)
+        {
+            return;
+        }
+
+        var visual = ElementComposition.GetElementVisual(target);
+        visual?.StopAnimation(ROTATION_PROPERTY);
+        if (visual is not null)
+        {
+            visual.RotationAngle = 0;
+        }
+
+        if (ReferenceEquals(target, _builtInIndicatorLayout))
+        {
+            StopBuiltInDotOpacityAnimations();
+            ResetBuiltInDotOpacities();
+        }
+    }
+
+    private void UpdateAnimatedTargetCenterPoint()
+    {
+        if (_animatedIndicatorTarget is null)
+        {
+            return;
+        }
+
+        var visual = ElementComposition.GetElementVisual(_animatedIndicatorTarget);
+        if (visual is not null)
+        {
+            UpdateTargetCenterPoint(_animatedIndicatorTarget, visual);
+        }
+    }
+
+    private void UpdateTargetCenterPoint(Control target, CompositionVisual visual)
+    {
+        var size = GetAnimationTargetSize(target);
+        visual.CenterPoint = new Vector3D(size.Width / 2, size.Height / 2, 0);
+    }
+
+    private Size GetAnimationTargetSize(Control target)
+    {
+        if (ReferenceEquals(target, _builtInIndicatorLayout) && !double.IsNaN(IndicatorSize))
+        {
+            return new Size(IndicatorSize, IndicatorSize);
+        }
+
+        if (ReferenceEquals(target, _customIndicatorPresenter) && !double.IsNaN(CustomIndicatorSize))
+        {
+            return new Size(CustomIndicatorSize, CustomIndicatorSize);
+        }
+
+        return target.Bounds.Size;
+    }
+
+    private TimeSpan GetCompositionDuration()
+    {
+        return MotionDuration < TimeSpan.FromMilliseconds(1)
+            ? TimeSpan.FromMilliseconds(1)
+            : MotionDuration;
+    }
+
+    private void StartBuiltInDotOpacityAnimations(Compositor compositor)
+    {
+        if (_builtInIndicatorLayout is null)
+        {
+            return;
+        }
+
+        var easing = MotionEasingCurve ?? new LinearEasing();
+        var index = 0;
+        foreach (var child in _builtInIndicatorLayout.Children)
+        {
+            if (child is not Control dot || index >= 4)
+            {
+                continue;
+            }
+
+            var dotVisual = ElementComposition.GetElementVisual(dot);
+            if (dotVisual is null)
+            {
+                index++;
+                continue;
+            }
+
+            var opacityAnimation = compositor.CreateScalarKeyFrameAnimation();
+            opacityAnimation.Target            = OPACITY_PROPERTY;
+            opacityAnimation.Duration          = GetCompositionDuration();
+            opacityAnimation.DelayBehavior     = AnimationDelayBehavior.SetInitialValueBeforeDelay;
+            opacityAnimation.DelayTime         = GetDotOpacityDelay(index);
+            opacityAnimation.Direction         = PlaybackDirection.Alternate;
+            opacityAnimation.IterationBehavior = AnimationIterationBehavior.Forever;
+            opacityAnimation.StopBehavior      = AnimationStopBehavior.SetToInitialValue;
+            opacityAnimation.InsertKeyFrame(0, (float)DOT_START_OPACITY, easing);
+            opacityAnimation.InsertKeyFrame(1, 1, easing);
+
+            dotVisual.StartAnimation(OPACITY_PROPERTY, opacityAnimation);
+            index++;
+        }
+    }
+
+    private void StopBuiltInDotOpacityAnimations()
+    {
+        if (_builtInIndicatorLayout is null)
+        {
+            return;
+        }
+
+        foreach (var child in _builtInIndicatorLayout.Children)
+        {
+            if (child is Control dot)
+            {
+                ElementComposition.GetElementVisual(dot)?.StopAnimation(OPACITY_PROPERTY);
+            }
+        }
+    }
+
+    private void ResetBuiltInDotOpacities()
+    {
+        if (_builtInIndicatorLayout is null)
+        {
+            return;
+        }
+
+        var index = 0;
+        foreach (var child in _builtInIndicatorLayout.Children)
+        {
+            if (child is Control dot && index < 4)
+            {
+                dot.Opacity = DOT_START_OPACITY;
+                index++;
+            }
+        }
+    }
+
+    private TimeSpan GetDotOpacityDelay(int index)
+    {
+        return TimeSpan.FromTicks(GetCompositionDuration().Ticks * index / 3);
     }
 
     private void HandleIndicatorPresenterPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -334,6 +427,18 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
         {
             UpdateCustomIndicatorSize();
         }
+    }
+
+    private void ReleaseTemplateParts()
+    {
+        StopIndicatorAnimation();
+        if (_customIndicatorPresenter is not null)
+        {
+            _customIndicatorPresenter.PropertyChanged -= HandleIndicatorPresenterPropertyChanged;
+        }
+
+        _builtInIndicatorLayout   = null;
+        _customIndicatorPresenter = null;
     }
 
     private void UpdateCustomIndicatorSize()
