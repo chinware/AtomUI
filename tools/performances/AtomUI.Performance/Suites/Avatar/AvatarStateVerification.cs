@@ -11,7 +11,7 @@ internal static partial class Program
     private static bool RunAvatarStateVerification()
     {
         var failures = new List<string>();
-        VerifyAvatarCreatesOnlyActivePresenter(failures);
+        VerifyAvatarStaticPresentersUseVisibility(failures);
         VerifyAvatarContentTypeSwitching(failures);
         VerifyAvatarGroupFoldLifecycle(failures);
 
@@ -29,63 +29,37 @@ internal static partial class Program
         return false;
     }
 
-    private static void VerifyAvatarCreatesOnlyActivePresenter(ICollection<string> failures)
+    private static void VerifyAvatarStaticPresentersUseVisibility(ICollection<string> failures)
     {
-        VerifyAvatarPresenterShape(
+        VerifyAvatarPresenterVisibility(
             new Avatar { Icon = new UserOutlined() },
             "Icon Avatar",
-            iconPresenter: 1,
-            image: 0,
-            svg: 0,
-            textBlock: 0,
+            "IconPresenter",
             failures);
-        VerifyAvatarPresenterShape(
+        VerifyAvatarPresenterVisibility(
             new Avatar { Text = "U" },
             "Text Avatar",
-            iconPresenter: 0,
-            image: 0,
-            svg: 0,
-            textBlock: 1,
+            "PART_TextPresenter",
             failures);
-        VerifyAvatarPresenterShape(
+        VerifyAvatarPresenterVisibility(
             new Avatar { Src = GetAvatarSvgPath() },
             "Svg Avatar",
-            iconPresenter: 0,
-            image: 0,
-            svg: 1,
-            textBlock: 0,
+            "SvgPresenter",
             failures);
-        VerifyAvatarPresenterShape(
+        VerifyAvatarPresenterVisibility(
             new Avatar { BitmapSrc = AvatarBitmap.Value },
             "Bitmap Avatar",
-            iconPresenter: 0,
-            image: 1,
-            svg: 0,
-            textBlock: 0,
+            "ImagePresenter",
             failures);
     }
 
-    private static void VerifyAvatarPresenterShape(Avatar avatar,
-                                                   string label,
-                                                   int iconPresenter,
-                                                   int image,
-                                                   int svg,
-                                                   int textBlock,
-                                                   ICollection<string> failures)
+    private static void VerifyAvatarPresenterVisibility(Avatar avatar,
+                                                        string label,
+                                                        string visiblePresenterName,
+                                                        ICollection<string> failures)
     {
         using var realized = RealizeControl(avatar);
-        Expect(CountVisualByTypeName(avatar, "IconPresenter") == iconPresenter,
-            $"{label} should create {iconPresenter} IconPresenter.",
-            failures);
-        Expect(CountVisualByType<Image>(avatar) == image,
-            $"{label} should create {image} Image presenter.",
-            failures);
-        Expect(CountVisualByTypeName(avatar, "Svg") == svg,
-            $"{label} should create {svg} Svg presenter.",
-            failures);
-        Expect(CountVisualByTypeName(avatar, "TextBlock") == textBlock,
-            $"{label} should create {textBlock} TextBlock presenter.",
-            failures);
+        ExpectAvatarPresenterVisibility(avatar, label, visiblePresenterName, failures);
     }
 
     private static void VerifyAvatarContentTypeSwitching(ICollection<string> failures)
@@ -100,39 +74,31 @@ internal static partial class Program
         Expect(firstIconPresenter != null,
             "Avatar should start with IconPresenter for Icon content.",
             failures);
+        ExpectAvatarPresenterVisibility(avatar, "Initial Icon Avatar", "IconPresenter", failures);
 
         avatar.SetCurrentValue(Avatar.TextProperty, "USER");
         RefreshLayout(realized.Window);
-        Expect(firstIconPresenter?.GetVisualParent() == null,
-            "Avatar should detach IconPresenter when switching to Text.",
+        Expect(firstIconPresenter?.GetVisualParent() != null && !firstIconPresenter.IsVisible,
+            "Avatar should keep static IconPresenter hidden when switching to Text.",
             failures);
-        Expect(CountVisualByTypeName(avatar, "TextBlock") == 1 &&
-               CountVisualByTypeName(avatar, "IconPresenter") == 0,
-            "Avatar should keep only TextBlock after switching to Text.",
-            failures);
+        ExpectAvatarPresenterVisibility(avatar, "Avatar after switching to Text", "PART_TextPresenter", failures);
 
         var textPresenter = FindVisualByName<Avalonia.Controls.TextBlock>(avatar, "PART_TextPresenter");
         avatar.SetCurrentValue(Avatar.SrcProperty, GetAvatarSvgPath());
         RefreshLayout(realized.Window);
-        Expect(textPresenter?.GetVisualParent() == null,
-            "Avatar should detach TextBlock when switching to Svg.",
+        Expect(textPresenter?.GetVisualParent() != null && !textPresenter.IsVisible,
+            "Avatar should keep static TextBlock hidden when switching to Svg.",
             failures);
-        Expect(CountVisualByTypeName(avatar, "Svg") == 1 &&
-               CountVisualByTypeName(avatar, "TextBlock") == 0,
-            "Avatar should keep only Svg after switching to Src.",
-            failures);
+        ExpectAvatarPresenterVisibility(avatar, "Avatar after switching to Svg", "SvgPresenter", failures);
 
         var svgPresenter = FindVisualByTypeName(avatar, "Svg", "SvgPresenter");
         avatar.SetCurrentValue(Avatar.SrcProperty, null);
         avatar.SetCurrentValue(Avatar.BitmapSrcProperty, AvatarBitmap.Value);
         RefreshLayout(realized.Window);
-        Expect(svgPresenter?.GetVisualParent() == null,
-            "Avatar should detach Svg when switching to BitmapSrc.",
+        Expect(svgPresenter?.GetVisualParent() != null && !svgPresenter.IsVisible,
+            "Avatar should keep static Svg hidden when switching to BitmapSrc.",
             failures);
-        Expect(CountVisualByType<Image>(avatar) == 1 &&
-               CountVisualByTypeName(avatar, "Svg") == 0,
-            "Avatar should keep only Image after switching to BitmapSrc.",
-            failures);
+        ExpectAvatarPresenterVisibility(avatar, "Avatar after switching to BitmapSrc", "ImagePresenter", failures);
     }
 
     private static void VerifyAvatarGroupFoldLifecycle(ICollection<string> failures)
@@ -188,10 +154,29 @@ internal static partial class Program
             failures);
     }
 
-    private static int CountVisualByType<T>(Control root)
-        where T : Control
+    private static void ExpectAvatarPresenterVisibility(Avatar avatar,
+                                                        string label,
+                                                        string visiblePresenterName,
+                                                        ICollection<string> failures)
     {
-        return root.GetSelfAndVisualDescendants().OfType<T>().Count();
+        var presenters = new[]
+        {
+            FindVisualByName<Control>(avatar, "IconPresenter"),
+            FindVisualByName<Control>(avatar, "ImagePresenter"),
+            FindVisualByName<Control>(avatar, "SvgPresenter"),
+            FindVisualByName<Control>(avatar, "PART_TextPresenter")
+        };
+
+        Expect(presenters.All(presenter => presenter != null),
+            $"{label} should keep all static presenters in the template.",
+            failures);
+        foreach (var presenter in presenters.OfType<Control>())
+        {
+            var shouldBeVisible = presenter.Name == visiblePresenterName;
+            Expect(presenter.IsVisible == shouldBeVisible,
+                $"{label} presenter {presenter.Name} visibility should be {shouldBeVisible}.",
+                failures);
+        }
     }
 
     private static int CountVisualByTypeName(Control root, string typeName)
