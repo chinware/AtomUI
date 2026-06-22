@@ -181,7 +181,7 @@ internal class StepsToken : AbstractControlDesignToken
         IconSizeSM          = SharedToken.FontSizeHeading3;
         DotSize             = SharedToken.ControlHeight / 4;
         DotCurrentSize      = SharedToken.ControlHeightLG / 4;
-        NavArrowColor       = SharedToken.ColorTextDisabled;
+        NavArrowColor       = SharedToken.ColorTextDescription;
         DescriptionMaxWidth = 140;
 
         WaitIconColor         = SharedToken.ColorTextLabel;

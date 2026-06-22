@@ -663,6 +663,12 @@
             <Style Selector="^ /template/ atom|Icon#NavArrow">
                 <Setter Property="Foreground"
                         Value="{atom:StepsTokenResource NavArrowColor}" />
+                <Setter Property="FillBrush"
+                        Value="{atom:StepsTokenResource NavArrowColor}" />
+                <Setter Property="StrokeBrush"
+                        Value="{atom:StepsTokenResource NavArrowColor}" />
+                <Setter Property="FallbackBrush"
+                        Value="{atom:StepsTokenResource NavArrowColor}" />
                 <Setter Property="Width"
                         Value="{atom:StepsTokenResource IconFontSize}" />
                 <Setter Property="Height"
@@ -702,10 +708,13 @@
                         <Setter Property="Template">
                             <ControlTemplate>
                                 <DockPanel LastChildFill="True" Name="RootLayout">
-                                    <antdicons:RightOutlined Name="NavArrow"
-                                                             DockPanel.Dock="Right"
-                                                             VerticalAlignment="Center"
-                                                             IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                    <Panel DockPanel.Dock="Right"
+                                           Classes="NavArrowLayout"
+                                           VerticalAlignment="Top"
+                                           IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}">
+                                        <antdicons:RightOutlined Name="NavArrow"
+                                                                 VerticalAlignment="Center" />
+                                    </Panel>
                                     <DockPanel LastChildFill="True" Name="IndicatorLineLayout">
                                         <Rectangle DockPanel.Dock="Bottom"
                                                    Classes="NavIndicatorLine"
@@ -787,10 +796,13 @@
                         <Setter Property="Template">
                             <ControlTemplate>
                                 <DockPanel LastChildFill="True" Name="RootLayout">
-                                    <antdicons:RightOutlined Name="NavArrow"
-                                                             DockPanel.Dock="Right"
-                                                             VerticalAlignment="Center"
-                                                             IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                    <Panel DockPanel.Dock="Right"
+                                           Classes="NavArrowLayout"
+                                           VerticalAlignment="Top"
+                                           IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}">
+                                        <antdicons:RightOutlined Name="NavArrow"
+                                                                 VerticalAlignment="Center" />
+                                    </Panel>
                                     <DockPanel LastChildFill="True" Name="IndicatorLineLayout">
                                         <Rectangle DockPanel.Dock="Bottom" Classes="NavIndicatorLine"
                                                    Opacity="0.0"
@@ -855,6 +867,18 @@
                                     Value="{atom:StepsTokenResource DescriptionMaxWidth}" />
                         </Style>
                     </Style>
+
+                    <Style Selector="^ /template/ Panel.NavArrowLayout">
+                        <Setter Property="Height"
+                                Value="{atom:StepsTokenResource IconSize}" />
+                    </Style>
+
+                    <Style Selector="^[SizeType=Small]">
+                        <Style Selector="^ /template/ Panel.NavArrowLayout">
+                            <Setter Property="Height"
+                                    Value="{atom:StepsTokenResource IconSizeSM}" />
+                        </Style>
+                    </Style>
                 </Style>
 
                 <!-- 点指示器类型 -->
@@ -862,10 +886,14 @@
                     <Setter Property="Template">
                         <ControlTemplate>
                             <DockPanel LastChildFill="True" Name="RootLayout">
-                                <antdicons:RightOutlined Name="NavArrow"
-                                                         DockPanel.Dock="Right"
-                                                         VerticalAlignment="Center"
-                                                         IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}" />
+                                <Panel DockPanel.Dock="Right"
+                                       Classes="NavArrowLayout"
+                                       VerticalAlignment="Top"
+                                       Height="{atom:StepsTokenResource IconFontSize}"
+                                       IsVisible="{TemplateBinding IsLast, Converter={x:Static BoolConverters.Not}}">
+                                    <antdicons:RightOutlined Name="NavArrow"
+                                                             VerticalAlignment="Center" />
+                                </Panel>
                                 <DockPanel LastChildFill="True" Name="IndicatorLineLayout">
                                     <Rectangle DockPanel.Dock="Bottom" Classes="NavIndicatorLine"
                                                Opacity="0.0"
@@ -922,7 +950,7 @@
 
                     <Style Selector="^ /template/ Panel#IndicatorLayout">
                         <Setter Property="Height"
-                                Value="{atom:StepsTokenResource DotCurrentSize}" />
+                                Value="{atom:StepsTokenResource IconFontSize}" />
                     </Style>
 
                     <Style Selector="^ /template/ atom|StepsItemIndicator">
