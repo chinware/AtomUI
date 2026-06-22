@@ -10,3 +10,7 @@
 - [NavMenu 桌面版实现原理](nav-menu/implementation.md)
 - [NavMenu Token 设计](nav-menu/token.md)
 - [NavMenu Changelog](nav-menu/changelog.md)
+- [Steps 桌面版架构设计](steps/overview.md)
+- [Steps 桌面版实现原理](steps/implementation.md)
+- [Steps Token 设计](steps/token.md)
+- [Steps Changelog](steps/changelog.md)
