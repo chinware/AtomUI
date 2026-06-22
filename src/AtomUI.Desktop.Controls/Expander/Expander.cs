@@ -38,9 +38,6 @@ public enum ExpanderIconPosition
     ExpanderPseudoClass.ExpandRight)]
 public class Expander : AvaloniaExpander, IMotionAwareControl
 {
-    private static readonly CubicEaseOut DefaultExpandMotionEasing = new();
-    private static readonly CubicEaseIn DefaultCollapseMotionEasing = new();
-
     #region 公共属性定义
 
     public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
@@ -168,6 +165,11 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
             o => o.EffectiveBorderThickness,
             (o, v) => o.EffectiveBorderThickness = v);
 
+    internal static readonly DirectProperty<Expander, Thickness> EffectiveExpandButtonMarginProperty =
+        AvaloniaProperty.RegisterDirect<Expander, Thickness>(nameof(EffectiveExpandButtonMargin),
+            o => o.EffectiveExpandButtonMargin,
+            (o, v) => o.EffectiveExpandButtonMargin = v);
+
     private Thickness _headerBorderThickness;
 
     internal Thickness HeaderBorderThickness
@@ -189,54 +191,65 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         get => _effectiveBorderThickness;
         set => SetAndRaise(EffectiveBorderThicknessProperty, ref _effectiveBorderThickness, value);
     }
-    
+
+    private Thickness _effectiveExpandButtonMargin;
+
+    internal Thickness EffectiveExpandButtonMargin
+    {
+        get => _effectiveExpandButtonMargin;
+        set => SetAndRaise(EffectiveExpandButtonMarginProperty, ref _effectiveExpandButtonMargin, value);
+    }
+
     #endregion
+
+    private static readonly CubicEaseOut DefaultExpandMotionEasing = new();
+    private static readonly CubicEaseIn DefaultCollapseMotionEasing = new();
+
+    private BaseMotionActor? _motionActor;
+    private Border? _headerDecorator;
+    private IconButton? _expandButton;
+    private CancellationTokenSource? _contentMotionCancellation;
 
     public Expander()
     {
         this.RegisterTokenResourceScope(ExpanderToken.ScopeProvider);
     }
-
-    private BaseMotionActor? _motionActor;
-    private Border? _headerDecorator;
-    private IconButton? _expandButton;
-    private bool _animating;
-    private bool _tempAnimationDisabled = false;
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+
         if (_expandButton is not null)
         {
             _expandButton.Click -= HandleExpandButtonClicked;
         }
 
+        CancelContentMotionAndClearValues();
         _motionActor     = e.NameScope.Find<BaseMotionActor>("PART_ContentMotionActor");
         _headerDecorator = e.NameScope.Find<Border>("PART_HeaderDecorator");
         _expandButton    = e.NameScope.Find<IconButton>("PART_ExpandButton");
 
-        _tempAnimationDisabled = true;
-        HandleExpandedChanged();
-        _tempAnimationDisabled = false;
+        if (_motionActor is not null)
+        {
+            ApplyContentStableState(_motionActor, IsExpanded);
+        }
+
         if (_expandButton is not null)
         {
-            _expandButton.Click -= HandleExpandButtonClicked;
             _expandButton.Click += HandleExpandButtonClicked;
         }
+
         SetupEffectiveBorderThickness();
         SetupExpanderBorderThickness();
+        UpdateEffectiveExpandButtonMargin();
         SetupDefaultIcon();
         UpdatePseudoClasses();
     }
 
-    private void HandleExpandButtonClicked(object? sender, RoutedEventArgs args)
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        if (_animating)
-        {
-            return;
-        }
-
-        IsExpanded = !IsExpanded;
+        base.OnDetachedFromVisualTree(e);
+        CancelContentMotionAndClearValues();
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -249,28 +262,71 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
                 SetupDefaultIcon();
             }
         }
-        
+
         if (change.Property == IsExpandedProperty)
         {
-            HandleExpandedChanged();
+            UpdateContentVisibility(IsExpanded);
         }
-        else if (change.Property == IsGhostStyleProperty ||
-                 change.Property == IsBorderlessProperty ||
-                 change.Property == IsExpandedProperty ||
-                 change.Property == ExpandDirectionProperty)
-        {
-            SetupExpanderBorderThickness();
-        }
-        else if (change.Property == IsBorderlessProperty)
+
+        if (change.Property == BorderThicknessProperty ||
+            change.Property == IsGhostStyleProperty ||
+            change.Property == IsBorderlessProperty ||
+            change.Property == ExpandDirectionProperty)
         {
             SetupEffectiveBorderThickness();
+            SetupExpanderBorderThickness();
         }
-        else if (change.Property == ContentPaddingProperty ||
-                 change.Property == HeaderPaddingProperty)
+
+        if (change.Property == HeaderPaddingProperty ||
+            change.Property == ExpandIconPositionProperty)
+        {
+            UpdateEffectiveExpandButtonMargin();
+        }
+
+        if (change.Property == ContentPaddingProperty ||
+            change.Property == HeaderPaddingProperty)
         {
             UpdatePseudoClasses();
         }
+    }
 
+    protected override void OnPointerPressed(PointerPressedEventArgs e)
+    {
+        base.OnPointerPressed(e);
+
+        if (!CanToggleFromHeaderPointer(e))
+        {
+            return;
+        }
+
+        ToggleExpanded();
+        e.Handled = true;
+    }
+
+    private void HandleExpandButtonClicked(object? sender, RoutedEventArgs args)
+    {
+        ToggleExpanded();
+        args.Handled = true;
+    }
+
+    private bool CanToggleFromHeaderPointer(PointerPressedEventArgs e)
+    {
+        if (TriggerType != ExpanderTriggerType.Header ||
+            e.Pointer.Type != PointerType.Mouse ||
+            !e.GetCurrentPoint(this).Properties.IsLeftButtonPressed ||
+            _headerDecorator is null)
+        {
+            return false;
+        }
+
+        var position = e.GetPosition(_headerDecorator);
+        var bounds   = new Rect(_headerDecorator.Bounds.Size);
+        return bounds.Contains(position);
+    }
+
+    private void ToggleExpanded()
+    {
+        IsExpanded = !IsExpanded;
     }
 
     private void SetupDefaultIcon()
@@ -280,6 +336,7 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
             ClearValue(ExpandIconProperty);
             SetValue(ExpandIconProperty, new RightOutlined(), BindingPriority.Template);
         }
+
         Debug.Assert(ExpandIcon is not null);
     }
 
@@ -300,82 +357,135 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
             HeaderBorderThickness = new Thickness(0, headerBorderThickness, 0, 0);
         }
     }
-    
-    protected override void OnPointerPressed(PointerPressedEventArgs e)
-    {
-        base.OnPointerPressed(e);
-        if (e.GetCurrentPoint(this).Properties.IsLeftButtonPressed && e.Pointer.Type == PointerType.Mouse)
-        {
-            var position = e.GetPosition(_headerDecorator);
-            if (_headerDecorator is not null)
-            {
-                var targetRect = new Rect(_headerDecorator.Bounds.Size);
-                if (targetRect.Contains(position))
-                {
-                    if (_animating)
-                    {
-                        return;
-                    }
 
-                    IsExpanded = !IsExpanded;
-                }
-            }
+    private void UpdateContentVisibility(bool isVisible)
+    {
+        var motionActor = _motionActor;
+        if (motionActor is null)
+        {
+            return;
+        }
+
+        if (!IsMotionEnabled)
+        {
+            ApplyContentStableState(motionActor, isVisible);
+            return;
+        }
+
+        if (!isVisible && !motionActor.IsVisible && _contentMotionCancellation is null)
+        {
+            ApplyContentStableState(motionActor, false);
+            return;
+        }
+
+        var cancellation = BeginContentMotion();
+        Dispatcher.InvokeAsync(async () => await RunContentMotionAsync(motionActor, isVisible, cancellation));
+    }
+
+    private async Task RunContentMotionAsync(BaseMotionActor motionActor,
+                                             bool targetVisible,
+                                             CancellationTokenSource cancellation)
+    {
+        try
+        {
+            await RunContentLayoutMotionAsync(motionActor, targetVisible, cancellation.Token);
+        }
+        catch (OperationCanceledException) when (cancellation.IsCancellationRequested)
+        {
+        }
+        finally
+        {
+            CompleteContentMotion(motionActor, targetVisible, cancellation);
         }
     }
 
-    private void HandleExpandedChanged()
+    private async Task RunContentLayoutMotionAsync(BaseMotionActor motionActor,
+                                                   bool targetVisible,
+                                                   CancellationToken cancellationToken)
     {
-        if (IsExpanded)
+        ClearContentMotionValues(motionActor);
+        AbstractMotion motion = targetVisible
+            ? new ExpandMotion(DirectionFromExpandDirection(ExpandDirection), MotionDuration, DefaultExpandMotionEasing)
+            : new CollapseMotion(DirectionFromExpandDirection(ExpandDirection), MotionDuration, DefaultCollapseMotionEasing);
+        await motion.RunAsync(motionActor,
+            targetVisible ? () => motionActor.SetCurrentValue(IsVisibleProperty, true) : null,
+            cancellationToken);
+    }
+
+    private CancellationTokenSource BeginContentMotion()
+    {
+        CancelContentMotion();
+        var cancellation = new CancellationTokenSource();
+        _contentMotionCancellation = cancellation;
+        return cancellation;
+    }
+
+    private void CompleteContentMotion(BaseMotionActor motionActor,
+                                       bool targetVisible,
+                                       CancellationTokenSource cancellation)
+    {
+        if (!IsCurrentContentMotion(cancellation))
         {
-            this.Dispatcher.InvokeAsync(ExpandItemContentAsync);
+            cancellation.Dispose();
+            return;
+        }
+
+        _contentMotionCancellation = null;
+        if (!ReferenceEquals(_motionActor, motionActor) || cancellation.IsCancellationRequested)
+        {
+            cancellation.Dispose();
+            return;
+        }
+
+        cancellation.Dispose();
+        if (IsExpanded == targetVisible)
+        {
+            ApplyContentStableState(motionActor, targetVisible);
         }
         else
         {
-            this.Dispatcher.InvokeAsync(CollapseItemContentAsync);
+            UpdateContentVisibility(IsExpanded);
         }
     }
 
-    private async Task ExpandItemContentAsync()
+    private void CancelContentMotion()
     {
-        if (_motionActor is null || _animating)
+        var cancellation = _contentMotionCancellation;
+        if (cancellation is not null)
         {
-            return;
+            _contentMotionCancellation = null;
+            cancellation.Cancel();
         }
-
-        if (!IsMotionEnabled || _tempAnimationDisabled)
-        {
-            _motionActor.IsVisible = true;
-            return;
-        }
-
-        _animating = true;
-        var motion = new ExpandMotion(DirectionFromExpandDirection(ExpandDirection),
-            MotionDuration,
-            DefaultExpandMotionEasing);
-        await motion.RunAsync(_motionActor, () => { _motionActor.SetCurrentValue(IsVisibleProperty, true); });
-        _animating = false;
     }
 
-    private async Task CollapseItemContentAsync()
+    private void CancelContentMotionAndClearValues()
     {
-        if (_motionActor is null || _animating)
+        CancelContentMotion();
+        if (_motionActor is { } motionActor)
         {
-            return;
+            ClearContentMotionValues(motionActor);
         }
+    }
 
-        if (!IsMotionEnabled || _tempAnimationDisabled)
-        {
-            _motionActor.IsVisible = false;
-            return;
-        }
+    private bool IsCurrentContentMotion(CancellationTokenSource cancellation)
+    {
+        return ReferenceEquals(_contentMotionCancellation, cancellation);
+    }
 
-        _animating = true;
-        var motion = new CollapseMotion(DirectionFromExpandDirection(ExpandDirection),
-            MotionDuration,
-            DefaultCollapseMotionEasing);
-        await motion.RunAsync(_motionActor);
-        _motionActor.SetCurrentValue(IsVisibleProperty, false);
-        _animating = false;
+    private void ApplyContentStableState(BaseMotionActor motionActor, bool isVisible)
+    {
+        CancelContentMotion();
+        ClearContentMotionValues(motionActor);
+        motionActor.Opacity   = isVisible ? 1.0 : 0.0;
+        motionActor.IsVisible = isVisible;
+    }
+
+    private static void ClearContentMotionValues(BaseMotionActor motionActor)
+    {
+        motionActor.Transitions               = null;
+        motionActor.MotionTransform           = null;
+        motionActor.MotionTransformOperations = null;
+        motionActor.ClearValue(HeightProperty);
     }
 
     private static Direction DirectionFromExpandDirection(ExpandDirection expandDirection)
@@ -401,6 +511,19 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
         {
             EffectiveBorderThickness = BorderThickness;
         }
+    }
+
+    private void UpdateEffectiveExpandButtonMargin()
+    {
+        if (HeaderPadding is not { } headerPadding)
+        {
+            EffectiveExpandButtonMargin = default;
+            return;
+        }
+
+        EffectiveExpandButtonMargin = ExpandIconPosition == ExpanderIconPosition.Start
+            ? new Thickness(0, 0, headerPadding.Left, 0)
+            : new Thickness(headerPadding.Right, 0, 0, 0);
     }
     
     private void UpdatePseudoClasses()
