@@ -149,7 +149,7 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
     static AbstractAvatar()
     {
         AffectsMeasure<AbstractAvatar>(SizeTypeProperty, TextProperty);
-        AffectsRender<AbstractAvatar>(ShapeProperty, IconProperty, SrcProperty, GapProperty);
+        AffectsRender<AbstractAvatar>(ShapeProperty, IconProperty, BitmapSrcProperty, SrcProperty, GapProperty);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -159,7 +159,10 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
         {
             if (!double.IsNaN(Size))
             {
-                _originSizeType = SizeType;
+                if (SizeType != CustomizableSizeType.Custom)
+                {
+                    _originSizeType = SizeType;
+                }
                 SizeType        = CustomizableSizeType.Custom;
             }
             else
@@ -167,6 +170,7 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
                 if (_originSizeType.HasValue)
                 {
                     SizeType = _originSizeType.Value;
+                    _originSizeType = null;
                 }
             }
         }
@@ -175,6 +179,7 @@ public abstract class AbstractAvatar : TemplatedControl, IMotionAwareControl
             ConfigureIconSize();
         }
         else if (change.Property == SrcProperty ||
+                 change.Property == BitmapSrcProperty ||
                  change.Property == IconProperty ||
                  change.Property == TextProperty)
         {
