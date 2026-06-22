@@ -157,14 +157,14 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
             range = _grooveRect.Height;
         }
 
-        deflateValue = range * (1 - Percentage / 100);
+        deflateValue = range * (1 - CalculateProgressRatio(Value));
         DrawIndicatorBar(context, deflateValue, StrokeBrush!);
 
         // 绘制成功阈值
         if (!double.IsNaN(SuccessThreshold))
         {
             var successThreshold             = Math.Clamp(SuccessThreshold, Minimum, Maximum);
-            var successThresholdDeflateValue = range * (1 - successThreshold / (Maximum - Minimum));
+            var successThresholdDeflateValue = range * (1 - CalculateProgressRatio(successThreshold));
             DrawIndicatorBar(context, successThresholdDeflateValue, SuccessStrokeBrush!);
         }
     }
@@ -450,7 +450,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
                     var grooveRect = GetProgressBarRect(controlRect);
                     offsetY = grooveRect.Y + (grooveRect.Height - targetHeight) / 2;
                     var range         = grooveRect.Width;
-                    var deflateValue  = range * (1 - Value / (Maximum - Minimum));
+                    var deflateValue  = range * (1 - CalculateProgressRatio(Value));
                     var indicatorRect = grooveRect.Deflate(new Thickness(0, 0, deflateValue, 0));
                     if (PercentPosition.Alignment == LinePercentAlignment.Start)
                     {
@@ -492,7 +492,7 @@ public abstract class AbstractGeneralProgressBar : AbstractLineProgress
                 var grooveRect = GetProgressBarRect(controlRect);
                 offsetX = grooveRect.X + (grooveRect.Width - targetWidth) / 2;
                 var range         = grooveRect.Height;
-                var deflateValue  = range * (1 - Value / (Maximum - Minimum));
+                var deflateValue  = range * (1 - CalculateProgressRatio(Value));
                 var indicatorRect = grooveRect.Deflate(new Thickness(0, 0, 0, deflateValue));
                 if (PercentPosition.Alignment == LinePercentAlignment.Start)
                 {

@@ -97,7 +97,7 @@ public abstract class AbstractGeneralCircleProgress : AbstractCircleProgress
                 SuccessStrokeBrush,
                 StrokeThickness,
                 lineCap: PenLineCap.Flat);
-            successSteps = (int)Math.Round(StepCount * SuccessThreshold / (Maximum - Minimum));
+            successSteps = (int)Math.Round(StepCount * CalculateProgressRatio(SuccessThreshold));
         }
 
         var   spanAngle  = (360 - StepGap * StepCount) / StepCount;
@@ -127,6 +127,6 @@ public abstract class AbstractGeneralCircleProgress : AbstractCircleProgress
 
     private double CalculateAngle(double value)
     {
-        return 360 * value / (Maximum - Minimum);
+        return 360 * CalculateProgressRatio(value);
     }
 }

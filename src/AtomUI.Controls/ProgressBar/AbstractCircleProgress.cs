@@ -247,11 +247,17 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
     private void SetupExtraInfoIconSize(double circleSize)
     {
         var calculatedSize = Math.Max(circleSize / 4.5, CircleMinimumIconSize);
-        ExceptionCompletedIconPresenter!.Width  = calculatedSize;
-        ExceptionCompletedIconPresenter!.Height = calculatedSize;
+        if (ExceptionCompletedIconPresenter is not null)
+        {
+            ExceptionCompletedIconPresenter.Width  = calculatedSize;
+            ExceptionCompletedIconPresenter.Height = calculatedSize;
+        }
 
-        SuccessCompletedIconPresenter!.Width  = calculatedSize;
-        SuccessCompletedIconPresenter!.Height = calculatedSize;
+        if (SuccessCompletedIconPresenter is not null)
+        {
+            SuccessCompletedIconPresenter.Width  = calculatedSize;
+            SuccessCompletedIconPresenter.Height = calculatedSize;
+        }
     }
 
     protected override Size ArrangeOverride(Size finalSize)
@@ -289,7 +295,6 @@ public abstract class AbstractCircleProgress : AbstractProgressBar
         }
 
         return base.ArrangeOverride(finalSize);
-        ;
     }
 
     protected override Rect GetProgressBarRect(Rect controlRect)
