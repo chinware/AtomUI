@@ -12,8 +12,8 @@ internal partial class zh_TW : LanguageProvider
     public const string BlockSegmentedDescription = "block 屬性會讓 Segmented 適配父容器寬度。";
     public const string DisabledTitle = "禁用";
     public const string DisabledDescription = "禁用狀態的 Segmented。";
-    public const string ThreeSizesTitle = "Segmented 三種尺寸";
-    public const string ThreeSizesDescription = "Segmented 有三種尺寸：大號（40px）、默認（32px）和小號（24px）。";
+    public const string ThreeSizesTitle = "Segmented 尺寸";
+    public const string ThreeSizesDescription = "Segmented 支持大號（40px）、默認（32px）、小號（24px）和自定義尺寸。";
     public const string IconOnlyTitle = "僅圖標";
     public const string IconOnlyDescription = "為 Segmented 項設置圖標但不設置標籤。";
     public const string WithIconTitle = "帶圖標";

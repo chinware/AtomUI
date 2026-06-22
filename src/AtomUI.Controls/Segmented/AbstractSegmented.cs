@@ -21,7 +21,7 @@ public abstract class AbstractSegmented : SelectingItemsControl,
 
     public static readonly StyledProperty<bool> IsExpandingProperty =
         AvaloniaProperty.Register<AbstractSegmented, bool>(nameof(IsExpanding));
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractSegmented>();
 
@@ -97,6 +97,8 @@ public abstract class AbstractSegmented : SelectingItemsControl,
     
     #endregion
 
+    private EventHandler? _formValueChanged;
+
     static AbstractSegmented()
     {
         AffectsMeasure<AbstractSegmented>(IsExpandingProperty, SizeTypeProperty);
@@ -107,7 +109,8 @@ public abstract class AbstractSegmented : SelectingItemsControl,
             SelectedThumbSizeProperty, 
             SelectedThumbPosProperty);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<AbstractSegmented>(false);
-        SelectedItemProperty.Changed.AddClassHandler<AbstractSegmented>((segmented, args) => segmented.NotifyFormValueChanged(args.NewValue));
+        SelectedItemProperty.Changed.AddClassHandler<AbstractSegmented>(
+            (segmented, args) => segmented.NotifyFormValueChanged(args.NewValue));
     }
 
     public AbstractSegmented()
@@ -115,6 +118,18 @@ public abstract class AbstractSegmented : SelectingItemsControl,
         SelectionMode = SelectionMode.Single;
     }
     
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.DisableTransitions();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        Dispatcher.Post(this.EnableTransitions);
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -141,14 +156,6 @@ public abstract class AbstractSegmented : SelectingItemsControl,
         
         SetupSelectedThumbRect();
     }
-    
-    private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
-    {
-        if (this.IsAttachedToVisualTree())
-        {
-            SetupSelectedThumbRect();
-        }
-    }
 
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
@@ -167,22 +174,6 @@ public abstract class AbstractSegmented : SelectingItemsControl,
         base.OnDetachedFromVisualTree(e);
         SelectionChanged -= HandleSelectionChanged;
     }
-
-    private void SetupSelectedThumbRect()
-    {
-        if (SelectedItem is not null)
-        {
-            var segmentedItem = ContainerFromItem(SelectedItem);
-            if (segmentedItem is not null)
-            {
-                var offset    = segmentedItem.TranslatePoint(new Point(0, 0), this) ?? default;
-                var offsetX   = offset.X;
-                var targetPos = new Point(offsetX, offset.Y);
-                SelectedThumbPos  = targetPos;
-                SelectedThumbSize = segmentedItem.DesiredSize;
-            }
-        }
-    }
     
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
     {
@@ -194,7 +185,6 @@ public abstract class AbstractSegmented : SelectingItemsControl,
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is AbstractSegmentedItem segmentedItem)
         {
-            
             if (item != null && item is not Visual)
             {
                 segmentedItem.SetCurrentValue(AbstractSegmentedItem.ContentProperty, item);
@@ -203,7 +193,7 @@ public abstract class AbstractSegmented : SelectingItemsControl,
                     segmentedItem[!AbstractSegmentedItem.ContentTemplateProperty] = this[!ItemTemplateProperty];
                 }
             }
-            
+
             segmentedItem[!SizeTypeProperty]        = this[!SizeTypeProperty];
             segmentedItem[!IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
 
@@ -211,12 +201,13 @@ public abstract class AbstractSegmented : SelectingItemsControl,
             {
                 SetCurrentValue(SelectedItemProperty, ItemFromContainer(segmentedItem));
             }
-            
+
             PrepareSegmentedItem(segmentedItem, item, index);
         }
         else
         {
-            throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type AbstractSegmentedItem.");
+            throw new ArgumentOutOfRangeException(nameof(container),
+                "The container type is incorrect, it must be type AbstractSegmentedItem.");
         }
     }
     
@@ -251,14 +242,13 @@ public abstract class AbstractSegmented : SelectingItemsControl,
 
     #region 实现 FormItem 接口
     
-    private EventHandler? _formValueChanged;
     event EventHandler? IFormItemAware.ValueChanged
     {
         add => _formValueChanged += value;
         remove => _formValueChanged -= value;
     }
 
-    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value as bool?);
+    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value);
 
     object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
     void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
@@ -289,15 +279,27 @@ public abstract class AbstractSegmented : SelectingItemsControl,
     }
     #endregion
 
-    protected override void OnInitialized()
+    private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
     {
-        base.OnInitialized();
-        this.DisableTransitions();
+        if (this.IsAttachedToVisualTree())
+        {
+            SetupSelectedThumbRect();
+        }
     }
 
-    protected override void OnLoaded(RoutedEventArgs e)
+    private void SetupSelectedThumbRect()
     {
-        base.OnLoaded(e);
-        Dispatcher.Post(this.EnableTransitions);
+        if (SelectedItem is not null)
+        {
+            var segmentedItem = ContainerFromItem(SelectedItem);
+            if (segmentedItem is not null)
+            {
+                var offset    = segmentedItem.TranslatePoint(new Point(0, 0), this) ?? default;
+                var offsetX   = offset.X;
+                var targetPos = new Point(offsetX, offset.Y);
+                SelectedThumbPos  = targetPos;
+                SelectedThumbSize = segmentedItem.DesiredSize;
+            }
+        }
     }
 }
