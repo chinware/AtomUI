@@ -21,6 +21,8 @@ using AtomUIMenu = AtomUI.Desktop.Controls.Menu;
 using AtomUINumericUpDown = AtomUI.Desktop.Controls.NumericUpDown;
 using AtomUIPagination = AtomUI.Desktop.Controls.Pagination;
 using AtomUISegmented = AtomUI.Desktop.Controls.Segmented;
+using AtomUISpin = AtomUI.Desktop.Controls.Spin;
+using AtomUISpinIndicator = AtomUI.Desktop.Controls.SpinIndicator;
 using AtomUITextBox = AtomUI.Desktop.Controls.TextBox;
 
 namespace AtomUI.Desktop.Controls.Tests.SizeType;
@@ -107,6 +109,11 @@ public class CustomizableSizeTypeContractTests
         yield return [typeof(ListTransfer)];
         yield return [typeof(TreeTransfer)];
         yield return [typeof(TransferItemDecorator)];
+
+        yield return [typeof(AbstractSpin)];
+        yield return [typeof(AtomUISpin)];
+        yield return [typeof(AbstractSpinIndicator)];
+        yield return [typeof(AtomUISpinIndicator)];
     }
 
     [Theory]

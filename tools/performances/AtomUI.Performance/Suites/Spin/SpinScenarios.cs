@@ -1,3 +1,4 @@
+using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
@@ -31,7 +32,7 @@ internal static partial class Program
     {
         return new SpinIndicator
         {
-            SizeType          = SizeType.Middle,
+            SizeType          = CustomizableSizeType.Middle,
             VerticalAlignment = VerticalAlignment.Center
         };
     }
@@ -40,7 +41,7 @@ internal static partial class Program
     {
         return new SpinIndicator
         {
-            SizeType          = SizeType.Middle,
+            SizeType          = CustomizableSizeType.Middle,
             VerticalAlignment = VerticalAlignment.Center,
             CustomIndicator  = new LoadingOutlined
             {
@@ -82,9 +83,9 @@ internal static partial class Program
                     Spacing     = 10,
                     Children =
                     {
-                        new SpinIndicator { SizeType = SizeType.Small },
-                        new SpinIndicator { SizeType = SizeType.Middle },
-                        new SpinIndicator { SizeType = SizeType.Large }
+                        new SpinIndicator { SizeType = CustomizableSizeType.Small },
+                        new SpinIndicator { SizeType = CustomizableSizeType.Middle },
+                        new SpinIndicator { SizeType = CustomizableSizeType.Large }
                     }
                 },
                 new StackPanel
@@ -95,17 +96,17 @@ internal static partial class Program
                     {
                         new SpinIndicator
                         {
-                            SizeType         = SizeType.Small,
+                            SizeType         = CustomizableSizeType.Small,
                             CustomIndicator = new LoadingOutlined { StrokeBrush = Brushes.DodgerBlue }
                         },
                         new SpinIndicator
                         {
-                            SizeType         = SizeType.Middle,
+                            SizeType         = CustomizableSizeType.Middle,
                             CustomIndicator = new LoadingOutlined { StrokeBrush = Brushes.DodgerBlue }
                         },
                         new SpinIndicator
                         {
-                            SizeType         = SizeType.Large,
+                            SizeType         = CustomizableSizeType.Large,
                             CustomIndicator = new LoadingOutlined { StrokeBrush = Brushes.DodgerBlue }
                         }
                     }

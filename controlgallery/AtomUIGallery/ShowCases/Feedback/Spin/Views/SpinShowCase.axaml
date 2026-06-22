@@ -152,6 +152,7 @@
                 <atom:SpinIndicator SizeType="Small" VerticalAlignment="Center" />
                 <atom:SpinIndicator SizeType="Middle" VerticalAlignment="Center" />
                 <atom:SpinIndicator SizeType="Large" VerticalAlignment="Center" />
+                <atom:SpinIndicator SizeType="Custom" IndicatorSize="44" DotSize="14" VerticalAlignment="Center" />
             </StackPanel>
                 </DataTemplate>
             </gallery:ShowCaseItem.DeferredContentTemplate>

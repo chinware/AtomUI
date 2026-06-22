@@ -8,19 +8,40 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <atomc:SpinIndicatorDotPanel Name="BuiltInIndicatorLayout">
-                        <Ellipse Classes="SpinIndicatorDot" Fill="{TemplateBinding DotBgBrush}" Opacity="0.3" />
-                        <Ellipse Classes="SpinIndicatorDot" Fill="{TemplateBinding DotBgBrush}" Opacity="0.3" />
-                        <Ellipse Classes="SpinIndicatorDot" Fill="{TemplateBinding DotBgBrush}" Opacity="0.3" />
-                        <Ellipse Classes="SpinIndicatorDot" Fill="{TemplateBinding DotBgBrush}" Opacity="0.3" />
+                    <atomc:SpinIndicatorDotPanel
+                        Name="BuiltInIndicatorLayout"
+                        Width="{TemplateBinding IndicatorSize}"
+                        Height="{TemplateBinding IndicatorSize}">
+                        <Ellipse Classes="SpinIndicatorDot"
+                                 Width="{TemplateBinding DotSize}"
+                                 Height="{TemplateBinding DotSize}"
+                                 Fill="{TemplateBinding DotBgBrush}"
+                                 Opacity="0.3" />
+                        <Ellipse Classes="SpinIndicatorDot"
+                                 Width="{TemplateBinding DotSize}"
+                                 Height="{TemplateBinding DotSize}"
+                                 Fill="{TemplateBinding DotBgBrush}"
+                                 Opacity="0.3" />
+                        <Ellipse Classes="SpinIndicatorDot"
+                                 Width="{TemplateBinding DotSize}"
+                                 Height="{TemplateBinding DotSize}"
+                                 Fill="{TemplateBinding DotBgBrush}"
+                                 Opacity="0.3" />
+                        <Ellipse Classes="SpinIndicatorDot"
+                                 Width="{TemplateBinding DotSize}"
+                                 Height="{TemplateBinding DotSize}"
+                                 Fill="{TemplateBinding DotBgBrush}"
+                                 Opacity="0.3" />
                     </atomc:SpinIndicatorDotPanel>
                     <ContentPresenter
                         Name="PART_CustomIndicatorPresenter"
                         Content="{TemplateBinding CustomIndicator}"
                         ContentTemplate="{TemplateBinding CustomIndicatorTemplate}"
+                        Width="{TemplateBinding IndicatorSize}"
+                        Height="{TemplateBinding IndicatorSize}"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
-                        IsVisible="False"/>
+                        IsVisible="False" />
                 </Panel>
             </ControlTemplate>
         </Setter>
@@ -42,62 +63,17 @@
 
         <Style Selector="^[SizeType=Large]">
             <Setter Property="IndicatorSize" Value="{atom:SpinTokenResource IndicatorSizeLG}" />
-            <Style Selector="^ /template/ atomc|SpinIndicatorDotPanel#BuiltInIndicatorLayout">
-                <Setter Property="Width" Value="{atom:SpinTokenResource IndicatorSizeLG}" />
-                <Setter Property="Height" Value="{atom:SpinTokenResource IndicatorSizeLG}" />
-            </Style>
-            <Style Selector="^ /template/ Ellipse.SpinIndicatorDot">
-                <Setter Property="Width" Value="{atom:SpinTokenResource DotSizeLG}" />
-                <Setter Property="Height" Value="{atom:SpinTokenResource DotSizeLG}" />
-            </Style>
+            <Setter Property="DotSize" Value="{atom:SpinTokenResource DotSizeLG}" />
         </Style>
 
-        <Style Selector="^[SizeType=Middle]">
+        <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Setter Property="IndicatorSize" Value="{atom:SpinTokenResource IndicatorSize}" />
-            <Style Selector="^ /template/ atomc|SpinIndicatorDotPanel#BuiltInIndicatorLayout">
-                <Setter Property="Width" Value="{atom:SpinTokenResource IndicatorSize}" />
-                <Setter Property="Height" Value="{atom:SpinTokenResource IndicatorSize}" />
-            </Style>
-            <Style Selector="^ /template/ Ellipse.SpinIndicatorDot">
-                <Setter Property="Width" Value="{atom:SpinTokenResource DotSize}" />
-                <Setter Property="Height" Value="{atom:SpinTokenResource DotSize}" />
-            </Style>
+            <Setter Property="DotSize" Value="{atom:SpinTokenResource DotSize}" />
         </Style>
 
         <Style Selector="^[SizeType=Small]">
             <Setter Property="IndicatorSize" Value="{atom:SpinTokenResource IndicatorSizeSM}" />
-            <Style Selector="^ /template/ atomc|SpinIndicatorDotPanel#BuiltInIndicatorLayout">
-                <Setter Property="Width" Value="{atom:SpinTokenResource IndicatorSizeSM}" />
-                <Setter Property="Height" Value="{atom:SpinTokenResource IndicatorSizeSM}" />
-            </Style>
-            <Style Selector="^ /template/ Ellipse.SpinIndicatorDot">
-                <Setter Property="Width" Value="{atom:SpinTokenResource DotSizeSM}" />
-                <Setter Property="Height" Value="{atom:SpinTokenResource DotSizeSM}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[SizeType=Large]">
-            <Setter Property="CustomIndicatorSize" Value="{atom:SpinTokenResource IndicatorSizeLG}" />
-            <Style Selector="^ /template/ ContentPresenter#PART_CustomIndicatorPresenter">
-                <Setter Property="Width" Value="{atom:SpinTokenResource IndicatorSizeLG}" />
-                <Setter Property="Height" Value="{atom:SpinTokenResource IndicatorSizeLG}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[SizeType=Middle]">
-            <Setter Property="CustomIndicatorSize" Value="{atom:SpinTokenResource IndicatorSize}" />
-            <Style Selector="^ /template/ ContentPresenter#PART_CustomIndicatorPresenter">
-                <Setter Property="Width" Value="{atom:SpinTokenResource IndicatorSize}" />
-                <Setter Property="Height" Value="{atom:SpinTokenResource IndicatorSize}" />
-            </Style>
-        </Style>
-
-        <Style Selector="^[SizeType=Small]">
-            <Setter Property="CustomIndicatorSize" Value="{atom:SpinTokenResource IndicatorSizeSM}" />
-            <Style Selector="^ /template/ ContentPresenter#PART_CustomIndicatorPresenter">
-                <Setter Property="Width" Value="{atom:SpinTokenResource IndicatorSizeSM}" />
-                <Setter Property="Height" Value="{atom:SpinTokenResource IndicatorSizeSM}" />
-            </Style>
+            <Setter Property="DotSize" Value="{atom:SpinTokenResource DotSizeSM}" />
         </Style>
     </ControlTheme>
 </ResourceDictionary>

@@ -18198,8 +18198,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyCustomIndicatorTemplate] = global::AtomUIGallery.ShowCases.Spin.en_US.ApiPropertyCustomIndicatorTemplate;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorCustomIndicator] = global::AtomUIGallery.ShowCases.Spin.en_US.ApiPropertyIndicatorCustomIndicator;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorCustomIndicatorTemplate] = global::AtomUIGallery.ShowCases.Spin.en_US.ApiPropertyIndicatorCustomIndicatorTemplate;
+                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorDotSize] = global::AtomUIGallery.ShowCases.Spin.en_US.ApiPropertyIndicatorDotSize;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorMotionDuration] = global::AtomUIGallery.ShowCases.Spin.en_US.ApiPropertyIndicatorMotionDuration;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorMotionEasingCurve] = global::AtomUIGallery.ShowCases.Spin.en_US.ApiPropertyIndicatorMotionEasingCurve;
+                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorSize] = global::AtomUIGallery.ShowCases.Spin.en_US.ApiPropertyIndicatorSize;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorSizeType] = global::AtomUIGallery.ShowCases.Spin.en_US.ApiPropertyIndicatorSizeType;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIsMaskBackgroundEnabled] = global::AtomUIGallery.ShowCases.Spin.en_US.ApiPropertyIsMaskBackgroundEnabled;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIsMaskBlurEnabled] = global::AtomUIGallery.ShowCases.Spin.en_US.ApiPropertyIsMaskBlurEnabled;
@@ -18282,8 +18284,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyCustomIndicatorTemplate] = global::AtomUIGallery.ShowCases.Spin.zh_CN.ApiPropertyCustomIndicatorTemplate;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorCustomIndicator] = global::AtomUIGallery.ShowCases.Spin.zh_CN.ApiPropertyIndicatorCustomIndicator;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorCustomIndicatorTemplate] = global::AtomUIGallery.ShowCases.Spin.zh_CN.ApiPropertyIndicatorCustomIndicatorTemplate;
+                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorDotSize] = global::AtomUIGallery.ShowCases.Spin.zh_CN.ApiPropertyIndicatorDotSize;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorMotionDuration] = global::AtomUIGallery.ShowCases.Spin.zh_CN.ApiPropertyIndicatorMotionDuration;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorMotionEasingCurve] = global::AtomUIGallery.ShowCases.Spin.zh_CN.ApiPropertyIndicatorMotionEasingCurve;
+                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorSize] = global::AtomUIGallery.ShowCases.Spin.zh_CN.ApiPropertyIndicatorSize;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorSizeType] = global::AtomUIGallery.ShowCases.Spin.zh_CN.ApiPropertyIndicatorSizeType;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIsMaskBackgroundEnabled] = global::AtomUIGallery.ShowCases.Spin.zh_CN.ApiPropertyIsMaskBackgroundEnabled;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIsMaskBlurEnabled] = global::AtomUIGallery.ShowCases.Spin.zh_CN.ApiPropertyIsMaskBlurEnabled;
@@ -18366,8 +18370,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyCustomIndicatorTemplate] = global::AtomUIGallery.ShowCases.Spin.zh_TW.ApiPropertyCustomIndicatorTemplate;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorCustomIndicator] = global::AtomUIGallery.ShowCases.Spin.zh_TW.ApiPropertyIndicatorCustomIndicator;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorCustomIndicatorTemplate] = global::AtomUIGallery.ShowCases.Spin.zh_TW.ApiPropertyIndicatorCustomIndicatorTemplate;
+                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorDotSize] = global::AtomUIGallery.ShowCases.Spin.zh_TW.ApiPropertyIndicatorDotSize;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorMotionDuration] = global::AtomUIGallery.ShowCases.Spin.zh_TW.ApiPropertyIndicatorMotionDuration;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorMotionEasingCurve] = global::AtomUIGallery.ShowCases.Spin.zh_TW.ApiPropertyIndicatorMotionEasingCurve;
+                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorSize] = global::AtomUIGallery.ShowCases.Spin.zh_TW.ApiPropertyIndicatorSize;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIndicatorSizeType] = global::AtomUIGallery.ShowCases.Spin.zh_TW.ApiPropertyIndicatorSizeType;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIsMaskBackgroundEnabled] = global::AtomUIGallery.ShowCases.Spin.zh_TW.ApiPropertyIsMaskBackgroundEnabled;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.ApiPropertyIsMaskBlurEnabled] = global::AtomUIGallery.ShowCases.Spin.zh_TW.ApiPropertyIsMaskBlurEnabled;

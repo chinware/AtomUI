@@ -14,12 +14,12 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
 
-public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
+public abstract class AbstractSpinIndicator : TemplatedControl, ICustomizableSizeTypeAware
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<SizeType> SizeTypeProperty =
-        SizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractSpinIndicator>();
+    public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
+        CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractSpinIndicator>();
 
     public static readonly StyledProperty<object?> CustomIndicatorProperty =
         AbstractSpin.CustomIndicatorProperty.AddOwner<AbstractSpinIndicator>();
@@ -33,7 +33,13 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
     public static readonly StyledProperty<Easing?> MotionEasingCurveProperty =
         AbstractSpin.MotionEasingCurveProperty.AddOwner<AbstractSpinIndicator>();
 
-    public SizeType SizeType
+    public static readonly StyledProperty<double> IndicatorSizeProperty =
+        AvaloniaProperty.Register<AbstractSpinIndicator, double>(nameof(IndicatorSize), double.NaN);
+
+    public static readonly StyledProperty<double> DotSizeProperty =
+        AvaloniaProperty.Register<AbstractSpinIndicator, double>(nameof(DotSize), double.NaN);
+
+    public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
@@ -64,18 +70,24 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
         set => SetValue(MotionEasingCurveProperty, value);
     }
 
+    public double IndicatorSize
+    {
+        get => GetValue(IndicatorSizeProperty);
+        set => SetValue(IndicatorSizeProperty, value);
+    }
+
+    public double DotSize
+    {
+        get => GetValue(DotSizeProperty);
+        set => SetValue(DotSizeProperty, value);
+    }
+
     #endregion
 
     #region 内部属性定义
 
-    internal static readonly StyledProperty<double> IndicatorSizeProperty =
-        AvaloniaProperty.Register<AbstractSpinIndicator, double>(nameof(IndicatorSize), double.NaN);
-
     internal static readonly StyledProperty<IBrush?> DotBgBrushProperty =
         AvaloniaProperty.Register<AbstractSpinIndicator, IBrush?>(nameof(DotBgBrush));
-
-    internal static readonly StyledProperty<double> CustomIndicatorSizeProperty =
-        AvaloniaProperty.Register<AbstractSpinIndicator, double>(nameof(CustomIndicatorSize), double.NaN);
 
     internal static readonly DirectProperty<AbstractSpinIndicator, bool> IsCustomIndicatorProperty =
         AvaloniaProperty.RegisterDirect<AbstractSpinIndicator, bool>(
@@ -83,22 +95,10 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
             o => o.IsCustomIndicator,
             (o, v) => o.IsCustomIndicator = v);
 
-    internal double IndicatorSize
-    {
-        get => GetValue(IndicatorSizeProperty);
-        set => SetValue(IndicatorSizeProperty, value);
-    }
-
     internal IBrush? DotBgBrush
     {
         get => GetValue(DotBgBrushProperty);
         set => SetValue(DotBgBrushProperty, value);
-    }
-
-    internal double CustomIndicatorSize
-    {
-        get => GetValue(CustomIndicatorSizeProperty);
-        set => SetValue(CustomIndicatorSizeProperty, value);
     }
 
     private bool _isCustomIndicator;
@@ -126,7 +126,7 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
             CustomIndicatorProperty,
             CustomIndicatorTemplateProperty,
             IndicatorSizeProperty,
-            CustomIndicatorSizeProperty);
+            DotSizeProperty);
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -165,13 +165,9 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == CustomIndicatorSizeProperty)
+        if (change.Property == IndicatorSizeProperty)
         {
             UpdateCustomIndicatorSize();
-            UpdateAnimatedTargetCenterPoint();
-        }
-        else if (change.Property == IndicatorSizeProperty)
-        {
             UpdateAnimatedTargetCenterPoint();
         }
         else if (change.Property == CustomIndicatorProperty ||
@@ -328,9 +324,9 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
             return new Size(IndicatorSize, IndicatorSize);
         }
 
-        if (ReferenceEquals(target, _customIndicatorPresenter) && !double.IsNaN(CustomIndicatorSize))
+        if (ReferenceEquals(target, _customIndicatorPresenter) && !double.IsNaN(IndicatorSize))
         {
-            return new Size(CustomIndicatorSize, CustomIndicatorSize);
+            return new Size(IndicatorSize, IndicatorSize);
         }
 
         return target.Bounds.Size;
@@ -448,7 +444,7 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ISizeTypeAware
             return;
         }
 
-        var size = CustomIndicatorSize;
+        var size = IndicatorSize;
         if (!double.IsNaN(size))
         {
             child.SetValue(WidthProperty, size);

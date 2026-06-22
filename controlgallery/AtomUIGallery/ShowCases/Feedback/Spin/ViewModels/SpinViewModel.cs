@@ -53,7 +53,7 @@ public class SpinViewModel : ReactiveObject, IRoutableViewModel
 
         ApiRows =
         [
-            new SpinApiRow("Spin.SizeType", Lang(SpinShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "cyan", "Middle"),
+            new SpinApiRow("Spin.SizeType", Lang(SpinShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "cyan", "Middle"),
             new SpinApiRow("Spin.Tip", Lang(SpinShowCaseLangResourceKind.ApiPropertyTip), "string?", "cyan", "null"),
             new SpinApiRow("Spin.IsTipVisible", Lang(SpinShowCaseLangResourceKind.ApiPropertyIsTipVisible), "bool", "purple", "false"),
             new SpinApiRow("Spin.CustomIndicator", Lang(SpinShowCaseLangResourceKind.ApiPropertyCustomIndicator), "object?", "cyan", "null"),
@@ -65,7 +65,9 @@ public class SpinViewModel : ReactiveObject, IRoutableViewModel
             new SpinApiRow("Spin.IsMaskBackgroundEnabled", Lang(SpinShowCaseLangResourceKind.ApiPropertyIsMaskBackgroundEnabled), "bool", "purple", "false"),
             new SpinApiRow("Spin.IsMotionEnabled", Lang(SpinShowCaseLangResourceKind.ApiPropertyIsMotionEnabled), "bool", "purple", "true"),
             new SpinApiRow("Spin.Content", Lang(SpinShowCaseLangResourceKind.ApiPropertyContent), "object?", "cyan", "null"),
-            new SpinApiRow("SpinIndicator.SizeType", Lang(SpinShowCaseLangResourceKind.ApiPropertyIndicatorSizeType), "SizeType", "cyan", "Middle"),
+            new SpinApiRow("SpinIndicator.SizeType", Lang(SpinShowCaseLangResourceKind.ApiPropertyIndicatorSizeType), "CustomizableSizeType", "cyan", "Middle"),
+            new SpinApiRow("SpinIndicator.IndicatorSize", Lang(SpinShowCaseLangResourceKind.ApiPropertyIndicatorSize), "double", "blue", "token"),
+            new SpinApiRow("SpinIndicator.DotSize", Lang(SpinShowCaseLangResourceKind.ApiPropertyIndicatorDotSize), "double", "blue", "token"),
             new SpinApiRow("SpinIndicator.CustomIndicator", Lang(SpinShowCaseLangResourceKind.ApiPropertyIndicatorCustomIndicator), "object?", "cyan", "null"),
             new SpinApiRow("SpinIndicator.CustomIndicatorTemplate", Lang(SpinShowCaseLangResourceKind.ApiPropertyIndicatorCustomIndicatorTemplate), "IDataTemplate?", "cyan", "null"),
             new SpinApiRow("SpinIndicator.MotionDuration", Lang(SpinShowCaseLangResourceKind.ApiPropertyIndicatorMotionDuration), "TimeSpan", "cyan", "token"),
@@ -119,6 +121,8 @@ public class SpinViewModel : ReactiveObject, IRoutableViewModel
             SpinShowCaseLangResourceKind.ApiPropertyIsMotionEnabled                  => en_US.ApiPropertyIsMotionEnabled,
             SpinShowCaseLangResourceKind.ApiPropertyContent                          => en_US.ApiPropertyContent,
             SpinShowCaseLangResourceKind.ApiPropertyIndicatorSizeType                => en_US.ApiPropertyIndicatorSizeType,
+            SpinShowCaseLangResourceKind.ApiPropertyIndicatorSize                    => en_US.ApiPropertyIndicatorSize,
+            SpinShowCaseLangResourceKind.ApiPropertyIndicatorDotSize                 => en_US.ApiPropertyIndicatorDotSize,
             SpinShowCaseLangResourceKind.ApiPropertyIndicatorCustomIndicator         => en_US.ApiPropertyIndicatorCustomIndicator,
             SpinShowCaseLangResourceKind.ApiPropertyIndicatorCustomIndicatorTemplate => en_US.ApiPropertyIndicatorCustomIndicatorTemplate,
             SpinShowCaseLangResourceKind.ApiPropertyIndicatorMotionDuration          => en_US.ApiPropertyIndicatorMotionDuration,
