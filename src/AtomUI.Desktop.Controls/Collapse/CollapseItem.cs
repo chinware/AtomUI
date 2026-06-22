@@ -20,9 +20,6 @@ namespace AtomUI.Desktop.Controls;
 [PseudoClasses(StdPseudoClass.Pressed, StdPseudoClass.Selected)]
 public class CollapseItem : HeaderedContentControl, ISelectable
 {
-    private static readonly CubicEaseOut DefaultExpandMotionEasing = new();
-    private static readonly CubicEaseIn DefaultCollapseMotionEasing = new();
-
     #region 公共属性定义
 
     public static readonly StyledProperty<bool> IsSelectedProperty =
@@ -94,6 +91,32 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     internal static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
         CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<CollapseItem>();
 
+    internal static readonly StyledProperty<Thickness> DefaultHeaderPaddingProperty =
+        AvaloniaProperty.Register<CollapseItem, Thickness>(nameof(DefaultHeaderPadding));
+
+    internal static readonly StyledProperty<Thickness> DefaultContentPaddingProperty =
+        AvaloniaProperty.Register<CollapseItem, Thickness>(nameof(DefaultContentPadding));
+
+    internal static readonly DirectProperty<CollapseItem, Thickness?> OwnerHeaderPaddingProperty =
+        AvaloniaProperty.RegisterDirect<CollapseItem, Thickness?>(nameof(OwnerHeaderPadding),
+            o => o.OwnerHeaderPadding,
+            (o, v) => o.OwnerHeaderPadding = v);
+
+    internal static readonly DirectProperty<CollapseItem, Thickness?> OwnerContentPaddingProperty =
+        AvaloniaProperty.RegisterDirect<CollapseItem, Thickness?>(nameof(OwnerContentPadding),
+            o => o.OwnerContentPadding,
+            (o, v) => o.OwnerContentPadding = v);
+
+    internal static readonly DirectProperty<CollapseItem, Thickness> EffectiveHeaderPaddingProperty =
+        AvaloniaProperty.RegisterDirect<CollapseItem, Thickness>(nameof(EffectiveHeaderPadding),
+            o => o.EffectiveHeaderPadding,
+            (o, v) => o.EffectiveHeaderPadding = v);
+
+    internal static readonly DirectProperty<CollapseItem, Thickness> EffectiveContentPaddingProperty =
+        AvaloniaProperty.RegisterDirect<CollapseItem, Thickness>(nameof(EffectiveContentPadding),
+            o => o.EffectiveContentPadding,
+            (o, v) => o.EffectiveContentPadding = v);
+
     internal static readonly DirectProperty<CollapseItem, bool> IsGhostStyleProperty =
         AvaloniaProperty.RegisterDirect<CollapseItem, bool>(nameof(IsGhostStyle),
             o => o.IsGhostStyle,
@@ -130,6 +153,50 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
+    }
+
+    internal Thickness DefaultHeaderPadding
+    {
+        get => GetValue(DefaultHeaderPaddingProperty);
+        set => SetValue(DefaultHeaderPaddingProperty, value);
+    }
+
+    internal Thickness DefaultContentPadding
+    {
+        get => GetValue(DefaultContentPaddingProperty);
+        set => SetValue(DefaultContentPaddingProperty, value);
+    }
+
+    private Thickness? _ownerHeaderPadding;
+
+    internal Thickness? OwnerHeaderPadding
+    {
+        get => _ownerHeaderPadding;
+        set => SetAndRaise(OwnerHeaderPaddingProperty, ref _ownerHeaderPadding, value);
+    }
+
+    private Thickness? _ownerContentPadding;
+
+    internal Thickness? OwnerContentPadding
+    {
+        get => _ownerContentPadding;
+        set => SetAndRaise(OwnerContentPaddingProperty, ref _ownerContentPadding, value);
+    }
+
+    private Thickness _effectiveHeaderPadding;
+
+    internal Thickness EffectiveHeaderPadding
+    {
+        get => _effectiveHeaderPadding;
+        set => SetAndRaise(EffectiveHeaderPaddingProperty, ref _effectiveHeaderPadding, value);
+    }
+
+    private Thickness _effectiveContentPadding;
+
+    internal Thickness EffectiveContentPadding
+    {
+        get => _effectiveContentPadding;
+        set => SetAndRaise(EffectiveContentPaddingProperty, ref _effectiveContentPadding, value);
     }
 
     private bool _isGhostStyle;
@@ -190,6 +257,15 @@ public class CollapseItem : HeaderedContentControl, ISelectable
     
     #endregion
 
+    private static readonly CubicEaseOut DefaultExpandMotionEasing = new();
+    private static readonly CubicEaseIn DefaultCollapseMotionEasing = new();
+
+    private BaseMotionActor? _motionActor;
+    private Border? _headerDecorator;
+    private IconButton? _expandButton;
+
+    internal bool InAnimating { get; private set; }
+
     static CollapseItem()
     {
         SelectableMixin.Attach<CollapseItem>(IsSelectedProperty);
@@ -198,16 +274,88 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         DataContextProperty.Changed.AddClassHandler<CollapseItem>((x, e) => x.UpdateHeader(e));
         AffectsRender<CollapseItem>(HeaderBorderThicknessProperty, ContentBorderThicknessProperty);
     }
-    
-    private BaseMotionActor? _motionActor;
-    private Border? _headerDecorator;
-    private IconButton? _expandButton;
-
-    internal bool InAnimating { get; private set; }
 
     protected override AutomationPeer OnCreateAutomationPeer()
     {
         return new ListItemAutomationPeer(this);
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.DisableTransitions();
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+
+        if (_expandButton is not null)
+        {
+            _expandButton.Click -= HandleExpandButtonClick;
+        }
+
+        _motionActor           = e.NameScope.Find<BaseMotionActor>("PART_ContentMotionActor");
+        _headerDecorator       = e.NameScope.Find<Border>("PART_HeaderDecorator");
+        _expandButton          = e.NameScope.Find<IconButton>("PART_ExpandButton");
+
+        UpdateEffectivePaddings();
+        HandleSelectedChanged(true);
+        if (_expandButton is not null)
+        {
+            _expandButton.Click += HandleExpandButtonClick;
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SetupDefaultExpandIcon();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        Dispatcher.Post(this.EnableTransitions);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        InAnimating = false;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (this.IsAttachedToVisualTree())
+        {
+            if (change.Property == IsSelectedProperty)
+            {
+                HandleSelectedChanged();
+            }
+        }
+
+        if (change.Property == HeaderPaddingProperty ||
+            change.Property == ContentPaddingProperty ||
+            change.Property == DefaultHeaderPaddingProperty ||
+            change.Property == DefaultContentPaddingProperty ||
+            change.Property == OwnerHeaderPaddingProperty ||
+            change.Property == OwnerContentPaddingProperty)
+        {
+            UpdateEffectivePaddings();
+        }
+    }
+
+    internal bool IsPointInHeaderBounds(Point position)
+    {
+        if (_headerDecorator is not null && TriggerType != CollapseTriggerType.Icon)
+        {
+            return _headerDecorator.Bounds.Contains(position);
+        }
+
+        return false;
     }
 
     private void UpdateHeader(AvaloniaPropertyChangedEventArgs obj)
@@ -245,41 +393,9 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         }
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-
-        if (_expandButton is not null)
-        {
-            _expandButton.Click -= HandleExpandButtonClick;
-        }
-
-        _motionActor           = e.NameScope.Find<BaseMotionActor>("PART_ContentMotionActor");
-        _headerDecorator       = e.NameScope.Find<Border>("PART_HeaderDecorator");
-        _expandButton          = e.NameScope.Find<IconButton>("PART_ExpandButton");
-
-        HandleSelectedChanged(true);
-        if (_expandButton is not null)
-        {
-            _expandButton.Click += HandleExpandButtonClick;
-        }
-    }
-
     private void HandleExpandButtonClick(object? sender, RoutedEventArgs args)
     {
         IsSelected = !IsSelected;
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        SetupDefaultExpandIcon();
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        InAnimating = false;
     }
 
     private void SetupDefaultExpandIcon()
@@ -292,17 +408,14 @@ public class CollapseItem : HeaderedContentControl, ISelectable
         Debug.Assert(ExpandIcon != null);
     }
 
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    private void UpdateEffectivePaddings()
     {
-        base.OnPropertyChanged(change);
-
-        if (this.IsAttachedToVisualTree())
-        {
-            if (change.Property == IsSelectedProperty)
-            {
-                HandleSelectedChanged();
-            }
-        }
+        EffectiveHeaderPadding = IsSet(HeaderPaddingProperty)
+            ? HeaderPadding
+            : OwnerHeaderPadding ?? DefaultHeaderPadding;
+        EffectiveContentPadding = IsSet(ContentPaddingProperty)
+            ? ContentPadding
+            : OwnerContentPadding ?? DefaultContentPadding;
     }
 
     private void HandleSelectedChanged(bool forceDisabledMotion = false)
@@ -363,27 +476,5 @@ public class CollapseItem : HeaderedContentControl, ISelectable
             _motionActor.SetCurrentValue(IsVisibleProperty, false);
             InAnimating = false;
         });
-    }
-
-    internal bool IsPointInHeaderBounds(Point position)
-    {
-        if (_headerDecorator is not null && TriggerType != CollapseTriggerType.Icon)
-        {
-            return _headerDecorator.Bounds.Contains(position);
-        }
-
-        return false;
-    }
-    
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        this.DisableTransitions();
-    }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        Dispatcher.Post(this.EnableTransitions);
     }
 }

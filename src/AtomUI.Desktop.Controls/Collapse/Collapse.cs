@@ -6,7 +6,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.VisualTree;
@@ -149,25 +148,6 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
         SelectionChanged += HandleSelectionChanged;
         this.RegisterTokenResourceScope(CollapseToken.ScopeProvider);
     }
-
-    private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
-    {
-        SetupItemsBorderThickness();
-    }
-
-    private void SetupItemsBorderThickness()
-    {
-        if (this.IsAttachedToVisualTree())
-        {
-            for (var i = 0; i < ItemCount; ++i)
-            {
-                if (Items[i] is CollapseItem collapseItem)
-                {
-                    SetupCollapseBorderThickness(collapseItem, i);
-                }
-            }
-        }
-    }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
     {
@@ -220,8 +200,8 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
             collapseItem[!CollapseItem.ExpandIconPositionProperty] = this[!ExpandIconPositionProperty];
             collapseItem[!CollapseItem.IsMotionEnabledProperty]    = this[!IsMotionEnabledProperty];
             PrepareCollapseItem(collapseItem, item, index);
-            SetupCollapseBorderThickness(collapseItem, index);
             ConfigureItemPaddings(collapseItem);
+            SetupCollapseBorderThickness(collapseItem, index);
         }
         else
         {
@@ -239,43 +219,6 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
         {
             SetupCollapseBorderThickness(collapseItem, newIndex);
         }
-    }
-
-    private void SetupCollapseBorderThickness(CollapseItem collapseItem, int index)
-    {
-        var headerBorderBottom  = BorderThickness.Bottom;
-        var contentBorderBottom = BorderThickness.Bottom;
-        if (!IsGhostStyle)
-        {
-            if (!IsBorderless)
-            {
-                if (index == ItemCount - 1 && !collapseItem.IsSelected)
-                {
-                    headerBorderBottom = 0d;
-                }
-            }
-            else
-            {
-                if (collapseItem.IsSelected || (index == ItemCount - 1 && !collapseItem.IsSelected))
-                {
-                    headerBorderBottom = 0d;
-                }
-            }
-
-            if (index == ItemCount - 1 &&
-                (collapseItem.IsSelected || (!collapseItem.IsSelected && collapseItem.InAnimating)))
-            {
-                contentBorderBottom = 0d;
-            }
-        }
-        else
-        {
-            headerBorderBottom  = 0d;
-            contentBorderBottom = 0d;
-        }
-
-        collapseItem.HeaderBorderThickness  = new Thickness(0, 0, 0, headerBorderBottom);
-        collapseItem.ContentBorderThickness = new Thickness(0, 0, 0, contentBorderBottom);
     }
 
     protected override void OnGotFocus(FocusChangedEventArgs e)
@@ -334,34 +277,116 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == IsBorderlessProperty)
-        {
-            SetupEffectiveBorderThickness();
-        }
-        else if (change.Property == IsAccordionProperty)
+
+        if (change.Property == IsAccordionProperty)
         {
             SetupSelectionMode();
         }
-        else if (change.Property == IsBorderlessProperty ||
-                 change.Property == IsGhostStyleProperty)
+
+        if (change.Property == BorderThicknessProperty ||
+            change.Property == IsBorderlessProperty ||
+            change.Property == IsGhostStyleProperty)
         {
+            SetupEffectiveBorderThickness();
             SetupItemsBorderThickness();
         }
+
         if (change.Property == ItemHeaderPaddingProperty ||
             change.Property == ItemContentPaddingProperty)
         {
-            if (Items.Count > 0)
+            ConfigureItemsPaddings();
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        SetupEffectiveBorderThickness();
+    }
+
+    private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs args)
+    {
+        SetupItemsBorderThickness();
+    }
+
+    private void SetupItemsBorderThickness()
+    {
+        if (this.IsAttachedToVisualTree())
+        {
+            for (var i = 0; i < ItemCount; ++i)
             {
-                for (int i = 0; i < ItemCount; i++)
+                if (GetCollapseItemAt(i) is { } collapseItem)
                 {
-                    var item = Items[i];
-                    if (item is CollapseItem collapseItem)
-                    {
-                        ConfigureItemPaddings(collapseItem);
-                    }
+                    SetupCollapseBorderThickness(collapseItem, i);
                 }
             }
         }
+    }
+
+    private void SetupCollapseBorderThickness(CollapseItem collapseItem, int index)
+    {
+        var headerBorderBottom  = BorderThickness.Bottom;
+        var contentBorderBottom = BorderThickness.Bottom;
+        if (!IsGhostStyle)
+        {
+            if (!IsBorderless)
+            {
+                if (index == ItemCount - 1 && !collapseItem.IsSelected)
+                {
+                    headerBorderBottom = 0d;
+                }
+            }
+            else
+            {
+                if (collapseItem.IsSelected || (index == ItemCount - 1 && !collapseItem.IsSelected))
+                {
+                    headerBorderBottom = 0d;
+                }
+            }
+
+            if (index == ItemCount - 1 &&
+                (collapseItem.IsSelected || (!collapseItem.IsSelected && collapseItem.InAnimating)))
+            {
+                contentBorderBottom = 0d;
+            }
+        }
+        else
+        {
+            headerBorderBottom  = 0d;
+            contentBorderBottom = 0d;
+        }
+
+        collapseItem.HeaderBorderThickness  = new Thickness(0, 0, 0, headerBorderBottom);
+        collapseItem.ContentBorderThickness = new Thickness(0, 0, 0, contentBorderBottom);
+    }
+
+    private CollapseItem? GetCollapseItemAt(int index)
+    {
+        return ContainerFromIndex(index) as CollapseItem;
+    }
+
+    private void ConfigureItemsPaddings()
+    {
+        if (Items.Count > 0)
+        {
+            for (var i = 0; i < ItemCount; i++)
+            {
+                if (GetCollapseItemAt(i) is { } collapseItem)
+                {
+                    ConfigureItemPaddings(collapseItem);
+                }
+            }
+        }
+    }
+
+    private void ConfigureItemPaddings(CollapseItem collapseItem)
+    {
+        collapseItem.OwnerHeaderPadding = IsSet(ItemHeaderPaddingProperty)
+            ? ItemHeaderPadding
+            : null;
+        collapseItem.OwnerContentPadding = IsSet(ItemContentPaddingProperty)
+            ? ItemContentPadding
+            : null;
     }
 
     private void SetupEffectiveBorderThickness()
@@ -385,29 +410,6 @@ public class Collapse : SelectingItemsControl, IMotionAwareControl
         else
         {
             SelectionMode = SelectionMode.Multiple | SelectionMode.Toggle;
-        }
-    }
-    
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        SetupEffectiveBorderThickness();
-    }
-    
-    private void ConfigureItemPaddings(CollapseItem collapseItem)
-    {
-        if (IsSet(ItemHeaderPaddingProperty) &&
-            !collapseItem.IsSet(CollapseItem.HeaderPaddingProperty))
-        {
-            collapseItem.SetValue(CollapseItem.HeaderPaddingProperty, ItemHeaderPadding,
-                BindingPriority.LocalValue);
-        }
-
-        if (IsSet(ItemContentPaddingProperty) &&
-            !collapseItem.IsSet(CollapseItem.ContentPaddingProperty))
-        {
-            collapseItem.SetValue(CollapseItem.ContentPaddingProperty, ItemContentPadding,
-                BindingPriority.LocalValue);
         }
     }
 }
