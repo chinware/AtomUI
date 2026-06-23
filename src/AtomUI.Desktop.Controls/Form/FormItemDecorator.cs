@@ -35,7 +35,7 @@ public class FormItemDecorator : TemplatedControl,
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<FormItemDecorator>();
     
     public static readonly StyledProperty<object?> ExtraProperty =
-        AvaloniaProperty.Register<FormItem, object?>(nameof(Extra));
+        AvaloniaProperty.Register<FormItemDecorator, object?>(nameof(Extra));
 
     public static readonly StyledProperty<IDataTemplate?> ExtraTemplateProperty =
         AvaloniaProperty.Register<FormItemDecorator, IDataTemplate?>(nameof(ExtraTemplate));
@@ -94,50 +94,6 @@ public class FormItemDecorator : TemplatedControl,
     }
     #endregion
 
-    private CompositeDisposable? _disposables;
-    
-    static FormItemDecorator()
-    {
-        AffectsMeasure<FormItemDecorator>(ChildProperty, PaddingProperty);
-        ChildProperty.Changed.AddClassHandler<FormItemDecorator>((decorator, e) => decorator.HandleChildChanged(e));
-    }
-
-    private void HandleChildChanged(AvaloniaPropertyChangedEventArgs e)
-    {
-        if (e.OldValue is IFormItemAware oldFormItemAware)
-        {
-            _disposables?.Dispose();
-            _disposables                  =  null;
-            oldFormItemAware.ValueChanged -= HandleContentValueChanged;
-        }
-        if (e.NewValue is IFormItemAware newFormItemAware)
-        {
-            _disposables = new CompositeDisposable();
-            newFormItemAware.ValueChanged += HandleContentValueChanged;
-            if (e.NewValue is Control newChild)
-            {
-                _disposables.Add(FormSizeTypeBindingHelper.RelaySizeType(this, SizeTypeProperty, newChild));
-                if (newChild is IMotionAwareControl)
-                {
-                    _disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, newChild, IsMotionEnabledProperty));
-                }
-                if (newChild is IInputControlStyleVariantAware)
-                {
-                    _disposables.Add(BindUtils.RelayBind(this, StyleVariantProperty, newChild, StyleVariantProperty));
-                }
-            }
-        }
-        else
-        {
-            throw new Exception("Child must implement IFormItemAware interface.");
-        }
-    }
-
-    private void HandleContentValueChanged(object? sender, EventArgs args)
-    {
-        _formValueChanged?.Invoke(this, EventArgs.Empty);
-    }
-
     #region 内部属性定义
 
     internal static readonly StyledProperty<FormValidateFeedback?> FormFeedbackProperty = 
@@ -150,6 +106,14 @@ public class FormItemDecorator : TemplatedControl,
     }
 
     #endregion
+
+    private CompositeDisposable? _disposables;
+
+    static FormItemDecorator()
+    {
+        AffectsMeasure<FormItemDecorator>(ChildProperty, PaddingProperty);
+        ChildProperty.Changed.AddClassHandler<FormItemDecorator>((decorator, e) => decorator.HandleChildChanged(e));
+    }
     
     #region 实现 FormItem 接口
     private EventHandler? _formValueChanged;
@@ -201,10 +165,66 @@ public class FormItemDecorator : TemplatedControl,
 
     protected virtual void NotifySetFeedBackControl(FormValidateFeedback? value)
     {
+        FormFeedback = value;
         if (Child is IFormItemFeedbackAware formItemFeedbackAware)
         {
             formItemFeedbackAware.SetFeedbackControl(value);
         }
     }
     #endregion
+
+    private void HandleChildChanged(AvaloniaPropertyChangedEventArgs e)
+    {
+        ReleaseChild(e.OldValue);
+        AttachChild(e.NewValue);
+    }
+
+    private void AttachChild(object? child)
+    {
+        if (child is not IFormItemAware formItemAware)
+        {
+            throw new Exception("Child must implement IFormItemAware interface.");
+        }
+
+        _disposables = new CompositeDisposable();
+        formItemAware.ValueChanged += HandleContentValueChanged;
+
+        if (child is Control childControl)
+        {
+            _disposables.Add(FormSizeTypeBindingHelper.RelaySizeType(this, SizeTypeProperty, childControl));
+            if (childControl is IMotionAwareControl)
+            {
+                _disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, childControl, IsMotionEnabledProperty));
+            }
+            if (childControl is IInputControlStyleVariantAware)
+            {
+                _disposables.Add(BindUtils.RelayBind(this, StyleVariantProperty, childControl, StyleVariantProperty));
+            }
+        }
+
+        if (child is IFormItemFeedbackAware feedbackAware)
+        {
+            feedbackAware.SetFeedbackControl(FormFeedback);
+        }
+    }
+
+    private void ReleaseChild(object? child)
+    {
+        _disposables?.Dispose();
+        _disposables = null;
+
+        if (child is IFormItemAware formItemAware)
+        {
+            formItemAware.ValueChanged -= HandleContentValueChanged;
+        }
+        if (child is IFormItemFeedbackAware feedbackAware)
+        {
+            feedbackAware.SetFeedbackControl(null);
+        }
+    }
+
+    private void HandleContentValueChanged(object? sender, EventArgs args)
+    {
+        _formValueChanged?.Invoke(this, EventArgs.Empty);
+    }
 }

@@ -1,5 +1,7 @@
 using Avalonia;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -28,11 +30,9 @@ public class SubmitButton : Button
         remove => RemoveHandler(SubmitEvent, value);
     }
     #endregion
-    
-    static SubmitButton()
-    {
-        Form.IsFormValidProperty.Changed.AddClassHandler<SubmitButton>((button, args) => button.HandleFormValidChanged(args.GetNewValue<bool>()));
-    }
+
+    private Form? _ownerForm;
+    private IDisposable? _formValidSubscription;
 
     protected override void OnClick()
     {
@@ -40,15 +40,75 @@ public class SubmitButton : Button
         RaiseEvent(new RoutedEventArgs(SubmitEvent));
     }
 
-    private void HandleFormValidChanged(bool newValue)
+    protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToLogicalTree(e);
+        ConfigureOwnerForm();
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ConfigureOwnerForm();
+    }
+
+    protected override void OnDetachedFromLogicalTree(LogicalTreeAttachmentEventArgs e)
+    {
+        ReleaseOwnerForm();
+        base.OnDetachedFromLogicalTree(e);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ReleaseOwnerForm();
+        base.OnDetachedFromVisualTree(e);
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == IsWatchValidateResultProperty)
+        {
+            ConfigureOwnerForm();
+        }
+    }
+
+    private void ConfigureOwnerForm()
+    {
+        if (!IsWatchValidateResult)
+        {
+            ReleaseOwnerForm();
+            return;
+        }
+
+        var ownerForm = this.FindLogicalAncestorOfType<Form>() ?? this.FindAncestorOfType<Form>();
+        if (ReferenceEquals(_ownerForm, ownerForm))
+        {
+            ApplyFormValidState(ownerForm?.IsFormValid);
+            return;
+        }
+
+        ReleaseOwnerForm();
+        _ownerForm = ownerForm;
+        if (_ownerForm != null)
+        {
+            _formValidSubscription = _ownerForm.GetObservable(Form.IsFormValidProperty).Subscribe(ApplyFormValidState);
+            ApplyFormValidState(_ownerForm.IsFormValid);
+        }
+    }
+
+    private void ReleaseOwnerForm()
+    {
+        _formValidSubscription?.Dispose();
+        _formValidSubscription = null;
+        _ownerForm             = null;
+    }
+
+    private void ApplyFormValidState(bool? isFormValid)
     {
         if (IsWatchValidateResult)
         {
-            SetValue(IsEnabledProperty, newValue);
-        }
-        else
-        {
-            SetValue(IsEnabledProperty, false);
+            SetCurrentValue(IsEnabledProperty, isFormValid == true);
         }
     }
 }
