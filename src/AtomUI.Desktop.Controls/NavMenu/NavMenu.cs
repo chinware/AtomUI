@@ -186,6 +186,7 @@ public class NavMenu : ItemsControl,
         KeyboardNavigation.TabNavigationProperty.OverrideDefaultValue(
             typeof(NavMenu),
             KeyboardNavigationMode.Once);
+        FocusableProperty.OverrideDefaultValue<NavMenu>(true);
         AutomationProperties.AccessibilityViewProperty.OverrideDefaultValue<NavMenu>(AccessibilityView.Control);
         AutomationProperties.ControlTypeOverrideProperty.OverrideDefaultValue<NavMenu>(AutomationControlType.Menu);
         NavMenuItem.SubmenuOpenedEvent.AddClassHandler<NavMenu>((navMenu, e) => navMenu.NotifySubmenuOpened(e));
@@ -339,6 +340,7 @@ public class NavMenu : ItemsControl,
     {
         if (container is NavMenuItem menuItem)
         {
+            menuItem.SetCurrentValue(NavMenuItem.IsKeyboardActiveProperty, false);
             menuItem.ClearNodeBindingDisposables();
         }
 
@@ -813,7 +815,7 @@ public class NavMenu : ItemsControl,
         return current.ContainerFromItem(childNode) as NavMenuItem;
     }
 
-    private void ExecutePendingContainerLayout(ItemsControl current)
+    internal void ExecutePendingContainerLayout(ItemsControl current)
     {
         current.ApplyTemplate();
 

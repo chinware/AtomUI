@@ -4,7 +4,7 @@
 
 ## 1. 实现定位
 
-NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护树形导航状态，并按 mode 选择不同交互策略。实现文档聚焦 `NavMenu`、`NavMenuItem`、节点模型、handler、selection coordinator 和 theme part 的协作关系。
+NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护树形导航状态，并按 mode 选择不同交互策略。实现文档聚焦 `NavMenu`、`NavMenuItem`、节点模型、handler、selection coordinator、keyboard navigation coordinator 和 theme part 的协作关系。
 
 路由切换、权限过滤、业务命令编排和页面生命周期不属于 NavMenu 实现范围。
 
@@ -33,7 +33,9 @@ NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护树形导航�
 
 `NavMenuSelectionCoordinator` 统一处理旧选中节点清理、新选中节点设置、祖先路径标记和事件派发，避免选择逻辑散落在 click handler、默认路径 replay 和 property changed 分支中。
 
-interaction handler 按 mode 分工：Inline handler 处理视觉树内展开，Default handler 处理 popup 打开、延迟关闭、窗口失焦和同级互斥。
+interaction handler 按 mode 分工：Inline handler 处理视觉树内展开，Default handler 处理 popup 打开、延迟关闭、窗口失焦和同级互斥。键盘导航由 interaction handler 层统一接入，负责 active/focus 漫游、层级进入/返回、Enter 提交和 Esc 关闭当前 popup 分支，不能散落到各个 `NavMenuItem` 的局部 key handler 中。
+
+keyboard navigation coordinator 只拥有临时 active/focus 状态，不拥有选择状态。它可以请求打开或关闭子菜单，但叶子节点提交必须进入 `NavMenuSelectionCoordinator`，以保持 click、默认路径 replay 和键盘提交使用同一个选择入口。
 
 Header 控件只承担显示和局部视觉状态，不拥有选择或打开逻辑。
 
@@ -55,12 +57,14 @@ NavMenuItemContainerBinder
 NavMenuItem
   Level / IsTopLevel / HasSubMenu / IsSubMenuOpen
       ↓
-Interaction handler + SelectionCoordinator
+Interaction handler + KeyboardNavigationCoordinator + SelectionCoordinator
       ↓
 Header theme / Popup frame / Inline child frame
 ```
 
 `SelectedItem` 是持续选择状态。`DefaultSelectedPath` 和 `DefaultOpenPaths` 只在初始路径应用中参与 replay。程序连续设置多个选择时，过期 replay 必须被忽略，只应用最新 revision。
+
+键盘 active/focus 是临时交互状态。active 项变化不能写入 `SelectedItem`，不能触发 `NavMenuNodeSelected`，不能改变 `IsInSelectedPath`。只有 Enter 在叶子节点上提交时，才进入 selection coordinator。
 
 `IsItemBackgroundEnabled` 下发到 `NavMenuItem` 和 header theme，但它只控制 item / submenu 背景块，不关闭 header 文本状态。
 
@@ -89,6 +93,17 @@ Default handler：
 - popup close 由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。
 - Horizontal 顶层 popup 放置在下方，非顶层和 vertical popup 使用侧向层级。
 
+Keyboard navigation：
+
+- NavMenu 在根菜单范围接收方向键、Enter 和 Esc，并根据当前 active/focus 项分派给当前 mode 的导航策略。
+- active 项优先来自当前键盘焦点所在的 `NavMenuItem`；没有可用 focus 时，先解析当前 `SelectedItem` 对应的可见容器作为方向键移动锚点，并把本次方向键 delta 应用到该锚点上；找不到选中容器时再使用当前可见层级中的第一个可交互项。
+- Up / Down 在当前可见层级内循环移动，跳过禁用项和不可交互项。
+- Horizontal 根层使用 Left / Right 在顶层项之间循环移动，Down 或 Enter 打开 active 子菜单并进入第一项。
+- Vertical 根层和 popup 子菜单使用 Right 或 Enter 进入子菜单，Left 或 Esc 返回父级并关闭当前 popup 分支。
+- Inline 模式使用 Up / Down 遍历当前展开后的可见树；Enter 在父节点上切换展开，在叶子节点上提交选择。
+- 键盘打开 popup 后必须确保子容器可生成，并把 active/focus 移动到第一个可交互子项；不能依赖固定 timer 等待 popup content。
+- Esc 只关闭当前 popup 分支，active/focus 回到父项；不能调用 `NavMenu.Close()`，避免清空 `SelectedItem`。
+
 `NavMenuItemClick` 表达 item 点击，`NavMenuNodeSelected` 表达叶子节点选择。禁用项不得触发有效点击或选择。
 
 ## 7. 内部算法与关键流程
@@ -114,6 +129,8 @@ NavMenu.SelectedItem + NavMenuNodeSelected
 
 祖先路径只标记导航路径，不应通过 ancestor pointer state 让父级 header 进入 hover 背景。
 
+键盘提交必须复用同一流程。active 项不是选择项，方向键移动不进入 selection coordinator。Enter 提交叶子节点时先触发 item click 语义，再由 selection coordinator 更新选中路径，确保键盘与 pointer click 的事件顺序一致。
+
 ### 7.3 默认路径 replay
 
 `TreeNodePath` 通过 `ItemKey` 定位节点路径。路径 replay 先打开中间节点，再选中叶子节点。由于容器生成依赖 layout 和 ItemsPresenter，replay 可以在 loaded priority 下有界重试。
@@ -135,11 +152,37 @@ Popup shell 位于 `NavMenuItem` 模板内，popup content 由 `ItemsPresenter` 
 
 Popup 背景使用 `MenuPopupBg` / `DarkMenuPopupBg`，不能回退成普通 elevated background。
 
+### 7.6 键盘漫游模型
+
+键盘漫游按“层级容器 + 当前 active 项”计算：
+
+```text
+KeyDown
+      ↓
+resolve active item
+      ↓
+resolve current visible level
+      ↓
+move sibling / enter child / return parent / commit leaf
+      ↓
+sync focus + keyboard active visual
+```
+
+当前可见层级由根 `NavMenu`、已打开 inline 子树或已打开 popup content 决定。层级内只包含已生成、可见、可交互的 `NavMenuItem` 容器。`ItemsSource` 数据节点不能直接参与键盘导航，必须通过容器定位，避免数据和视觉状态出现两个 owner。
+
+初始化 active 项时只能使用当前已经生成且可交互的容器。`SelectedItem` 可以作为 keyboard active 的初始移动锚点，但第一次方向键必须立即移动到选中项前后相邻节点，不能把 active 停在选中项本身；也不能为了初始化 active 项而强制打开隐藏 popup 或 inline 分支。如果选中节点不可见，导航应回退到第一个可导航节点。
+
+打开子菜单时先设置 `IsSubMenuOpen`，再执行必要的模板和 layout 接入以生成子容器，然后把 active/focus 移入子级第一项。关闭子菜单时先关闭当前 popup 分支，再把 active/focus 放回父级触发项。Inline 模式下关闭子菜单不应清理其子树中的 selection path；selection path 只由 selection coordinator 维护。
+
+keyboard active 视觉通过 header 的内部状态表达，使用 `ItemActiveBg` 语义。该状态优先级低于 selected，高于默认态；它不能复用 `IsSelected` 或 `IsInSelectedPath`，否则会把“浏览候选”和“已提交选择”混为同一个状态。`IsInSelectedPath` 只表达选中路径文字语义，不能屏蔽 keyboard active 背景。
+
 ## 8. 资源、性能与 AOT 边界
 
 NavMenu 不应通过反射访问 template part 或内部状态。Header、popup、inline child frame 和 active indicator 均通过稳定 template part 和 Avalonia 属性接入。
 
 handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时释放。延迟打开 / 关闭任务必须支持取消，避免旧 pointer 状态影响新 mode 或新 popup。
+
+键盘导航状态持有的 active item 引用必须随 detach、mode 切换、container clear、popup close 和 item disabled 变化失效。失效时应重新从当前可见层级解析 active 项，不保留悬空容器引用。
 
 默认路径 replay 必须有界，避免容器生成失败时形成无休止 dispatcher 队列。
 
@@ -151,6 +194,11 @@ handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时
 - 点击 item 不得临时关闭 motion。
 - 默认路径应用不使用固定 50ms sleep 作为稳定策略。
 - selection coordinator 是选择状态的统一入口。
+- keyboard active/focus 状态不能替代 selection coordinator。
+- 方向键移动不得触发点击或选中事件。
+- keyboard active 初始解析可以复用可见 `SelectedItem` 容器作为方向键移动锚点，但不得吃掉第一次方向键、触发选择事件或自动打开隐藏分支。
+- Esc 关闭 popup 分支不得调用 `NavMenu.Close()`，不得清空 `SelectedItem`。
+- 键盘打开 popup 或 inline 子项不得依赖固定 timer 生成容器。
 - header hover / selected 背景不通过父级 item hover 状态误触发。
 - `IsItemBackgroundEnabled=false` 不关闭 header 颜色和交互状态。
 - popup、root、inline child frame、header 四类背景职责保持分离。
@@ -161,6 +209,10 @@ handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时
 验证范围：
 
 - Inline、Vertical、Horizontal 打开、关闭、hover、click 和同级互斥。
+- Inline、Vertical、Horizontal 的 Up / Down / Left / Right / Enter / Esc 键盘漫游、层级进入/返回、leaf commit 和 popup close。
+- 方向键移动 active 项不触发 `NavMenuItemClick` / `NavMenuNodeSelected`。
+- Esc 关闭当前 popup 分支但不清空 `SelectedItem`。
+- 禁用项、隐藏项和未展开子项不进入键盘漫游序列。
 - `SelectedItem`、`DefaultSelectedPath`、`DefaultOpenPaths`、stale replay 和 clear selection。
 - 点击子节点时父级 header 不出现错误 hover 背景。
 - `IsItemBackgroundEnabled=true/false` 下 inline 背景块、header 背景和间距分别正确。

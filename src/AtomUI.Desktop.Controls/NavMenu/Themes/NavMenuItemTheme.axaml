@@ -22,6 +22,7 @@
                                                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                            IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                                                            IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
+                                                           IsKeyboardActive="{TemplateBinding IsKeyboardActive}"
                                                            IsTopLevel="{TemplateBinding IsTopLevel}" />
                         <atom:Popup Name="PART_Popup"
                                     WindowManagerAddShadowHint="False"
@@ -68,7 +69,8 @@
                                                          IsEnabled="{TemplateBinding IsEnabled}"
                                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                          IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
-                                                         IsInSelectedPath="{TemplateBinding IsInSelectedPath}" />
+                                                         IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
+                                                         IsKeyboardActive="{TemplateBinding IsKeyboardActive}" />
                         <atom:Popup Name="PART_Popup"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
@@ -115,7 +117,8 @@
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                             Focusable="{TemplateBinding Focusable}"
-                            IsInSelectedPath="{TemplateBinding IsInSelectedPath}" />
+                            IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
+                            IsKeyboardActive="{TemplateBinding IsKeyboardActive}" />
 
                         <atom:LayoutAwareMotionActor
                             Name="PART_ChildItemsLayoutTransform">

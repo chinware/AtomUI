@@ -60,6 +60,11 @@
             </Style>
         </Style>
 
+        <Style Selector="^[IsKeyboardActive=True]:not(^[IsSelected=True])">
+            <Setter Property="Background"
+                    Value="{atom:NavMenuTokenResource ItemActiveBg}" />
+        </Style>
+
         <Style Selector="^[IsDarkStyle=True]">
             <Setter Property="Foreground"
                     Value="{atom:NavMenuTokenResource DarkItemColor}" />
@@ -103,6 +108,11 @@
             <Style Selector="^[IsSelected=True]">
                 <Setter Property="Background"
                         Value="{atom:NavMenuTokenResource DarkItemSelectedBg}" />
+            </Style>
+
+            <Style Selector="^[IsKeyboardActive=True]:not(^[IsSelected=True])">
+                <Setter Property="Background"
+                        Value="{atom:NavMenuTokenResource DarkItemHoverBg}" />
             </Style>
         </Style>
 
