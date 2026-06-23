@@ -863,7 +863,7 @@ public class ComboBoxDisplayMemberBindingTests
                       .Where(item => item.IsVisible && item.Content is string)
                       .ShouldBeEmpty();
 
-            var emptyIndicator = GetVisualDescendant<ContentPresenter>(popupFrame, "PART_EmptyIndicator");
+            var emptyIndicator = GetVisualDescendant<Control>(popupFrame, "PART_EmptyIndicator");
             emptyIndicator.IsVisible.ShouldBeTrue(
                 "When editable filtering removes every candidate, the popup should show the standard empty state instead of a blank panel.");
             emptyIndicator.GetVisualDescendants()
@@ -1042,6 +1042,161 @@ public class ComboBoxDisplayMemberBindingTests
         });
     }
 
+    [Fact]
+    public void Editable_Filter_Down_Key_Activates_Candidate_Without_Changing_Selection()
+    {
+        var comboBox = new AtomUIComboBox
+        {
+            Width           = 200,
+            IsEditable      = true,
+            IsFilterEnabled = true,
+            IsMotionEnabled = false
+        };
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpha" });
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpine" });
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Beta" });
+
+        ShowInWindow(comboBox, window =>
+        {
+            comboBox.Text           = "Al";
+            comboBox.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var textBox = GetVisualDescendant<AvaloniaTextBox>(comboBox, "PART_EditableTextBox");
+            textBox.Focus(NavigationMethod.Pointer);
+            Dispatcher.UIThread.RunJobs();
+
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            Dispatcher.UIThread.RunJobs();
+
+            var visibleRows = GetVisibleStringComboBoxItems(window);
+            visibleRows.Select(item => item.Content).ShouldBe(["Alpha", "Alpine"]);
+            IsCandidateSelected(visibleRows[0]).ShouldBeTrue(
+                "Down should move the keyboard candidate highlight to the first visible option.");
+            IsCandidateSelected(visibleRows[1]).ShouldBeFalse();
+            comboBox.SelectedIndex.ShouldBe(-1,
+                "Moving the keyboard candidate must not commit the real ComboBox selection.");
+
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            Dispatcher.UIThread.RunJobs();
+
+            IsCandidateSelected(visibleRows[0]).ShouldBeFalse();
+            IsCandidateSelected(visibleRows[1]).ShouldBeTrue(
+                "Repeated Down should move the candidate highlight without committing selection.");
+            comboBox.SelectedIndex.ShouldBe(-1);
+        });
+    }
+
+    [Fact]
+    public void Editable_Filter_Enter_Key_Commits_Active_Candidate_And_Closes_DropDown()
+    {
+        var comboBox = new AtomUIComboBox
+        {
+            Width           = 200,
+            IsEditable      = true,
+            IsFilterEnabled = true,
+            IsMotionEnabled = false
+        };
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpha" });
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpine" });
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Beta" });
+
+        ShowInWindow(comboBox, window =>
+        {
+            comboBox.Text           = "Al";
+            comboBox.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var textBox = GetVisualDescendant<AvaloniaTextBox>(comboBox, "PART_EditableTextBox");
+            textBox.Focus(NavigationMethod.Pointer);
+            Dispatcher.UIThread.RunJobs();
+
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            PressKey(window, Key.Enter, PhysicalKey.Enter);
+            Dispatcher.UIThread.RunJobs();
+
+            comboBox.SelectedIndex.ShouldBe(0);
+            comboBox.Text.ShouldBe("Alpha");
+            comboBox.IsDropDownOpen.ShouldBeFalse(
+                "Enter should commit the active keyboard candidate and close the popup.");
+        });
+    }
+
+    [Fact]
+    public void Editable_Filter_Up_Key_Activates_Last_Visible_Candidate()
+    {
+        var comboBox = new AtomUIComboBox
+        {
+            Width           = 200,
+            IsEditable      = true,
+            IsFilterEnabled = true,
+            IsMotionEnabled = false
+        };
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpha" });
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpine" });
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Beta" });
+
+        ShowInWindow(comboBox, window =>
+        {
+            comboBox.Text           = "Al";
+            comboBox.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var textBox = GetVisualDescendant<AvaloniaTextBox>(comboBox, "PART_EditableTextBox");
+            textBox.Focus(NavigationMethod.Pointer);
+            Dispatcher.UIThread.RunJobs();
+
+            PressKey(window, Key.Up, PhysicalKey.ArrowUp);
+            Dispatcher.UIThread.RunJobs();
+
+            var visibleRows = GetVisibleStringComboBoxItems(window);
+            visibleRows.Select(item => item.Content).ShouldBe(["Alpha", "Alpine"]);
+            IsCandidateSelected(visibleRows[0]).ShouldBeFalse();
+            IsCandidateSelected(visibleRows[1]).ShouldBeTrue(
+                "Up should move the keyboard candidate highlight to the last visible option when no candidate is active.");
+            comboBox.SelectedIndex.ShouldBe(-1);
+        });
+    }
+
+    [Fact]
+    public void Editable_Filter_Escape_Key_Clears_Candidate_And_Closes_DropDown()
+    {
+        var comboBox = new AtomUIComboBox
+        {
+            Width           = 200,
+            IsEditable      = true,
+            IsFilterEnabled = true,
+            IsMotionEnabled = false
+        };
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpha" });
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Alpine" });
+        comboBox.Items.Add(new AtomUIComboBoxItem { Content = "Beta" });
+
+        ShowInWindow(comboBox, window =>
+        {
+            comboBox.Text           = "Al";
+            comboBox.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var textBox = GetVisualDescendant<AvaloniaTextBox>(comboBox, "PART_EditableTextBox");
+            textBox.Focus(NavigationMethod.Pointer);
+            Dispatcher.UIThread.RunJobs();
+
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            Dispatcher.UIThread.RunJobs();
+
+            var visibleRows = GetVisibleStringComboBoxItems(window);
+            IsCandidateSelected(visibleRows[0]).ShouldBeTrue();
+
+            PressKey(window, Key.Escape, PhysicalKey.Escape);
+            Dispatcher.UIThread.RunJobs();
+
+            comboBox.IsDropDownOpen.ShouldBeFalse("Escape should close the open candidate popup.");
+            comboBox.SelectedIndex.ShouldBe(-1, "Escape should not commit the active keyboard candidate.");
+            visibleRows.ForEach(row => IsCandidateSelected(row).ShouldBeFalse());
+        });
+    }
+
     private static T GetVisualDescendant<T>(Control control, string name)
         where T : Control
     {
@@ -1062,6 +1217,23 @@ public class ComboBoxDisplayMemberBindingTests
         window.MouseMove(clickPoint.Value);
         window.MouseDown(clickPoint.Value, MouseButton.Left);
         window.MouseUp(clickPoint.Value, MouseButton.Left);
+    }
+
+    private static List<AtomUIComboBoxItem> GetVisibleStringComboBoxItems(Control root)
+    {
+        return root.GetVisualDescendants()
+                   .OfType<AtomUIComboBoxItem>()
+                   .Where(item => item.IsVisible && item.Content is string)
+                   .ToList();
+    }
+
+    private static bool IsCandidateSelected(AtomUIComboBoxItem item)
+    {
+        var property = typeof(AtomUIComboBoxItem).GetProperty(
+            "IsCandidateSelected",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        property.ShouldNotBeNull("ComboBoxItem should expose an internal keyboard candidate state.");
+        return (bool)property.GetValue(item)!;
     }
 
     private static void PressKey(AvaloniaWindow window, Key key, PhysicalKey physicalKey)

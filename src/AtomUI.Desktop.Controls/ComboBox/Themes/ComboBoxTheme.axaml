@@ -137,14 +137,16 @@
                                         ItemsPanel="{TemplateBinding ItemsPanel}"
                                         Grid.IsSharedSizeScope="True" />
                                 </atom:ScrollViewer>
-                                <ContentPresenter
+                                <Border
                                     Name="PART_EmptyIndicator"
-                                    HorizontalContentAlignment="Center"
-                                    VerticalContentAlignment="Center"
                                     Padding="{atom:SharedTokenResource Padding}"
                                     IsVisible="{TemplateBinding IsEffectiveEmptyVisible}">
-                                    <atom:Empty SizeType="Small" PresetImage="Simple" />
-                                </ContentPresenter>
+                                    <atom:Empty
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        SizeType="Small"
+                                        PresetImage="Simple" />
+                                </Border>
                             </Panel>
                         </Border>
                     </atom:Popup>

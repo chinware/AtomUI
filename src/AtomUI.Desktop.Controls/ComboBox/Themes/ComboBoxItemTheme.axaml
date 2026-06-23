@@ -32,6 +32,12 @@
                     Value="{atom:ComboBoxTokenResource ItemHoverBgColor}" />
         </Style>
 
+        <Style Selector="^[IsSelected=False][IsCandidateSelected=True]">
+            <Setter Property="Foreground" Value="{atom:ComboBoxTokenResource ItemHoverColor}" />
+            <Setter Property="Background"
+                    Value="{atom:ComboBoxTokenResource ItemHoverBgColor}" />
+        </Style>
+
         <Style Selector="^:selected">
             <Setter Property="Foreground"
                     Value="{atom:ComboBoxTokenResource ItemSelectedColor}" />

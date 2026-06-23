@@ -20,6 +20,9 @@ public class ComboBoxItem : AvaloniaComboBoxItem
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBoxItem>();
 
+    internal static readonly StyledProperty<bool> IsCandidateSelectedProperty =
+        AvaloniaProperty.Register<ComboBoxItem, bool>(nameof(IsCandidateSelected));
+
     internal CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -30,6 +33,12 @@ public class ComboBoxItem : AvaloniaComboBoxItem
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    internal bool IsCandidateSelected
+    {
+        get => GetValue(IsCandidateSelectedProperty);
+        set => SetValue(IsCandidateSelectedProperty, value);
     }
 
     #endregion
