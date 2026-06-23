@@ -95,7 +95,7 @@ public class Form : ItemsControl,
         AvaloniaProperty.Register<Form, bool>(nameof(IsScrollToFirstErrorEnabled));
     
     public static readonly StyledProperty<FormValidateTrigger> ValidateTriggerProperty =
-        AvaloniaProperty.Register<Form, FormValidateTrigger>(nameof(ValidateTrigger), FormValidateTrigger.OnChanged);
+        AvaloniaProperty.Register<Form, FormValidateTrigger>(nameof(ValidateTrigger), FormValidateTrigger.OnSubmit);
     
     public static readonly StyledProperty<MediaBreakGridLength?> LabelColInfoProperty =
         AvaloniaProperty.Register<Form, MediaBreakGridLength?>(nameof(LabelColInfo));
@@ -520,10 +520,7 @@ public class Form : ItemsControl,
     
     public void Validate()
     {
-        _validationTokenSource?.Cancel();
-        _validationTokenSource?.Dispose();
-        _validationTokenSource = new CancellationTokenSource();
-        var cancellationToken = _validationTokenSource.Token;
+        var cancellationToken = BeginValidationRun();
         Dispatcher.InvokeAsync(() => ValidateAsync(cancellationToken));
     }
 
@@ -599,13 +596,14 @@ public class Form : ItemsControl,
 
     public void Submit()
     {
-        _validationTokenSource?.Cancel();
-        _validationTokenSource?.Dispose();
-        _validationTokenSource = new CancellationTokenSource();
-        var cancellationToken = _validationTokenSource.Token;
+        var cancellationToken = BeginValidationRun();
         Dispatcher.InvokeAsync(async () =>
         {
             var result = await ValidateAsync(cancellationToken);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
             if (result == FormValidateResult.Success)
             {
                 var values = new FormValues();
@@ -626,6 +624,7 @@ public class Form : ItemsControl,
     {
         try
         {
+            CancelPendingValidation();
             IsResetting = true;
             foreach (var item in Items)
             {
@@ -650,6 +649,20 @@ public class Form : ItemsControl,
 
     protected virtual void NotifyReset()
     {
+    }
+
+    private CancellationToken BeginValidationRun()
+    {
+        CancelPendingValidation();
+        _validationTokenSource = new CancellationTokenSource();
+        return _validationTokenSource.Token;
+    }
+
+    private void CancelPendingValidation()
+    {
+        _validationTokenSource?.Cancel();
+        _validationTokenSource?.Dispose();
+        _validationTokenSource = null;
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

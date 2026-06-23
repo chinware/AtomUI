@@ -37,7 +37,7 @@
                                            ErrorFeedbackTemplate="{Binding ErrorFeedbackTemplate}"
                                            WarningFeedback="{Binding WarningFeedback}"
                                            WarningFeedbackTemplate="{Binding WarningFeedbackTemplate}"
-                                           ValidatingFeedback="{Binding WarningFeedback}"
+                                           ValidatingFeedback="{Binding ValidatingFeedback}"
                                            ValidatingFeedbackTemplate="{Binding ValidatingFeedbackTemplate}"/>
             </DataTemplate>
         </Setter>
