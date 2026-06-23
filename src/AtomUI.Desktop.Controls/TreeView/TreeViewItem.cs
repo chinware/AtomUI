@@ -1,4 +1,5 @@
 ﻿using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
 using AtomUI.MotionScene;
@@ -409,6 +410,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
     private Pen? _treeNodeLinePen;
     private IBrush? _treeNodeLinePenBrush;
     private double _treeNodeLinePenWidth;
+    private CompositeDisposable? _treeItemNodeBindingDisposables;
 
     static TreeViewItem()
     {
@@ -427,6 +429,40 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
     {
         _borderRenderHelper     =  new BorderRenderHelper();
         Items.CollectionChanged += HandleCollectionChanged;
+    }
+
+    internal void PrepareTreeItemNodeData(ITreeItemNode treeItemData, IResourceHost resourceHost)
+    {
+        ClearTreeItemNodeBindingDisposables();
+
+        if (treeItemData is BindableTreeItemNode bindableTreeItemNode)
+        {
+            var disposables = new CompositeDisposable();
+            _treeItemNodeBindingDisposables = disposables;
+            disposables.Add(bindableTreeItemNode.AttachResourceHost(resourceHost));
+
+            ApplyNodeData(this, treeItemData);
+            BindBindableTreeItemNode(bindableTreeItemNode, disposables);
+        }
+        else
+        {
+            ApplyNodeData(this, treeItemData);
+        }
+    }
+
+    internal void ClearTreeItemNodeBindingDisposables()
+    {
+        _treeItemNodeBindingDisposables?.Dispose();
+        _treeItemNodeBindingDisposables = null;
+    }
+
+    internal void ClearPreparedTreeItemNodeData()
+    {
+        ClearTreeItemNodeBindingDisposables();
+        if (Header is BindableTreeItemNode)
+        {
+            ClearValue(ItemsSourceProperty);
+        }
     }
     
     private void HandleCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -454,6 +490,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        ClearPreparedTreeItemNodeData();
         base.OnDetachedFromVisualTree(e);
         OwnerTreeView = null;
     }
@@ -807,7 +844,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
             
             if (item != null && item is not Visual && item is ITreeItemNode treeViewItemData)
             {
-                ApplyNodeData(treeViewItem, treeViewItemData);
+                treeViewItem.PrepareTreeItemNodeData(treeViewItemData, this);
             }
             
             if (ItemTemplate != null)
@@ -839,6 +876,26 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
     {
     }
 
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is TreeViewItem treeViewItem)
+        {
+            var shouldReleaseTreeDataTemplateBinding = treeViewItem.Header is BindableTreeItemNode;
+            treeViewItem.ClearPreparedTreeItemNodeData();
+            base.ClearContainerForItemOverride(container);
+            if (shouldReleaseTreeDataTemplateBinding)
+            {
+                // HeaderedItemsControl keeps TreeDataTemplate children binding in an internal disposable.
+                // Preparing once with a null item lets Avalonia release that binding before recycling.
+                base.PrepareContainerForItemOverride(container, null, -1);
+                base.ClearContainerForItemOverride(container);
+            }
+            return;
+        }
+
+        base.ClearContainerForItemOverride(container);
+    }
+
     internal static void ApplyNodeData(TreeViewItem treeViewItem, ITreeItemNode treeItemData)
     {
         treeViewItem.SetCurrentValue(IconProperty, treeItemData.Icon);
@@ -847,10 +904,106 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
         treeViewItem.SetCurrentValue(IsEnabledProperty, treeItemData.IsEnabled);
         treeViewItem.SetCurrentValue(IsExpandedProperty, treeItemData.IsExpanded);
         treeViewItem.SetCurrentValue(IsIndicatorEnabledProperty, treeItemData.IsIndicatorEnabled);
+        treeViewItem.SetCurrentValue(GroupNameProperty, treeItemData.GroupName);
         treeViewItem.SetCurrentValue(ValueProperty, treeItemData.Value);
         
         treeViewItem.ItemKey = treeItemData.ItemKey;
         treeViewItem.IsLeaf  = treeItemData.IsLeaf;
+    }
+
+    private void BindBindableTreeItemNode(BindableTreeItemNode node, CompositeDisposable disposables)
+    {
+        void NodePropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            SyncContainerFromBindableTreeItemNode(node, e.Property);
+        }
+
+        void ContainerPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            SyncBindableTreeItemNodeFromContainer(node, e.Property);
+        }
+
+        node.PropertyChanged += NodePropertyChanged;
+        PropertyChanged      += ContainerPropertyChanged;
+
+        disposables.Add(Disposable.Create(() =>
+        {
+            node.PropertyChanged -= NodePropertyChanged;
+            PropertyChanged      -= ContainerPropertyChanged;
+        }));
+    }
+
+    private void SyncContainerFromBindableTreeItemNode(BindableTreeItemNode node, AvaloniaProperty property)
+    {
+        if (property == BindableTreeItemNode.IconProperty &&
+            !Equals(Icon, node.Icon))
+        {
+            SetCurrentValue(IconProperty, node.Icon);
+        }
+        else if (property == BindableTreeItemNode.IsCheckedProperty &&
+                 IsChecked != node.IsChecked)
+        {
+            SetCurrentValue(IsCheckedProperty, node.IsChecked);
+        }
+        else if (property == BindableTreeItemNode.IsSelectedProperty &&
+                 IsSelected != node.IsSelected)
+        {
+            SetCurrentValue(IsSelectedProperty, node.IsSelected);
+        }
+        else if (property == BindableTreeItemNode.IsEnabledProperty &&
+                 IsEnabled != node.IsEnabled)
+        {
+            SetCurrentValue(IsEnabledProperty, node.IsEnabled);
+        }
+        else if (property == BindableTreeItemNode.IsExpandedProperty &&
+                 IsExpanded != node.IsExpanded)
+        {
+            SetCurrentValue(IsExpandedProperty, node.IsExpanded);
+        }
+        else if (property == BindableTreeItemNode.IsIndicatorEnabledProperty &&
+                 IsIndicatorEnabled != node.IsIndicatorEnabled)
+        {
+            SetCurrentValue(IsIndicatorEnabledProperty, node.IsIndicatorEnabled);
+        }
+        else if (property == BindableTreeItemNode.GroupNameProperty &&
+                 GroupName != node.GroupName)
+        {
+            SetCurrentValue(GroupNameProperty, node.GroupName);
+        }
+        else if (property == BindableTreeItemNode.ValueProperty &&
+                 !Equals(Value, node.Value))
+        {
+            SetCurrentValue(ValueProperty, node.Value);
+        }
+        else if (property == BindableTreeItemNode.ItemKeyProperty &&
+                 ItemKey != node.ItemKey)
+        {
+            ItemKey = node.ItemKey;
+        }
+        else if (property == BindableTreeItemNode.IsLeafProperty &&
+                 IsLeaf != node.IsLeaf)
+        {
+            IsLeaf = node.IsLeaf;
+        }
+    }
+
+    private void SyncBindableTreeItemNodeFromContainer(BindableTreeItemNode node, AvaloniaProperty property)
+    {
+        if (property == IsCheckedProperty &&
+            node.IsChecked != IsChecked)
+        {
+            node.IsChecked = IsChecked;
+        }
+        else if (property == IsSelectedProperty &&
+                 node.IsSelected != IsSelected)
+        {
+            node.IsSelected = IsSelected;
+        }
+        else if (property == IsExpandedProperty &&
+                 node.IsExpanded != IsExpanded)
+        {
+            node.IsExpanded = IsExpanded;
+        }
     }
 
     private void ConfigureIsLeaf()

@@ -1,0 +1,274 @@
+# Cascader 桌面版实现原理
+
+本文档描述 Cascader 桌面版的输入壳体、选项集合、级联展开、选择同步、勾选、过滤、异步加载、绑定型选项和资源生命周期。公共设计与 API 契约见 [Cascader 桌面版架构设计](overview.md)，Token 语义见 [Cascader Token 设计](token.md)，变化记录见 [Cascader Changelog](changelog.md)。
+
+## 1. 实现定位
+
+Cascader 的实现由外层 `Cascader` 和内部 `CascaderView` 组成。`Cascader` 负责输入表面、popup、选择结果、默认值、Form 和 AddOn 集成；`CascaderView` 负责弹层内的级联列、过滤、展开、勾选和异步加载。本文档聚焦 Cascader 自身的状态编排、容器生命周期、数据节点边界和维护不变量，不重复 Select 家族输入壳体的通用实现。
+
+## 2. 源码文件结构
+
+主要源码：
+
+- `src/AtomUI.Desktop.Controls/Cascader/Cascader.cs`：public API、输入壳体、popup、选择结果、默认路径、Form / CompactSpace 集成和外层交互。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderView.cs`：弹层内容、选项源、选择、过滤入口、空状态、默认展开路径和模板接入。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderView.ExpandAndCollapse.cs`：展开、收起、同级互斥展开、子列创建和默认展开路径。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderView.Check.cs`：多选勾选、子树勾选、父级半选和 `SelectedOptions` 同步。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderView.AsyncItemDataLoad.cs`：异步加载、超时、取消、并发加载合并和 loaded 事件。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderView.Filter.cs`：过滤路径收集、过滤结果列表、过滤计数和高亮文本。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderViewLevelList.cs`：单级列表、容器准备、虚拟化上下文保存和清理。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderViewItem.cs`：选项容器、checked / expanded / selected 事件、leaf 判断和绑定型选项同步。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderOption.cs`：`ICascaderOption`、默认轻量 `CascaderOption` 和层级 helper。
+- `src/AtomUI.Desktop.Controls/Cascader/BindableCascaderOption.cs`：绑定型选项模型，使用 scoped resource host generator。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderAddOnDecoratedBox.cs`：Cascader 输入壳体扩展。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderViewPanel.cs`：弹层 frame 布局与边框测量。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderViewFilterList.cs`、`CascaderViewFilterListItemData.cs`：过滤结果列表和路径数据。
+- `src/AtomUI.Desktop.Controls/Cascader/Themes/*.axaml`：Cascader、CascaderView、CascaderViewItem、level list 和 filter list 主题。
+- `src/AtomUI.Desktop.Controls/Cascader/CascaderToken.cs`：Cascader 专属 Token。
+
+## 3. 核心类职责
+
+`Cascader` 是用户直接使用的输入控件。它维护 `Options`、`SelectedOption`、`SelectedOptions`、`EffectiveSelectedOptions`、`SelectedOptionPath`、popup 状态、清除入口、默认选择路径和 Form 映射。它继承 `AbstractSelect` 的输入表面、popup、Form feedback、AddOn、CompactSpace、清除和最大选择数量契约。
+
+`CascaderView` 是 popup 内容控件。它把 `OptionsSource` 同步到内部 `Options`，管理 root level list、过滤结果、选项展开、选项选择、多选勾选和异步加载。
+
+`CascaderViewLevelList` 是单列选项列表。它负责创建 `CascaderViewItem`，恢复默认上下文，保存虚拟化上下文，并在容器清理时释放绑定型选项的生命周期资源。
+
+`CascaderViewItem` 是选项容器。它把 option 状态映射为 header、icon、checked、enabled、expanded、checkbox enabled、leaf 和 value。绑定型选项进入容器时，容器同时负责 resource host attach、属性订阅、children 集合订阅和 checked / expanded 反写。
+
+`CascaderOption` 是默认轻量数据模型。它维护 children 与 parent 的基本关系，不承载 Avalonia 属性系统和动态资源。
+
+`BindableCascaderOption` 是绑定型数据模型。它继承 `AvaloniaObject`，通过 DirectProperty 承载选项属性，并使用 `[GenerateScopedResourceHost]` 生成 scoped resource host 能力。
+
+## 4. 状态与数据流
+
+### 4.1 选项源流
+
+```text
+Cascader.OptionsSource / Options
+      ↓
+Cascader.HandleCascaderSourceChanged
+      ↓
+_options ItemCollection
+      ↓
+CascaderView.OptionsSource
+      ↓
+CascaderView.Options
+      ↓
+PART_RootLevelList.ItemsSource
+```
+
+`OptionsSource` 变化时，外层 Cascader 会先捕获当前选择的路径 identity，再替换内部 `_options`。单选模式下按旧路径尝试重映射 `SelectedOption`，失败时应用 `DefaultSelectOptionPath`。多选模式下按每个已选项路径重映射 `SelectedOptions`。
+
+### 4.2 展开流
+
+```text
+CascaderViewItem.IsExpanded changed
+      ↓
+CascaderView.HandleCascaderItemExpanded
+      ↓
+ExpandItemAsync(option)
+      ↓
+build root-to-target path
+      ↓
+collapse sibling expanded branch
+      ↓
+create child CascaderViewLevelList from option.Children
+```
+
+展开目标必须能从当前 root options 中找到完整路径。找不到 root 或路径不完整时，控件把它视为不属于当前 CascaderView 的野数据。
+
+### 4.3 勾选流
+
+```text
+CascaderViewItem.IsChecked changed
+      ↓
+CheckedSubTree / UnCheckedSubTree
+      ↓
+MarkViewOptionChecked(option)
+      ↓
+SetupParentNodeCheckedStatus
+      ↓
+CascaderView.SelectedOptions
+      ↓
+Cascader.SelectedOptions
+      ↓
+EffectiveSelectedOptions
+```
+
+父级状态按有效子节点计算。有效子节点必须同时满足 enabled 和 checkbox enabled。父级结果为 `true`、`false` 或 `null`，其中 `null` 表达半选。
+
+### 4.4 过滤流
+
+```text
+SelectFilterTextBox.TextChanged
+      ↓
+Cascader.FilterValue
+      ↓
+CascaderView.FilterItems
+      ↓
+collect leaf path infos
+      ↓
+Filter.Filter(selector(pathInfo), FilterValue)
+      ↓
+CascaderViewFilterList
+```
+
+过滤结果只收集叶子路径。结果项的 `Content` 是 header 路径文本，`ExpandItems` 是完整 option 路径，选择结果时回写末级 option。
+
+### 4.5 绑定型选项同步流
+
+```text
+CascaderViewItem prepared
+      ↓
+BindableCascaderOption.AttachResourceHost(owner)
+      ↓
+option.PropertyChanged -> container state
+option.Children.CollectionChanged -> container leaf state
+container IsChecked / IsExpanded changed -> option state
+      ↓
+container clear / detach -> dispose attachment and subscriptions
+```
+
+`Header` 的容器值保持为 option 对象本身。默认 `OptionTemplate` 通过 `Header` 绑定显示文本，用户自定义模板也继续以 option 为 DataContext。
+
+## 5. 生命周期与模板接入
+
+`Cascader` 静态构造注册清除、过滤输入、tag close、multiple、OptionsSource 和选择属性变化的 class handler。
+
+`Cascader` 构造时注册 Cascader token scope，并监听 `Options.CollectionChanged`。`OnInitialized()` 设置默认 contains filter。`OnLoaded()` 应用 `DefaultSelectOptionPath`。
+
+`Cascader.OnApplyTemplate()` 重新应用模板时必须先解除旧 `_cascaderView` 的事件订阅，并清空旧 view 的 `OptionsSource`。随后获取 `PART_SingleFilterInput` 和 `PART_CascaderView`，重新订阅内部 view 事件并把 `Options` 转发给 view。
+
+`CascaderView.OnApplyTemplate()` 获取 `PART_ItemsPanel`、`PART_RootLevelList` 和 `PART_FilterList`。Root level list 设置 `Level=1` 和 `OwnerView=this`，filter list 必须解除旧 selection 订阅再订阅新实例。
+
+`CascaderViewLevelList.ContainerForItemPreparedOverride()` 对每个 `ICascaderOption` 调用 `CascaderViewItem.PrepareCascaderOptionData()`。如果 option 是 `BindableCascaderOption`，容器创建同一生命周期的 `CompositeDisposable`，用于保存 resource host attachment、属性订阅和 children 集合订阅。
+
+`ClearContainerForItemOverride()` 保存虚拟化上下文后，必须先释放绑定型选项订阅，再清空容器属性。这个顺序防止容器清理动作把空值反写到用户数据。
+
+`CascaderViewItem.OnDetachedFromVisualTree()` 释放当前绑定型选项生命周期，防止 detached 容器继续持有 option 或 owner resource host。
+
+`CascaderView.OnDetachedFromVisualTree()` 取消所有待处理异步加载。
+
+## 6. 交互与事件处理
+
+Pointer 路径：
+
+- 外层 Cascader 在 popup 外 pointer release 时切换 `IsDropDownOpen`。
+- popup 内 pointer 事件不触发外层关闭。
+- tag close button 点击不触发外层 popup toggle。
+- `CascaderViewLevelList` 点击 option 时先触发 item click，再按 `ExpandTrigger` 决定是否展开。
+
+键盘路径：
+
+- popup 打开时，按键先交给 `_cascaderView.HandleKeyDown()`。
+- `Escape` 关闭 popup。
+- popup 关闭时，`Down` 打开 popup，`F4` 切换 popup。
+
+单选路径：
+
+- leaf item selected 或 clicked 时提交 `SelectedOption`。
+- `IsAllowSelectParent=true` 时，非 leaf option 也可提交。
+- 单选 popup 关闭时清空过滤输入和 `FilterValue`。
+
+多选路径：
+
+- `IsMultiple=true` 时，`CascaderViewItem.CheckedEvent` 触发 subtree check / uncheck。
+- `SelectedOptionsChanged` 从内部 view 同步到外层 Cascader。
+- tag close 通过 `SelectTag.ClosedEvent` 移除目标 option 及其子孙。
+
+过滤路径：
+
+- `SelectFilterTextBox.TextChangedEvent` 更新 `FilterValue`。
+- `CascaderViewFilterList.SelectionChanged` 选择过滤结果，并在单选模式下提交目标 option。
+
+## 7. 内部算法与关键流程
+
+### 7.1 路径 identity
+
+`BuildOptionIdentityPath()` 从当前 option 沿 `ParentNode` 回溯到 root。每一级路径段优先使用 `ItemKey`，缺失时使用 `Value?.ToString()`。任一级没有可用段时，整条路径不可用于重映射。
+
+`TryParseSelectPath()` 按路径段逐级在当前 options 中查找，匹配规则同样是 `ItemKey` 优先、`Value` 兜底。
+
+### 7.2 默认选择路径
+
+`DefaultSelectOptionPath` 只在单选模式生效。它应用时生成 `SelectedOptionPath` 显示文本，但不直接把末级 option 写入 `SelectedOption`，直到用户交互或外部选择状态进入真实选择流。
+
+### 7.3 展开路径
+
+`ExpandItemAsync(ICascaderOption)` 先从目标节点沿 `ParentNode` 回溯到 root，构造路径。只有路径 root 存在于当前 `_options` 中时才继续展开。
+
+每一级展开前会折叠同级已展开项，保证级联列只表达一条当前展开路径。子列由目标节点 `Children` 创建，`OwnerView`、`ItemTemplate`、`IsAllowSelectParent` 和 `ExpandTrigger` 从 CascaderView 继承。
+
+### 7.4 Leaf 判断
+
+容器 leaf 状态由 `CascaderViewItem.ConfigureIsLeaf()` 统一判断。非异步模式下主要按 children 是否为空判断；异步模式下，`option.IsLeaf`、`AsyncLoaded` 和 children 状态共同决定是否显示展开入口。
+
+绑定型选项的 `IsLeaf`、`Children` 属性替换或当前 children 集合内容变化会触发容器重新执行 leaf 判断，不直接绕过 Cascader 的异步加载语义。
+
+### 7.5 勾选父级状态
+
+父级勾选状态按有效子节点计算。有效子节点必须同时满足 enabled 和 checkbox enabled。父级结果为：
+
+- 全部有效子节点 checked：`true`。
+- 任一有效子节点 checked 或 indeterminate：`null`。
+- 无有效子节点 checked：`false`。
+
+### 7.6 多选展示策略
+
+`BuildEffectiveSelectedOptions()` 根据 `ShowCheckedStrategy` 从真实 `SelectedOptions` 计算展示集合：
+
+- `All` 直接使用真实集合。
+- `ShowParent` 保留完整覆盖子节点的父级，隐藏其子孙。
+- `ShowChild` 只保留没有 children 的节点。
+
+该计算只影响 tag 展示，不改写真实选中集合。
+
+### 7.7 过滤路径缓存
+
+`FilterItems()` 首次过滤时收集所有叶子路径到 `_allPathInfos`，按路径文本排序并缓存。过滤值、过滤器或选项源变化时会重新过滤；`ClearFilter()` 清理过滤状态、结果和缓存。
+
+### 7.8 绑定型选项资源宿主
+
+`BindableCascaderOption` 不持有容器或 ShowCase。容器准备时临时 attach 到 `CascaderView` 或当前 level list 的 `IResourceHost`，清理时释放 attach。动态资源查找使用 owner resource 优先，再 fallback 到 Application。
+
+## 8. 资源、性能与 AOT 边界
+
+绑定型选项使用 source generator 生成 scoped resource host，不手写 `IResourceHost` / `IThemeVariantHost` 样板代码，不使用运行时反射扫描或字符串 binding。
+
+模板内稳定关系优先放在 AXAML 中表达。右侧 count、content add-on 和 handle 状态使用 compiled ancestor binding；C# 属性同步只用于运行时生成容器和绑定型非 Visual 数据对象。
+
+容器生命周期是绑定型选项的释放边界。`CascaderViewItem` 持有的 resource host attachment、option property subscription、container property subscription 和 children collection subscription 必须在容器 clear 或 detach 时释放。
+
+异步加载由 `AsyncExpandLoadCoordinator` 合并同一节点并发请求并应用超时。`CascaderView` detached 时必须调用 `CancelAll()`，避免已离开视觉树的控件继续处理加载结果。
+
+过滤路径缓存以当前 options 为边界，清除过滤或 options source 变化时必须失效，不能跨数据源复用旧路径。
+
+## 9. 维护不变量
+
+- 不把 `CascaderOption` 改造成 `AvaloniaObject`。
+- 新增 binding target 需求时使用独立 bindable 类型。
+- 容器清理时先释放订阅，再清空容器属性。
+- `Header` 容器值保持 option 对象，不改成 header 文本。
+- checked / expanded 的反写只针对 `BindableCascaderOption`，不改变普通 `CascaderOption` 的 CLR 数据模型语义。
+- `ShowCheckedStrategy` 不能改写真实 `SelectedOptions`。
+- `DefaultSelectOptionPath` 和 `OptionsSource` 重映射必须继续使用 `ItemKey` 优先、`Value` 兜底的路径 identity。
+- 展开、过滤、异步加载和勾选不能通过延迟刷新或抑制标记掩盖状态所有权问题。
+- 重新套用模板、container recycle、ItemsSource replacement 和 detach 都必须有对应 release 路径。
+
+## 10. 测试与验证
+
+关键测试：
+
+- `CascaderBindableOptionTests`：绑定型选项 parent 维护、容器同步、children 变化、checked / expanded 反写、owner resource 和 WeakReference 生命周期。
+- `CascaderLazyLoadTests`：异步加载时弹层保持打开、loading 和 loaded children。
+- `CascaderChangeOnSelectTests`：父级可选时立即选择并保持弹层打开。
+- `CascaderThemeContractTests`：主题 binding 和模板契约。
+
+验证命令：
+
+```bash
+dotnet test tests/AtomUI.Desktop.Controls.Tests/AtomUI.Desktop.Controls.Tests.csproj --framework net10.0 --no-restore --filter FullyQualifiedName~Cascader
+dotnet build controlgallery/AtomUIGallery/AtomUIGallery.csproj --no-restore
+git diff --check
+```

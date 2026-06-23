@@ -76,6 +76,14 @@ TreeViewItem 节点 API：
 
 `ITreeItemNode` 是数据驱动树的节点契约，提供 `Header`、`Icon`、`ItemKey`、`Children`、`IsEnabled`、`IsChecked`、`IsSelected`、`IsExpanded`、`IsIndicatorEnabled`、`GroupName`、`IsLeaf`、`Value` 和 parent node 更新能力。
 
+节点数据类型边界：
+
+| 类型 | 定位 | 绑定能力 | 兼容边界 |
+| --- | --- | --- | --- |
+| `TreeItemNode` | 轻量数据节点，适合 C# 构造、异步加载结果和普通 ItemsSource。 | 作为 binding source 使用，不承载 Avalonia binding target 语义。 | 保持 POCO / record 形态，不改造成 `AvaloniaObject`。 |
+| 用户自定义 `ITreeItemNode` | 业务自己的树节点模型。 | 可自行实现 `INotifyPropertyChanged` 或其他业务通知机制。 | TreeView 只依赖 `ITreeItemNode` 契约，不要求继承 AtomUI 节点基类。 |
+| `BindableTreeItemNode` | 绑定型节点，适合在 XAML 中把节点属性作为 Avalonia binding target 或 `DynamicResource` target。 | 使用 Avalonia 属性系统，支持 `Header`、`Icon`、`IsChecked`、`IsSelected`、`IsExpanded` 等节点属性绑定。 | 独立于 `TreeItemNode`，不替代轻量节点；作为 owner-managed 非 Visual `AvaloniaObject` 必须遵守 scoped resource host 生命周期。 |
+
 事件 API：
 
 | 事件 | 语义 |
@@ -156,6 +164,14 @@ TreeView 的状态模型由节点状态、选择状态、勾选状态、展开�
 - 加载中节点显示 loading switcher icon。
 - 加载成功后把返回子节点写入目标节点 `Children`，并展开目标节点。
 
+绑定型节点行为：
+
+- `TreeItemNode` 的定位是轻量数据源节点，不承载 `DynamicResource`、Avalonia styled binding target 或资源宿主职责。
+- 需要在 XAML 中直接绑定节点属性，或把节点 `Header`、`Icon`、状态属性设置为 `DynamicResource` 时，使用独立的 `BindableTreeItemNode`。
+- `BindableTreeItemNode` 进入 TreeView 容器生命周期时，由 owner TreeView / TreeViewItem attach scoped resource host；离开容器、detach、re-template 或 container recycle 时释放 attach token。
+- 绑定型节点属性变化应同步当前生成的 `TreeViewItem` 容器；容器交互导致的 checked、selected、expanded 等状态变化也应按契约回写节点状态。
+- 自定义 `ITreeItemNode` 仍按普通数据模型处理；TreeView 不要求用户模型继承 `BindableTreeItemNode`。
+
 ## 5. 视觉与主题模型
 
 TreeView 主题按 root、item、header、switcher 四层组织。
@@ -204,6 +220,7 @@ TreeView 属于 Data Display 分类，与 List、DataGrid、Card、Descriptions�
 - Avalonia `TreeView`：继承 ItemsControl、Selection、容器生成和基础 keyboard / focus 语义。
 - `TreeViewItem`：节点容器，承载 icon、checked、loading、leaf、value 和 event。
 - `TreeItemNode` / `ITreeItemNode`：数据驱动节点模型。
+- `BindableTreeItemNode`：绑定型节点模型，为 XAML binding target、`DynamicResource` 和动态资源场景提供 Avalonia 属性承载。
 - `NodeSwitcherButton`：节点展开、收起、加载和叶子图标入口。
 - `FloatableTreeView`：TreeView 的浮层变体，用于 TreeViewFlyout 场景。
 - Form：通过 `IFormItemAware` 读取和写入选择值。
@@ -217,6 +234,8 @@ TreeView 不实现 CompactSpace、Button 家族或 Popup 菜单导航模型。
 维护 TreeView 时必须保持以下不变量：
 
 - 不擅自新增、删除、重命名或改变 TreeView / TreeViewItem / ITreeItemNode public API。
+- `TreeItemNode` 保持轻量 POCO / record 数据节点定位，不直接改造成 `AvaloniaObject`。
+- 绑定型节点能力通过独立 `BindableTreeItemNode` 承载，不能通过破坏 `TreeItemNode` record 语义、init 属性或相等性来实现。
 - `DefaultSelectedPaths`、`DefaultCheckedPaths`、`DefaultExpandedPaths` 是默认状态入口，不是持续受控状态。
 - `IsDefaultExpandAll=true` 优先于 `DefaultExpandedPaths`。
 - `SelectedItem` / `SelectedItems` 的 Avalonia 选择语义不变。
@@ -227,6 +246,7 @@ TreeView 不实现 CompactSpace、Button 家族或 Popup 菜单导航模型。
 - `ItemsSource` 变化后应尽量按节点身份路径恢复运行期选择和勾选状态，再回放默认状态。
 - filter 清除后必须恢复过滤前节点可见性、展开状态和高亮状态。
 - 异步加载只在数据节点模型下写入 `ITreeItemNode.Children`，不修改普通手写 `TreeViewItem` 子树。
+- 非 Visual `AvaloniaObject` 节点只要承载 `DynamicResource` 或 token-resource binding，就必须使用 scoped resource host，并有明确 attach/release 路径。
 - 拖拽不得允许节点 drop 到自身或自身后代。
 - Template part 名称和职责不擅自修改。
 - Token 名称和语义不擅自重命名或迁移为实例状态。
@@ -259,6 +279,20 @@ TreeView 同时支持 checkbox 和 radio。checkbox 可以按 `IsCheckStrictly` 
 
 拖拽模型以 TreeViewItem header bounds 和树层级关系计算 drop 目标。drop 结果直接调整 Items / child Items 顺序，并通过 `ItemDropped` 暴露目标父节点和插入位置。
 
+### 8.7 绑定型节点模型
+
+绑定型节点模型用于解决“节点属性本身需要成为 Avalonia binding target”的场景。它不改变 `ITreeItemNode` 作为数据契约的定位，也不要求业务节点继承 AtomUI 类型。
+
+设计规则：
+
+- `TreeItemNode` 继续服务轻量数据源场景；`BindableTreeItemNode` 服务 XAML binding target、`DynamicResource` 和动态主题资源场景。
+- `BindableTreeItemNode` 继承 `AvaloniaObject`，暴露节点属性对应的 Avalonia 属性，并实现 `ITreeItemNode`。
+- `BindableTreeItemNode` 使用 `[GenerateScopedResourceHost]` 生成 scoped `IResourceHost` / `IThemeVariantHost` 生命周期样板代码。
+- TreeView / TreeViewItem 是 owner，负责在容器准备时 attach resource host，在容器清理、detach 或 recycle 时释放。
+- 节点属性变化只同步当前生成容器，不把容器或视觉树对象永久挂回节点。
+- `Header` 仍遵守 Avalonia TreeView 数据项语义：生成容器的 `Header` 是节点对象，`node.Header` 通过 `TreeDataTemplate` 绑定更新展示内容。
+- 普通 `TreeItemNode`、用户自定义 `ITreeItemNode` 与 `BindableTreeItemNode` 可以在同一个 TreeView 数据源中并存。
+
 ## 9. 文档导航与验证策略
 
 关联文档：
@@ -277,5 +311,6 @@ TreeView 同时支持 checkbox 和 radio。checkbox 可以按 `IsCheckStrictly` 
 | 勾选 | strict / cascading、半选、CheckedItems 同步、radio group。 |
 | 过滤 | 高亮、加粗、展开路径、隐藏未命中、清除过滤和空状态。 |
 | 异步加载 | loading 状态、成功写入子节点、超时 / 取消事件结果和 detach 取消。 |
+| 绑定型节点 | XAML binding target、DynamicResource、owner resource 优先级、属性变化同步容器、container clear 释放。 |
 | 拖拽 | preview、drop indicator、根 / 子级插入、自身后代保护和事件顺序。 |
 | Theme / Token | template part、hover mode、selected / disabled、line、switcher、drag indicator 和 token 表。 |

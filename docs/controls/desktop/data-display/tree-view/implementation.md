@@ -22,7 +22,7 @@ TreeView 内部实现较多，按功能拆分 partial 文件。拆分边界服�
 - `src/AtomUI.Desktop.Controls/TreeView/TreeViewItem.cs`：节点容器、展开收起、line 渲染、check/radio 状态、drag bounds 和数据节点承载。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeViewItemHeader.cs`：header 视觉状态、pointer 状态、switcher mode、filter highlight runs 和 template part 订阅。
 - `src/AtomUI.Desktop.Controls/TreeView/NodeSwitcherButton.cs`：switcher 当前图标选择、默认图标、loading load request 和 rotation 动效。
-- `src/AtomUI.Desktop.Controls/TreeView/TreeItemNode.cs`、`ITreeItemNode.cs`：数据节点模型和父子关系维护。
+- `src/AtomUI.Desktop.Controls/TreeView/TreeItemNode.cs`、`ITreeItemNode.cs`：轻量数据节点模型、节点契约和父子关系维护。绑定型节点模型属于同一节点数据职责边界，必须保持独立类型，不改造 `TreeItemNode`。
 - `src/AtomUI.Desktop.Controls/TreeView/DefaultTreeViewInteractionHandler.cs`：pointer、context menu、radio group、checked changed 和 floating tree light dismiss。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeViewToken.cs`：TreeView Token 定义。
 - `src/AtomUI.Desktop.Controls/TreeView/Themes/`：TreeView、TreeViewItem、TreeViewItemHeader、NodeSwitcherButton 主题和模板常量。
@@ -39,7 +39,9 @@ TreeView 内部实现较多，按功能拆分 partial 文件。拆分边界服�
 
 `DefaultTreeViewInteractionHandler` 处理 TreeView 级 pointer、右键上下文菜单、radio group、checked changed 和浮层关闭逻辑，使节点容器不直接持有全局输入订阅。
 
-`TreeItemNode` 是数据驱动节点模型，维护 `Children` 与 `ParentNode` 的一致性。
+`TreeItemNode` 是轻量数据驱动节点模型，维护 `Children` 与 `ParentNode` 的一致性。它不继承 `AvaloniaObject`，不承载 `DynamicResource` 或 Avalonia binding target 语义。
+
+`BindableTreeItemNode` 是绑定型数据节点模型，继承 `AvaloniaObject` 并实现 `ITreeItemNode`。它用于节点属性需要作为 Avalonia binding target 的场景，资源宿主生命周期由 `[GenerateScopedResourceHost]` 生成，owner TreeView / TreeViewItem 负责 attach/release。
 
 ## 4. 状态与数据流
 
@@ -55,6 +57,7 @@ TreeViewItem
 ContainerForItemPreparedOverride
   OwnerTreeView
   ApplyNodeData(ITreeItemNode)
+  BindableTreeItemNode attach resource host + property sync
   ItemTemplate -> HeaderTemplate
   switcher icons
   filter / motion / hover / line / toggle / selectable state bindings
@@ -218,9 +221,25 @@ detached 时必须调用 `CancelAll`，避免已离开视觉树的 TreeView 继�
 
 drop indicator 根据目标 header 上半区、中间区域和下半区决定插入到前、插入到内部或插入到后。执行 drop 前必须检查目标不是被拖拽节点自身或其后代。
 
+### 7.7 绑定型节点同步
+
+绑定型节点只解决节点属性作为 Avalonia binding target 的场景，不替代轻量 `TreeItemNode`。
+
+同步规则：
+
+- `ContainerForItemPreparedOverride` 识别 `BindableTreeItemNode` 后，先 attach scoped resource host，再执行普通 `ITreeItemNode` 数据转接，并建立节点到当前 `TreeViewItem` 的属性同步。
+- 节点到容器同步覆盖 `Icon`、`IsEnabled`、`IsChecked`、`IsSelected`、`IsExpanded`、`IsIndicatorEnabled`、`GroupName`、`Value`、`IsLeaf` 和 `ItemKey` 等当前容器状态。`Header` 保持 Avalonia TreeView 的数据项语义，容器 `Header` 仍是节点对象本身；显示内容通过 `TreeDataTemplate` 绑定 `node.Header` 更新。
+- 容器交互导致的 checked、selected、expanded 状态变化应回写绑定型节点，避免节点状态和当前容器状态分叉。
+- 同步绑定必须进入容器生命周期 disposable。`ClearContainerForItemOverride`、detach、re-template 或 container recycle 时释放，不允许让旧容器继续订阅节点。容器清理还必须释放 `TreeDataTemplate` 建立的 children binding，避免回收容器继续持有旧节点。
+- 同一个节点被多个容器短暂使用时，resource host attach 必须使用 attachment count 或等价 scoped token，释放到 0 后再解除 owner 订阅。
+
 ## 8. 资源、性能与 AOT 边界
 
 TreeView 不通过反射访问模板内部结构。模板接入依赖稳定 part 名称和 Avalonia 属性绑定。
+
+`BindableTreeItemNode` 属于 owner-managed 非 Visual `AvaloniaObject`。它承载 `DynamicResource`、token-resource binding 或 XAML binding target 时，必须按 [Scoped Resource Host Source Generator 范式](../../../../modules/generator/scoped-resource-host-generator.md) 生成 scoped `IResourceHost` / `IThemeVariantHost` 生命周期样板代码。资源查找顺序必须是 owner TreeView / TreeViewItem 优先，再 fallback 到 `Application.Current`。
+
+TreeView / TreeViewItem 对绑定型节点的 attach/release 是资源生命周期边界。不得把 generated `TreeViewItem`、header、container 或 Gallery ShowCase 永久挂回节点，也不得用清空 DataContext 或静态资源替代动态资源能力。
 
 过滤、默认状态回放和勾选级联会触发 layout pass 以实现需要访问的子容器；这些路径必须保持有界，不能引入固定延时等待。
 
@@ -245,6 +264,9 @@ Filter highlight runs 是 header 状态，不应写入 Token 或节点数据模�
 - `DefaultTreeViewInteractionHandler.Detach` 必须释放 pointer、input manager、root handler 和 radio group 关系。
 - `NodeSwitcherButton.Toggle` 在节点加载中不重复触发展开。
 - drag preview、drag-over、drop target 和 indicator 状态必须在拖拽完成或取消时清理。
+- `TreeItemNode` 保持轻量数据节点定位，不承载 Avalonia 属性系统。
+- `BindableTreeItemNode` 的 resource host attach、属性订阅和容器同步必须与容器生命周期成对释放。
+- 绑定型节点不能永久保存当前 `TreeViewItem`、header、template part 或 visual container。
 
 ## 10. 测试与验证
 
@@ -258,4 +280,5 @@ Filter highlight runs 是 header 状态，不应写入 Token 或节点数据模�
 - 异步加载：加载成功、超时、取消、重复请求合并、detach 取消。
 - 拖拽：drag preview、drop indicator、根插入、子节点插入、自身后代保护和事件顺序。
 - Theme：template part、hover mode、selected / disabled、line rendering、switcher icons、drag indicator 和 filter highlighter。
+- 绑定型节点：节点属性变化同步当前容器、容器交互回写节点、DynamicResource 不 root 已移除节点、owner resource 优先于 Application resource。
 - 文档改动运行 `git diff --check`。

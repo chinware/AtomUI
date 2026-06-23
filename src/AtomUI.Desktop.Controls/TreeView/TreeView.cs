@@ -636,7 +636,7 @@ public partial class TreeView : AvaloniaTreeView,
             
             if (item != null && item is not Visual && item is ITreeItemNode treeViewItemData)
             {
-                TreeViewItem.ApplyNodeData(treeViewItem, treeViewItemData);
+                treeViewItem.PrepareTreeItemNodeData(treeViewItemData, this);
             }
             
             if (ItemTemplate != null)
@@ -685,6 +685,26 @@ public partial class TreeView : AvaloniaTreeView,
     
     protected virtual void PrepareTreeViewItem(TreeViewItem treeViewItem, object? item, int index)
     {
+    }
+
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is TreeViewItem treeViewItem)
+        {
+            var shouldReleaseTreeDataTemplateBinding = treeViewItem.Header is BindableTreeItemNode;
+            treeViewItem.ClearPreparedTreeItemNodeData();
+            base.ClearContainerForItemOverride(container);
+            if (shouldReleaseTreeDataTemplateBinding)
+            {
+                // HeaderedItemsControl keeps TreeDataTemplate children binding in an internal disposable.
+                // Preparing once with a null item lets Avalonia release that binding before recycling.
+                base.PrepareContainerForItemOverride(container, null, -1);
+                base.ClearContainerForItemOverride(container);
+            }
+            return;
+        }
+
+        base.ClearContainerForItemOverride(container);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)

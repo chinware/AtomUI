@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Diagnostics;
-using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Controls.Utils;
@@ -313,7 +312,6 @@ public partial class CascaderView : TemplatedControl,
     private bool _defaultExpandPathApplied;
     private bool _ignoreSelectedPropertyChanged;
     private CascaderViewLevelList? _rootLevelList;
-    private readonly Dictionary<CascaderViewLevelList, CompositeDisposable> _levelListDisposables = new();
     
     static CascaderView()
     {
