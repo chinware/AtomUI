@@ -116,10 +116,24 @@ public class BaseNavMenuItemHeader : TemplatedControl
     internal static readonly StyledProperty<bool> IsItemBackgroundEnabledProperty =
         AvaloniaProperty.Register<BaseNavMenuItemHeader, bool>(nameof(IsItemBackgroundEnabled), true);
 
+    internal static readonly DirectProperty<BaseNavMenuItemHeader, bool> IsKeyboardActiveProperty =
+        AvaloniaProperty.RegisterDirect<BaseNavMenuItemHeader, bool>(
+            nameof(IsKeyboardActive),
+            o => o.IsKeyboardActive,
+            (o, v) => o.IsKeyboardActive = v);
+
     internal bool IsItemBackgroundEnabled
     {
         get => GetValue(IsItemBackgroundEnabledProperty);
         set => SetValue(IsItemBackgroundEnabledProperty, value);
+    }
+
+    private bool _isKeyboardActive;
+
+    internal bool IsKeyboardActive
+    {
+        get => _isKeyboardActive;
+        set => SetAndRaise(IsKeyboardActiveProperty, ref _isKeyboardActive, value);
     }
 
     #endregion

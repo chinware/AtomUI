@@ -272,6 +272,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     internal static readonly StyledProperty<bool> IsInSelectedPathProperty = 
         AvaloniaProperty.Register<NavMenuItem, bool>(nameof (IsInSelectedPath));
 
+    internal static readonly DirectProperty<NavMenuItem, bool> IsKeyboardActiveProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(
+            nameof(IsKeyboardActive),
+            o => o.IsKeyboardActive,
+            (o, v) => o.IsKeyboardActive = v);
+
     private double _effectivePopupMinWidth;
 
     internal double EffectivePopupMinWidth
@@ -331,6 +337,14 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         get => GetValue(IsInSelectedPathProperty);
         set => SetValue(IsInSelectedPathProperty, value);
+    }
+
+    private bool _isKeyboardActive;
+
+    internal bool IsKeyboardActive
+    {
+        get => _isKeyboardActive;
+        set => SetAndRaise(IsKeyboardActiveProperty, ref _isKeyboardActive, value);
     }
     
     internal Control? ItemHeader => _itemHeader;
@@ -916,6 +930,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         if (container is NavMenuItem menuItem)
         {
+            menuItem.SetCurrentValue(IsKeyboardActiveProperty, false);
             menuItem.ClearNodeBindingDisposables();
         }
 

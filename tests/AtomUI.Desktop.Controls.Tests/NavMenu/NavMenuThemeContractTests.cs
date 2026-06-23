@@ -100,6 +100,19 @@ public class NavMenuThemeContractTests
     }
 
     [Fact]
+    public void Keyboard_Active_Visual_Is_Header_State_And_Does_Not_ReUse_Selected_State()
+    {
+        var headerSource      = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/BaseNavMenuItemHeaderTheme.axaml");
+        var navMenuItemSource = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuItemTheme.axaml");
+
+        navMenuItemSource.ShouldContain("IsKeyboardActive=\"{TemplateBinding IsKeyboardActive}\"");
+        headerSource.ShouldContain("Selector=\"^[IsKeyboardActive=True]:not(^[IsSelected=True])\"");
+        headerSource.ShouldNotContain("Selector=\"^[IsKeyboardActive=True]:not(^[IsSelected=True]):not(^[IsInSelectedPath=True])\"");
+        headerSource.ShouldContain("Value=\"{atom:NavMenuTokenResource ItemActiveBg}\"");
+        headerSource.ShouldContain("Value=\"{atom:NavMenuTokenResource DarkItemHoverBg}\"");
+    }
+
+    [Fact]
     public void Submenu_Title_Hover_Uses_Foreground_And_Background_Tokens()
     {
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/BaseNavMenuItemHeaderTheme.axaml");

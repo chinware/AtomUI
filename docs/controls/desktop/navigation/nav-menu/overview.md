@@ -70,6 +70,8 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 
 `DefaultSelectedPath` 和 `DefaultOpenPaths` 是默认值入口，不是持续受控展开状态。运行期受控选择应使用 `SelectedItem`。
 
+键盘漫游状态属于内部交互状态，不进入公共 API。NavMenu 保持与 Ant Design Menu 一致的分层：`SelectedItem` 表示已提交的导航选择，`DefaultOpenPaths` / `IsSubMenuOpen` 表示展开状态，键盘当前项只表示临时 active/focus 目标。业务代码不应通过公开属性控制键盘 active 项，也不应把 active 项误认为已选择节点。
+
 稳定 template part：
 
 | Template Part | 类型 | 职责 |
@@ -94,6 +96,9 @@ NavMenu 的交互行为由 mode 决定。
 - 子菜单在当前视觉树中展开，使用 `LayoutAwareMotionActor` 承载展开收起 motion。
 - 点击叶子节点时选中该节点，并更新所有祖先 `IsInSelectedPath`。
 - `IsAccordionMode=true` 时，顶层子菜单互斥展开。
+- 键盘 Up / Down 在当前可见层级内移动 active/focus 项。
+- Enter 在带子菜单项上切换展开状态，在叶子节点上提交选择。
+- Left / Right 可作为桌面增强支持折叠当前 inline 子菜单或展开当前 active 子菜单，但不能改变 `SelectedItem`。
 
 `Vertical` 与 `Horizontal` 模式：
 
@@ -101,12 +106,19 @@ NavMenu 的交互行为由 mode 决定。
 - hover 可以延迟打开子菜单；pointer 离开后延迟关闭。
 - 点击叶子节点时选中节点；弹出层关闭由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。
 - `Horizontal` 顶层菜单 popup 位于下方；非顶层 popup 按右侧边缘对齐。
+- 键盘导航以当前打开的可见菜单层级为边界移动 active/focus 项，跳过禁用项、分割线和不可聚焦内容。
+- 键盘 active 初次移动时优先以当前可见且已生成的 `SelectedItem` 容器作为方向键锚点，并立即移动到前一个或后一个可导航节点；如果没有选中项，或选中项隐藏在未打开的子菜单中，则从第一个可导航节点开始。
+- `Horizontal` 顶层菜单使用 Left / Right 在顶层兄弟项之间移动，Down 或 Enter 打开当前 active 子菜单并进入子菜单第一项。
+- `Vertical` 根层和所有 popup 子菜单使用 Up / Down 在同层兄弟项之间移动，Right 或 Enter 打开当前 active 子菜单并进入子菜单第一项，Left 或 Esc 返回父级并关闭当前 popup 分支。
+- Enter 在叶子节点上提交选择并触发 `NavMenuNodeSelected` / `NavMenuItemClick`；方向键只改变 active/focus，不触发选择。
+- Esc 只关闭当前键盘导航所在的 popup 分支并返回父级 active 项，不调用 `Close()`，因此不能清空 `SelectedItem`。
 
 公共交互状态：
 
 - `Disabled` 由节点 `IsEnabled` 和 command can-execute 共同决定，禁用项不应触发有效点击。
 - `PointerOver` 改变 header 前景和背景，但不能改变选中路径。
 - `Pressed` 只作为点击过程状态，不应通过 ancestor selector 误作用到 header。
+- `KeyboardActive` 表示键盘漫游中的当前项，只影响 focus 和 active 视觉，不改变选中路径。
 - `Selected` 表示当前叶子节点被选中。
 - `IsInSelectedPath` 表示某个祖先位于当前选中路径中。
 - `Open` 表示当前项目子菜单打开。
@@ -138,6 +150,7 @@ Theme 映射规则：
 - Root 背景使用 `ItemBg`，Dark root 背景使用 `DarkMenuBg`。
 - Popup 背景使用 `MenuPopupBg`，Dark popup 使用 `DarkMenuPopupBg`。
 - Header 默认背景为 `Transparent`，hover / selected 背景由 header state 直接控制。
+- Keyboard active 背景使用 `ItemActiveBg`，其优先级低于 `Selected`，高于普通默认态；它可以叠加在 `IsInSelectedPath` 父节点上，使父节点保留 selected-path 文字色的同时显示临时 active 背景。dark style 下使用 dark 语义的 active 视觉，不复用 selected 背景表达临时漫游。
 - `IsItemBackgroundEnabled=true` 时，inline child frame 使用 `SubMenuItemBg` / `DarkSubMenuItemBg`，并应用背景块专用外距。
 - `IsItemBackgroundEnabled=false` 时，inline child frame 背景为 `Transparent`，不应用背景块专用外距；header 的文字色、hover、selected 和 selected path 仍然生效。
 - Horizontal 顶层 light style 通过 `PART_ActiveIndicator` 表达选中；dark style 可以使用 selected background。
@@ -167,8 +180,11 @@ NavMenu 不实现 Form、CompactSpace 或 Button 家族接口。
 - `Mode` 默认值保持 `Inline`。
 - `SelectedItem` 优先级高于 `DefaultSelectedPath`。
 - `DefaultOpenPaths` 和 `DefaultSelectedPath` 不依赖固定时间延迟。
+- 键盘 active/focus 状态不得进入公共 API，不得改变 `SelectedItem`、`DefaultSelectedPath` 或 `DefaultOpenPaths` 的语义。
 - `NavMenuNode` 的 `Header`、`HeaderTemplate`、`ItemKey`、`Icon`、`IsEnabled`、`Children` 名称、类型和语义不变。
 - `NavMenuItemClick` 和 `NavMenuNodeSelected` 的事件语义不变。
+- 方向键移动 active 项不得触发 `NavMenuItemClick` 或 `NavMenuNodeSelected`。
+- Esc 关闭 popup 分支不得调用 `Close()`，不得清空已选中节点。
 - `IsAccordionMode=true` 只控制同层展开互斥，不改变选中节点。
 - `IsItemBackgroundEnabled=false` 不应关闭 header 前景色、hover、selected、selected path 或 disabled 视觉，只关闭 item / submenu 背景块。
 - inline 子菜单背景块外距只在 `IsItemBackgroundEnabled=true` 时生效。
@@ -195,11 +211,27 @@ NavMenu 不实现 Form、CompactSpace 或 Button 家族接口。
 
 `TreeNodePath` 通过 `ItemKey` 定位节点路径。路径 replay 先打开中间节点，再选中叶子节点。`SelectedItem` 是持续选择状态，`DefaultSelectedPath` 是默认选择入口。两者同时存在时，`SelectedItem` 生效。
 
-### 8.3 Item Background 模型
+### 8.3 Keyboard Navigation 模型
+
+NavMenu 的键盘导航模型与选择模型分离：
+
+| 状态 | 职责 | 是否公开 |
+| --- | --- | --- |
+| Keyboard active item | 当前键盘漫游和 focus 目标。 | 否 |
+| Open item path | 当前已展开的 inline / popup 分支。 | 仅通过现有打开行为间接体现 |
+| Selected item | 已提交的导航节点。 | 是，`SelectedItem` |
+
+键盘导航只遍历当前可见且可交互的 `NavMenuItem`。禁用项、分割线、隐藏 popup 内容、尚未展开的 inline 子项和非菜单项内容不进入漫游序列。打开子菜单时，active 项进入该子菜单的第一个可交互子项；关闭子菜单时，active 项回到父级触发项。
+
+当 keyboard active 尚未初始化时，NavMenu 先尝试把当前 `SelectedItem` 对应的可见容器作为方向键移动锚点；第一次 Up / Down 应直接移动到选中项前一个或后一个可导航节点，而不是把 active 停在选中项本身。如果当前没有选中项，或选中项所在分支尚未展开、容器不可见，则回退到第一个可导航节点。这个初始化不会触发新的选择事件，也不会自动打开隐藏分支。
+
+键盘提交遵循“浏览和提交分离”：Up / Down / Left / Right 只移动 active/focus 或打开/关闭层级，Enter 才能提交叶子节点选择。带子菜单项的 Enter 优先执行展开或进入子菜单，不直接选中父节点。
+
+### 8.4 Item Background 模型
 
 `IsItemBackgroundEnabled` 控制背景块，不控制 header 文本状态。该模型要求 `NavMenuItem` 背景和 `NavMenuItemHeader` 背景分离，不能通过禁用 header selector 来实现无背景模式。
 
-### 8.4 Popup 模型
+### 8.5 Popup 模型
 
 `Vertical` 和 `Horizontal` 子菜单使用同一 popup shell。顶层 horizontal popup 放置在底部，非顶层和 vertical popup 使用右侧对齐。Popup 内容宽度、最大高度、背景、圆角和内边距由 NavMenuToken 和 PopupHostToken 共同决定。
 
@@ -218,6 +250,7 @@ NavMenu 不实现 Form、CompactSpace 或 Button 家族接口。
 | 文档 | `overview.md`、`implementation.md`、`token.md`、`changelog.md` 链接有效。 |
 | Public API | `NavMenu`、`NavMenuNode`、`INavMenuNode`、`INavMenu`、事件参数与文档一致。 |
 | Mode 行为 | Inline、Vertical、Horizontal 的打开、关闭、选中、默认路径和 popup 逻辑稳定。 |
+| Keyboard | Up、Down、Left、Right、Enter、Esc 在 Inline、Vertical、Horizontal 中的 active、focus、open、close 和 commit 语义稳定。 |
 | Selection | `SelectedItem`、`DefaultSelectedPath`、`DefaultOpenPaths`、stale replay 和 clear selection 测试覆盖。 |
 | AXAML | Template part 名称、header theme、popup frame、inline child frame、active indicator 和 item background selector 稳定。 |
 | Layout | root item margin、inline child gap、popup item inset、background-enabled true/false gap 与 Ant Design 规则一致。 |
