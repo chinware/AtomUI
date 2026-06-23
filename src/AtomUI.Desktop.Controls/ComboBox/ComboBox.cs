@@ -300,6 +300,8 @@ public class ComboBox : AvaloniaComboBox,
     private AvaloniaTextBox? _editableTextBox;
     private string? _editableTextBeforeUserEditKeyDown;
     private IDisposable? _feedbackStatusSubscription;
+    private int _candidateSelectedIndex = -1;
+    private ComboBoxItem? _candidateSelectedItem;
     private readonly Dictionary<ComboBoxItem, FilterVisibilityState> _filterItemVisibilityContext = new();
 
     static ComboBox()
@@ -396,6 +398,7 @@ public class ComboBox : AvaloniaComboBox,
         base.OnDetachedFromVisualTree(e);
         _deactivationSubscription?.Dispose();
         _deactivationSubscription = null;
+        ClearCandidateItemSelection();
         ClearFilteredItemVisibility();
     }
 
@@ -454,6 +457,12 @@ public class ComboBox : AvaloniaComboBox,
     {
         if (element is ComboBoxItem comboBoxItem)
         {
+            if (ReferenceEquals(_candidateSelectedItem, comboBoxItem))
+            {
+                _candidateSelectedItem = null;
+            }
+
+            SetCandidateItemSelectedIfChanged(comboBoxItem, false);
             ClearFilterState(comboBoxItem);
         }
 
@@ -482,9 +491,17 @@ public class ComboBox : AvaloniaComboBox,
                 SetCurrentValue(IsDropDownOpenProperty, false);
             }
         }
-        else if (change.Property == IsDropDownOpenProperty && IsDropDownOpen)
+        else if (change.Property == IsDropDownOpenProperty)
         {
-            RefreshFilteredItemVisibility();
+            if (IsDropDownOpen)
+            {
+                ClearCandidateItemSelection();
+                RefreshFilteredItemVisibility();
+            }
+            else
+            {
+                ClearCandidateItemSelection();
+            }
         }
         else if (change.Property == FormFeedbackProperty)
         {
@@ -496,12 +513,14 @@ public class ComboBox : AvaloniaComboBox,
             ConfigureEffectiveFilterEnabled();
             ConfigureBaseEditableTextBoxFocusBehavior();
             SyncFilterValueFromText();
+            ClearCandidateItemSelection();
             RefreshFilteredItemVisibility();
             ConfigureOverlayInputPassThroughElement();
         }
         else if (change.Property == TextProperty)
         {
             SyncFilterValueFromText();
+            ClearCandidateItemSelection();
             RefreshFilteredItemVisibility();
         }
         else if (change.Property == FilterValueProperty ||
@@ -510,6 +529,7 @@ public class ComboBox : AvaloniaComboBox,
                  change.Property == DisplayMemberBindingProperty ||
                  change.Property == TextSearch.TextBindingProperty)
         {
+            ClearCandidateItemSelection();
             RefreshFilteredItemVisibility();
         }
     }
@@ -524,6 +544,16 @@ public class ComboBox : AvaloniaComboBox,
         }
 
         FocusEditableTextBox(e.NavigationMethod);
+    }
+
+    protected override void OnKeyDown(KeyEventArgs e)
+    {
+        if (!e.Handled && IsEnabled && IsDropDownOpen && HandleOpenDropDownKeyDown(e))
+        {
+            return;
+        }
+
+        base.OnKeyDown(e);
     }
     
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -775,6 +805,7 @@ public class ComboBox : AvaloniaComboBox,
 
     private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
+        ClearCandidateItemSelection();
         RefreshFilteredItemVisibility();
     }
 
@@ -860,11 +891,254 @@ public class ComboBox : AvaloniaComboBox,
                modifiers.HasFlag(KeyModifiers.Meta);
     }
 
+    private bool HandleOpenDropDownKeyDown(KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Key.Down:
+                SelectNextCandidateItem();
+                e.Handled = true;
+                return true;
+
+            case Key.Up:
+                SelectPreviousCandidateItem();
+                e.Handled = true;
+                return true;
+
+            case Key.Enter:
+                CommitCandidateSelection();
+                e.Handled = true;
+                return true;
+
+            case Key.Escape:
+                ClearCandidateItemSelection();
+                SetCurrentValue(IsDropDownOpenProperty, false);
+                e.Handled = true;
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
+    private void SelectNextCandidateItem()
+    {
+        SelectCandidateItem(1);
+    }
+
+    private void SelectPreviousCandidateItem()
+    {
+        SelectCandidateItem(-1);
+    }
+
+    private void SelectCandidateItem(int delta)
+    {
+        if (Items.Count == 0)
+        {
+            ClearCandidateItemSelection();
+            return;
+        }
+
+        var startIndex = _candidateSelectedIndex;
+        if (startIndex == -1)
+        {
+            startIndex = SelectedIndex != -1
+                ? SelectedIndex
+                : (delta > 0 ? -1 : Items.Count);
+        }
+
+        SetCandidateSelectedIndex(FindNextCandidateIndex(startIndex, delta));
+    }
+
+    private int FindNextCandidateIndex(int startIndex, int delta)
+    {
+        if (Items.Count == 0)
+        {
+            return -1;
+        }
+
+        var index = startIndex;
+        for (var scanned = 0; scanned < Items.Count; scanned++)
+        {
+            index += delta;
+            if (index >= Items.Count)
+            {
+                index = 0;
+            }
+            else if (index < 0)
+            {
+                index = Items.Count - 1;
+            }
+
+            if (IsCandidateItemSelectable(index))
+            {
+                return index;
+            }
+        }
+
+        return -1;
+    }
+
+    private void SetCandidateSelectedIndex(int index)
+    {
+        if (_candidateSelectedIndex == index)
+        {
+            if (index == -1)
+            {
+                ClearCandidateItemVisualSelection();
+            }
+            return;
+        }
+
+        ClearCandidateItemVisualSelection();
+        _candidateSelectedIndex = index;
+        SelectCandidateItemVisual(_candidateSelectedIndex);
+
+        if (_candidateSelectedIndex != -1)
+        {
+            ScrollIntoView(_candidateSelectedIndex);
+        }
+    }
+
+    private void ClearCandidateItemSelection()
+    {
+        SetCandidateSelectedIndex(-1);
+    }
+
+    private void SetCandidateItemSelected(int index, bool isSelected)
+    {
+        if (index < 0 || index >= Items.Count)
+        {
+            return;
+        }
+
+        if (GetCandidateItemContainer(index) is { } comboBoxItem)
+        {
+            SetCandidateItemSelectedIfChanged(comboBoxItem, isSelected);
+        }
+    }
+
+    private void ClearCandidateItemVisualSelection()
+    {
+        if (_candidateSelectedItem != null)
+        {
+            SetCandidateItemSelectedIfChanged(_candidateSelectedItem, false);
+            _candidateSelectedItem = null;
+            return;
+        }
+
+        SetCandidateItemSelected(_candidateSelectedIndex, false);
+    }
+
+    private void SelectCandidateItemVisual(int index)
+    {
+        if (index < 0 || index >= Items.Count)
+        {
+            _candidateSelectedItem = null;
+            return;
+        }
+
+        _candidateSelectedItem = GetCandidateItemContainer(index);
+        if (_candidateSelectedItem != null)
+        {
+            SetCandidateItemSelectedIfChanged(_candidateSelectedItem, true);
+        }
+    }
+
+    private static void SetCandidateItemSelectedIfChanged(ComboBoxItem comboBoxItem, bool isSelected)
+    {
+        if (comboBoxItem.IsCandidateSelected != isSelected)
+        {
+            comboBoxItem.SetCurrentValue(ComboBoxItem.IsCandidateSelectedProperty, isSelected);
+        }
+    }
+
+    private void CommitCandidateSelection()
+    {
+        if (_candidateSelectedIndex == -1 ||
+            !IsCandidateItemSelectable(_candidateSelectedIndex))
+        {
+            return;
+        }
+
+        var handled = false;
+        if (GetCandidateItemContainer(_candidateSelectedIndex) is { } comboBoxItem)
+        {
+            handled = UpdateSelectionFromEvent(comboBoxItem, new RoutedEventArgs());
+        }
+
+        if (!handled)
+        {
+            SetCurrentValue(SelectedIndexProperty, _candidateSelectedIndex);
+            if (IsDropDownOpen)
+            {
+                SetCurrentValue(IsDropDownOpenProperty, false);
+            }
+        }
+
+    }
+
+    private void EnsureCandidateItemSelectionIsValid()
+    {
+        if (_candidateSelectedIndex != -1 &&
+            !IsCandidateItemSelectable(_candidateSelectedIndex))
+        {
+            ClearCandidateItemSelection();
+        }
+    }
+
+    private bool IsCandidateItemSelectable(int index)
+    {
+        if (index < 0 || index >= Items.Count)
+        {
+            return false;
+        }
+
+        var item         = Items[index];
+        var comboBoxItem = GetCandidateItemContainer(index);
+        if (comboBoxItem != null)
+        {
+            return comboBoxItem.IsVisible &&
+                   comboBoxItem.IsEnabled &&
+                   IsCurrentFilterMatched(item);
+        }
+
+        return item is not Control control
+            ? IsCurrentFilterMatched(item)
+            : control.IsVisible && control.IsEnabled && IsCurrentFilterMatched(item);
+    }
+
+    private bool IsCurrentFilterMatched(object? item)
+    {
+        var filterValue    = FilterValue;
+        var hasFilterValue = !string.IsNullOrEmpty(filterValue?.ToString());
+
+        if (!IsEffectiveFilterEnabled || !hasFilterValue || Filter == null)
+        {
+            return true;
+        }
+
+        var textBinding     = TextSearch.GetTextBinding(this) ?? DisplayMemberBinding;
+        using var evaluator = BindingEvaluator<string?>.TryCreate(textBinding);
+        return Filter.Filter(SelectFilterValue(item, evaluator), filterValue);
+    }
+
+    private ComboBoxItem? GetCandidateItemContainer(int index)
+    {
+        return GetFilterItemContainer(index);
+    }
+
     private void HandleContainerPrepared(object? sender, ContainerPreparedEventArgs args)
     {
         if (args.Container is ComboBoxItem comboBoxItem)
         {
             ApplyCurrentFilterState(comboBoxItem, Items[args.Index]);
+            if (args.Index == _candidateSelectedIndex)
+            {
+                _candidateSelectedItem = comboBoxItem;
+            }
+
+            SetCandidateItemSelectedIfChanged(comboBoxItem, args.Index == _candidateSelectedIndex);
         }
     }
 
@@ -892,6 +1166,7 @@ public class ComboBox : AvaloniaComboBox,
         if (!IsEffectiveFilterEnabled || !hasFilterValue || Filter == null)
         {
             ClearFilteredItemVisibility();
+            EnsureCandidateItemSelectionIsValid();
             return;
         }
 
@@ -913,6 +1188,7 @@ public class ComboBox : AvaloniaComboBox,
         }
 
         IsEffectiveEmptyVisible = !hasVisibleMatch;
+        EnsureCandidateItemSelectionIsValid();
     }
 
     private void ApplyCurrentFilterState(ComboBoxItem comboBoxItem, object? item)
