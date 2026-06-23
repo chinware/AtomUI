@@ -8,6 +8,8 @@ namespace AtomUI.Desktop.Controls;
 
 internal class ComboBoxHandle : TemplatedControl
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ComboBoxHandle>();
 
@@ -17,7 +19,14 @@ internal class ComboBoxHandle : TemplatedControl
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
+    #endregion
+
+    #region 公共事件定义
+
     public event EventHandler<RoutedEventArgs>? HandleClick;
+
+    #endregion
+
     private IconButton? _iconButton;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

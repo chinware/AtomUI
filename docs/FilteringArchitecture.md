@@ -1,6 +1,6 @@
 # AtomUI 过滤体系架构与使用指南
 
-> 适用于 `AtomUI.Desktop.Controls` 下所有支持"在一组候选项里按输入筛选"的控件：AutoComplete / Mentions / Select / Cascader / TreeSelect / TreeView / Transfer / ListBox / ListView。
+> 适用于 `AtomUI.Desktop.Controls` 下所有支持"在一组候选项里按输入筛选"的控件：AutoComplete / ComboBox / Mentions / Select / Cascader / TreeSelect / TreeView / Transfer / ListBox / ListView。
 
 ## 1. 设计目标
 
@@ -68,7 +68,7 @@ public static class ValueFilterFactory
 
 ## 3. 控件 API 总览
 
-全部 9 个控件对外暴露的过滤相关属性命名一致：
+全部支持过滤的控件对外暴露的过滤相关属性命名一致：
 
 | 属性 | 类型 | 作用 |
 |---|---|---|
@@ -89,6 +89,8 @@ public static class ValueFilterFactory
 | `SourceFilterValue` / `TargetFilterValue` | Transfer | 左右两栏独立的过滤条件（`FilterValue` 不存在于 Transfer） |
 
 Transfer 的特殊性：它是双栏结构，过滤条件左右独立，但 `Filter` 和 `FilterValueSelector` 两栏共用。
+
+ComboBox 的特殊性：过滤只在 `IsEditable=True && IsFilterEnabled=True` 时实际生效。用户输入写入 `Text`，控件内部再同步为 `FilterValue`，弹出层使用独立候选视图展示过滤结果；原始 `Items` / `ItemsSource` 不会被替换或裁剪，选择语义仍回写到原 ComboBox 项。
 
 ## 4. 数据流
 
@@ -128,7 +130,18 @@ Transfer 的特殊性：它是双栏结构，过滤条件左右独立，但 `Fil
 
 不需要写任何 C#。`IsFilterEnabled=True` 打开搜索框，`Filter` 默认用 `Contains`，selector 默认取 `ISelectOption.Header`。
 
-### 5.2 自定义匹配策略
+### 5.2 可编辑并过滤的 ComboBox
+
+```xml
+<atom:ComboBox IsEditable="True"
+               IsFilterEnabled="True"
+               ItemsSource="{Binding Cities}"
+               DisplayMemberBinding="{Binding Name}" />
+```
+
+ComboBox 复用 Avalonia 自身的 `IsEditable` / `Text` 契约。过滤候选项来自当前 `Items`，不会改写 `ItemsSource`，所以外部绑定集合、选中项和原始索引语义保持稳定。
+
+### 5.3 自定义匹配策略
 
 ```xml
 <atom:AutoComplete IsFilterEnabled="True"
@@ -142,7 +155,7 @@ Transfer 的特殊性：它是双栏结构，过滤条件左右独立，但 `Fil
 myAutoComplete.Filter = ValueFilterFactory.BuildFilter(ValueFilterMode.StartsWithCaseSensitive);
 ```
 
-### 5.3 自定义值选择器
+### 5.4 自定义值选择器
 
 场景：ListView 绑定了复杂业务对象，希望按多个字段拼接后匹配。
 
@@ -159,7 +172,7 @@ myListView.FilterValueSelector = record =>
 
 `record` 是 `object?`，务必做空检查。
 
-### 5.4 完全自定义谓词
+### 5.5 完全自定义谓词
 
 当内置 12 种匹配策略都不满足（比如要做模糊拼音匹配、正则、或者跨字段加权）：
 
@@ -182,7 +195,7 @@ public sealed class PinyinFilter : IValueFilter
 myCascader.Filter = new PinyinFilter();
 ```
 
-### 5.5 Transfer 双栏过滤
+### 5.6 Transfer 双栏过滤
 
 ```xml
 <atom:ListTransfer IsFilterEnabled="True"
@@ -200,6 +213,7 @@ myCascader.Filter = new PinyinFilter();
 | 控件 | 默认 selector 行为 |
 |---|---|
 | AutoComplete | 取 `IAutoCompleteOption.Value` / 字符串项原样 |
+| ComboBox | 优先取 `TextSearch.Text`；其次取 `TextSearch.TextBinding` / `DisplayMemberBinding` 计算值；`ComboBoxItem` 取 `Content`；最后 `item.ToString()` |
 | Mentions | 取 `IMentionOption.Content` |
 | Select | `HeaderFilterPropertySelector` 或 `ValueFilterPropertySelector`（取决于 `FilterBy` 配置） |
 | Cascader | `(value) => (value as ICascaderItemInfo)?.Path`，`Path` 在 `CascaderView` 内部沿 `ICascaderOption.ParentNode` 预先拼好，例如 `"华东 / 上海"` |
@@ -214,14 +228,16 @@ myCascader.Filter = new PinyinFilter();
 
 1. **ControlTheme 直接消费**：`^[IsFilterEnabled=True]` 伪类 selector 和 `TemplateBinding IsFilterEnabled` 在 axaml 里正常使用，不需要绑到别的派生属性
 2. **Select 的 `IsEffectiveFilterEnabled`** 是 internal DirectProperty，Select 在 Tags 模式下强制为 true，非 Tags 模式下等于 `IsFilterEnabled`；它是 Select 内部对"实际生效状态"的二次派生，不对外
-3. **Filter == null 不会自动关闭搜索框**：`IsFilterEnabled=True` + `Filter=null` 的组合合法，行为是搜索框显示但过滤谓词被控件回落到默认 `Contains`
-4. **Filter 非空也不会自动打开搜索框**：只设 `Filter` 而不设 `IsFilterEnabled=True` 时，搜索 UI 不显示，过滤路径不走
+3. **ComboBox 的 `IsEffectiveFilterEnabled`** 是 internal DirectProperty，只有 `IsEditable && IsFilterEnabled` 时为 true；它用于区分"显示可编辑输入"和"弹出候选列表是否过滤"
+4. **Filter == null 不会自动关闭搜索框**：`IsFilterEnabled=True` + `Filter=null` 的组合合法，行为是搜索框显示但过滤谓词被控件回落到默认 `Contains`
+5. **Filter 非空也不会自动打开搜索框**：只设 `Filter` 而不设 `IsFilterEnabled=True` 时，搜索 UI 不显示，过滤路径不走
 
 这是有意为之的解耦：样式开关与谓词供应是正交的两件事。
 
 ## 8. 何时该写什么
 
 - **只是想开一个搜索框**：`IsFilterEnabled="True"`，不碰 `Filter`
+- **ComboBox 想输入时过滤候选项**：同时设置 `IsEditable="True"` 和 `IsFilterEnabled="True"`
 - **想换匹配策略**：设 `Filter = ValueFilterFactory.BuildFilter(...)`
 - **想按复合字段过滤**：设 `FilterValueSelector = record => ...`
 - **想完全自定义匹配**：实现 `IValueFilter`，设到 `Filter`
@@ -298,7 +314,6 @@ private bool DoFilter(object item)
 
 ## 10. 不在体系内的控件
 
-- **ComboBox**：定位为"纯选择"，不加过滤能力。需要可搜索下拉用 Select 或 AutoComplete
 - **Upload**：`Accepts` 是文件类型约束，属于"输入源限制"而非"候选过滤"，不走本体系
 - **Pagination**：只做分页，不参与过滤
 
@@ -308,6 +323,7 @@ private bool DoFilter(object item)
 
 - 核心契约：`src/AtomUI.Controls.Shared/Utils/IValueFilter.cs`、`ValueFilterMode.cs`、`ValueFilterFactory.cs`、`StringValueFilters.cs`
 - 典型叶子控件：`src/AtomUI.Desktop.Controls/AutoComplete/AbstractAutoComplete.cs`
+- 可编辑候选过滤：`src/AtomUI.Desktop.Controls/ComboBox/ComboBox.cs` + `ComboBoxCandidateList.cs`
 - 典型层级控件：`src/AtomUI.Desktop.Controls/Cascader/CascaderView.cs` + `CascaderView.Filter.cs`
 - 典型容器控件：`src/AtomUI.Desktop.Controls/ListBox/ListBox.cs`
 - Transfer 双栏：`src/AtomUI.Desktop.Controls/Transfer/AbstractTransfer.cs`
