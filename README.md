@@ -219,6 +219,18 @@ public partial class App : Application
 }
 ```
 
+To make the first rendered frame use the dark theme, configure the initial theme algorithm in the builder:
+
+```csharp
+this.UseAtomUI(builder =>
+{
+    builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID, ThemeAlgorithm.Dark);
+    builder.UseDesktopControls();
+});
+```
+
+`SetDarkThemeMode(true)` is intended for runtime theme switching after AtomUI has been initialized.
+
 ###### Start building with AtomUI
 
 After AtomUI is registered, you can use AtomUI controls and Ant Design icons directly in XAML.

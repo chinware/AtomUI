@@ -254,6 +254,11 @@ internal class Theme : AvaloniaObject, ITheme
 
     internal static ThemeVariant BuildThemeVariant(string id, bool hasDark, bool hasCompact)
     {
+        return new ThemeVariant(BuildThemeVariantName(id, hasDark, hasCompact), null);
+    }
+
+    internal static string BuildThemeVariantName(string id, bool hasDark, bool hasCompact)
+    {
         var variantName = id;
         if (hasDark)
         {
@@ -265,7 +270,7 @@ internal class Theme : AvaloniaObject, ITheme
             variantName += $"-{nameof(ThemeAlgorithm.Compact)}";
         }
 
-        return new ThemeVariant(variantName, null);
+        return variantName;
     }
 
     internal static ISet<ThemeAlgorithm> CheckAlgorithmNames(IList<string> algorithmNames)

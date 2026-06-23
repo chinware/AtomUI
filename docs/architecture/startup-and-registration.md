@@ -45,6 +45,18 @@ public override void Initialize()
 
 `UseAtomUI()` 会创建 `ThemeManagerBuilder`，设置默认语言和主题，执行用户传入的注册动作，然后构建 `ThemeManager`。
 
+如果应用需要首帧就是暗色或紧凑主题，应在 builder 阶段配置初始主题算法，而不是在 `UseAtomUI()` 之后调用运行期切换 API：
+
+```csharp
+this.UseAtomUI(builder =>
+{
+    builder.WithDefaultTheme(IThemeManager.DEFAULT_THEME_ID, ThemeAlgorithm.Dark);
+    builder.UseDesktopControls();
+});
+```
+
+`SetDarkThemeMode(true)` 和 `SetCompactThemeMode(true)` 用于应用启动后的运行期切换。它们会在 `ThemeManager` 已经绑定到 `Application.ActualThemeVariant` 后修改 `Application.RequestedThemeVariant`，不适合作为首帧默认主题入口。
+
 ## ThemeManagerBuilder 收集内容
 
 `ThemeManagerBuilder` 在构建前收集以下内容：
@@ -79,4 +91,3 @@ DataGrid 和 ColorPicker 独立包通过 `UseDesktopDataGrid()`、`UseDesktopCol
 - Token 资源键常量：供 AXAML 和 C# 使用。
 
 因此新增控件 Token 或语言 Provider 时，需要确认对应 Attribute 正确，生成文件才会进入注册链路。
-
