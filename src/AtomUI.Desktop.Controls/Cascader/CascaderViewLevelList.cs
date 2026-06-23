@@ -58,7 +58,7 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
         var cascaderViewItem = new CascaderViewItem();
         if (item is ICascaderOption option)
         {
-            NotifyRestoreDefaultContext(cascaderViewItem, option);
+            CascaderViewItem.ApplyOptionData(cascaderViewItem, option);
         }
         return cascaderViewItem;
     }
@@ -234,15 +234,7 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
     
     protected virtual void NotifyRestoreDefaultContext(CascaderViewItem item, ICascaderOption option)
     {
-        item.SetCurrentValue(CascaderViewItem.HeaderProperty, option);
-        item.ItemKey = option.ItemKey;
-        item.SetCurrentValue(CascaderViewItem.ValueProperty, option.Value);
-        item.SetCurrentValue(CascaderViewItem.IconProperty, option.Icon);
-        item.SetCurrentValue(CascaderViewItem.IsCheckedProperty, option.IsChecked);
-        item.SetCurrentValue(CascaderViewItem.IsEnabledProperty, option.IsEnabled);
-        item.SetCurrentValue(CascaderViewItem.IsExpandedProperty, option.IsExpanded);
-        item.SetCurrentValue(CascaderViewItem.IsCheckBoxEnabledProperty, option.IsCheckBoxEnabled);
-        item.AsyncLoaded = false;
+        item.PrepareCascaderOptionData(option, GetResourceHost());
     }
     
     protected void NotifySaveVirtualizingContext(CascaderViewItem item, IDictionary<object, object?> context)
@@ -303,6 +295,7 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
     
     protected virtual void NotifyClearContainerForVirtualizingContext(CascaderViewItem item)
     {
+        item.ClearPreparedCascaderOptionData();
         item.ClearValue(CascaderViewItem.HeaderProperty);
         item.ClearValue(CascaderViewItem.ValueProperty);
         item.ItemKey = null;
@@ -349,6 +342,16 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
         {
             ListVirtualizingContextAwareUtils.ExecuteWithinContextClosure(cascaderViewItem, NotifyClearContainerForVirtualizingContext);
         }
+    }
+
+    private IResourceHost GetResourceHost()
+    {
+        if (OwnerView is not null)
+        {
+            return OwnerView;
+        }
+
+        return this;
     }
     #endregion
 }

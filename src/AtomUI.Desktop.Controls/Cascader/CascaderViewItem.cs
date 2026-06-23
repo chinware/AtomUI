@@ -1,3 +1,5 @@
+using System.Collections.Specialized;
+using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using Avalonia;
@@ -256,6 +258,7 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
     internal bool AsyncLoaded;
     private static readonly Point s_invalidPoint = new (double.NaN, double.NaN);
     private Point _pointerDownPoint = s_invalidPoint;
+    private CompositeDisposable? _cascaderOptionBindingDisposables;
 
     static CascaderViewItem()
     {
@@ -268,6 +271,36 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
         AffectsRender<CascaderViewItem>(BorderBrushProperty,
             BorderThicknessProperty,
             BackgroundProperty);
+    }
+
+    internal void PrepareCascaderOptionData(ICascaderOption option, IResourceHost resourceHost)
+    {
+        ClearCascaderOptionBindingDisposables();
+
+        if (option is BindableCascaderOption bindableOption)
+        {
+            var disposables = new CompositeDisposable();
+            _cascaderOptionBindingDisposables = disposables;
+            disposables.Add(bindableOption.AttachResourceHost(resourceHost));
+
+            ApplyOptionData(this, option);
+            BindBindableCascaderOption(bindableOption, disposables);
+        }
+        else
+        {
+            ApplyOptionData(this, option);
+        }
+    }
+
+    internal void ClearCascaderOptionBindingDisposables()
+    {
+        _cascaderOptionBindingDisposables?.Dispose();
+        _cascaderOptionBindingDisposables = null;
+    }
+
+    internal void ClearPreparedCascaderOptionData()
+    {
+        ClearCascaderOptionBindingDisposables();
     }
     
     private void HandleIsExpandedChanged(AvaloniaPropertyChangedEventArgs<bool> args)
@@ -308,6 +341,12 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
         {
             UpdatePseudoClasses();
         }
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ClearPreparedCascaderOptionData();
+        base.OnDetachedFromVisualTree(e);
     }
     
     private void HandleToggleTypeChanged(AvaloniaPropertyChangedEventArgs change)
@@ -401,5 +440,125 @@ public class CascaderViewItem : TemplatedControl, ISelectable, IListItemVirtuali
     internal void NotifyClearDescendantExpanded()
     {
         RaiseEvent(new RoutedEventArgs(ClearDescendantExpandedEvent, this));
+    }
+
+    internal static void ApplyOptionData(CascaderViewItem item, ICascaderOption option)
+    {
+        item.SetCurrentValue(HeaderProperty, option);
+        item.ItemKey = option.ItemKey;
+        item.SetCurrentValue(ValueProperty, option.Value);
+        item.SetCurrentValue(IconProperty, option.Icon);
+        item.SetCurrentValue(IsCheckedProperty, option.IsChecked);
+        item.SetCurrentValue(IsEnabledProperty, option.IsEnabled);
+        item.SetCurrentValue(IsExpandedProperty, option.IsExpanded);
+        item.SetCurrentValue(IsCheckBoxEnabledProperty, option.IsCheckBoxEnabled);
+        item.AsyncLoaded = false;
+        item.ConfigureIsLeaf();
+    }
+
+    private void BindBindableCascaderOption(BindableCascaderOption option, CompositeDisposable disposables)
+    {
+        var childrenCollectionSubscription = new SerialDisposable();
+        disposables.Add(childrenCollectionSubscription);
+
+        void AttachChildrenCollectionChanged()
+        {
+            if (option.Children is INotifyCollectionChanged notifyCollectionChanged)
+            {
+                NotifyCollectionChangedEventHandler handler = (_, _) => ConfigureIsLeaf();
+                notifyCollectionChanged.CollectionChanged += handler;
+                childrenCollectionSubscription.Disposable = Disposable.Create(() =>
+                {
+                    notifyCollectionChanged.CollectionChanged -= handler;
+                });
+            }
+            else
+            {
+                childrenCollectionSubscription.Disposable = Disposable.Empty;
+            }
+        }
+
+        void OptionPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.Property == BindableCascaderOption.ChildrenProperty)
+            {
+                AttachChildrenCollectionChanged();
+            }
+
+            SyncContainerFromBindableCascaderOption(option, e.Property);
+        }
+
+        void ContainerPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            SyncBindableCascaderOptionFromContainer(option, e.Property);
+        }
+
+        option.PropertyChanged += OptionPropertyChanged;
+        PropertyChanged        += ContainerPropertyChanged;
+        AttachChildrenCollectionChanged();
+
+        disposables.Add(Disposable.Create(() =>
+        {
+            option.PropertyChanged -= OptionPropertyChanged;
+            PropertyChanged        -= ContainerPropertyChanged;
+        }));
+    }
+
+    private void SyncContainerFromBindableCascaderOption(BindableCascaderOption option, AvaloniaProperty property)
+    {
+        if (property == BindableCascaderOption.IconProperty &&
+            !Equals(Icon, option.Icon))
+        {
+            SetCurrentValue(IconProperty, option.Icon);
+        }
+        else if (property == BindableCascaderOption.IsCheckedProperty &&
+                 IsChecked != option.IsChecked)
+        {
+            SetCurrentValue(IsCheckedProperty, option.IsChecked);
+        }
+        else if (property == BindableCascaderOption.IsEnabledProperty &&
+                 IsEnabled != option.IsEnabled)
+        {
+            SetCurrentValue(IsEnabledProperty, option.IsEnabled);
+        }
+        else if (property == BindableCascaderOption.IsExpandedProperty &&
+                 IsExpanded != option.IsExpanded)
+        {
+            SetCurrentValue(IsExpandedProperty, option.IsExpanded);
+        }
+        else if (property == BindableCascaderOption.IsCheckBoxEnabledProperty &&
+                 IsCheckBoxEnabled != option.IsCheckBoxEnabled)
+        {
+            SetCurrentValue(IsCheckBoxEnabledProperty, option.IsCheckBoxEnabled);
+        }
+        else if (property == BindableCascaderOption.ValueProperty &&
+                 !Equals(Value, option.Value))
+        {
+            SetCurrentValue(ValueProperty, option.Value);
+        }
+        else if (property == BindableCascaderOption.ItemKeyProperty &&
+                 ItemKey != option.ItemKey)
+        {
+            ItemKey = option.ItemKey;
+        }
+        else if (property == BindableCascaderOption.IsLeafProperty ||
+                 property == BindableCascaderOption.ChildrenProperty)
+        {
+            ConfigureIsLeaf();
+        }
+    }
+
+    private void SyncBindableCascaderOptionFromContainer(BindableCascaderOption option, AvaloniaProperty property)
+    {
+        if (property == IsCheckedProperty &&
+            option.IsChecked != IsChecked)
+        {
+            option.IsChecked = IsChecked;
+        }
+        else if (property == IsExpandedProperty &&
+                 option.IsExpanded != IsExpanded)
+        {
+            option.IsExpanded = IsExpanded;
+        }
     }
 }

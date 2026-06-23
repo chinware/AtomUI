@@ -32,9 +32,30 @@
                         <atom:AddOnDecoratedBox.ContentRightAddOn>
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{atom:SharedTokenResource SpacingXS}">
-                                <atom:SelectMaxCountIndicator Name="PART_SelectMaxCountIndicator" />
-                                <ContentPresenter Name="PART_ContentRightAddOnPresenter" />
-                                <atom:SelectHandle Name="PART_SelectHandle" />
+                                <atom:SelectMaxCountIndicator
+                                    Name="PART_SelectMaxCountIndicator"
+                                    MaxCount="{CompiledBinding $parent[atom:Cascader].MaxCount}"
+                                    SelectedCount="{CompiledBinding $parent[atom:Cascader].SelectedCount}"
+                                    IsVisible="{CompiledBinding $parent[atom:Cascader].IsShowMaxCountIndicator}" />
+                                <ContentPresenter
+                                    Name="PART_ContentRightAddOnPresenter"
+                                    Content="{CompiledBinding $parent[atom:Cascader].ContentRightAddOn}"
+                                    ContentTemplate="{CompiledBinding $parent[atom:Cascader].ContentRightAddOnTemplate}"
+                                    IsVisible="{CompiledBinding $parent[atom:Cascader].ContentRightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                <atom:SelectHandle
+                                    Name="PART_SelectHandle"
+                                    FormFeedback="{CompiledBinding $parent[atom:Cascader].FormFeedback}"
+                                    LoadingIcon="{CompiledBinding $parent[atom:Cascader].SuffixLoadingIcon}"
+                                    OpenIndicator="{CompiledBinding $parent[atom:Cascader].SuffixIcon}"
+                                    IsFilterEnabled="{CompiledBinding $parent[atom:Cascader].IsFilterEnabled}"
+                                    IsEnabled="{CompiledBinding $parent[atom:Cascader].IsEnabled}"
+                                    IsMotionEnabled="{CompiledBinding $parent[atom:Cascader].IsMotionEnabled}"
+                                    IsLoading="{CompiledBinding $parent[atom:Cascader].IsLoading}"
+                                    IsAllowClear="{CompiledBinding $parent[atom:Cascader].IsAllowClear}"
+                                    IsSelectionEmpty="{CompiledBinding $parent[atom:Cascader].IsSelectionEmpty}"
+                                    IsInputHover="{CompiledBinding $parent[atom:CascaderAddOnDecoratedBox].IsInnerBoxHover}"
+                                    IsInputPressed="{CompiledBinding $parent[atom:CascaderAddOnDecoratedBox].IsInnerBoxPressed}"
+                                    IsDropDownOpen="{CompiledBinding $parent[atom:Cascader].IsDropDownOpen}" />
                             </StackPanel>
                         </atom:AddOnDecoratedBox.ContentRightAddOn>
                         <Panel>
