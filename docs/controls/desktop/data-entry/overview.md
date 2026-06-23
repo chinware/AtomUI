@@ -41,3 +41,7 @@
 - [Slider 桌面版实现原理](slider/implementation.md)
 - [Slider Token 设计](slider/token.md)
 - [Slider Changelog](slider/changelog.md)
+- [Form 桌面版架构设计](form/overview.md)
+- [Form 桌面版实现原理](form/implementation.md)
+- [Form Token 设计](form/token.md)
+- [Form Changelog](form/changelog.md)
