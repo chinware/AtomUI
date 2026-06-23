@@ -21,6 +21,8 @@ internal partial class en_US : LanguageProvider
     public const string BasicDescription = "Basic button spinner.";
     public const string ItemsSourceTitle = "Generate ComboBoxItem by ItemsSource";
     public const string ItemsSourceDescription = "Generate structure based on ItemsSource and template.";
+    public const string EditableFilterTitle = "Editable filtering";
+    public const string EditableFilterDescription = "Type in the ComboBox input to filter popup candidates without replacing the source items.";
     public const string DisabledTitle = "Disabled";
     public const string DisabledDescription = "Disabled button spinner.";
     public const string ThreeSizesTitle = "Three sizes of Input";
@@ -34,6 +36,7 @@ internal partial class en_US : LanguageProvider
     public const string StatusTitle = "Status";
     public const string StatusDescription = "Add status to Input with status, which could be error or warning.";
     public const string P2PlaceholderTextPleaseSelect = "Please select";
+    public const string P2PlaceholderTextTypeToFilter = "Type to filter";
     public const string P2PlaceholderSizeTypeLarge = "SizeType: Large";
     public const string P2PlaceholderSizeTypeMiddle = "SizeType: Middle";
     public const string P2PlaceholderSizeTypeSmall = "SizeType: Small";
@@ -51,6 +54,12 @@ internal partial class en_US : LanguageProvider
     public const string ApiPropertySelectedItem = "Currently selected item.";
     public const string ApiPropertySelectedIndex = "Index of the selected item.";
     public const string ApiPropertyPlaceholderText = "Placeholder shown when no item is selected.";
+    public const string ApiPropertyIsEditable = "Allows text input in the ComboBox selection area.";
+    public const string ApiPropertyText = "Editable input text. When filtering is enabled, it drives FilterValue.";
+    public const string ApiPropertyIsFilterEnabled = "Enables filtering for editable ComboBox candidates.";
+    public const string ApiPropertyFilter = "Predicate used to match candidate values against FilterValue.";
+    public const string ApiPropertyFilterValue = "Current filtering value, normally synchronized from Text in editable filtering mode.";
+    public const string ApiPropertyFilterValueSelector = "Selects the comparable value from each candidate item before filtering.";
     public const string ApiPropertyLeftAddOn = "Content displayed outside the input area on the left.";
     public const string ApiPropertyRightAddOn = "Content displayed outside the input area on the right.";
     public const string ApiPropertyContentLeftAddOn = "Content displayed inside the input area before the selection.";

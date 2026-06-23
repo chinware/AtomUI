@@ -204,6 +204,26 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:ComboBoxShowCaseLangResource EditableFilterTitle}"
+            Description="{gallery:ComboBoxShowCaseLangResource EditableFilterDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:ComboBoxViewModel">
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextTypeToFilter}"
+                           Width="300"
+                           IsEditable="True"
+                           IsFilterEnabled="True">
+                <atom:ComboBoxItem Content="Alpha" />
+                <atom:ComboBoxItem Content="Alpine" />
+                <atom:ComboBoxItem Content="Beta" />
+                <atom:ComboBoxItem Content="Gamma" />
+                <atom:ComboBoxItem Content="Delta" />
+            </atom:ComboBox>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:ComboBoxShowCaseLangResource DisabledTitle}"
             Description="{gallery:ComboBoxShowCaseLangResource DisabledDescription}"
             IsDeferredContentEnabled="True">

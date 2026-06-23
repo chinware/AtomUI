@@ -21,6 +21,8 @@ internal partial class zh_TW : LanguageProvider
     public const string BasicDescription = "基礎的組合框用法。";
     public const string ItemsSourceTitle = "通過 ItemsSource 生成 ComboBoxItem";
     public const string ItemsSourceDescription = "基於 ItemsSource 和模板生成結構。";
+    public const string EditableFilterTitle = "可編輯過濾";
+    public const string EditableFilterDescription = "在 ComboBox 輸入區輸入文本，過濾彈出候選項，同時不替換原始 ItemsSource。";
     public const string DisabledTitle = "禁用狀態";
     public const string DisabledDescription = "禁用狀態的組合框。";
     public const string ThreeSizesTitle = "三種尺寸";
@@ -34,6 +36,7 @@ internal partial class zh_TW : LanguageProvider
     public const string StatusTitle = "狀態";
     public const string StatusDescription = "通過 status 為輸入框添加錯誤或警告狀態。";
     public const string P2PlaceholderTextPleaseSelect = "請選擇";
+    public const string P2PlaceholderTextTypeToFilter = "輸入內容過濾";
     public const string P2PlaceholderSizeTypeLarge = "SizeType：Large";
     public const string P2PlaceholderSizeTypeMiddle = "SizeType：Middle";
     public const string P2PlaceholderSizeTypeSmall = "SizeType：Small";
@@ -51,6 +54,12 @@ internal partial class zh_TW : LanguageProvider
     public const string ApiPropertySelectedItem = "當前選中項。";
     public const string ApiPropertySelectedIndex = "當前選中項索引。";
     public const string ApiPropertyPlaceholderText = "未選擇內容時顯示的佔位文本。";
+    public const string ApiPropertyIsEditable = "允許在 ComboBox 選擇區域輸入文本。";
+    public const string ApiPropertyText = "可編輯輸入文本；啟用過濾時會驅動 FilterValue。";
+    public const string ApiPropertyIsFilterEnabled = "為可編輯 ComboBox 候選項啟用過濾。";
+    public const string ApiPropertyFilter = "用於將候選值與 FilterValue 匹配的過濾謂詞。";
+    public const string ApiPropertyFilterValue = "當前過濾值，通常在可編輯過濾模式下由 Text 同步。";
+    public const string ApiPropertyFilterValueSelector = "過濾前從每個候選項中提取可比較值。";
     public const string ApiPropertyLeftAddOn = "顯示在輸入區域外左側的內容。";
     public const string ApiPropertyRightAddOn = "顯示在輸入區域外右側的內容。";
     public const string ApiPropertyContentLeftAddOn = "顯示在輸入區域內選中內容前方的內容。";

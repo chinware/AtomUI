@@ -31,11 +31,24 @@ public class ComboBoxItem : AvaloniaComboBoxItem
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
+
     #endregion
 
     private static readonly Point s_invalidPoint = new Point(double.NaN, double.NaN);
     private Point _pointerDownPoint = s_invalidPoint;
-    
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.DisableTransitions();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        Dispatcher.Post(this.EnableTransitions);
+    }
+
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
@@ -94,17 +107,5 @@ public class ComboBoxItem : AvaloniaComboBoxItem
             }
         }
         _pointerDownPoint = s_invalidPoint;
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        this.DisableTransitions();
-    }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        Dispatcher.Post(this.EnableTransitions);
     }
 }
