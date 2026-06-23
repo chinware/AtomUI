@@ -47,14 +47,17 @@ public class GridViewModel : ReactiveObject, IRoutableViewModel
         [
             new GridApiRow("Row.Gutter", Lang(GridShowCaseLangResourceKind.ApiPropertyRowGutter), "GridGutter", "cyan", "0"),
             new GridApiRow("Row.Justify", Lang(GridShowCaseLangResourceKind.ApiPropertyRowJustify), "RowJustify", "cyan", "Start"),
+            new GridApiRow("Row.JustifyInfo", Lang(GridShowCaseLangResourceKind.ApiPropertyRowJustifyInfo), "GridRowJustifyInfo?", "cyan", "null"),
             new GridApiRow("Row.Align", Lang(GridShowCaseLangResourceKind.ApiPropertyRowAlign), "RowAlign", "cyan", "Stretch"),
+            new GridApiRow("Row.AlignInfo", Lang(GridShowCaseLangResourceKind.ApiPropertyRowAlignInfo), "GridRowAlignInfo?", "cyan", "null"),
             new GridApiRow("Row.IsWrapped", Lang(GridShowCaseLangResourceKind.ApiPropertyRowIsWrapped), "bool", "cyan", "true"),
             new GridApiRow("Col.Span", Lang(GridShowCaseLangResourceKind.ApiPropertyColSpan), "GridColSpanInfo", "cyan", "24"),
+            new GridApiRow("Col.Flex", Lang(GridShowCaseLangResourceKind.ApiPropertyColFlex), "GridColFlex?", "cyan", "null"),
             new GridApiRow("Col.Offset", Lang(GridShowCaseLangResourceKind.ApiPropertyColOffset), "int", "orange", "0"),
             new GridApiRow("Col.Push", Lang(GridShowCaseLangResourceKind.ApiPropertyColPush), "int", "orange", "0"),
             new GridApiRow("Col.Pull", Lang(GridShowCaseLangResourceKind.ApiPropertyColPull), "int", "orange", "0"),
             new GridApiRow("Col.Order", Lang(GridShowCaseLangResourceKind.ApiPropertyColOrder), "int", "orange", "0"),
-            new GridApiRow("Col.Xs/Sm/Md/Lg/Xl/Xxl", Lang(GridShowCaseLangResourceKind.ApiPropertyColBreakpoints), "GridColSize?", "cyan", "null"),
+            new GridApiRow("Col.Xs/Sm/Md/Lg/Xl/Xxl/Xxxl", Lang(GridShowCaseLangResourceKind.ApiPropertyColBreakpoints), "GridColSize?", "cyan", "null"),
             new GridApiRow("ColInfo", Lang(GridShowCaseLangResourceKind.ApiPropertyColInfo), "GridColSize", "cyan", "null")
         ];
     }
@@ -85,9 +88,12 @@ public class GridViewModel : ReactiveObject, IRoutableViewModel
         {
             GridShowCaseLangResourceKind.ApiPropertyRowGutter       => en_US.ApiPropertyRowGutter,
             GridShowCaseLangResourceKind.ApiPropertyRowJustify      => en_US.ApiPropertyRowJustify,
+            GridShowCaseLangResourceKind.ApiPropertyRowJustifyInfo  => en_US.ApiPropertyRowJustifyInfo,
             GridShowCaseLangResourceKind.ApiPropertyRowAlign        => en_US.ApiPropertyRowAlign,
+            GridShowCaseLangResourceKind.ApiPropertyRowAlignInfo    => en_US.ApiPropertyRowAlignInfo,
             GridShowCaseLangResourceKind.ApiPropertyRowIsWrapped    => en_US.ApiPropertyRowIsWrapped,
             GridShowCaseLangResourceKind.ApiPropertyColSpan         => en_US.ApiPropertyColSpan,
+            GridShowCaseLangResourceKind.ApiPropertyColFlex         => en_US.ApiPropertyColFlex,
             GridShowCaseLangResourceKind.ApiPropertyColOffset       => en_US.ApiPropertyColOffset,
             GridShowCaseLangResourceKind.ApiPropertyColPush         => en_US.ApiPropertyColPush,
             GridShowCaseLangResourceKind.ApiPropertyColPull         => en_US.ApiPropertyColPull,

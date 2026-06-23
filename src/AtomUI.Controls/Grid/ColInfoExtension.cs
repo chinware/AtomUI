@@ -4,6 +4,7 @@ namespace AtomUI.Controls;
 
 public class ColInfoExtension : MarkupExtension
 {
+    public GridColFlex? Flex { get; set; }
     public int? Span { get; set; }
     public int? Offset { get; set; }
     public int? Order { get; set; }
@@ -18,6 +19,7 @@ public class ColInfoExtension : MarkupExtension
 
         return new GridColSize
         {
+            Flex = Flex,
             Span = Span,
             Offset = Offset,
             Order = Order,
