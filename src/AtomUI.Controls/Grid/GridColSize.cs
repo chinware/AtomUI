@@ -7,6 +7,7 @@ namespace AtomUI.Controls;
 [TypeConverter(typeof(GridColSizeConverter))]
 public record GridColSize
 {
+    public GridColFlex? Flex { get; init; }
     public int? Span { get; init; }
     public int? Offset { get; init; }
     public int? Order { get; init; }
@@ -51,7 +52,11 @@ public record GridColSize
                 throw new FormatException($"Invalid segment '{segment}'.");
             }
 
-            if (key.Equals("span", StringComparison.OrdinalIgnoreCase))
+            if (key.Equals("flex", StringComparison.OrdinalIgnoreCase))
+            {
+                result = result with { Flex = GridColFlex.Parse(value.ToString()) };
+            }
+            else if (key.Equals("span", StringComparison.OrdinalIgnoreCase))
             {
                 var span = ParseInt(value, "span", allowNegative: false);
                 ValidateColumnValue(span, "span");
@@ -93,7 +98,9 @@ public record GridColSize
     {
         return layout with
         {
+            Flex = Flex ?? layout.Flex,
             Span = Span ?? layout.Span,
+            IsSpanSpecified = Span.HasValue || layout.IsSpanSpecified,
             Offset = Offset ?? layout.Offset,
             Order = Order ?? layout.Order,
             Push = Push ?? layout.Push,
@@ -126,11 +133,16 @@ public record GridColSize
 }
 
 internal readonly record struct GridColLayout(
+    GridColFlex? Flex,
     int Span,
+    bool IsSpanSpecified,
     int Offset,
     int Order,
     int Push,
-    int Pull);
+    int Pull)
+{
+    public bool IsHidden => IsSpanSpecified && Span == 0;
+}
 
 public class GridColSizeConverter : TypeConverter
 {
@@ -193,12 +205,21 @@ public class GridColSizeConverter : TypeConverter
 
         if (value is GridColSize size)
         {
-            if (size.Span.HasValue && size.Offset is null && size.Order is null && size.Push is null && size.Pull is null)
+            if (size.Flex is null &&
+                size.Span.HasValue &&
+                size.Offset is null &&
+                size.Order is null &&
+                size.Push is null &&
+                size.Pull is null)
             {
                 return size.Span.Value.ToString(CultureInfo.InvariantCulture);
             }
 
             var builder = new StringBuilder();
+            if (size.Flex.HasValue)
+            {
+                AppendPart(builder, "flex", FormatFlex(size.Flex.Value));
+            }
             if (size.Span.HasValue)
             {
                 AppendPart(builder, "span", size.Span.Value);
@@ -227,6 +248,11 @@ public class GridColSizeConverter : TypeConverter
 
     private static void AppendPart(StringBuilder builder, string name, int value)
     {
+        AppendPart(builder, name, value.ToString(CultureInfo.InvariantCulture));
+    }
+
+    private static void AppendPart(StringBuilder builder, string name, string value)
+    {
         if (builder.Length > 0)
         {
             builder.Append(',');
@@ -234,6 +260,26 @@ public class GridColSizeConverter : TypeConverter
 
         builder.Append(name);
         builder.Append(':');
-        builder.Append(value.ToString(CultureInfo.InvariantCulture));
+        builder.Append(value);
+    }
+
+    private static string FormatFlex(GridColFlex flex)
+    {
+        if (flex == GridColFlex.Auto)
+        {
+            return "auto";
+        }
+
+        if (flex == GridColFlex.None)
+        {
+            return "none";
+        }
+
+        if (flex.Basis.HasValue)
+        {
+            return FormattableString.Invariant($"{flex.Basis.Value:G17}px");
+        }
+
+        return FormattableString.Invariant($"{flex.Grow:G17}");
     }
 }

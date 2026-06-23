@@ -714,6 +714,68 @@
             </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
 
+        <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource FlexTitle}" Description="{gallery:GridShowCaseLangResource FlexDescription}" IsOccupyEntireRow="True" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:GridViewModel">
+            <StackPanel Margin="20" Spacing="12">
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextPercentageColumns}" />
+                <atom:Row Gutter="16,16">
+                    <atom:Col Flex="2">
+                        <Border Classes="grid-cell">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColFlex2}" />
+                        </Border>
+                    </atom:Col>
+                    <atom:Col Flex="3">
+                        <Border Classes="grid-cell alt">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColFlex3}" />
+                        </Border>
+                    </atom:Col>
+                </atom:Row>
+
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextFillRest}" />
+                <atom:Row Gutter="16,16">
+                    <atom:Col Flex="100px">
+                        <Border Classes="grid-cell">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextCol100Px}" />
+                        </Border>
+                    </atom:Col>
+                    <atom:Col Flex="auto">
+                        <Border Classes="grid-cell alt">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColFlexAuto}" />
+                        </Border>
+                    </atom:Col>
+                    <atom:Col Flex="1">
+                        <Border Classes="grid-cell">
+                            <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColFlexFill}" />
+                        </Border>
+                    </atom:Col>
+                </atom:Row>
+
+                <TextBlock Classes="grid-section-title" Text="{gallery:GridShowCaseLangResource P2TextResponsiveFlex}" />
+                <Border Classes="grid-row-surface">
+                    <atom:Row Gutter="16,16"
+                              JustifyInfo="xs: start, md: space-between"
+                              AlignInfo="xs: top, md: middle">
+                        <atom:Col Span="6">
+                            <Border Classes="grid-cell" Height="64">
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColN6}" />
+                            </Border>
+                        </atom:Col>
+                        <atom:Col Flex="1">
+                            <atom:Col.Lg>
+                                <atom:ColInfo Flex="2" />
+                            </atom:Col.Lg>
+                            <Border Classes="grid-cell alt" Height="48">
+                                <TextBlock Classes="grid-cell-text" Text="{gallery:GridShowCaseLangResource P2TextColFlexResponsive}" />
+                            </Border>
+                        </atom:Col>
+                    </atom:Row>
+                </Border>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
         <gallery:ShowCaseItem Title="{gallery:GridShowCaseLangResource ColInfoTitle}" Description="{gallery:GridShowCaseLangResource ColInfoDescription}" IsOccupyEntireRow="True" IsDeferredContentEnabled="True">
             <gallery:ShowCaseItem.DeferredContentTemplate>
                 <DataTemplate x:DataType="vm:GridViewModel">

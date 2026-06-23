@@ -10,6 +10,9 @@ public class Col : ContentControl
     public static readonly StyledProperty<GridColSpanInfo> SpanProperty =
         AvaloniaProperty.Register<Col, GridColSpanInfo>(nameof(Span));
 
+    public static readonly StyledProperty<GridColFlex?> FlexProperty =
+        AvaloniaProperty.Register<Col, GridColFlex?>(nameof(Flex));
+
     public static readonly StyledProperty<int> OffsetProperty =
         AvaloniaProperty.Register<Col, int>(nameof(Offset), validate: v => v >= 0 && v <= 24);
 
@@ -47,6 +50,12 @@ public class Col : ContentControl
     {
         get => GetValue(SpanProperty);
         set => SetValue(SpanProperty, value);
+    }
+
+    public GridColFlex? Flex
+    {
+        get => GetValue(FlexProperty);
+        set => SetValue(FlexProperty, value);
     }
 
     public int Offset
@@ -119,6 +128,7 @@ public class Col : ContentControl
     {
         AffectsMeasure<Col>(
             SpanProperty,
+            FlexProperty,
             OffsetProperty,
             OrderProperty,
             PushProperty,
@@ -136,6 +146,7 @@ public class Col : ContentControl
     {
         base.OnPropertyChanged(change);
         if (change.Property == SpanProperty ||
+            change.Property == FlexProperty ||
             change.Property == OffsetProperty ||
             change.Property == OrderProperty ||
             change.Property == PushProperty ||
@@ -161,7 +172,7 @@ public class Col : ContentControl
 
     internal GridColLayout ResolveLayout(MediaBreakPoint breakPoint)
     {
-        var layout = new GridColLayout(Span.GetValue(breakPoint), Offset, Order, Push, Pull);
+        var layout = new GridColLayout(Flex, Span.GetValue(breakPoint), IsSet(SpanProperty), Offset, Order, Push, Pull);
 
         if (Xs is not null)
         {

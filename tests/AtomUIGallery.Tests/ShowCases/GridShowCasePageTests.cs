@@ -46,13 +46,14 @@ public class GridShowCasePageTests
         source.ShouldContain("LineHeight=\"22\"");
         source.ShouldContain("Text=\"{gallery:GridShowCaseLangResource PageDescription}\"");
         source.ShouldContain("HorizontalAlignment=\"Left\"");
-        CountShowCaseItemElements(source).ShouldBe(8);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(8);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(8);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:GridViewModel\"").ShouldBe(8);
+        CountShowCaseItemElements(source).ShouldBe(9);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(9);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(9);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:GridViewModel\"").ShouldBe(9);
         source.ShouldContain("GridShowCaseLangResource BasicGridTitle");
         source.ShouldContain("GridShowCaseLangResource GutterTitle");
         source.ShouldContain("GridShowCaseLangResource JustifyTitle");
+        source.ShouldContain("GridShowCaseLangResource FlexTitle");
         source.ShouldContain("GridShowCaseLangResource ColInfoTitle");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
@@ -151,10 +152,14 @@ public class GridShowCasePageTests
             source.ShouldContain("PageSubtitle");
             source.ShouldContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyRowGutter");
+            source.ShouldContain("ApiPropertyRowJustifyInfo");
+            source.ShouldContain("ApiPropertyRowAlignInfo");
             source.ShouldContain("ApiPropertyColSpan");
+            source.ShouldContain("ApiPropertyColFlex");
             source.ShouldContain("ApiPropertyColOffset");
             source.ShouldContain("ApiPropertyColOrder");
             source.ShouldContain("ApiPropertyColInfo");
+            source.ShouldContain("FlexTitle");
         }
     }
 

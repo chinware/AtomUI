@@ -16,8 +16,14 @@ public class Row : Panel
     public static readonly StyledProperty<RowJustify> JustifyProperty =
         AvaloniaProperty.Register<Row, RowJustify>(nameof(Justify), RowJustify.Start);
 
+    public static readonly StyledProperty<GridRowJustifyInfo?> JustifyInfoProperty =
+        AvaloniaProperty.Register<Row, GridRowJustifyInfo?>(nameof(JustifyInfo));
+
     public static readonly StyledProperty<RowAlign> AlignProperty =
         AvaloniaProperty.Register<Row, RowAlign>(nameof(Align), RowAlign.Stretch);
+
+    public static readonly StyledProperty<GridRowAlignInfo?> AlignInfoProperty =
+        AvaloniaProperty.Register<Row, GridRowAlignInfo?>(nameof(AlignInfo));
 
     public static readonly StyledProperty<bool> IsWrappedProperty =
         AvaloniaProperty.Register<Row, bool>(nameof(IsWrapped), true);
@@ -34,10 +40,22 @@ public class Row : Panel
         set => SetValue(JustifyProperty, value);
     }
 
+    public GridRowJustifyInfo? JustifyInfo
+    {
+        get => GetValue(JustifyInfoProperty);
+        set => SetValue(JustifyInfoProperty, value);
+    }
+
     public RowAlign Align
     {
         get => GetValue(AlignProperty);
         set => SetValue(AlignProperty, value);
+    }
+
+    public GridRowAlignInfo? AlignInfo
+    {
+        get => GetValue(AlignInfoProperty);
+        set => SetValue(AlignInfoProperty, value);
     }
 
     public bool IsWrapped
@@ -55,7 +73,7 @@ public class Row : Panel
 
     static Row()
     {
-        AffectsMeasure<Row>(GutterProperty, JustifyProperty, AlignProperty, IsWrappedProperty);
+        AffectsMeasure<Row>(GutterProperty, JustifyProperty, JustifyInfoProperty, AlignProperty, AlignInfoProperty, IsWrappedProperty);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -127,15 +145,15 @@ public class Row : Panel
         {
             var gapCount = Math.Max(0, line.Items.Count - 1);
             var remaining = result.WidthInfinite ? 0 : Math.Max(0, result.ContainerWidth - line.TotalWidth);
-            var (startX, gap) = CalculateJustify(Justify, remaining, gapCount, line.Items.Count);
+            var (startX, gap) = CalculateJustify(result.Justify, remaining, gapCount, line.Items.Count);
             var x = startX;
 
             foreach (var item in line.Items)
             {
                 x += item.OffsetWidth;
                 var childWidth = item.FinalWidth;
-                var childHeight = Align == RowAlign.Stretch ? line.Height : item.Child.DesiredSize.Height;
-                var yOffset = CalculateCrossAxisOffset(Align, line.Height, childHeight);
+                var childHeight = result.Align == RowAlign.Stretch ? line.Height : item.Child.DesiredSize.Height;
+                var yOffset = CalculateCrossAxisOffset(result.Align, line.Height, childHeight);
                 var shift = result.WidthInfinite ? 0 : result.ColumnWidth * (item.Layout.Push - item.Layout.Pull);
                 var paddedWidth = Math.Max(0, childWidth - result.HorizontalPadding * 2);
                 var childX = x + shift + result.HorizontalPadding;
@@ -144,6 +162,11 @@ public class Row : Panel
             }
 
             y += line.Height + result.VerticalGap;
+        }
+
+        foreach (var hiddenChild in result.HiddenChildren)
+        {
+            hiddenChild.Arrange(default);
         }
 
         return finalSize;
@@ -171,6 +194,8 @@ public class Row : Panel
         result.ContainerWidth = availableSize.Width;
         result.WidthInfinite = double.IsInfinity(result.ContainerWidth);
         result.ColumnWidth = result.WidthInfinite ? 0 : result.ContainerWidth / GridColumns;
+        result.Justify = JustifyInfo?.Resolve(breakPoint, Justify) ?? Justify;
+        result.Align = AlignInfo?.Resolve(breakPoint, Align) ?? Align;
 
         var orderedChildren = GetOrderedChildren(breakPoint);
         var currentLine = new RowLine();
@@ -180,6 +205,18 @@ public class Row : Panel
         {
             var child = info.Child;
             var layout = info.Layout;
+
+            if (layout.IsHidden)
+            {
+                if (measureChildren)
+                {
+                    child.Measure(default);
+                }
+
+                result.HiddenChildren.Add(child);
+                continue;
+            }
+
             var baseWidth = MeasureChild(child, layout, availableSize, result, measureChildren);
             var offsetWidth = result.WidthInfinite ? 0 : result.ColumnWidth * layout.Offset;
             var estimatedWidth = offsetWidth + baseWidth;
@@ -187,7 +224,7 @@ public class Row : Panel
             if (IsWrapped && !result.WidthInfinite && currentLine.Items.Count > 0 &&
                 lineWidth + estimatedWidth > result.ContainerWidth)
             {
-                FinalizeLine(currentLine);
+                FinalizeLine(currentLine, result, availableSize, measureChildren);
                 result.Lines.Add(currentLine);
                 currentLine = new RowLine();
                 lineWidth = 0;
@@ -200,7 +237,7 @@ public class Row : Panel
 
         if (currentLine.Items.Count > 0)
         {
-            FinalizeLine(currentLine);
+            FinalizeLine(currentLine, result, availableSize, measureChildren);
             result.Lines.Add(currentLine);
         }
 
@@ -236,6 +273,16 @@ public class Row : Panel
 
     private static double GetMeasureWidth(GridColLayout layout, LayoutResult result)
     {
+        if (layout.Flex?.Basis is { } basis)
+        {
+            return basis;
+        }
+
+        if (layout.Flex.HasValue)
+        {
+            return result.WidthInfinite ? double.PositiveInfinity : result.ContainerWidth;
+        }
+
         if (layout.Span > 0 && !result.WidthInfinite)
         {
             return result.ColumnWidth * layout.Span;
@@ -246,6 +293,16 @@ public class Row : Panel
 
     private static double GetBaseWidth(Control child, GridColLayout layout, LayoutResult result)
     {
+        if (layout.Flex?.Basis is { } basis)
+        {
+            return basis;
+        }
+
+        if (layout.Flex.HasValue)
+        {
+            return child.DesiredSize.Width;
+        }
+
         if (layout.Span > 0 && !result.WidthInfinite)
         {
             return result.ColumnWidth * layout.Span;
@@ -264,12 +321,67 @@ public class Row : Panel
         return Math.Max(0, width - padding * 2);
     }
 
-    private static void FinalizeLine(RowLine line)
+    private static void FinalizeLine(RowLine line, LayoutResult result, Size availableSize, bool measureChildren)
     {
         line.TotalOffset = line.Items.Sum(item => item.OffsetWidth);
         foreach (var item in line.Items)
         {
             item.FinalWidth = item.BaseWidth;
+        }
+
+        line.TotalWidth = line.TotalOffset + line.Items.Sum(item => item.FinalWidth);
+        DistributeFlexWidth(line, result);
+
+        if (measureChildren)
+        {
+            line.Height = 0;
+            foreach (var item in line.Items)
+            {
+                var adjustedWidth = AdjustWidth(item.FinalWidth, result.HorizontalPadding);
+                item.Child.Measure(new Size(adjustedWidth, availableSize.Height));
+                line.Height = Math.Max(line.Height, item.Child.DesiredSize.Height);
+            }
+        }
+    }
+
+    private static void DistributeFlexWidth(RowLine line, LayoutResult result)
+    {
+        if (result.WidthInfinite)
+        {
+            return;
+        }
+
+        var remaining = result.ContainerWidth - line.TotalWidth;
+        if (remaining > 0)
+        {
+            var totalGrow = line.Items.Sum(item => item.Layout.Flex?.Grow ?? 0);
+            if (totalGrow > 0)
+            {
+                foreach (var item in line.Items)
+                {
+                    var grow = item.Layout.Flex?.Grow ?? 0;
+                    if (grow > 0)
+                    {
+                        item.FinalWidth += remaining * grow / totalGrow;
+                    }
+                }
+            }
+        }
+        else if (remaining < 0)
+        {
+            var totalShrink = line.Items.Sum(item => (item.Layout.Flex?.Shrink ?? 0) * item.BaseWidth);
+            if (totalShrink > 0)
+            {
+                var overflow = -remaining;
+                foreach (var item in line.Items)
+                {
+                    var shrink = item.Layout.Flex?.Shrink ?? 0;
+                    if (shrink > 0)
+                    {
+                        item.FinalWidth = Math.Max(0, item.FinalWidth - overflow * shrink * item.BaseWidth / totalShrink);
+                    }
+                }
+            }
         }
 
         line.TotalWidth = line.TotalOffset + line.Items.Sum(item => item.FinalWidth);
@@ -292,7 +404,7 @@ public class Row : Panel
 
             var layout = child is Col col
                 ? col.ResolveLayout(breakPoint)
-                : new GridColLayout(0, 0, 0, 0, 0);
+                : new GridColLayout(null, 0, false, 0, 0, 0, 0);
 
             _orderedChildrenCache.Add(new RowChildInfo(child, layout, i));
         }
@@ -411,5 +523,8 @@ public class Row : Panel
         public double ColumnWidth { get; set; }
         public bool WidthInfinite { get; set; }
         public double ContainerWidth { get; set; }
+        public RowJustify Justify { get; set; }
+        public RowAlign Align { get; set; }
+        public List<Control> HiddenChildren { get; } = new();
     }
 }
