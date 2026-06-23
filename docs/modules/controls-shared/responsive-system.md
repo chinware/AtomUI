@@ -174,7 +174,9 @@ Grid 是响应式机制的基准控件。
 
 `Col.Span=0` 和断点级 `GridColSize.Span=0` 表示隐藏该列，布局时不占用行宽，并在 arrange 阶段收敛到零尺寸，等价于 Ant Design 的 `display: none` 语义。未显式设置 `Span` 的 `Col` 仍保持自然宽度行为，不能因为默认 `GridColSpanInfo` 为 `0` 而被误判为隐藏。
 
-`Row.Gutter` 的水平和垂直间距分别使用响应式 resolver。`Row.JustifyInfo` 与 `Row.AlignInfo` 为响应式覆盖入口，未设置时完全沿用 `Row.Justify` 与 `Row.Align`。响应式行对齐必须使用同一套 resolver，不能引入单独解析规则。
+`Row.Gutter` 的水平和垂直间距分别使用响应式 resolver。水平 gutter 必须对齐 Ant Design 的 Row 负 margin + Col padding 模型：间距只出现在列之间，不出现在 Row 两端；实现上通过扩展 Row 的内部布局面并从 `-gutter / 2` 开始排布来抵消首尾半个 gutter。
+
+`Row.JustifyInfo` 与 `Row.AlignInfo` 为响应式覆盖入口，未设置时完全沿用 `Row.Justify` 与 `Row.Align`。响应式行对齐必须使用同一套 resolver，不能引入单独解析规则。
 
 ### 6.2 Descriptions
 

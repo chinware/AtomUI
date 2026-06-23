@@ -48,8 +48,10 @@ public class GridResponsiveTests
             window.Show();
             Dispatcher.UIThread.RunJobs();
 
-            row.Children[0].Bounds.X.ShouldBe(8, 0.5);
+            row.Children[0].Bounds.X.ShouldBe(0, 0.5);
+            row.Children[0].Bounds.Width.ShouldBe(112, 0.5);
             row.Children[1].Bounds.X.ShouldBe(128, 0.5);
+            row.Children[1].Bounds.Width.ShouldBe(112, 0.5);
         }
         finally
         {
