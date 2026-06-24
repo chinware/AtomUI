@@ -16,7 +16,6 @@ public class RibbonBadge : AbstractRibbonBadge
         {
             _ribbonBadgeAdorner = new RibbonBadgeAdorner();
             SetupTokenBindings();
-            HandleDecoratedTargetChanged();
             if (RibbonColor is not null)
             {
                 SetupRibbonColor(RibbonColor);

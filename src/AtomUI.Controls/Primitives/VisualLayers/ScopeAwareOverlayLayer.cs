@@ -71,7 +71,7 @@ public class ScopeAwareOverlayLayer : Canvas
             layer.LayerHost = layerHost;
             if (layerHost is VisualLayerManager visualLayerManager)
             {
-                visualLayerManager.AddLayer(layer, visualLayerManager.ZIndex);
+                visualLayerManager.AddLayer(layer, layer.ZIndex);
             }
             else if (layerHost is ScopeAwareOverlayLayerPanel scopeAwareOverlayLayerPanel)
             {

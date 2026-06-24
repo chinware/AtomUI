@@ -1,10 +1,18 @@
 using System;
 using System.IO;
+using System.Linq;
+using AtomUI.Controls.Primitives;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Media;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
+using AvaloniaScrollViewer = Avalonia.Controls.ScrollViewer;
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUIGallery.Tests.Controls;
 
@@ -129,6 +137,83 @@ public class GalleryStickyTabsHostTests
         hostSource.ShouldNotContain("MoveStickyContentToOverlay");
         hostSource.ShouldNotContain("MoveStickyContentInline");
         hostSource.ShouldNotContain("_inlineStickyContentPresenter.Content");
+    }
+
+    [Fact]
+    public void Sticky_Host_Mirror_Layer_Is_Above_Native_Adorner_Layer()
+    {
+        var host = CreateStickyHost(new FixedSizeControl(320, 800));
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child              = host
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 180,
+            Content = visualLayerManager
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var nativeAdornerLayer = AdornerLayer.GetAdornerLayer(host);
+            nativeAdornerLayer.ShouldNotBeNull();
+            var nativeAdorner = new Border
+            {
+                Width      = 20,
+                Height     = 20,
+                Background = Brushes.Red
+            };
+            AdornerLayer.SetAdornedElement(nativeAdorner, host);
+            nativeAdornerLayer.Children.Add(nativeAdorner);
+
+            PinStickyContent(host);
+
+            var stickyMirrorLayer = visualLayerManager.GetVisualDescendants()
+                                                      .OfType<ScopeAwareAdornerLayer>()
+                                                      .Single(layer => ReferenceEquals(layer.GetVisualParent(),
+                                                          visualLayerManager));
+
+            nativeAdornerLayer.Children.Count.ShouldBe(1);
+            stickyMirrorLayer.Children
+                             .OfType<Border>()
+                             .Count(border => border.Background is VisualBrush)
+                             .ShouldBe(1);
+            stickyMirrorLayer.ZIndex.ShouldBeGreaterThan(nativeAdornerLayer.ZIndex);
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    private static GalleryStickyTabsHost CreateStickyHost(Control content)
+    {
+        return new GalleryStickyTabsHost
+        {
+            Header        = new FixedSizeControl(320, 80),
+            StickyContent = new FixedSizeControl(320, 40),
+            Content       = content
+        };
+    }
+
+    private static void PinStickyContent(GalleryStickyTabsHost host)
+    {
+        var panel = host.GetVisualDescendants()
+                        .OfType<GalleryStickyTabsPanel>()
+                        .Single();
+        var scrollViewer = panel.GetVisualAncestors()
+                                .OfType<AvaloniaScrollViewer>()
+                                .First();
+        scrollViewer.Offset = new Vector(0, 96);
+        Dispatcher.UIThread.RunJobs();
+
+        panel.IsStickyPinned.ShouldBeTrue();
     }
 
     private static GalleryStickyTabsPanel CreatePanel()
