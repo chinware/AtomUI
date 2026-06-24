@@ -5,6 +5,8 @@ namespace AtomUI.Desktop.Controls;
 
 public class UploadTaskInfo : AvaloniaObject
 {
+    #region 公共属性定义
+
     public static readonly DirectProperty<UploadTaskInfo, Guid> TaskIdProperty =
         AvaloniaProperty.RegisterDirect<UploadTaskInfo, Guid>(
             nameof(TaskId),
@@ -55,6 +57,14 @@ public class UploadTaskInfo : AvaloniaObject
         set => SetAndRaise(TaskIdProperty, ref _taskId, value);
     }
     
+    private string? _fileName;
+
+    public string? FileName
+    {
+        get => _fileName;
+        set => SetAndRaise(FileNameProperty, ref _fileName, value);
+    }
+
     private double _progress;
 
     public double Progress
@@ -69,14 +79,6 @@ public class UploadTaskInfo : AvaloniaObject
     {
         get => _isImageFile;
         set => SetAndRaise(IsImageFileProperty, ref _isImageFile, value);
-    }
-    
-    private string? _fileName;
-
-    public string? FileName
-    {
-        get => _fileName;
-        set => SetAndRaise(FileNameProperty, ref _fileName, value);
     }
     
     private FileUploadStatus _status;
@@ -102,7 +104,13 @@ public class UploadTaskInfo : AvaloniaObject
         get => _filePath;
         set => SetAndRaise(FilePathProperty, ref _filePath, value);
     }
+
+    #endregion
+
+    #region 内部属性定义
     
     internal FileUploadTask? UploadTask { get; set; }
     internal bool IsPictureTriggerTask { get; set; }
+
+    #endregion
 }

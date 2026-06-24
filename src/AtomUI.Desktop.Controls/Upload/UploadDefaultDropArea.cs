@@ -1,5 +1,4 @@
 using AtomUI.Animations;
-using Avalonia.Threading;
 using AtomUI.Controls;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
@@ -96,26 +95,6 @@ public class UploadDefaultDropArea : TemplatedControl, IMotionAwareControl
    
     }
 
-    private void HandleDrop(DragEventArgs e)
-    {
-        List<IStorageFile>? files = null;
-        foreach (var item in e.DataTransfer.Items)
-        {
-            var raw = item.TryGetRaw(DataFormat.File);
-            if (raw is IStorageFile file)
-            {
-                files ??= new List<IStorageFile>(e.DataTransfer.Items.Count);
-                files.Add(file);
-            }
-        }
-        IReadOnlyList<IStorageFile> droppedFiles = files is null ? Array.Empty<IStorageFile>() : files;
-        RaiseEvent(new UploadFilesDroppedEventArgs(droppedFiles)
-        {
-            Source = this,
-            RoutedEvent = FilesDroppedEvent,
-        });
-    }
-
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -135,5 +114,25 @@ public class UploadDefaultDropArea : TemplatedControl, IMotionAwareControl
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
+    }
+
+    private void HandleDrop(DragEventArgs e)
+    {
+        List<IStorageFile>? files = null;
+        foreach (var item in e.DataTransfer.Items)
+        {
+            var raw = item.TryGetRaw(DataFormat.File);
+            if (raw is IStorageFile file)
+            {
+                files ??= new List<IStorageFile>(e.DataTransfer.Items.Count);
+                files.Add(file);
+            }
+        }
+        IReadOnlyList<IStorageFile> droppedFiles = files is null ? Array.Empty<IStorageFile>() : files;
+        RaiseEvent(new UploadFilesDroppedEventArgs(droppedFiles)
+        {
+            Source = this,
+            RoutedEvent = FilesDroppedEvent,
+        });
     }
 }

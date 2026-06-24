@@ -9,7 +9,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -40,7 +39,7 @@ internal class UploadTriggerContent : ContentControl, IMotionAwareControl
     #region 公共事件定义
 
     public static readonly RoutedEvent<RoutedEventArgs> FileSelectRequestEvent =
-        RoutedEvent.Register<AbstractUploadListItem, RoutedEventArgs>(nameof(FileSelectRequest), RoutingStrategies.Bubble);
+        RoutedEvent.Register<UploadTriggerContent, RoutedEventArgs>(nameof(FileSelectRequest), RoutingStrategies.Bubble);
 
     public event EventHandler<RoutedEventArgs>? FileSelectRequest
     {
@@ -53,6 +52,12 @@ internal class UploadTriggerContent : ContentControl, IMotionAwareControl
     private IDisposable? _clickSubscription;
     private RawPointerEventArgs? _latestClickEventArgs;
     private ContentPresenter? _trigger;
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        _trigger = e.NameScope.Find<ContentPresenter>("PART_Trigger");
+    }
     
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -65,6 +70,42 @@ internal class UploadTriggerContent : ContentControl, IMotionAwareControl
         base.OnDetachedFromVisualTree(e);
         _clickSubscription?.Dispose();
         _clickSubscription = null;
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+
+        if (change.Property == ListTypeProperty)
+        {
+            if (ListType == UploadListType.PictureCircle)
+            {
+                var radius = Math.Max(Width, Height);
+                if (double.IsNaN(radius))
+                {
+                    radius = Math.Min(DesiredSize.Width, DesiredSize.Height);
+                }
+                ConfigureEffectiveCornerRadius(radius);
+            }
+        }
+    }
+
+    protected override void OnSizeChanged(SizeChangedEventArgs e)
+    {
+        base.OnSizeChanged(e);
+        ConfigureEffectiveCornerRadius(Math.Max(e.NewSize.Width, e.NewSize.Height));
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.DisableTransitions();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        Dispatcher.Post(this.EnableTransitions);
     }
 
     private void ConfigureInputManager()
@@ -122,53 +163,11 @@ internal class UploadTriggerContent : ContentControl, IMotionAwareControl
         return false;
     }
     
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-
-        if (change.Property == ListTypeProperty)
-        {
-            if (ListType == UploadListType.PictureCircle)
-            {
-                var radius= Math.Max(Width, Height);
-                if (double.IsNaN(radius))
-                {
-                    radius = Math.Min(DesiredSize.Width, DesiredSize.Height);
-                }
-                ConfigureEffectiveCornerRadius(radius);
-            }
-        }
-    }
-
-    protected override void OnSizeChanged(SizeChangedEventArgs e)
-    {
-        base.OnSizeChanged(e);
-        ConfigureEffectiveCornerRadius(Math.Max(e.NewSize.Width, e.NewSize.Height));
-    }
-    
     private void ConfigureEffectiveCornerRadius(double cornerRadius)
     {
         if (ListType == UploadListType.PictureCircle)
         {
             SetCurrentValue(CornerRadiusProperty, new CornerRadius(cornerRadius));
         }
-    }
-
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        _trigger = e.NameScope.Find<ContentPresenter>("PART_Trigger");
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        this.DisableTransitions();
-    }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        Dispatcher.Post(this.EnableTransitions);
     }
 }
