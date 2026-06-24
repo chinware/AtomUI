@@ -1,10 +1,7 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Metadata;
-using Avalonia.Threading;
 using Avalonia.VisualTree;
 
 namespace AtomUI.Controls.Commons;
@@ -86,10 +83,6 @@ public abstract class AbstractRibbonBadge : Control
     }
     
     private protected AbstractRibbonBadgeAdorner? _ribbonBadgeAdorner;
-    private protected AdornerLayer? _adornerLayer;
-    private const int MaxAdornerLayerRetryCount = 30;
-    private bool _adornerLayerRetryScheduled;
-    private int _adornerLayerRetryCount;
 
     private void AttachChild(Control child)
     {
@@ -123,38 +116,21 @@ public abstract class AbstractRibbonBadge : Control
         child.SetLogicalParent(null);
     }
 
-    private void DetachLayerAdorner()
+    private void DetachRibbonAdorner()
     {
-        if (_adornerLayer is null || _ribbonBadgeAdorner is null)
-        {
-            _adornerLayer = null;
-            return;
-        }
-
-        _adornerLayer.Children.Remove(_ribbonBadgeAdorner);
-        _adornerLayer = null;
+        DetachChild(_ribbonBadgeAdorner);
     }
 
     private protected void HandleDecoratedTargetChanged(Control? oldDecoratedTarget = null)
     {
-        if (_ribbonBadgeAdorner is not null)
+        DetachChild(oldDecoratedTarget);
+        if (BadgeIsVisible)
         {
-            DetachChild(oldDecoratedTarget);
-            if (DecoratedTarget is null)
-            {
-                DetachLayerAdorner();
-                _ribbonBadgeAdorner.IsAdornerMode = false;
-                if (BadgeIsVisible)
-                {
-                    AttachChild(_ribbonBadgeAdorner);
-                }
-            }
-            else if (DecoratedTarget is not null)
-            {
-                DetachChild(_ribbonBadgeAdorner);
-                _ribbonBadgeAdorner.IsAdornerMode = true;
-                AttachChild(DecoratedTarget);
-            }
+            PrepareAdorner();
+        }
+        else
+        {
+            HideAdorner();
         }
     }
 
@@ -193,11 +169,6 @@ public abstract class AbstractRibbonBadge : Control
             var badgeIsVisible = change.GetNewValue<bool>();
             if (badgeIsVisible)
             {
-                if (_adornerLayer is not null)
-                {
-                    return;
-                }
-
                 PrepareAdorner();
             }
             else
@@ -211,10 +182,6 @@ public abstract class AbstractRibbonBadge : Control
             if (change.Property == DecoratedTargetProperty)
             {
                 HandleDecoratedTargetChanged(change.GetOldValue<Control?>());
-                if (BadgeIsVisible)
-                {
-                    PrepareAdorner();
-                }
             }
 
             if (change.Property == RibbonColorProperty)
@@ -231,131 +198,97 @@ public abstract class AbstractRibbonBadge : Control
         var ribbonBadgeAdorner = CreateBadgeAdorner();
         if (DecoratedTarget is not null)
         {
-            DetachChild(ribbonBadgeAdorner);
             AttachChild(DecoratedTarget);
             ribbonBadgeAdorner.IsAdornerMode = true;
-            if (_adornerLayer is not null)
-            {
-                return;
-            }
-
-            _adornerLayer = AdornerLayer.GetAdornerLayer(this);
-            // 这里需要抛出异常吗？
-            if (_adornerLayer == null)
-            {
-                ScheduleAdornerLayerRetry();
-                return;
-            }
-
-            _adornerLayerRetryCount     = 0;
-            _adornerLayerRetryScheduled = false;
-            AdornerLayer.SetAdornedElement(ribbonBadgeAdorner, this);
-            AdornerLayer.SetIsClipEnabled(ribbonBadgeAdorner, false);
-            _adornerLayer.Children.Add(ribbonBadgeAdorner);
+            AttachChild(ribbonBadgeAdorner);
         }
         else
         {
-            DetachLayerAdorner();
+            DetachRibbonAdorner();
             ribbonBadgeAdorner.IsAdornerMode = false;
             AttachChild(ribbonBadgeAdorner);
             IsVisible = true;
         }
+
+        InvalidateMeasure();
     }
 
     private void HideAdorner()
     {
-        if (_ribbonBadgeAdorner is null)
-        {
-            return;
-        }
-
         if (DecoratedTarget is null)
         {
-            DetachChild(_ribbonBadgeAdorner);
+            DetachRibbonAdorner();
             IsVisible = false;
         }
         else
         {
-            DetachChild(_ribbonBadgeAdorner);
-            DetachLayerAdorner();
+            AttachChild(DecoratedTarget);
+            DetachRibbonAdorner();
         }
+
+        InvalidateMeasure();
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        _adornerLayerRetryCount = 0;
         if (BadgeIsVisible)
         {
             PrepareAdorner();
+        }
+        else
+        {
+            HideAdorner();
         }
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        Loaded -= HandleAdornerLayerRetryLoaded;
-        _adornerLayerRetryScheduled = false;
-        _adornerLayerRetryCount     = 0;
         HideAdorner();
     }
 
-    private void ScheduleAdornerLayerRetry()
+    protected override Size MeasureOverride(Size availableSize)
     {
-        if (_adornerLayerRetryScheduled ||
-            !this.IsAttachedToVisualTree() ||
-            _adornerLayerRetryCount >= MaxAdornerLayerRetryCount)
+        if (DecoratedTarget is not null)
         {
-            return;
+            DecoratedTarget.Measure(availableSize);
+            var targetSize = DecoratedTarget.DesiredSize;
+            if (BadgeIsVisible && _ribbonBadgeAdorner is not null)
+            {
+                _ribbonBadgeAdorner.Measure(targetSize);
+            }
+
+            return targetSize;
         }
 
-        _adornerLayerRetryScheduled = true;
-        if (IsLoaded)
+        if (BadgeIsVisible && _ribbonBadgeAdorner is not null)
         {
-            if (_adornerLayerRetryCount == 0)
-            {
-                Dispatcher.UIThread.Post(RetryPrepareAdorner, DispatcherPriority.Loaded);
-            }
-            else
-            {
-                DispatcherTimer.RunOnce(RetryPrepareAdorner, TimeSpan.FromMilliseconds(16));
-            }
+            _ribbonBadgeAdorner.Measure(availableSize);
+            return _ribbonBadgeAdorner.DesiredSize;
         }
-        else
-        {
-            Loaded += HandleAdornerLayerRetryLoaded;
-        }
+
+        return default;
     }
 
-    private void HandleAdornerLayerRetryLoaded(object? sender, RoutedEventArgs e)
+    protected override Size ArrangeOverride(Size finalSize)
     {
-        Loaded -= HandleAdornerLayerRetryLoaded;
-        Dispatcher.UIThread.Post(RetryPrepareAdorner, DispatcherPriority.Loaded);
-    }
-
-    private void RetryPrepareAdorner()
-    {
-        if (!_adornerLayerRetryScheduled)
+        if (DecoratedTarget is not null)
         {
-            return;
+            DecoratedTarget.Arrange(new Rect(finalSize));
+            if (BadgeIsVisible && _ribbonBadgeAdorner is not null)
+            {
+                _ribbonBadgeAdorner.Arrange(new Rect(finalSize));
+            }
+
+            return finalSize;
         }
 
-        _adornerLayerRetryScheduled = false;
-        if (!this.IsAttachedToVisualTree() ||
-            !BadgeIsVisible ||
-            DecoratedTarget is null)
+        if (BadgeIsVisible && _ribbonBadgeAdorner is not null)
         {
-            return;
+            _ribbonBadgeAdorner.Arrange(new Rect(finalSize));
         }
 
-        _adornerLayerRetryCount++;
-        var adornerLayer = AdornerLayer.GetAdornerLayer(this);
-        if (adornerLayer is null)
-        {
-            ScheduleAdornerLayerRetry();
-            return;
-        }
-
-        PrepareAdorner();
+        return finalSize;
     }
 }
