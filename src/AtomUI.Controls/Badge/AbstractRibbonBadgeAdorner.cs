@@ -106,12 +106,15 @@ internal abstract class AbstractRibbonBadgeAdorner : TemplatedControl
     private Color? _cornerBrushSourceColor;
     private int _cornerBrushDarkenAmount;
     private IBrush? _cornerBrush;
+    private Size _arrangedSize;
     private readonly BorderRenderHelper _borderRenderHelper;
 
     static AbstractRibbonBadgeAdorner()
     {
-        AffectsMeasure<AbstractRibbonBadgeAdorner>(TextProperty, IsAdornerModeProperty);
-        AffectsMeasure<AbstractRibbonBadgeAdorner>(PlacementProperty);
+        AffectsMeasure<AbstractRibbonBadgeAdorner>(TextProperty, IsAdornerModeProperty,
+            PlacementProperty, BadgeRibbonOffsetProperty);
+        AffectsArrange<AbstractRibbonBadgeAdorner>(OffsetProperty, PlacementProperty,
+            BadgeRibbonOffsetProperty);
         AffectsRender<AbstractRibbonBadgeAdorner>(RibbonColorProperty, OffsetProperty,
             BadgeRibbonCornerDarkenAmountProperty);
     }
@@ -145,6 +148,7 @@ internal abstract class AbstractRibbonBadgeAdorner : TemplatedControl
 
     protected override Size ArrangeOverride(Size finalSize)
     {
+        _arrangedSize = finalSize;
         if (_labelText is not null)
         {
             _labelText.Arrange(GetTextRect());
@@ -231,14 +235,15 @@ internal abstract class AbstractRibbonBadgeAdorner : TemplatedControl
         var offsetY = 0d;
         if (IsAdornerMode)
         {
-            offsetY += BadgeRibbonOffset.Y;
+            offsetY += BadgeRibbonOffset.Y + Offset.Y;
+            var targetWidth = _arrangedSize.Width > 0 ? _arrangedSize.Width : DesiredSize.Width;
             if (Placement == RibbonBadgePlacement.End)
             {
-                offsetX = DesiredSize.Width - _labelText.DesiredSize.Width + BadgeRibbonOffset.X;
+                offsetX = targetWidth - _labelText.DesiredSize.Width + BadgeRibbonOffset.X + Offset.X;
             }
             else
             {
-                offsetX = -BadgeRibbonOffset.X;
+                offsetX = -BadgeRibbonOffset.X + Offset.X;
             }
         }
 

@@ -1,4 +1,5 @@
 using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
@@ -75,7 +76,7 @@ public class RibbonBadgeAdornerTests
                                             .Count(visual => visual.GetType().Name == "RibbonBadgeAdorner");
 
         nativeAdorner.ShouldBeNull(
-            "RibbonBadge should behave like Ant Design Badge.Ribbon: the ribbon belongs to the decorated content tree, not a window-level adorner.");
+            "RibbonBadge should behave like Ant Design Badge.Ribbon: the ribbon belongs to the decorated wrapper tree, not a window-level adorner.");
         inlineAdornerCount.ShouldBe(1);
     }
 
@@ -103,6 +104,73 @@ public class RibbonBadgeAdornerTests
         inlineAdornerCount.ShouldBe(0);
     }
 
+    [Fact]
+    public void RibbonBadge_Target_Mode_Applies_Offset_To_Ribbon_Position()
+    {
+        var defaultLabelX = GetRibbonLabelX(new Point());
+        var insetLabelX   = GetRibbonLabelX(new Point(-8, 0));
+
+        insetLabelX.ShouldBe(defaultLabelX - 8, 0.001);
+    }
+
+    [Fact]
+    public void RibbonBadge_Target_Mode_Anchors_End_Ribbon_To_Final_Target_Right_Edge_In_Stretch_Layout()
+    {
+        var ribbonBadge = new AtomUI.Desktop.Controls.RibbonBadge
+        {
+            Text = "Hippies",
+            DecoratedTarget = new Border
+            {
+                Padding         = new Thickness(10, 0),
+                BorderThickness = new Thickness(1),
+                Child = new StackPanel
+                {
+                    Children =
+                    {
+                        new TextBlock { Text = "Pushes open the window" },
+                        new TextBlock { Text = "and raises the spyglass." }
+                    }
+                }
+            }
+        };
+        var host = new StackPanel
+        {
+            Margin   = new Thickness(20, 0),
+            Children = { ribbonBadge }
+        };
+        using var context = ShowInAdornerHost(host, width: 920, height: 180);
+
+        var label = context.VisualLayerManager
+                           .GetVisualDescendants()
+                           .OfType<TextBlock>()
+                           .Single(textBlock => textBlock.Text == "Hippies");
+
+        label.Bounds.Right.ShouldBeGreaterThan(ribbonBadge.Bounds.Width,
+            "the end ribbon should overhang the decorated target's final right edge instead of stopping inside it.");
+    }
+
+    private static double GetRibbonLabelX(Point offset)
+    {
+        var ribbonBadge = new AtomUI.Desktop.Controls.RibbonBadge
+        {
+            Text   = "v6.0.5",
+            Offset = offset,
+            DecoratedTarget = new Border
+            {
+                Width  = 160,
+                Height = 80
+            }
+        };
+        using var context = ShowInAdornerHost(ribbonBadge, width: 240, height: 160);
+
+        return context.VisualLayerManager
+                      .GetVisualDescendants()
+                      .OfType<TextBlock>()
+                      .Single(textBlock => textBlock.Text == "v6.0.5")
+                      .Bounds
+                      .X;
+    }
+
     private static Control? FindNativeAdorner(Control badge)
     {
         var adornerLayer = AdornerLayer.GetAdornerLayer(badge);
@@ -114,30 +182,34 @@ public class RibbonBadgeAdornerTests
 
     private static WindowContext ShowInAdornerHost(Control control, double width = 120, double height = 100)
     {
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child              = control
+        };
         var window = new AvaloniaWindow
         {
             Width   = width,
             Height  = height,
-            Content = new VisualLayerManager
-            {
-                EnableAdornerLayer = true,
-                Child              = control
-            }
+            Content = visualLayerManager
         };
 
         window.Show();
         Dispatcher.UIThread.RunJobs();
-        return new WindowContext(window);
+        return new WindowContext(window, visualLayerManager);
     }
 
     private sealed class WindowContext : IDisposable
     {
         private readonly AvaloniaWindow _window;
 
-        public WindowContext(AvaloniaWindow window)
+        public WindowContext(AvaloniaWindow window, VisualLayerManager visualLayerManager)
         {
-            _window = window;
+            _window            = window;
+            VisualLayerManager = visualLayerManager;
         }
+
+        public VisualLayerManager VisualLayerManager { get; }
 
         public void Dispose()
         {

@@ -38,6 +38,7 @@
         </Setter>
 
         <Style Selector="^[IsBadgeVisible=True]">
+            <Setter Property="ClipToBounds" Value="False" />
             <Setter Property="Template">
                 <ControlTemplate TargetType="{x:Type gallery:ShowCaseItem}">
                     <atom:RibbonBadge Text="{TemplateBinding BadgeText}"

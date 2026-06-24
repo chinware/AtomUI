@@ -362,7 +362,7 @@ public class ComboBoxShowCasePageTests
                           .Where(item => item.IsVisible && item.Content is string)
                           .ShouldBeEmpty();
 
-                var emptyIndicator = GetVisualDescendant<ContentPresenter>(popupFrame, "PART_EmptyIndicator");
+                var emptyIndicator = GetVisualDescendant<Control>(popupFrame, "PART_EmptyIndicator");
                 emptyIndicator.IsVisible.ShouldBeTrue(
                     "The real Gallery editable filtering ComboBox should show Empty when no candidate matches.");
                 emptyIndicator.GetVisualDescendants()
