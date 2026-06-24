@@ -3,6 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview-cn)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.0.6-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-license-shield]][github-license-link]
 
@@ -59,6 +60,18 @@ Token 和本地化开发的源代码生成器。欢迎提交 Issue、PR 和改�
 - 基于 Avalonia 样式与资源系统实现 Token 驱动的主题能力，便于在应用级统一定制视觉风格。
 - 使用统一的 .NET/XAML 开发模型支持 Windows、macOS、Linux 跨平台桌面应用。
 - 提供自定义控件、主题 Token、本地化相关的源代码生成能力，减少重复基础设施代码。
+
+#### 6.0.6 最新特性
+
+- 扩展了可自定义尺寸能力，覆盖 Button、输入类控件、Select、TreeSelect、ToggleSwitch、SpinIndicator 等
+  SizeType 相关控件，并补充了对应 Gallery 示例。
+- Grid、Row、Col 进一步对齐 Ant Design 行为，修复响应式布局细节，并增加 Col `Flex` 支持。
+- NavMenu 增强键盘导航和 inline 折叠模式，支持配置折叠宽度，并优化折叠布局过渡体验。
+- ComboBox 增加可编辑筛选、候选项键盘导航和空结果展示行为。
+- Form 验证流程优化，支持更符合提交场景的验证反馈，避免表单项过早进入错误状态。
+- 多个桌面控件完成正确性、生命周期和视觉细节优化，包括 Collapse、Expander、Descriptions、Segmented、
+  Spin、ProgressBar、Skeleton、Card、Avatar、Badge、Pagination、Upload、Breadcrumb 等。
+- 控件文档和 Gallery 示例继续补齐，覆盖更多 API、Design Token 与自定义尺寸用法。
 
 #### 运行环境
 
@@ -120,9 +133,9 @@ AtomUI 推荐通过 NuGet 安装。先安装主桌面控件包，再根据应用
 | AtomUI.Generator                    | 面向自定义控件、Token 与本地化开发的源代码生成器   |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.0.5
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.5
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.5
+dotnet add package AtomUI.Desktop.Controls --version 6.0.6
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.6
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.6
 ```
 
 您也可以在 IDE 的 NuGet 包管理器中安装。以 Rider 为例，可以依次点击：
@@ -149,9 +162,9 @@ NuGet -> 软件包
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.0.5"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.0.5"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.0.5"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.0.6"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.0.6"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.0.6"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>
