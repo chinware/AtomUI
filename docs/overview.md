@@ -39,6 +39,7 @@ docs/
 - [modules/desktop-controls-datagrid/overview.md](modules/desktop-controls-datagrid/overview.md) - `AtomUI.Desktop.Controls.DataGrid`
 - [modules/desktop-controls-colorpicker/overview.md](modules/desktop-controls-colorpicker/overview.md) - `AtomUI.Desktop.Controls.ColorPicker`
 - [modules/generator/overview.md](modules/generator/overview.md) - `AtomUI.Generator`
+- [modules/toolkits-gallery-base/overview.md](modules/toolkits-gallery-base/overview.md) - `AtomUI.Toolkits.GalleryBase`
 - [modules/icons/overview.md](modules/icons/overview.md) - 图标相关项目
 - [modules/fonts/overview.md](modules/fonts/overview.md) - 字体相关项目
 

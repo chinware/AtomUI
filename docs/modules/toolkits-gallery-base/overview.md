@@ -60,6 +60,7 @@
 - [navigation-routing.md](navigation-routing.md)
 - [shell-and-platform.md](shell-and-platform.md)
 - [showcase-controls.md](showcase-controls.md)
+- [source-code-display.md](source-code-display.md)
 - [theming-localization.md](theming-localization.md)
 - [migration-and-testing.md](migration-and-testing.md)
 - [../../gallery/gallery-showcase-design-pattern.md](../../gallery/gallery-showcase-design-pattern.md)
