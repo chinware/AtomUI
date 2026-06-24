@@ -4,7 +4,6 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -87,7 +86,7 @@ internal class AbstractUploadPictureContent : TemplatedControl, IMotionAwareCont
         {
             if (ListType == UploadListType.PictureCircle)
             {
-                var radius= Math.Max(Width, Height);
+                var radius = Math.Max(Width, Height);
                 if (double.IsNaN(radius))
                 {
                     radius = Math.Min(DesiredSize.Width, DesiredSize.Height);
@@ -102,14 +101,6 @@ internal class AbstractUploadPictureContent : TemplatedControl, IMotionAwareCont
         base.OnSizeChanged(e);
         ConfigureEffectiveCornerRadius(Math.Max(e.NewSize.Width, e.NewSize.Height));
     }
-    
-    private void ConfigureEffectiveCornerRadius(double cornerRadius)
-    {
-        if (ListType == UploadListType.PictureCircle)
-        {
-            SetCurrentValue(CornerRadiusProperty, new CornerRadius(cornerRadius));
-        }
-    }
 
     protected override void OnInitialized()
     {
@@ -121,5 +112,13 @@ internal class AbstractUploadPictureContent : TemplatedControl, IMotionAwareCont
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
+    }
+
+    private void ConfigureEffectiveCornerRadius(double cornerRadius)
+    {
+        if (ListType == UploadListType.PictureCircle)
+        {
+            SetCurrentValue(CornerRadiusProperty, new CornerRadius(cornerRadius));
+        }
     }
 }

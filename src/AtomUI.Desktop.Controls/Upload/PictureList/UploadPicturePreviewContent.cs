@@ -18,21 +18,13 @@ internal class UploadPicturePreviewContent : AbstractUploadPictureContent
     }
 
     #endregion
+
+    private UploadImagePreviewer? _uploadImagePreviewer;
     
     static UploadPicturePreviewContent()
     {
         HyperLinkTextBlock.ClickEvent.AddClassHandler<UploadPicturePreviewContent>((o, args) => o.HandleLinkTextClicked());
     }
-    
-    private void HandleLinkTextClicked()
-    {
-        if (_uploadImagePreviewer != null)
-        {
-            _uploadImagePreviewer.OpenDialog();
-        }
-    }
-    
-    private UploadImagePreviewer? _uploadImagePreviewer;
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -54,5 +46,13 @@ internal class UploadPicturePreviewContent : AbstractUploadPictureContent
     {
         base.OnApplyTemplate(e);
         _uploadImagePreviewer = e.NameScope.Find<UploadImagePreviewer>("PART_ImagePreviewer");
+    }
+
+    private void HandleLinkTextClicked()
+    {
+        if (_uploadImagePreviewer != null)
+        {
+            _uploadImagePreviewer.OpenDialog();
+        }
     }
 }

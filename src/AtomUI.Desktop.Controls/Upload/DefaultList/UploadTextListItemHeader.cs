@@ -8,6 +8,8 @@ namespace AtomUI.Desktop.Controls;
 
 internal class UploadTextListItemHeader : TemplatedControl, IMotionAwareControl
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<string?> FileNameProperty =
         AbstractUploadListItem.FileNameProperty.AddOwner<UploadTextListItemHeader>();
 
@@ -32,18 +34,20 @@ internal class UploadTextListItemHeader : TemplatedControl, IMotionAwareControl
         set => SetValue(StatusProperty, value);
     }
     
-    public bool IsMotionEnabled
-    {
-        get => GetValue(IsMotionEnabledProperty);
-        set => SetValue(IsMotionEnabledProperty, value);
-    }
-    
     public string? ErrorMessage
     {
         get => GetValue(ErrorMessageProperty);
         set => SetValue(ErrorMessageProperty, value);
     }
     
+    public bool IsMotionEnabled
+    {
+        get => GetValue(IsMotionEnabledProperty);
+        set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    #endregion
+
     #region 内部属性定义
 
     internal static readonly StyledProperty<double> RelativeLineHeightProperty =

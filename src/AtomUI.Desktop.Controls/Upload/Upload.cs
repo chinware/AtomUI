@@ -9,131 +9,131 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
-public class Upload : ContentControl, 
+public class Upload : ContentControl,
                       IMotionAwareControl,
                       IFormItemAware
 {
     #region 公共属性定义
+
     public static readonly StyledProperty<IReadOnlyList<string>?> AcceptsProperty =
         AvaloniaProperty.Register<Upload, IReadOnlyList<string>?>(nameof(Accepts));
-    
+
     public static readonly StyledProperty<object?> ExtraContextProperty =
         AvaloniaProperty.Register<Upload, object?>(
             nameof(ExtraContext));
-    
+
     public static readonly StyledProperty<int> MaxCountProperty =
         AvaloniaProperty.Register<Upload, int>(
             nameof(MaxCount), int.MaxValue);
-    
+
     public static readonly StyledProperty<bool> IsUploadDirectoryEnabledProperty =
         AvaloniaProperty.Register<Upload, bool>(nameof(IsUploadDirectoryEnabled));
-    
+
     public static readonly StyledProperty<UploadListType> ListTypeProperty =
         AvaloniaProperty.Register<Upload, UploadListType>(nameof(ListType));
-    
+
     public static readonly StyledProperty<bool> IsMultipleEnabledProperty =
         AvaloniaProperty.Register<Upload, bool>(nameof(IsMultipleEnabled));
-    
+
     public static readonly StyledProperty<bool> IsOpenFileDialogOnClickProperty =
         AvaloniaProperty.Register<Upload, bool>(nameof(IsOpenFileDialogOnClick), true);
-    
+
     public static readonly StyledProperty<bool> IsShowUploadListProperty =
         AvaloniaProperty.Register<Upload, bool>(nameof(IsShowUploadList), true);
-    
+
     public static readonly StyledProperty<bool> IsShowUploadTriggerProperty =
         AvaloniaProperty.Register<Upload, bool>(nameof(IsShowUploadTrigger), true);
-    
+
     public static readonly StyledProperty<IList<UploadTaskInfo>?> DefaultTaskListProperty =
         AvaloniaProperty.Register<Upload, IList<UploadTaskInfo>?>(nameof(DefaultTaskList));
-    
+
     public static readonly StyledProperty<int> MaxConcurrentTasksProperty =
         AvaloniaProperty.Register<Upload, int>(nameof(MaxConcurrentTasks), 3);
-    
+
     public static readonly DirectProperty<Upload, IFileUploadTransport?> UploadTransportProperty =
         AvaloniaProperty.RegisterDirect<Upload, IFileUploadTransport?>(
             nameof(UploadTransport),
             o => o.UploadTransport,
             (o, v) => o.UploadTransport = v);
-    
+
     public static readonly DirectProperty<Upload, bool> IsTaskRunningProperty =
         AvaloniaProperty.RegisterDirect<Upload, bool>(
             nameof(IsTaskRunning),
             o => o.IsTaskRunning,
             (o, v) => o.IsTaskRunning = v);
-    
+
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<Upload>();
-    
+
     public IReadOnlyList<string>? Accepts
     {
         get => GetValue(AcceptsProperty);
         set => SetValue(AcceptsProperty, value);
     }
-    
+
     public object? ExtraContext
     {
         get => GetValue(ExtraContextProperty);
         set => SetValue(ExtraContextProperty, value);
     }
-    
+
     public int MaxCount
     {
         get => GetValue(MaxCountProperty);
         set => SetValue(MaxCountProperty, value);
     }
-    
+
     public bool IsUploadDirectoryEnabled
     {
         get => GetValue(IsUploadDirectoryEnabledProperty);
         set => SetValue(IsUploadDirectoryEnabledProperty, value);
     }
-    
+
     public UploadListType ListType
     {
         get => GetValue(ListTypeProperty);
         set => SetValue(ListTypeProperty, value);
     }
-    
+
     public bool IsMultipleEnabled
     {
         get => GetValue(IsMultipleEnabledProperty);
         set => SetValue(IsMultipleEnabledProperty, value);
     }
-    
+
     public bool IsOpenFileDialogOnClick
     {
         get => GetValue(IsOpenFileDialogOnClickProperty);
         set => SetValue(IsOpenFileDialogOnClickProperty, value);
     }
-    
+
     public bool IsShowUploadList
     {
         get => GetValue(IsShowUploadListProperty);
         set => SetValue(IsShowUploadListProperty, value);
     }
-    
+
     public bool IsShowUploadTrigger
     {
         get => GetValue(IsShowUploadTriggerProperty);
         set => SetValue(IsShowUploadTriggerProperty, value);
     }
-    
+
     public IList<UploadTaskInfo>? DefaultTaskList
     {
         get => GetValue(DefaultTaskListProperty);
         set => SetValue(DefaultTaskListProperty, value);
     }
-    
+
     public int MaxConcurrentTasks
     {
         get => GetValue(MaxConcurrentTasksProperty);
         set => SetValue(MaxConcurrentTasksProperty, value);
     }
-    
+
     private IFileUploadTransport? _uploadTransport;
 
     public IFileUploadTransport? UploadTransport
@@ -141,7 +141,7 @@ public class Upload : ContentControl,
         get => _uploadTransport;
         set => SetAndRaise(UploadTransportProperty, ref _uploadTransport, value);
     }
-    
+
     private bool _isTaskRunning;
 
     public bool IsTaskRunning
@@ -149,18 +149,16 @@ public class Upload : ContentControl,
         get => _isTaskRunning;
         set => SetAndRaise(IsTaskRunningProperty, ref _isTaskRunning, value);
     }
-    
+
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-    
-    public AvaloniaList<UploadTaskInfo> TaskInfoList { get; private set; } = new ();
-    
+
+    public AvaloniaList<UploadTaskInfo> TaskInfoList { get; private set; } = new();
+
     #endregion
-    
-    private List<UploadTaskInfo> _allTaskList = new ();
 
     #region 公共事件定义
 
@@ -171,11 +169,13 @@ public class Upload : ContentControl,
     public event EventHandler<UploadTaskCancelledEventArgs>? UploadTaskCancelled;
     public event EventHandler<UploadTaskFailedEventArgs>? UploadTaskFailed;
     public event EventHandler<UploadTaskRemovedEventArgs>? UploadTaskRemoved;
-    
+
     #endregion
 
     #region 公共回调函数定义
+
     public Func<UploadFileInfo, bool>? IsImageFilePredicate { get; set; }
+
     #endregion
 
     #region 内部属性定义
@@ -193,15 +193,18 @@ public class Upload : ContentControl,
         get => _currentTaskList;
         set => SetAndRaise(CurrentTaskListProperty, ref _currentTaskList, value);
     }
+
     #endregion
-    
-    private FileUploadScheduler _uploadScheduler;
+
     private static readonly Regex ImageExtensionRegex =
         new(@"\.(webp|svg|png|gif|jpg|jpeg|jfif|bmp|dpg|ico|heic|heif)$",
             RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
+    private List<UploadTaskInfo> _allTaskList = new();
+    private FileUploadScheduler _uploadScheduler;
     private bool _defaultTaskListApplied;
     private CancellationTokenSource? _uploadCts;
+    private EventHandler? _formValueChanged;
 
     static Upload()
     {
@@ -224,7 +227,7 @@ public class Upload : ContentControl,
             });
         });
     }
-    
+
     public Upload()
     {
         this.RegisterTokenResourceScope(UploadToken.ScopeProvider);
@@ -232,35 +235,18 @@ public class Upload : ContentControl,
         TaskInfoList.CollectionChanged += HandleTaskListChanged;
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    public async Task ResetAsync(CancellationToken cancellationToken = default)
     {
-        base.OnAttachedToVisualTree(e);
-        // Create a new CancellationTokenSource when attached to visual tree
-        _uploadCts = new CancellationTokenSource();
+        await CancelAllUploadTaskAsync(cancellationToken);
+        TaskInfoList = new();
     }
 
-    private void HandleTaskListChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    public void Reset()
     {
-        if (TaskInfoList.Count == 0)
+        Dispatcher.InvokeAsync(async () =>
         {
-            CurrentTaskList = null;
-        }
-        else
-        {
-            CurrentTaskList = CopyTaskInfoList();
-        }
-    }
-
-    private UploadTaskInfo[] CopyTaskInfoList()
-    {
-        var count = TaskInfoList.Count;
-        var tasks = new UploadTaskInfo[count];
-        for (var i = 0; i < count; ++i)
-        {
-            tasks[i] = TaskInfoList[i];
-        }
-
-        return tasks;
+            await CancelAllUploadTaskAsync();
+        });
     }
 
     protected virtual void OpenFileDialog()
@@ -269,7 +255,7 @@ public class Upload : ContentControl,
 
         if (topLevel != null)
         {
-            var storageProvider  = topLevel.StorageProvider;
+            var storageProvider = topLevel.StorageProvider;
             if (!storageProvider.CanOpen)
             {
                 if (RuntimePlatform.Features.SupportsNativeWindow)
@@ -315,14 +301,166 @@ public class Upload : ContentControl,
                         AllowMultiple     = IsMultipleEnabled,
                         SuggestedFileType = new FilePickerFileType("filter")
                         {
-                            MimeTypes = Accepts,
-                            Patterns  = Accepts,
+                            MimeTypes                   = Accepts,
+                            Patterns                    = Accepts,
                             AppleUniformTypeIdentifiers = Accepts
                         }
                     });
                     await EnqueueUploadFiles(files);
                 }
             });
+        }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        // Create a new CancellationTokenSource when attached to visual tree
+        _uploadCts = new CancellationTokenSource();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnDetachedFromVisualTree(e);
+        _uploadCts?.Cancel();
+        _uploadCts?.Dispose();
+        _uploadCts = null;
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        if (!_defaultTaskListApplied)
+        {
+            if (DefaultTaskList != null)
+            {
+                if (ListType == UploadListType.PictureCircle || ListType == UploadListType.PictureCard)
+                {
+                    // 检查是否有 trigger
+                    var trigger = FindPictureTriggerTask();
+                    if (trigger != null)
+                    {
+                        TaskInfoList.InsertRange(0, DefaultTaskList);
+                    }
+                    else
+                    {
+                        TaskInfoList.AddRange(DefaultTaskList);
+                    }
+                }
+                else
+                {
+                    TaskInfoList.AddRange(DefaultTaskList);
+                }
+
+                _allTaskList.AddRange(DefaultTaskList);
+                _defaultTaskListApplied = true;
+            }
+        }
+    }
+
+    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
+    {
+        base.OnApplyTemplate(e);
+        ConfigurePictureTriggerTask();
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == UploadTransportProperty)
+        {
+            if (UploadTransport != null)
+            {
+                Dispatcher.InvokeAsync(async () =>
+                {
+                    await _uploadScheduler.SetTransportAsync(UploadTransport);
+                });
+            }
+        }
+        else if (change.Property == MaxConcurrentTasksProperty)
+        {
+            Dispatcher.InvokeAsync(async () =>
+            {
+                await _uploadScheduler.SetMaxConcurrentTasksAsync(MaxConcurrentTasks);
+            });
+        }
+        else if (change.Property == ListTypeProperty)
+        {
+            ConfigurePictureTriggerTask();
+        }
+    }
+
+    #region 实现 FormItem 接口
+
+    // TODO 这里对于上传值的定义需要做，目前没有做
+
+    event EventHandler? IFormItemAware.ValueChanged
+    {
+        add => _formValueChanged += value;
+        remove => _formValueChanged -= value;
+    }
+
+    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value);
+
+    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
+
+    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
+
+    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
+
+    protected virtual void NotifyFormValueChanged(object? value)
+    {
+        _formValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    protected virtual void NotifySetFormValue(object? value)
+    {
+    }
+
+    protected virtual object? NotifyGetFormValue()
+    {
+        return null;
+    }
+
+    protected virtual void NotifyClearFormValue()
+    {
+    }
+
+    protected virtual void NotifyValidateStatus(FormValidateStatus status)
+    {
+    }
+
+    #endregion
+
+    private void HandleTaskListChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (TaskInfoList.Count == 0)
+        {
+            CurrentTaskList = null;
+        }
+        else
+        {
+            CurrentTaskList = CopyTaskInfoList();
+        }
+    }
+
+    private UploadTaskInfo[] CopyTaskInfoList()
+    {
+        var count = TaskInfoList.Count;
+        var tasks = new UploadTaskInfo[count];
+        for (var i = 0; i < count; ++i)
+        {
+            tasks[i] = TaskInfoList[i];
+        }
+
+        return tasks;
+    }
+
+    private void HandleFileSelectRequest()
+    {
+        if (IsOpenFileDialogOnClick)
+        {
+            OpenFileDialog();
         }
     }
 
@@ -333,7 +471,7 @@ public class Upload : ContentControl,
             await EnqueueUploadFile(file);
         }
     }
-    
+
     private async Task EnqueueUploadFiles(IList<UploadFileInfo> files)
     {
         foreach (var file in files)
@@ -360,7 +498,7 @@ public class Upload : ContentControl,
         {
             UploadFileInfo = uploadFile
         };
-        
+
         task.UploadProgressHandler  = HandleUploadProgressChanged;
         task.UploadCompletedHandler = HandleUploadCompleted;
         task.UploadFailedHandler    = HandleUploadFailed;
@@ -379,12 +517,12 @@ public class Upload : ContentControl,
         {
             if (MaxCount > 1)
             {
-                return; 
+                return;
             }
 
             await CancelAllUploadTaskAsync();
         }
-        
+
         _allTaskList.Add(uploadTaskInfo);
         UploadTaskCreated?.Invoke(this, new UploadTaskCreatedEventArgs(task.Id, uploadFile));
         var aboutToSchedulingEvent = new UploadTaskAboutToSchedulingEventArgs(task.Id, uploadFile);
@@ -401,8 +539,8 @@ public class Upload : ContentControl,
                 AddUploadTaskInfo(uploadTaskInfo);
             }
             uploadTaskInfo.Status = FileUploadStatus.Failed;
-            UploadTaskFailed?.Invoke(this, new UploadTaskFailedEventArgs(task.Id, 
-                uploadFile, 
+            UploadTaskFailed?.Invoke(this, new UploadTaskFailedEventArgs(task.Id,
+                uploadFile,
                 FileUploadResult.FailureResult(FileUploadErrorCode.ClientError, aboutToSchedulingEvent.CancelReason ?? "client error")));
         }
     }
@@ -417,6 +555,53 @@ public class Upload : ContentControl,
         else
         {
             TaskInfoList.Add(uploadTaskInfo);
+        }
+    }
+
+    private async Task HandleUploadTaskRemoveRequestAsync(Guid taskId)
+    {
+        var taskInfo = FindTaskInfo(taskId);
+        if (taskInfo != null)
+        {
+            if (taskInfo.Status != FileUploadStatus.Uploading || taskInfo.UploadTask == null)
+            {
+                TaskInfoList.Remove(taskInfo);
+                _allTaskList.Remove(taskInfo);
+            }
+            else
+            {
+                await Dispatcher.InvokeAsync(async () =>
+                {
+                    await _uploadScheduler.CancelUploadAsync(taskInfo.UploadTask);
+                    TaskInfoList.Remove(taskInfo);
+                    _allTaskList.Remove(taskInfo);
+                    UploadTaskRemoved?.Invoke(this, new UploadTaskRemovedEventArgs(taskId, taskInfo.UploadTask.UploadFileInfo!));
+                });
+            }
+        }
+    }
+
+    private async Task CancelAllUploadTaskAsync(CancellationToken cancellationToken = default)
+    {
+        for (int i = _allTaskList.Count - 1; i >= 0; i--)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var taskInfo = TaskInfoList[i];
+            if (taskInfo.Status != FileUploadStatus.Uploading || taskInfo.UploadTask == null)
+            {
+                TaskInfoList.Remove(taskInfo);
+                _allTaskList.Remove(taskInfo);
+            }
+            else
+            {
+                await Dispatcher.InvokeAsync(async () =>
+                {
+                    await _uploadScheduler.CancelUploadAsync(taskInfo.UploadTask);
+                    _allTaskList.Remove(taskInfo);
+                    TaskInfoList.Remove(taskInfo);
+                    UploadTaskRemoved?.Invoke(this, new UploadTaskRemovedEventArgs(taskInfo.TaskId, taskInfo.UploadTask.UploadFileInfo!));
+                });
+            }
         }
     }
 
@@ -437,7 +622,7 @@ public class Upload : ContentControl,
             UploadTaskProgress?.Invoke(this, new UploadTaskProgressEventArgs(taskId, fileInfo, progress));
         }
     }
-    
+
     private void HandleUploadCompleted(Guid taskId, UploadFileInfo uploadFileInfo, FileUploadResult result)
     {
         var taskInfo = FindTaskInfo(taskId);
@@ -448,7 +633,7 @@ public class Upload : ContentControl,
         }
         CheckTaskRunning();
     }
-    
+
     private void HandleUploadFailed(Guid taskId, UploadFileInfo uploadFileInfo, FileUploadResult result)
     {
         var taskInfo = FindTaskInfo(taskId);
@@ -460,7 +645,7 @@ public class Upload : ContentControl,
         }
         CheckTaskRunning();
     }
-    
+
     private void HandleUploadCancelled(Guid taskId, UploadFileInfo uploadFileInfo, FileUploadResult result)
     {
         var taskInfo = FindTaskInfo(taskId);
@@ -503,38 +688,6 @@ public class Upload : ContentControl,
         return null;
     }
 
-    protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
-    {
-        base.OnApplyTemplate(e);
-        ConfigurePictureTriggerTask();
-    }
-
-    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-    {
-        base.OnPropertyChanged(change);
-        if (change.Property == UploadTransportProperty)
-        {
-            if (UploadTransport != null)
-            {
-                Dispatcher.InvokeAsync(async () =>
-                {
-                   await _uploadScheduler.SetTransportAsync(UploadTransport);
-                });
-            }
-        }
-        else if (change.Property == MaxConcurrentTasksProperty)
-        {
-            Dispatcher.InvokeAsync(async () =>
-            {
-                await _uploadScheduler.SetMaxConcurrentTasksAsync(MaxConcurrentTasks);
-            });
-        }
-        else if (change.Property == ListTypeProperty)
-        {
-            ConfigurePictureTriggerTask();
-        }
-    }
-
     private bool IsImageFile(UploadFileInfo uploadFileInfo)
     {
         if (IsImageFilePredicate != null)
@@ -547,114 +700,6 @@ public class Upload : ContentControl,
             return false;
         }
         return ImageExtensionRegex.IsMatch(extension);
-    }
-
-    private async Task HandleUploadTaskRemoveRequestAsync(Guid taskId)
-    {
-        var taskInfo = FindTaskInfo(taskId);
-        if (taskInfo != null)
-        {
-            if (taskInfo.Status != FileUploadStatus.Uploading || taskInfo.UploadTask == null)
-            {
-                TaskInfoList.Remove(taskInfo);
-                _allTaskList.Remove(taskInfo);
-            }
-            else
-            {
-                await Dispatcher.InvokeAsync(async () =>
-                {
-                    await _uploadScheduler.CancelUploadAsync(taskInfo.UploadTask);
-                    TaskInfoList.Remove(taskInfo);
-                    _allTaskList.Remove(taskInfo);
-                    UploadTaskRemoved?.Invoke(this, new UploadTaskRemovedEventArgs(taskId, taskInfo.UploadTask.UploadFileInfo!));
-                });
-            }
-        }
-    }
-
-    public async Task ResetAsync(CancellationToken cancellationToken = default)
-    {
-        await CancelAllUploadTaskAsync(cancellationToken);
-        TaskInfoList = new();
-    }
-
-    public void Reset()
-    {
-        Dispatcher.InvokeAsync(async () =>
-        {
-            await CancelAllUploadTaskAsync();
-        });
-    }
-    
-    private async Task CancelAllUploadTaskAsync(CancellationToken cancellationToken = default)
-    {
-        for (int i = _allTaskList.Count - 1; i >= 0; i--)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            var taskInfo = TaskInfoList[i];
-            if (taskInfo.Status != FileUploadStatus.Uploading || taskInfo.UploadTask == null)
-            {
-                TaskInfoList.Remove(taskInfo);
-                _allTaskList.Remove(taskInfo);
-            }
-            else
-            {
-                await Dispatcher.InvokeAsync(async () =>
-                {
-                    await _uploadScheduler.CancelUploadAsync(taskInfo.UploadTask);
-                    _allTaskList.Remove(taskInfo);
-                    TaskInfoList.Remove(taskInfo);
-                    UploadTaskRemoved?.Invoke(this, new UploadTaskRemovedEventArgs(taskInfo.TaskId, taskInfo.UploadTask.UploadFileInfo!));
-                });
-            }
-        }
-    }
-    
-    private void HandleFileSelectRequest()
-    {
-        if (IsOpenFileDialogOnClick)
-        {
-            OpenFileDialog();
-        }
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _uploadCts?.Cancel();
-        _uploadCts?.Dispose();
-        _uploadCts = null;
-    }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        if (!_defaultTaskListApplied)
-        {
-            if (DefaultTaskList != null)
-            {
-                if (ListType == UploadListType.PictureCircle || ListType == UploadListType.PictureCard)
-                {
-                    // 检查是否有 trigger
-                    var trigger = FindPictureTriggerTask();
-                    if (trigger != null)
-                    {
-                        TaskInfoList.InsertRange(0, DefaultTaskList);
-                    }
-                    else
-                    {
-                        TaskInfoList.AddRange(DefaultTaskList);
-                    }
-                }
-                else
-                {
-                    TaskInfoList.AddRange(DefaultTaskList);
-                }
-                
-                _allTaskList.AddRange(DefaultTaskList);
-                _defaultTaskListApplied = true;
-            }
-        }
     }
 
     private void ConfigurePictureTriggerTask()
@@ -690,43 +735,4 @@ public class Upload : ContentControl,
         }
         return null;
     }
-    
-    #region 实现 FormItem 接口
-    // TODO 这里对于上传值的定义需要做，目前没有做
-    
-    private EventHandler? _formValueChanged;
-    event EventHandler? IFormItemAware.ValueChanged
-    {
-        add => _formValueChanged += value;
-        remove => _formValueChanged -= value;
-    }
-
-    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value);
-
-    object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
-    void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
-    void IFormItemAware.NotifyValidateStatus(FormValidateStatus status) => NotifyValidateStatus(status);
-    
-    protected virtual void NotifyFormValueChanged(object? value)
-    {
-        _formValueChanged?.Invoke(this, EventArgs.Empty);
-    }
-
-    protected virtual void NotifySetFormValue(object? value)
-    {
-    }
-
-    protected virtual object? NotifyGetFormValue()
-    {
-        return null;
-    }
-
-    protected virtual void NotifyClearFormValue()
-    {
-    }
-
-    protected virtual void NotifyValidateStatus(FormValidateStatus status)
-    {
-    }
-    #endregion
 }

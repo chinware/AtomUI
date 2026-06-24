@@ -6,6 +6,8 @@ namespace AtomUI.Desktop.Controls;
 
 internal class UploadPictureShapePreviewContent : AbstractUploadPictureContent
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<IList<string>?> SourcesProperty =
         AvaloniaProperty.Register<UploadPictureShapePreviewContent, IList<string>?>(nameof(Sources));
     
@@ -14,27 +16,15 @@ internal class UploadPictureShapePreviewContent : AbstractUploadPictureContent
         get => GetValue(SourcesProperty);
         set => SetValue(SourcesProperty, value);
     }
+
+    #endregion
+
+    private UploadImagePreviewer? _uploadImagePreviewer;
     
     static UploadPictureShapePreviewContent()
     {
         IconButton.ClickEvent.AddClassHandler<UploadPictureShapePreviewContent>((o, args) => o.HandleActionButtonClicked((args.Source as IconButton)!));
     }
-    
-    private void HandleActionButtonClicked(IconButton button)
-    {
-        if (button.Tag is UploadListActions actionType)
-        {
-            if (actionType == UploadListActions.Preview)
-            {
-                if (_uploadImagePreviewer != null)
-                {
-                    _uploadImagePreviewer.OpenDialog();
-                }
-            }
-        }
-    }
-    
-    private UploadImagePreviewer? _uploadImagePreviewer;
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -56,5 +46,19 @@ internal class UploadPictureShapePreviewContent : AbstractUploadPictureContent
     {
         base.OnApplyTemplate(e);
         _uploadImagePreviewer = e.NameScope.Find<UploadImagePreviewer>("PART_ImagePreviewer");
+    }
+
+    private void HandleActionButtonClicked(IconButton button)
+    {
+        if (button.Tag is UploadListActions actionType)
+        {
+            if (actionType == UploadListActions.Preview)
+            {
+                if (_uploadImagePreviewer != null)
+                {
+                    _uploadImagePreviewer.OpenDialog();
+                }
+            }
+        }
     }
 }

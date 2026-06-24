@@ -3,7 +3,6 @@ using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -127,17 +126,6 @@ internal class AbstractUploadListItem : TemplatedControl, IMotionAwareControl
         IconButton.ClickEvent.AddClassHandler<AbstractUploadListItem>((o, args) => o.HandleActionButtonClicked((args.Source as IconButton)!));
     }
     
-    private void HandleActionButtonClicked(IconButton button)
-    {
-        if (button.Tag is UploadListActions actionType)
-        {
-            if (actionType == UploadListActions.Remove)
-            {
-                RaiseTaskRemoveRequestEvent();
-            }
-        }
-    }
-    
     protected virtual void RaiseTaskRemoveRequestEvent()
     {
         RaiseEvent(new TaskRemoveRequestEventArgs(TaskId)
@@ -157,5 +145,16 @@ internal class AbstractUploadListItem : TemplatedControl, IMotionAwareControl
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
+    }
+
+    private void HandleActionButtonClicked(IconButton button)
+    {
+        if (button.Tag is UploadListActions actionType)
+        {
+            if (actionType == UploadListActions.Remove)
+            {
+                RaiseTaskRemoveRequestEvent();
+            }
+        }
     }
 }
