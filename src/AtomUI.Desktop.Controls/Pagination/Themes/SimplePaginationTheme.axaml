@@ -28,7 +28,7 @@
                                     HorizontalAlignment="Center"
                                     IsEnabled="{TemplateBinding IsEnabled}" />
                     <atom:PaginationNavItem Name="PART_NextNavItem"
-                                            PaginationItemType="Previous"
+                                            PaginationItemType="Next"
                                             Icon="{antdicons:AntDesignIconProvider RightOutlined}"
                                             SizeType="{TemplateBinding SizeType}"
                                             IsEnabled="{TemplateBinding IsEnabled}"

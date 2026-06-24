@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using System.Reflection;
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -203,6 +205,68 @@ public class PaginationPageSizeTests
         Should.Throw<ArgumentException>(() => pagination.PageSizeOptions = [10, -20]);
     }
 
+    [Fact]
+    public void SimplePagination_Template_Assigns_Next_Item_Type()
+    {
+        var pagination = new SimplePagination
+        {
+            Total           = 100,
+            CurrentPage     = 2,
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(pagination, () =>
+        {
+            var previousItem = pagination.GetVisualDescendants()
+                                         .OfType<PaginationNavItem>()
+                                         .Single(item => item.Name == "PART_PreviousNavItem");
+            var nextItem = pagination.GetVisualDescendants()
+                                     .OfType<PaginationNavItem>()
+                                     .Single(item => item.Name == "PART_NextNavItem");
+
+            previousItem.PaginationItemType.ShouldBe(PaginationItemType.Previous);
+            nextItem.PaginationItemType.ShouldBe(PaginationItemType.Next);
+        });
+    }
+
+    [Fact]
+    public void SimplePagination_Editable_Jump_Uses_Default_PageSize_When_PageSize_Is_Zero()
+    {
+        var pagination = new SimplePagination
+        {
+            Total           = 100,
+            CurrentPage     = 1,
+            PageSize        = 0,
+            IsReadOnly      = false,
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(pagination, () =>
+        {
+            var quickJumper = pagination.GetVisualDescendants()
+                                        .OfType<QuickJumpEdit>()
+                                        .Single(item => item.Name == "PART_QuickJumper");
+
+            quickJumper.Text = "3";
+
+            var exception = Record.Exception(() =>
+            {
+                quickJumper.RaiseEvent(new KeyEventArgs
+                {
+                    RoutedEvent  = InputElement.KeyUpEvent,
+                    Source       = quickJumper,
+                    Key          = Key.Enter,
+                    PhysicalKey  = PhysicalKey.Enter,
+                    KeyModifiers = KeyModifiers.None
+                });
+                Dispatcher.UIThread.RunJobs();
+            });
+
+            exception.ShouldBeNull();
+            pagination.CurrentPage.ShouldBe(3);
+        });
+    }
+
     private static int GetPageSize(object item)
     {
         var pageSizeProperty = item.GetType()
@@ -216,6 +280,11 @@ public class PaginationPageSizeTests
 
     private static void ShowInWindow(Control content, Action assertion)
     {
+        ShowInWindow(content, _ => assertion());
+    }
+
+    private static void ShowInWindow(Control content, Action<AvaloniaWindow> assertion)
+    {
         var window = new AvaloniaWindow
         {
             Width   = 360,
@@ -227,11 +296,12 @@ public class PaginationPageSizeTests
         {
             window.Show();
             Dispatcher.UIThread.RunJobs();
-            assertion();
+            assertion(window);
         }
         finally
         {
             window.Close();
         }
     }
+
 }

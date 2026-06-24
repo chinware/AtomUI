@@ -13,23 +13,27 @@ internal class PaginationNav : SelectingItemsControl, ICustomizableSizeTypeAware
     public static readonly StyledProperty<CustomizableSizeType> SizeTypeProperty =
         CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<PaginationNav>();
 
+    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
+        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PaginationNav>();
+
     public CustomizableSizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
 
-    public static readonly StyledProperty<bool> IsMotionEnabledProperty =
-        MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<PaginationNav>();
-
     public bool IsMotionEnabled
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
     }
-    
+
+    #endregion
+
+    #region 公共事件定义
+
     public event EventHandler<PageNavRequestArgs>? PageNavigateRequest;
-    
+
     #endregion
 
     #region 内部属性定义

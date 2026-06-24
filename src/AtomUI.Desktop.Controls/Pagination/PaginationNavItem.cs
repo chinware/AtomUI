@@ -1,5 +1,4 @@
 using AtomUI.Animations;
-using Avalonia.Threading;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
@@ -7,7 +6,6 @@ using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -21,6 +19,8 @@ internal enum PaginationItemType
 
 internal class PaginationNavItem : ContentControl, ISelectable
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<bool> IsSelectedProperty =
         SelectingItemsControl.IsSelectedProperty.AddOwner<PaginationNavItem>();
     
@@ -38,9 +38,6 @@ internal class PaginationNavItem : ContentControl, ISelectable
     
     public static readonly StyledProperty<PathIcon?> IconProperty =
         AvaloniaProperty.Register<PaginationNavItem, PathIcon?>(nameof(Icon));
-    
-    public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
-        RoutedEvent.Register<PaginationNavItem, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
 
     public bool IsSelected
     {
@@ -66,26 +63,40 @@ internal class PaginationNavItem : ContentControl, ISelectable
         set => SetValue(IsMotionEnabledProperty, value);
     }
     
-    public PathIcon? Icon
-    {
-        get => GetValue(IconProperty);
-        set => SetValue(IconProperty, value);
-    }
-    
-    public event EventHandler<RoutedEventArgs>? Click
-    {
-        add => AddHandler(ClickEvent, value);
-        remove => RemoveHandler(ClickEvent, value);
-    }
-    
     private bool _isPressed = false;
+
     public bool IsPressed
     {
         get => _isPressed;
         private set => SetAndRaise(IsPressedProperty, ref _isPressed, value);
     }
 
+    public PathIcon? Icon
+    {
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
+
+    #endregion
+
+    #region 公共事件定义
+
+    public static readonly RoutedEvent<RoutedEventArgs> ClickEvent =
+        RoutedEvent.Register<PaginationNavItem, RoutedEventArgs>(nameof(Click), RoutingStrategies.Bubble);
+
+    public event EventHandler<RoutedEventArgs>? Click
+    {
+        add => AddHandler(ClickEvent, value);
+        remove => RemoveHandler(ClickEvent, value);
+    }
+
+    #endregion
+
+    #region 内部属性定义
+
     internal int PageNumber { get; set; } = -1;
+
+    #endregion
     
     static PaginationNavItem()
     {
@@ -96,6 +107,24 @@ internal class PaginationNavItem : ContentControl, ISelectable
         AffectsRender<PaginationNavItem>(BackgroundProperty, BorderBrushProperty);
     }
 
+    protected virtual void OnClick()
+    {
+        var e = new RoutedEventArgs(ClickEvent);
+        RaiseEvent(e);
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        this.DisableTransitions();
+    }
+
+    protected override void OnLoaded(RoutedEventArgs e)
+    {
+        base.OnLoaded(e);
+        Dispatcher.Post(this.EnableTransitions);
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -104,12 +133,6 @@ internal class PaginationNavItem : ContentControl, ISelectable
         {
             UpdatePseudoClasses();
         }
-    }
-
-    protected virtual void OnClick()
-    {
-        var e = new RoutedEventArgs(ClickEvent);
-        RaiseEvent(e);
     }
 
     protected override void OnPointerPressed(PointerPressedEventArgs e)
@@ -157,17 +180,5 @@ internal class PaginationNavItem : ContentControl, ISelectable
     private void UpdatePseudoClasses()
     {
         PseudoClasses.Set(StdPseudoClass.Pressed, IsPressed);
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        this.DisableTransitions();
-    }
-
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        Dispatcher.Post(this.EnableTransitions);
     }
 }
