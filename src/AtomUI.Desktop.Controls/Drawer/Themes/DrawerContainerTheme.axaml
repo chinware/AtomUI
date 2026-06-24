@@ -19,6 +19,7 @@
                             Title="{TemplateBinding Title}"
                             Footer="{TemplateBinding Footer}"
                             FooterTemplate="{TemplateBinding FooterTemplate}"
+                            ContentPadding="{TemplateBinding ContentPadding}"
                             Extra="{TemplateBinding Extra}"
                             ExtraTemplate="{TemplateBinding ExtraTemplate}"
                             Content="{TemplateBinding Content}"

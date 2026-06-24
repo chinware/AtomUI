@@ -4,6 +4,7 @@ using AtomUI.Toolkits.GalleryBase.Configuration;
 using AtomUI.Toolkits.GalleryBase.Localization;
 using AtomUI.Toolkits.GalleryBase.Routing;
 using AtomUIGallery.Localization;
+using AtomUIGallery.SourceCode;
 using AtomUIGallery.ShowCases.Alert;
 using AtomUIGallery.ShowCases.AutoComplete;
 using AtomUIGallery.ShowCases.Avatar;
@@ -103,6 +104,7 @@ public static class AtomUIGalleryModule
         ConfigureBranding(options.Branding);
         ConfigureNavigation(options.Navigation);
         ConfigureRoutes(options.Routes);
+        ConfigureSourceCodeDisplay(options.SourceCodeDisplay);
     }
 
     public static void RegisterViews(DefaultViewLocator locator)
@@ -118,6 +120,12 @@ public static class AtomUIGalleryModule
         branding.Links.Add(new GalleryLink("Website", "https://www.atomui.net", Icon(AntDesignIconKind.GlobalOutlined)));
         branding.Links.Add(new GalleryLink("Gitee", "https://gitee.com/chinware/AtomUI", Icon(AntDesignIconKind.GiteeOutlined)));
         branding.Links.Add(new GalleryLink("GitHub", "https://github.com/chinware/atomui", Icon(AntDesignIconKind.GithubOutlined)));
+    }
+
+    private static void ConfigureSourceCodeDisplay(GallerySourceCodeDisplayOptions sourceCodeDisplay)
+    {
+        sourceCodeDisplay.IsEnabled       = true;
+        sourceCodeDisplay.SnippetProvider = new AtomUIGalleryShowCaseCodeSnippetProvider();
     }
 
     private static void ConfigureNavigation(AtomUI.Toolkits.GalleryBase.Navigation.GalleryNavigationBuilder navigation)

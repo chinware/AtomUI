@@ -64,6 +64,18 @@ public class WorkspaceWindowLayoutTests
     }
 
     [Fact]
+    public void Source_Code_Drawer_Masks_Entire_Shell_Instead_Of_Content_Column()
+    {
+        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Toolkits.GalleryBase/Shell/GalleryShellView.cs"));
+
+        source.ShouldContain("Child = RoutedViewHost");
+        source.ShouldContain("PageContent = rootLayout");
+        source.ShouldContain("Content = codeDrawerHost");
+        source.ShouldNotContain("PageContent = RoutedViewHost");
+        source.ShouldNotContain("Child = codeDrawerHost");
+    }
+
+    [Fact]
     public void Sidebar_Navigation_Does_Not_Override_Selected_Background()
     {
         var source = File.ReadAllText(GetRepoFile("controlgallery/AtomUIGallery/Workspace/Views/CaseNavigation.axaml"));

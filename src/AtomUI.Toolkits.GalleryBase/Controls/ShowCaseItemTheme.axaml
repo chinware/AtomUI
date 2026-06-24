@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="using:AtomUI.Icons.AntDesign"
     xmlns:gallery="https://atomui.net/toolkits/gallery-base">
 
     <ControlTheme x:Key="{x:Type gallery:ShowCaseItem}"
@@ -26,9 +27,25 @@
                                               Content="{TemplateBinding Content}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </Grid>
-                        <atom:Separator TitlePosition="Left"
-                                        FontWeight="{gallery:ShowCaseItemTokenResource TitleFontWeight}"
-                                        Title="{TemplateBinding Title}" />
+                        <Grid ColumnDefinitions="*,Auto">
+                            <atom:Separator TitlePosition="Left"
+                                            Grid.Column="0"
+                                            FontWeight="{gallery:ShowCaseItemTokenResource TitleFontWeight}"
+                                            Title="{TemplateBinding Title}" />
+                            <atom:IconButton Name="PART_ShowSourceButton"
+                                             Grid.Column="1"
+                                             Width="28"
+                                             Height="28"
+                                             IconWidth="16"
+                                             IconHeight="16"
+                                             VerticalAlignment="Center"
+                                             IsVisible="{Binding IsCodeActionVisible, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
+                                             atom:ToolTip.Tip="View source">
+                                <atom:IconButton.Icon>
+                                    <antdicons:CodeOutlined />
+                                </atom:IconButton.Icon>
+                            </atom:IconButton>
+                        </Grid>
                         <atom:TextBlock TextWrapping="Wrap"
                                         Margin="{gallery:ShowCaseItemTokenResource DescriptionMargin}"
                                         Text="{TemplateBinding Description}" />
@@ -61,9 +78,25 @@
                                                       Content="{Binding Content, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
                                                       ContentTemplate="{Binding ContentTemplate, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}" />
                                 </Grid>
-                                <atom:Separator TitlePosition="Left"
-                                                FontWeight="{gallery:ShowCaseItemTokenResource TitleFontWeight}"
-                                                Title="{Binding Title, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}" />
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <atom:Separator TitlePosition="Left"
+                                                    Grid.Column="0"
+                                                    FontWeight="{gallery:ShowCaseItemTokenResource TitleFontWeight}"
+                                                    Title="{Binding Title, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}" />
+                                    <atom:IconButton Name="PART_ShowSourceButton"
+                                                     Grid.Column="1"
+                                                     Width="28"
+                                                     Height="28"
+                                                     IconWidth="16"
+                                                     IconHeight="16"
+                                                     VerticalAlignment="Center"
+                                                     IsVisible="{Binding IsCodeActionVisible, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
+                                                     atom:ToolTip.Tip="View source">
+                                        <atom:IconButton.Icon>
+                                            <antdicons:CodeOutlined />
+                                        </atom:IconButton.Icon>
+                                    </atom:IconButton>
+                                </Grid>
                                 <atom:TextBlock TextWrapping="Wrap"
                                                 Margin="{gallery:ShowCaseItemTokenResource DescriptionMargin}"
                                                 Text="{Binding Description, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}" />

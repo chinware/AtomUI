@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using AtomUI.Toolkits.GalleryBase.Navigation;
 using AtomUI.Toolkits.GalleryBase.Routing;
+using AtomUI.Toolkits.GalleryBase.SourceCode;
 using Avalonia;
 
 namespace AtomUI.Toolkits.GalleryBase.Configuration;
@@ -21,21 +22,25 @@ public sealed class GalleryBaseConfiguration
 
     public GalleryPlatformConfiguration Platform { get; }
 
+    public GallerySourceCodeDisplayConfiguration SourceCodeDisplay { get; }
+
     private GalleryBaseConfiguration(GalleryBrandingConfiguration branding,
                                      IReadOnlyList<GalleryNavigationNode> navigationNodes,
                                      IReadOnlyList<EntityKey> defaultOpenKeys,
                                      EntityKey defaultRoute,
                                      GalleryRouteRegistry routes,
                                      GalleryShellConfiguration shell,
-                                     GalleryPlatformConfiguration platform)
+                                     GalleryPlatformConfiguration platform,
+                                     GallerySourceCodeDisplayConfiguration sourceCodeDisplay)
     {
-        Branding        = branding;
-        NavigationNodes = navigationNodes;
-        DefaultOpenKeys = defaultOpenKeys;
-        DefaultRoute    = defaultRoute;
-        Routes          = routes;
-        Shell           = shell;
-        Platform        = platform;
+        Branding          = branding;
+        NavigationNodes   = navigationNodes;
+        DefaultOpenKeys   = defaultOpenKeys;
+        DefaultRoute      = defaultRoute;
+        Routes            = routes;
+        Shell             = shell;
+        Platform          = platform;
+        SourceCodeDisplay = sourceCodeDisplay;
     }
 
     internal static GalleryBaseConfiguration Create(GalleryBaseOptions options)
@@ -54,7 +59,8 @@ public sealed class GalleryBaseConfiguration
             options.Navigation.DefaultRoute,
             routes,
             GalleryShellConfiguration.FromOptions(options.Shell),
-            GalleryPlatformConfiguration.FromOptions(options.Platform));
+            GalleryPlatformConfiguration.FromOptions(options.Platform),
+            GallerySourceCodeDisplayConfiguration.FromOptions(options.SourceCodeDisplay));
     }
 
     private static void ValidateNavigation(GalleryNavigationBuilder navigation,
@@ -290,5 +296,26 @@ public sealed class GalleryPlatformConfiguration
             options.EnableBrowserMediaBreakpoints,
             options.EnableDesktopCrashLog,
             options.CrashLogDirectoryName);
+    }
+}
+
+public sealed class GallerySourceCodeDisplayConfiguration
+{
+    public bool IsEnabled { get; }
+
+    public IShowCaseCodeSnippetProvider? SnippetProvider { get; }
+
+    public bool CanShowSourceCode => IsEnabled && SnippetProvider is not null;
+
+    private GallerySourceCodeDisplayConfiguration(bool isEnabled,
+                                                  IShowCaseCodeSnippetProvider? snippetProvider)
+    {
+        IsEnabled       = isEnabled;
+        SnippetProvider = snippetProvider;
+    }
+
+    internal static GallerySourceCodeDisplayConfiguration FromOptions(GallerySourceCodeDisplayOptions options)
+    {
+        return new GallerySourceCodeDisplayConfiguration(options.IsEnabled, options.SnippetProvider);
     }
 }

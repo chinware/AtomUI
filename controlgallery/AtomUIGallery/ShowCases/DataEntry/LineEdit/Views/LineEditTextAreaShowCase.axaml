@@ -5,7 +5,7 @@
              xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              x:DataType="vm:LineEditViewModel">
-    <gallery:ShowCasePanel>
+    <gallery:ShowCasePanel Name="ExamplesContent">
         <gallery:ShowCaseItem
             Title="{gallery:LineEditShowCaseLangResource TextAreaTitle}"
             Description="{gallery:LineEditShowCaseLangResource TextAreaDescription}">

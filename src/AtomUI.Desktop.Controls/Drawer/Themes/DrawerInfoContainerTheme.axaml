@@ -24,7 +24,8 @@
                             <atom:TextBlock Name="HeaderText"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
-                                            Grid.Column="1" />
+                                            Grid.Column="1"
+                                            Text="{TemplateBinding Title}" />
                             <ContentPresenter
                                 Name="ExtraContentPresenter"
                                 Grid.Column="2"
@@ -135,7 +136,7 @@
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#InfoContainer">
-            <Setter Property="Padding" Value="{atom:DrawerTokenResource ContentPadding}" />
+            <Setter Property="Padding" Value="{TemplateBinding ContentPadding}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#InfoFooter">

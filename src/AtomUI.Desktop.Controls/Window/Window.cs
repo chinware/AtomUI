@@ -13,7 +13,6 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
 using Avalonia.Metadata;
-using Avalonia.Platform;
 
 namespace AtomUI.Desktop.Controls;
 

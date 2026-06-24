@@ -26,6 +26,7 @@ internal partial class en_US : LanguageProvider
     public const string TokenColumnStatus = "Status";
     public const string ApiPropertyDrawerContent = "Drawer body content.";
     public const string ApiPropertyDrawerContentTemplate = "Template used to render drawer body content.";
+    public const string ApiPropertyDrawerContentPadding = "Overrides padding around drawer body content.";
     public const string ApiPropertyDrawerIsOpen = "Controls whether the drawer is open.";
     public const string ApiPropertyDrawerPlacement = "Specifies which edge the drawer appears from.";
     public const string ApiPropertyDrawerOpenOn = "Sets the host control where the drawer is rendered.";

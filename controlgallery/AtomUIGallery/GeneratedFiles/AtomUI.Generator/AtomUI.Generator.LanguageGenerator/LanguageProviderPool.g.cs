@@ -6620,6 +6620,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiColumnProperty;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiColumnType;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContent] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerContent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentPadding] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerContentPadding;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentTemplate] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerContentTemplate;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerDialogSize] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerDialogSize;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerExtra] = global::AtomUIGallery.ShowCases.Drawer.en_US.ApiPropertyDrawerExtra;
@@ -6729,6 +6730,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiColumnProperty;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiColumnType;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContent] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerContent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentPadding] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerContentPadding;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentTemplate] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerContentTemplate;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerDialogSize] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerDialogSize;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerExtra] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ApiPropertyDrawerExtra;
@@ -6838,6 +6840,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnProperty] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiColumnProperty;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiColumnType;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContent] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerContent;
+                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentPadding] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerContentPadding;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentTemplate] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerContentTemplate;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerDialogSize] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerDialogSize;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ApiPropertyDrawerExtra] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ApiPropertyDrawerExtra;

@@ -14,7 +14,10 @@
 
     <ItemGroup>
         <PackageReference Include="Avalonia" />
+        <PackageReference Include="Avalonia.AvaloniaEdit" />
+        <PackageReference Include="AvaloniaEdit.TextMate" />
         <PackageReference Include="ReactiveUI.Avalonia" />
+        <PackageReference Include="TextMateSharp.Grammars" />
     </ItemGroup>
 
     <ItemGroup>

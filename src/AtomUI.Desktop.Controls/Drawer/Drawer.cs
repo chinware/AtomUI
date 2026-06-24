@@ -27,6 +27,9 @@ public class Drawer : Control,
     public static readonly StyledProperty<IDataTemplate?> ContentTemplateProperty =
         AvaloniaProperty.Register<Drawer, IDataTemplate?>(nameof(ContentTemplate));
 
+    public static readonly StyledProperty<Thickness> ContentPaddingProperty =
+        AvaloniaProperty.Register<Drawer, Thickness>(nameof(ContentPadding));
+
     public static readonly StyledProperty<bool> IsOpenProperty = 
         AvaloniaProperty.Register<Drawer, bool>(nameof(IsOpen), false, false, BindingMode.TwoWay);
 
@@ -84,6 +87,12 @@ public class Drawer : Control,
     {
         get => GetValue(ContentTemplateProperty);
         set => SetValue(ContentTemplateProperty, value);
+    }
+
+    public Thickness ContentPadding
+    {
+        get => GetValue(ContentPaddingProperty);
+        set => SetValue(ContentPaddingProperty, value);
     }
 
     public bool IsOpen

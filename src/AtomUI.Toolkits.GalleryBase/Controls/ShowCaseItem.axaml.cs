@@ -1,7 +1,12 @@
 using System;
+using System.Linq;
+using AtomUI.Toolkits.GalleryBase.Configuration;
+using AtomUI.Toolkits.GalleryBase.SourceCode;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Toolkits.GalleryBase.Controls;
 
@@ -13,6 +18,13 @@ public enum ShowCaseItemSpan
 
 public class ShowCaseItem : ContentControl
 {
+    private const string ShowSourceButtonPart = "PART_ShowSourceButton";
+
+    public static readonly RoutedEvent<ShowCaseSourceCodeRequestedEventArgs> SourceCodeRequestedEvent =
+        RoutedEvent.Register<ShowCaseItem, ShowCaseSourceCodeRequestedEventArgs>(
+            nameof(SourceCodeRequested),
+            RoutingStrategies.Bubble);
+
     public static readonly StyledProperty<string> TitleProperty =
         AvaloniaProperty.Register<ShowCaseItem, string>(nameof(Title));
 
@@ -46,14 +58,32 @@ public class ShowCaseItem : ContentControl
     public static readonly StyledProperty<string?> BadgeColorProperty =
         AvaloniaProperty.Register<ShowCaseItem, string?>(nameof(BadgeColor), "blue");
 
+    public static readonly StyledProperty<string?> SourceKeyProperty =
+        AvaloniaProperty.Register<ShowCaseItem, string?>(nameof(SourceKey));
+
     public static readonly StyledProperty<bool> IsDeferredContentMaterializedProperty =
         AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsDeferredContentMaterialized), false);
+
+    internal static readonly StyledProperty<bool> IsCodeActionVisibleProperty =
+        AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsCodeActionVisible), false);
 
     internal static readonly StyledProperty<bool> IsDeferredPlaceholderVisibleProperty =
         AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsDeferredPlaceholderVisible), false);
 
     internal static readonly StyledProperty<bool> IsBadgeVisibleProperty =
         AvaloniaProperty.Register<ShowCaseItem, bool>(nameof(IsBadgeVisible), false);
+
+    public event EventHandler<ShowCaseSourceCodeRequestedEventArgs> SourceCodeRequested
+    {
+        add => AddHandler(SourceCodeRequestedEvent, value);
+        remove => RemoveHandler(SourceCodeRequestedEvent, value);
+    }
+
+    public ShowCaseItem()
+    {
+        AddHandler(Button.ClickEvent, HandleButtonClick);
+        UpdateCodeActionVisibility();
+    }
 
     public string Title
     {
@@ -121,10 +151,22 @@ public class ShowCaseItem : ContentControl
         set => SetValue(BadgeColorProperty, value);
     }
 
+    public string? SourceKey
+    {
+        get => GetValue(SourceKeyProperty);
+        set => SetValue(SourceKeyProperty, value);
+    }
+
     public bool IsDeferredContentMaterialized
     {
         get => GetValue(IsDeferredContentMaterializedProperty);
         private set => SetValue(IsDeferredContentMaterializedProperty, value);
+    }
+
+    internal bool IsCodeActionVisible
+    {
+        get => GetValue(IsCodeActionVisibleProperty);
+        set => SetValue(IsCodeActionVisibleProperty, value);
     }
 
     internal bool IsDeferredPlaceholderVisible
@@ -170,6 +212,12 @@ public class ShowCaseItem : ContentControl
         }
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        UpdateCodeActionVisibility();
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -207,5 +255,58 @@ public class ShowCaseItem : ContentControl
     private void UpdateBadgeVisibility()
     {
         IsBadgeVisible = !string.IsNullOrWhiteSpace(BadgeText);
+    }
+
+    private void UpdateCodeActionVisibility()
+    {
+        IsCodeActionVisible = GalleryBaseConfigurationProvider.Current?.SourceCodeDisplay.CanShowSourceCode == true;
+    }
+
+    private void HandleButtonClick(object? sender, RoutedEventArgs e)
+    {
+        if (e.Source is not Button { Name: ShowSourceButtonPart })
+        {
+            return;
+        }
+
+        if (TryCreateSnippetKey(out var key))
+        {
+            RaiseEvent(new ShowCaseSourceCodeRequestedEventArgs(SourceCodeRequestedEvent, key, Title));
+            e.Handled = true;
+        }
+    }
+
+    private bool TryCreateSnippetKey(out ShowCaseCodeSnippetKey key)
+    {
+        key = default;
+        var panel = this.FindAncestorOfType<ShowCasePanel>();
+        if (panel is null || string.IsNullOrWhiteSpace(panel.Name))
+        {
+            return false;
+        }
+
+        var itemIndex = panel.Children.OfType<ShowCaseItem>().ToList().IndexOf(this);
+        if (itemIndex < 0)
+        {
+            return false;
+        }
+
+        var viewTypeName = ResolveViewTypeName();
+        if (string.IsNullOrWhiteSpace(viewTypeName))
+        {
+            return false;
+        }
+
+        key = new ShowCaseCodeSnippetKey(viewTypeName, panel.Name!, itemIndex, SourceKey);
+        return true;
+    }
+
+    private string? ResolveViewTypeName()
+    {
+        return this.GetVisualAncestors()
+                   .OfType<UserControl>()
+                   .Select(static control => control.GetType())
+                   .FirstOrDefault(static type => type.Namespace?.Contains(".ShowCases.") == true)
+                   ?.FullName;
     }
 }

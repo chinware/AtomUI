@@ -201,5 +201,7 @@ outputs/
 cmake-build-*/
 
 controlgallery/AtomUIGallery/GeneratedFiles/Avalonia.Generators/
+controlgallery/AtomUIGallery/GeneratedFiles/AtomUI.Toolkits.GalleryBase.Generator/
+src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/Avalonia.Generators/
 .referenceprojects/
 .claude/settings.local.json

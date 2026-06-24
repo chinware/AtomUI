@@ -212,7 +212,7 @@ user selects tab
 
 ## 6. 视觉与主题模型
 
-源码展示使用 AtomUI Drawer 承载，使用 AvaloniaEdit 作为只读代码查看器。Drawer 位于页面浮层，不参与 `ShowCasePanel` Masonry 布局。
+源码展示使用 AtomUI Drawer 承载，使用 AvaloniaEdit 作为只读代码查看器。Drawer 位于 Gallery Shell 级浮层，不参与 `ShowCasePanel` Masonry 布局。`GalleryShowCaseCodeDrawerHost` 必须包住 Shell 根布局，让 Drawer mask 覆盖导航区和内容区；不要只挂在右侧内容列上。
 
 视觉结构：
 
@@ -235,9 +235,15 @@ GalleryShowCaseCodeDrawerHost
 
 - Drawer 背景、边框、标题、工具条间距使用 AtomUI SharedToken 和 GalleryBase Token。
 - `GalleryCodeViewer` 使用等宽字体，默认字体族为 `Cascadia Code, Consolas, Menlo, Monospace`。
-- 代码编辑器 theme 跟随应用主题：
+- 代码编辑器 TextMate theme 必须跟随当前主题模式：
   - light 使用 TextMate `LightPlus`
   - dark 使用 TextMate `DarkPlus`
+- 当 `ActualThemeVariant` 是 Avalonia 内置 `ThemeVariant.Light` 或 `ThemeVariant.Dark` 时，优先按该值选择 TextMate theme。
+- 当 `ActualThemeVariant` 是 AtomUI 生成的自定义变体，例如 `DaybreakBlue-Dark` 或 `DaybreakBlue-Dark-Compact`，不能用 `ActualThemeVariant == ThemeVariant.Dark` 判断暗色。`GalleryCodeViewer` 必须通过 `Application.IsDarkThemeMode()` 扩展方法读取当前应用暗色模式结果。
+- `GalleryCodeViewer` 暴露 `LightSyntaxTheme` 和 `DarkSyntaxTheme`，默认值分别为 `LightPlus` 和 `DarkPlus`。产品 Gallery 可以在不改 GalleryBase 源码的前提下替换为 `VisualStudioLight`、`VisualStudioDark`、`AtomOneDark`、`Dracula` 等 TextMate 内置主题。
+- `GalleryCodeViewer` 只安装一次 TextMate。主题变化时调用 `TextMate.Installation.SetTheme(...)` 切换主题，不销毁 `TextEditor`、不重建 document、不中断当前滚动位置。
+- `Language` 变化只更新 grammar，`ActualThemeVariant` 或 syntax theme 属性变化只更新 TextMate theme，两条路径不能互相重建。
+- 已打开的 Drawer 编辑器必须监听主题变体变化作为同步信号。纯 Avalonia 主题切换可由 `Application.ActualThemeVariantChanged` 覆盖；AtomUI 主题切换必须订阅 `IThemeManager.ThemeVariantProperty`，因为它在激活主题按算法更新后触发。不要直接订阅 `IThemeManager.IsDarkThemeModeProperty`，否则会早于主题激活流程，读到旧的 `ActivatedTheme`。
 - 行号默认显示。
 - 编辑器只读，允许文本选择和复制。
 - 长代码在 Drawer 内部滚动，不让页面滚动条承载代码阅读。
@@ -275,8 +281,9 @@ public class GalleryCodeViewer : TemplatedControl
 - 安装 TextMate registry。
 - 根据 `Language` 设置 grammar。
 - 同步 AtomUI 主题到 TextMate theme。
+- 在 `Application.ActualThemeVariantChanged` 和 `IThemeManager.ThemeVariantProperty` 变化时重新应用 syntax theme；暗色判断读取当前激活主题的算法结果，避免主题状态来源分叉。
 - 设置只读、行号、字体、换行和滚动策略。
-- detach 时释放 TextMate installation，清空 document 引用。
+- dispose 时释放 TextMate installation，取消事件订阅，清空 document 引用。
 
 `ShowCaseItem` 和 Drawer 不直接操作 AvaloniaEdit API，避免第三方编辑器细节扩散到 ShowCase 控件。
 
@@ -343,7 +350,7 @@ internal static partial class ShowCaseCodeSnippetCatalog
 
 生成物命名应位于产品 Gallery namespace 下，例如 `AtomUIGallery.Generated.ShowCaseCodeSnippetCatalog`。GalleryBase 只认识 provider 契约，不认识生成物名称。
 
-Generator 诊断遵循 [AtomUI 编译期诊断规范](../../engineering/compiler-diagnostics-guidelines.md)，诊断 ID 使用 `ATOMUIGEN` 领域前缀并登记到诊断注册表。源码展示 generator 至少需要覆盖以下诊断场景：
+Generator 诊断遵循 [AtomUI 编译期诊断规范](../../engineering/compiler-diagnostics-guidelines.md)，诊断 ID 使用 `ATOMUIGEN` 领域前缀并登记到诊断注册表。源码展示 generator 已使用 `ATOMUIGEN101` 覆盖默认源码匹配缺少 panel key 的场景，其他诊断按同一领域前缀扩展。
 
 | 场景 | Severity | 行为 |
 |---|---|---|
