@@ -56,6 +56,7 @@ public class MenuShowCasePageTests
         source.ShouldContain("MenuShowCaseLangResource ContextMenuTitle");
         source.ShouldContain("MenuShowCaseLangResource VerticalNavMenuTitle");
         source.ShouldContain("MenuShowCaseLangResource InlineCollapsedMenuTitle");
+        source.ShouldContain("BadgeText=\"v6.0.6\"");
         source.ShouldContain("IsInlineCollapsed=\"{Binding IsInlineCollapsed}\"");
         source.ShouldContain("Click=\"HandleToggleInlineCollapsedClick\"");
         source.ShouldNotContain("<atom:TabControl");
