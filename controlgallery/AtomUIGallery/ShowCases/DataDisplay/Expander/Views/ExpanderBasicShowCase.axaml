@@ -5,7 +5,7 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.Expander"
              x:DataType="vm:ExpanderViewModel">
-    <gallery:ShowCasePanel>
+    <gallery:ShowCasePanel Name="ExamplesContent">
         <gallery:ShowCaseItem
             Title="{gallery:ExpanderShowCaseLangResource ExpanderTitle}"
             Description="{gallery:ExpanderShowCaseLangResource ExpanderDescription}">

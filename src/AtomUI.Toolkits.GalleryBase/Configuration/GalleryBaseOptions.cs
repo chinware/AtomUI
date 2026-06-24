@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using AtomUI.Toolkits.GalleryBase.Navigation;
 using AtomUI.Toolkits.GalleryBase.Routing;
+using AtomUI.Toolkits.GalleryBase.SourceCode;
 using Avalonia;
 
 namespace AtomUI.Toolkits.GalleryBase.Configuration;
@@ -16,6 +17,8 @@ public sealed class GalleryBaseOptions
     public GalleryShellOptions Shell { get; } = new();
 
     public GalleryPlatformOptions Platform { get; } = new();
+
+    public GallerySourceCodeDisplayOptions SourceCodeDisplay { get; } = new();
 
     public GalleryBaseConfiguration BuildConfiguration()
     {
@@ -66,4 +69,11 @@ public sealed class GalleryPlatformOptions
     public bool EnableDesktopCrashLog { get; set; } = true;
 
     public string CrashLogDirectoryName { get; set; } = "Gallery";
+}
+
+public sealed class GallerySourceCodeDisplayOptions
+{
+    public bool IsEnabled { get; set; }
+
+    public IShowCaseCodeSnippetProvider? SnippetProvider { get; set; }
 }

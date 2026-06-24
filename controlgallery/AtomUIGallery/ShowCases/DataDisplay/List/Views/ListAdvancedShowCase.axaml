@@ -5,7 +5,7 @@
              x:DataType="vm:ListViewModel"
              xmlns:atom="https://atomui.net"
              xmlns:gallery="https://atomui.net/oss-controls/gallery">
-    <gallery:ShowCasePanel>
+    <gallery:ShowCasePanel Name="ExamplesContent">
         <gallery:ShowCaseItem
             Title="{gallery:ListShowCaseLangResource FilterTitle}"
             Description="{gallery:ListShowCaseLangResource FilterDescription}">

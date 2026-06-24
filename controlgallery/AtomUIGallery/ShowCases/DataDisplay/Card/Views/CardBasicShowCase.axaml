@@ -5,7 +5,7 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.Card"
              x:DataType="vm:CardViewModel">
-    <gallery:ShowCasePanel>
+    <gallery:ShowCasePanel Name="ExamplesContent">
         <gallery:ShowCaseItem Title="{gallery:CardShowCaseLangResource BasicTitle}"
                               Description="{gallery:CardShowCaseLangResource BasicDescription}"
                               IsOccupyEntireRow="True">

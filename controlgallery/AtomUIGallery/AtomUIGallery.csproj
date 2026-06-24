@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets/**/*.*"/>
+        <AdditionalFiles Include="ShowCases/**/*.axaml" />
     </ItemGroup>
 
     <ItemGroup>
@@ -28,6 +29,10 @@
         <ProjectReference Include="../../src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj"/>
         <ProjectReference Include="../../src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj"/>
         <ProjectReference Include="../../src/AtomUI.Generator/AtomUI.Generator.csproj"
+                          OutputItemType="Analyzer"
+                          ReferenceOutputAssembly="false"
+                          PrivateAssets="all" />
+        <ProjectReference Include="../../src/AtomUI.Toolkits.GalleryBase.Generator/AtomUI.Toolkits.GalleryBase.Generator.csproj"
                           OutputItemType="Analyzer"
                           ReferenceOutputAssembly="false"
                           PrivateAssets="all" />

@@ -6,7 +6,7 @@
              xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              x:DataType="vm:LineEditViewModel">
-    <gallery:ShowCasePanel>
+    <gallery:ShowCasePanel Name="ExamplesContent">
         <gallery:ShowCaseItem
             Title="{gallery:LineEditShowCaseLangResource SearchBoxTitle}"
             Description="{gallery:LineEditShowCaseLangResource SearchBoxDescription}">

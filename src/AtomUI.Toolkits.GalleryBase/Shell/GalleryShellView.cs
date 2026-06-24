@@ -2,6 +2,7 @@ using System.Reactive.Disposables;
 using AtomUI.Data;
 using AtomUI.Theme.Styling;
 using AtomUI.Toolkits.GalleryBase.Configuration;
+using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -71,7 +72,12 @@ public sealed class GalleryShellView : UserControl, IDisposable
         };
         BindToken(rootLayout, Panel.BackgroundProperty, SharedTokenKind.ColorBgContainer);
 
-        Content = rootLayout;
+        var codeDrawerHost = new GalleryShowCaseCodeDrawerHost(configuration)
+        {
+            PageContent = rootLayout
+        };
+
+        Content = codeDrawerHost;
     }
 
     public void Dispose()

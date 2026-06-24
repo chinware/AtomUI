@@ -2142,6 +2142,7 @@ namespace AtomUIGallery.Localization
         ApiColumnProperty,
         ApiColumnType,
         ApiPropertyDrawerContent,
+        ApiPropertyDrawerContentPadding,
         ApiPropertyDrawerContentTemplate,
         ApiPropertyDrawerDialogSize,
         ApiPropertyDrawerExtra,

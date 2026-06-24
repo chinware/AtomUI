@@ -26,6 +26,7 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenColumnStatus = "状态";
     public const string ApiPropertyDrawerContent = "抽屉主体内容。";
     public const string ApiPropertyDrawerContentTemplate = "用于渲染抽屉主体内容的模板。";
+    public const string ApiPropertyDrawerContentPadding = "覆盖抽屉主体内容区域的内边距。";
     public const string ApiPropertyDrawerIsOpen = "控制抽屉是否打开。";
     public const string ApiPropertyDrawerPlacement = "指定抽屉从哪一侧弹出。";
     public const string ApiPropertyDrawerOpenOn = "设置抽屉渲染所在的宿主控件。";

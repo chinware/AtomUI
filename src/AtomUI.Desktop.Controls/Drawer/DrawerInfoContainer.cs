@@ -38,6 +38,11 @@ internal class DrawerInfoContainer : HeaderedContentControl
         AvaloniaProperty.RegisterDirect<DrawerInfoContainer, IDataTemplate?>(nameof(FooterTemplate),
             o => o.FooterTemplate,
             (o, v) => o.FooterTemplate = v);
+
+    internal static readonly DirectProperty<DrawerInfoContainer, Thickness> ContentPaddingProperty =
+        AvaloniaProperty.RegisterDirect<DrawerInfoContainer, Thickness>(nameof(ContentPadding),
+            o => o.ContentPadding,
+            (o, v) => o.ContentPadding = v);
     
     internal static readonly DirectProperty<DrawerInfoContainer, object?> ExtraProperty =
         AvaloniaProperty.RegisterDirect<DrawerInfoContainer, object?>(nameof(Extra),
@@ -105,6 +110,14 @@ internal class DrawerInfoContainer : HeaderedContentControl
     {
         get => _footerTemplate;
         set => SetAndRaise(FooterTemplateProperty, ref _footerTemplate, value);
+    }
+
+    private Thickness _contentPadding;
+
+    internal Thickness ContentPadding
+    {
+        get => _contentPadding;
+        set => SetAndRaise(ContentPaddingProperty, ref _contentPadding, value);
     }
     
     private object? _extra;

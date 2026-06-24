@@ -54,6 +54,11 @@ internal class DrawerContainer : ContentControl
             o => o.FooterTemplate,
             (o, v) => o.FooterTemplate = v);
 
+    internal static readonly DirectProperty<DrawerContainer, Thickness> ContentPaddingProperty =
+        AvaloniaProperty.RegisterDirect<DrawerContainer, Thickness>(nameof(ContentPadding),
+            o => o.ContentPadding,
+            (o, v) => o.ContentPadding = v);
+
     internal static readonly DirectProperty<DrawerContainer, object?> ExtraProperty =
         AvaloniaProperty.RegisterDirect<DrawerContainer, object?>(nameof(Extra),
             o => o.Extra,
@@ -139,6 +144,14 @@ internal class DrawerContainer : ContentControl
         set => SetAndRaise(FooterTemplateProperty, ref _footerTemplate, value);
     }
 
+    private Thickness _contentPadding;
+
+    internal Thickness ContentPadding
+    {
+        get => _contentPadding;
+        set => SetAndRaise(ContentPaddingProperty, ref _contentPadding, value);
+    }
+
     private object? _extra;
 
     internal object? Extra
@@ -220,6 +233,7 @@ internal class DrawerContainer : ContentControl
             Bind(DataContextProperty, drawer[!DataContextProperty]),
             Bind(ContentProperty, drawer[!AtomUI.Desktop.Controls.Drawer.ContentProperty]),
             Bind(ContentTemplateProperty, drawer[!AtomUI.Desktop.Controls.Drawer.ContentTemplateProperty]),
+            Bind(ContentPaddingProperty, drawer[!AtomUI.Desktop.Controls.Drawer.ContentPaddingProperty]),
             Bind(FooterProperty, drawer[!AtomUI.Desktop.Controls.Drawer.FooterProperty]),
             Bind(FooterTemplateProperty, drawer[!AtomUI.Desktop.Controls.Drawer.FooterTemplateProperty]),
             Bind(ExtraProperty, drawer[!AtomUI.Desktop.Controls.Drawer.ExtraProperty]),
@@ -376,6 +390,7 @@ internal class DrawerContainer : ContentControl
         ClearValue(DataContextProperty);
         ClearValue(ContentProperty);
         ClearValue(ContentTemplateProperty);
+        ClearValue(ContentPaddingProperty);
         ClearValue(FooterProperty);
         ClearValue(FooterTemplateProperty);
         ClearValue(ExtraProperty);

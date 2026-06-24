@@ -72,6 +72,7 @@ public class DrawerViewModel : ReactiveObject, IRoutableViewModel
         [
             new DrawerApiRow("Content", Lang(DrawerShowCaseLangResourceKind.ApiPropertyDrawerContent), "object?", "cyan", "null"),
             new DrawerApiRow("ContentTemplate", Lang(DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentTemplate), "IDataTemplate?", "cyan", "null"),
+            new DrawerApiRow("ContentPadding", Lang(DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentPadding), "Thickness", "cyan", "token"),
             new DrawerApiRow("IsOpen", Lang(DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsOpen), "bool", "purple", "false"),
             new DrawerApiRow("Placement", Lang(DrawerShowCaseLangResourceKind.ApiPropertyDrawerPlacement), "DrawerPlacement", "blue", "Right"),
             new DrawerApiRow("OpenOn", Lang(DrawerShowCaseLangResourceKind.ApiPropertyDrawerOpenOn), "Control?", "cyan", "TopLevel"),
@@ -129,6 +130,7 @@ public class DrawerViewModel : ReactiveObject, IRoutableViewModel
         {
             DrawerShowCaseLangResourceKind.ApiPropertyDrawerContent                => en_US.ApiPropertyDrawerContent,
             DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentTemplate        => en_US.ApiPropertyDrawerContentTemplate,
+            DrawerShowCaseLangResourceKind.ApiPropertyDrawerContentPadding         => en_US.ApiPropertyDrawerContentPadding,
             DrawerShowCaseLangResourceKind.ApiPropertyDrawerIsOpen                 => en_US.ApiPropertyDrawerIsOpen,
             DrawerShowCaseLangResourceKind.ApiPropertyDrawerPlacement              => en_US.ApiPropertyDrawerPlacement,
             DrawerShowCaseLangResourceKind.ApiPropertyDrawerOpenOn                 => en_US.ApiPropertyDrawerOpenOn,

@@ -5,7 +5,7 @@
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.Collapse"
              x:DataType="vm:CollapseViewModel">
-    <gallery:ShowCasePanel>
+    <gallery:ShowCasePanel Name="ExamplesContent">
         <gallery:ShowCaseItem
             Title="{gallery:CollapseShowCaseLangResource BorderlessTitle}"
             Description="{gallery:CollapseShowCaseLangResource BorderlessDescription}">
