@@ -67,6 +67,11 @@ public class ControlName ...
         internal DirectProperty + backing field + wrapper
     #endregion
 
+    #region 内部协作 API
+        internal constants, properties, and methods used by sibling controls
+        internal static helpers that form a stable same-module collaboration contract
+    #endregion
+
     static readonly helpers / constants
     runtime fields
 
@@ -105,6 +110,25 @@ public class ControlName ...
         private event notification helpers
 }
 ```
+
+## Contract-First Class Prelude
+
+Inside a control class, the public contract region is the first reading entry. Do not put implementation or internal collaboration members before `#region 公共属性定义`.
+
+Allowed before the control class:
+
+- `enum` and small public state types that help explain the control model
+
+Not allowed before `#region 公共属性定义` inside the control class:
+
+- `internal const` or `internal static readonly` values used by sibling controls
+- `internal static` helper methods, even if they are pure calculations
+- internal collaboration APIs between related controls
+- private helpers, runtime fields, template parts, disposables, state flags, or patch artifacts
+
+Internal collaboration members are not public user API, but they are still contracts for sibling controls in the same module. Place them after the public and internal property/event contract regions, preferably in `#region 内部协作 API`, before ordinary private helpers and runtime fields.
+
+If an `internal static` helper is used only by the current class, treat it as implementation detail and keep it with private implementation flow instead of promoting it above the public contract.
 
 ## Control API Before Interface Regions
 

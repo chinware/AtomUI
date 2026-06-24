@@ -136,68 +136,8 @@ public class CompactSpaceAddOn : TemplatedControl,
         ConfigureEffectiveCornerRadius();
     }
 
-    private void ConfigureEffectiveCornerRadius()
-    {
-        if (StyleVariant != InputControlStyleVariant.Underlined)
-        {
-            var topLeftRadius     = CornerRadius.TopLeft;
-            var topRightRadius    = CornerRadius.TopRight;
-            var bottomLeftRadius  = CornerRadius.BottomLeft;
-            var bottomRightRadius = CornerRadius.BottomRight;
-        
-            if (IsUsedInCompactSpace && CompactSpaceItemPosition.HasValue)
-            {
-                var position = CompactSpaceItemPosition.Value;
-                var isFirst  = CompactSpace.HasPositionFlag(position, SpaceItemPosition.First);
-                var isMiddle = CompactSpace.HasPositionFlag(position, SpaceItemPosition.Middle);
-                var isLast   = CompactSpace.HasPositionFlag(position, SpaceItemPosition.Last);
-                var isPartial = !isFirst || !isLast;
-                if (isPartial && isFirst)
-                {
-                    if (CompactSpaceOrientation == Orientation.Horizontal)
-                    {
-                        topRightRadius    = 0;
-                        bottomRightRadius = 0;
-                    }
-                    else
-                    {
-                        bottomLeftRadius  = 0;
-                        bottomRightRadius = 0;
-                    }
-                }
-                else if (isPartial && isMiddle)
-                {
-                     topLeftRadius     = 0;
-                     topRightRadius    = 0;
-                     bottomLeftRadius  = 0;
-                     bottomRightRadius = 0;
-                }
-                else if (isPartial && isLast)
-                {
-                    if (CompactSpaceOrientation == Orientation.Horizontal)
-                    {
-                        topLeftRadius    = 0;
-                        bottomLeftRadius = 0;
-                    }
-                    else
-                    {
-                        topLeftRadius = 0;
-                        topRightRadius = 0;
-                    }
-                }
-            }
-            
-            SetCurrentValue(EffectiveCornerRadiusProperty, new CornerRadius(topLeftRadius,
-                topRightRadius,
-                bottomLeft: bottomLeftRadius,
-                bottomRight: bottomRightRadius));
-        }
-        else
-        {
-            SetCurrentValue(EffectiveCornerRadiusProperty, new CornerRadius(0));
-        }
-    }
-    
+    #region 实现 ICompactSpaceAware 接口
+
     void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
     {
         var isUsedInCompactSpace = position != null;
@@ -224,6 +164,26 @@ public class CompactSpaceAddOn : TemplatedControl,
     
     double ICompactSpaceAware.GetBorderThickness()
     {
-        return CompactSpaceOrientation ==  Orientation.Horizontal ? BorderThickness.Left : BorderThickness.Top;
+        return CompactSpaceOrientation == Orientation.Horizontal ? BorderThickness.Left : BorderThickness.Top;
+    }
+
+    #endregion
+
+    private void ConfigureEffectiveCornerRadius()
+    {
+        if (StyleVariant != InputControlStyleVariant.Underlined)
+        {
+            SetCurrentValue(
+                EffectiveCornerRadiusProperty,
+                CompactSpace.CalculateEffectiveCornerRadius(
+                    CornerRadius,
+                    IsUsedInCompactSpace,
+                    CompactSpaceItemPosition,
+                    CompactSpaceOrientation));
+        }
+        else
+        {
+            SetCurrentValue(EffectiveCornerRadiusProperty, new CornerRadius(0));
+        }
     }
 }

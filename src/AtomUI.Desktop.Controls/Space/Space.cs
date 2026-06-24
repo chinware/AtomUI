@@ -119,35 +119,11 @@ public class Space : Control,
     public AvaloniaList<Control> Children { get; } = new();
     
     public bool IsItemsHost { get; internal set; }
-    
-    event EventHandler<ChildIndexChangedEventArgs>? IChildIndexProvider.ChildIndexChanged
-    {
-        add
-        {
-            if (_childIndexChanged is null)
-            {
-                Children.PropertyChanged -= HandleChildrenPropertyChanged;
-                Children.PropertyChanged += HandleChildrenPropertyChanged;
-            }
-            _childIndexChanged += value;
-        }
 
-        remove
-        {
-            _childIndexChanged -= value;
-            if (_childIndexChanged is null)
-            {
-                Children.PropertyChanged -= HandleChildrenPropertyChanged;
-            }
-        }
-    }
-    
     #endregion
-    
-    #region 内部属性定义
+
     private EventHandler<ChildIndexChangedEventArgs>? _childIndexChanged;
     private CompositeDisposable? _spacingBindings;
-    #endregion
     
     static Space()
     {
@@ -166,23 +142,6 @@ public class Space : Control,
         this.RegisterTokenResourceScope(SpaceToken.ScopeProvider);
         ApplySpacingTokenBinding();
         Children.CollectionChanged += HandleChildrenChanged;
-    }
-
-    private void ApplySpacingTokenBinding()
-    {
-        _spacingBindings?.Dispose();
-        var tokenKind = SizeType switch
-        {
-            CustomizableSizeType.Small  => SpaceTokenKind.GapSmallSize,
-            CustomizableSizeType.Middle => SpaceTokenKind.GapMiddleSize,
-            CustomizableSizeType.Large  => SpaceTokenKind.GapLargeSize,
-            _                           => SpaceTokenKind.GapSmallSize
-        };
-        _spacingBindings = new CompositeDisposable
-        {
-            TokenResourceBinder.CreateTokenBinding(this, ItemSpacingProperty, tokenKind),
-            TokenResourceBinder.CreateTokenBinding(this, LineSpacingProperty, tokenKind)
-        };
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -256,97 +215,9 @@ public class Space : Control,
         }
     }
 
-    private void HandleSplitTemplateChanged()
-    {
-        LogicalChildren.Clear();
-        VisualChildren.Clear();
-        for (var i = 0; i < Children.Count; ++i)
-        {
-            var child = Children[i];
-            if (!IsItemsHost)
-            {
-                LogicalChildren.Add(child);
-            }
-            VisualChildren.Add(child);
-            if (SplitTemplate != null)
-            {
-                if (i != Children.Count - 1)
-                {
-                    var split = SplitTemplate.Build();
-                    if (!IsItemsHost)
-                    {
-                        LogicalChildren.Add(split);
-                    }
-                    VisualChildren.Add(split);
-                }
-            }
-        }
-    }
-
     private protected virtual void InvalidateMeasureOnChildrenChanged()
     {
         InvalidateMeasure();
-    }
-    
-    private void HandleChildrenPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(Children.Count) || e.PropertyName is null)
-        {
-            _childIndexChanged?.Invoke(this, ChildIndexChangedEventArgs.TotalCountChanged);
-        }
-    }
-    
-    int IChildIndexProvider.GetChildIndex(ILogical child)
-    {
-        return child is Control control ? Children.IndexOf(control) : -1;
-    }
-    
-    bool IChildIndexProvider.TryGetTotalCount(out int count)
-    {
-        count = Children.Count;
-        return true;
-    }
-    
-    IInputElement? INavigableContainer.GetControl(NavigationDirection direction, IInputElement? from, bool wrap)
-    {
-        var  orientation = Orientation;
-        var  children    = Children;
-        bool horiz       = orientation == Orientation.Horizontal;
-        int  index       = from is not null ? Children.IndexOf((Control)from) : -1;
-
-        switch (direction)
-        {
-            case NavigationDirection.First:
-                index = 0;
-                break;
-            case NavigationDirection.Last:
-                index = children.Count - 1;
-                break;
-            case NavigationDirection.Next:
-                ++index;
-                break;
-            case NavigationDirection.Previous:
-                --index;
-                break;
-            case NavigationDirection.Left:
-                index = horiz ? index - 1 : -1;
-                break;
-            case NavigationDirection.Right:
-                index = horiz ? index + 1 : -1;
-                break;
-            case NavigationDirection.Up:
-                index = horiz ? -1 : index - 1;
-                break;
-            case NavigationDirection.Down:
-                index = horiz ? -1 : index + 1;
-                break;
-        }
-
-        if (index >= 0 && index < children.Count)
-        {
-            return children[index];
-        }
-        return null;
     }
     
     protected override Size MeasureOverride(Size constraint)
@@ -529,6 +400,141 @@ public class Space : Control,
                 return useItemV ? itemV :
                     isHorizontal ? c.DesiredSize.Height : c.DesiredSize.Width;
             }
+        }
+    }
+
+    #region 实现 IChildIndexProvider 接口
+
+    event EventHandler<ChildIndexChangedEventArgs>? IChildIndexProvider.ChildIndexChanged
+    {
+        add
+        {
+            if (_childIndexChanged is null)
+            {
+                Children.PropertyChanged -= HandleChildrenPropertyChanged;
+                Children.PropertyChanged += HandleChildrenPropertyChanged;
+            }
+            _childIndexChanged += value;
+        }
+
+        remove
+        {
+            _childIndexChanged -= value;
+            if (_childIndexChanged is null)
+            {
+                Children.PropertyChanged -= HandleChildrenPropertyChanged;
+            }
+        }
+    }
+
+    int IChildIndexProvider.GetChildIndex(ILogical child)
+    {
+        return child is Control control ? Children.IndexOf(control) : -1;
+    }
+
+    bool IChildIndexProvider.TryGetTotalCount(out int count)
+    {
+        count = Children.Count;
+        return true;
+    }
+
+    #endregion
+
+    #region 实现 INavigableContainer 接口
+
+    IInputElement? INavigableContainer.GetControl(NavigationDirection direction, IInputElement? from, bool wrap)
+    {
+        var  orientation = Orientation;
+        var  children    = Children;
+        bool horiz       = orientation == Orientation.Horizontal;
+        int  index       = from is not null ? Children.IndexOf((Control)from) : -1;
+
+        switch (direction)
+        {
+            case NavigationDirection.First:
+                index = 0;
+                break;
+            case NavigationDirection.Last:
+                index = children.Count - 1;
+                break;
+            case NavigationDirection.Next:
+                ++index;
+                break;
+            case NavigationDirection.Previous:
+                --index;
+                break;
+            case NavigationDirection.Left:
+                index = horiz ? index - 1 : -1;
+                break;
+            case NavigationDirection.Right:
+                index = horiz ? index + 1 : -1;
+                break;
+            case NavigationDirection.Up:
+                index = horiz ? -1 : index - 1;
+                break;
+            case NavigationDirection.Down:
+                index = horiz ? -1 : index + 1;
+                break;
+        }
+
+        if (index >= 0 && index < children.Count)
+        {
+            return children[index];
+        }
+        return null;
+    }
+
+    #endregion
+
+    private void ApplySpacingTokenBinding()
+    {
+        _spacingBindings?.Dispose();
+        var tokenKind = SizeType switch
+        {
+            CustomizableSizeType.Small  => SpaceTokenKind.GapSmallSize,
+            CustomizableSizeType.Middle => SpaceTokenKind.GapMiddleSize,
+            CustomizableSizeType.Large  => SpaceTokenKind.GapLargeSize,
+            _                           => SpaceTokenKind.GapSmallSize
+        };
+        _spacingBindings = new CompositeDisposable
+        {
+            TokenResourceBinder.CreateTokenBinding(this, ItemSpacingProperty, tokenKind),
+            TokenResourceBinder.CreateTokenBinding(this, LineSpacingProperty, tokenKind)
+        };
+    }
+
+    private void HandleSplitTemplateChanged()
+    {
+        LogicalChildren.Clear();
+        VisualChildren.Clear();
+        for (var i = 0; i < Children.Count; ++i)
+        {
+            var child = Children[i];
+            if (!IsItemsHost)
+            {
+                LogicalChildren.Add(child);
+            }
+            VisualChildren.Add(child);
+            if (SplitTemplate != null)
+            {
+                if (i != Children.Count - 1)
+                {
+                    var split = SplitTemplate.Build();
+                    if (!IsItemsHost)
+                    {
+                        LogicalChildren.Add(split);
+                    }
+                    VisualChildren.Add(split);
+                }
+            }
+        }
+    }
+
+    private void HandleChildrenPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(Children.Count) || e.PropertyName is null)
+        {
+            _childIndexChanged?.Invoke(this, ChildIndexChangedEventArgs.TotalCountChanged);
         }
     }
     

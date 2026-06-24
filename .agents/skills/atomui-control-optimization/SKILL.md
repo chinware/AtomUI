@@ -74,6 +74,7 @@ If the audit finds no issues beyond member order, say that explicitly. If it fin
 - If investigation or review finds an unnecessary class, duplicate helper, speculative abstraction, patch flag, or stale artifact introduced by the current change, remove it before reporting completion. Do not leave it as harmless cleanup for later.
 - Prefer existing shared primitives and comparable-control implementations over one-off private classes. A private class is allowed only when no existing primitive expresses the behavior correctly and the class removes real duplication or clarifies a stable responsibility.
 - Do not mix pure member reordering with behavior fixes. If a bug is found during reordering, split it into a behavior fix with tests.
+- Member layout cleanup must preserve the control contract as the first reading path. Do not place internal collaboration members, `internal const`, `internal static` helpers, private helpers, runtime fields, or patch artifacts before the public contract region inside a control class.
 - Do not split files just because a file looks long. Under about `2000` lines, prefer method order, regions, and private helper extraction.
 - Do not treat the `2000` line threshold as an automatic split rule. Even after the threshold is crossed, split only when the control has real, stable responsibility boundaries.
 - Do not scatter a control into many small partial files. Public API contracts must remain in the main control file.
@@ -102,6 +103,7 @@ Other required skills:
 Behavior changes mixed into layout-only work: No
 C# relay binding inventory: None / Reviewed, exceptions documented
 New artifact audit: None / necessary classes/helpers/fields/flags listed with reason
+Members before public contract region: None / exceptions documented
 Verification commands:
 ```
 
@@ -155,6 +157,7 @@ For broad optimization, run focused searches before deciding the implementation 
 - data flow: `ItemsSource`, `Selected`, `Checked`, `Current`, `TargetKeys`, `SelectedKeys`, `Filter`, `Page`
 - dead/duplicate code: class references, copied methods, override methods matching the base implementation, new helpers/classes that duplicate existing primitives
 - patch artifacts: new boolean-switch parameters, marker fields, local marker variables, stale fallback branches, and cleanup-only helper classes
+- member prelude: anything inside the control class before `#region 公共属性定义`, especially `internal const`, `internal static`, internal collaboration APIs, private helpers, runtime fields, and temporary state
 
 Do not treat these scans as proof by themselves. Use them to identify ownership and edge-case paths that must be reviewed.
 
