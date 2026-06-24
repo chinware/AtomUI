@@ -1,3 +1,4 @@
+using AtomUI.Controls.Primitives;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -6,6 +7,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Metadata;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Toolkits.GalleryBase.Controls;
 
@@ -17,6 +19,7 @@ public class GalleryStickyTabsHost : TemplatedControl
     private const string ScrollViewerPart      = "PART_ScrollViewer";
     private const string StickyPanelPart       = "PART_StickyPanel";
     private const string StickyContentHostPart = "PART_StickyContentHost";
+    private const int StickyMirrorZIndex       = -1;
 
     public static readonly StyledProperty<object?> HeaderProperty =
         AvaloniaProperty.Register<GalleryStickyTabsHost, object?>(nameof(Header));
@@ -85,7 +88,7 @@ public class GalleryStickyTabsHost : TemplatedControl
     private ScrollViewer? _scrollViewer;
     private GalleryStickyTabsPanel? _stickyPanel;
     private Border? _inlineStickyContentHost;
-    private OverlayLayer? _overlayLayer;
+    private ScopeAwareAdornerLayer? _stickyMirrorLayer;
     private Border? _stickyMirror;
     private VisualBrush? _stickyMirrorBrush;
     private bool _stickyMirrorUpdateQueued;
@@ -220,8 +223,8 @@ public class GalleryStickyTabsHost : TemplatedControl
             return;
         }
 
-        _overlayLayer = OverlayLayer.GetOverlayLayer(this);
-        if (_overlayLayer is null ||
+        _stickyMirrorLayer = ResolveStickyMirrorLayer();
+        if (_stickyMirrorLayer is null ||
             _inlineStickyContentHost is null)
         {
             return;
@@ -238,18 +241,19 @@ public class GalleryStickyTabsHost : TemplatedControl
             Background       = _stickyMirrorBrush,
             ClipToBounds     = true,
             Focusable        = false,
-            IsHitTestVisible = false
+            IsHitTestVisible = false,
+            ZIndex           = StickyMirrorZIndex
         };
 
-        _overlayLayer.Children.Add(_stickyMirror);
+        _stickyMirrorLayer.Children.Add(_stickyMirror);
     }
 
     private void RemoveStickyMirror()
     {
         if (_stickyMirror is not null &&
-            _overlayLayer?.Children.Contains(_stickyMirror) == true)
+            _stickyMirrorLayer?.Children.Contains(_stickyMirror) == true)
         {
-            _overlayLayer.Children.Remove(_stickyMirror);
+            _stickyMirrorLayer.Children.Remove(_stickyMirror);
         }
 
         if (_stickyMirrorBrush is not null)
@@ -259,19 +263,19 @@ public class GalleryStickyTabsHost : TemplatedControl
 
         _stickyMirror      = null;
         _stickyMirrorBrush = null;
-        _overlayLayer      = null;
+        _stickyMirrorLayer = null;
     }
 
     private void UpdateStickyMirrorBounds()
     {
         if (_stickyMirror is null ||
             _inlineStickyContentHost is null ||
-            _overlayLayer is null)
+            _stickyMirrorLayer is null)
         {
             return;
         }
 
-        var transform = _inlineStickyContentHost.TransformToVisual(_overlayLayer);
+        var transform = _inlineStickyContentHost.TransformToVisual(_stickyMirrorLayer);
         if (!transform.HasValue)
         {
             return;
@@ -285,6 +289,21 @@ public class GalleryStickyTabsHost : TemplatedControl
         Canvas.SetTop(_stickyMirror, position.Y);
         _stickyMirror.Width  = width;
         _stickyMirror.Height = height;
+    }
+
+    private ScopeAwareAdornerLayer? ResolveStickyMirrorLayer()
+    {
+        if (this.FindAncestorOfType<VisualLayerManager>() is { } visualLayerManager)
+        {
+            return ScopeAwareAdornerLayer.GetLayer(visualLayerManager);
+        }
+
+        if (TopLevel.GetTopLevel(this) is { } topLevel)
+        {
+            return ScopeAwareAdornerLayer.GetLayer(topLevel);
+        }
+
+        return ScopeAwareAdornerLayer.GetLayer(this);
     }
 
     private void InvalidateStickyMirrorBrush()

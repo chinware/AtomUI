@@ -84,12 +84,15 @@ public class GalleryStickyTabsHostTests
         hostSource.ShouldContain("IsStickyMirrorEnabledProperty");
         hostSource.ShouldContain("[Content]");
         hostSource.ShouldContain("RegisterTokenResourceScope(GalleryStickyTabsHostToken.ScopeProvider)");
-        hostSource.ShouldContain("OverlayLayer.GetOverlayLayer(this)");
+        hostSource.ShouldContain("ScopeAwareAdornerLayer.GetLayer(this)");
+        hostSource.ShouldContain("StickyMirrorZIndex       = -1");
         hostSource.ShouldContain("VisualBrush");
         hostSource.ShouldContain("IsHitTestVisible = false");
+        hostSource.ShouldContain("ZIndex           = StickyMirrorZIndex");
         hostSource.ShouldContain("RemoveStickyMirror()");
         hostSource.ShouldContain("!IsStickyMirrorEnabled");
         hostSource.ShouldNotContain("Popup");
+        hostSource.ShouldNotContain("OverlayLayer.GetOverlayLayer(this)");
 
         panelSource.ShouldContain("ScrollChanged += HandleScrollChanged");
         panelSource.ShouldContain("ScrollChanged -= HandleScrollChanged");

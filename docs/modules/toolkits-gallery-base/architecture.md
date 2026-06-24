@@ -362,7 +362,7 @@ GalleryBase 测试覆盖：
 
 - `ShowCasePanel` 瀑布流布局和延迟创建行为。
 - `ShowCaseItem` deferred content materialization。
-- `GalleryStickyTabsHost` sticky 和 overlay mirror 行为。
+- `GalleryStickyTabsHost` sticky 和 sticky mirror 行为。
 - `GalleryRouteRegistry` 的 route key、ViewModel factory 和 ViewLocator 注册。
 - `GalleryNavigationBuilder` 的分组、页面、默认路由和重复 key 校验。
 - `GalleryWorkspaceViewModel` 的导航、主题、语言命令。

@@ -143,14 +143,15 @@ GalleryStickyTabsHost
 - 提供页面级 ScrollViewer。
 - 让 Header、StickyContent、Content 共用一个滚动上下文。
 - StickyContent 到达顶部后保持可见。
-- 通过只读 overlay mirror 解决窗口级 Adorner 覆盖 sticky tabs 的问题。
+- 通过只读 sticky mirror 解决窗口级 Adorner 覆盖 sticky tabs 的问题。
 
 规则：
 
 - 真实 StickyContent 不移出原视觉树。
-- overlay mirror 只绘制视觉镜像，`IsHitTestVisible=false`。
+- sticky mirror 只绘制视觉镜像，`IsHitTestVisible=false`。
+- sticky mirror 由 AtomUI 受控 adorner 层承载，并作为低 ZIndex 子项，低于 Drawer、Dialog、Tour 等真正浮层。
 - 不在滚动时销毁或重建 TabStrip。
-- detach 时释放 ScrollViewer、StickyPanel、LayoutUpdated 和 overlay 资源。
+- detach 时释放 ScrollViewer、StickyPanel、LayoutUpdated 和 sticky mirror 资源。
 
 ## GalleryShowCaseScenarioController
 
@@ -230,5 +231,5 @@ xmlns:gallery="https://atomui.net/toolkits/gallery-base"
 - `ShowCasePanel` 只使用一个 panel 级 viewport 监听。
 - Browser 渐进挂载不影响 deferred content 策略。
 - Masonry full span item 占满整行。
-- Sticky host detach 后释放 overlay mirror。
+- Sticky host detach 后释放 sticky mirror。
 - Scenario controller 首次切换创建 lazy content，后续切换复用缓存。
