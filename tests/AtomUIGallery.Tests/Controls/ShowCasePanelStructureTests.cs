@@ -2,7 +2,9 @@ using System;
 using System.IO;
 using System.Linq;
 using AtomUI.Toolkits.GalleryBase.Controls;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -71,6 +73,8 @@ public class ShowCasePanelStructureTests
         itemTheme.ShouldContain("<atom:RibbonBadge");
         itemTheme.ShouldContain("Text=\"{TemplateBinding BadgeText}\"");
         itemTheme.ShouldContain("RibbonColor=\"{TemplateBinding BadgeColor}\"");
+        itemTheme.ShouldContain("<Setter Property=\"ClipToBounds\" Value=\"False\" />");
+        itemTheme.ShouldNotContain("Offset=\"-8,0\"");
         itemTheme.ShouldNotContain("RibbonBadgeText");
         itemTheme.ShouldNotContain("FeatureBadgeText");
         itemTheme.ShouldNotContain("PART_FeatureBadge");
@@ -102,6 +106,7 @@ public class ShowCasePanelStructureTests
                                   .SingleOrDefault();
             ribbonBadge.ShouldNotBeNull();
             ribbonBadge.Text.ShouldBe("v6.0.5");
+            ribbonBadge.Offset.ShouldBe(default);
 
             item.GetVisualDescendants()
                 .OfType<AtomSeparator>()
@@ -116,6 +121,107 @@ public class ShowCasePanelStructureTests
                 .OfType<TextBlock>()
                 .Any(textBlock => textBlock.Text == "content")
                 .ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void ShowCaseItem_Badge_Template_Anchors_Ribbon_To_Card_Right_Edge()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var item = new ShowCaseItem
+        {
+            Title       = "Feature",
+            Description = "Feature item",
+            BadgeText   = "v6.0.6",
+            Content     = new TextBlock { Text = "content" }
+        };
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child              = item
+        };
+
+        ShowInWindow(visualLayerManager, () =>
+        {
+            var ribbonBadge = item.GetVisualDescendants()
+                                  .OfType<AtomRibbonBadge>()
+                                  .Single();
+            var label = visualLayerManager.GetVisualDescendants()
+                                          .OfType<TextBlock>()
+                                          .Single(textBlock => textBlock.Text == "v6.0.6");
+
+            item.ClipToBounds.ShouldBeFalse(
+                "the version ribbon intentionally overhangs the ShowCaseItem right edge and must not be clipped by the item host.");
+            var labelRight = label.TranslatePoint(new Point(label.Bounds.Width, 0), visualLayerManager);
+            var targetRight = ribbonBadge.TranslatePoint(new Point(ribbonBadge.Bounds.Width, 0), visualLayerManager);
+
+            labelRight.ShouldNotBeNull();
+            targetRight.ShouldNotBeNull();
+            labelRight.Value.X.ShouldBeGreaterThan(targetRight.Value.X,
+                "ShowCaseItem version RibbonBadge should overhang the card's final right edge instead of stopping inside it.");
+        });
+    }
+
+    [Fact]
+    public void RibbonBadge_In_ShowCasePanel_Anchors_To_Decorated_Target_Right_Edge()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var target = new Border
+        {
+            Padding         = new Thickness(10, 0),
+            BorderThickness = new Thickness(1),
+            Child = new StackPanel
+            {
+                Children =
+                {
+                    new TextBlock { Text = "Pushes open the window" },
+                    new TextBlock { Text = "and raises the spyglass." }
+                }
+            }
+        };
+        var ribbonBadge = new AtomRibbonBadge
+        {
+            Text            = "Hippies",
+            RibbonColor     = "purple",
+            DecoratedTarget = target
+        };
+        var item = new ShowCaseItem
+        {
+            Title       = "Ribbon",
+            Description = "Ribbon item",
+            Content = new StackPanel
+            {
+                Margin   = new Thickness(20, 0),
+                Children = { ribbonBadge }
+            }
+        };
+        var panel = new ShowCasePanel
+        {
+            IsScrollEnabled = false,
+            ContentMargin   = new Thickness(28),
+            Children        = { item }
+        };
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child              = panel
+        };
+
+        ShowInWindow(visualLayerManager, () =>
+        {
+            var label = visualLayerManager.GetVisualDescendants()
+                                          .OfType<TextBlock>()
+                                          .Single(textBlock => textBlock.Text == "Hippies");
+
+            var labelRight = label.TranslatePoint(new Point(label.Bounds.Width, 0), visualLayerManager);
+            var targetRight = target.TranslatePoint(new Point(target.Bounds.Width, 0), visualLayerManager);
+
+            labelRight.ShouldNotBeNull();
+            targetRight.ShouldNotBeNull();
+            labelRight.Value.X.ShouldBeGreaterThan(targetRight.Value.X,
+                "RibbonBadge should overhang the target's final right edge in ShowCasePanel, matching the ShowCaseItem badge behavior.");
         });
     }
 

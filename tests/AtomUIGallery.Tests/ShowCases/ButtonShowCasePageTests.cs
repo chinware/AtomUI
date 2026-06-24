@@ -1,8 +1,18 @@
 using System;
 using System.IO;
 using System.Linq;
+using AtomUI.Toolkits.GalleryBase.Controls;
+using AtomUIGallery.ShowCases.Button;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
+using Avalonia.Threading;
+using Avalonia.VisualTree;
+using ReactiveUI;
 using Shouldly;
 using Xunit;
+using AtomRibbonBadge = AtomUI.Desktop.Controls.RibbonBadge;
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 namespace AtomUIGallery.Tests.ShowCases;
 
@@ -180,6 +190,43 @@ public class ButtonShowCasePageTests
         codeBehindSource.ShouldContain("ButtonIconPlacement.Start");
         codeBehindSource.ShouldContain("ButtonIconPlacement.End");
         viewModelSource.ShouldContain("ButtonIconPlacement ButtonIconPlacement");
+    }
+
+    [Fact]
+    public void Button_ShowCase_Version_Ribbon_Anchors_To_Real_ShowCaseItem_Right_Edge()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var page = new ButtonShowCase
+        {
+            DataContext = new ButtonViewModel(new TestScreen())
+        };
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child              = page
+        };
+
+        ShowInWindow(visualLayerManager, 1440, 900, () =>
+        {
+            var item = page.GetVisualDescendants()
+                           .OfType<ShowCaseItem>()
+                           .Single(showCaseItem => showCaseItem.BadgeText == "v6.0.6");
+            var ribbonBadge = item.GetVisualDescendants()
+                                  .OfType<AtomRibbonBadge>()
+                                  .Single();
+            var label = visualLayerManager.GetVisualDescendants()
+                                          .OfType<TextBlock>()
+                                          .Single(textBlock => textBlock.Text == "v6.0.6");
+
+            var labelRight = label.TranslatePoint(new Point(label.Bounds.Width, 0), visualLayerManager);
+            var targetRight = ribbonBadge.TranslatePoint(new Point(ribbonBadge.Bounds.Width, 0), visualLayerManager);
+
+            labelRight.ShouldNotBeNull();
+            targetRight.ShouldNotBeNull();
+            (labelRight.Value.X - targetRight.Value.X).ShouldBe(8, 1,
+                "ShowCaseItem version RibbonBadge should match Ant Design's right:-badgeRibbonOffset placement.");
+        });
     }
 
     [Fact]
@@ -363,5 +410,31 @@ public class ButtonShowCasePageTests
         }
 
         return Path.Combine(AppContext.BaseDirectory, relativePath);
+    }
+
+    private static void ShowInWindow(Control content, double width, double height, Action assertion)
+    {
+        var window = new AvaloniaWindow
+        {
+            Content = content,
+            Width   = width,
+            Height  = height
+        };
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            assertion();
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    private sealed class TestScreen : IScreen
+    {
+        public RoutingState Router { get; } = new();
     }
 }
