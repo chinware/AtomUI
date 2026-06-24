@@ -1,5 +1,4 @@
-﻿using System.Collections.Specialized;
-using AtomUI.Controls;
+﻿using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -11,9 +10,10 @@ namespace AtomUI.Desktop.Controls;
 
 public class Breadcrumb : ItemsControl, IMotionAwareControl
 {
-    public const string DefaultSeparator = "/";
-    
     #region 公共属性定义
+
+    public const string DefaultSeparator = "/";
+
     public static readonly StyledProperty<object?> SeparatorProperty =
         AvaloniaProperty.Register<Breadcrumb, object?>(
             nameof(Separator),
@@ -53,25 +53,18 @@ public class Breadcrumb : ItemsControl, IMotionAwareControl
 
     #endregion
 
-    public Breadcrumb()
+    #region 内部协作 API
+
+    internal void NotifyNavigateRequest(BreadcrumbItem breadcrumbItem)
     {
-        LogicalChildren.CollectionChanged += HandleItemsCollectionChanged;
-        this.RegisterTokenResourceScope(BreadcrumbToken.ScopeProvider);
+        NavigateRequest?.Invoke(this, new BreadcrumbNavigateEventArgs(breadcrumbItem));
     }
 
-    private void HandleItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    #endregion
+
+    public Breadcrumb()
     {
-        if (LogicalChildren.Count > 0)
-        {
-            for (int i = 0; i < LogicalChildren.Count; i++)
-            {
-                var item = LogicalChildren[i];
-                if (item is BreadcrumbItem breadcrumbItem)
-                {
-                    breadcrumbItem.IsLast = (i == LogicalChildren.Count - 1);
-                }
-            }
-        }
+        this.RegisterTokenResourceScope(BreadcrumbToken.ScopeProvider);
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -91,45 +84,14 @@ public class Breadcrumb : ItemsControl, IMotionAwareControl
         {
             if (item != null && item is not Visual)
             {
-                if (!breadcrumbItem.IsSet(BreadcrumbItem.ContentProperty))
-                {
-                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.ContentProperty, item);
-                }
-                
                 if (item is IBreadcrumbItemData breadcrumbItemData)
                 {
-                    if (!breadcrumbItem.IsSet(BreadcrumbItem.IconProperty))
-                    {
-                        breadcrumbItem.SetCurrentValue(BreadcrumbItem.IconProperty, breadcrumbItemData.Icon);
-                    }
-                
-                    if (breadcrumbItemData.Separator != null)
-                    {
-                        breadcrumbItem.SetValue(BreadcrumbItem.SeparatorProperty, breadcrumbItemData.Separator);
-                    }
-                    else
-                    {
-                        breadcrumbItem.ClearValue(BreadcrumbItem.SeparatorProperty);
-                    }
-                
-                    if (breadcrumbItemData.SeparatorTemplate != null)
-                    {
-                        breadcrumbItem.SetValue(BreadcrumbItem.SeparatorTemplateProperty, breadcrumbItemData.SeparatorTemplate);
-                    }
-                    else
-                    {
-                        breadcrumbItem.ClearValue(BreadcrumbItem.SeparatorTemplateProperty);
-                    }
-                
-                    if (!breadcrumbItem.IsSet(BreadcrumbItem.NavigateContextProperty) && breadcrumbItemData.NavigateContext != null)
-                    {
-                        breadcrumbItem.SetCurrentValue(BreadcrumbItem.NavigateContextProperty, breadcrumbItemData.NavigateContext);
-                    }
-                           
-                    if (!breadcrumbItem.IsSet(BreadcrumbItem.NavigateUriProperty) && breadcrumbItemData.NavigateUri != null)
-                    {
-                        breadcrumbItem.SetCurrentValue(BreadcrumbItem.NavigateUriProperty, breadcrumbItemData.NavigateUri);
-                    }
+                    ApplyItemDataContent(breadcrumbItem, breadcrumbItemData);
+                    ApplyItemData(breadcrumbItem, breadcrumbItemData);
+                }
+                else if (!breadcrumbItem.IsSet(BreadcrumbItem.ContentProperty))
+                {
+                    breadcrumbItem.SetCurrentValue(BreadcrumbItem.ContentProperty, item);
                 }
             }
             
@@ -150,9 +112,36 @@ public class Breadcrumb : ItemsControl, IMotionAwareControl
             throw new ArgumentOutOfRangeException(nameof(container), "The container type is incorrect, it must be type BreadcrumbItem.");
         }
     }
+
+    protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
+    {
+        base.ContainerForItemPreparedOverride(container, item, index);
+        UpdateItemStates();
+    }
     
     protected virtual void PrepareBreadcrumbItem(BreadcrumbItem breadcrumbItem, object? item, int index)
     {
+    }
+
+    protected override void ContainerIndexChangedOverride(Control container, int oldIndex, int newIndex)
+    {
+        base.ContainerIndexChangedOverride(container, oldIndex, newIndex);
+        UpdateItemStates();
+    }
+
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is BreadcrumbItem breadcrumbItem)
+        {
+            breadcrumbItem.IsLast = false;
+            if (!ReferenceEquals(ItemFromContainer(breadcrumbItem), breadcrumbItem))
+            {
+                ClearGeneratedItemValues(breadcrumbItem);
+            }
+        }
+
+        base.ClearContainerForItemOverride(container);
+        UpdateItemStates();
     }
 
     private void ConfigureItemSeparator(BreadcrumbItem breadcrumbItem)
@@ -177,8 +166,69 @@ public class Breadcrumb : ItemsControl, IMotionAwareControl
         }
     }
 
-    internal void NotifyNavigateRequest(BreadcrumbItem breadcrumbItem)
+    private void ApplyItemDataContent(BreadcrumbItem breadcrumbItem, IBreadcrumbItemData breadcrumbItemData)
     {
-        NavigateRequest?.Invoke(this, new BreadcrumbNavigateEventArgs(breadcrumbItem));
+        if (ItemTemplate is null)
+        {
+            breadcrumbItem.SetCurrentValue(BreadcrumbItem.ContentProperty, breadcrumbItemData.Content);
+        }
+    }
+
+    private static void ApplyItemData(BreadcrumbItem breadcrumbItem, IBreadcrumbItemData breadcrumbItemData)
+    {
+        if (!breadcrumbItem.IsSet(BreadcrumbItem.IconProperty))
+        {
+            breadcrumbItem.SetCurrentValue(BreadcrumbItem.IconProperty, breadcrumbItemData.Icon);
+        }
+
+        if (breadcrumbItemData.Separator != null)
+        {
+            breadcrumbItem.SetValue(BreadcrumbItem.SeparatorProperty, breadcrumbItemData.Separator);
+        }
+        else
+        {
+            breadcrumbItem.ClearValue(BreadcrumbItem.SeparatorProperty);
+        }
+
+        if (breadcrumbItemData.SeparatorTemplate != null)
+        {
+            breadcrumbItem.SetValue(BreadcrumbItem.SeparatorTemplateProperty, breadcrumbItemData.SeparatorTemplate);
+        }
+        else
+        {
+            breadcrumbItem.ClearValue(BreadcrumbItem.SeparatorTemplateProperty);
+        }
+
+        if (!breadcrumbItem.IsSet(BreadcrumbItem.NavigateContextProperty) && breadcrumbItemData.NavigateContext != null)
+        {
+            breadcrumbItem.SetCurrentValue(BreadcrumbItem.NavigateContextProperty, breadcrumbItemData.NavigateContext);
+        }
+
+        if (!breadcrumbItem.IsSet(BreadcrumbItem.NavigateUriProperty) && breadcrumbItemData.NavigateUri != null)
+        {
+            breadcrumbItem.SetCurrentValue(BreadcrumbItem.NavigateUriProperty, breadcrumbItemData.NavigateUri);
+        }
+    }
+
+    private void UpdateItemStates()
+    {
+        for (var i = 0; i < ItemCount; i++)
+        {
+            if (ContainerFromIndex(i) is BreadcrumbItem breadcrumbItem)
+            {
+                breadcrumbItem.IsLast = i == ItemCount - 1;
+            }
+        }
+    }
+
+    private static void ClearGeneratedItemValues(BreadcrumbItem breadcrumbItem)
+    {
+        breadcrumbItem.ClearValue(BreadcrumbItem.ContentProperty);
+        breadcrumbItem.ClearValue(BreadcrumbItem.ContentTemplateProperty);
+        breadcrumbItem.ClearValue(BreadcrumbItem.IconProperty);
+        breadcrumbItem.ClearValue(BreadcrumbItem.NavigateContextProperty);
+        breadcrumbItem.ClearValue(BreadcrumbItem.NavigateUriProperty);
+        breadcrumbItem.ClearValue(BreadcrumbItem.SeparatorProperty);
+        breadcrumbItem.ClearValue(BreadcrumbItem.SeparatorTemplateProperty);
     }
 }

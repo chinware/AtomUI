@@ -9,7 +9,6 @@ using Avalonia.Controls.Templates;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Metadata;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -19,6 +18,7 @@ using AvaloniaButton = Avalonia.Controls.Button;
 public class BreadcrumbItem : AvaloniaButton
 {
     #region 公共属性定义
+
     public static readonly StyledProperty<PathIcon?> IconProperty =
         AvaloniaProperty.Register<BreadcrumbItem, PathIcon?>(nameof(Icon));
     
@@ -35,17 +35,17 @@ public class BreadcrumbItem : AvaloniaButton
     
     public static readonly StyledProperty<IDataTemplate?> SeparatorTemplateProperty =
         Breadcrumb.SeparatorTemplateProperty.AddOwner<BreadcrumbItem>();
-    
-    public object? NavigateContext
-    {
-        get => GetValue(NavigateContextProperty);
-        set => SetValue(NavigateContextProperty, value);
-    }
 
     public PathIcon? Icon
     {
         get => GetValue(IconProperty);
         set => SetValue(IconProperty, value);
+    }
+
+    public object? NavigateContext
+    {
+        get => GetValue(NavigateContextProperty);
+        set => SetValue(NavigateContextProperty, value);
     }
     
     public Uri? NavigateUri
@@ -66,6 +66,7 @@ public class BreadcrumbItem : AvaloniaButton
         get => GetValue(SeparatorTemplateProperty);
         set => SetValue(SeparatorTemplateProperty, value);
     }
+
     #endregion
 
     #region 内部属性定义
@@ -104,6 +105,7 @@ public class BreadcrumbItem : AvaloniaButton
         get => _isNavigateResponsive;
         set => SetAndRaise(IsNavigateResponsiveProperty, ref _isNavigateResponsive, value);
     }
+
     #endregion
     
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -133,13 +135,7 @@ public class BreadcrumbItem : AvaloniaButton
         base.OnApplyTemplate(e);
         UpdatePseudoClasses();
     }
-    
-    private void UpdatePseudoClasses()
-    {
-        PseudoClasses.Set(BreadcrumbPseudoClass.HasIcon, Icon is not null);
-        PseudoClasses.Set(BreadcrumbPseudoClass.IsLast, IsLast);
-    }
-    
+
     protected override void OnClick()
     {
         base.OnClick();
@@ -174,5 +170,11 @@ public class BreadcrumbItem : AvaloniaButton
     {
         base.OnLoaded(e);
         Dispatcher.Post(this.EnableTransitions);
+    }
+
+    private void UpdatePseudoClasses()
+    {
+        PseudoClasses.Set(BreadcrumbPseudoClass.HasIcon, Icon is not null);
+        PseudoClasses.Set(BreadcrumbPseudoClass.IsLast, IsLast);
     }
 }
