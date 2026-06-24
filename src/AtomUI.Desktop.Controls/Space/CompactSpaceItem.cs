@@ -82,40 +82,6 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
         }
     }
     
-    void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
-    {
-        var isUsedInCompactSpace = position != null;
-        if (IsUsedInCompactSpace != isUsedInCompactSpace)
-        {
-            IsUsedInCompactSpace = isUsedInCompactSpace;
-        }
-
-        if (CompactSpaceItemPosition != position)
-        {
-            CompactSpaceItemPosition = position;
-        }
-    }
-
-    bool ICompactSpaceAware.IsAlwaysActiveZIndex()
-    {
-        if (Child is ICompactSpaceAware compactSpaceAware)
-        {
-            return compactSpaceAware.IsAlwaysActiveZIndex();
-        }
-
-        return false;
-    }
-
-    bool ICompactSpaceAware.IgnoreZIndexChange()
-    {
-        if (Child is ICompactSpaceAware compactSpaceAware)
-        {
-            return compactSpaceAware.IgnoreZIndexChange();
-        }
-
-        return false;
-    }
-
     protected override Size MeasureOverride(Size availableSize)
     {
         var size = base.MeasureOverride(availableSize);
@@ -148,12 +114,48 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
         return size;
     }
 
+    #region 实现 ICompactSpaceAware 接口
+
+    void ICompactSpaceAware.NotifyPositionChange(SpaceItemPosition? position)
+    {
+        var isUsedInCompactSpace = position != null;
+        if (IsUsedInCompactSpace != isUsedInCompactSpace)
+        {
+            IsUsedInCompactSpace = isUsedInCompactSpace;
+        }
+
+        if (CompactSpaceItemPosition != position)
+        {
+            CompactSpaceItemPosition = position;
+        }
+    }
+
     void ICompactSpaceAware.NotifyOrientationChange(Orientation orientation)
     {
         if (CompactSpaceOrientation != orientation)
         {
             CompactSpaceOrientation = orientation;
         }
+    }
+
+    bool ICompactSpaceAware.IsAlwaysActiveZIndex()
+    {
+        if (Child is ICompactSpaceAware compactSpaceAware)
+        {
+            return compactSpaceAware.IsAlwaysActiveZIndex();
+        }
+
+        return false;
+    }
+
+    bool ICompactSpaceAware.IgnoreZIndexChange()
+    {
+        if (Child is ICompactSpaceAware compactSpaceAware)
+        {
+            return compactSpaceAware.IgnoreZIndexChange();
+        }
+
+        return false;
     }
 
     double ICompactSpaceAware.GetBorderThickness()
@@ -165,6 +167,8 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
 
         return 0.0;
     }
+
+    #endregion
 
     private void SetOffsetTransform(double x, double y)
     {

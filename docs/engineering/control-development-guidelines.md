@@ -57,14 +57,16 @@ API 和主题契约包括但不限于：
 
 ## 控件成员排列建议
 
-这是一条推荐规范，不作为强制约定边界。优化控件代码时应优先遵循现有控件的组织习惯，不要按个人偏好重排成员。
+这是一条推荐规范，不作为强制约定边界。优化控件代码时应优先遵循现有控件的组织习惯，不要按个人偏好重排成员。其中控件类内部不得在公共契约之前放置 internal/private 实现成员，是为了保证契约入口稳定的强约束。
 
 - 控件相关的 `enum`、小型公开类型通常放在控件类之前，便于先理解控件状态模型。
 - 控件类开头优先放公共契约区，通常使用 `#region 公共属性定义`。
+- 控件类内部的第一阅读入口必须是公共契约区。不得在 `#region 公共属性定义` 之前放置 `internal const`、`internal static` helper、跨控件 internal 协作 API、private helper、runtime field 或临时状态。
 - 公共属性契约区建议先集中定义 `StyledProperty`、`DirectProperty` 等 Avalonia 属性注册字段，再按相同顺序集中放对应 CLR wrapper。
 - `DirectProperty` 的 backing field 建议靠近对应 CLR wrapper，不放入普通 runtime 字段区。
 - 公共事件建议单独成区，例如 `#region 公共事件定义`。`RoutedEvent` 注册字段和对应 .NET event wrapper 应保持在同一区域内。
 - internal template/theme 契约建议放在公共契约之后，通常使用 `#region 内部属性定义`。这些成员包括模板依赖的 internal 属性、DirectProperty、状态 wrapper 等，不和普通 private 字段混放。
+- 跨同模块控件使用的 internal 常量、属性和 helper 不属于用户公开 API，但属于内部协作契约，建议放在公共契约和 internal template/theme 契约之后，使用 `#region 内部协作 API`，不要抢在公共属性契约之前。
 - 普通 runtime 字段建议放在契约区之后、构造函数之前，包括 template part、helper、disposable、运行时状态标志等。
 - 构造函数区建议保持 `static` 构造函数在前，实例构造函数在后。
 - 构造函数之后的方法不强制按访问级别排序。优先按控件功能流组织，例如 template 接入、属性变更分发、交互处理、布局计算、状态同步、渲染、表单适配等。
