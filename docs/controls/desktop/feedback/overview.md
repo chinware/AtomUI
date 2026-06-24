@@ -1,12 +1,49 @@
 # Feedback 控件
 
-反馈类桌面控件文档放在本目录，例如 Dialog、Message、Notification、Tooltip、PopupConfirm、Spin、Alert、Skeleton、Tour。
-
-此分类关注用户操作后的提示、确认、加载、引导和临时浮层。Popup/Overlay 的包级内部机制写在 `docs/modules/desktop-controls/`。
+反馈类桌面控件文档放在本目录，覆盖 Alert、Message、Notification、Modal、Drawer、加载和结果反馈。
 
 ## 控件文档
 
+- [Alert 桌面版架构设计](alert/overview.md)
+- [Alert 桌面版实现原理](alert/implementation.md)
+- [Alert Token 设计](alert/token.md)
+- [Alert Changelog](alert/changelog.md)
+- [Drawer 桌面版架构设计](drawer/overview.md)
+- [Drawer 桌面版实现原理](drawer/implementation.md)
+- [Drawer Token 设计](drawer/token.md)
+- [Drawer Changelog](drawer/changelog.md)
+- [Message 桌面版架构设计](message/overview.md)
+- [Message 桌面版实现原理](message/implementation.md)
+- [Message Token 设计](message/token.md)
+- [Message Changelog](message/changelog.md)
+- [Modal 桌面版架构设计](modal/overview.md)
+- [Modal 桌面版实现原理](modal/implementation.md)
+- [Modal Token 设计](modal/token.md)
+- [Modal Changelog](modal/changelog.md)
+- [Notification 桌面版架构设计](notification/overview.md)
+- [Notification 桌面版实现原理](notification/implementation.md)
+- [Notification Token 设计](notification/token.md)
+- [Notification Changelog](notification/changelog.md)
+- [PopupConfirm 桌面版架构设计](popup-confirm/overview.md)
+- [PopupConfirm 桌面版实现原理](popup-confirm/implementation.md)
+- [PopupConfirm Token 设计](popup-confirm/token.md)
+- [PopupConfirm Changelog](popup-confirm/changelog.md)
 - [ProgressBar 桌面版架构设计](progress-bar/overview.md)
 - [ProgressBar 桌面版实现原理](progress-bar/implementation.md)
 - [ProgressBar Token 设计](progress-bar/token.md)
 - [ProgressBar Changelog](progress-bar/changelog.md)
+- [Result 桌面版架构设计](result/overview.md)
+- [Result 桌面版实现原理](result/implementation.md)
+- [Result Token 设计](result/token.md)
+- [Result Changelog](result/changelog.md)
+- [Skeleton 桌面版架构设计](skeleton/overview.md)
+- [Skeleton 桌面版实现原理](skeleton/implementation.md)
+- [Skeleton Token 设计](skeleton/token.md)
+- [Skeleton Changelog](skeleton/changelog.md)
+- [Spin 桌面版架构设计](spin/overview.md)
+- [Spin 桌面版实现原理](spin/implementation.md)
+- [Spin Token 设计](spin/token.md)
+- [Spin Changelog](spin/changelog.md)
+- [Watermark 桌面版架构设计](watermark/overview.md)
+- [Watermark 桌面版实现原理](watermark/implementation.md)
+- [Watermark Changelog](watermark/changelog.md)

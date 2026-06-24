@@ -1,5 +1,14 @@
 # Window 控件
 
-窗口类桌面控件文档放在本目录，例如 Window、WindowTitleBar、ImagePreviewer。
+窗口类桌面控件文档放在本目录，覆盖 Window、WindowTitleBar 以及平台窗口集成相关能力。
 
-此分类关注窗口外观、自绘标题栏、平台差异、窗口级交互和图片预览窗口。底层 Native 细节写在 `docs/modules/native/`。
+## 控件文档
+
+- [Window 桌面版架构设计](window/overview.md)
+- [Window 桌面版实现原理](window/implementation.md)
+- [Window Token 设计](window/token.md)
+- [Window Changelog](window/changelog.md)
+- [WindowTitleBar 桌面版架构设计](window-title-bar/overview.md)
+- [WindowTitleBar 桌面版实现原理](window-title-bar/implementation.md)
+- [WindowTitleBar Token 设计](window-title-bar/token.md)
+- [WindowTitleBar Changelog](window-title-bar/changelog.md)
