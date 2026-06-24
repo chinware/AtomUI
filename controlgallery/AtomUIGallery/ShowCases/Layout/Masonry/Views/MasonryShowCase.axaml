@@ -268,9 +268,9 @@
                                                   LayoutChanged="HandleDynamicMasonryLayoutChanged">
                                         <atom:Masonry.ItemContainerTheme>
                                             <ControlTheme TargetType="ContentPresenter"
-                                                          x:CompileBindings="False">
+                                                          x:DataType="vm:MasonryDynamicItem">
                                                 <Setter Property="atom:Masonry.Column"
-                                                        Value="{Binding Column}" />
+                                                        Value="{CompiledBinding Column}" />
                                             </ControlTheme>
                                         </atom:Masonry.ItemContainerTheme>
                                         <atom:Masonry.ItemTemplate>

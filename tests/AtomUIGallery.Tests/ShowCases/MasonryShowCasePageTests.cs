@@ -162,8 +162,11 @@ public class MasonryShowCasePageTests
         dynamicDemoMarkup.ShouldContain("ColumnGap=\"16\"");
         dynamicDemoMarkup.ShouldContain("RowGap=\"16\"");
         dynamicDemoMarkup.ShouldContain("ItemContainerTheme");
+        dynamicDemoMarkup.ShouldContain("x:DataType=\"vm:MasonryDynamicItem\"");
         dynamicDemoMarkup.ShouldContain("Property=\"atom:Masonry.Column\"");
-        dynamicDemoMarkup.ShouldContain("Value=\"{Binding Column}\"");
+        dynamicDemoMarkup.ShouldContain("Value=\"{CompiledBinding Column}\"");
+        dynamicDemoMarkup.ShouldNotContain("x:CompileBindings=\"False\"");
+        dynamicDemoMarkup.ShouldNotContain("Value=\"{Binding Column}\"");
         dynamicDemoMarkup.ShouldContain("LayoutChanged=\"HandleDynamicMasonryLayoutChanged\"");
         dynamicDemoMarkup.ShouldContain("Height=\"{Binding Height}\"");
         dynamicDemoMarkup.ShouldContain("Text=\"{Binding DisplayText}\"");
