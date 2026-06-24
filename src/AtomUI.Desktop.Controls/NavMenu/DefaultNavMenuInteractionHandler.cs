@@ -99,7 +99,7 @@ internal class DefaultNavMenuInteractionHandler : NavMenuInteractionHandlerBase
         }
         else
         {
-            SelectionCoordinator.Select(Menu, menuItem);
+            (Menu as NavMenu)?.SelectNavMenuItem(menuItem);
         }
     }
 

@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Threading;
 using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
@@ -370,6 +371,67 @@ public class NavMenuInlineCollapsedTests
             parentContainer.IsSubMenuOpen.ShouldBeTrue(
                 "leaving collapsed state restores the cached inline open path.");
             parentContainer.IsInSelectedPath.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void InlineCollapsed_Handler_Recreation_Does_Not_Leave_Previous_Item_Selected()
+    {
+        var option1 = new NavMenuNode
+        {
+            Header  = "Option 1",
+            ItemKey = "Option1",
+            Icon    = new PieChartOutlined()
+        };
+        var option2 = new NavMenuNode
+        {
+            Header  = "Option 2",
+            ItemKey = "Option2",
+            Icon    = new PieChartOutlined()
+        };
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode                = NavMenuMode.Inline,
+            IsMotionEnabled     = false,
+            DefaultSelectedPath = new TreeNodePath("/Option1")
+        };
+        menu.Items.Add(option1);
+        menu.Items.Add(option2);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = menu
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var option1Container = (NavMenuItem)menu.ContainerFromItem(option1)!;
+            var option2Container = (NavMenuItem)menu.ContainerFromItem(option2)!;
+
+            option1Container.IsSelected.ShouldBeTrue();
+            option2Container.IsSelected.ShouldBeFalse();
+
+            menu.IsInlineCollapsed = true;
+            Dispatcher.UIThread.RunJobs();
+
+            menu.InteractionHandler.ShouldNotBeNull();
+            menu.InteractionHandler.Select(option2Container);
+            Dispatcher.UIThread.RunJobs();
+
+            option1Container.IsSelected.ShouldBeFalse(
+                "recreating the interaction handler for inline collapsed mode must not lose the previous selected item, otherwise the next selection cannot clear it.");
+            option2Container.IsSelected.ShouldBeTrue();
+            menu.SelectedItem.ShouldBeSameAs(option2);
         }
         finally
         {

@@ -12,8 +12,6 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
     private NavMenuItem? _latestClickedItem;
     private NavMenuItem? _keyboardActiveItem;
 
-    protected NavMenuSelectionCoordinator SelectionCoordinator { get; } = new();
-
     internal INavMenu? Menu { get; private set; }
 
     public void Attach(NavMenu navMenu) => AttachCore(navMenu);
@@ -24,7 +22,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
 
     public void ClearSelection()
     {
-        SelectionCoordinator.ClearSelection();
+        (Menu as NavMenu)?.ClearSelectionState();
     }
 
     internal void AttachCore(INavMenu navMenu)
@@ -62,7 +60,6 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
         ClearKeyboardActiveItem();
         Menu = null;
         ResetPressState();
-        SelectionCoordinator.Reset();
     }
 
     protected virtual void OnAttached(INavMenu navMenu)

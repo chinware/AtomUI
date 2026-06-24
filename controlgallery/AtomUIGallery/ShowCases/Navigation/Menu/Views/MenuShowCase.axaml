@@ -499,6 +499,7 @@
         <gallery:ShowCaseItem
             Title="{gallery:MenuShowCaseLangResource InlineCollapsedMenuTitle}"
             Description="{gallery:MenuShowCaseLangResource InlineCollapsedMenuDescription}"
+            BadgeText="v6.0.6"
             IsDeferredContentEnabled="True">
             <gallery:ShowCaseItem.DeferredContentTemplate>
                 <DataTemplate x:DataType="viewModels:MenuViewModel">

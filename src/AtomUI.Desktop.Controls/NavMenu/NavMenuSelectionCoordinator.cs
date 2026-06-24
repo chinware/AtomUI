@@ -6,7 +6,7 @@ internal sealed class NavMenuSelectionCoordinator
 {
     private NavMenuItem? _latestSelectedItem;
 
-    public void Select(INavMenu? menu, NavMenuItem menuItem)
+    public void Select(NavMenu menu, NavMenuItem menuItem)
     {
         if (ReferenceEquals(_latestSelectedItem, menuItem))
         {
@@ -48,7 +48,7 @@ internal sealed class NavMenuSelectionCoordinator
         var parentItem = ItemsControl.ItemsControlFromItemContainer(menuItem) as IMenuChildSelectable;
         parentItem?.SelectChildItem(menuItem, true);
         _latestSelectedItem = menuItem;
-        (menu as NavMenu)?.RaiseNavMenuItemSelected(menuItem);
+        menu.RaiseNavMenuItemSelected(menuItem);
     }
 
     public void ClearSelection()
@@ -72,5 +72,13 @@ internal sealed class NavMenuSelectionCoordinator
     public void Reset()
     {
         _latestSelectedItem = null;
+    }
+
+    public void Forget(NavMenuItem menuItem)
+    {
+        if (ReferenceEquals(_latestSelectedItem, menuItem))
+        {
+            Reset();
+        }
     }
 }

@@ -243,6 +243,7 @@ public class NavMenu : ItemsControl,
     private List<IReadOnlyList<INavMenuNode>>? _inlineCollapsedOpenNodePathCache;
     private List<TreeNodePath>? _inlineCollapsedDefaultOpenPathCache;
     private CancellationTokenSource? _inlineCollapsedWidthMotionCancellationTokenSource;
+    private readonly NavMenuSelectionCoordinator _selectionCoordinator = new();
     private double _lastInlineExpandedWidth = double.NaN;
     
     static NavMenu()
@@ -347,7 +348,7 @@ public class NavMenu : ItemsControl,
             }
             else
             {
-                InteractionHandler?.ClearSelection();
+                ClearSelectionState();
             }
         }
         else if (change.Property == IsMotionEnabledProperty &&
@@ -407,6 +408,7 @@ public class NavMenu : ItemsControl,
         ClearInlineCollapsedLayoutWidth();
         InteractionHandler?.Detach(this);
         InteractionHandler = null;
+        _selectionCoordinator.Reset();
     }
 
     protected override bool NeedsContainerOverride(object? item, int index, out object? recycleKey)
@@ -455,6 +457,7 @@ public class NavMenu : ItemsControl,
         if (container is NavMenuItem menuItem)
         {
             menuItem.SetCurrentValue(NavMenuItem.IsKeyboardActiveProperty, false);
+            _selectionCoordinator.Forget(menuItem);
             menuItem.ClearNodeBindingDisposables();
         }
 
@@ -463,6 +466,16 @@ public class NavMenu : ItemsControl,
     
     internal virtual void PrepareNavMenuItem(NavMenuItem menuItem, object? item, int index)
     {
+    }
+
+    internal void SelectNavMenuItem(NavMenuItem menuItem)
+    {
+        _selectionCoordinator.Select(this, menuItem);
+    }
+
+    internal void ClearSelectionState()
+    {
+        _selectionCoordinator.ClearSelection();
     }
     
     private void ConfigureInteractionHandler(bool needMount = false)
