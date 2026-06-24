@@ -4,6 +4,44 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.0.6
+
+`2026-06-24`
+
+- Compatibility Notes
+  - Several size-aware controls now use the customizable size model, allowing `Custom` size behavior in addition to built-in size types. Projects that directly depend on old size-type contracts should verify source compatibility.
+- Added
+  - Add customizable size support across Button family, DropdownButton, NumericUpDown, Mentions, Select, TreeSelect, ToggleSwitch, SpinIndicator and related size-aware controls.
+  - Add configurable Button icon placement.
+  - Add Slider desktop control with documentation and Gallery coverage.
+  - Add `Col.Flex` support and improve Row/Grid responsive layout behavior.
+  - Add editable ComboBox filtering, candidate keyboard navigation, Enter/Escape behavior and empty-result feedback.
+  - Add NavMenu keyboard navigation, active item feedback and inline collapsed mode.
+  - Add initial theme algorithm configuration so applications can render the first frame with dark theme.
+  - Add bindable TreeView/Cascader node or option support for binding-oriented data scenarios.
+  - Add reusable GalleryBase toolkit package and integrate Gallery shell/routing foundations.
+- Changed
+  - Improve custom size layout and Gallery showcases for Button, SplitButton, LineEdit, SearchEdit, DatePicker, TimePicker, ColorPicker, Select, TreeSelect and other controls.
+  - Improve Form validation flow so submit-oriented validation does not show errors too early.
+  - Improve Collapse accordion state handling, padding calculation and content visibility behavior.
+  - Improve Expander indicator spacing, content visibility and layout behavior.
+  - Improve Descriptions, Segmented, Steps, ProgressBar, Skeleton, Card, AvatarGroup, Transfer, Upload, Pagination and Breadcrumb implementation structure and correctness.
+  - Improve SpinIndicator animation handling, default alignment and customizable size rendering.
+  - Improve RibbonBadge positioning and adorner visibility behavior.
+  - Improve CompactSpace internal collaboration and layout handling.
+  - Upgrade Avalonia dependency from `12.0.4` to `12.0.5`.
+- Fixed
+  - Fix DatePicker and TimePicker preferred input width calculation.
+  - Fix ListBox/ListView filtered item state handling.
+  - Fix NavMenu selection preservation in inline collapsed mode.
+  - Fix Gallery AppImage installer asset paths.
+  - Fix Gallery macOS DMG workflow by avoiding unused Homebrew taps.
+  - Fix Breadcrumb generated item state cleanup and `IBreadcrumbItemData.Content` mapping.
+- Documentation
+  - Add or complete control documentation for LineEdit, SearchEdit, ListView, NumericUpDown, Select, Slider, ToggleSwitch, TreeSelect, Descriptions, Expander, Segmented, ProgressBar, Card, Cascader, Form and other desktop controls.
+  - Add control optimization skill documentation, including API layout, file splitting, lifecycle and root-cause optimization rules.
+  - Update Gallery showcase examples for custom size, keyboard navigation and newly documented control scenarios.
+
 ## 6.0.5
 
 `2026-06-19`

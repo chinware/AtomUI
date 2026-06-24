@@ -3,6 +3,7 @@
 <div align="center">
 
 [![AntDesign](https://img.shields.io/badge/AntDesign%20-6.0-1677ff?style=flat-square&logo=antdesign)](https://ant-design.antgroup.com/components/overview)
+[![AtomUI](https://img.shields.io/badge/AtomUI-6.0.6-1677ff?style=flat-square)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-contributors-shield]][github-contributors-link]
 [![][github-stars-shield]][github-stars-link]
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
@@ -66,6 +67,21 @@ requests are welcome.
 - Cross-platform desktop support for Windows, macOS and Linux with a shared .NET/XAML development model.
 - Source generators for custom controls, theme tokens and localization to reduce repetitive infrastructure code.
 
+#### What's New in 6.0.6
+
+- Customizable size support has been expanded across size-aware controls, including Button, input controls, Select,
+  TreeSelect, ToggleSwitch, SpinIndicator and related Gallery examples.
+- Grid, Row and Col behavior has been further aligned with Ant Design, including responsive layout fixes and Col `Flex`
+  support.
+- NavMenu now includes richer keyboard navigation and inline collapsed mode, with configurable collapsed width and
+  smoother collapsed layout behavior.
+- ComboBox gains editable filtering, candidate keyboard navigation and clearer empty-result behavior.
+- Form validation flow is improved so validation feedback can be driven by submit-oriented scenarios instead of showing
+  errors too early.
+- Several desktop controls received correctness, lifecycle and visual refinements, including Collapse, Expander,
+  Descriptions, Segmented, Spin, ProgressBar, Skeleton, Card, Avatar, Badge, Pagination, Upload and Breadcrumb.
+- Control documentation and Gallery showcases have been expanded to cover more APIs, design tokens and custom-size usage.
+
 #### Requirements
 
 .NET 8 or later (development supports .NET 10)<br>
@@ -124,9 +140,9 @@ The packages we have released are as follows:
 | AtomUI.Generator                    | Source generators for custom controls, tokens and localization             |
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.0.5
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.5
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.5
+dotnet add package AtomUI.Desktop.Controls --version 6.0.6
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.6
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.6
 ```
 
 You can also install the packages from your IDE's NuGet package manager. In Rider, open:
@@ -154,9 +170,9 @@ Search for "AtomUI" and install the packages your project needs.
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.0.5"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.0.5"/>
-        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.0.5"/>
+        <PackageReference Include="AtomUI.Desktop.Controls" Version="6.0.6"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.DataGrid" Version="6.0.6"/>
+        <PackageReference Include="AtomUI.Desktop.Controls.ColorPicker" Version="6.0.6"/>
         <PackageReference Include="AvaloniaUI.DiagnosticsSupport" Version="2.2.1"/>
     </ItemGroup>
 </Project>

@@ -13,15 +13,25 @@ Windows, macOS and Linux.
 - A reusable Gallery toolkit package, `AtomUI.Toolkits.GalleryBase`, for product demos and documentation galleries.
 - Source generators for custom controls, theme tokens and localization infrastructure.
 
+### What's New in 6.0.6
+
+- Expanded customizable size support across size-aware controls and Gallery examples.
+- Improved Ant Design alignment for Grid, Row, Col, NavMenu, ComboBox and form validation flows.
+- Added richer NavMenu keyboard navigation and inline collapsed behavior.
+- Improved editable ComboBox filtering, candidate navigation and empty-result feedback.
+- Refined correctness, lifecycle and visual details across desktop controls such as Collapse, Expander, Descriptions,
+  Segmented, Spin, ProgressBar, Skeleton, Card, Avatar, Badge, Pagination, Upload and Breadcrumb.
+- Expanded control documentation for APIs, design tokens and custom-size usage.
+
 ### Install
 
 Install the main desktop controls package first, then add optional packages only when your application needs them.
 
 ```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.0.5
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.5
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.5
-dotnet add package AtomUI.Toolkits.GalleryBase --version 6.0.5
+dotnet add package AtomUI.Desktop.Controls --version 6.0.6
+dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.6
+dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.6
+dotnet add package AtomUI.Toolkits.GalleryBase --version 6.0.6
 ```
 
 ### Requirements
