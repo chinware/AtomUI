@@ -18,7 +18,7 @@ internal class QuickJumpArgs
 
 internal class QuickJumperBar : TemplatedControl
 {
-    public event EventHandler<QuickJumpArgs>? JumpRequest;
+    #region 公共属性定义
     
     public static readonly DirectProperty<QuickJumperBar, string?> JumpToTextProperty =
         AvaloniaProperty.RegisterDirect<QuickJumperBar,  string?>(nameof(JumpToText),
@@ -34,6 +34,7 @@ internal class QuickJumperBar : TemplatedControl
         CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<QuickJumperBar>();
     
     private string? _jumpToText;
+
     public string? JumpToText
     {
         get => _jumpToText;
@@ -41,6 +42,7 @@ internal class QuickJumperBar : TemplatedControl
     }
     
     private string? _pageText;
+
     public string? PageText
     {
         get => _pageText;
@@ -52,6 +54,14 @@ internal class QuickJumperBar : TemplatedControl
         get => GetValue(SizeTypeProperty);
         set => SetValue(SizeTypeProperty, value);
     }
+
+    #endregion
+
+    #region 公共事件定义
+
+    public event EventHandler<QuickJumpArgs>? JumpRequest;
+
+    #endregion
     
     private LineEdit? _lineEdit;
     

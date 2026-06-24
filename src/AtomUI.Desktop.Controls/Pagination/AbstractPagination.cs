@@ -6,11 +6,11 @@ namespace AtomUI.Desktop.Controls;
 
 public abstract class AbstractPagination : TemplatedControl, ICustomizableSizeTypeAware, IMotionAwareControl
 {
+    #region 公共属性定义
+
     public const int DefaultPageSize = 10;
     public const int DefaultCurrentPage = 1;
-    
-    #region 公共属性定义
-    
+
     public static readonly StyledProperty<bool> IsHideOnSinglePageProperty =
         AvaloniaProperty.Register<AbstractPagination, bool>(nameof(IsHideOnSinglePage));
     
@@ -92,7 +92,9 @@ public abstract class AbstractPagination : TemplatedControl, ICustomizableSizeTy
     #endregion
     
     #region 公共事件定义
+
     public event EventHandler<PageChangedEventArgs>? CurrentPageChanged;
+
     #endregion
     
     #region 内部属性定义
@@ -110,11 +112,6 @@ public abstract class AbstractPagination : TemplatedControl, ICustomizableSizeTy
         set => SetAndRaise(IsEffectiveVisibleProperty, ref _isEffectiveVisible, value);
     }
 
-    private static bool PageSizeValidator(int pageSize)
-    {
-        return pageSize >= 0;
-    }
-    
     #endregion
     
     protected bool TemplateConfigured = false;
@@ -174,5 +171,10 @@ public abstract class AbstractPagination : TemplatedControl, ICustomizableSizeTy
     protected void EmitCurrentPageChanged(int currentPage, int pageCount, int pageSize)
     {
         CurrentPageChanged?.Invoke(this, new PageChangedEventArgs(currentPage, pageCount, pageSize));
+    }
+
+    private static bool PageSizeValidator(int pageSize)
+    {
+        return pageSize >= 0;
     }
 }

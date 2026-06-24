@@ -5,6 +5,8 @@ namespace AtomUI.Desktop.Controls;
 
 internal class QuickJumpEdit : LineEdit
 {
+    #region 公共属性定义
+
     public static readonly StyledProperty<int> MinimumProperty =
         AvaloniaProperty.Register<QuickJumpEdit, int>(nameof(Minimum), 1);
     
@@ -22,6 +24,8 @@ internal class QuickJumpEdit : LineEdit
         get => GetValue(MaximumProperty);
         set => SetValue(MaximumProperty, value);
     }
+
+    #endregion
     
     protected override Type StyleKeyOverride => typeof(LineEdit);
 

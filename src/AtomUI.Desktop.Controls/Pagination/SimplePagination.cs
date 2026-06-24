@@ -41,6 +41,8 @@ public class SimplePagination : AbstractPagination
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        ClearTemplateParts();
+
         _previousPageItem = e.NameScope.Find<PaginationNavItem>("PART_PreviousNavItem");
         _nextPageItem     = e.NameScope.Find<PaginationNavItem>("PART_NextNavItem");
         _infoIndicator    = e.NameScope.Find<TextBlock>("PART_InfoIndicator");
@@ -123,10 +125,35 @@ public class SimplePagination : AbstractPagination
             {
                 if (lineEdit.Text is { } text && int.TryParse(text.AsSpan().Trim(), out var pageNumber))
                 {
-                    var pageCount   = (int)Math.Ceiling(Total / (double)PageSize);
+                    var pageSize    = PageSize <= 0 ? DefaultPageSize : PageSize;
+                    var pageCount   = (int)Math.Ceiling(Total / (double)pageSize);
                     CurrentPage = Math.Max(1, Math.Min(pageNumber, pageCount));
                 }
             }
         }
+    }
+
+    private void ClearTemplateParts()
+    {
+        if (_previousPageItem is not null)
+        {
+            _previousPageItem.Click -= HandleNavItemClicked;
+        }
+
+        if (_nextPageItem is not null)
+        {
+            _nextPageItem.Click -= HandleNavItemClicked;
+        }
+
+        if (_quickJumper is not null)
+        {
+            _quickJumper.KeyUp -= HandleLineEditKeyUp;
+        }
+
+        _previousPageItem = null;
+        _nextPageItem     = null;
+        _infoIndicator    = null;
+        _quickJumper      = null;
+        TemplateConfigured = false;
     }
 }
