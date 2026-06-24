@@ -222,10 +222,10 @@ DataGrid 规则：
 - sticky 行为由 `GalleryStickyTabsPanel` arrange 单个 sticky 子项实现。
 - 真实 StickyContent 必须始终保留在模板里的 inline presenter，不允许移动到 Popup、OverlayLayer 或其他 presenter。
 - 不允许通过清空 inline presenter 再把同一个 TabStrip 交给 overlay 的方式实现吸顶；这会导致 Tabs 消失或视觉树父级冲突。
-- Badge、Ribbon 等窗口级 Adorner 可能压过普通 sticky 内容时，只允许使用只读的 overlay mirror：在高层绘制 inline StickyContent 的视觉镜像，不能承载真实 TabStrip，且必须 `IsHitTestVisible=false`。
+- Badge、Ribbon 等窗口级 Adorner 可能压过普通 sticky 内容时，只允许使用只读的 sticky mirror：在 AtomUI 受控 adorner 层绘制 inline StickyContent 的视觉镜像，不能承载真实 TabStrip，且必须 `IsHitTestVisible=false`。
 - 不在滚动时创建或销毁真实 TabStrip 视觉树。
 - 不在 Content 外层包局部 `VisualLayerManager`，避免 Badge、Ribbon 等基于窗口级 `AdornerLayer` 的控件丢失装饰层。
-- sticky pinned 后，视觉镜像必须位于高于窗口级 `AdornerLayer` 的 overlay 层；`GalleryStickyTabsPanel` 不允许裁剪后续 Content，避免深滚动、Tab 切换或重排后出现大面积空白。遮挡关系由真实 sticky 行的背景、ZIndex 和只读 overlay mirror 负责。
+- sticky pinned 后，视觉镜像必须位于高于窗口级 `AdornerLayer` 的 AtomUI adorner 层，但作为低 ZIndex 子项，低于 Drawer、Dialog、Tour 等真正浮层；`GalleryStickyTabsPanel` 不允许裁剪后续 Content，避免深滚动、Tab 切换或重排后出现大面积空白。遮挡关系由真实 sticky 行的背景、ZIndex 和只读 sticky mirror 负责。
 - `ScrollChanged` 订阅必须在 detach 时释放。
 
 Token 规则：
