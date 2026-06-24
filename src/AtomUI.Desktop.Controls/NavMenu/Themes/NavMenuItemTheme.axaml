@@ -23,6 +23,7 @@
                                                            IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                                                            IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
                                                            IsKeyboardActive="{TemplateBinding IsKeyboardActive}"
+                                                           IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}"
                                                            IsTopLevel="{TemplateBinding IsTopLevel}" />
                         <atom:Popup Name="PART_Popup"
                                     WindowManagerAddShadowHint="False"
@@ -70,7 +71,8 @@
                                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                          IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                                                          IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
-                                                         IsKeyboardActive="{TemplateBinding IsKeyboardActive}" />
+                                                         IsKeyboardActive="{TemplateBinding IsKeyboardActive}"
+                                                         IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}" />
                         <atom:Popup Name="PART_Popup"
                                     WindowManagerAddShadowHint="False"
                                     IsLightDismissEnabled="False"
@@ -118,7 +120,8 @@
                             IsSelected="{TemplateBinding SelectingItemsControl.IsSelected}"
                             Focusable="{TemplateBinding Focusable}"
                             IsInSelectedPath="{TemplateBinding IsInSelectedPath}"
-                            IsKeyboardActive="{TemplateBinding IsKeyboardActive}" />
+                            IsKeyboardActive="{TemplateBinding IsKeyboardActive}"
+                            IsInlineCollapsed="{TemplateBinding IsInlineCollapsed}" />
 
                         <atom:LayoutAwareMotionActor
                             Name="PART_ChildItemsLayoutTransform">

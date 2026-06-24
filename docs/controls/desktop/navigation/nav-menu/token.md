@@ -67,8 +67,14 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 - `HorizontalItemMargin`
 - `ItemBorderRadius`
 - `SubMenuItemBorderRadius`
+- `InlineCollapsedWidth`
+- `CollapsedWidth`
 
-用于菜单项高度、Ant Design block margin 映射、header 内边距、inline child frame 外距和菜单内容 padding。`ItemContentMargin` 表达 item header 的外部 margin；`VerticalChildItemsMargin` 表达 inline submenu 背景块在背景模式下的外部 margin，不是所有 inline 子菜单的无条件间距。
+用于菜单项高度、Ant Design block margin 映射、header 内边距、inline child frame 外距、菜单内容 padding 和 inline collapsed 根宽度。`ItemContentMargin` 表达 item header 的外部 margin；`VerticalChildItemsMargin` 表达 inline submenu 背景块在背景模式下的外部 margin，不是所有 inline 子菜单的无条件间距。
+
+`InlineCollapsedWidth` 是 `Mode=Inline && IsInlineCollapsed=true` 的折叠宽度默认值，初始设计值为 `48`。控件实例上的 `NavMenu.InlineCollapsedWidth` 本地值优先级高于 token setter。该 token 只提供主题默认布局值，不表达实例是否折叠，也不参与 `Vertical` / `Horizontal` 模式测量。
+
+`CollapsedWidth` 是既有折叠宽度 token，保留兼容，不删除、不重命名。新的 inline collapsed 设计、文档和实现应优先使用 `InlineCollapsedWidth` 表达内联折叠菜单宽度，避免把旧 token 继续扩展为多语义 token。
 
 ### 2.5 Icon 与箭头 Token
 
@@ -80,6 +86,8 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 - `InlineItemIndentUnit`
 
 用于菜单项图标、horizontal 顶层图标间距、箭头尺寸和 inline 缩进。`InlineItemIndentUnit` 默认来自 `ItemHeight / 2`，使层级缩进与菜单项高度保持比例关系。
+
+`CollapsedIconSize` 继续作为 inline collapsed 顶层图标尺寸 token。它只控制图标尺寸，不控制折叠宽度；折叠宽度由 `InlineCollapsedWidth` 或控件本地属性值决定。
 
 ### 2.6 Popup Token
 
@@ -199,6 +207,8 @@ Token 变更要求：
 - 不把 root、popup、header、inline submenu block 背景合并为同一职责。
 - 不让 `VerticalChildItemsMargin` 在 `IsItemBackgroundEnabled=false` 时影响布局。
 - 不把 Ant Design block margin 映射改为 StackPanel spacing 叠加。
+- 不把 `InlineCollapsedWidth` 写成实例状态；`IsInlineCollapsed` 是状态，`InlineCollapsedWidth` / `NavMenuToken.InlineCollapsedWidth` 是布局输入。
+- 不删除或重命名 `CollapsedWidth`；它是既有兼容 token，新的 inline collapsed 宽度语义使用 `InlineCollapsedWidth`。
 - 需要破坏性变更时，必须先说明影响范围并获得授权。
 
 ## 6. 验证策略
@@ -208,6 +218,7 @@ Token 变更要求：
 | 新增 NavMenuToken | 检查生成的 `NavMenuTokenKind`、AXAML 引用和默认值计算。 |
 | 修改颜色 Token | 覆盖 light / dark root、popup、inline child、header hover、selected path。 |
 | 修改间距 Token | 运行 `NavMenuLayoutTests`，覆盖 root inset、inline child gap、popup inset 和 `IsItemBackgroundEnabled` true/false。 |
+| 修改 inline collapsed 宽度 Token | 覆盖 `InlineCollapsedWidth` 默认值、本地属性覆盖、`Mode=Inline && IsInlineCollapsed=true` 生效和 `Vertical` / `Horizontal` 不受影响。 |
 | 修改 popup Token | 覆盖 vertical/horizontal popup 背景、尺寸、padding 和 overlay popup 行为。 |
 | 修改 horizontal Token | 覆盖 active indicator、top-level margin、line height 和 dark selected background。 |
 | 删除或重命名 Token | 默认不允许；如获授权，需同步所有 AXAML 引用和生成文件。 |

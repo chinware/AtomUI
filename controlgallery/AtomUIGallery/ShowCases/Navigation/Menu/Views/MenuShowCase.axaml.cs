@@ -83,6 +83,14 @@ public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
         }
     }
 
+    public void HandleToggleInlineCollapsedClick(object? sender, RoutedEventArgs? args)
+    {
+        if (DataContext is MenuViewModel viewModel)
+        {
+            viewModel.HandleToggleInlineCollapsedClick(sender, args);
+        }
+    }
+
     private static Control CreateScenarioContent(string scenario)
     {
         return scenario switch
@@ -102,6 +110,12 @@ public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
                 new TreeNodePath("/3/SubGroup2")
             ];
             viewModel.DefaultSelectedPath = new TreeNodePath("/3/SubGroup1/Option1");
+            viewModel.IsInlineCollapsed   = false;
+            viewModel.InlineCollapsedOpenPaths =
+            [
+                new TreeNodePath("/NavigationOne")
+            ];
+            viewModel.InlineCollapsedSelectedPath = new TreeNodePath("/Option1");
             RefreshMenuSources(viewModel);
         }
     }
@@ -120,6 +134,9 @@ public partial class MenuShowCase : GalleryReactiveUserControl<MenuViewModel>
         viewModel.ContextMenuItems            = null;
         viewModel.DefaultOpenPaths            = null;
         viewModel.DefaultSelectedPath         = null;
+        viewModel.IsInlineCollapsed           = false;
+        viewModel.InlineCollapsedOpenPaths    = null;
+        viewModel.InlineCollapsedSelectedPath = null;
         viewModel.DefaultSelectedNode         = null;
     }
 

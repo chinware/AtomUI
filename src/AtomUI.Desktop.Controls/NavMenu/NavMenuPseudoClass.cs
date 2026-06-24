@@ -3,6 +3,7 @@ namespace AtomUI.Desktop.Controls;
 public static class NavMenuPseudoClass
 {
     public const string InlineMode = ":inline-mode";
+    public const string InlineCollapsed = ":inline-collapsed";
     public const string HorizontalMode = ":horizontal-mode";
     public const string VerticalMode = ":vertical-mode";
     public const string DarkStyle = ":dark";

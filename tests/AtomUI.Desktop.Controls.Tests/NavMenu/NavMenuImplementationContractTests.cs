@@ -10,8 +10,11 @@ public class NavMenuImplementationContractTests
     public void Default_Path_Replay_Does_Not_Wait_On_Fixed_Timer_Delays()
     {
         var source = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/NavMenu.cs");
+        const string inlineCollapsedWidthMotionDelay =
+            "await Task.Delay(InlineCollapsedWidthMotionFrameInterval, cancellationTokenSource.Token);";
 
-        source.ShouldNotContain("Task.Delay");
+        source.ShouldContain(inlineCollapsedWidthMotionDelay);
+        source.Replace(inlineCollapsedWidthMotionDelay, string.Empty).ShouldNotContain("Task.Delay");
         source.ShouldNotContain("TimeSpan.FromMilliseconds(50)");
         source.ShouldNotContain("GetNavMenuItemContainerAsync");
         source.ShouldContain("ExecuteLayoutPass()");

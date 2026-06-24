@@ -497,6 +497,51 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:MenuShowCaseLangResource InlineCollapsedMenuTitle}"
+            Description="{gallery:MenuShowCaseLangResource InlineCollapsedMenuDescription}"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="viewModels:MenuViewModel">
+            <StackPanel Spacing="16">
+                <atom:Button ButtonType="Primary"
+                             Icon="{antdicons:AntDesignIconProvider Kind=MenuFoldOutlined}"
+                             Click="HandleToggleInlineCollapsedClick" />
+                <atom:NavMenu Mode="Inline"
+                              Width="300"
+                              IsDarkStyle="True"
+                              IsInlineCollapsed="{Binding IsInlineCollapsed}"
+                              DefaultOpenPaths="{Binding InlineCollapsedOpenPaths}"
+                              DefaultSelectedPath="{Binding InlineCollapsedSelectedPath}">
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}"
+                                      Icon="{antdicons:AntDesignIconProvider Kind=PieChartOutlined}"
+                                      ItemKey="Option1" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}"
+                                      Icon="{antdicons:AntDesignIconProvider Kind=DesktopOutlined}"
+                                      ItemKey="Option2" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN3}"
+                                      Icon="{antdicons:AntDesignIconProvider Kind=ContainerOutlined}"
+                                      ItemKey="Option3" />
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationOne}"
+                                      Icon="{antdicons:AntDesignIconProvider Kind=MailOutlined}"
+                                      ItemKey="NavigationOne">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN5}" ItemKey="Option5" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN6}" ItemKey="Option6" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN7}" ItemKey="Option7" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN8}" ItemKey="Option8" />
+                    </atom:NavMenuNode>
+                    <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderNavigationTwo}"
+                                      Icon="{antdicons:AntDesignIconProvider Kind=AppstoreOutlined}"
+                                      ItemKey="NavigationTwo">
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN1}" ItemKey="NavigationTwoOption1" />
+                        <atom:NavMenuNode Header="{gallery:MenuShowCaseLangResource P2HeaderOptionN2}" ItemKey="NavigationTwoOption2" />
+                    </atom:NavMenuNode>
+                </atom:NavMenu>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:MenuShowCaseLangResource TopNavigationTitle}"
             Description="{gallery:MenuShowCaseLangResource TopNavigationDescription}"
             IsOccupyEntireRow="True"

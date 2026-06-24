@@ -44,6 +44,8 @@ internal partial class zh_TW : LanguageProvider
     public const string VerticalNavMenuDescription = "子菜單以彈出層方式打開。";
     public const string InlineMenuTitle = "內聯菜單";
     public const string InlineMenuDescription = "帶內聯子菜單的垂直菜單。";
+    public const string InlineCollapsedMenuTitle = "縮起內聯菜單";
+    public const string InlineCollapsedMenuDescription = "內聯菜單可以被縮起或展開。";
     public const string TopNavigationTitle = "頂部導航";
     public const string TopNavigationDescription = "水平頂部導航菜單。";
     public const string SwitchMenuTypeTitle = "切換菜單類型";
@@ -85,6 +87,10 @@ internal partial class zh_TW : LanguageProvider
     public const string P2HeaderItemN2 = "項目 2";
     public const string P2HeaderOptionN3 = "選項 3";
     public const string P2HeaderOptionN4 = "選項 4";
+    public const string P2HeaderOptionN5 = "選項 5";
+    public const string P2HeaderOptionN6 = "選項 6";
+    public const string P2HeaderOptionN7 = "選項 7";
+    public const string P2HeaderOptionN8 = "選項 8";
     public const string P2HeaderNavigationFour = "導航四";
     public const string P2TextChangeMode = "切換模式";
     public const string P2TextChangeStyle = "切換樣式";
@@ -102,6 +108,8 @@ internal partial class zh_TW : LanguageProvider
     public const string ApiPropertyContextMenuItemsSource = "用於生成上下文菜單項的數據源。";
     public const string ApiPropertyMenuFlyoutItemsSource = "用於生成菜單浮出層條目的數據源。";
     public const string ApiPropertyNavMenuMode = "控制 NavMenu 使用內聯、垂直或水平模式。";
+    public const string ApiPropertyNavMenuIsInlineCollapsed = "將內聯 NavMenu 折疊為緊湊的彈出式導航欄。";
+    public const string ApiPropertyNavMenuInlineCollapsedWidth = "內聯 NavMenu 折疊時使用的寬度。";
     public const string ApiPropertyNavMenuIsDarkStyle = "應用暗色導航菜單樣式。";
     public const string ApiPropertyNavMenuDefaultOpenPaths = "導航菜單初始化時默認展開的路徑。";
     public const string ApiPropertyNavMenuDefaultSelectedPath = "導航菜單初始化時默認選中的路徑。";
@@ -123,6 +131,7 @@ internal partial class zh_TW : LanguageProvider
     public const string TokenNameNavMenuItemContentPadding = "導航菜單項內容內邊距。";
     public const string TokenNameNavMenuInlineItemIndentUnit = "內聯導航層級縮進單位。";
     public const string TokenNameNavMenuCollapsedWidth = "收起狀態的導航菜單寬度。";
+    public const string TokenNameNavMenuInlineCollapsedWidth = "內聯折疊導航菜單的默認寬度。";
     public const string TokenNameNavMenuMenuHorizontalHeight = "水平導航菜單高度。";
     public const string TokenNameNavMenuDarkMenuBg = "暗色導航菜單背景。";
     public const string TokenNameNavMenuMenuPopupMaxHeight = "導航彈出菜單最大高度。";

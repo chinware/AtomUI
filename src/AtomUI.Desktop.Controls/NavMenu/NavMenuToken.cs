@@ -227,6 +227,11 @@ internal class NavMenuToken : AbstractControlDesignToken
     /// 收起后的宽度
     /// </summary>
     public double CollapsedWidth { get; set; }
+
+    /// <summary>
+    /// 内联折叠后的宽度
+    /// </summary>
+    public double InlineCollapsedWidth { get; set; }
     
     /// <summary>
     /// 弹出框背景色
@@ -415,6 +420,7 @@ internal class NavMenuToken : AbstractControlDesignToken
         ItemHeight           = SharedToken.ControlHeightLG;
         GroupTitleLineHeight = SharedToken.ControlHeight;
         CollapsedWidth       = SharedToken.ControlHeight * 2;
+        InlineCollapsedWidth = 48d;
         IconSize             = SharedToken.FontSize;
         IconMargin           = new Thickness(0, 0, SharedToken.ControlHeightSM - SharedToken.FontSize, 0);
         CollapsedIconSize    = SharedToken.FontSizeLG;

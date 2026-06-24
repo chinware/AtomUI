@@ -133,6 +133,34 @@ public class NavMenuThemeContractTests
         headerSource.ShouldContain("<Setter Property=\"Background\" Value=\"Transparent\" />");
     }
 
+    [Fact]
+    public void Inline_Collapsed_Uses_Effective_Mode_And_Axaml_Visual_State()
+    {
+        var navMenuSource       = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/NavMenu.cs");
+        var navMenuThemeSource  = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuTheme.axaml");
+        var navMenuItemTheme    = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/NavMenuItemTheme.axaml");
+        var verticalHeaderTheme = ReadRepoFile("src/AtomUI.Desktop.Controls/NavMenu/Themes/VerticalNavMenuItemHeaderTheme.axaml");
+
+        navMenuSource.ShouldContain("public static readonly StyledProperty<bool> IsInlineCollapsedProperty");
+        navMenuSource.ShouldContain("public static readonly StyledProperty<double> InlineCollapsedWidthProperty");
+        navMenuSource.ShouldContain("internal static readonly StyledProperty<double> InlineCollapsedLayoutWidthProperty");
+        navMenuSource.ShouldContain("menuItem[!NavMenuItem.ModeProperty]                  = this[!EffectiveModeProperty];");
+        navMenuSource.ShouldContain("menuItem[!NavMenuItem.IsInlineCollapsedProperty]     = this[!IsEffectiveInlineCollapsedProperty];");
+        navMenuSource.ShouldNotContain("Layoutable.MaxWidthProperty");
+        navMenuSource.ShouldNotContain("Layoutable.WidthProperty,\n                BindingMode.OneWay,\n                BindingPriority.Animation");
+        navMenuSource.ShouldContain("WidthProperty.OverrideMetadata<NavMenu>");
+        navMenuSource.ShouldContain("RunInlineCollapsedWidthMotionAsync");
+
+        navMenuThemeSource.ShouldContain("<Setter Property=\"InlineCollapsedWidth\" Value=\"{atom:NavMenuTokenResource InlineCollapsedWidth}\" />");
+        navMenuThemeSource.ShouldNotContain("<DoubleTransition Property=\"Width\"");
+        navMenuThemeSource.ShouldNotContain("{Binding InlineCollapsedWidth");
+        navMenuItemTheme.ShouldContain("IsInlineCollapsed=\"{TemplateBinding IsInlineCollapsed}\"");
+
+        verticalHeaderTheme.ShouldContain("Selector=\"^[IsInlineCollapsed=True]\"");
+        verticalHeaderTheme.ShouldContain("Value=\"{atom:NavMenuTokenResource CollapsedIconSize}\"");
+        verticalHeaderTheme.ShouldContain("FirstCharacterConverter");
+    }
+
     private static string ReadRepoFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

@@ -4,7 +4,7 @@
 
 ## 1. 实现定位
 
-NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护树形导航状态，并按 mode 选择不同交互策略。实现文档聚焦 `NavMenu`、`NavMenuItem`、节点模型、handler、selection coordinator、keyboard navigation coordinator 和 theme part 的协作关系。
+NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护树形导航状态，并按 mode 选择不同交互策略。实现文档聚焦 `NavMenu`、`NavMenuItem`、节点模型、handler、selection coordinator、keyboard navigation coordinator、inline collapsed coordinator 和 theme part 的协作关系。
 
 路由切换、权限过滤、业务命令编排和页面生命周期不属于 NavMenu 实现范围。
 
@@ -31,6 +31,8 @@ NavMenu 的实现目标是在 `ItemsControl` 容器体系内维护树形导航�
 
 `NavMenuItem` 是内部容器，负责承载单个节点的 header、icon、子节点、popup 或 inline child items，并维护 `IsSelected`、`IsInSelectedPath`、`IsSubMenuOpen`、`Level`、`IsTopLevel` 等状态。
 
+inline collapsed coordinator 由 `NavMenu` 拥有，负责根据 `Mode` 和 `IsInlineCollapsed` 计算 effective mode，缓存 inline 打开路径，关闭折叠期间的临时 popup，并把折叠视觉状态下发到 `NavMenuItem` 和 header。它不拥有选择状态，也不直接修改 `Mode`。
+
 `NavMenuSelectionCoordinator` 统一处理旧选中节点清理、新选中节点设置、祖先路径标记和事件派发，避免选择逻辑散落在 click handler、默认路径 replay 和 property changed 分支中。
 
 interaction handler 按 mode 分工：Inline handler 处理视觉树内展开，Default handler 处理 popup 打开、延迟关闭、窗口失焦和同级互斥。键盘导航由 interaction handler 层统一接入，负责 active/focus 漫游、层级进入/返回、Enter 提交和 Esc 关闭当前 popup 分支，不能散落到各个 `NavMenuItem` 的局部 key handler 中。
@@ -45,9 +47,12 @@ Header 控件只承担显示和局部视觉状态，不拥有选择或打开逻�
 
 ```text
 NavMenu public API / NavMenuNode
-  Mode / IsDarkStyle / IsItemBackgroundEnabled
+  Mode / IsInlineCollapsed / InlineCollapsedWidth
+  IsDarkStyle / IsItemBackgroundEnabled
   SelectedItem / DefaultSelectedPath / DefaultOpenPaths
   Header / Icon / ItemKey / Children / IsEnabled
+      ↓
+Effective mode + inline collapsed open path cache
       ↓
 ItemsControl container generation
       ↓
@@ -64,13 +69,35 @@ Header theme / Popup frame / Inline child frame
 
 `SelectedItem` 是持续选择状态。`DefaultSelectedPath` 和 `DefaultOpenPaths` 只在初始路径应用中参与 replay。程序连续设置多个选择时，过期 replay 必须被忽略，只应用最新 revision。
 
+`IsInlineCollapsed` 是 `Inline` 模式附加状态。进入折叠时，当前 inline 打开路径写入 cache，主视觉树中的 inline 子菜单关闭，effective mode 切为 `Vertical`；退出折叠时，折叠期间打开的 popup 关闭，再从 cache 恢复 inline 打开路径。这个流程不能调用 `NavMenu.Close()`，不能改写 `SelectedItem`。
+
+`InlineCollapsedWidth` 是布局输入。默认值由 `NavMenuTheme.axaml` 通过 `NavMenuToken.InlineCollapsedWidth` 提供；本地属性值覆盖 token 默认值。该属性只影响 `Mode=Inline && IsInlineCollapsed=true` 的根宽度和测量，不影响 `Vertical` / `Horizontal`。宽度约束由 `NavMenu` 内部通过 `Width` / `MinWidth` metadata coercion 表达：折叠时 effective `Width` 收敛到 `InlineCollapsedWidth`，较大的 effective `MinWidth` 向下收敛，展开后恢复原始 base value 或绑定。过渡动画不能挂在 root `Width` 的 `DoubleTransition` 上，因为 `IsInlineCollapsed` 切换时宽度来自 coercion，不是普通 styled value 变化；动画应由内部 `InlineCollapsedLayoutWidth` motion 按帧驱动 coercion。不要使用 `BindingPriority.Animation` relay binding 控制根宽度，也不要设置 `MaxWidth`，否则会破坏用户 base `Width` 或把收缩动画立即夹到目标宽度。
+
 键盘 active/focus 是临时交互状态。active 项变化不能写入 `SelectedItem`，不能触发 `NavMenuNodeSelected`，不能改变 `IsInSelectedPath`。只有 Enter 在叶子节点上提交时，才进入 selection coordinator。
 
 `IsItemBackgroundEnabled` 下发到 `NavMenuItem` 和 header theme，但它只控制 item / submenu 背景块，不关闭 header 文本状态。
 
 ## 5. 生命周期与模板接入
 
-`NavMenu` 在 mode 变化时同步 root pseudo-class、ItemsPanel 方向、interaction handler 和已打开子菜单状态。切换 mode 必须关闭旧模式下的 popup 或 inline 子菜单，避免旧 handler 的 pointer、delay、popup 或 motion 状态泄漏。
+`NavMenu` 在 mode 或 inline collapsed 状态变化时同步 root pseudo-class、ItemsPanel 方向、interaction handler、effective mode 和已打开子菜单状态。切换 public `Mode` 必须关闭旧模式下的 popup 或 inline 子菜单，避免旧 handler 的 pointer、delay、popup 或 motion 状态泄漏。切换 `IsInlineCollapsed` 不能走 public mode change 的 `Close()` 路径，而要走 inline collapsed coordinator 的 cache / restore 流程。
+
+`IsInlineCollapsed` 变化时的生命周期顺序必须固定：
+
+```text
+collapse:
+  collect open inline paths
+  close inline child frames without clearing SelectedItem
+  switch effective mode to Vertical
+  reattach interaction handler if needed
+  sync collapsed visual state
+
+expand:
+  close transient popup branches
+  switch effective mode to Inline
+  reattach interaction handler if needed
+  replay cached inline paths
+  sync expanded visual state
+```
 
 `NavMenuItem.OnApplyTemplate` 获取 header、popup、popup frame、inline motion actor、child frame、items presenter 和 active indicator。模板替换时必须解除旧 part 事件订阅，并重新绑定 handler 需要的 part。
 
@@ -84,6 +111,7 @@ Inline handler：
 - 点击叶子节点进入 selection coordinator。
 - `IsAccordionMode=true` 时关闭同层其他打开项。
 - Inline 展开收起保持 motion，不通过临时关闭 motion 规避问题。
+- 当 `IsInlineCollapsed=true` 时不使用 Inline handler；有效交互切换到 Default handler，使带子菜单的顶层项通过 popup 打开。
 
 Default handler：
 
@@ -92,6 +120,7 @@ Default handler：
 - 点击叶子节点进入 selection coordinator。
 - popup close 由 pointer、窗口失焦、非客户端点击和同级打开状态共同控制。
 - Horizontal 顶层 popup 放置在下方，非顶层和 vertical popup 使用侧向层级。
+- inline collapsed 使用 Default handler 的 popup 路径，但仍保留 public `Mode=Inline`，以保持 API 语义和文档语义一致。
 
 Keyboard navigation：
 
@@ -101,6 +130,7 @@ Keyboard navigation：
 - Horizontal 根层使用 Left / Right 在顶层项之间循环移动，Down 或 Enter 打开 active 子菜单并进入第一项。
 - Vertical 根层和 popup 子菜单使用 Right 或 Enter 进入子菜单，Left 或 Esc 返回父级并关闭当前 popup 分支。
 - Inline 模式使用 Up / Down 遍历当前展开后的可见树；Enter 在父节点上切换展开，在叶子节点上提交选择。
+- Inline collapsed 模式使用 effective vertical 键盘策略，根层只遍历顶层项，打开子菜单后进入 popup 子级。
 - 键盘打开 popup 后必须确保子容器可生成，并把 active/focus 移动到第一个可交互子项；不能依赖固定 timer 等待 popup content。
 - Esc 只关闭当前 popup 分支，active/focus 回到父项；不能调用 `NavMenu.Close()`，避免清空 `SelectedItem`。
 
@@ -176,11 +206,40 @@ sync focus + keyboard active visual
 
 keyboard active 视觉通过 header 的内部状态表达，使用 `ItemActiveBg` 语义。该状态优先级低于 selected，高于默认态；它不能复用 `IsSelected` 或 `IsInSelectedPath`，否则会把“浏览候选”和“已提交选择”混为同一个状态。`IsInSelectedPath` 只表达选中路径文字语义，不能屏蔽 keyboard active 背景。
 
+### 7.7 Inline collapsed 模型
+
+Inline collapsed 模型按“public state + effective mode + open path cache”组织：
+
+```text
+Mode=Inline + IsInlineCollapsed=false
+      ↓
+effective mode = Inline
+inline child frame owns open visuals
+
+Mode=Inline + IsInlineCollapsed=true
+      ↓
+effective mode = Vertical
+popup owns temporary open visuals
+inline open paths live in cache
+```
+
+折叠状态切换不应复用 public `Mode` 变化逻辑，因为 public mode change 当前会清理打开状态和选择状态。折叠只是 inline 的紧凑呈现状态，必须保留 `SelectedItem`、selected path 和可恢复的 inline open path。
+
+open path cache 应记录路径语义而不是持有容器引用。容器可能因 ItemsSource reset、template reapply、detached 或 popup 生命周期变化而失效；cache 只保存可重新 replay 的 `TreeNodePath` 或等价节点路径。恢复时复用默认路径 replay 的有界容器生成策略，不能固定 sleep。
+
+折叠期间的 popup 打开状态是临时交互状态。它可以改变 `IsSubMenuOpen` 以驱动 popup，但不得写回 inline open path cache。退出折叠时必须先关闭这些 popup 分支，再恢复 cache，避免 popup 与 inline child frame 同时认为自己拥有同一个分支的打开视觉。
+
+初始加载时如果 `IsInlineCollapsed=true` 且存在 `DefaultOpenPaths`，默认展开路径进入 inline open path cache，不立即展开 inline 子树；首次展开时再 replay cache。`DefaultSelectedPath` / `SelectedItem` 仍可应用 selected leaf 和 selected path，不能因为子树未展开而丢失选中语义。
+
+折叠视觉由 theme 层表达：顶层 header 隐藏标题和箭头，icon 使用 `CollapsedIconSize` 居中；没有 icon 的顶层项显示 header 首字符。root 宽度约束属于控件布局状态，由 C# metadata coercion 表达，以保留用户的 base `Width` / binding。inline collapsed 宽度过渡由内部 `InlineCollapsedLayoutWidth` motion 临时接管 coercion 输入，完成后必须清理回 `double.NaN`，让稳态宽度重新由 `InlineCollapsedWidth` 或用户原始 `Width` / binding 决定。C# 层不应为了折叠视觉改写 `Header` 或临时替换 `HeaderTemplate`。
+
 ## 8. 资源、性能与 AOT 边界
 
 NavMenu 不应通过反射访问 template part 或内部状态。Header、popup、inline child frame 和 active indicator 均通过稳定 template part 和 Avalonia 属性接入。
 
 handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时释放。延迟打开 / 关闭任务必须支持取消，避免旧 pointer 状态影响新 mode 或新 popup。
+
+inline collapsed cache 不得持有 `NavMenuItem`、header、popup 或 template part 引用。状态失效边界包括 ItemsSource reset、container clear、detach、mode change 和 default path replay revision 变化。
 
 键盘导航状态持有的 active item 引用必须随 detach、mode 切换、container clear、popup close 和 item disabled 变化失效。失效时应重新从当前可见层级解析 active 项，不保留悬空容器引用。
 
@@ -191,6 +250,10 @@ handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时
 内部重构必须保持以下不变量：
 
 - mode 切换时重新挂接 handler，并清理旧模式打开状态。
+- `IsInlineCollapsed` 切换不得改写 public `Mode`，不得调用 `Close()`，不得清空 `SelectedItem`。
+- inline collapsed 进入时缓存 inline open path，退出时恢复 cache；折叠期间 popup 打开状态不得污染 cache。
+- `InlineCollapsedWidth` 默认来自 `NavMenuToken.InlineCollapsedWidth`，本地属性值必须按 Avalonia 优先级覆盖 token 默认值。
+- 折叠视觉不能通过改写 `Header`、删除 `HeaderTemplate` 或动态创建替代 header 实现。
 - 点击 item 不得临时关闭 motion。
 - 默认路径应用不使用固定 50ms sleep 作为稳定策略。
 - selection coordinator 是选择状态的统一入口。
@@ -209,6 +272,7 @@ handler 持有事件订阅时必须在 mode 切换、detached 或模板替换时
 验证范围：
 
 - Inline、Vertical、Horizontal 打开、关闭、hover、click 和同级互斥。
+- Inline collapsed 切换、effective mode、open path cache、初始 `DefaultOpenPaths` 缓存、展开恢复、popup 临时打开和 selected path 保持。
 - Inline、Vertical、Horizontal 的 Up / Down / Left / Right / Enter / Esc 键盘漫游、层级进入/返回、leaf commit 和 popup close。
 - 方向键移动 active 项不触发 `NavMenuItemClick` / `NavMenuNodeSelected`。
 - Esc 关闭当前 popup 分支但不清空 `SelectedItem`。

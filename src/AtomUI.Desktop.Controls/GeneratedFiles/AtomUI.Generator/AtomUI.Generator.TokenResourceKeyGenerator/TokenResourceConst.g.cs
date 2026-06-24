@@ -638,6 +638,7 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         HorizontalLineHeight,
         IconMargin,
         IconSize,
+        InlineCollapsedWidth,
         InlineItemIndentUnit,
         ItemActiveBg,
         ItemBg,

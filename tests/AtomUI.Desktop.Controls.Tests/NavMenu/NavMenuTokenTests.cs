@@ -40,4 +40,20 @@ public class NavMenuTokenTests
         navMenuToken.VerticalItemsPanelSpacing.ShouldBe(0);
         navMenuToken.VerticalChildItemsMargin.ShouldBe(new Thickness(0, 0, 0, 4));
     }
+
+    [Fact]
+    public void Inline_Collapsed_Width_Uses_Dedicated_Token_And_Keeps_Legacy_CollapsedWidth()
+    {
+        var sharedToken = new DesignToken
+        {
+            ControlHeight = 32
+        };
+        var navMenuToken = new NavMenuToken();
+        navMenuToken.AssignSharedToken(sharedToken);
+
+        navMenuToken.CalculateTokenValues(isDarkMode: false);
+
+        navMenuToken.InlineCollapsedWidth.ShouldBe(48);
+        navMenuToken.CollapsedWidth.ShouldBe(sharedToken.ControlHeight * 2);
+    }
 }

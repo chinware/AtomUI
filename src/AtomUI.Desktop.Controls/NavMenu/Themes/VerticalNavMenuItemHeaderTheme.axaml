@@ -16,7 +16,7 @@
                         Padding="{TemplateBinding Padding}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Height="{TemplateBinding Height}">
-                    <Grid>
+                    <Grid Name="HeaderLayout">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"
                                               SharedSizeGroup="IconPresenter" />
@@ -41,6 +41,15 @@
                             IsHitTestVisible="False"
                             Content="{TemplateBinding Header, Converter={x:Static atom:BaseNavMenuItemHeaderTheme.StringToTextBlockConverter}}"
                             ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                        <ContentPresenter
+                            Name="CollapsedTitlePresenter"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            IsHitTestVisible="False"
+                            IsVisible="False"
+                            Content="{TemplateBinding Header, Converter={x:Static atom:BaseNavMenuItemHeaderTheme.FirstCharacterConverter}}" />
                         <antdicons:RightOutlined
                             Grid.Column="2"
                             Name="MenuIndicatorIcon"
@@ -55,6 +64,39 @@
         <Style Selector="^:is(atom|VerticalNavMenuItemHeader)">
             <Setter Property="Height" Value="{atom:NavMenuTokenResource ItemHeight}" />
             <Setter Property="Margin" Value="{atom:NavMenuTokenResource ItemContentMargin}" />
+
+            <Style Selector="^[IsInlineCollapsed=True]">
+                <Style Selector="^ /template/ Grid#HeaderLayout">
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#ItemTextPresenter">
+                    <Setter Property="IsVisible" Value="False" />
+                </Style>
+
+                <Style Selector="^ /template/ atom|Icon#MenuIndicatorIcon">
+                    <Setter Property="IsVisible" Value="False" />
+                </Style>
+
+                <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
+                    <Setter Property="Grid.Column" Value="0" />
+                    <Setter Property="Grid.ColumnSpan" Value="3" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="Margin" Value="0" />
+                    <Setter Property="Width" Value="{atom:NavMenuTokenResource CollapsedIconSize}" />
+                    <Setter Property="Height" Value="{atom:NavMenuTokenResource CollapsedIconSize}" />
+                </Style>
+
+                <Style Selector="^ /template/ ContentPresenter#CollapsedTitlePresenter">
+                    <Setter Property="IsVisible" Value="True" />
+                </Style>
+
+                <Style Selector="^:icon">
+                    <Style Selector="^ /template/ ContentPresenter#CollapsedTitlePresenter">
+                        <Setter Property="IsVisible" Value="False" />
+                    </Style>
+                </Style>
+            </Style>
         </Style>
     </ControlTheme>
 </ResourceDictionary>

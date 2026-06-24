@@ -46,15 +46,18 @@ public class MenuShowCasePageTests
         source.ShouldContain("LineHeight=\"22\"");
         source.ShouldContain("Text=\"{gallery:MenuShowCaseLangResource PageDescription}\"");
         source.ShouldContain("HorizontalAlignment=\"Left\"");
-        CountShowCaseItemElements(source).ShouldBe(15);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(15);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(15);
-        CountOccurrences(source, "DataTemplate x:DataType=\"viewModels:MenuViewModel\"").ShouldBe(15);
+        CountShowCaseItemElements(source).ShouldBe(16);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(16);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(16);
+        CountOccurrences(source, "DataTemplate x:DataType=\"viewModels:MenuViewModel\"").ShouldBe(16);
         source.ShouldContain("MenuShowCaseLangResource BasicTitle");
         source.ShouldContain("MenuShowCaseLangResource IconAndSubmenuTitle");
         source.ShouldContain("MenuShowCaseLangResource MenuItemItemsSourceTitle");
         source.ShouldContain("MenuShowCaseLangResource ContextMenuTitle");
         source.ShouldContain("MenuShowCaseLangResource VerticalNavMenuTitle");
+        source.ShouldContain("MenuShowCaseLangResource InlineCollapsedMenuTitle");
+        source.ShouldContain("IsInlineCollapsed=\"{Binding IsInlineCollapsed}\"");
+        source.ShouldContain("Click=\"HandleToggleInlineCollapsedClick\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");
@@ -85,6 +88,7 @@ public class MenuShowCasePageTests
         codeBehindSource.ShouldContain("new MenuDesignTokenDataGrid()");
         codeBehindSource.ShouldContain("HandleChangeModeCheckChanged");
         codeBehindSource.ShouldContain("HandleChangeStyleCheckChanged");
+        codeBehindSource.ShouldContain("HandleToggleInlineCollapsedClick");
         codeBehindSource.ShouldNotContain("new MenuBasicShowCase()");
         codeBehindSource.ShouldNotContain("new MenuFeaturesShowCase()");
         codeBehindSource.ShouldNotContain("new MenuItemsSourceShowCase()");
@@ -101,8 +105,10 @@ public class MenuShowCasePageTests
         pageSource.ShouldContain("ItemsSource=\"{Binding InlineNavMenuNodes}\"");
         pageSource.ShouldContain("ItemsSource=\"{Binding ItemsSourceDemoNavMenuNodes}\"");
         pageSource.ShouldContain("ItemsSource=\"{Binding ContextMenuItems}\"");
+        pageSource.ShouldContain("IsInlineCollapsed=\"{Binding IsInlineCollapsed}\"");
         pageSource.ShouldContain("IsCheckedChanged=\"HandleChangeModeCheckChanged\"");
         pageSource.ShouldContain("IsCheckedChanged=\"HandleChangeStyleCheckChanged\"");
+        pageSource.ShouldContain("Click=\"HandleToggleInlineCollapsedClick\"");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:MenuApiRow\"");
@@ -161,6 +167,10 @@ public class MenuShowCasePageTests
             source.ShouldContain("ApiPropertyNavMenuDefaultOpenPaths");
             source.ShouldContain("TokenNameMenuItemHeight");
             source.ShouldContain("TokenNameNavMenuItemHeight");
+            source.ShouldContain("InlineCollapsedMenuTitle");
+            source.ShouldContain("InlineCollapsedMenuDescription");
+            source.ShouldContain("P2HeaderOptionN5");
+            source.ShouldContain("P2HeaderOptionN8");
         }
     }
 
@@ -204,7 +214,7 @@ public class MenuShowCasePageTests
 
         return Regex.Replace(
             normalized,
-            @"\s+IsCheckedChanged=""HandleChange(Mode|Style)CheckChanged""",
+            @"\s+(IsCheckedChanged=""HandleChange(Mode|Style)CheckChanged""|Click=""HandleToggleInlineCollapsedClick"")",
             string.Empty,
             RegexOptions.CultureInvariant);
     }

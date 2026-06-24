@@ -12156,8 +12156,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyMenuSizeType] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyMenuSizeType;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuDefaultOpenPaths] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuDefaultOpenPaths;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuDefaultSelectedPath] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuDefaultSelectedPath;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuInlineCollapsedWidth] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuInlineCollapsedWidth;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsAccordionMode] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuIsAccordionMode;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsDarkStyle] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuIsDarkStyle;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsInlineCollapsed] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuIsInlineCollapsed;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuMode] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuMode;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuSelectedItem] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuSelectedItem;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuShouldUseOverlayPopup] = global::AtomUIGallery.ShowCases.Menu.en_US.ApiPropertyNavMenuShouldUseOverlayPopup;
@@ -12176,6 +12178,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Menu.en_US.InfoBaseClassLabel;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Menu.en_US.InfoNamespaceLabel;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Menu.en_US.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuDescription] = global::AtomUIGallery.ShowCases.Menu.en_US.InlineCollapsedMenuDescription;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuTitle] = global::AtomUIGallery.ShowCases.Menu.en_US.InlineCollapsedMenuTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineMenuDescription] = global::AtomUIGallery.ShowCases.Menu.en_US.InlineMenuDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineMenuTitle] = global::AtomUIGallery.ShowCases.Menu.en_US.InlineMenuTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineNavMenuItemsSourceDescription] = global::AtomUIGallery.ShowCases.Menu.en_US.InlineNavMenuItemsSourceDescription;
@@ -12210,6 +12214,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN2] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderOptionN2;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN3] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderOptionN3;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN4] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderOptionN4;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN5] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderOptionN5;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN6] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderOptionN6;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN7] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderOptionN7;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN8] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderOptionN8;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderPaste] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderPaste;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderPasteFromHistory] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderPasteFromHistory;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderSave] = global::AtomUIGallery.ShowCases.Menu.en_US.P2HeaderSave;
@@ -12251,6 +12259,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameMenuSeparatorItemHeight] = global::AtomUIGallery.ShowCases.Menu.en_US.TokenNameMenuSeparatorItemHeight;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuCollapsedWidth] = global::AtomUIGallery.ShowCases.Menu.en_US.TokenNameNavMenuCollapsedWidth;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuDarkMenuBg] = global::AtomUIGallery.ShowCases.Menu.en_US.TokenNameNavMenuDarkMenuBg;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuInlineCollapsedWidth] = global::AtomUIGallery.ShowCases.Menu.en_US.TokenNameNavMenuInlineCollapsedWidth;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuInlineItemIndentUnit] = global::AtomUIGallery.ShowCases.Menu.en_US.TokenNameNavMenuInlineItemIndentUnit;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuItemContentPadding] = global::AtomUIGallery.ShowCases.Menu.en_US.TokenNameNavMenuItemContentPadding;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuItemHeight] = global::AtomUIGallery.ShowCases.Menu.en_US.TokenNameNavMenuItemHeight;
@@ -12303,8 +12312,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyMenuSizeType] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyMenuSizeType;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuDefaultOpenPaths] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuDefaultOpenPaths;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuDefaultSelectedPath] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuDefaultSelectedPath;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuInlineCollapsedWidth] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuInlineCollapsedWidth;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsAccordionMode] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuIsAccordionMode;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsDarkStyle] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuIsDarkStyle;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsInlineCollapsed] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuIsInlineCollapsed;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuMode] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuMode;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuSelectedItem] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuSelectedItem;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuShouldUseOverlayPopup] = global::AtomUIGallery.ShowCases.Menu.zh_CN.ApiPropertyNavMenuShouldUseOverlayPopup;
@@ -12323,6 +12334,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InfoBaseClassLabel;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InfoNamespaceLabel;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuDescription] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InlineCollapsedMenuDescription;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuTitle] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InlineCollapsedMenuTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineMenuDescription] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InlineMenuDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineMenuTitle] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InlineMenuTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineNavMenuItemsSourceDescription] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InlineNavMenuItemsSourceDescription;
@@ -12357,6 +12370,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN2] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderOptionN2;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN3] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderOptionN3;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN4] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderOptionN4;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN5] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderOptionN5;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN6] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderOptionN6;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN7] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderOptionN7;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN8] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderOptionN8;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderPaste] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderPaste;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderPasteFromHistory] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderPasteFromHistory;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderSave] = global::AtomUIGallery.ShowCases.Menu.zh_CN.P2HeaderSave;
@@ -12398,6 +12415,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameMenuSeparatorItemHeight] = global::AtomUIGallery.ShowCases.Menu.zh_CN.TokenNameMenuSeparatorItemHeight;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuCollapsedWidth] = global::AtomUIGallery.ShowCases.Menu.zh_CN.TokenNameNavMenuCollapsedWidth;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuDarkMenuBg] = global::AtomUIGallery.ShowCases.Menu.zh_CN.TokenNameNavMenuDarkMenuBg;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuInlineCollapsedWidth] = global::AtomUIGallery.ShowCases.Menu.zh_CN.TokenNameNavMenuInlineCollapsedWidth;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuInlineItemIndentUnit] = global::AtomUIGallery.ShowCases.Menu.zh_CN.TokenNameNavMenuInlineItemIndentUnit;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuItemContentPadding] = global::AtomUIGallery.ShowCases.Menu.zh_CN.TokenNameNavMenuItemContentPadding;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuItemHeight] = global::AtomUIGallery.ShowCases.Menu.zh_CN.TokenNameNavMenuItemHeight;
@@ -12450,8 +12468,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyMenuSizeType] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyMenuSizeType;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuDefaultOpenPaths] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuDefaultOpenPaths;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuDefaultSelectedPath] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuDefaultSelectedPath;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuInlineCollapsedWidth] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuInlineCollapsedWidth;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsAccordionMode] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuIsAccordionMode;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsDarkStyle] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuIsDarkStyle;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsInlineCollapsed] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuIsInlineCollapsed;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuMode] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuMode;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuSelectedItem] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuSelectedItem;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.ApiPropertyNavMenuShouldUseOverlayPopup] = global::AtomUIGallery.ShowCases.Menu.zh_TW.ApiPropertyNavMenuShouldUseOverlayPopup;
@@ -12470,6 +12490,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InfoBaseClassLabel;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InfoNamespaceLabel;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuDescription] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InlineCollapsedMenuDescription;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuTitle] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InlineCollapsedMenuTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineMenuDescription] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InlineMenuDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineMenuTitle] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InlineMenuTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineNavMenuItemsSourceDescription] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InlineNavMenuItemsSourceDescription;
@@ -12504,6 +12526,10 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN2] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderOptionN2;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN3] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderOptionN3;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN4] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderOptionN4;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN5] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderOptionN5;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN6] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderOptionN6;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN7] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderOptionN7;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderOptionN8] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderOptionN8;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderPaste] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderPaste;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderPasteFromHistory] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderPasteFromHistory;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.P2HeaderSave] = global::AtomUIGallery.ShowCases.Menu.zh_TW.P2HeaderSave;
@@ -12545,6 +12571,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameMenuSeparatorItemHeight] = global::AtomUIGallery.ShowCases.Menu.zh_TW.TokenNameMenuSeparatorItemHeight;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuCollapsedWidth] = global::AtomUIGallery.ShowCases.Menu.zh_TW.TokenNameNavMenuCollapsedWidth;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuDarkMenuBg] = global::AtomUIGallery.ShowCases.Menu.zh_TW.TokenNameNavMenuDarkMenuBg;
+                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuInlineCollapsedWidth] = global::AtomUIGallery.ShowCases.Menu.zh_TW.TokenNameNavMenuInlineCollapsedWidth;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuInlineItemIndentUnit] = global::AtomUIGallery.ShowCases.Menu.zh_TW.TokenNameNavMenuInlineItemIndentUnit;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuItemContentPadding] = global::AtomUIGallery.ShowCases.Menu.zh_TW.TokenNameNavMenuItemContentPadding;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.TokenNameNavMenuItemHeight] = global::AtomUIGallery.ShowCases.Menu.zh_TW.TokenNameNavMenuItemHeight;

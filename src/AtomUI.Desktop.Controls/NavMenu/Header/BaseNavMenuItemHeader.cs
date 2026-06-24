@@ -122,6 +122,12 @@ public class BaseNavMenuItemHeader : TemplatedControl
             o => o.IsKeyboardActive,
             (o, v) => o.IsKeyboardActive = v);
 
+    internal static readonly DirectProperty<BaseNavMenuItemHeader, bool> IsInlineCollapsedProperty =
+        AvaloniaProperty.RegisterDirect<BaseNavMenuItemHeader, bool>(
+            nameof(IsInlineCollapsed),
+            o => o.IsInlineCollapsed,
+            (o, v) => o.IsInlineCollapsed = v);
+
     internal bool IsItemBackgroundEnabled
     {
         get => GetValue(IsItemBackgroundEnabledProperty);
@@ -134,6 +140,14 @@ public class BaseNavMenuItemHeader : TemplatedControl
     {
         get => _isKeyboardActive;
         set => SetAndRaise(IsKeyboardActiveProperty, ref _isKeyboardActive, value);
+    }
+
+    private bool _isInlineCollapsed;
+
+    internal bool IsInlineCollapsed
+    {
+        get => _isInlineCollapsed;
+        set => SetAndRaise(IsInlineCollapsedProperty, ref _isInlineCollapsed, value);
     }
 
     #endregion
