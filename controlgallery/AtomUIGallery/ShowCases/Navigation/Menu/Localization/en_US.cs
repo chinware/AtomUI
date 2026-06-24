@@ -44,6 +44,8 @@ internal partial class en_US : LanguageProvider
     public const string VerticalNavMenuDescription = "Submenus open as pop-ups.";
     public const string InlineMenuTitle = "Inline menu";
     public const string InlineMenuDescription = "Vertical menu with inline submenus.";
+    public const string InlineCollapsedMenuTitle = "Inline collapsed menu";
+    public const string InlineCollapsedMenuDescription = "Inline menus can be collapsed and expanded.";
     public const string TopNavigationTitle = "Top Navigation";
     public const string TopNavigationDescription = "Horizontal top navigation menu.";
     public const string SwitchMenuTypeTitle = "Switch the menu type";
@@ -85,6 +87,10 @@ internal partial class en_US : LanguageProvider
     public const string P2HeaderItemN2 = "Item 2";
     public const string P2HeaderOptionN3 = "Option 3";
     public const string P2HeaderOptionN4 = "Option 4";
+    public const string P2HeaderOptionN5 = "Option 5";
+    public const string P2HeaderOptionN6 = "Option 6";
+    public const string P2HeaderOptionN7 = "Option 7";
+    public const string P2HeaderOptionN8 = "Option 8";
     public const string P2HeaderNavigationFour = "Navigation Four";
     public const string P2TextChangeMode = "Change Mode";
     public const string P2TextChangeStyle = "Change Style";
@@ -102,6 +108,8 @@ internal partial class en_US : LanguageProvider
     public const string ApiPropertyContextMenuItemsSource = "Data source used to generate context menu items.";
     public const string ApiPropertyMenuFlyoutItemsSource = "Data source used to generate menu flyout items.";
     public const string ApiPropertyNavMenuMode = "Controls whether NavMenu is inline, vertical, or horizontal.";
+    public const string ApiPropertyNavMenuIsInlineCollapsed = "Collapses inline NavMenu into a compact popup navigation rail.";
+    public const string ApiPropertyNavMenuInlineCollapsedWidth = "Width used when inline NavMenu is collapsed.";
     public const string ApiPropertyNavMenuIsDarkStyle = "Applies the dark navigation menu style.";
     public const string ApiPropertyNavMenuDefaultOpenPaths = "Paths opened when the navigation menu initializes.";
     public const string ApiPropertyNavMenuDefaultSelectedPath = "Path selected when the navigation menu initializes.";
@@ -123,6 +131,7 @@ internal partial class en_US : LanguageProvider
     public const string TokenNameNavMenuItemContentPadding = "Padding inside navigation menu item content.";
     public const string TokenNameNavMenuInlineItemIndentUnit = "Indent unit used by inline navigation levels.";
     public const string TokenNameNavMenuCollapsedWidth = "Width of a collapsed navigation menu.";
+    public const string TokenNameNavMenuInlineCollapsedWidth = "Default width of inline collapsed navigation menus.";
     public const string TokenNameNavMenuMenuHorizontalHeight = "Height of horizontal navigation menus.";
     public const string TokenNameNavMenuDarkMenuBg = "Dark navigation menu background.";
     public const string TokenNameNavMenuMenuPopupMaxHeight = "Maximum height of navigation popup menus.";

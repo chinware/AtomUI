@@ -278,6 +278,12 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             o => o.IsKeyboardActive,
             (o, v) => o.IsKeyboardActive = v);
 
+    internal static readonly DirectProperty<NavMenuItem, bool> IsInlineCollapsedProperty =
+        AvaloniaProperty.RegisterDirect<NavMenuItem, bool>(
+            nameof(IsInlineCollapsed),
+            o => o.IsInlineCollapsed,
+            (o, v) => o.IsInlineCollapsed = v);
+
     private double _effectivePopupMinWidth;
 
     internal double EffectivePopupMinWidth
@@ -345,6 +351,14 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     {
         get => _isKeyboardActive;
         set => SetAndRaise(IsKeyboardActiveProperty, ref _isKeyboardActive, value);
+    }
+
+    private bool _isInlineCollapsed;
+
+    internal bool IsInlineCollapsed
+    {
+        get => _isInlineCollapsed;
+        set => SetAndRaise(IsInlineCollapsedProperty, ref _isInlineCollapsed, value);
     }
     
     internal Control? ItemHeader => _itemHeader;
@@ -635,7 +649,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         {
             if (Parent is NavMenu navMenu)
             {
-                if (navMenu.Mode == NavMenuMode.Horizontal)
+                if (navMenu.EffectiveMode == NavMenuMode.Horizontal)
                 {
                     EffectivePopupMinWidth = Math.Max(_itemHeader?.Bounds.Width ?? Bounds.Width, PopupMinWidth);
                 }
@@ -869,7 +883,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         {
             if (Parent is NavMenu navMenu)
             {
-                if (navMenu.Mode == NavMenuMode.Horizontal && _itemHeader is not null)
+                if (navMenu.EffectiveMode == NavMenuMode.Horizontal && _itemHeader is not null)
                 {
                     var offset     = _itemHeader.TranslatePoint(new Point(0, 0), this) ?? default;
                     var targetRect = new Rect(offset, _itemHeader.Bounds.Size);
@@ -912,6 +926,8 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
             }
             
             menuItem[!NavMenuItem.ModeProperty]                  = this[!ModeProperty];
+            menuItem.ClearValue(IsInlineCollapsedProperty);
+            menuItem.SetCurrentValue(IsInlineCollapsedProperty, false);
             menuItem[!NavMenuItem.IsDarkStyleProperty]           = this[!IsDarkStyleProperty];
             menuItem[!NavMenuItem.IsItemBackgroundEnabledProperty] = this[!IsItemBackgroundEnabledProperty];
             menuItem[!NavMenuItem.IsMotionEnabledProperty]       = this[!IsMotionEnabledProperty];
@@ -1056,6 +1072,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
     
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        CancelInlineMotion();
         ClearStateRecursively(this);
         base.OnApplyTemplate(e);
         if (_popup != null)
@@ -1074,6 +1091,7 @@ internal class NavMenuItem : HeaderedSelectingItemsControl,
         }
 
         _itemHeader = e.NameScope.Find<Control>("PART_Header");
+        _childItemsLayoutTransform = null;
         
         if (Mode == NavMenuMode.Inline)
         {

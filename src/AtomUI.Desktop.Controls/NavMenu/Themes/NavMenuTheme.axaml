@@ -63,11 +63,12 @@
         </Style>
         
         <Setter Property="ShouldUseOverlayPopup" Value="True" />
+        <Setter Property="InlineCollapsedWidth" Value="{atom:NavMenuTokenResource InlineCollapsedWidth}" />
         <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
         <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
         <Setter Property="atom:ScrollViewer.IsLiteMode" Value="True" />
         <Setter Property="atom:ScrollViewer.AllowAutoHide" Value="True" />
-        
+
         <Setter Property="ItemTemplate">
             <TreeDataTemplate ItemsSource="{Binding Children}"
                               x:DataType="atom:INavMenuNode">
@@ -115,7 +116,7 @@
                         Value="{atom:NavMenuTokenResource VerticalItemsPanelSpacing}" />
             </Style>
         </Style>
-        
+
         <Style Selector="^[Mode=Horizontal]">
             <Setter Property="ItemsPanel">
                 <ItemsPanelTemplate>

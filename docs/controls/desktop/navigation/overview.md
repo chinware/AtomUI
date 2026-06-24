@@ -1,16 +1,44 @@
 # Navigation 控件
 
-导航类桌面控件文档放在本目录，例如 Menu、NavMenu、Tabs、Breadcrumb、Pagination、Steps。
-
-此分类关注页面/视图切换、层级路径、步骤进度、分页和菜单交互。
+导航类桌面控件文档放在本目录，覆盖路径、菜单、页签、分页、下拉和候选导航能力。
 
 ## 控件文档
 
+- [Breadcrumb 桌面版架构设计](breadcrumb/overview.md)
+- [Breadcrumb 桌面版实现原理](breadcrumb/implementation.md)
+- [Breadcrumb Token 设计](breadcrumb/token.md)
+- [Breadcrumb Changelog](breadcrumb/changelog.md)
+- [ButtonSpinner 桌面版架构设计](button-spinner/overview.md)
+- [ButtonSpinner 桌面版实现原理](button-spinner/implementation.md)
+- [ButtonSpinner Token 设计](button-spinner/token.md)
+- [ButtonSpinner Changelog](button-spinner/changelog.md)
+- [ComboBox 桌面版架构设计](combo-box/overview.md)
+- [ComboBox 桌面版实现原理](combo-box/implementation.md)
+- [ComboBox Token 设计](combo-box/token.md)
+- [ComboBox Changelog](combo-box/changelog.md)
+- [DropdownButton 桌面版架构设计](dropdown-button/overview.md)
+- [DropdownButton 桌面版实现原理](dropdown-button/implementation.md)
+- [DropdownButton Changelog](dropdown-button/changelog.md)
+- [Menu 桌面版架构设计](menu/overview.md)
+- [Menu 桌面版实现原理](menu/implementation.md)
+- [Menu Token 设计](menu/token.md)
+- [Menu Changelog](menu/changelog.md)
 - [NavMenu 桌面版架构设计](nav-menu/overview.md)
 - [NavMenu 桌面版实现原理](nav-menu/implementation.md)
 - [NavMenu Token 设计](nav-menu/token.md)
 - [NavMenu Changelog](nav-menu/changelog.md)
+- [Pagination 桌面版架构设计](pagination/overview.md)
+- [Pagination 桌面版实现原理](pagination/implementation.md)
+- [Pagination Token 设计](pagination/token.md)
+- [Pagination Changelog](pagination/changelog.md)
 - [Steps 桌面版架构设计](steps/overview.md)
 - [Steps 桌面版实现原理](steps/implementation.md)
 - [Steps Token 设计](steps/token.md)
 - [Steps Changelog](steps/changelog.md)
+- [TabControl 桌面版架构设计](tab-control/overview.md)
+- [TabControl 桌面版实现原理](tab-control/implementation.md)
+- [TabControl Token 设计](tab-control/token.md)
+- [TabControl Changelog](tab-control/changelog.md)
+- [TabStrip 桌面版架构设计](tab-strip/overview.md)
+- [TabStrip 桌面版实现原理](tab-strip/implementation.md)
+- [TabStrip Changelog](tab-strip/changelog.md)

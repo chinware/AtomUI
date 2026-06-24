@@ -162,7 +162,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
     private void HandleDownKey(NavMenu navMenu)
     {
         var activeItem = GetValidKeyboardActiveItem();
-        if (navMenu.Mode == NavMenuMode.Horizontal &&
+        if (navMenu.EffectiveMode == NavMenuMode.Horizontal &&
             activeItem is { IsTopLevel: true, HasSubMenu: true })
         {
             if (TryOpenSubmenuAndActivateFirstChild(navMenu, activeItem))
@@ -188,7 +188,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
             return;
         }
 
-        if (navMenu.Mode == NavMenuMode.Horizontal && activeItem.IsTopLevel)
+        if (navMenu.EffectiveMode == NavMenuMode.Horizontal && activeItem.IsTopLevel)
         {
             MoveKeyboardActiveItem(navMenu, 1, navMenu);
             return;
@@ -212,7 +212,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
             return;
         }
 
-        if (navMenu.Mode == NavMenuMode.Horizontal && activeItem.IsTopLevel)
+        if (navMenu.EffectiveMode == NavMenuMode.Horizontal && activeItem.IsTopLevel)
         {
             MoveKeyboardActiveItem(navMenu, -1, navMenu);
             return;
@@ -221,7 +221,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
         var parentItem = activeItem.Parent as NavMenuItem;
         if (parentItem is not null)
         {
-            if (navMenu.Mode != NavMenuMode.Inline)
+            if (navMenu.EffectiveMode != NavMenuMode.Inline)
             {
                 parentItem.Close();
             }
@@ -242,7 +242,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
     {
         var activeItem = GetValidKeyboardActiveItem();
         var owner      = forcedOwner ?? ResolveKeyboardNavigationOwner(navMenu, activeItem);
-        var items      = navMenu.Mode == NavMenuMode.Inline && forcedOwner is null
+        var items      = navMenu.EffectiveMode == NavMenuMode.Inline && forcedOwner is null
             ? CollectVisibleInlineItems(navMenu)
             : CollectDirectNavigationItems(owner);
 
@@ -273,7 +273,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
 
         if (activeItem.HasSubMenu)
         {
-            if (navMenu.Mode == NavMenuMode.Inline)
+            if (navMenu.EffectiveMode == NavMenuMode.Inline)
             {
                 Select(activeItem);
             }
@@ -338,7 +338,7 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
     private ItemsControl ResolveKeyboardNavigationOwner(NavMenu navMenu, NavMenuItem? activeItem)
     {
         if (activeItem?.Parent is ItemsControl owner &&
-            (navMenu.Mode != NavMenuMode.Horizontal || !activeItem.IsTopLevel))
+            (navMenu.EffectiveMode != NavMenuMode.Horizontal || !activeItem.IsTopLevel))
         {
             return owner;
         }

@@ -79,6 +79,30 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
         set => this.RaiseAndSetIfChanged(ref _defaultSelectedPath, value);
     }
 
+    private bool _isInlineCollapsed;
+
+    public bool IsInlineCollapsed
+    {
+        get => _isInlineCollapsed;
+        set => this.RaiseAndSetIfChanged(ref _isInlineCollapsed, value);
+    }
+
+    private IList<TreeNodePath>? _inlineCollapsedOpenPaths;
+
+    public IList<TreeNodePath>? InlineCollapsedOpenPaths
+    {
+        get => _inlineCollapsedOpenPaths;
+        set => this.RaiseAndSetIfChanged(ref _inlineCollapsedOpenPaths, value);
+    }
+
+    private TreeNodePath? _inlineCollapsedSelectedPath;
+
+    public TreeNodePath? InlineCollapsedSelectedPath
+    {
+        get => _inlineCollapsedSelectedPath;
+        set => this.RaiseAndSetIfChanged(ref _inlineCollapsedSelectedPath, value);
+    }
+
     private INavMenuNode? _defaultSelectedNode;
 
     public INavMenuNode? DefaultSelectedNode
@@ -146,6 +170,8 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
             new MenuApiRow("ContextMenu.ItemsSource", Lang(MenuShowCaseLangResourceKind.ApiPropertyContextMenuItemsSource), "IEnumerable?", "cyan", "null"),
             new MenuApiRow("MenuFlyout.ItemsSource", Lang(MenuShowCaseLangResourceKind.ApiPropertyMenuFlyoutItemsSource), "IEnumerable?", "cyan", "null"),
             new MenuApiRow("NavMenu.Mode", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuMode), "NavMenuMode", "blue", "Inline"),
+            new MenuApiRow("NavMenu.IsInlineCollapsed", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsInlineCollapsed), "bool", "purple", "false"),
+            new MenuApiRow("NavMenu.InlineCollapsedWidth", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuInlineCollapsedWidth), "double", "cyan", "token"),
             new MenuApiRow("NavMenu.IsDarkStyle", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsDarkStyle), "bool", "purple", "false"),
             new MenuApiRow("NavMenu.DefaultOpenPaths", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuDefaultOpenPaths), "IList<TreeNodePath>?", "cyan", "null"),
             new MenuApiRow("NavMenu.DefaultSelectedPath", Lang(MenuShowCaseLangResourceKind.ApiPropertyNavMenuDefaultSelectedPath), "TreeNodePath?", "cyan", "null"),
@@ -175,6 +201,7 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
             new MenuDesignTokenRow("NavMenu.ItemContentPadding", Lang(MenuShowCaseLangResourceKind.TokenNameNavMenuItemContentPadding), Lang(MenuShowCaseLangResourceKind.TokenScopeComponent), "blue", Lang(MenuShowCaseLangResourceKind.TokenStatusStable), "success"),
             new MenuDesignTokenRow("NavMenu.InlineItemIndentUnit", Lang(MenuShowCaseLangResourceKind.TokenNameNavMenuInlineItemIndentUnit), Lang(MenuShowCaseLangResourceKind.TokenScopeComponent), "blue", Lang(MenuShowCaseLangResourceKind.TokenStatusStable), "success"),
             new MenuDesignTokenRow("NavMenu.CollapsedWidth", Lang(MenuShowCaseLangResourceKind.TokenNameNavMenuCollapsedWidth), Lang(MenuShowCaseLangResourceKind.TokenScopeComponent), "blue", Lang(MenuShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new MenuDesignTokenRow("NavMenu.InlineCollapsedWidth", Lang(MenuShowCaseLangResourceKind.TokenNameNavMenuInlineCollapsedWidth), Lang(MenuShowCaseLangResourceKind.TokenScopeComponent), "blue", Lang(MenuShowCaseLangResourceKind.TokenStatusStable), "success"),
             new MenuDesignTokenRow("NavMenu.MenuHorizontalHeight", Lang(MenuShowCaseLangResourceKind.TokenNameNavMenuMenuHorizontalHeight), Lang(MenuShowCaseLangResourceKind.TokenScopeComponent), "blue", Lang(MenuShowCaseLangResourceKind.TokenStatusStable), "success"),
             new MenuDesignTokenRow("NavMenu.DarkMenuBg", Lang(MenuShowCaseLangResourceKind.TokenNameNavMenuDarkMenuBg), Lang(MenuShowCaseLangResourceKind.TokenScopeComponent), "blue", Lang(MenuShowCaseLangResourceKind.TokenStatusStable), "success"),
             new MenuDesignTokenRow("NavMenu.MenuPopupMaxHeight", Lang(MenuShowCaseLangResourceKind.TokenNameNavMenuMenuPopupMaxHeight), Lang(MenuShowCaseLangResourceKind.TokenScopeComponent), "blue", Lang(MenuShowCaseLangResourceKind.TokenStatusStable), "success")
@@ -209,6 +236,11 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
         }
     }
 
+    public void HandleToggleInlineCollapsedClick(object? sender, RoutedEventArgs? args)
+    {
+        IsInlineCollapsed = !IsInlineCollapsed;
+    }
+
     private static string Lang(MenuShowCaseLangResourceKind kind)
     {
         if (Application.Current is not null && Dispatcher.UIThread.CheckAccess())
@@ -233,6 +265,8 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
             MenuShowCaseLangResourceKind.ApiPropertyContextMenuItemsSource          => en_US.ApiPropertyContextMenuItemsSource,
             MenuShowCaseLangResourceKind.ApiPropertyMenuFlyoutItemsSource           => en_US.ApiPropertyMenuFlyoutItemsSource,
             MenuShowCaseLangResourceKind.ApiPropertyNavMenuMode                     => en_US.ApiPropertyNavMenuMode,
+            MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsInlineCollapsed        => en_US.ApiPropertyNavMenuIsInlineCollapsed,
+            MenuShowCaseLangResourceKind.ApiPropertyNavMenuInlineCollapsedWidth     => en_US.ApiPropertyNavMenuInlineCollapsedWidth,
             MenuShowCaseLangResourceKind.ApiPropertyNavMenuIsDarkStyle              => en_US.ApiPropertyNavMenuIsDarkStyle,
             MenuShowCaseLangResourceKind.ApiPropertyNavMenuDefaultOpenPaths         => en_US.ApiPropertyNavMenuDefaultOpenPaths,
             MenuShowCaseLangResourceKind.ApiPropertyNavMenuDefaultSelectedPath      => en_US.ApiPropertyNavMenuDefaultSelectedPath,
@@ -250,6 +284,7 @@ public class MenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableVie
             MenuShowCaseLangResourceKind.TokenNameNavMenuItemContentPadding         => en_US.TokenNameNavMenuItemContentPadding,
             MenuShowCaseLangResourceKind.TokenNameNavMenuInlineItemIndentUnit       => en_US.TokenNameNavMenuInlineItemIndentUnit,
             MenuShowCaseLangResourceKind.TokenNameNavMenuCollapsedWidth             => en_US.TokenNameNavMenuCollapsedWidth,
+            MenuShowCaseLangResourceKind.TokenNameNavMenuInlineCollapsedWidth       => en_US.TokenNameNavMenuInlineCollapsedWidth,
             MenuShowCaseLangResourceKind.TokenNameNavMenuMenuHorizontalHeight       => en_US.TokenNameNavMenuMenuHorizontalHeight,
             MenuShowCaseLangResourceKind.TokenNameNavMenuDarkMenuBg                 => en_US.TokenNameNavMenuDarkMenuBg,
             MenuShowCaseLangResourceKind.TokenNameNavMenuMenuPopupMaxHeight         => en_US.TokenNameNavMenuMenuPopupMaxHeight,
