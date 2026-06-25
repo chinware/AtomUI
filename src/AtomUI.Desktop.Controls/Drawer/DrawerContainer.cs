@@ -499,7 +499,7 @@ internal class DrawerContainer : ContentControl
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);
-        if (IsCloseOnMaskClick)
+        if (IsCloseOnMaskClick && e.InitialPressMouseButton == MouseButton.Left)
         {
             if (Drawer != null && Drawer.TryGetTarget(out var drawer))
             {
