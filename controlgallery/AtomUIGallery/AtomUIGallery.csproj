@@ -10,6 +10,8 @@
     <ItemGroup>
         <AvaloniaResource Include="Assets/**/*.*"/>
         <AdditionalFiles Include="ShowCases/**/*.axaml" />
+        <AdditionalFiles Include="ShowCases/**/*.axaml.cs" />
+        <AdditionalFiles Include="ShowCases/**/ViewModels/**/*.cs" />
     </ItemGroup>
 
     <ItemGroup>

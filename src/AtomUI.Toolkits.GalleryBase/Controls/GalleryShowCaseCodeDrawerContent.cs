@@ -10,6 +10,8 @@ namespace AtomUI.Toolkits.GalleryBase.Controls;
 internal sealed class GalleryShowCaseCodeDrawerContent : UserControl, IDisposable
 {
     private readonly List<GalleryCodeViewer> _viewers = new();
+    private readonly Dictionary<DesktopTabItem, ShowCaseCodeSnippet> _pendingSnippets = new();
+    private DesktopTabControl? _tabs;
     private bool _isDisposed;
 
     public GalleryShowCaseCodeDrawerContent(ShowCaseCodeSnippetGroup? group, ShowCaseCodeSnippetKey key)
@@ -38,25 +40,50 @@ internal sealed class GalleryShowCaseCodeDrawerContent : UserControl, IDisposabl
         };
         foreach (var snippet in group.Snippets)
         {
-            var viewer = new GalleryCodeViewer
+            var tabItem = new DesktopTabItem
             {
-                CodeText = snippet.Text,
-                Language = snippet.Language,
-                ShowLineNumbers = true,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch
+                Header = snippet.TabTitle
             };
-            _viewers.Add(viewer);
-
-            tabs.Items.Add(new DesktopTabItem
-            {
-                Header = snippet.TabTitle,
-                Content = viewer
-            });
+            _pendingSnippets.Add(tabItem, snippet);
+            tabs.Items.Add(tabItem);
         }
 
-        tabs.SelectedIndex = 0;
+        tabs.SelectionChanged += HandleSelectionChanged;
+        _tabs = tabs;
         Content = tabs;
+
+        // Materialize the initially selected tab; the rest are created on demand.
+        tabs.SelectedIndex = 0;
+        EnsureViewerCreated(tabs.SelectedItem as DesktopTabItem);
+    }
+
+    private void HandleSelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (_tabs is not null)
+        {
+            EnsureViewerCreated(_tabs.SelectedItem as DesktopTabItem);
+        }
+    }
+
+    private void EnsureViewerCreated(DesktopTabItem? tabItem)
+    {
+        if (tabItem is null ||
+            !_pendingSnippets.TryGetValue(tabItem, out var snippet))
+        {
+            return;
+        }
+
+        _pendingSnippets.Remove(tabItem);
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = snippet.Text,
+            Language = snippet.Language,
+            ShowLineNumbers = true,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch
+        };
+        _viewers.Add(viewer);
+        tabItem.Content = viewer;
     }
 
     public void Dispose()
@@ -67,6 +94,13 @@ internal sealed class GalleryShowCaseCodeDrawerContent : UserControl, IDisposabl
         }
 
         _isDisposed = true;
+        if (_tabs is not null)
+        {
+            _tabs.SelectionChanged -= HandleSelectionChanged;
+            _tabs = null;
+        }
+
+        _pendingSnippets.Clear();
         foreach (var viewer in _viewers)
         {
             viewer.Dispose();

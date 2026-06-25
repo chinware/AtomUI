@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Avatar;
 
 public partial class AvatarApiDataGrid : GalleryReactiveUserControl<AvatarViewModel>
