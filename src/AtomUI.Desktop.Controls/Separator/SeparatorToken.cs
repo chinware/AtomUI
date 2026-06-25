@@ -58,9 +58,9 @@ internal class SeparatorToken : AbstractControlDesignToken
         TextPaddingInline              = 1.0;
         OrientationMarginPercent       = 0.05;
         VerticalMarginInline           = SharedToken.UniformlyMarginXS;
-        HorizontalMarginBlockSM        = new Thickness(0, SharedToken.UniformlyMarginXS);
-        HorizontalMarginBlock          = new Thickness(0, SharedToken.UniformlyMargin);
-        HorizontalMarginBlockLG        = new Thickness(0, SharedToken.UniformlyMarginLG);
+        HorizontalMarginBlockSM        = new Thickness(0, 1);
+        HorizontalMarginBlock          = new Thickness(0, 1);
+        HorizontalMarginBlockLG        = new Thickness(0, 1);
         HorizontalWithTextGutterMargin = new Thickness(0, SharedToken.UniformlyMargin);
     }
     

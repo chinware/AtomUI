@@ -18,7 +18,7 @@ public class GallerySourceCodeDisplayLayoutTests
         contentSource.ShouldContain("SelectedIndex = 0");
         contentSource.ShouldContain("HorizontalContentAlignment = HorizontalAlignment.Stretch");
         contentSource.ShouldContain("VerticalContentAlignment = VerticalAlignment.Stretch");
-        contentSource.ShouldContain("ContentPadding = new Thickness(0)");
+        contentSource.ShouldContain("ContentPadding = new Thickness(1)");
         contentSource.ShouldNotContain("MinHeight = 520");
         viewerMarkup.ShouldContain("Name=\"PART_Editor\"");
         viewerMarkup.ShouldContain("HorizontalAlignment=\"Stretch\"");
@@ -31,12 +31,12 @@ public class GallerySourceCodeDisplayLayoutTests
         var contentSource = File.ReadAllText(GetRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseCodeDrawerContent.cs"));
         var hostSource    = File.ReadAllText(GetRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseCodeDrawerHost.cs"));
 
-        hostSource.ShouldContain("ContentPadding = new Thickness(12)");
+        hostSource.ShouldContain("ContentPadding = new Thickness(8, 1, 1, 1)");
         contentSource.ShouldNotContain("DrawerContentPaddingCompensation");
         contentSource.ShouldNotContain("new Thickness(-");
         contentSource.ShouldContain("HeaderStartEdgePadding = 0");
         contentSource.ShouldContain("HeaderEndEdgePadding = 0");
-        contentSource.ShouldContain("TabAndContentGutter = 8");
+        contentSource.ShouldContain("TabAndContentGutter = 2");
         contentSource.ShouldNotContain("Content = new Border");
     }
 
