@@ -179,6 +179,17 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
     private void HandleRightKey(NavMenu navMenu)
     {
         var activeItem = GetValidKeyboardActiveItem();
+        if (navMenu.EffectiveMode == NavMenuMode.Inline)
+        {
+            if (activeItem is { HasSubMenu: true, IsSubMenuOpen: false })
+            {
+                activeItem.Open();
+                navMenu.ExecutePendingContainerLayout(activeItem);
+            }
+
+            return;
+        }
+
         if (activeItem is null)
         {
             MoveKeyboardActiveItem(navMenu, 1);
@@ -203,6 +214,16 @@ internal abstract class NavMenuInteractionHandlerBase : INavMenuInteractionHandl
     private void HandleLeftKey(NavMenu navMenu)
     {
         var activeItem = GetValidKeyboardActiveItem();
+        if (navMenu.EffectiveMode == NavMenuMode.Inline)
+        {
+            if (activeItem is { HasSubMenu: true, IsSubMenuOpen: true })
+            {
+                activeItem.Close();
+            }
+
+            return;
+        }
+
         if (activeItem is null)
         {
             MoveKeyboardActiveItem(navMenu, -1);
