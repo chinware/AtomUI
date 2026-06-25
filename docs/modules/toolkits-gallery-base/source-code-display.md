@@ -15,14 +15,15 @@
 - 使用多标签只读编辑器展示 AXAML、code-behind、ViewModel 等源码片段。
 - 延迟加载源码片段和编辑器实例，避免增加 ShowCase 首屏创建成本。
 - 通过产品侧 Provider 获取源码片段，不在 GalleryBase 中引用具体产品页面。
-- 通过 Source Generator 生成产品侧源码片段 catalog，避免运行时文件扫描和反射扫描。
+- 通过 Source Generator 生成产品侧源码片段 catalog，并按 `ShowCaseItem` 做源码切片，避免运行时文件扫描和反射扫描。
 
 模块非职责：
 
 - 不编辑源码，不提供保存、格式化、诊断、跳转定义或智能提示能力。
 - 不替代 API / Design Token 表格。
 - 不展示整个源码文件，除非该文件本身就是当前示例的最小片段。
-- 不从运行时文件系统读取 `ShowCases/**/*.axaml`。
+- 不为了让片段可独立编译而引入整页、整文件或无关基础设施代码；源码片段目标是阅读完整，不是生成可复制即编译的小项目。
+- 不从运行时文件系统读取 `ShowCases/**/*.axaml`、`.axaml.cs` 或 ViewModel `.cs`。
 - 不在 GalleryBase 内写入 `AtomUIGallery.ShowCases.*` 或任何产品命名空间。
 
 ## 2. 设计语言
@@ -35,7 +36,7 @@
 - 阅读聚焦：源码内容在 Drawer 中展示，避免长代码撑开 Masonry 卡片。
 - 上下文保留：打开 Drawer 不销毁当前示例、不切换页面、不重建 ShowCase 内容。
 - 延迟成本：只有用户点击源码按钮后才解析片段、创建 Drawer 内容和代码编辑器。
-- 多文件表达：同一示例可包含多个片段标签，基础生成范围包含 AXAML。
+- 多文件表达：同一示例可包含 AXAML、Code-behind、ViewModel 等片段标签；每个标签只展示当前 `ShowCaseItem` 的共性上下文和直接相关代码。
 
 Drawer 而不是卡片内展开，是因为 Gallery 示例代码量差异很大。Drawer 提供稳定宽度、内部滚动、多标签和复制工具条，能承载 DataGrid、Form、TreeView 等复杂示例的代码阅读需求。
 
@@ -49,7 +50,7 @@ Drawer 而不是卡片内展开，是因为 Gallery 示例代码量差异很大�
 | 宿主层 | `AtomUI.Toolkits.GalleryBase` | `GalleryShowCaseCodeDrawerHost` 承载单例 Drawer，接收打开请求 |
 | 查看层 | `AtomUI.Toolkits.GalleryBase` | `GalleryShowCaseCodeDrawer` 和 `GalleryCodeViewer` 展示多标签只读源码 |
 | 数据层 | 产品 Gallery 项目 | 实现 `IShowCaseCodeSnippetProvider`，从生成 catalog 查询片段 |
-| 生成层 | `AtomUI.Toolkits.GalleryBase.Generator` | 扫描产品 AdditionalFiles，生成 `ShowCaseCodeSnippetCatalog.g.cs` |
+| 生成层 | `AtomUI.Toolkits.GalleryBase.Generator` | 扫描产品 AdditionalFiles，按 `ShowCaseItem` 提取 AXAML 与相关 C# 成员，生成 `ShowCaseCodeSnippetCatalog.g.cs` |
 
 依赖方向：
 
@@ -131,7 +132,7 @@ public sealed record ShowCaseCodeSnippet(
 | `SourceFilePath` | repo 相对路径，用于调试和测试 |
 | `StartLine` / `EndLine` | 源文件行号范围 |
 
-Generator 的基础生成范围是 `AXAML` 标签。code-behind 和 ViewModel 标签只有在产品侧或 generator 配置提供明确片段提取规则时才生成，不能自动展示整个 `.axaml.cs` 或 ViewModel 文件。
+Generator 必须默认生成 `AXAML` 标签。`Code-behind` 和 `ViewModel` 标签由 item 级静态分析生成：只有当当前 `ShowCaseItem` 的 AXAML 直接引用事件处理器、Binding、`x:DataType` 或相关命名对象，并且 generator 能从同组 `.axaml.cs` / ViewModel `.cs` 中切出相关成员时才生成。没有相关内容时不生成空标签。Generator 不能自动展示整个 `.axaml.cs` 或 ViewModel 文件。
 
 ### 4.4 Provider
 
@@ -306,19 +307,108 @@ Generator 项目使用 `netstandard2.0`，设置 `IsRoslynComponent=true`，并�
 
 ```text
 controlgallery/AtomUIGallery/ShowCases/**/*.axaml
+controlgallery/AtomUIGallery/ShowCases/**/*.axaml.cs
+controlgallery/AtomUIGallery/ShowCases/**/ViewModels/*.cs
 ```
 
-产品项目通过 `AdditionalFiles` 将 ShowCase AXAML 文件传给 generator。
+产品项目通过 `AdditionalFiles` 将 ShowCase AXAML、code-behind 和 ViewModel 源文件传给 generator。Generator 只读取 AdditionalFiles，不通过运行时文件系统、MSBuild project model 或 assembly metadata 反向扫描源码。
 
-提取规则：
+### 8.1 Item 级源码切片规则
+
+Generator 以 `ShowCaseItem` 为切片单位，而不是以整个 ShowCase 页面为单位。每个 item 的源码片段必须由 AXAML 入口和 C# 依赖闭包共同决定：
 
 - 读取 `x:Class` 得到 `ViewTypeName`。
 - 读取 `gallery:ShowCasePanel`，使用 `Name` 作为 `PanelKey`。
 - 按同一 panel 内声明顺序为 `gallery:ShowCaseItem` 分配 `ItemIndex`。
 - 对迁移后的 item，提取 `ShowCaseItem.DeferredContentTemplate > DataTemplate` 内部节点。
 - 对未迁移 item，提取 `ShowCaseItem` 的直接内容。
-- 保留源文件相对路径和行号范围。
+- 保留 AXAML 源文件相对路径和行号范围。
 - 默认生成 `Language="axaml"`、`TabTitle="AXAML"`。
+- 从 item AXAML 中收集 `x:DataType`、`{Binding ...}` 根路径、事件属性、`Name` / `x:Name`。
+- 事件属性只在 code-behind 中存在同名方法时才视为事件处理器；普通字符串属性不进入 C# 依赖集合。
+- Binding 根路径用于选择 ViewModel 成员，例如 `SelectedColorPreset.Name` 选择 `SelectedColorPreset`，不把 `Name` 当成独立 ViewModel 依赖。
+- `Name` / `x:Name` 只作为 code-behind 依赖辅助输入，用于识别事件处理器或 helper 中访问的示例控件，不单独生成片段。
+
+### 8.2 同组文件定位
+
+ShowCase 源文件通常按以下结构组织：
+
+```text
+ShowCases/<Category>/<Control>/
+  Views/<Control>ShowCase.axaml
+  Views/<Control>ShowCase.axaml.cs
+  ViewModels/<Control>ViewModel.cs
+```
+
+Generator 按以下顺序定位同组文件：
+
+1. code-behind 优先匹配 AXAML 同路径同名 `.axaml.cs`。
+2. 如果同路径匹配失败，通过 `x:Class` 的类型名和 namespace 在 AdditionalFiles 中兜底匹配 partial class。
+3. ViewModel 优先读取 item 或上层 `DataTemplate x:DataType`。
+4. 如果 `x:DataType` 缺失，通过 code-behind 基类 `GalleryReactiveUserControl<TViewModel>` 推断。
+5. 如果泛型推断失败，再按同组 `ViewModels/*ViewModel.cs` 约定兜底；兜底只能在唯一匹配时生效。
+
+找不到 code-behind 或 ViewModel 不阻断 AXAML 片段生成。Generator 只跳过对应 C# 标签。
+
+### 8.3 C# 成员切片规则
+
+Generator 使用 Roslyn C# syntax tree 对 code-behind 和 ViewModel 做成员级切片。切片目标是“当前示例阅读完整”，不是“单片段可独立编译”。
+
+Code-behind 片段包括：
+
+- 当前 item AXAML 直接引用的事件处理器方法。
+- 事件处理器调用的同类型 helper 方法。
+- 这些方法访问的字段、属性和嵌套类型。
+- 这些方法创建或引用的同文件局部记录类型、枚举或小型 DTO。
+- 片段需要的 `using`、alias using、namespace 和包含类型声明。
+
+ViewModel 片段包括：
+
+- 当前 item Binding 根路径对应的 public / internal 属性。
+- 属性使用的 backing field。
+- 属性 setter 或 getter 调用的同类型 helper 方法。
+- code-behind 事件转发到 ViewModel 的 public / internal 方法。
+- 相关属性或方法依赖的同文件 record、enum、小型 DTO 和构造初始化。
+- 构造函数中只与已选成员相关的初始化语句；如果无法安全拆分构造函数，保留完整构造函数但不引入 `EnsureApiRows()`、`EnsureDesignTokenRows()` 等无关 lazy data 方法。
+- 片段需要的 `using`、namespace 和包含类型声明。
+
+以下内容默认不进入当前 item 的 C# 片段：
+
+- API / Design Token 表格的 row 初始化方法，除非当前 item 明确 Binding 到这些成员。
+- 其他 `ShowCaseItem` 专用事件处理器、Binding 属性和 helper。
+- 仅服务页面 Shell、Scenario tabs、路由、导航、语言刷新或 DataGrid lazy loading 的成员，除非当前 item AXAML 直接引用。
+- 整个 `.axaml.cs` 或整个 ViewModel 文件。
+
+### 8.4 依赖闭包与降级规则
+
+成员切片采用有界递归：
+
+```text
+AXAML references
+  -> direct C# members
+  -> same-file member references
+  -> backing fields / helper methods / small related types
+  -> stop at framework, external assembly, unrelated ShowCase members
+```
+
+递归只跨同一 code-behind 文件和同一 ViewModel 文件，不跨产品项目中任意 C# 文件扩散。跨文件类型只保留引用表达式，不自动展开目标源码；后续如确实需要，可通过显式 SourceKey 或 include 规则扩展。
+
+当 generator 无法可靠判断某个成员是否相关时，按以下顺序降级：
+
+1. 保留当前 item 的 AXAML。
+2. 保留能确定直接相关的 C# 成员。
+3. 跳过不确定的 C# 标签，不生成空标签。
+4. 在严格模式下报告诊断；默认模式不因 C# 切片不完整产生 warning 噪声。
+
+严格模式由产品项目 MSBuild 属性控制，例如：
+
+```xml
+<GallerySourceCodeDisplayStrict>true</GallerySourceCodeDisplayStrict>
+```
+
+默认非严格模式适合日常开发和迁移期；严格模式适合 release 前检查源码展示完整性。
+
+### 8.5 生成片段顺序
 
 输出：
 
@@ -336,6 +426,14 @@ internal static partial class ShowCaseCodeSnippetCatalog
     }
 }
 ```
+
+每个 `ShowCaseCodeSnippetGroup.Snippets` 使用稳定顺序：
+
+1. `AXAML`
+2. `Code-behind`
+3. `ViewModel`
+
+没有内容的 C# 标签不生成。`AXAML` 是唯一默认必选标签；如果 item 没有可展示 AXAML 内容，则整个 group 不生成。
 
 生成代码应使用显式 `switch` 或稳定表，不进行运行时文件系统读取、assembly scan 或 XML 解析。
 
@@ -359,6 +457,12 @@ Generator 诊断遵循 [AtomUI 编译期诊断规范](../../engineering/compiler
 | `ShowCasePanel` 缺少 `Name` 且没有显式 `SourceKey` | Warning | 跳过该 panel 的默认 key 生成 |
 | `ShowCaseItem` 无法定位可展示内容 | Warning | 为该 item 不生成 snippet，并保留其他 item |
 | 同一 key 产生重复 snippet group | Warning | 后出现的 key 不覆盖先出现的 key，提示重复来源 |
+| 事件处理器名称在 code-behind 中不存在 | Hidden / Warning in strict mode | 默认只跳过该 handler；严格模式提示补齐 handler 或修正 AXAML |
+| `x:DataType` 或推断 ViewModel 无法解析 | Hidden / Warning in strict mode | 默认只生成 AXAML 和可用 code-behind；严格模式提示补齐 `x:DataType` 或 ViewModel 约定 |
+| Binding 根路径在 ViewModel 中找不到成员 | Hidden / Warning in strict mode | 默认跳过该 ViewModel 成员；严格模式提示 Binding 与 VM 不一致 |
+| C# syntax tree 无法解析 | Warning | 跳过对应 C# 文件，保留其他文件片段 |
+
+默认诊断策略偏低噪声：AXAML key 和 group 生成问题使用 Warning，因为它们会导致源码入口无法匹配；C# 切片不完整默认不阻断 ShowCase 源码展示，因为 AXAML 片段仍然可用。严格模式只在产品显式开启时提高 C# 关联问题的可见性。
 
 ## 9. 产品集成模型
 
@@ -412,9 +516,10 @@ Clipboard 操作通过当前 `TopLevel` 获取剪贴板服务。没有可用 cli
 - 运行时不使用 `Assembly.GetTypes()`、`Activator.CreateInstance(...)`、反射字段扫描或运行时文件扫描。
 - Source Generator 输出的 catalog 是普通 C# 代码，trimmer 可静态分析。
 - Generator 项目使用 `netstandard2.0`，并隔离 `PublishAot`、`PublishTrimmed`、`RuntimeIdentifier` 等发布属性。
+- Generator 的 C# 分析只在编译期使用 Roslyn syntax tree；运行时不保存 Roslyn 类型、语义模型或源码文件索引。
 - TextMate grammar 资源必须通过包资源路径加载，并在 Browser 发布中验证。
 - Drawer 和 editor 均按用户操作延迟创建，Browser 首屏不初始化 AvaloniaEdit。
-- 生成 catalog 不应无限增长到包含整页或整文件源码；只保存与示例直接相关的片段。
+- 生成 catalog 不应无限增长到包含整页或整文件源码；只保存与示例直接相关的 AXAML、code-behind 和 ViewModel 切片。
 
 涉及 NativeAOT 发布时，除普通测试外必须执行 Gallery NativeAOT publish 验证。
 
@@ -430,6 +535,8 @@ Clipboard 操作通过当前 `TopLevel` 获取剪贴板服务。没有可用 cli
 - Drawer 始终作为浮层显示，不参与 Masonry 布局测量。
 - GalleryBase 不引用产品项目。
 - Source Generator 不生成产品运行时依赖之外的反射路径。
+- Source Generator 生成的 `Code-behind` / `ViewModel` 标签必须来自 item 级依赖分析，不得退化为整文件展示。
+- 当前 item 没有关联 C# 代码时不生成空 tab；Drawer 只显示实际存在的片段。
 - Snapshot 测试中的 demo 内容提取规则仍以 demo XAML 为准，不把源码展示 UI 混入示例内容 snapshot。
 
 ## 13. 文档导航与验证策略
@@ -447,8 +554,9 @@ Clipboard 操作通过当前 `TopLevel` 获取剪贴板服务。没有可用 cli
 
 | 层级 | 验证 |
 |---|---|
-| Generator | generator tests 覆盖 AXAML 提取、panel key、item index、line range 和空输入 |
+| Generator | generator tests 覆盖 AXAML 提取、panel key、item index、line range、空输入、事件 handler 切片、Binding 到 ViewModel 成员切片和无 C# 关联时不生成空 tab |
+| Generator strict mode | generator tests 覆盖找不到事件处理器、找不到 ViewModel、Binding 成员缺失时默认低噪声和 strict warning 两种行为 |
 | GalleryBase runtime | Drawer 打开/关闭、editor lazy 创建、provider 缺失、clipboard fallback |
-| ShowCase 结构 | 全量迁移页面每个 `ShowCaseItem` 可匹配源码片段 |
+| ShowCase 结构 | 全量迁移页面每个 `ShowCaseItem` 可匹配源码片段；典型页面覆盖 `AXAML + Code-behind`、`AXAML + ViewModel`、`AXAML + Code-behind + ViewModel` 三类组合 |
 | AOT | Gallery NativeAOT publish 验证生成 catalog 和编辑器依赖 |
 | 文档 | `git diff --check`，并确认本文件从 GalleryBase 模块入口可达 |

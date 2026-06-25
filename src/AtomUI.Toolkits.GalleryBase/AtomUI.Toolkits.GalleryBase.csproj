@@ -13,6 +13,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <InternalsVisibleTo Include="AtomUI.Toolkits.GalleryBase.Tests" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Avalonia" />
         <PackageReference Include="Avalonia.AvaloniaEdit" />
         <PackageReference Include="AvaloniaEdit.TextMate" />

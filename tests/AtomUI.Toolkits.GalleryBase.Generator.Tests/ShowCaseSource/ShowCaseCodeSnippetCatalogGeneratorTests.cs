@@ -63,6 +63,347 @@ public class ShowCaseCodeSnippetCatalogGeneratorTests
     }
 
     [Fact]
+    public void GeneratesCodeBehindAndViewModelSnippetsFromShowCaseItemDependencies()
+    {
+        var compilation = CreateCompilation();
+        var additionalFiles = ImmutableArray.Create<AdditionalText>(
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml",
+                """
+                <UserControl
+                    xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gallery="https://atomui.net/toolkits/gallery-base"
+                    xmlns:vm="using:AtomUIGallery.ShowCases.General.Foo.ViewModels"
+                    x:Class="AtomUIGallery.ShowCases.General.Foo.Views.FooShowCase">
+                    <gallery:ShowCasePanel Name="ExamplesContent">
+                        <gallery:ShowCaseItem Title="Basic">
+                            <gallery:ShowCaseItem.DeferredContentTemplate>
+                                <DataTemplate x:DataType="vm:FooViewModel">
+                                    <StackPanel Spacing="8">
+                                        <TextBlock Text="{Binding SelectedValue}" />
+                                        <Button Content="Change" Click="HandleChangeClick" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </gallery:ShowCaseItem.DeferredContentTemplate>
+                        </gallery:ShowCaseItem>
+                    </gallery:ShowCasePanel>
+                </UserControl>
+                """),
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml.cs",
+                """
+                namespace AtomUIGallery.ShowCases.General.Foo.Views;
+
+                public partial class FooShowCase
+                {
+                    private void HandleChangeClick(object? sender, RoutedEventArgs e)
+                    {
+                        if (DataContext is AtomUIGallery.ShowCases.General.Foo.ViewModels.FooViewModel viewModel)
+                        {
+                            viewModel.HandleChangeClick();
+                        }
+                    }
+
+                    private string GetLabel()
+                    {
+                        return "Basic";
+                    }
+                }
+                """),
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/ViewModels/FooViewModel.cs",
+                """
+                using ReactiveUI;
+
+                namespace AtomUIGallery.ShowCases.General.Foo.ViewModels;
+
+                public class FooViewModel : ReactiveObject
+                {
+                    private string _selectedValue = "Default";
+
+                    public string SelectedValue
+                    {
+                        get => _selectedValue;
+                        set => this.RaiseAndSetIfChanged(ref _selectedValue, value);
+                    }
+
+                    public void HandleChangeClick()
+                    {
+                        SelectedValue = GetNextValue();
+                    }
+
+                    private string GetNextValue()
+                    {
+                        return "Updated";
+                    }
+                }
+                """));
+
+        var outputCompilation = RunGenerator(compilation, additionalFiles, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        outputCompilation.GetDiagnostics(TestContext.Current.CancellationToken)
+                         .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                         .ShouldBeEmpty();
+
+        var generatedSource = outputCompilation.SyntaxTrees
+                                               .Single(tree => tree.FilePath.EndsWith("ShowCaseCodeSnippetCatalog.g.cs"))
+                                               .GetText(TestContext.Current.CancellationToken)
+                                               .ToString();
+
+        generatedSource.ShouldContain("TabTitle: \"AXAML\"");
+        generatedSource.ShouldContain("TabTitle: \"Code-behind\"");
+        generatedSource.ShouldContain("TabTitle: \"ViewModel\"");
+        generatedSource.ShouldContain("HandleChangeClick");
+        generatedSource.ShouldContain("SelectedValue");
+        generatedSource.ShouldContain("GetNextValue");
+        generatedSource.ShouldContain("_selectedValue");
+        generatedSource.ShouldNotContain("GetLabel");
+    }
+
+    [Fact]
+    public void ExtractsFullMultiLineAxamlElementWithPrefixedClosingTag()
+    {
+        var compilation = CreateCompilation();
+        var additionalFiles = ImmutableArray.Create<AdditionalText>(
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml",
+                """
+                <UserControl
+                    xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gallery="https://atomui.net/toolkits/gallery-base"
+                    xmlns:atom="https://atomui.net"
+                    x:Class="AtomUIGallery.ShowCases.Navigation.Steps.Views.StepsShowCase">
+                    <gallery:ShowCasePanel Name="ExamplesContent">
+                        <gallery:ShowCaseItem Title="Basic">
+                            <gallery:ShowCaseItem.DeferredContentTemplate>
+                                <DataTemplate>
+                                    <atom:Steps CurrentStep="0">
+                                        <atom:StepsItem Header="Finished" />
+                                        <atom:StepsItem Header="In Progress" />
+                                        <atom:StepsItem Header="Waiting" />
+                                    </atom:Steps>
+                                </DataTemplate>
+                            </gallery:ShowCaseItem.DeferredContentTemplate>
+                        </gallery:ShowCaseItem>
+                    </gallery:ShowCasePanel>
+                </UserControl>
+                """));
+
+        var outputCompilation = RunGenerator(compilation, additionalFiles, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+
+        var generatedSource = outputCompilation.SyntaxTrees
+                                               .Single(tree => tree.FilePath.EndsWith("ShowCaseCodeSnippetCatalog.g.cs"))
+                                               .GetText(TestContext.Current.CancellationToken)
+                                               .ToString();
+
+        // The whole element must be captured, not just the opening line.
+        generatedSource.ShouldContain("<atom:Steps CurrentStep=\\\"0\\\">");
+        generatedSource.ShouldContain("<atom:StepsItem Header=\\\"Finished\\\" />");
+        generatedSource.ShouldContain("<atom:StepsItem Header=\\\"Waiting\\\" />");
+        generatedSource.ShouldContain("</atom:Steps>");
+    }
+
+    [Fact]
+    public void ExcludesPageLevelLocalizationHelpersFromViewModelSnippet()
+    {
+        var compilation = CreateCompilation();
+        var additionalFiles = ImmutableArray.Create<AdditionalText>(
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/Views/StepsShowCase.axaml",
+                """
+                <UserControl
+                    xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gallery="https://atomui.net/toolkits/gallery-base"
+                    xmlns:vm="using:AtomUIGallery.ShowCases.Navigation.Steps.ViewModels"
+                    x:Class="AtomUIGallery.ShowCases.Navigation.Steps.Views.StepsShowCase">
+                    <gallery:ShowCasePanel Name="ExamplesContent">
+                        <gallery:ShowCaseItem Title="Basic">
+                            <gallery:ShowCaseItem.DeferredContentTemplate>
+                                <DataTemplate x:DataType="vm:StepsViewModel">
+                                    <TextBlock Text="{Binding NextButtonText}" />
+                                </DataTemplate>
+                            </gallery:ShowCaseItem.DeferredContentTemplate>
+                        </gallery:ShowCaseItem>
+                    </gallery:ShowCasePanel>
+                </UserControl>
+                """),
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/Navigation/Steps/ViewModels/StepsViewModel.cs",
+                """
+                using ReactiveUI;
+
+                namespace AtomUIGallery.ShowCases.Navigation.Steps.ViewModels;
+
+                public class StepsViewModel : ReactiveObject
+                {
+                    private string _nextButtonText = Lang(StepsLangResourceKind.Next);
+
+                    public string NextButtonText
+                    {
+                        get => _nextButtonText;
+                        set => this.RaiseAndSetIfChanged(ref _nextButtonText, value);
+                    }
+
+                    private static string Lang(StepsLangResourceKind kind)
+                    {
+                        return FallbackLang(kind);
+                    }
+
+                    private static string FallbackLang(StepsLangResourceKind kind)
+                    {
+                        return kind switch
+                        {
+                            StepsLangResourceKind.Next => "Next",
+                            StepsLangResourceKind.Done => "Done",
+                            _                          => kind.ToString()
+                        };
+                    }
+                }
+                """));
+
+        var outputCompilation = RunGenerator(compilation, additionalFiles, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+
+        var generatedSource = outputCompilation.SyntaxTrees
+                                               .Single(tree => tree.FilePath.EndsWith("ShowCaseCodeSnippetCatalog.g.cs"))
+                                               .GetText(TestContext.Current.CancellationToken)
+                                               .ToString();
+
+        generatedSource.ShouldContain("TabTitle: \"ViewModel\"");
+        generatedSource.ShouldContain("NextButtonText");
+        // The localization lookup table is page-level data and must not be dragged in.
+        generatedSource.ShouldNotContain("FallbackLang");
+        generatedSource.ShouldNotContain("StepsLangResourceKind.Done");
+    }
+
+    [Fact]
+    public void NormalizesMemberIndentationInCSharpSnippet()
+    {
+        var compilation = CreateCompilation();
+        var additionalFiles = ImmutableArray.Create<AdditionalText>(
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml",
+                """
+                <UserControl
+                    xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gallery="https://atomui.net/toolkits/gallery-base"
+                    x:Class="AtomUIGallery.ShowCases.General.Foo.Views.FooShowCase">
+                    <gallery:ShowCasePanel Name="ExamplesContent">
+                        <gallery:ShowCaseItem Title="Basic">
+                            <gallery:ShowCaseItem.DeferredContentTemplate>
+                                <DataTemplate>
+                                    <Button Click="HandleChangeClick" />
+                                </DataTemplate>
+                            </gallery:ShowCaseItem.DeferredContentTemplate>
+                        </gallery:ShowCaseItem>
+                    </gallery:ShowCasePanel>
+                </UserControl>
+                """),
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml.cs",
+                """
+                namespace AtomUIGallery.ShowCases.General.Foo.Views;
+
+                public partial class FooShowCase
+                {
+                    private void HandleChangeClick(object? sender, RoutedEventArgs e)
+                    {
+                        DoWork();
+                    }
+                }
+                """));
+
+        var outputCompilation = RunGenerator(compilation, additionalFiles, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+
+        var generatedSource = outputCompilation.SyntaxTrees
+                                               .Single(tree => tree.FilePath.EndsWith("ShowCaseCodeSnippetCatalog.g.cs"))
+                                               .GetText(TestContext.Current.CancellationToken)
+                                               .ToString();
+
+        // Member is indented exactly one level (4 spaces) under the type; the opening brace
+        // of the body sits at the same 4-space level, not stacked to 8.
+        generatedSource.ShouldContain("    private void HandleChangeClick(object? sender, RoutedEventArgs e)\\n    {\\n        DoWork();\\n    }");
+    }
+
+    [Fact]
+    public void OmitsEmptyCodeBehindAndViewModelTabsWhenItemHasNoCSharpDependencies()
+    {
+        var compilation = CreateCompilation();
+        var additionalFiles = ImmutableArray.Create<AdditionalText>(
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml",
+                """
+                <UserControl
+                    xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gallery="https://atomui.net/toolkits/gallery-base"
+                    x:Class="AtomUIGallery.ShowCases.General.Foo.Views.FooShowCase">
+                    <gallery:ShowCasePanel Name="ExamplesContent">
+                        <gallery:ShowCaseItem Title="Basic">
+                            <gallery:ShowCaseItem.DeferredContentTemplate>
+                                <DataTemplate>
+                                    <StackPanel Spacing="8">
+                                        <Button Content="Primary" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </gallery:ShowCaseItem.DeferredContentTemplate>
+                        </gallery:ShowCaseItem>
+                    </gallery:ShowCasePanel>
+                </UserControl>
+                """),
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml.cs",
+                """
+                namespace AtomUIGallery.ShowCases.General.Foo.Views;
+
+                public partial class FooShowCase
+                {
+                    private void HandleUnusedClick(object? sender, object e)
+                    {
+                    }
+                }
+                """),
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/ViewModels/FooViewModel.cs",
+                """
+                namespace AtomUIGallery.ShowCases.General.Foo.ViewModels;
+
+                public class FooViewModel
+                {
+                    public string UnusedText { get; set; } = "Unused";
+                }
+                """));
+
+        var outputCompilation = RunGenerator(compilation, additionalFiles, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        outputCompilation.GetDiagnostics(TestContext.Current.CancellationToken)
+                         .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                         .ShouldBeEmpty();
+
+        var generatedSource = outputCompilation.SyntaxTrees
+                                               .Single(tree => tree.FilePath.EndsWith("ShowCaseCodeSnippetCatalog.g.cs"))
+                                               .GetText(TestContext.Current.CancellationToken)
+                                               .ToString();
+
+        generatedSource.ShouldContain("TabTitle: \"AXAML\"");
+        generatedSource.ShouldNotContain("TabTitle: \"Code-behind\"");
+        generatedSource.ShouldNotContain("TabTitle: \"ViewModel\"");
+        generatedSource.ShouldNotContain("HandleUnusedClick");
+        generatedSource.ShouldNotContain("UnusedText");
+    }
+
+    [Fact]
     public void ReportsDiagnosticForShowCasePanelWithoutName()
     {
         var compilation = CreateCompilation();

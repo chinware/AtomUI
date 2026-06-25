@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using AtomUI.Toolkits.GalleryBase.Controls;
+using AtomUI.Toolkits.GalleryBase.SourceCode;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -21,6 +22,8 @@ using TextMateSharp.Grammars;
 using Xunit;
 using AtomUIContextMenu = AtomUI.Desktop.Controls.ContextMenu;
 using AtomUIMenuItem = AtomUI.Desktop.Controls.MenuItem;
+using DesktopTabControl = AtomUI.Desktop.Controls.TabControl;
+using DesktopTabItem = AtomUI.Desktop.Controls.TabItem;
 
 namespace AtomUI.Toolkits.GalleryBase.Tests.SourceCode;
 
@@ -319,6 +322,125 @@ public class GalleryCodeViewerRuntimeTests
 
             await WaitForClipboardTextAsync(editor, "public");
         });
+    }
+
+    [Fact]
+    public void DrawerContent_Renders_Tab_Header_Per_Snippet()
+    {
+        var group = new ShowCaseCodeSnippetGroup(
+            "Basic",
+            new[]
+            {
+                CreateSnippet("AXAML", "axaml", "<Button Content=\"Primary\" />"),
+                CreateSnippet("Code-behind", "csharp", "private void HandleClick() { }"),
+                CreateSnippet("ViewModel", "csharp", "public string SelectedValue { get; set; }")
+            });
+
+        ShowDrawerContentInWindow(group, content =>
+        {
+            var tabControl = content.GetVisualDescendants()
+                                    .OfType<DesktopTabControl>()
+                                    .Single();
+
+            tabControl.Items
+                      .OfType<DesktopTabItem>()
+                      .Select(static tabItem => tabItem.Header)
+                      .ShouldBe(new object?[] { "AXAML", "Code-behind", "ViewModel" });
+        });
+    }
+
+    [Fact]
+    public void DrawerContent_Creates_Viewers_Lazily_Per_Selected_Tab()
+    {
+        var group = new ShowCaseCodeSnippetGroup(
+            "Basic",
+            new[]
+            {
+                CreateSnippet("AXAML", "axaml", "<Button Content=\"Primary\" />"),
+                CreateSnippet("Code-behind", "csharp", "private void HandleClick() { }"),
+                CreateSnippet("ViewModel", "csharp", "public string SelectedValue { get; set; }")
+            });
+
+        ShowDrawerContentInWindow(group, content =>
+        {
+            var tabControl = content.GetVisualDescendants()
+                                    .OfType<DesktopTabControl>()
+                                    .Single();
+            var tabItems = tabControl.Items.OfType<DesktopTabItem>().ToArray();
+
+            // Only the initially selected tab materializes a viewer.
+            tabItems[0].Content.ShouldBeOfType<GalleryCodeViewer>();
+            tabItems[1].Content.ShouldBeNull();
+            tabItems[2].Content.ShouldBeNull();
+
+            tabControl.SelectedIndex = 2;
+            Dispatcher.UIThread.RunJobs();
+
+            // Selecting another tab materializes its viewer; the untouched tab stays empty.
+            tabItems[2].Content.ShouldBeOfType<GalleryCodeViewer>();
+            tabItems[1].Content.ShouldBeNull();
+        });
+    }
+
+    [Fact]
+    public void DrawerContent_Shows_Placeholder_When_No_Snippets_Available()
+    {
+        var key = new ShowCaseCodeSnippetKey(
+            "AtomUIGallery.ShowCases.General.Button.Views.ButtonShowCase",
+            "ExamplesContent",
+            0);
+
+        ShowDrawerContentInWindow(null, key, content =>
+        {
+            content.GetVisualDescendants()
+                   .OfType<DesktopTabControl>()
+                   .ShouldBeEmpty();
+
+            content.GetVisualDescendants()
+                   .OfType<TextBlock>()
+                   .Select(static textBlock => textBlock.Text)
+                   .ShouldContain(text => text != null && text.Contains("No source snippet found"));
+        });
+    }
+
+    private static ShowCaseCodeSnippet CreateSnippet(string tabTitle, string language, string text)
+    {
+        return new ShowCaseCodeSnippet(tabTitle, language, text, SourceFilePath: null, StartLine: 1, EndLine: 1);
+    }
+
+    private static void ShowDrawerContentInWindow(ShowCaseCodeSnippetGroup group,
+                                                  Action<GalleryShowCaseCodeDrawerContent> verify)
+    {
+        var key = new ShowCaseCodeSnippetKey("Demo", "ExamplesContent", 0);
+        ShowDrawerContentInWindow(group, key, verify);
+    }
+
+    private static void ShowDrawerContentInWindow(ShowCaseCodeSnippetGroup? group,
+                                                  ShowCaseCodeSnippetKey key,
+                                                  Action<GalleryShowCaseCodeDrawerContent> verify)
+    {
+        var content = new GalleryShowCaseCodeDrawerContent(group, key);
+        var window = new Window
+        {
+            Width = 640,
+            Height = 480,
+            Content = content
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            content.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+            verify(content);
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+            content.Dispose();
+        }
     }
 
     private static void ShowInWindow(GalleryCodeViewer viewer, Action<TextEditor> verify, Control? content = null)
