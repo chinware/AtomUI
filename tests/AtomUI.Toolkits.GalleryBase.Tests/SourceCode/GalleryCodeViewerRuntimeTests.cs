@@ -1,11 +1,14 @@
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Styling;
 using Avalonia.Threading;
@@ -16,6 +19,8 @@ using Shouldly;
 using TextMateSharp.Registry;
 using TextMateSharp.Grammars;
 using Xunit;
+using AtomUIContextMenu = AtomUI.Desktop.Controls.ContextMenu;
+using AtomUIMenuItem = AtomUI.Desktop.Controls.MenuItem;
 
 namespace AtomUI.Toolkits.GalleryBase.Tests.SourceCode;
 
@@ -264,6 +269,58 @@ public class GalleryCodeViewerRuntimeTests
         });
     }
 
+    [Fact]
+    public void GalleryCodeViewer_Uses_AtomUI_ContextMenu_For_Copying_Selected_Code()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = "public class Demo { }",
+            Language = "csharp"
+        };
+
+        ShowInWindow(viewer, editor =>
+        {
+            var contextMenu = editor.ContextMenu.ShouldBeOfType<AtomUIContextMenu>();
+            var copyItem = contextMenu.Items
+                                      .OfType<AtomUIMenuItem>()
+                                      .Single();
+
+            copyItem.Header.ShouldBe("Copy");
+            copyItem.IsEnabled.ShouldBeFalse();
+
+            editor.Select(0, 6);
+            Dispatcher.UIThread.RunJobs();
+
+            copyItem.IsEnabled.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public async Task GalleryCodeViewer_ContextMenu_Copy_Writes_Selected_Code_To_Clipboard()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = "public class Demo { }",
+            Language = "csharp"
+        };
+
+        await ShowInWindowAsync(viewer, async editor =>
+        {
+            editor.Select(0, 6);
+            Dispatcher.UIThread.RunJobs();
+
+            var copyItem = editor.ContextMenu
+                                 .ShouldBeOfType<AtomUIContextMenu>()
+                                 .Items
+                                 .OfType<AtomUIMenuItem>()
+                                 .Single();
+
+            copyItem.RaiseEvent(new RoutedEventArgs(AtomUIMenuItem.ClickEvent, copyItem));
+
+            await WaitForClipboardTextAsync(editor, "public");
+        });
+    }
+
     private static void ShowInWindow(GalleryCodeViewer viewer, Action<TextEditor> verify, Control? content = null)
     {
         var window = new Window
@@ -293,6 +350,63 @@ public class GalleryCodeViewerRuntimeTests
             Dispatcher.UIThread.RunJobs();
             viewer.Dispose();
         }
+    }
+
+    private static async Task ShowInWindowAsync(GalleryCodeViewer viewer,
+                                                Func<TextEditor, Task> verify,
+                                                Control? content = null)
+    {
+        var window = new Window
+        {
+            Width = 640,
+            Height = 480,
+            Content = content ?? viewer
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            viewer.ApplyTemplate();
+
+            var editor = viewer.GetVisualDescendants()
+                               .OfType<TextEditor>()
+                               .Single();
+            editor.ApplyTemplate();
+
+            Dispatcher.UIThread.RunJobs();
+            await verify(editor);
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+            viewer.Dispose();
+        }
+    }
+
+    private static async Task WaitForClipboardTextAsync(Control control, string expectedText)
+    {
+        var clipboard = TopLevel.GetTopLevel(control)?.Clipboard;
+        clipboard.ShouldNotBeNull();
+
+        string? actualText = null;
+        for (var i = 0; i < 20; i++)
+        {
+            Dispatcher.UIThread.RunJobs();
+            using var dataTransfer = await clipboard!.TryGetInProcessDataAsync();
+            actualText = dataTransfer is null
+                ? null
+                : await dataTransfer.TryGetValueAsync(DataFormat.Text);
+            if (actualText == expectedText)
+            {
+                return;
+            }
+
+            await Task.Delay(10);
+        }
+
+        actualText.ShouldBe(expectedText);
     }
 
     private static string GetTextMateThemeColor(GalleryCodeViewer viewer, string colorKey)
