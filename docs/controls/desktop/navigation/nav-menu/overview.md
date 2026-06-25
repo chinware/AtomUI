@@ -104,7 +104,7 @@ NavMenu 的交互行为由 mode 决定。
 - 进入折叠时缓存当前 inline 打开路径并关闭主视觉树中的 inline 子菜单；退出折叠时恢复缓存路径。折叠和展开不得清空 `SelectedItem` 或 selected path。
 - 键盘 Up / Down 在当前可见层级内移动 active/focus 项。
 - Enter 在带子菜单项上切换展开状态，在叶子节点上提交选择。
-- Left / Right 可作为桌面增强支持折叠当前 inline 子菜单或展开当前 active 子菜单，但不能改变 `SelectedItem`。
+- Left / Right 可作为桌面增强支持折叠或展开当前 active 子菜单，并保持 keyboard active 在当前项；叶子项上为 no-op，不能改变 `SelectedItem`。
 
 `Vertical` 与 `Horizontal` 模式：
 
@@ -251,7 +251,7 @@ NavMenu 的键盘导航模型与选择模型分离：
 | Open item path | 当前已展开的 inline / popup 分支。 | 仅通过现有打开行为间接体现 |
 | Selected item | 已提交的导航节点。 | 是，`SelectedItem` |
 
-键盘导航只遍历当前可见且可交互的 `NavMenuItem`。禁用项、分割线、隐藏 popup 内容、尚未展开的 inline 子项和非菜单项内容不进入漫游序列。打开子菜单时，active 项进入该子菜单的第一个可交互子项；关闭子菜单时，active 项回到父级触发项。
+键盘导航只遍历当前可见且可交互的 `NavMenuItem`。禁用项、分割线、隐藏 popup 内容、尚未展开的 inline 子项和非菜单项内容不进入漫游序列。Vertical、Horizontal 和 inline collapsed 的 popup 层级中，打开子菜单时 active 项进入该子菜单的第一个可交互子项；关闭子菜单时，active 项回到父级触发项。Inline 展开态的 Left / Right 只控制当前 active 子菜单展开收起，不移动 active 项。
 
 当 keyboard active 尚未初始化时，NavMenu 先尝试把当前 `SelectedItem` 对应的可见容器作为方向键移动锚点；第一次 Up / Down 应直接移动到选中项前一个或后一个可导航节点，而不是把 active 停在选中项本身。如果当前没有选中项，或选中项所在分支尚未展开、容器不可见，则回退到第一个可导航节点。这个初始化不会触发新的选择事件，也不会自动打开隐藏分支。
 

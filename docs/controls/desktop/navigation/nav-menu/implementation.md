@@ -129,7 +129,7 @@ Keyboard navigation：
 - Up / Down 在当前可见层级内循环移动，跳过禁用项和不可交互项。
 - Horizontal 根层使用 Left / Right 在顶层项之间循环移动，Down 或 Enter 打开 active 子菜单并进入第一项。
 - Vertical 根层和 popup 子菜单使用 Right 或 Enter 进入子菜单，Left 或 Esc 返回父级并关闭当前 popup 分支。
-- Inline 模式使用 Up / Down 遍历当前展开后的可见树；Enter 在父节点上切换展开，在叶子节点上提交选择。
+- Inline 模式使用 Up / Down 遍历当前展开后的可见树；Left / Right 只折叠或展开当前 active 子菜单并保持 active 项不变，叶子项上为 no-op；Enter 在父节点上切换展开，在叶子节点上提交选择。
 - Inline collapsed 模式使用 effective vertical 键盘策略，根层只遍历顶层项，打开子菜单后进入 popup 子级。
 - 键盘打开 popup 后必须确保子容器可生成，并把 active/focus 移动到第一个可交互子项；不能依赖固定 timer 等待 popup content。
 - Esc 只关闭当前 popup 分支，active/focus 回到父项；不能调用 `NavMenu.Close()`，避免清空 `SelectedItem`。

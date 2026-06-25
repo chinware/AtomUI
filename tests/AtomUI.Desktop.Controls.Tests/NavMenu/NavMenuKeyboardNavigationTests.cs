@@ -227,6 +227,186 @@ public class NavMenuKeyboardNavigationTests
     }
 
     [Fact]
+    public void Inline_Left_Key_Collapses_Active_Submenu_Without_Moving_Keyboard_Active_Item()
+    {
+        var option = new NavMenuNode
+        {
+            Header  = "Option",
+            ItemKey = "option"
+        };
+        var child = new NavMenuNode
+        {
+            Header  = "Child",
+            ItemKey = "child"
+        };
+        child.Children.Add(option);
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Children.Add(child);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(parent);
+
+        ShowInWindow(menu, window =>
+        {
+            var parentContainer = (NavMenuItem)menu.ContainerFromItem(parent)!;
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var childContainer = (NavMenuItem)parentContainer.ContainerFromItem(child)!;
+            childContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var optionContainer = (NavMenuItem)childContainer.ContainerFromItem(option)!;
+
+            menu.Focus(NavigationMethod.Tab).ShouldBeTrue();
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            Dispatcher.UIThread.RunJobs();
+
+            IsKeyboardActive(childContainer).ShouldBeTrue();
+            childContainer.IsSubMenuOpen.ShouldBeTrue();
+
+            PressKey(window, Key.Left, PhysicalKey.ArrowLeft);
+            RunDispatcherJobsUntil(() => !childContainer.IsSubMenuOpen);
+
+            childContainer.IsSubMenuOpen.ShouldBeFalse();
+            IsKeyboardActive(parentContainer).ShouldBeFalse();
+            IsKeyboardActive(childContainer).ShouldBeTrue(
+                "Inline Left should collapse the active submenu itself instead of moving active state to its parent.");
+            IsKeyboardActive(optionContainer).ShouldBeFalse();
+            menu.SelectedItem.ShouldBeNull();
+        });
+    }
+
+    [Fact]
+    public void Inline_Right_Key_Expands_Active_Submenu_Without_Moving_Keyboard_Active_Item()
+    {
+        var option = new NavMenuNode
+        {
+            Header  = "Option",
+            ItemKey = "option"
+        };
+        var child = new NavMenuNode
+        {
+            Header  = "Child",
+            ItemKey = "child"
+        };
+        child.Children.Add(option);
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Children.Add(child);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(parent);
+
+        ShowInWindow(menu, window =>
+        {
+            var parentContainer = (NavMenuItem)menu.ContainerFromItem(parent)!;
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var childContainer = (NavMenuItem)parentContainer.ContainerFromItem(child)!;
+
+            menu.Focus(NavigationMethod.Tab).ShouldBeTrue();
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            Dispatcher.UIThread.RunJobs();
+
+            IsKeyboardActive(childContainer).ShouldBeTrue();
+            childContainer.IsSubMenuOpen.ShouldBeFalse();
+
+            PressKey(window, Key.Right, PhysicalKey.ArrowRight);
+            RunDispatcherJobsUntil(() => childContainer.IsSubMenuOpen);
+
+            var optionContainer = (NavMenuItem)childContainer.ContainerFromItem(option)!;
+            childContainer.IsSubMenuOpen.ShouldBeTrue();
+            IsKeyboardActive(parentContainer).ShouldBeFalse();
+            IsKeyboardActive(childContainer).ShouldBeTrue(
+                "Inline Right should expand the active submenu itself instead of moving active state to the first child.");
+            IsKeyboardActive(optionContainer).ShouldBeFalse();
+            menu.SelectedItem.ShouldBeNull();
+        });
+    }
+
+    [Theory]
+    [InlineData(Key.Left, PhysicalKey.ArrowLeft)]
+    [InlineData(Key.Right, PhysicalKey.ArrowRight)]
+    public void Inline_Left_And_Right_Keys_Do_Not_Move_Active_Leaf_Item(Key key, PhysicalKey physicalKey)
+    {
+        var option = new NavMenuNode
+        {
+            Header  = "Option",
+            ItemKey = "option"
+        };
+        var child = new NavMenuNode
+        {
+            Header  = "Child",
+            ItemKey = "child"
+        };
+        child.Children.Add(option);
+        var parent = new NavMenuNode
+        {
+            Header  = "Parent",
+            ItemKey = "parent"
+        };
+        parent.Children.Add(child);
+
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode            = NavMenuMode.Inline,
+            IsMotionEnabled = false
+        };
+        menu.Items.Add(parent);
+
+        ShowInWindow(menu, window =>
+        {
+            var parentContainer = (NavMenuItem)menu.ContainerFromItem(parent)!;
+            parentContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var childContainer = (NavMenuItem)parentContainer.ContainerFromItem(child)!;
+            childContainer.Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var optionContainer = (NavMenuItem)childContainer.ContainerFromItem(option)!;
+
+            menu.Focus(NavigationMethod.Tab).ShouldBeTrue();
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            PressKey(window, Key.Down, PhysicalKey.ArrowDown);
+            Dispatcher.UIThread.RunJobs();
+
+            IsKeyboardActive(optionContainer).ShouldBeTrue();
+            childContainer.IsSubMenuOpen.ShouldBeTrue();
+
+            PressKey(window, key, physicalKey);
+            Dispatcher.UIThread.RunJobs();
+
+            childContainer.IsSubMenuOpen.ShouldBeTrue();
+            IsKeyboardActive(parentContainer).ShouldBeFalse();
+            IsKeyboardActive(childContainer).ShouldBeFalse();
+            IsKeyboardActive(optionContainer).ShouldBeTrue(
+                "Inline Left/Right should only expand or collapse the active item when it has a submenu; leaf active items should not move.");
+            menu.SelectedItem.ShouldBeNull();
+        });
+    }
+
+    [Fact]
     public void Inline_Selected_Path_Parent_Shows_Keyboard_Active_Background()
     {
         var option1 = new NavMenuNode
