@@ -26,7 +26,7 @@ public sealed class GalleryShowCaseCodeDrawerHost : UserControl
         {
             Placement = AtomUI.Desktop.Controls.DrawerPlacement.Right,
             DialogSize = new Dimension(736),
-            ContentPadding = new Thickness(12),
+            ContentPadding = new Thickness(8, 1, 1, 1),
             IsShowCloseButton = true,
             IsCloseOnMaskClick = true,
             Title = "Source Code"

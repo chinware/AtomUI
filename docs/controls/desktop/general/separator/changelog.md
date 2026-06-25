@@ -4,6 +4,9 @@
 
 ## 2026-06-24
 
+- Fix
+  - Reduce untitled horizontal Separator block margin tokens to `1px` so plain divider lines do not create large vertical gaps in compact surfaces such as Drawer headers.
+
 - Docs
   - Complete Separator desktop architecture and implementation docs with source-derived API groups, template parts, state flow and verification boundaries.
   - Establish Separator desktop architecture documentation under `docs/controls/desktop/general/separator/overview.md`.

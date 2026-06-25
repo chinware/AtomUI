@@ -27,10 +27,10 @@ internal sealed class GalleryShowCaseCodeDrawerContent : UserControl, IDisposabl
         var tabs = new DesktopTabControl
         {
             Margin = new Thickness(0),
-            ContentPadding = new Thickness(0),
+            ContentPadding = new Thickness(1),
             HeaderStartEdgePadding = 0,
             HeaderEndEdgePadding = 0,
-            TabAndContentGutter = 8,
+            TabAndContentGutter = 2,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch,
             HorizontalContentAlignment = HorizontalAlignment.Stretch,
