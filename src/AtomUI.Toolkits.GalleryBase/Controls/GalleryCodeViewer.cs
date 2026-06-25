@@ -1,14 +1,19 @@
+using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Styling;
 using Avalonia.VisualTree;
 using AvaloniaEdit;
 using AvaloniaEdit.TextMate;
 using TextMateSharp.Grammars;
+using AtomUIContextMenu = AtomUI.Desktop.Controls.ContextMenu;
+using AtomUIMenuItem = AtomUI.Desktop.Controls.MenuItem;
 
 namespace AtomUI.Toolkits.GalleryBase.Controls;
 
@@ -30,6 +35,13 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         AvaloniaProperty.Register<GalleryCodeViewer, ThemeName>(nameof(DarkSyntaxTheme), ThemeName.DarkPlus);
 
     private readonly TextEditor _editor;
+    private readonly AtomUIContextMenu _editorContextMenu = new();
+    private readonly AtomUIMenuItem _copyMenuItem = new()
+    {
+        Header = "Copy",
+        IsEnabled = false
+    };
+
     private TextMate.Installation? _textMateInstallation;
     private RegistryOptions? _registryOptions;
     private ScrollBar? _horizontalScrollBar;
@@ -44,7 +56,9 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         InitializeComponent();
         _editor = this.FindControl<TextEditor>("PART_Editor")!;
         _editor.LayoutUpdated += HandleEditorLayoutUpdated;
+        _editor.TextArea.SelectionChanged += HandleEditorSelectionChanged;
         ActualThemeVariantChanged += HandleActualThemeVariantChanged;
+        ConfigureEditorContextMenu();
         EnsureTextMateInstalled();
         UpdateText();
         ApplyGrammar();
@@ -92,8 +106,16 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         _textMateInstallation = null;
         _registryOptions      = null;
         ReleaseThemeVariantSubscriptions();
-        _editor.Document      = null;
         _editor.LayoutUpdated -= HandleEditorLayoutUpdated;
+        _editor.TextArea.SelectionChanged -= HandleEditorSelectionChanged;
+        _editor.Document      = null;
+        _copyMenuItem.Click -= HandleCopyMenuItemClick;
+        _editorContextMenu.Opened -= HandleEditorContextMenuOpened;
+        _editorContextMenu.Close();
+        if (ReferenceEquals(_editor.ContextMenu, _editorContextMenu))
+        {
+            _editor.ContextMenu = null;
+        }
         ActualThemeVariantChanged -= HandleActualThemeVariantChanged;
         _horizontalScrollBar  = null;
         _currentSyntaxTheme   = null;
@@ -138,6 +160,29 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
     private void HandleEditorLayoutUpdated(object? sender, EventArgs e)
     {
         UpdateHorizontalScrollBarGutterInset();
+    }
+
+    private void HandleEditorSelectionChanged(object? sender, EventArgs e)
+    {
+        UpdateCopyMenuItemState();
+    }
+
+    private void HandleEditorContextMenuOpened(object? sender, EventArgs e)
+    {
+        UpdateCopyMenuItemState();
+    }
+
+    private async void HandleCopyMenuItemClick(object? sender, RoutedEventArgs e)
+    {
+        e.Handled = true;
+        try
+        {
+            await CopySelectedCodeToClipboardAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error copying Gallery source code: {ex.Message}");
+        }
     }
 
     private void HandleActualThemeVariantChanged(object? sender, EventArgs e)
@@ -214,6 +259,49 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
     private void UpdateText()
     {
         _editor.Text = CodeText ?? string.Empty;
+    }
+
+    private void ConfigureEditorContextMenu()
+    {
+        _copyMenuItem.Click += HandleCopyMenuItemClick;
+        _editorContextMenu.Opened += HandleEditorContextMenuOpened;
+        _editorContextMenu.Items.Add(_copyMenuItem);
+        _editor.ContextMenu = _editorContextMenu;
+        UpdateCopyMenuItemState();
+    }
+
+    private void UpdateCopyMenuItemState()
+    {
+        _copyMenuItem.IsEnabled = !string.IsNullOrEmpty(GetSelectedCodeText());
+    }
+
+    private string GetSelectedCodeText()
+    {
+        return _editor.TextArea.Selection.IsEmpty
+            ? string.Empty
+            : _editor.TextArea.Selection.GetText();
+    }
+
+    private async Task CopySelectedCodeToClipboardAsync()
+    {
+        var selectedText = GetSelectedCodeText();
+        if (string.IsNullOrEmpty(selectedText))
+        {
+            return;
+        }
+
+        var clipboard = TopLevel.GetTopLevel(_editor)?.Clipboard;
+        if (clipboard is null)
+        {
+            return;
+        }
+
+        var item = new DataTransferItem();
+        item.SetText(selectedText);
+
+        var dataTransfer = new DataTransfer();
+        dataTransfer.Add(item);
+        await clipboard.SetDataAsync(dataTransfer);
     }
 
     private void EnsureTextMateInstalled()
