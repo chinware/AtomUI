@@ -49,6 +49,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
     private IThemeManager? _subscribedThemeManager;
     private IDisposable? _themeVariantSubscription;
     private ThemeName? _currentSyntaxTheme;
+    private bool _isUpdatingScrollBarInset;
     private bool _isDisposed;
 
     public GalleryCodeViewer()
@@ -202,6 +203,15 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
 
     private void UpdateHorizontalScrollBarGutterInset()
     {
+        // This runs from LayoutUpdated. Mutating the scroll bar Margin below triggers another
+        // layout pass, which re-enters here. Without this guard, dragging a selection past the
+        // right edge (which auto-scrolls and fires LayoutUpdated continuously) spins the layout
+        // system forever and hangs the UI thread.
+        if (_isUpdatingScrollBarInset)
+        {
+            return;
+        }
+
         var horizontalScrollBar = GetHorizontalScrollBar();
         if (horizontalScrollBar is null)
         {
@@ -215,11 +225,19 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             return;
         }
 
-        horizontalScrollBar.Margin = new Thickness(
-            gutterWidth,
-            currentMargin.Top,
-            currentMargin.Right,
-            currentMargin.Bottom);
+        _isUpdatingScrollBarInset = true;
+        try
+        {
+            horizontalScrollBar.Margin = new Thickness(
+                gutterWidth,
+                currentMargin.Top,
+                currentMargin.Right,
+                currentMargin.Bottom);
+        }
+        finally
+        {
+            _isUpdatingScrollBarInset = false;
+        }
     }
 
     private ScrollBar? GetHorizontalScrollBar()
@@ -243,17 +261,17 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             return 0;
         }
 
-        var rightEdge = 0d;
+        // Sum the left margins' own widths instead of projecting a point through TranslatePoint.
+        // The left gutter is fixed and does not scroll, but TranslatePoint's result shifts with
+        // the horizontal scroll offset and with mid-layout bounds, so the computed value jitters
+        // during a drag-scroll and never converges against the 0.5 tolerance above.
+        var width = 0d;
         foreach (var margin in _editor.TextArea.LeftMargins)
         {
-            var point = margin.TranslatePoint(new Point(margin.Bounds.Width, 0), _editor);
-            if (point is { } value)
-            {
-                rightEdge = Math.Max(rightEdge, value.X);
-            }
+            width += margin.Bounds.Width;
         }
 
-        return rightEdge;
+        return width;
     }
 
     private void UpdateText()

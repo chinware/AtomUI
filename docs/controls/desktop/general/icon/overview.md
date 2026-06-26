@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/General/Icon` |
+| 控件状态 | Stable |
+
 Icon 是 AtomUI 桌面控件体系中的图标渲染控件，用于在按钮、菜单、表格和独立图标场景中稳定呈现矢量图标。
 
 Icon 不负责业务图标语义、图标资源注册和图标字体打包。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
@@ -119,13 +127,33 @@ Icon 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证�
 
 不适用。Icon 当前没有独立于公共 API、状态模型和主题模型之外的专项模型；维护重点是保持模板契约和资源边界稳定。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Icon 桌面版实现原理](implementation.md)
 - [Icon Token 设计](token.md)
 - [Icon Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Icon` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `content` | `内容区域` | 承载用户内容、图标、文本或装饰性展示。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `state` | `状态区域` | 表达 hover、pressed、disabled、loading、selected 或控件专属状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `theme` | `主题区域` | 连接 ControlTheme、SharedToken、组件 Token 和资源键。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/icon/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/icon/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

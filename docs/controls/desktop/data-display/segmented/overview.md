@@ -4,13 +4,21 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented` |
+| 控件状态 | Stable |
+
 Segmented 是桌面端数据展示类的紧凑单选控件，用于在少量互斥选项之间切换当前视图、展示模式、时间粒度或状态筛选。它通过分段轨道、选项 item、选中滑块、图标和文本表达“当前只有一个有效选择”的语义。
 
 Segmented 的职责是承载一组有限选项并维护单选状态。它不是完整导航系统、Tab 容器、列表选择器、弹层选择器、表单编辑器或大数据集合控件；复杂页面导航、动态搜索、虚拟化、多选和异步加载应由专用控件或业务层承担。
 
 ## 2. 设计语言
 
-Segmented 的设计语言来自 Ant Design 的分段控制器：浅色轨道承载一组互斥选项，选中滑块跟随当前项移动，选项文本和图标在 hover、pressed、selected、disabled 状态下提供即时反馈。
+Segmented 的设计语言来自 参考设计体系的分段控制器：浅色轨道承载一组互斥选项，选中滑块跟随当前项移动，选项文本和图标在 hover、pressed、selected、disabled 状态下提供即时反馈。
 
 | 维度 | 含义 | 典型表达 |
 | --- | --- | --- |
@@ -178,13 +186,34 @@ Segmented 的共享实现位于 `AtomUI.Controls`，桌面实现位于 `AtomUI.D
 
 `SizeType=Custom` 是 `ICustomizableSizeTypeAware` 的自定义尺寸入口。默认主题下，Custom 使用 Middle 分支作为初始视觉基线；实例上的显式属性值覆盖主题 setter。控件不新增 Segmented 专属 `CustomHeight`、`CustomPadding` 等公开 API。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Segmented 桌面版实现原理](implementation.md)
 - [Segmented Token 设计](token.md)
 - [Segmented Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Segmented` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/segmented/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/segmented/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

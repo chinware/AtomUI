@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit` |
+| 控件状态 | Stable |
+
 LineEdit 是 AtomUI 桌面数据录入体系中的文本输入控件家族，用于承载单行文本、密码输入、搜索输入和多行文本输入。它以 Avalonia `TextBox` 文本编辑能力为基础，接入 AtomUI 的尺寸、输入表面、校验状态、清除按钮、密码 reveal、字数统计、Addon、CompactSpace、Form 和 Token 体系。
 
 LineEdit 家族包含以下稳定入口：
@@ -191,13 +199,34 @@ SearchEdit 将搜索按钮视为输入框的一部分。搜索按钮继承输入
 
 TextArea 支持固定行数、自动高度和拖拽 resize。固定行数模式下，控件根据字体、line height 和文本 presenter/scroll viewer 的垂直间距计算高度。resize 模式记录拖拽开始时的高度，并把高度限制在 `MinLines` / `MaxLines` 对应的范围内。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [LineEdit 桌面版实现原理](implementation.md)
 - [LineEdit Token 设计](token.md)
 - [LineEdit Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `LineEdit` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/line-edit/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/line-edit/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

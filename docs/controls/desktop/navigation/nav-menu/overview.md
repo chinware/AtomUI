@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | 未独立 Gallery 页面；以 `docs/controls/desktop/navigation/nav-menu` 源文档为准 |
+| 控件状态 | Stable |
+
 NavMenu 是 AtomUI 桌面导航体系中的层级菜单导航控件，用于表达应用页面、模块、功能入口或命令集合之间的层级关系。它以树形节点为数据模型，以 `Inline`、`Vertical`、`Horizontal` 三种模式映射到不同导航场景。
 
 NavMenu 的职责是管理导航节点容器生成、层级展开、选中路径、弹出式子菜单、主题视觉和菜单交互。它不负责路由切换、页面生命周期、权限过滤、数据懒加载、业务命令编排或页面内容渲染。业务导航行为应通过 `NavMenuNodeSelected`、`NavMenuItemClick` 或外部 ViewModel 处理。
@@ -27,7 +35,7 @@ NavMenu 表达的是“层级入口 + 当前路径”的导航语义。用户应
 | `Vertical` | 顶层项目垂直排列，子菜单通过 Popup 展开。 | 紧凑菜单、上下文导航、浮层式侧栏。 |
 | `Horizontal` | 顶层项目水平排列，子菜单通过 Popup 展开。 | 顶部导航栏、一级模块切换。 |
 
-Light 与 Dark 样式不是简单反色。Dark 样式有独立的根背景、Popup 背景、子菜单背景、选中背景和文字透明度规则，应保持与 Ant Design Menu 的层级背景语义一致。
+Light 与 Dark 样式不是简单反色。Dark 样式有独立的根背景、Popup 背景、子菜单背景、选中背景和文字透明度规则，应保持与 参考 Menu 的层级背景语义一致。
 
 `IsItemBackgroundEnabled` 控制菜单项背景块模型。开启时，inline 子菜单背景块、选中背景和 hover 背景形成连续层级背景；关闭时，菜单项背景块保持透明，但 header 文本颜色、选中路径颜色和交互状态仍然保留。
 
@@ -74,7 +82,7 @@ NavMenu 的公共 API 分为控件 API、节点 API 和事件 API。
 
 `IsInlineCollapsed` 只对 `Mode=Inline` 生效。`Mode=Vertical` 或 `Mode=Horizontal` 时设置该属性不应改变当前模式的 popup、布局或键盘语义。`InlineCollapsedWidth` 参与布局测量，默认通过 theme setter 取得 `NavMenuToken.InlineCollapsedWidth`；collapsed 状态下由控件内部对 `Width` / `MinWidth` 做有效值 coercion，本地设置的属性值应按 Avalonia 属性优先级覆盖 token 默认值，展开后原始 `Width` 或绑定必须恢复。
 
-键盘漫游状态属于内部交互状态，不进入公共 API。NavMenu 保持与 Ant Design Menu 一致的分层：`SelectedItem` 表示已提交的导航选择，`DefaultOpenPaths` / `IsSubMenuOpen` 表示展开状态，键盘当前项只表示临时 active/focus 目标。业务代码不应通过公开属性控制键盘 active 项，也不应把 active 项误认为已选择节点。
+键盘漫游状态属于内部交互状态，不进入公共 API。NavMenu 保持与 参考 Menu 一致的分层：`SelectedItem` 表示已提交的导航选择，`DefaultOpenPaths` / `IsSubMenuOpen` 表示展开状态，键盘当前项只表示临时 active/focus 目标。业务代码不应通过公开属性控制键盘 active 项，也不应把 active 项误认为已选择节点。
 
 稳定 template part：
 
@@ -229,7 +237,7 @@ NavMenu 不实现 Form、CompactSpace 或 Button 家族接口。
 
 ### 8.2 Inline Collapsed 模型
 
-Inline collapsed 模型对齐 Ant Design Menu 的 `inlineCollapsed`：公开模式仍为 `Inline`，折叠状态只改变内部有效交互和视觉。折叠菜单宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`；开发者可在控件实例上设置 `InlineCollapsedWidth` 获得更窄或更宽的折叠侧栏。
+Inline collapsed 模型对齐 参考 Menu 的 `inlineCollapsed`：公开模式仍为 `Inline`，折叠状态只改变内部有效交互和视觉。折叠菜单宽度使用 `InlineCollapsedWidth`，默认来自 `NavMenuToken.InlineCollapsedWidth=48`；开发者可在控件实例上设置 `InlineCollapsedWidth` 获得更窄或更宽的折叠侧栏。
 
 进入折叠时，NavMenu 记录当前已经打开的 inline path，然后关闭主视觉树中的 inline 子菜单，使根菜单只保留顶层项。带子菜单的顶层项在折叠状态下按 popup 子菜单打开；popup 打开关闭只属于折叠期间的临时交互，不写回 inline path cache。
 
@@ -267,13 +275,34 @@ NavMenu 的键盘导航模型与选择模型分离：
 
 `Vertical`、`Horizontal` 和 inline collapsed 子菜单使用同一 popup shell。顶层 horizontal popup 放置在底部，非顶层、vertical 和 inline collapsed popup 使用右侧对齐。Popup 内容宽度、最大高度、背景、圆角和内边距由 NavMenuToken 和 PopupHostToken 共同决定。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [NavMenu 桌面版实现原理](implementation.md)
 - [NavMenu Token 设计](token.md)
 - [NavMenu Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `NavMenu` | 导航控件根语义区域，承载 public API、状态归一和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `item` | `导航项区域` | 承载当前项、选中项、禁用项、层级项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/nav-menu/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/nav-menu/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 
@@ -286,6 +315,6 @@ NavMenu 的键盘导航模型与选择模型分离：
 | Keyboard | Up、Down、Left、Right、Enter、Esc 在 Inline、Vertical、Horizontal 中的 active、focus、open、close 和 commit 语义稳定。 |
 | Selection | `SelectedItem`、`DefaultSelectedPath`、`DefaultOpenPaths`、stale replay 和 clear selection 测试覆盖。 |
 | AXAML | Template part 名称、header theme、popup frame、inline child frame、active indicator 和 item background selector 稳定。 |
-| Layout | root item margin、inline child gap、popup item inset、background-enabled true/false gap 与 Ant Design 规则一致。 |
+| Layout | root item margin、inline child gap、popup item inset、background-enabled true/false gap 与 参考设计体系 规则一致。 |
 | Token | `NavMenuToken` 默认值、`InlineCollapsedWidth`、dark token、popup token 和 spacing token 与测试一致。 |
 | Gallery | 运行 Navigation/Menu Showcase 相关测试，确认示例结构和 CaseNavigation 布局稳定。 |

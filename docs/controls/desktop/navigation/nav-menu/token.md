@@ -70,7 +70,7 @@ NavMenuToken 当前按 NavMenu 语义分为八类。
 - `InlineCollapsedWidth`
 - `CollapsedWidth`
 
-用于菜单项高度、Ant Design block margin 映射、header 内边距、inline child frame 外距、菜单内容 padding 和 inline collapsed 根宽度。`ItemContentMargin` 表达 item header 的外部 margin；`VerticalChildItemsMargin` 表达 inline submenu 背景块在背景模式下的外部 margin，不是所有 inline 子菜单的无条件间距。
+用于菜单项高度、参考 block margin 映射、header 内边距、inline child frame 外距、菜单内容 padding 和 inline collapsed 根宽度。`ItemContentMargin` 表达 item header 的外部 margin；`VerticalChildItemsMargin` 表达 inline submenu 背景块在背景模式下的外部 margin，不是所有 inline 子菜单的无条件间距。
 
 `InlineCollapsedWidth` 是 `Mode=Inline && IsInlineCollapsed=true` 的折叠宽度默认值，初始设计值为 `48`。控件实例上的 `NavMenu.InlineCollapsedWidth` 本地值优先级高于 token setter。该 token 只提供主题默认布局值，不表达实例是否折叠，也不参与 `Vertical` / `Horizontal` 模式测量。
 
@@ -140,9 +140,9 @@ Dark token 服务 NavMenu dark style，不应由 light token 自动反推。Dang
 
 ## 3. NavMenu 专项模型中的 Token 使用
 
-### 3.1 Ant Design Menu 间距映射
+### 3.1 参考 Menu 间距映射
 
-NavMenu 使用 `ItemContentMargin` 映射 Ant Design `itemMarginInline` 与 `itemMarginBlock`：
+NavMenu 使用 `ItemContentMargin` 映射 参考设计体系 `itemMarginInline` 与 `itemMarginBlock`：
 
 ```text
 ItemContentMargin = marginXXS, 0, marginXXS, marginXXS
@@ -206,7 +206,7 @@ Token 变更要求：
 - 不把实例状态迁移到 Token。
 - 不把 root、popup、header、inline submenu block 背景合并为同一职责。
 - 不让 `VerticalChildItemsMargin` 在 `IsItemBackgroundEnabled=false` 时影响布局。
-- 不把 Ant Design block margin 映射改为 StackPanel spacing 叠加。
+- 不把 参考 block margin 映射改为 StackPanel spacing 叠加。
 - 不把 `InlineCollapsedWidth` 写成实例状态；`IsInlineCollapsed` 是状态，`InlineCollapsedWidth` / `NavMenuToken.InlineCollapsedWidth` 是布局输入。
 - 不删除或重命名 `CollapsedWidth`；它是既有兼容 token，新的 inline collapsed 宽度语义使用 `InlineCollapsedWidth`。
 - 需要破坏性变更时，必须先说明影响范围并获得授权。

@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Calendar` |
+| 控件状态 | Stable |
+
 Calendar 是 AtomUI 桌面控件体系中的日历展示控件，用于显示月份、日期选择和禁用日期。
 
 Calendar 不负责输入弹层、日期范围选择器或业务日程系统。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
@@ -147,13 +155,34 @@ Calendar 的当前项状态必须由单一 owner 推导。public 选择属性、
 
 Calendar 的动效只表达状态变化反馈，不应改变 public API 语义。初始加载、禁用态和卸载路径应能抑制或取消动效，避免保留旧控件实例。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Calendar 桌面版实现原理](implementation.md)
 - [Calendar Token 设计](token.md)
 - [Calendar Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Calendar` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/calendar/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/calendar/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/List` |
+| 控件状态 | Stable |
+
 ListView 是桌面端数据展示类列表视图控件，用于展示一组数据项，并在同一控件内提供选择、分组、排序、过滤、分页、空状态和操作中状态。它以 Avalonia `ItemsControl` 为基础，使用 AtomUI 的 `ListCollectionView` 管理数据视图，并用 `ListViewItem` 作为条目容器。
 
 ListView 的职责是把用户提供的 `ItemsSource` 归一到可排序、可过滤、可分组、可分页的列表视图，并把视图状态同步到容器、选择模型和分页器。它不负责树形层级、表格列模型、远程数据请求、跨控件业务命令编排或候选列表提交逻辑；这些场景应分别使用 TreeView、DataGrid、业务组合控件或 Select / AutoComplete 等候选列表控件。
@@ -211,7 +219,7 @@ ListViewItemTheme
 - `SizeType` 控制 root 圆角、空状态 padding、条目最小高度、条目 padding 和条目圆角。
 - 默认条目背景透明，hover 使用 `ItemHoverBg`，selected 使用 `ItemSelectedBg`。
 - 组标题使用 `GroupHeaderColor`，不应用普通条目的 hover / selected 状态背景。
-- selected indicator 默认使用 Ant Design `CheckOutlined`，颜色和尺寸来自 SharedToken。
+- selected indicator 默认使用 默认 `CheckOutlined`，颜色和尺寸来自 SharedToken。
 - 空状态默认使用 `Empty` 的 simple preset image。
 - 分页器 margin 使用 ListViewToken 的 `PaginationMargin`。
 
@@ -284,13 +292,34 @@ ListView 的数据视图能力由 `IListCollectionView` 承担。ListView 负责
 
 `IsOperating` 不改变数据、选择或分页状态，只在视觉上通过 `Spin` 覆盖当前列表内容。外部异步加载、刷新或批量操作应通过此模型表达忙碌状态，而不是在 ListView 内部引入远程请求或任务编排。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 文档导航：
 
 - [ListView 桌面版实现原理](implementation.md)
 - [ListView Token 设计](token.md)
 - [ListView Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `ListView` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/list-view/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/list-view/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

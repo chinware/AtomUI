@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/NumberUpDown` |
+| 控件状态 | Stable |
+
 NumericUpDown 是 AtomUI 桌面数据录入体系中的数值输入控件，用于在文本输入、步进按钮、键盘和鼠标滚轮之间建立统一的十进制数值编辑体验。它以 Avalonia `NumericUpDown` 为基础，保留原生数值、格式化、步进和范围约束语义，并接入 AtomUI 的输入外观、Addon、CompactSpace、Form 和 Token 体系。
 
 NumericUpDown 的职责是编辑单个 `decimal?` 数值，或在 string mode 下以 `StringValue` 保存高精度原始输入文本并同步可解析的 `Value`。它不承担表达式计算、单位换算、多值范围输入、校验消息展示、数据源管理或异步选择职责。
@@ -201,19 +209,40 @@ NumericUpDown 使用 ButtonSpinner 的浮动 Handle 模型。Handle normal 状�
 
 ### 8.4 Spinner Mode 模型
 
-Spinner mode 对齐 Ant Design InputNumber 的 `mode="spinner"` 设计：同一个数值输入控件在保留数值语义的前提下，切换为左减号、中间输入、右加号的三段式展示。
+Spinner mode 对齐 参考 InputNumber 的 `mode="spinner"` 设计：同一个数值输入控件在保留数值语义的前提下，切换为左减号、中间输入、右加号的三段式展示。
 
 ### 8.5 Form 集成模型
 
 NumericUpDown 通过 `IFormItemAware` 暴露表单值能力。Form 集成只以 `Value` 作为表单值，不直接使用 `StringValue`。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [NumericUpDown 桌面版实现原理](implementation.md)
 - [NumericUpDown Token 设计](token.md)
 - [NumericUpDown Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `NumericUpDown` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/numeric-up-down/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/numeric-up-down/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

@@ -8,6 +8,12 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-06-26
+
+- Docs
+  - Add LLMS metadata, semantic parts and export source mapping for `SearchEdit`.
+  - Align generated output paths with `controls/search-edit/index-cn.md` and `controls/search-edit/semantic-cn.md`.
+
 ## 2026-06-21
 
 - Docs

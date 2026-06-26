@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/Layout/Masonry` |
+| 控件状态 | Stable |
+
 Masonry 是桌面端瀑布流布局控件，用于将高度不一致的内容块按列组织，并通过 shortest-column 策略降低列高差。它适合图片墙、卡片流、示例集合、资源列表等内容高度不可预先统一的场景。
 
 `Masonry` 派生自 Avalonia `ItemsControl`，同时承担数据绑定入口和子项布局元数据 attached property 容器（`atom:Masonry.Column`、`atom:Masonry.Span`）两种职责。
@@ -155,7 +163,7 @@ Masonry 不提供虚拟化语义。瀑布流虚拟化涉及滚动偏移、容器
 
 ### 8.1 响应式模型
 
-`ColumnInfo` 对齐 Ant Design Masonry `columns` 语义，`Gutter` 对齐 Ant Design Masonry `gutter` 语义。两者只在当前断点命中显式配置时覆盖兼容属性，未命中时继续使用控件自身 fallback。
+`ColumnInfo` 对齐 参考 Masonry `columns` 语义，`Gutter` 对齐 参考 Masonry `gutter` 语义。两者只在当前断点命中显式配置时覆盖兼容属性，未命中时继续使用控件自身 fallback。
 
 ### 8.2 整行项模型
 
@@ -165,13 +173,38 @@ Masonry 不提供虚拟化语义。瀑布流虚拟化涉及滚动偏移、容器
 
 Masonry 的布局元数据属于 item container，而不是数据对象或模板内部视觉元素。该规则保证直接子元素和 `ItemsSource` 两种模式都通过同一套 `MasonryPanel.Children` 计算路径布局。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Masonry 桌面版实现原理](implementation.md)
 - [Masonry Changelog](changelog.md)
 - [AtomUI 响应式机制设计](../../../../modules/controls-shared/responsive-system.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Masonry` | 布局控件根语义区域，承载布局 public API、尺寸和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `container` | `布局容器` | 组织子元素、间距、断点、对齐或分割状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `item` | `布局项` | 承载子内容、占位、跨度、排序或尺寸约束。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `theme` | `主题区域` | 连接 SharedToken、布局主题资源和 Gallery 可观察样式。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+Token 说明：
+
+- Masonry 当前没有专属 `token.md`；LLMS 生成按第 5 节视觉与主题模型、SharedToken、控件家族 Token 或主题资源说明 Token 边界。
+
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/masonry/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/masonry/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 
