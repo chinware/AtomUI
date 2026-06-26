@@ -4,11 +4,26 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/General/Button` |
+| 控件状态 | Stable |
+
 Button 是 AtomUI 桌面控件体系中的基础动作触发控件，用于承载用户可执行的明确操作。Button 负责把动作语义稳定映射为公共 API、交互状态、主题 Token、模板结构和反馈效果。
 
 Button 不承担复杂内容布局、导航结构管理或业务状态表达职责。复杂按钮形态应通过 Button 家族控件扩展，而不是扩大 Button 本体的职责边界。
 
 Button 家族包括 `DropdownButton`、`SplitButton`、`IconButton` 和 `HyperLinkButton`。这些控件可以拥有不同模板结构，但必须共享 Button 的动作语义、状态解释、尺寸体系和主题资源。
+
+典型使用场景：
+
+- 提交、保存、删除、确认、取消等明确动作。
+- 表达主动作、普通动作、弱强调动作、链接式动作和危险动作。
+- 在工具栏、表单、对话框、卡片和列表项中提供可点击操作入口。
+- 使用图标、加载态、禁用态、尺寸和形状增强动作可识别性。
 
 ## 2. 设计语言
 
@@ -95,6 +110,22 @@ Template part 与主题入口：
 | `PART_LoadingIcon` | 展示 loading 状态图标。 |
 | `PART_ButtonIcon` | 展示用户设置的 icon，位置由 `IconPlacement` 控制。 |
 | `PART_ContentPresenter` | 展示用户内容。 |
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Button` | 控件根语义区域，承载 public API、命令、点击、状态归一和伪类。 | `ButtonType`、`Color`、`Variant`、`IsDanger`、`IsGhost`、`IsLoading`、`SizeType`、`Shape`、`Icon`、`IconPlacement` | ButtonToken、SharedToken | stable |
+| `wave` | `PART_WaveSpirit` | 点击 wave 反馈区域，跟随有效圆角和 wave 类型。 | `IsWaveSpiritEnabled`、`IsMotionEnabled` | SharedToken motion / wave 资源 | stable |
+| `shadow` | `ShadowsFrame` | 阴影绘制层，独立于主体背景和边框。 | effective state | `DefaultShadow`、`PrimaryShadow`、`DangerShadow` | stable |
+| `surface` | `Frame` | 主体背景、边框、圆角、尺寸和虚线边框绘制层。 | `ButtonType`、`Color`、`Variant`、`Shape`、`SizeType`、`CornerRadius`、`Padding` | default、primary、danger、text、link、padding、corner radius 相关 Token | stable |
+| `customBackground` | `CustomBackgroundLayer` | normal 状态自定义背景覆层，只服务 `CustomBackground` 视觉模型。 | `CustomBackground` | 不新增专属 Token | internal-stable |
+| `contentLayout` | `PART_RootLayout` | loading icon、用户 icon 和内容的排列区域。 | `IconPlacement`、`HorizontalContentAlignment`、`VerticalContentAlignment` | `IconMargin`、尺寸 Token | stable |
+| `loadingIcon` | `PART_LoadingIcon` | loading 状态图标区域。 | `IsLoading` | `IconSize`、`OnlyIconSize` 相关 Token | stable |
+| `icon` | `PART_ButtonIcon` | 用户 icon 区域，支持内容前后位置和 icon-only 场景。 | `Icon`、`IconPlacement` | `IconSize`、`OnlyIconSize`、`IconMargin` | stable |
+| `content` | `PART_ContentPresenter` | 用户内容展示区域。 | `Content`、`ContentTemplate` | `ContentFontSize`、`ContentLineHeight`、`FontWeight` | stable |
+
+`CustomBackgroundLayer` 是主题内部实现细节，不作为用户可直接依赖的 template part。LLMS semantic 文档可以记录它的存在和边界，但应明确它只服务 `CustomBackground` 受控视觉模型。
 
 ## 4. 行为与状态模型
 
@@ -192,11 +223,11 @@ Button 与 CompactSpace、FormItem、Wave、Browser 主题协同。`Color + Vari
 
 `CustomBackground` 是 Button 的受控视觉覆层模型，用于表达 normal 状态下的自定义按钮表面。覆层只在 `EffectiveVariant=Solid`、非危险态、非禁用态下显示；hover 与 pressed 状态隐藏覆层，露出标准 Button 状态背景。
 
-自定义背景覆层是主题内部实现细节，不形成用户可依赖的 `/template/` 样式入口。该模型等价于 Ant Design 渐变按钮示例中的 `::before` 覆层：normal 状态显示自定义表面，交互状态回落到 Button 原有语义状态。
+自定义背景覆层是主题内部实现细节，不形成用户可依赖的 `/template/` 样式入口。该模型用于表达 normal 状态的受控自定义表面，交互状态回落到 Button 原有语义状态。
 
 ### 8.3 Custom 尺寸模型
 
-Button 的尺寸模型由预设档和实例定制组成。预设档 `Large`、`Middle`、`Small` 对齐 Ant Design Button 的三档尺寸；AtomUI 额外通过 `CustomizableSizeType.Custom` 提供实例级自定义入口。
+Button 的尺寸模型由预设档和实例定制组成。预设档 `Large`、`Middle`、`Small` 表达 Button 的三档尺寸；AtomUI 额外通过 `CustomizableSizeType.Custom` 提供实例级自定义入口。
 
 `SizeType=Custom` 的设计契约：
 
@@ -218,13 +249,24 @@ Button 的 `Icon` 是单一用户图标入口，`IconPlacement` 只描述这个�
 - loading icon 仍由 `IsLoading` 状态控制，不作为 `IconPlacement` 的目标；loading 状态下原用户 icon 隐藏逻辑保持不变。
 - `DropdownButton`、`SplitButton`、`IconButton`、`HyperLinkButton` 是否暴露同名能力应按各自模板职责单独评估，不由 Button 本体隐式要求。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Button 桌面版实现原理](implementation.md)
 - [Button Token 设计](token.md)
 - [Button Changelog](changelog.md)
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/button/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + `ButtonTheme.axaml` | 生成 `controls/button/semantic-cn.md` |
+| API 表 | `ButtonViewModel.EnsureApiRows()` + `Button.cs` public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | `ButtonDesignTokenDataGrid` + `ButtonToken.cs` + `token.md` | `token.md` 解释 Token 语义边界 |
+| 示例 | `ButtonShowCase.axaml` + source snippet catalog | 覆盖类型、形状、尺寸、图标、加载、危险、幽灵、禁用、渐变、颜色与变体 |
+| 源码索引 | `implementation.md` | 用于定位 Button 源码、主题、伪类和测试 |
 
 验证策略：
 
@@ -236,3 +278,4 @@ Button 的 `Icon` 是单一用户图标入口，`IconPlacement` 只描述这个�
 | Token / Palette 改动 | Light / Dark 主题检查，确认 Browser 主题一致性。 |
 | Button 家族影响 | 覆盖 `DropdownButton`、`SplitButton`、`IconButton`、`HyperLinkButton` 关联场景。 |
 | Public API 改动 | 需要授权，并补充 API 兼容测试与文档。 |
+| LLMS 导出改动 | 重新生成 `controls/button/index-cn.md`、`controls/button/semantic-cn.md`、`llms-full-cn.txt` 和 `llms-semantic-cn.md`，确认来源表、API、Token、示例和 semantic parts 一致。 |

@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/Cascader` |
+| 控件状态 | Stable |
+
 Cascader 是 AtomUI 桌面数据录入体系中的级联选择控件，用于在有明确父子层级的数据中按列逐级展开并选择一个或多个选项。它面向地区、组织、分类、资源路径、权限域等“路径就是业务含义”的选择场景。
 
 Cascader 由外层输入控件和内部级联弹层组成。外层 `Cascader` 负责输入表面、popup、选择结果、清除、Form、CompactSpace 和 AddOn 集成；内部 `CascaderView` 负责级联列、展开收起、过滤结果、异步加载和多选勾选。
@@ -260,7 +268,7 @@ Cascader 使用 `ItemKey` 或 `Value` 组成 `TreeNodePath`，用于默认选择
 
 该策略只影响多选 tag 展示集合，不改变 Form value 和 `SelectedOptions`。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 - [Cascader 桌面版实现原理](implementation.md)
 - [Cascader Token 设计](token.md)
@@ -277,3 +285,24 @@ Cascader 使用 `ItemKey` 或 `Value` 组成 `TreeNodePath`，用于默认选择
 | AXAML 或 template part | 验证 AddOnDecoratedBox、右侧 count/content/handle binding、popup、CascaderView、level list 和 option template。 |
 | Token 或尺寸 | 验证 Large / Middle / Small / Custom、列宽、选项高度、padding、图标间距和空状态宽度。 |
 | 文档改动 | 运行 `git diff --check`，检查文档链接存在。 |
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Cascader` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/cascader/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/cascader/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |

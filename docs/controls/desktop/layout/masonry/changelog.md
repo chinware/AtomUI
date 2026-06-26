@@ -3,6 +3,12 @@
 本文档记录 Masonry 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-06-26
+
+- Docs
+  - Add LLMS metadata, semantic parts and export source mapping for `Masonry`.
+  - Align generated output paths with `controls/masonry/index-cn.md` and `controls/masonry/semantic-cn.md`.
+
 ## 2026-06-19
 
 - Docs
@@ -23,7 +29,7 @@
   - 补充 `LayoutChanged` 派发语义：只通知有效列和整行状态变化，避开 layout pass，同一布局周期合并等价通知，并定义空布局通知行为。
   - 补充键盘与焦点模型：logical order、焦点顺序、读屏顺序和容器生成顺序保持源集合顺序，不按视觉列顺序重排。
   - 补充默认值与无效值归一规则，要求 Gallery API 表与公共属性默认值保持一致。
-  - 补充 Masonry 响应式布局模型，对齐共享响应式机制和 Ant Design Masonry `columns` / `gutter` 语义。
+  - 补充 Masonry 响应式布局模型，对齐共享响应式机制和 参考 Masonry `columns` / `gutter` 语义。
   - 明确响应式断点变化只更新 effective state 并触发布局失效，不在 breakpoint 回调中执行完整布局。
 - API
   - 公开控件类型由 `MasonryPanel`（`Panel`）调整为 `Masonry`（`ItemsControl`），直接承担数据绑定入口与子项布局元数据 attached property 容器职责。

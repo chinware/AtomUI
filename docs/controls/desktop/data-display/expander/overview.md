@@ -4,13 +4,21 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Expander` |
+| 控件状态 | Stable |
+
 Expander 是桌面端数据展示类单面板折叠容器，用于在有限空间内展示一段可展开或收起的内容。它以 Avalonia `Expander` 为基础，扩展 AtomUI 的尺寸、展开图标、附加内容、触发区域、边框模式、Ghost 模式、展开方向、动效和 Token 体系。
 
 Expander 的职责是管理一个 Header 与一个 Content 区域之间的展开关系。它不是多面板集合控件，不负责手风琴互斥展开、列表虚拟化、数据项生成、表单校验、远程加载或复杂主从详情关系。需要多面板协调时应使用 Collapse；需要静态分组时应使用 GroupBox；需要列表或树形数据展示时应使用 ListView、TreeView 或 DataGrid。
 
 ## 2. 设计语言
 
-Expander 的设计语言来自 Ant Design 的轻量折叠面板：Header 表达当前内容主题，展开图标表达折叠状态和方向，Content 承载可延迟阅读的内容。
+Expander 的设计语言来自 参考设计体系的轻量折叠面板：Header 表达当前内容主题，展开图标表达折叠状态和方向，Content 承载可延迟阅读的内容。
 
 | 维度 | 含义 | 典型表达 |
 | --- | --- | --- |
@@ -168,7 +176,7 @@ Expander 属于 Data Display 分类，是单面板折叠容器。
 
 - Avalonia `Expander`：继承 Header、Content、IsExpanded 和 ExpandDirection 基础语义。
 - MotionScene：通过 `LayoutAwareMotionActor`、`ExpandMotion` 和 `CollapseMotion` 处理展开/收起动画。
-- Button/Icon：`PART_ExpandButton` 使用 AtomUI `IconButton` 和 Ant Design `RightOutlined` 默认图标。
+- Button/Icon：`PART_ExpandButton` 使用 AtomUI `IconButton` 和 默认 `RightOutlined` 默认图标。
 - Token 系统：通过 `ExpanderToken.ScopeProvider` 注册控件 Token 资源作用域。
 - Gallery：通过 Basic、Size、Borderless、Ghost、Custom Padding、Direction、Nested、No Arrow、Icon Position 和 Trigger 示例展示契约。
 
@@ -213,13 +221,34 @@ Expander 与 Collapse 的边界：
 
 动效的最终状态以最新 `IsExpanded` 为准。取消旧 motion 后必须清理 `Height`、`MotionTransform`、`MotionTransformOperations` 和 `Transitions` 等临时值，再进入下一次 motion 或稳定状态。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Expander 桌面版实现原理](implementation.md)
 - [Expander Token 设计](token.md)
 - [Expander Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Expander` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/expander/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/expander/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

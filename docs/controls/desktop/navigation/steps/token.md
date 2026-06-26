@@ -53,7 +53,7 @@ StepsToken 不承载以下状态：
 - `NavItemGutterSM`
 - `StepsNavActiveColor`
 
-Navigation Token 控制导航箭头颜色、垂直 Navigation 箭头外距、Navigation item 内容与指示线之间的间距，以及导航激活色。`NavArrowColor` 同时写入 `Foreground`、`FillBrush`、`StrokeBrush` 和 `FallbackBrush`，保证 Ant Design icon 的实际绘制颜色一致。
+Navigation Token 控制导航箭头颜色、垂直 Navigation 箭头外距、Navigation item 内容与指示线之间的间距，以及导航激活色。`NavArrowColor` 同时写入 `Foreground`、`FillBrush`、`StrokeBrush` 和 `FallbackBrush`，保证 默认 icon 的实际绘制颜色一致。
 
 ### 2.5 状态颜色 Token
 

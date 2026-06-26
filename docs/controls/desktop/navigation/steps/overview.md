@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/Navigation/Steps` |
+| 控件状态 | Stable |
+
 Steps 是 AtomUI 桌面导航体系中的步骤进度控件，用于表达线性流程中的当前位置、已完成步骤、等待步骤和异常步骤。它适合安装向导、表单分步、审批流、支付流程、任务进度和带内容切换的步骤页。
 
 Steps 的职责是生成步骤容器、维护当前步骤、计算每个步骤的状态、展示连接线、指示器、标题、副标题、描述、进度环和导航样式。它不负责业务流程校验、页面路由、异步任务编排、表单提交、权限控制或步骤内容的生命周期管理。
@@ -229,13 +237,34 @@ Steps 不实现 Form、CompactSpace、Popup 或路由接口。
 
 Navigation 风格下，水平模板把箭头放入右侧 `NavArrowLayout`，该槽位负责和指示器首行对齐，并提供足够绘制空间。默认指示器使用 `IconSize` / `IconSizeSM` 作为槽位高度；Dot 指示器使用 `IconFontSize` 保证箭头不被裁剪，同时让 dot 和箭头在同一首行槽位内居中。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Steps 桌面版实现原理](implementation.md)
 - [Steps Token 设计](token.md)
 - [Steps Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Steps` | 导航控件根语义区域，承载 public API、状态归一和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `trigger` | `触发区域` | 承载点击、键盘、打开关闭、跳转或提交入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `item` | `导航项区域` | 承载当前项、选中项、禁用项、层级项或分页项状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `popup` | `弹层或内容区域` | 承载 flyout、dropdown、tab content、submenu 或候选内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `motion` | `动效区域` | 表达打开关闭、选中指示、切换和过渡反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/steps/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/steps/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

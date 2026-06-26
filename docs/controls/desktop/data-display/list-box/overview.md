@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/List` |
+| 控件状态 | Stable |
+
 ListBox 是桌面端数据展示类轻量列表选择控件，用于展示一组纵向排列的简单选项、候选项、搜索结果或可点击条目。它以 Avalonia `ListBox` 为基础，扩展 AtomUI 的尺寸、选中指示器、空状态、文本过滤高亮、Token 和 CandidateList 复用能力。
 
 ListBox 的职责是管理列表容器生成、单选或多选、键盘导航、条目点击、空状态展示、文本过滤展示和虚拟化容器状态回放。它不负责分组、排序、分页、复杂数据视图刷新、远程搜索请求、树形层级、表格列模型或业务命令编排；这些场景应使用 `ListView`、TreeView、DataGrid 或组合控件。
@@ -148,7 +156,7 @@ ListBoxItemTheme
 - `SizeType` 控制 root 圆角、空状态 padding、条目最小高度和条目 padding。
 - 默认条目背景透明，hover 使用 `ItemHoverBg`，selected 使用 `ItemSelectedBg`。
 - disabled 内容使用 SharedToken disabled 文本色。
-- 选中指示器默认使用 Ant Design `CheckOutlined`，颜色使用 SharedToken 主色，尺寸使用 SharedToken icon size。
+- 选中指示器默认使用 默认 `CheckOutlined`，颜色使用 SharedToken 主色，尺寸使用 SharedToken icon size。
 - 空状态默认使用 `Empty` 的 simple preset image。
 
 ListBoxToken 提供内容 padding、条目文字颜色、条目状态背景、条目 padding、条目 margin、选中指示器 margin 和过滤高亮色。Token 详情见 [ListBox Token 设计](token.md)。
@@ -200,13 +208,34 @@ ListBox 的过滤模型面向简单文本列表和候选项列表。`FilterValue
 
 CandidateList 继承 ListBox，并增加候选项键盘导航、候选高亮、commit / cancel 和最大选择数量控制。ListBox 的点击、选择、过滤、空状态和虚拟化上下文规则直接影响 CandidateList，因此 ListBox 变更必须走 CandidateList 验证。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 文档导航：
 
 - [ListBox 桌面版实现原理](implementation.md)
 - [ListBox Token 设计](token.md)
 - [ListBox Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `ListBox` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/list-box/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/list-box/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

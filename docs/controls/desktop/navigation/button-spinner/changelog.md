@@ -2,6 +2,12 @@
 
 本文档记录 ButtonSpinner 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-06-26
+
+- Docs
+  - Add LLMS metadata, semantic parts and export source mapping for `ButtonSpinner`.
+  - Align generated output paths with `controls/button-spinner/index-cn.md` and `controls/button-spinner/semantic-cn.md`.
+
 ## 2026-06-24
 
 - Docs

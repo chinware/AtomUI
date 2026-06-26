@@ -8,6 +8,15 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-06-26
+
+- Docs
+  - Add LLMS export source mapping to Button architecture documentation.
+  - Document Button package, .NET namespace, AXAML namespace, Gallery path and stable status as LLMS metadata.
+  - Add Button semantic parts for root, wave, shadow, surface, custom background, content layout, loading icon, user icon and content.
+  - Align Button LLMS export paths with `controls/button/index-cn.md` and `controls/button/semantic-cn.md`.
+  - Clarify that `CustomBackgroundLayer` is an internal-stable semantic area for LLMS output, not a user customization template part.
+
 ## 2026-06-19
 
 - Docs

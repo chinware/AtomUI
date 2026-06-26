@@ -138,6 +138,7 @@
                     </gallery:ShowCasePanel.Styles>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-type"
                         Title="{gallery:ButtonShowCaseLangResource TypeTitle}"
                         Description="{gallery:ButtonShowCaseLangResource TypeDescription}"
                         IsDeferredContentEnabled="True">
@@ -155,6 +156,7 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-shape"
                         Title="{gallery:ButtonShowCaseLangResource ButtonShapeTitle}"
                         Description="{gallery:ButtonShowCaseLangResource ButtonShapeDescription}"
                         IsDeferredContentEnabled="True">
@@ -187,6 +189,7 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-size"
                         Title="{gallery:ButtonShowCaseLangResource SizeTitle}"
                         Description="{gallery:ButtonShowCaseLangResource SizeDescription}"
                         IsDeferredContentEnabled="True">
@@ -256,6 +259,7 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-icon"
                         Title="{gallery:ButtonShowCaseLangResource IconTitle}"
                         Description="{gallery:ButtonShowCaseLangResource IconDescription}"
                         IsDeferredContentEnabled="True">
@@ -310,6 +314,7 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-icon-placement"
                         Title="{gallery:ButtonShowCaseLangResource IconPlacementTitle}"
                         Description="{gallery:ButtonShowCaseLangResource IconPlacementDescription}"
                         BadgeText="v6.0.6"
@@ -376,6 +381,7 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-loading"
                         Title="{gallery:ButtonShowCaseLangResource LoadingTitle}"
                         Description="{gallery:ButtonShowCaseLangResource LoadingDescription}"
                         IsDeferredContentEnabled="True">
@@ -407,6 +413,7 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-block"
                         Title="{gallery:ButtonShowCaseLangResource BlockButtonTitle}"
                         Description="{gallery:ButtonShowCaseLangResource BlockButtonDescription}"
                         IsDeferredContentEnabled="True">
@@ -424,6 +431,7 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-danger"
                         Title="{gallery:ButtonShowCaseLangResource DangerButtonsTitle}"
                         Description="{gallery:ButtonShowCaseLangResource DangerButtonsDescription}"
                         IsDeferredContentEnabled="True">
@@ -441,6 +449,7 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-ghost"
                         Title="{gallery:ButtonShowCaseLangResource GhostButtonTitle}"
                         Description="{gallery:ButtonShowCaseLangResource GhostButtonDescription}"
                         IsDeferredContentEnabled="True">
@@ -477,6 +486,7 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-disabled"
                         Title="{gallery:ButtonShowCaseLangResource DisabledTitle}"
                         Description="{gallery:ButtonShowCaseLangResource DisabledDescription}"
                         IsDeferredContentEnabled="True">
@@ -547,6 +557,7 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-gradient"
                         Title="{gallery:ButtonShowCaseLangResource GradientButtonTitle}"
                         Description="{gallery:ButtonShowCaseLangResource GradientButtonDescription}"
                         BadgeText="v6.0.5"
@@ -580,6 +591,7 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        SourceKey="button-color-variant"
                         Title="{gallery:ButtonShowCaseLangResource ColorVariantTitle}"
                         Description="{gallery:ButtonShowCaseLangResource ColorVariantDescription}"
                         Span="Full"

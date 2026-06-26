@@ -118,6 +118,53 @@ public class GalleryCodeViewerRuntimeTests
     }
 
     [Fact]
+    public void GalleryCodeViewer_ScrollBar_Inset_Converges_While_Horizontally_Scrolling()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = string.Join(
+                "\n",
+                Enumerable.Range(1, 40).Select(index => $"{index}: {new string('x', 220)}")),
+            Language = "csharp"
+        };
+
+        ShowInWindow(viewer, editor =>
+        {
+            var horizontalScrollBar = editor.GetVisualDescendants()
+                                            .OfType<ScrollBar>()
+                                            .Single(scrollBar => scrollBar.Orientation == Orientation.Horizontal);
+
+            // Drive the editor through a range of horizontal scroll offsets, forcing a layout
+            // pass at each step. This reproduces the auto-scroll-while-selecting feedback loop:
+            // the inset must settle to a stable value and not keep mutating the margin (which
+            // previously re-triggered layout forever and hung the UI thread).
+            double MeasureInsetAfterScroll(double offset)
+            {
+                editor.ScrollToHorizontalOffset(offset);
+                editor.InvalidateMeasure();
+                editor.InvalidateArrange();
+                Dispatcher.UIThread.RunJobs();
+                return horizontalScrollBar.Margin.Left;
+            }
+
+            foreach (var offset in new[] { 0d, 50d, 120d, 200d, 320d })
+            {
+                MeasureInsetAfterScroll(offset);
+            }
+
+            // After settling at a fixed offset, repeated layout passes must not change the inset.
+            var settled = MeasureInsetAfterScroll(320d);
+            for (var i = 0; i < 5; i++)
+            {
+                MeasureInsetAfterScroll(320d).ShouldBe(settled, 0.5);
+            }
+
+            // The inset stays pinned to the (non-scrolling) gutter width, independent of offset.
+            settled.ShouldBeGreaterThan(0);
+        });
+    }
+
+    [Fact]
     public void GalleryCodeViewer_Uses_Dark_Syntax_Theme_When_AtomUI_Dark_Mode_Is_Enabled()
     {
         var application = Application.Current!;

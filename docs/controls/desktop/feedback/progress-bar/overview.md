@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/Feedback/ProgressBar` |
+| 控件状态 | Stable |
+
 ProgressBar 是 AtomUI 桌面反馈体系中的进度展示控件，用于表达任务完成比例、状态结果、成功阈值、分段进度和环形进度。它继承 Avalonia `RangeBase` 的 `Minimum`、`Maximum` 和 `Value` 语义，并扩展 `Status`、`SizeType`、成功段、文字格式、线帽、方向、分段、圆形和仪表盘模型。
 
 ProgressBar 的职责是展示已经由外部业务计算好的进度值。它不负责启动任务、取消任务、调度异步流程、估算剩余时间、处理下载队列或持有业务任务状态。需要任务生命周期、错误重试或进度聚合时，应由业务 ViewModel 或服务层维护，并把当前值写入 ProgressBar。
@@ -240,13 +248,34 @@ ProgressBar 不参与 Form 值提交，不实现选择、输入、弹出层或�
 
 `DashboardProgress` 使用 `DashboardGapPosition` 和 `GapDegree` 计算绘制起始角和总跨度。`GapDegree` 被限制在 `[0, 295]`，保证仪表盘仍保留可见进度弧。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [ProgressBar 桌面版实现原理](implementation.md)
 - [ProgressBar Token 设计](token.md)
 - [ProgressBar Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `ProgressBar` | 反馈控件根语义区域，承载 public API、反馈状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `host` | `宿主或弹层区域` | 承载 overlay、popup、portal、message host、drawer 或 modal 容器。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `surface` | `反馈表面` | 承载背景、边框、阴影、尺寸、placement 和视觉状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `content` | `内容区域` | 承载标题、正文、图标、进度、结果、操作或关闭入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `motion` | `动效区域` | 表达进入退出、loading、progress、skeleton 或水印刷新反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/progress-bar/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/progress-bar/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

@@ -23,7 +23,7 @@ BorderBeamToken 按流光语义分为三类。
 - `BeamSize`
 - `BeamOpacity`
 
-`BeamSize` 控制流光高光段的基准尺寸，默认对齐 Ant Design CSS 实现中 `::before` 的 `width: 100`。`BeamOpacity` 控制高光层默认透明度，保持装饰效果有足够可见度但不压过内容。
+`BeamSize` 控制流光高光段的基准尺寸，默认对齐 参考 CSS 实现中 `::before` 的 `width: 100`。`BeamOpacity` 控制高光层默认透明度，保持装饰效果有足够可见度但不压过内容。
 
 ### 2.2 动效 Token
 

@@ -4,13 +4,21 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/Descriptions` |
+| 控件状态 | Stable |
+
 Descriptions 是桌面端数据展示类控件，用于按标签和值展示对象属性、订单信息、配置详情、用户资料等结构化只读信息。它通过 `DescriptionItem` 集合、响应式列数、水平/纵向布局、边框模式和 Header/Extra 区域表达“属性说明列表”的展示语义。
 
 Descriptions 的职责是把描述项数据排版为稳定的网格视觉。它不负责编辑、选择、排序、过滤、远程数据加载、表单提交、虚拟化列表或复杂主从详情关系；这些能力应由业务层、DataGrid、ListView、Form 或专用编辑控件承担。
 
 ## 2. 设计语言
 
-Descriptions 的设计语言来自 Ant Design 的描述列表：标签提供字段名，内容提供字段值，列数和跨度提供信息密度，边框模式提供表格化阅读边界。
+Descriptions 的设计语言来自 参考设计体系的描述列表：标签提供字段名，内容提供字段值，列数和跨度提供信息密度，边框模式提供表格化阅读边界。
 
 | 维度 | 含义 | 典型表达 |
 | --- | --- | --- |
@@ -202,13 +210,34 @@ Descriptions 是 Data Display 分类下的独立展示控件，不属于输入�
 - item 与视觉控件之间只能保存当前生成周期需要的映射；重建视觉前必须清空旧映射和旧订阅。
 - 不允许通过清空 Gallery DataContext、强制路由释放或改静态资源值来掩盖泄露。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Descriptions 桌面版实现原理](implementation.md)
 - [Descriptions Token 设计](token.md)
 - [Descriptions Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Descriptions` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/descriptions/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/descriptions/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

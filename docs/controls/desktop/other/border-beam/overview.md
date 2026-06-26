@@ -2,9 +2,17 @@
 
 本文档定义 `AtomUI.Desktop.Controls.BorderBeam` 桌面版的最新设计定位、公共契约、装饰状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [BorderBeam 桌面版实现原理](implementation.md)，BorderBeam Token 的专项设计见 [BorderBeam Token 设计](token.md)，设计和契约变化记录见 [BorderBeam Changelog](changelog.md)。
 
-Ant Design `BorderBeam` 的核心语义是为容器边框提供持续流动的装饰性高亮效果。AtomUI 的 BorderBeam 以该设计语义为基准，按 Avalonia 控件模型实现为独立包装控件，并通过显式边界感知接口获取被装饰控件的有效边框和圆角。
+参考 `BorderBeam` 的核心语义是为容器边框提供持续流动的装饰性高亮效果。AtomUI 的 BorderBeam 以该设计语义为基准，按 Avalonia 控件模型实现为独立包装控件，并通过显式边界感知接口获取被装饰控件的有效边框和圆角。
 
 ## 1. 控件定位
+
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam` |
+| 控件状态 | Stable |
 
 BorderBeam 是 AtomUI 桌面其他类控件中的装饰性包装控件，用于在容器边界上绘制持续流动的高光效果。它强化某个容器的视觉关注度，但不表达焦点态、校验态、选中态、错误态、警告态或任何业务状态。
 
@@ -153,15 +161,35 @@ BorderBeam 是装饰性动效。`IsMotionEnabled=false` 时，流光效果隐藏
 
 ### 8.4 渲染连续性模型
 
-BorderBeamPresenter 应以一个连续圆角矩形运动路径驱动流光。高光段本身按路径切线旋转，并使用与 Ant Design `offsetAnchor: 90% 50%` 等价的锚点模型，使光束提前进入转角并保持尾迹连续。
+BorderBeamPresenter 应以一个连续圆角矩形运动路径驱动流光。高光段本身按路径切线旋转，并使用与 参考设计体系 `offsetAnchor: 90% 50%` 等价的锚点模型，使光束提前进入转角并保持尾迹连续。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [BorderBeam 桌面版实现原理](implementation.md)
 - [BorderBeam Token 设计](token.md)
 - [BorderBeam Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `BorderBeam` | 控件根语义区域，承载 public API、状态归一、主题入口和 Gallery 可观察行为。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `surface` | `装饰表面` | 承载背景、边框、圆角、遮罩或装饰性效果。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `content` | `内容区域` | 承载被装饰内容或用户内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `motion` | `动效区域` | 表达视觉动效、过渡和刷新边界。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/border-beam/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/border-beam/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

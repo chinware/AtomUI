@@ -4,7 +4,7 @@
 
 ## 1. 实现定位
 
-ToggleSwitch 的 public 桌面类型位于 `AtomUI.Desktop.Controls`，实际交互和布局实现位于 `AtomUI.Controls.AbstractToggleSwitch`。桌面层通过 `ToggleSwitchToken` 和主题文件提供 Ant Design 风格视觉。本文档聚焦 AtomUI 增强层，不重新说明 Avalonia `ToggleButton` 的基础点击和键盘切换算法。
+ToggleSwitch 的 public 桌面类型位于 `AtomUI.Desktop.Controls`，实际交互和布局实现位于 `AtomUI.Controls.AbstractToggleSwitch`。桌面层通过 `ToggleSwitchToken` 和主题文件提供 参考设计体系 风格视觉。本文档聚焦 AtomUI 增强层，不重新说明 Avalonia `ToggleButton` 的基础点击和键盘切换算法。
 
 ## 2. 源码文件结构
 

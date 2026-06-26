@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataDisplay/TreeView` |
+| 控件状态 | Stable |
+
 TreeView 是桌面端数据展示类树形结构控件，用于展示具有父子层级的数据、文件目录、组织结构、权限结构、分类结构和可展开节点集合。它以 Avalonia `TreeView` 为基础，扩展 AtomUI 的节点数据模型、图标、连线、选择、勾选、过滤、高亮、异步加载、拖拽、空状态、动效、Form 集成和 Token 体系。
 
 TreeView 的职责是管理树节点容器生成、层级展开、选择、勾选、过滤展示、节点异步加载和节点拖拽重排。它不负责业务路由、文件系统访问、权限计算、搜索数据源请求、远程分页、虚拟化列表、节点详情面板或业务命令编排。
@@ -293,13 +301,34 @@ TreeView 同时支持 checkbox 和 radio。checkbox 可以按 `IsCheckStrictly` 
 - `Header` 仍遵守 Avalonia TreeView 数据项语义：生成容器的 `Header` 是节点对象，`node.Header` 通过 `TreeDataTemplate` 绑定更新展示内容。
 - 普通 `TreeItemNode`、用户自定义 `ITreeItemNode` 与 `BindableTreeItemNode` 可以在同一个 TreeView 数据源中并存。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [TreeView 桌面版实现原理](implementation.md)
 - [TreeView Token 设计](token.md)
 - [TreeView Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `TreeView` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/tree-view/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/tree-view/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 

@@ -4,6 +4,14 @@
 
 ## 1. 控件定位
 
+| 项 | 值 |
+| --- | --- |
+| NuGet 包 | `AtomUI.Desktop.Controls` |
+| .NET 命名空间 | `AtomUI.Desktop.Controls` |
+| AXAML 命名空间 | `https://atomui.net` |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/Slider` |
+| 控件状态 | Stable |
+
 Slider 是 AtomUI 桌面数据录入体系中的连续或离散数值选择控件，用于在有限范围内通过轨道、滑块、刻度、键盘和 tooltip 表达数值选择。它继承 Avalonia `RangeBase` 的 `Minimum`、`Maximum`、`Value`、`SmallChange` 和 `LargeChange` 语义，并扩展范围选择、刻度标记、方向反转、tooltip 格式化、动效、Form 和 Token 体系。
 
 Slider 的职责是选择一个 `double` 数值，或在范围模式下选择一个 `SliderRangeValue` 区间。它不负责文本输入、数值解析、单位换算、复杂范围校验、异步数据加载或业务格式化模型。需要展示单位、区间说明或业务校验信息时，应由外层表单、文本或业务 ViewModel 承担。
@@ -207,13 +215,34 @@ Tooltip 内容由 `ValueFormatTemplate` 格式化当前值。Tooltip 宿主宽�
 
 Slider 使用 `SliderAutomationPeer`，自动化类型为 `Slider`。`SliderThumb` 使用 `SliderThumbAutomationPeer`，自动化类型为 `Thumb`，且不作为 content element 暴露。维护自动化时不得把内部 thumb 当作业务内容项暴露给辅助技术。
 
-## 9. 文档导航与验证策略
+## 9. 文档导航、LLMS 导出与验证策略
 
 关联文档：
 
 - [Slider 桌面版实现原理](implementation.md)
 - [Slider Token 设计](token.md)
 - [Slider Changelog](changelog.md)
+
+LLMS 语义区域：
+
+| Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
+| --- | --- | --- | --- | --- | --- |
+| `root` | `Slider` | 数据录入控件根语义区域，承载 public API、值状态、验证状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `input` | `输入或编辑区域` | 承载用户输入、当前值、占位、格式化或只读状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `trigger` | `触发区域` | 承载清除、展开、提交、步进、上传或辅助操作。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `popup` | `弹层或候选区域` | 承载下拉、候选项、日历、颜色面板或异步内容。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `validation` | `校验反馈区域` | 承载 Form、status、错误、警告、help 或 loading 状态。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+
+LLMS 导出来源：
+
+| LLMS 内容 | 来源 | 说明 |
+| --- | --- | --- |
+| 单控件完整文档 | `overview.md` + Gallery API / Token / ShowCase | 生成 `controls/slider/index-cn.md` |
+| 单控件语义文档 | `overview.md` + `implementation.md` + theme/template 信息 | 生成 `controls/slider/semantic-cn.md` |
+| API 表 | Gallery ApiDataGrid 或源码 public surface | 不在 `overview.md` 中复制完整 API 表 |
+| Design Token 表 | Gallery DesignTokenDataGrid、Token 类型或第 5 节主题模型 | 不在生成产物中手工维护第二份 Token 表 |
+| 示例 | Gallery ShowCase + source snippet catalog | 只引用稳定示例 |
+| 源码索引 | `implementation.md` | 用于定位控件源码、主题和测试 |
 
 验证策略：
 
