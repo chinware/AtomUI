@@ -50,7 +50,7 @@ Avalonia、ReactiveUI、Roslyn、测试依赖等版本在此统一管理。Relea
 
 ## 打包边界
 
-README 中声明的主要包边界为：
+当前源码打包边界为：
 
 - `AtomUI.Native`
 - `AtomUI.Core`
@@ -63,7 +63,9 @@ README 中声明的主要包边界为：
 - `AtomUI.Toolkits.GalleryBase`
 - `AtomUI.Desktop.Controls.DataGrid`
 - `AtomUI.Desktop.Controls.ColorPicker`
+- `AtomUI.Desktop.Controls.Extras`
+- `AtomUI.Desktop.Controls.Labs`
 - `AtomUI.Generator`
 
-DataGrid 和 ColorPicker 是独立按需包，但源码上依赖 `AtomUI.Desktop.Controls` 并访问其内部成员。
+DataGrid、ColorPicker、Extras 和 Labs 是独立按需包，但源码上依赖 `AtomUI.Desktop.Controls` 并访问其内部成员。
 GalleryBase 是产品中立的 Gallery 应用底座包，跟随主库版本发布，供 AtomUI 生态内的产品 Gallery、Demo 和文档应用复用。

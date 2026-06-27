@@ -15,6 +15,8 @@ flowchart TD
     Desktop["AtomUI.Desktop.Controls\n桌面主控件包"]
     DataGrid["AtomUI.Desktop.Controls.DataGrid\n独立 DataGrid 包"]
     ColorPicker["AtomUI.Desktop.Controls.ColorPicker\n独立 ColorPicker 包"]
+    Extras["AtomUI.Desktop.Controls.Extras\n稳定补充控件包"]
+    Labs["AtomUI.Desktop.Controls.Labs\n实验性补充控件包"]
     Generator["AtomUI.Generator\nToken 与语言源生成器"]
     GalleryBase["AtomUI.Toolkits.GalleryBase\nGallery 应用底座库"]
     Gallery["AtomUIGallery\n示例与展示宿主"]
@@ -26,6 +28,8 @@ flowchart TD
     Generator -. analyzer .-> Desktop
     Generator -. analyzer .-> DataGrid
     Generator -. analyzer .-> ColorPicker
+    Generator -. analyzer .-> Extras
+    Generator -. analyzer .-> Labs
     Core --> Shared
     Core --> Icons
     Core --> Fonts
@@ -36,6 +40,8 @@ flowchart TD
     Desktop --> GalleryBase
     Desktop --> DataGrid
     Desktop --> ColorPicker
+    Desktop --> Extras
+    Desktop --> Labs
     GalleryBase --> Gallery
     Desktop --> Gallery
     DataGrid --> Gallery
@@ -58,6 +64,8 @@ AtomUI 应用通常分两步接入：
 - `AtomUI.Controls` 提供公共控件和 Primitives，是桌面控件包的基础。
 - `AtomUI.Desktop.Controls` 是桌面主包，负责大多数 Ant Design 桌面控件、Popup/Overlay、Window、Browser 兼容主题。
 - `AtomUI.Desktop.Controls.DataGrid` 和 `AtomUI.Desktop.Controls.ColorPicker` 是按需引入的独立桌面控件包。
+- `AtomUI.Desktop.Controls.Extras` 承载 Ant Design 标准之外、准备作为稳定 API 发布的补充桌面控件。
+- `AtomUI.Desktop.Controls.Labs` 承载 Ant Design 标准之外、仍处于实验或评估阶段的补充桌面控件。
 - `AtomUI.Toolkits.GalleryBase` 是 Gallery 应用底座库，提供产品中立的 ShowCase 控件、Gallery 主题和运行时辅助能力。
 - `AtomUI.Generator` 以 Analyzer 方式接入多个项目，生成 Token 资源键、ControlToken 类型池、语言资源键和语言 Provider 池。
 
