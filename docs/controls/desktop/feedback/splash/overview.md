@@ -9,8 +9,8 @@
 | NuGet 包 | `AtomUI.Desktop.Controls.Extras` |
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
-| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/Feedback/Splash` |
-| 控件状态 | Design |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/Other/Splash` |
+| 控件状态 | Preview |
 
 Splash 是 AtomUI 桌面控件体系中的应用启动反馈控件，用于在主窗口准备完成前展示品牌、启动状态、确定或不确定进度、错误信息和可选补充内容。
 
@@ -49,7 +49,7 @@ Splash 的公共契约由视觉控件、启动窗口、实例服务、静态便�
 
 主要公开类型与枚举：
 
-- 类型：`Splash`、`SplashWindow`、`SplashService`、`SplashOptions`、`SplashController`、`ISplashService`。
+- 类型：`Splash`、`SplashWindow`、`SplashService`、`SplashOptions`、`ISplashService`。
 - 枚举：`SplashStatus`。
 
 稳定 template part：
@@ -83,7 +83,6 @@ Splash 的状态流按以下路径收敛：
 
 ```text
 Splash visual API / SplashService API / Splash static API
-  -> SplashController state
   -> Splash instance properties
   -> pseudo-class / template binding
   -> ControlTheme selector / ProgressBar / Spin / TextBlock
@@ -93,6 +92,7 @@ Splash visual API / SplashService API / Splash static API
 状态维护规则：
 
 - `Splash` 视觉控件只持有可展示状态，不创建主窗口、不关闭应用、不吞异常。
+- `Splash` 本体提供 `SetMessage`、`SetProgress`、`SetStatus` 和 `SetError` 状态写入方法。
 - `SplashWindow` 只持有窗口级状态和关闭动效，不解释业务启动步骤。
 - `SplashService` 是实例 API 的状态 owner，同一个服务实例一次只管理一个 `CurrentWindow`。
 - `Splash` 静态 API 只委托给 `Splash.DefaultService`，不直接持有窗口或视觉节点。
@@ -108,10 +108,18 @@ Splash 的视觉模型由 `Splash` 控件模板、`SplashWindow` 宿主主题、
 | 主题文件 | 职责 |
 | --- | --- |
 | `SplashTheme.axaml` | 定义启动页视觉控件模板、状态 selector、ProgressBar/Spin 组合和内容区域。 |
-| `SplashWindowTheme.axaml` | 定义桌面启动窗口宿主、无标题栏、不可调整大小、圆角和阴影边界。 |
-| `SplashThemes.axaml` | 聚合 Splash 控件家族主题资源，保证包级引入顺序稳定。 |
+| `SplashWindowTheme.axaml` | 定义桌面启动窗口宿主、透明无装饰窗口模板、阴影宿主和内容承载边界。 |
+| `SplashThemes.axaml` | 聚合 Splash 视觉控件主题资源，保证包级引入顺序稳定。 |
 
 Splash 使用 `SplashToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 `Status`、`Progress`、`IsIndeterminate`、启动步骤或异常对象。
+`SplashWindow` 使用 `{x:Type atom:SplashWindow}` 作为隐式 `ControlTheme` key；窗口模板必须保持透明内容宿主，避免默认 Window 背景破坏 Splash 表面圆角。
+`SplashWindowTheme.axaml` 直接使用 `ShadowsAwareContainer#PART_SurfaceHost` 承载 `Splash`，由 `SurfaceBoxShadow` 控制窗口表面阴影，由 `SurfaceCornerRadius` 控制阴影遮罩圆角。`SplashTheme.axaml` 内部的 `PART_RootLayout` 和 `PART_SurfaceLayout` 继续负责背景、内容圆角和裁剪。
+
+资源覆盖边界：
+
+- 同时影响窗口阴影宿主和 Splash 内容表面的视觉资源，应写入 `SplashWindow.Resources`。
+- 只影响 `Splash` 内部模板的资源，可以写入 `Splash.Resources`。
+- 不通过 C# `TokenResourceBinder` 在窗口宿主和 Splash 之间桥接 `SurfaceBoxShadow`、`SurfaceCornerRadius` 等模板可表达关系。
 
 主题维护规则：
 
@@ -127,8 +135,7 @@ Splash 属于 `AtomUI.Desktop.Controls.Extras` 中的稳定补充控件。它与
 主要协作类型：
 
 - `Splash`：视觉控件，承载品牌、文本、进度、状态和扩展内容。
-- `SplashWindow`：桌面宿主窗口，承载 `Splash` 并管理显示、淡出和关闭节奏。
-- `SplashController`：状态写入入口，供 `SplashWindow` 和服务统一更新 visual state。
+- `SplashWindow`：桌面宿主窗口，通过可空 `Splash` 属性承载内容控件，并管理显示、淡出和关闭节奏。
 - `ISplashService`：实例服务契约，适合应用启动代码、测试和依赖注入场景。
 - `SplashService`：默认实例服务，实现 show/update/close 编排。
 - `SplashOptions`：启动窗口和初始内容配置对象。
@@ -178,6 +185,7 @@ Application startup code
 ```text
 Splash.ShowAsync(...)
 Splash.SetMessage(...)
+Splash.SetProgress(...)
 Splash.CloseAsync(...)
 ```
 
@@ -195,7 +203,22 @@ Splash.CloseAsync(...)
 
 ### 8.4 窗口宿主模型
 
-`SplashWindow` 默认不显示任务栏、不显示标题栏、不可调整大小并居中显示。关闭动效只影响 Splash 自身窗口，不改变主窗口的显示、激活或 owner 关系。
+`SplashWindow` 默认不显示任务栏、不显示标题栏、不可调整大小并居中显示。这些窗口壳层默认值由 `SplashWindowTheme.axaml` 提供，运行时 `SplashOptions` 只在服务配置阶段覆盖调用方显式传入的窗口选项。
+`SplashWindow` 构造阶段不创建 `Splash`，`SplashService` 负责创建或复用 `SplashWindow.Splash`，再把 `SplashOptions` 统一写入窗口和内容控件。
+`SplashWindow.Splash` 是默认值为 `null` 的 `StyledProperty<Splash?>`；`MinimumShowDuration`、`CloseDelay`、`FadeOutDuration` 是窗口级 `StyledProperty<TimeSpan>`，`IsCloseRequested` 是运行时只读 `DirectProperty`。
+
+窗口模板结构：
+
+```text
+SplashWindow
+  -> SplashWindowTheme
+     -> ShadowsAwareContainer#PART_SurfaceHost
+        -> Splash
+           -> PART_RootLayout
+              -> PART_SurfaceLayout
+```
+
+`PART_SurfaceHost` 必须保持 `ClipToBounds=False`，保证阴影不会被宿主裁剪；`Splash` 模板内部的圆角 Border 负责实际背景和内容裁剪。关闭动效只影响 Splash 自身窗口，不改变主窗口的显示、激活或 owner 关系。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 

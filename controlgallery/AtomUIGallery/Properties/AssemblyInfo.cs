@@ -62,6 +62,7 @@ using Avalonia.Metadata;
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Slider")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Space")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Spin")]
+[assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Splash")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.SplitButton")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Splitter")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUIGallery.ShowCases.Statistic")]

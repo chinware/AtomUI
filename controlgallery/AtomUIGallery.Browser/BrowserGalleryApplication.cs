@@ -23,6 +23,7 @@ public class BrowserGalleryApplication : Application
             builder.WithDefaultFontFamily(FontFamily.Parse(
                 $"fonts:AlibabaSans#Alibaba Sans, {AlibabaPuHuiTiFontConstants.FontFamily}, $Default"));
             builder.UseDesktopControls();
+            builder.UseDesktopExtras();
             builder.UseDesktopColorPicker();
             builder.UseDesktopDataGrid();
             builder.UseGalleryControls();

@@ -1208,6 +1208,7 @@ namespace AtomUIGallery.Localization
         Navigation_TabStrip,
         Other,
         Other_BorderBeam,
+        Other_Splash,
         Overview
     }
 
@@ -5809,6 +5810,111 @@ namespace AtomUIGallery.Localization
         }
 
         public SpinShowCaseLangResourceExtension(SpinShowCaseLangResourceKind kind) : base(kind)
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.Localization
+{
+    public enum SplashShowCaseLangResourceKind
+    {
+        ApiColumnDefault,
+        ApiColumnDescription,
+        ApiColumnMember,
+        ApiColumnType,
+        ApiMethodSetProgress,
+        ApiOptionMinimumShowDuration,
+        ApiPropertyDetail,
+        ApiPropertyFooter,
+        ApiPropertyIsIndeterminate,
+        ApiPropertyIsMotionEnabled,
+        ApiPropertyLogo,
+        ApiPropertyLogoTemplate,
+        ApiPropertyMessage,
+        ApiPropertyProgress,
+        ApiPropertyStatus,
+        ApiPropertySubtitle,
+        ApiPropertyTitle,
+        ApiServiceShowAsync,
+        ApiStaticShowAsync,
+        BasicDescription,
+        BasicTitle,
+        ComponentCategory,
+        ComponentStatusPreview,
+        ComposedDescription,
+        ComposedTitle,
+        DeterminateDescription,
+        DeterminateTitle,
+        InfoBaseClassLabel,
+        InfoNamespaceLabel,
+        InfoPackageLabel,
+        P2ContentModuleCore,
+        P2ContentModuleGallery,
+        P2ContentModuleTheme,
+        P2ContentShowWindowSplash,
+        P2DetailError,
+        P2DetailLoadingThemeAndResources,
+        P2DetailProgress,
+        P2DetailReady,
+        P2FooterDesktopOnly,
+        P2FooterStaticPreview,
+        P2MessageError,
+        P2MessageLoadingModules,
+        P2MessagePreparingShell,
+        P2MessageReady,
+        P2SubtitleDesktopBoot,
+        P2WindowSplashDetailComplete,
+        P2WindowSplashDetailProgress,
+        P2WindowSplashDetailStarting,
+        P2WindowSplashFooter,
+        P2WindowSplashMessageComplete,
+        P2WindowSplashMessageFinalizing,
+        P2WindowSplashMessageLoadingControls,
+        P2WindowSplashMessageLoadingRoutes,
+        P2WindowSplashMessageLoadingTheme,
+        P2WindowSplashMessageStarting,
+        P2WindowSplashMessageWarmingCache,
+        P2WindowSplashSubtitle,
+        PageDescription,
+        PageSubtitle,
+        ScenarioApi,
+        ScenarioDesignToken,
+        ScenarioExamples,
+        StatusDescription,
+        StatusTitle,
+        TokenColumnDescription,
+        TokenColumnScope,
+        TokenColumnStatus,
+        TokenColumnToken,
+        TokenNameContentPadding,
+        TokenNameDetailFontSize,
+        TokenNameErrorColor,
+        TokenNameIndicatorSize,
+        TokenNameLogoSize,
+        TokenNameMessageFontSize,
+        TokenNameProgressBarHeight,
+        TokenNameSubtitleFontSize,
+        TokenNameSuccessColor,
+        TokenNameSurfaceBackground,
+        TokenNameSurfaceBoxShadow,
+        TokenNameSurfaceCornerRadius,
+        TokenNameTitleFontSize,
+        TokenNameWindowMinHeight,
+        TokenNameWindowWidth,
+        TokenScopeComponent,
+        TokenStatusPreview,
+        WindowServiceDescription,
+        WindowServiceTitle
+    }
+
+    public class SplashShowCaseLangResourceExtension : LanguageResourceExtension<SplashShowCaseLangResourceKind>
+    {
+        public SplashShowCaseLangResourceExtension()
+        {
+        }
+
+        public SplashShowCaseLangResourceExtension(SplashShowCaseLangResourceKind kind) : base(kind)
         {
         }
     }

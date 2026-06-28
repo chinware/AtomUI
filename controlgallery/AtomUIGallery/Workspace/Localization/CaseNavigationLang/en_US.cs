@@ -98,6 +98,7 @@ internal partial class en_US : LanguageProvider
 
     public const string Other = "Other";
     public const string Other_BorderBeam = "BorderBeam";
+    public const string Other_Splash = "Splash";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }

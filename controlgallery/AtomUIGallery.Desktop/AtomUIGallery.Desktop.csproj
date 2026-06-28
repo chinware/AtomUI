@@ -38,6 +38,7 @@
 
     <ItemGroup>
         <ProjectReference Include="../AtomUIGallery/AtomUIGallery.csproj"/>
+        <ProjectReference Include="../../src/AtomUI.Desktop.Controls.Extras/AtomUI.Desktop.Controls.Extras.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

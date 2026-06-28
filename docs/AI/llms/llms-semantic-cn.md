@@ -12493,11 +12493,75 @@ Source: ./controls/splash/semantic-cn.md
 
 ## Abstract AXAML Structure
 
-未定位到可生成抽象 AXAML 结构的 ControlTheme 模板。生成器不会根据 semantic parts 发明 AXAML 节点；请以 Template Parts、主题文件和源码索引为准。
+来源：`src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashTheme.axaml`
+
+```xml
+<Border Name="PART_RootLayout">
+    <Border Name="PART_SurfaceLayout">
+        <StackPanel Name="PART_ContentLayout">
+            <ContentPresenter Name="PART_LogoPresenter" />
+            <TextBlock Name="PART_TitleBlock" />
+            <TextBlock Name="PART_SubtitleBlock" />
+            <ContentPresenter Name="PART_ContentPresenter" />
+            <Panel Name="PART_ProgressLayout">
+                <Spin Name="PART_Spin" />
+                <ProgressBar Name="PART_ProgressBar" />
+            </Panel>
+            <TextBlock Name="PART_MessageBlock" />
+            <TextBlock Name="PART_DetailBlock" />
+            <ContentPresenter Name="PART_FooterPresenter" />
+        </StackPanel>
+    </Border>
+</Border>
+```
 
 ## Composition Model
 
-该控件主要由 public 控件和 ControlTheme 模板直接表达，没有额外运行时组合层。
+该章节由控件 `Themes/` 文件夹中的真实主题文件生成，用于说明 public 控件与内部协作对象之间的运行时结构。内部节点只用于理解和维护，不应指导用户代码直接依赖。
+
+### 控件角色图
+
+```text
+Splash
+  -> Splash (control theme, SplashTheme.axaml)
+     -> Border#PART_RootLayout (template-stable)
+        -> Border#PART_SurfaceLayout (template-stable)
+           -> StackPanel#PART_ContentLayout (template-stable)
+              -> ContentPresenter#PART_LogoPresenter (template-stable)
+              -> TextBlock#PART_TitleBlock (template-stable)
+              -> TextBlock#PART_SubtitleBlock (template-stable)
+              -> ContentPresenter#PART_ContentPresenter (template-stable)
+              -> Panel#PART_ProgressLayout (template-stable)
+                 -> Spin#PART_Spin (template-stable)
+                 -> ProgressBar#PART_ProgressBar (template-stable)
+              -> TextBlock#PART_MessageBlock (template-stable)
+              -> TextBlock#PART_DetailBlock (template-stable)
+              -> ContentPresenter#PART_FooterPresenter (template-stable)
+  -> SplashWindow (control theme, SplashWindowTheme.axaml)
+     -> ShadowsAwareContainer#PART_SurfaceHost (template-stable)
+```
+
+### 协作节点
+
+| 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `Splash` | public control | `源文档 + public API` | 用户代码 / 控件宿主 | public API | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `Splash` | control theme | `SplashTheme.axaml` | 用户代码 / 控件宿主 | `Content`, `ContentTemplate`, `Detail`, `Footer`, `FooterTemplate`, `IsProgressBarVisible` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_RootLayout` | template node (Border) | `SplashTheme.axaml` | Splash | `Content`, `ContentTemplate`, `Detail`, `Footer`, `FooterTemplate`, `IsProgressBarVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_SurfaceLayout` | template node (Border) | `SplashTheme.axaml` | Splash | `Content`, `ContentTemplate`, `Detail`, `Footer`, `FooterTemplate`, `IsProgressBarVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentLayout` | template node (StackPanel) | `SplashTheme.axaml` | Splash | `Content`, `ContentTemplate`, `Detail`, `Footer`, `FooterTemplate`, `IsProgressBarVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_LogoPresenter` | template node (ContentPresenter) | `SplashTheme.axaml` | Splash | `Logo`, `LogoTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_TitleBlock` | template node (TextBlock) | `SplashTheme.axaml` | Splash | `Title` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_SubtitleBlock` | template node (TextBlock) | `SplashTheme.axaml` | Splash | `Subtitle` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ContentPresenter` | template node (ContentPresenter) | `SplashTheme.axaml` | Splash | `Content`, `ContentTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ProgressLayout` | template node (Panel) | `SplashTheme.axaml` | Splash | `IsProgressBarVisible`, `IsSpinVisible`, `ProgressValue` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_Spin` | template node (Spin) | `SplashTheme.axaml` | Splash | `IsSpinVisible` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_ProgressBar` | template node (ProgressBar) | `SplashTheme.axaml` | Splash | `IsProgressBarVisible`, `ProgressValue` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_MessageBlock` | template node (TextBlock) | `SplashTheme.axaml` | Splash | `Message` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_DetailBlock` | template node (TextBlock) | `SplashTheme.axaml` | Splash | `Detail` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `PART_FooterPresenter` | template node (ContentPresenter) | `SplashTheme.axaml` | Splash | `Footer`, `FooterTemplate` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
+| `SplashWindow` | control theme | `SplashWindowTheme.axaml` | 用户代码 / 控件宿主 | `Splash` | public | 用户可直接使用 public 控件；可作为示例和 API 入口。 |
+| `PART_SurfaceHost` | template node (ShadowsAwareContainer) | `SplashWindowTheme.axaml` | SplashWindow | `Splash` | template-stable | 用于主题维护；变更需同步主题、实现和 LLMS。 |
 
 ## Template Parts
 
@@ -12532,7 +12596,6 @@ Splash 的状态流按以下路径收敛：
 
 ```text
 Splash visual API / SplashService API / Splash static API
-  -> SplashController state
   -> Splash instance properties
   -> pseudo-class / template binding
   -> ControlTheme selector / ProgressBar / Spin / TextBlock
@@ -12542,6 +12605,7 @@ Splash visual API / SplashService API / Splash static API
 状态维护规则：
 
 - `Splash` 视觉控件只持有可展示状态，不创建主窗口、不关闭应用、不吞异常。
+- `Splash` 本体提供 `SetMessage`、`SetProgress`、`SetStatus` 和 `SetError` 状态写入方法。
 - `SplashWindow` 只持有窗口级状态和关闭动效，不解释业务启动步骤。
 - `SplashService` 是实例 API 的状态 owner，同一个服务实例一次只管理一个 `CurrentWindow`。
 - `Splash` 静态 API 只委托给 `Splash.DefaultService`，不直接持有窗口或视觉节点。
@@ -12557,10 +12621,18 @@ Splash 的视觉模型由 `Splash` 控件模板、`SplashWindow` 宿主主题、
 | 主题文件 | 职责 |
 | --- | --- |
 | `SplashTheme.axaml` | 定义启动页视觉控件模板、状态 selector、ProgressBar/Spin 组合和内容区域。 |
-| `SplashWindowTheme.axaml` | 定义桌面启动窗口宿主、无标题栏、不可调整大小、圆角和阴影边界。 |
-| `SplashThemes.axaml` | 聚合 Splash 控件家族主题资源，保证包级引入顺序稳定。 |
+| `SplashWindowTheme.axaml` | 定义桌面启动窗口宿主、透明无装饰窗口模板、阴影宿主和内容承载边界。 |
+| `SplashThemes.axaml` | 聚合 Splash 视觉控件主题资源，保证包级引入顺序稳定。 |
 
 Splash 使用 `SplashToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 `Status`、`Progress`、`IsIndeterminate`、启动步骤或异常对象。
+`SplashWindow` 使用 `{x:Type atom:SplashWindow}` 作为隐式 `ControlTheme` key；窗口模板必须保持透明内容宿主，避免默认 Window 背景破坏 Splash 表面圆角。
+`SplashWindowTheme.axaml` 直接使用 `ShadowsAwareContainer#PART_SurfaceHost` 承载 `Splash`，由 `SurfaceBoxShadow` 控制窗口表面阴影，由 `SurfaceCornerRadius` 控制阴影遮罩圆角。`SplashTheme.axaml` 内部的 `PART_RootLayout` 和 `PART_SurfaceLayout` 继续负责背景、内容圆角和裁剪。
+
+资源覆盖边界：
+
+- 同时影响窗口阴影宿主和 Splash 内容表面的视觉资源，应写入 `SplashWindow.Resources`。
+- 只影响 `Splash` 内部模板的资源，可以写入 `Splash.Resources`。
+- 不通过 C# `TokenResourceBinder` 在窗口宿主和 Splash 之间桥接 `SurfaceBoxShadow`、`SurfaceCornerRadius` 等模板可表达关系。
 
 主题维护规则：
 
