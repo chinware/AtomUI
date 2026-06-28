@@ -99,6 +99,7 @@
 - [Result](./controls/result/index-cn.md)
 - [Skeleton](./controls/skeleton/index-cn.md)
 - [Spin](./controls/spin/index-cn.md)
+- [Splash](./controls/splash/index-cn.md)
 - [Watermark](./controls/watermark/index-cn.md)
 
 ### window
@@ -202,6 +203,7 @@
 - [Result](./controls/result/semantic-cn.md)
 - [Skeleton](./controls/skeleton/semantic-cn.md)
 - [Spin](./controls/spin/semantic-cn.md)
+- [Splash](./controls/splash/semantic-cn.md)
 - [Watermark](./controls/watermark/semantic-cn.md)
 
 ### window
@@ -288,6 +290,7 @@
 - Result: `docs/controls/desktop/feedback/result/overview.md`
 - Skeleton: `docs/controls/desktop/feedback/skeleton/overview.md`
 - Spin: `docs/controls/desktop/feedback/spin/overview.md`
+- Splash: `docs/controls/desktop/feedback/splash/overview.md`
 - Watermark: `docs/controls/desktop/feedback/watermark/overview.md`
 - Window: `docs/controls/desktop/window/window/overview.md`
 - WindowTitleBar: `docs/controls/desktop/window/window-title-bar/overview.md`
