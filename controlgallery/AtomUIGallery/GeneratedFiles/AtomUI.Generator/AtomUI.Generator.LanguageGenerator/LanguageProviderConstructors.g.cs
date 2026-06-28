@@ -1912,6 +1912,39 @@ namespace AtomUIGallery.ShowCases.Spin
     }
 }
 
+namespace AtomUIGallery.ShowCases.Splash
+{
+    internal partial class en_US
+    {
+        public en_US()
+            : base(global::AtomUI.Theme.Language.LanguageCode.en_US, "SplashShowCase")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.Splash
+{
+    internal partial class zh_CN
+    {
+        public zh_CN()
+            : base(global::AtomUI.Theme.Language.LanguageCode.zh_CN, "SplashShowCase")
+        {
+        }
+    }
+}
+
+namespace AtomUIGallery.ShowCases.Splash
+{
+    internal partial class zh_TW
+    {
+        public zh_TW()
+            : base(global::AtomUI.Theme.Language.LanguageCode.zh_TW, "SplashShowCase")
+        {
+        }
+    }
+}
+
 namespace AtomUIGallery.ShowCases.SplitButton
 {
     internal partial class en_US

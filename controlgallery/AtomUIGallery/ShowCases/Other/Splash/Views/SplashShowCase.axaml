@@ -1,0 +1,320 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="AtomUIGallery.ShowCases.Splash.SplashShowCase"
+             xmlns:atom="https://atomui.net"
+             xmlns:gallery="https://atomui.net/oss-controls/gallery"
+             xmlns:vm="using:AtomUIGallery.ShowCases.Splash"
+             x:DataType="vm:SplashViewModel">
+    <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
+        <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
+            <gallery:GalleryStickyTabsHost.Header>
+                <StackPanel Margin="28,24,28,18"
+                            Spacing="16">
+                    <StackPanel Spacing="6">
+                        <StackPanel Orientation="Horizontal"
+                                    Spacing="10"
+                                    VerticalAlignment="Center">
+                            <atom:TextBlock Text="Splash"
+                                            FontSize="26"
+                                            FontWeight="Bold"
+                                            VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:SplashShowCaseLangResource ComponentCategory}"
+                                      TagColor="geekblue"
+                                      VerticalAlignment="Center" />
+                            <atom:Tag Text="{gallery:SplashShowCaseLangResource ComponentStatusPreview}"
+                                      TagColor="processing"
+                                      VerticalAlignment="Center" />
+                        </StackPanel>
+                        <atom:TextBlock Text="{gallery:SplashShowCaseLangResource PageSubtitle}"
+                                        FontSize="15"
+                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        <atom:TextBlock Text="{gallery:SplashShowCaseLangResource PageDescription}"
+                                        HorizontalAlignment="Left"
+                                        TextWrapping="Wrap"
+                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
+                    </StackPanel>
+
+                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                            BorderThickness="1"
+                            CornerRadius="6"
+                            MinHeight="48"
+                            Padding="16,8">
+                        <Border.Styles>
+                            <Style Selector="atom|TextBlock.info-label">
+                                <Setter Property="Width" Value="84" />
+                            </Style>
+                            <Style Selector="atom|TextBlock.info-value">
+                                <Setter Property="Width" Value="240" />
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                            </Style>
+                        </Border.Styles>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemSpacing="48"
+                                   LineSpacing="8"
+                                   VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SplashShowCaseLangResource InfoNamespaceLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SplashShowCaseLangResource InfoPackageLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="AtomUI.Desktop.Controls.Extras"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="10"
+                                        VerticalAlignment="Center">
+                                <atom:TextBlock Classes="info-label"
+                                                Text="{gallery:SplashShowCaseLangResource InfoBaseClassLabel}"
+                                                FontWeight="Bold"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                                <atom:TextBlock Classes="info-value"
+                                                Text="ContentControl"
+                                                FontFamily="Consolas"
+                                                LineHeight="22"
+                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                                VerticalAlignment="Center" />
+                            </StackPanel>
+                        </WrapPanel>
+                    </Border>
+                </StackPanel>
+            </gallery:GalleryStickyTabsHost.Header>
+
+            <gallery:GalleryStickyTabsHost.StickyContent>
+                <atom:TabStrip Name="ScenarioTabs"
+                               SizeType="Large"
+                               SelectedIndex="0">
+                    <atom:TabStripItem Content="{gallery:SplashShowCaseLangResource ScenarioExamples}"
+                                       Tag="Examples"
+                                       IsSelected="True" />
+                    <atom:TabStripItem Content="{gallery:SplashShowCaseLangResource ScenarioApi}"
+                                       Tag="Api" />
+                    <atom:TabStripItem Content="{gallery:SplashShowCaseLangResource ScenarioDesignToken}"
+                                       Tag="DesignToken" />
+                </atom:TabStrip>
+            </gallery:GalleryStickyTabsHost.StickyContent>
+
+            <ContentControl Name="ScenarioContentHost">
+                <gallery:ShowCasePanel Name="ExamplesContent"
+                                       IsScrollEnabled="False"
+                                       IsDeferredLoadingEnabled="True"
+                                       InitialDeferredLoadItemCount="4"
+                                       DeferredLoadBatchSize="2"
+                                       ContentMargin="28,10,28,28">
+                    <gallery:ShowCasePanel.Styles>
+                        <Style Selector="atom|Splash.preview-splash">
+                            <Setter Property="Width" Value="360" />
+                            <Setter Property="MinHeight" Value="260" />
+                        </Style>
+                        <Style Selector="atom|Splash.status-splash">
+                            <Setter Property="Width" Value="320" />
+                            <Setter Property="MinHeight" Value="250" />
+                        </Style>
+                    </gallery:ShowCasePanel.Styles>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:SplashShowCaseLangResource BasicTitle}"
+                        Description="{gallery:SplashShowCaseLangResource BasicDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplashViewModel">
+                                <atom:Splash Classes="preview-splash"
+                                             Logo="{Binding BasicLogo}"
+                                             Title="AtomUI"
+                                             Subtitle="{gallery:SplashShowCaseLangResource P2SubtitleDesktopBoot}"
+                                             Message="{gallery:SplashShowCaseLangResource P2MessagePreparingShell}"
+                                             Detail="{gallery:SplashShowCaseLangResource P2DetailLoadingThemeAndResources}"
+                                             IsIndeterminate="True"
+                                             HorizontalAlignment="Left">
+                                    <atom:Splash.LogoTemplate>
+                                        <DataTemplate x:DataType="vm:SplashLogoInfo">
+                                            <Border Width="52"
+                                                    Height="52"
+                                                    CornerRadius="14"
+                                                    Background="{Binding Background}">
+                                                <atom:TextBlock Text="{Binding Text}"
+                                                                Foreground="{Binding Foreground}"
+                                                                FontSize="20"
+                                                                FontWeight="Bold"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </atom:Splash.LogoTemplate>
+                                </atom:Splash>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:SplashShowCaseLangResource DeterminateTitle}"
+                        Description="{gallery:SplashShowCaseLangResource DeterminateDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplashViewModel">
+                                <atom:Splash Classes="preview-splash"
+                                             Logo="{Binding BasicLogo}"
+                                             Title="AtomUI"
+                                             Subtitle="{gallery:SplashShowCaseLangResource P2SubtitleDesktopBoot}"
+                                             Message="{gallery:SplashShowCaseLangResource P2MessageLoadingModules}"
+                                             Detail="{gallery:SplashShowCaseLangResource P2DetailProgress}"
+                                             Progress="{Binding ProgressValue}"
+                                             IsIndeterminate="False"
+                                             HorizontalAlignment="Left">
+                                    <atom:Splash.LogoTemplate>
+                                        <DataTemplate x:DataType="vm:SplashLogoInfo">
+                                            <Border Width="52"
+                                                    Height="52"
+                                                    CornerRadius="14"
+                                                    Background="{Binding Background}">
+                                                <atom:TextBlock Text="{Binding Text}"
+                                                                Foreground="{Binding Foreground}"
+                                                                FontSize="20"
+                                                                FontWeight="Bold"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </atom:Splash.LogoTemplate>
+                                </atom:Splash>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:SplashShowCaseLangResource StatusTitle}"
+                        Description="{gallery:SplashShowCaseLangResource StatusDescription}"
+                        IsOccupyEntireRow="True"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplashViewModel">
+                                <WrapPanel Orientation="Horizontal"
+                                           ItemSpacing="20"
+                                           LineSpacing="20">
+                                    <atom:Splash Classes="status-splash"
+                                                 Title="AtomUI"
+                                                 Message="{gallery:SplashShowCaseLangResource P2MessageReady}"
+                                                 Detail="{gallery:SplashShowCaseLangResource P2DetailReady}"
+                                                 Status="Success"
+                                                 Progress="1"
+                                                 IsIndeterminate="False"
+                                                 Footer="{gallery:SplashShowCaseLangResource P2FooterStaticPreview}" />
+                                    <atom:Splash Classes="status-splash"
+                                                 Title="AtomUI"
+                                                 Message="{gallery:SplashShowCaseLangResource P2MessageError}"
+                                                 Detail="{gallery:SplashShowCaseLangResource P2DetailError}"
+                                                 Status="Error"
+                                                 IsIndeterminate="False"
+                                                 Footer="{gallery:SplashShowCaseLangResource P2FooterStaticPreview}" />
+                                </WrapPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:SplashShowCaseLangResource ComposedTitle}"
+                        Description="{gallery:SplashShowCaseLangResource ComposedDescription}"
+                        IsOccupyEntireRow="True"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplashViewModel">
+                                <atom:Splash Width="420"
+                                             MinHeight="300"
+                                             Logo="{Binding ComposedLogo}"
+                                             Title="AtomUI Gallery"
+                                             Subtitle="{gallery:SplashShowCaseLangResource P2SubtitleDesktopBoot}"
+                                             Message="{gallery:SplashShowCaseLangResource P2MessageLoadingModules}"
+                                             Detail="{gallery:SplashShowCaseLangResource P2DetailProgress}"
+                                             Progress="{Binding ProgressValue}"
+                                             IsIndeterminate="False"
+                                             Footer="{Binding ComposedFooter}"
+                                             HorizontalAlignment="Left">
+                                    <StackPanel Orientation="Horizontal"
+                                                Spacing="8"
+                                                HorizontalAlignment="Center">
+                                        <atom:Tag Text="{gallery:SplashShowCaseLangResource P2ContentModuleCore}"
+                                                  TagColor="success" />
+                                        <atom:Tag Text="{gallery:SplashShowCaseLangResource P2ContentModuleTheme}"
+                                                  TagColor="processing" />
+                                        <atom:Tag Text="{gallery:SplashShowCaseLangResource P2ContentModuleGallery}"
+                                                  TagColor="warning" />
+                                    </StackPanel>
+                                    <atom:Splash.LogoTemplate>
+                                        <DataTemplate x:DataType="vm:SplashLogoInfo">
+                                            <Border Width="56"
+                                                    Height="56"
+                                                    CornerRadius="18"
+                                                    Background="{Binding Background}">
+                                                <atom:TextBlock Text="{Binding Text}"
+                                                                Foreground="{Binding Foreground}"
+                                                                FontSize="18"
+                                                                FontWeight="Bold"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </atom:Splash.LogoTemplate>
+                                    <atom:Splash.FooterTemplate>
+                                        <DataTemplate x:DataType="vm:SplashFooterInfo">
+                                            <StackPanel Orientation="Horizontal"
+                                                        Spacing="8"
+                                                        VerticalAlignment="Center">
+                                                <atom:Tag Text="{Binding Version}"
+                                                          TagColor="geekblue" />
+                                                <atom:TextBlock Text="{Binding Description}"
+                                                                Foreground="{atom:SharedTokenResource ColorTextTertiary}"
+                                                                VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </atom:Splash.FooterTemplate>
+                                </atom:Splash>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:SplashShowCaseLangResource WindowServiceTitle}"
+                        Description="{gallery:SplashShowCaseLangResource WindowServiceDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:SplashViewModel">
+                                <atom:Button ButtonType="Primary"
+                                             Content="{gallery:SplashShowCaseLangResource P2ContentShowWindowSplash}"
+                                             Click="HandleShowWindowSplashButtonClick" />
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+                </gallery:ShowCasePanel>
+            </ContentControl>
+        </gallery:GalleryStickyTabsHost>
+    </Grid>
+</UserControl>

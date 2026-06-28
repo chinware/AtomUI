@@ -18529,6 +18529,345 @@ namespace AtomUI.Theme.Language
         }
     }
 
+    internal sealed class SplashShowCaseEnUSLanguageProvider : LanguageProvider
+    {
+        public SplashShowCaseEnUSLanguageProvider()
+            : base(LanguageCode.en_US, "SplashShowCase")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiMethodSetProgress] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiMethodSetProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiOptionMinimumShowDuration] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiOptionMinimumShowDuration;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyDetail] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiPropertyDetail;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyFooter] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiPropertyFooter;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyIsIndeterminate] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiPropertyIsIndeterminate;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyLogo] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiPropertyLogo;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyLogoTemplate] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiPropertyLogoTemplate;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyMessage] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiPropertyMessage;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyProgress] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiPropertyProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyStatus] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiPropertyStatus;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertySubtitle] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiPropertySubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyTitle] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiPropertyTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiServiceShowAsync] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiServiceShowAsync;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiStaticShowAsync] = global::AtomUIGallery.ShowCases.Splash.en_US.ApiStaticShowAsync;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Splash.en_US.BasicDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Splash.en_US.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Splash.en_US.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComponentStatusPreview] = global::AtomUIGallery.ShowCases.Splash.en_US.ComponentStatusPreview;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComposedDescription] = global::AtomUIGallery.ShowCases.Splash.en_US.ComposedDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComposedTitle] = global::AtomUIGallery.ShowCases.Splash.en_US.ComposedTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateDescription] = global::AtomUIGallery.ShowCases.Splash.en_US.DeterminateDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateTitle] = global::AtomUIGallery.ShowCases.Splash.en_US.DeterminateTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Splash.en_US.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Splash.en_US.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Splash.en_US.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleCore] = global::AtomUIGallery.ShowCases.Splash.en_US.P2ContentModuleCore;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleGallery] = global::AtomUIGallery.ShowCases.Splash.en_US.P2ContentModuleGallery;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleTheme] = global::AtomUIGallery.ShowCases.Splash.en_US.P2ContentModuleTheme;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentShowWindowSplash] = global::AtomUIGallery.ShowCases.Splash.en_US.P2ContentShowWindowSplash;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailError] = global::AtomUIGallery.ShowCases.Splash.en_US.P2DetailError;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailLoadingThemeAndResources] = global::AtomUIGallery.ShowCases.Splash.en_US.P2DetailLoadingThemeAndResources;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailProgress] = global::AtomUIGallery.ShowCases.Splash.en_US.P2DetailProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailReady] = global::AtomUIGallery.ShowCases.Splash.en_US.P2DetailReady;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2FooterDesktopOnly] = global::AtomUIGallery.ShowCases.Splash.en_US.P2FooterDesktopOnly;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2FooterStaticPreview] = global::AtomUIGallery.ShowCases.Splash.en_US.P2FooterStaticPreview;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessageError] = global::AtomUIGallery.ShowCases.Splash.en_US.P2MessageError;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessageLoadingModules] = global::AtomUIGallery.ShowCases.Splash.en_US.P2MessageLoadingModules;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessagePreparingShell] = global::AtomUIGallery.ShowCases.Splash.en_US.P2MessagePreparingShell;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessageReady] = global::AtomUIGallery.ShowCases.Splash.en_US.P2MessageReady;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2SubtitleDesktopBoot] = global::AtomUIGallery.ShowCases.Splash.en_US.P2SubtitleDesktopBoot;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashDetailComplete] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashDetailComplete;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashDetailProgress] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashDetailProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashDetailStarting] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashDetailStarting;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashFooter] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashFooter;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageComplete] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashMessageComplete;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageFinalizing] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashMessageFinalizing;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingControls] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashMessageLoadingControls;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingRoutes] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashMessageLoadingRoutes;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingTheme] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashMessageLoadingTheme;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageStarting] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashMessageStarting;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageWarmingCache] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashMessageWarmingCache;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashSubtitle] = global::AtomUIGallery.ShowCases.Splash.en_US.P2WindowSplashSubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Splash.en_US.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Splash.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Splash.en_US.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Splash.en_US.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Splash.en_US.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.Splash.en_US.StatusDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.Splash.en_US.StatusTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameContentPadding] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameContentPadding;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameDetailFontSize] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameDetailFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameErrorColor] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameErrorColor;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameIndicatorSize] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameIndicatorSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameLogoSize] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameLogoSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameMessageFontSize] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameMessageFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameProgressBarHeight] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameProgressBarHeight;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSubtitleFontSize] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameSubtitleFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSuccessColor] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameSuccessColor;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSurfaceBackground] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameSurfaceBackground;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSurfaceBoxShadow] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameSurfaceBoxShadow;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSurfaceCornerRadius] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameSurfaceCornerRadius;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameTitleFontSize] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameTitleFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameWindowMinHeight] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameWindowMinHeight;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameWindowWidth] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenNameWindowWidth;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenStatusPreview] = global::AtomUIGallery.ShowCases.Splash.en_US.TokenStatusPreview;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.WindowServiceDescription] = global::AtomUIGallery.ShowCases.Splash.en_US.WindowServiceDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.WindowServiceTitle] = global::AtomUIGallery.ShowCases.Splash.en_US.WindowServiceTitle;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class SplashShowCaseZhCNLanguageProvider : LanguageProvider
+    {
+        public SplashShowCaseZhCNLanguageProvider()
+            : base(LanguageCode.zh_CN, "SplashShowCase")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiMethodSetProgress] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiMethodSetProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiOptionMinimumShowDuration] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiOptionMinimumShowDuration;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyDetail] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiPropertyDetail;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyFooter] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiPropertyFooter;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyIsIndeterminate] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiPropertyIsIndeterminate;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyLogo] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiPropertyLogo;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyLogoTemplate] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiPropertyLogoTemplate;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyMessage] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiPropertyMessage;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyProgress] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiPropertyProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyStatus] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiPropertyStatus;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertySubtitle] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiPropertySubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyTitle] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiPropertyTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiServiceShowAsync] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiServiceShowAsync;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiStaticShowAsync] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ApiStaticShowAsync;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Splash.zh_CN.BasicDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Splash.zh_CN.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComponentStatusPreview] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ComponentStatusPreview;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComposedDescription] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ComposedDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComposedTitle] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ComposedTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateDescription] = global::AtomUIGallery.ShowCases.Splash.zh_CN.DeterminateDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateTitle] = global::AtomUIGallery.ShowCases.Splash.zh_CN.DeterminateTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Splash.zh_CN.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Splash.zh_CN.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Splash.zh_CN.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleCore] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2ContentModuleCore;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleGallery] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2ContentModuleGallery;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleTheme] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2ContentModuleTheme;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentShowWindowSplash] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2ContentShowWindowSplash;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailError] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2DetailError;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailLoadingThemeAndResources] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2DetailLoadingThemeAndResources;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailProgress] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2DetailProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailReady] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2DetailReady;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2FooterDesktopOnly] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2FooterDesktopOnly;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2FooterStaticPreview] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2FooterStaticPreview;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessageError] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2MessageError;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessageLoadingModules] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2MessageLoadingModules;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessagePreparingShell] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2MessagePreparingShell;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessageReady] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2MessageReady;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2SubtitleDesktopBoot] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2SubtitleDesktopBoot;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashDetailComplete] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashDetailComplete;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashDetailProgress] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashDetailProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashDetailStarting] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashDetailStarting;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashFooter] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashFooter;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageComplete] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashMessageComplete;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageFinalizing] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashMessageFinalizing;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingControls] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashMessageLoadingControls;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingRoutes] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashMessageLoadingRoutes;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingTheme] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashMessageLoadingTheme;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageStarting] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashMessageStarting;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageWarmingCache] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashMessageWarmingCache;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashSubtitle] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2WindowSplashSubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Splash.zh_CN.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Splash.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.Splash.zh_CN.StatusDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.Splash.zh_CN.StatusTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameContentPadding] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameContentPadding;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameDetailFontSize] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameDetailFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameErrorColor] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameErrorColor;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameIndicatorSize] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameIndicatorSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameLogoSize] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameLogoSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameMessageFontSize] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameMessageFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameProgressBarHeight] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameProgressBarHeight;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSubtitleFontSize] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameSubtitleFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSuccessColor] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameSuccessColor;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSurfaceBackground] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameSurfaceBackground;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSurfaceBoxShadow] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameSurfaceBoxShadow;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSurfaceCornerRadius] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameSurfaceCornerRadius;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameTitleFontSize] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameTitleFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameWindowMinHeight] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameWindowMinHeight;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameWindowWidth] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenNameWindowWidth;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenStatusPreview] = global::AtomUIGallery.ShowCases.Splash.zh_CN.TokenStatusPreview;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.WindowServiceDescription] = global::AtomUIGallery.ShowCases.Splash.zh_CN.WindowServiceDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.WindowServiceTitle] = global::AtomUIGallery.ShowCases.Splash.zh_CN.WindowServiceTitle;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
+    internal sealed class SplashShowCaseZhTWLanguageProvider : LanguageProvider
+    {
+        public SplashShowCaseZhTWLanguageProvider()
+            : base(LanguageCode.zh_TW, "SplashShowCase")
+        {
+        }
+
+        protected override System.Type GetResourceKindType()
+        {
+            return typeof(global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind);
+        }
+
+        public override void BuildResourceDictionary(IResourceDictionary dictionary)
+        {
+            var resourceKindType = GetResourceKindType();
+            try
+            {
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnDefault] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiColumnDefault;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnDescription] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnMember] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiColumnMember;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiColumnType] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiColumnType;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiMethodSetProgress] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiMethodSetProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiOptionMinimumShowDuration] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiOptionMinimumShowDuration;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyDetail] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiPropertyDetail;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyFooter] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiPropertyFooter;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyIsIndeterminate] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiPropertyIsIndeterminate;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyIsMotionEnabled] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiPropertyIsMotionEnabled;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyLogo] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiPropertyLogo;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyLogoTemplate] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiPropertyLogoTemplate;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyMessage] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiPropertyMessage;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyProgress] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiPropertyProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyStatus] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiPropertyStatus;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertySubtitle] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiPropertySubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiPropertyTitle] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiPropertyTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiServiceShowAsync] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiServiceShowAsync;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ApiStaticShowAsync] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ApiStaticShowAsync;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.Splash.zh_TW.BasicDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Splash.zh_TW.BasicTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ComponentCategory;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComponentStatusPreview] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ComponentStatusPreview;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComposedDescription] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ComposedDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComposedTitle] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ComposedTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateDescription] = global::AtomUIGallery.ShowCases.Splash.zh_TW.DeterminateDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateTitle] = global::AtomUIGallery.ShowCases.Splash.zh_TW.DeterminateTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Splash.zh_TW.InfoBaseClassLabel;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Splash.zh_TW.InfoNamespaceLabel;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Splash.zh_TW.InfoPackageLabel;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleCore] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2ContentModuleCore;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleGallery] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2ContentModuleGallery;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleTheme] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2ContentModuleTheme;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentShowWindowSplash] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2ContentShowWindowSplash;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailError] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2DetailError;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailLoadingThemeAndResources] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2DetailLoadingThemeAndResources;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailProgress] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2DetailProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2DetailReady] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2DetailReady;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2FooterDesktopOnly] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2FooterDesktopOnly;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2FooterStaticPreview] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2FooterStaticPreview;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessageError] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2MessageError;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessageLoadingModules] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2MessageLoadingModules;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessagePreparingShell] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2MessagePreparingShell;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2MessageReady] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2MessageReady;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2SubtitleDesktopBoot] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2SubtitleDesktopBoot;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashDetailComplete] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashDetailComplete;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashDetailProgress] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashDetailProgress;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashDetailStarting] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashDetailStarting;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashFooter] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashFooter;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageComplete] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashMessageComplete;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageFinalizing] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashMessageFinalizing;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingControls] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashMessageLoadingControls;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingRoutes] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashMessageLoadingRoutes;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageLoadingTheme] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashMessageLoadingTheme;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageStarting] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashMessageStarting;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashMessageWarmingCache] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashMessageWarmingCache;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2WindowSplashSubtitle] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2WindowSplashSubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Splash.zh_TW.PageDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Splash.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ScenarioApi;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ScenarioDesignToken;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ScenarioExamples;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.StatusDescription] = global::AtomUIGallery.ShowCases.Splash.zh_TW.StatusDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.StatusTitle] = global::AtomUIGallery.ShowCases.Splash.zh_TW.StatusTitle;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnDescription] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenColumnDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnScope] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenColumnScope;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnStatus] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenColumnStatus;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenColumnToken] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenColumnToken;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameContentPadding] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameContentPadding;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameDetailFontSize] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameDetailFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameErrorColor] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameErrorColor;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameIndicatorSize] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameIndicatorSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameLogoSize] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameLogoSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameMessageFontSize] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameMessageFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameProgressBarHeight] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameProgressBarHeight;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSubtitleFontSize] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameSubtitleFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSuccessColor] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameSuccessColor;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSurfaceBackground] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameSurfaceBackground;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSurfaceBoxShadow] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameSurfaceBoxShadow;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameSurfaceCornerRadius] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameSurfaceCornerRadius;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameTitleFontSize] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameTitleFontSize;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameWindowMinHeight] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameWindowMinHeight;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenNameWindowWidth] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenNameWindowWidth;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenScopeComponent;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.TokenStatusPreview] = global::AtomUIGallery.ShowCases.Splash.zh_TW.TokenStatusPreview;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.WindowServiceDescription] = global::AtomUIGallery.ShowCases.Splash.zh_TW.WindowServiceDescription;
+                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.WindowServiceTitle] = global::AtomUIGallery.ShowCases.Splash.zh_TW.WindowServiceTitle;
+            }
+            catch (System.Exception)
+            {
+                LogBuildResourceDictionaryError(resourceKindType);
+                throw;
+            }
+        }
+    }
+
     internal sealed class SplitButtonShowCaseEnUSLanguageProvider : LanguageProvider
     {
         public SplitButtonShowCaseEnUSLanguageProvider()
@@ -24230,6 +24569,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabStrip] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Navigation_TabStrip;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Other;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other_BorderBeam] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Other_BorderBeam;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other_Splash] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Other_Splash;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Overview] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.en_US.Overview;
             }
             catch (System.Exception)
@@ -24340,6 +24680,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabStrip] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Navigation_TabStrip;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Other;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other_BorderBeam] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Other_BorderBeam;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other_Splash] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Other_Splash;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Overview] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_CN.Overview;
             }
             catch (System.Exception)
@@ -24450,6 +24791,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Navigation_TabStrip] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Navigation_TabStrip;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Other;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other_BorderBeam] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Other_BorderBeam;
+                dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Other_Splash] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Other_Splash;
                 dictionary[global::AtomUIGallery.Localization.CaseNavigationLangResourceKind.Overview] = global::AtomUIGallery.Workspace.Localization.CaseNavigationLang.zh_TW.Overview;
             }
             catch (System.Exception)
@@ -24587,7 +24929,7 @@ namespace AtomUI.Theme.Language
     {
         internal static IList<LanguageProvider> GetLanguageProviders()
         {
-            List<LanguageProvider> languageProviders = new List<LanguageProvider>(231);
+            List<LanguageProvider> languageProviders = new List<LanguageProvider>(234);
             languageProviders.Add(new AlertShowCaseEnUSLanguageProvider());
             languageProviders.Add(new AlertShowCaseZhCNLanguageProvider());
             languageProviders.Add(new AlertShowCaseZhTWLanguageProvider());
@@ -24762,6 +25104,9 @@ namespace AtomUI.Theme.Language
             languageProviders.Add(new SpinShowCaseEnUSLanguageProvider());
             languageProviders.Add(new SpinShowCaseZhCNLanguageProvider());
             languageProviders.Add(new SpinShowCaseZhTWLanguageProvider());
+            languageProviders.Add(new SplashShowCaseEnUSLanguageProvider());
+            languageProviders.Add(new SplashShowCaseZhCNLanguageProvider());
+            languageProviders.Add(new SplashShowCaseZhTWLanguageProvider());
             languageProviders.Add(new SplitButtonShowCaseEnUSLanguageProvider());
             languageProviders.Add(new SplitButtonShowCaseZhCNLanguageProvider());
             languageProviders.Add(new SplitButtonShowCaseZhTWLanguageProvider());

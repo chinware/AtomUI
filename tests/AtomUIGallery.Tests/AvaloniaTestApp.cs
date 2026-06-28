@@ -41,6 +41,7 @@ internal sealed class TestApplication : Application
         this.UseAtomUI(builder =>
         {
             builder.UseDesktopControls();
+            builder.UseDesktopExtras();
             builder.UseDesktopColorPicker();
             builder.UseDesktopDataGrid();
             builder.UseGalleryControls();

@@ -63,6 +63,7 @@ using AtomUIGallery.ShowCases.Skeleton;
 using AtomUIGallery.ShowCases.Slider;
 using AtomUIGallery.ShowCases.Space;
 using AtomUIGallery.ShowCases.Spin;
+using AtomUIGallery.ShowCases.Splash;
 using AtomUIGallery.ShowCases.SplitButton;
 using AtomUIGallery.ShowCases.Splitter;
 using AtomUIGallery.ShowCases.Statistic;
@@ -223,7 +224,8 @@ public static class AtomUIGalleryModule
                   .AddPage(WatermarkViewModel.ID, Nav(CaseNavigationLangResourceKind.Feedback_Watermark, "Watermark"));
 
         components.AddGroup("Other", Nav(CaseNavigationLangResourceKind.Other, "Other"), Icon(AntDesignIconKind.BlockOutlined))
-                  .AddPage(BorderBeamViewModel.ID, Nav(CaseNavigationLangResourceKind.Other_BorderBeam, "BorderBeam"));
+                  .AddPage(BorderBeamViewModel.ID, Nav(CaseNavigationLangResourceKind.Other_BorderBeam, "BorderBeam"))
+                  .AddPage(SplashViewModel.ID, Nav(CaseNavigationLangResourceKind.Other_Splash, "Splash"));
     }
 
     private static GalleryLocalizedText<CaseNavigationLangResourceKind> Nav(CaseNavigationLangResourceKind kind,
@@ -284,6 +286,7 @@ public static class AtomUIGalleryModule
         routes.Map(ResultViewModel.ID, screen => new ResultViewModel(screen), () => new ResultShowCase());
         routes.Map(BadgeViewModel.ID, screen => new BadgeViewModel(screen), () => new BadgeShowCase());
         routes.Map(BorderBeamViewModel.ID, screen => new BorderBeamViewModel(screen), () => new BorderBeamShowCase());
+        routes.Map(SplashViewModel.ID, screen => new SplashViewModel(screen), () => new SplashShowCase());
         routes.Map(StatisticViewModel.ID, screen => new StatisticViewModel(screen), () => new StatisticShowCase());
         routes.Map(TimelineViewModel.ID, screen => new TimelineViewModel(screen), () => new TimelineShowCase());
         routes.Map(QRCodeViewModel.ID, screen => new QRCodeViewModel(screen), () => new QRCodeShowCase());

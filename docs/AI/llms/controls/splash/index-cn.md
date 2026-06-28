@@ -19,8 +19,8 @@ Splash 不负责应用依赖注入、主窗口创建、启动异常吞掉、重�
 | NuGet 包 | `AtomUI.Desktop.Controls.Extras` |
 | .NET 命名空间 | `AtomUI.Desktop.Controls` |
 | AXAML 命名空间 | `https://atomui.net` |
-| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/Feedback/Splash` |
-| 状态 | Design |
+| Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/Other/Splash` |
+| 状态 | Preview |
 
 ## 何时使用
 
@@ -51,7 +51,7 @@ Splash 的公共契约由视觉控件、启动窗口、实例服务、静态便�
 
 主要公开类型与枚举：
 
-- 类型：`Splash`、`SplashWindow`、`SplashService`、`SplashOptions`、`SplashController`、`ISplashService`。
+- 类型：`Splash`、`SplashWindow`、`SplashService`、`SplashOptions`、`ISplashService`。
 - 枚举：`SplashStatus`。
 
 稳定 template part：
@@ -87,7 +87,161 @@ Splash 的事件与命令以公共 API、Avalonia 基类契约和 Gallery API �
 
 稳定示例来源于 Gallery ShowCase 和源码查看片段。生成器只输出可从 `ShowCaseItem` 追溯的示例，不维护第二套手写示例。
 
-Gallery 目录 `controlgallery/AtomUIGallery/ShowCases/Feedback/Splash` 当前不存在；请检查控件文档中的 Gallery 页面元数据。
+以下示例来自 Gallery 源码查看使用的 `ShowCaseItem` 片段，并已按中文资源规范化。
+
+### 基础
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:150`
+
+Gallery key：`ExamplesContent` / item `0`
+
+```axaml
+<atom:Splash Classes="preview-splash"
+             Logo="{Binding BasicLogo}"
+             Title="AtomUI"
+             Subtitle="桌面启动流程"
+             Message="正在准备工作区"
+             Detail="正在加载主题、语言资源和缓存状态。"
+             IsIndeterminate="True"
+             HorizontalAlignment="Left">
+    <atom:Splash.LogoTemplate>
+        <DataTemplate x:DataType="vm:SplashLogoInfo">
+            <Border Width="52"
+                    Height="52"
+                    CornerRadius="14"
+                    Background="{Binding Background}">
+                <atom:TextBlock Text="{Binding Text}"
+                                Foreground="{Binding Foreground}"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Border>
+        </DataTemplate>
+    </atom:Splash.LogoTemplate>
+</atom:Splash>
+```
+
+### 确定进度
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:184`
+
+Gallery key：`ExamplesContent` / item `1`
+
+```axaml
+<atom:Splash Classes="preview-splash"
+             Logo="{Binding BasicLogo}"
+             Title="AtomUI"
+             Subtitle="桌面启动流程"
+             Message="正在加载模块"
+             Detail="主题、图标和路由目录已就绪，正在初始化可选包。"
+             Progress="{Binding ProgressValue}"
+             IsIndeterminate="False"
+             HorizontalAlignment="Left">
+    <atom:Splash.LogoTemplate>
+        <DataTemplate x:DataType="vm:SplashLogoInfo">
+            <Border Width="52"
+                    Height="52"
+                    CornerRadius="14"
+                    Background="{Binding Background}">
+                <atom:TextBlock Text="{Binding Text}"
+                                Foreground="{Binding Foreground}"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Border>
+        </DataTemplate>
+    </atom:Splash.LogoTemplate>
+</atom:Splash>
+```
+
+### 状态
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:220`
+
+Gallery key：`ExamplesContent` / item `2`
+
+```axaml
+<WrapPanel Orientation="Horizontal"
+           ItemSpacing="20"
+           LineSpacing="20">
+    <atom:Splash Classes="status-splash"
+                 Title="AtomUI"
+                 Message="工作区已就绪"
+                 Detail="满足最短展示时长后即可显示主窗口。"
+                 Status="Success"
+                 Progress="1"
+                 IsIndeterminate="False"
+                 Footer="Gallery 静态预览" />
+    <atom:Splash Classes="status-splash"
+                 Title="AtomUI"
+                 Message="启动失败"
+                 Detail="可通过 SetErrorAsync 在关闭前呈现阻塞型启动错误。"
+                 Status="Error"
+                 IsIndeterminate="False"
+                 Footer="Gallery 静态预览" />
+</WrapPanel>
+```
+
+### Logo、内容与页脚
+
+来源：`controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml:250`
+
+Gallery key：`ExamplesContent` / item `3`
+
+```axaml
+<atom:Splash Width="420"
+             MinHeight="300"
+             Logo="{Binding ComposedLogo}"
+             Title="AtomUI Gallery"
+             Subtitle="桌面启动流程"
+             Message="正在加载模块"
+             Detail="主题、图标和路由目录已就绪，正在初始化可选包。"
+             Progress="{Binding ProgressValue}"
+             IsIndeterminate="False"
+             Footer="{Binding ComposedFooter}"
+             HorizontalAlignment="Left">
+    <StackPanel Orientation="Horizontal"
+                Spacing="8"
+                HorizontalAlignment="Center">
+        <atom:Tag Text="核心"
+                  TagColor="success" />
+        <atom:Tag Text="主题"
+                  TagColor="processing" />
+        <atom:Tag Text="Gallery"
+                  TagColor="warning" />
+    </StackPanel>
+    <atom:Splash.LogoTemplate>
+        <DataTemplate x:DataType="vm:SplashLogoInfo">
+            <Border Width="56"
+                    Height="56"
+                    CornerRadius="18"
+                    Background="{Binding Background}">
+                <atom:TextBlock Text="{Binding Text}"
+                                Foreground="{Binding Foreground}"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Border>
+        </DataTemplate>
+    </atom:Splash.LogoTemplate>
+    <atom:Splash.FooterTemplate>
+        <DataTemplate x:DataType="vm:SplashFooterInfo">
+            <StackPanel Orientation="Horizontal"
+                        Spacing="8"
+                        VerticalAlignment="Center">
+                <atom:Tag Text="{Binding Version}"
+                          TagColor="geekblue" />
+                <atom:TextBlock Text="{Binding Description}"
+                                Foreground="{atom:SharedTokenResource ColorTextTertiary}"
+                                VerticalAlignment="Center" />
+            </StackPanel>
+        </DataTemplate>
+    </atom:Splash.FooterTemplate>
+</atom:Splash>
+```
 
 ## 状态模型
 
@@ -95,7 +249,6 @@ Splash 的状态流按以下路径收敛：
 
 ```text
 Splash visual API / SplashService API / Splash static API
-  -> SplashController state
   -> Splash instance properties
   -> pseudo-class / template binding
   -> ControlTheme selector / ProgressBar / Spin / TextBlock
@@ -105,6 +258,7 @@ Splash visual API / SplashService API / Splash static API
 状态维护规则：
 
 - `Splash` 视觉控件只持有可展示状态，不创建主窗口、不关闭应用、不吞异常。
+- `Splash` 本体提供 `SetMessage`、`SetProgress`、`SetStatus` 和 `SetError` 状态写入方法。
 - `SplashWindow` 只持有窗口级状态和关闭动效，不解释业务启动步骤。
 - `SplashService` 是实例 API 的状态 owner，同一个服务实例一次只管理一个 `CurrentWindow`。
 - `Splash` 静态 API 只委托给 `Splash.DefaultService`，不直接持有窗口或视觉节点。
@@ -120,10 +274,18 @@ Splash 的视觉模型由 `Splash` 控件模板、`SplashWindow` 宿主主题、
 | 主题文件 | 职责 |
 | --- | --- |
 | `SplashTheme.axaml` | 定义启动页视觉控件模板、状态 selector、ProgressBar/Spin 组合和内容区域。 |
-| `SplashWindowTheme.axaml` | 定义桌面启动窗口宿主、无标题栏、不可调整大小、圆角和阴影边界。 |
-| `SplashThemes.axaml` | 聚合 Splash 控件家族主题资源，保证包级引入顺序稳定。 |
+| `SplashWindowTheme.axaml` | 定义桌面启动窗口宿主、透明无装饰窗口模板、阴影宿主和内容承载边界。 |
+| `SplashThemes.axaml` | 聚合 Splash 视觉控件主题资源，保证包级引入顺序稳定。 |
 
 Splash 使用 `SplashToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 `Status`、`Progress`、`IsIndeterminate`、启动步骤或异常对象。
+`SplashWindow` 使用 `{x:Type atom:SplashWindow}` 作为隐式 `ControlTheme` key；窗口模板必须保持透明内容宿主，避免默认 Window 背景破坏 Splash 表面圆角。
+`SplashWindowTheme.axaml` 直接使用 `ShadowsAwareContainer#PART_SurfaceHost` 承载 `Splash`，由 `SurfaceBoxShadow` 控制窗口表面阴影，由 `SurfaceCornerRadius` 控制阴影遮罩圆角。`SplashTheme.axaml` 内部的 `PART_RootLayout` 和 `PART_SurfaceLayout` 继续负责背景、内容圆角和裁剪。
+
+资源覆盖边界：
+
+- 同时影响窗口阴影宿主和 Splash 内容表面的视觉资源，应写入 `SplashWindow.Resources`。
+- 只影响 `Splash` 内部模板的资源，可以写入 `Splash.Resources`。
+- 不通过 C# `TokenResourceBinder` 在窗口宿主和 Splash 之间桥接 `SurfaceBoxShadow`、`SurfaceCornerRadius` 等模板可表达关系。
 
 主题维护规则：
 
@@ -146,6 +308,8 @@ Splash Token 只表达组件级视觉变量，例如窗口尺寸、内容间距�
 
 - 不通过运行时反射扫描 public API、Token、服务或 Gallery 表格数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
+- 不为模板稳定节点之间的 token 资源关系创建 `TokenResourceBinder` 桥接；`PART_SurfaceHost` 和 `Splash` 内部模板应通过相同的资源树解析 `SplashTokenResource`。
+- 窗口级视觉覆盖写入 `SplashWindow.Resources`，确保 `PART_SurfaceHost` 与 `Splash` 内部模板都能解析；`Splash.Resources` 只用于仅影响 Splash 内部模板的覆盖。
 - `SplashService` 中的延迟任务、淡出任务和取消 token 必须能取消或释放。
 - 事件订阅必须与窗口或服务生命周期一致。
 - `Splash.DefaultService` 替换不得保留旧服务窗口引用。
@@ -164,7 +328,6 @@ Splash Token 只表达组件级视觉变量，例如窗口尺寸、内容间距�
 - `src/AtomUI.Desktop.Controls.Extras/Splash/Splash.cs`
 - `src/AtomUI.Desktop.Controls.Extras/Splash/Splash.StaticAPI.cs`
 - `src/AtomUI.Desktop.Controls.Extras/Splash/SplashWindow.cs`
-- `src/AtomUI.Desktop.Controls.Extras/Splash/SplashController.cs`
 - `src/AtomUI.Desktop.Controls.Extras/Splash/SplashOptions.cs`
 - `src/AtomUI.Desktop.Controls.Extras/Splash/SplashService.cs`
 - `src/AtomUI.Desktop.Controls.Extras/Splash/ISplashService.cs`
@@ -180,10 +343,10 @@ Splash Token 只表达组件级视觉变量，例如窗口尺寸、内容间距�
 
 职责边界：
 
-- `Splash.cs` 保留视觉控件 public/protected API、Avalonia 属性注册、伪类同步和主要模板生命周期入口。
+- `Splash.cs` 保留视觉控件 public/protected API、状态写入方法、Avalonia 属性注册、伪类同步和主要模板生命周期入口。
 - `Splash.StaticAPI.cs` 只放静态便利入口，所有逻辑委托给 `Splash.DefaultService`。
-- `SplashWindow.cs` 只负责窗口默认值、窗口内容、淡出关闭和窗口引用释放。
-- `SplashService.cs` 是启动编排 owner，负责创建窗口、更新状态、关闭窗口和 UI thread 调度。
+- `SplashWindow.cs` 负责窗口级 `Splash` 内容承载属性、展示时间记录、淡出关闭和关闭请求状态；`SplashWindowTheme.axaml` 负责透明无装饰窗口默认值、窗口模板、阴影宿主和内容承载边界。
+- `SplashService.cs` 是启动编排 owner，负责创建窗口、创建或复用 `Splash` 实例、应用运行时 options、更新状态、关闭窗口和 UI thread 调度。
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。

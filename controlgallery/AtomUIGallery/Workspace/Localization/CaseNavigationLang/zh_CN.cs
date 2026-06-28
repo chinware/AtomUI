@@ -98,6 +98,7 @@ internal partial class zh_CN : LanguageProvider
 
     public const string Other = "其他";
     public const string Other_BorderBeam = "BorderBeam 流光边框";
+    public const string Other_Splash = "Splash 启动页";
 
     protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }
