@@ -1,18 +1,24 @@
-name: AtomUI Release Pipeline
+name: AtomUI NuGet Packages Release
 on:
    workflow_dispatch:
       inputs:
-         TargetBranch:
-            description: 'Target branch to build'
+         TargetRef:
+            description: 'Branch, tag, or commit SHA to build'
             type: string
-            default: 'main'
-         BuildConfiguration:
-            description: 'Build configuration'
-            type: string
+            required: true
+            default: 'release/6.0'
+         BuildType:
+            description: 'Build type'
+            type: choice
+            required: true
             default: 'Release'
+            options:
+               - Release
+               - Debug
          PublishToNuget:
             description: 'Publish to nuget.org'
             type: boolean
+            required: false
             default: false
 env:
    SOURCE_DIR: ${{ github.workspace }}
@@ -26,7 +32,7 @@ jobs:
          -  name: Checkout code
             uses: actions/checkout@v6
             with:
-               ref: ${{ inputs.TargetBranch }}
+               ref: ${{ inputs.TargetRef }}
          - name: Setup .NET 10
            uses: actions/setup-dotnet@v5
            with:
@@ -48,16 +54,16 @@ jobs:
             shell: pwsh
             run: |
                # Build AtomUI project
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Native/AtomUI.Native.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Core/AtomUI.Core.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Controls/AtomUI.Controls.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Generator/AtomUI.Generator.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Native/AtomUI.Native.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Core/AtomUI.Core.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Controls.Shared/AtomUI.Controls.Shared.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Controls/AtomUI.Controls.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Toolkits.GalleryBase/AtomUI.Toolkits.GalleryBase.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Generator/AtomUI.Generator.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Icons.Shared/AtomUI.Icons.Shared.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj
          -  name: Create AtomUI NuGet packages
             shell: pwsh
             run: |
@@ -74,7 +80,7 @@ jobs:
                   "./src/AtomUI.Icons.AntDesign/AtomUI.Icons.AntDesign.csproj"
                )
                foreach ($project in $projects) {
-                  dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} $project
+                  dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} $project
                }
                $packages = Get-ChildItem -Path $env:BASE_OUTPUT_DIR -Filter *.nupkg -Recurse -File
                foreach ($pkg in $packages) {
@@ -91,13 +97,13 @@ jobs:
          -  name: Build AtomUI Extensions projects
             shell: pwsh
             run: |
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
-               dotnet build --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
+               dotnet build --configuration ${{ inputs.BuildType }} ./src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
          -  name: Create AtomUI Extensions NuGet packages
             shell: pwsh
             run: |
-               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
-               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildConfiguration }} ./src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
+               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} ./src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj
+               dotnet pack --no-build --output $env:BASE_OUTPUT_DIR --configuration ${{ inputs.BuildType }} ./src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj
          -  name: Upload NuGet artifacts
             uses: actions/upload-artifact@v7
             with:
