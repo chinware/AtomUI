@@ -7,6 +7,8 @@ using System.Xml.Linq;
 using AtomUI.Desktop.Controls.DesignTokens;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -94,6 +96,39 @@ public class SplashBehaviorTests
         splash.Progress.ShouldBeNull();
         splash.Message.ShouldBe("Startup failed");
         splash.Detail.ShouldBe("Configuration file is invalid");
+    }
+
+    [Fact]
+    public void Splash_Declares_Template_Parts_For_Custom_Themes()
+    {
+        var expectedParts = new Dictionary<string, Type>
+        {
+            ["PART_RootLayout"]       = typeof(Border),
+            ["PART_SurfaceLayout"]    = typeof(Border),
+            ["PART_ContentLayout"]    = typeof(StackPanel),
+            ["PART_LogoPresenter"]    = typeof(ContentPresenter),
+            ["PART_TitleBlock"]       = typeof(AtomUI.Desktop.Controls.TextBlock),
+            ["PART_SubtitleBlock"]    = typeof(AtomUI.Desktop.Controls.TextBlock),
+            ["PART_ContentPresenter"] = typeof(ContentPresenter),
+            ["PART_ProgressLayout"]   = typeof(Panel),
+            ["PART_Spin"]             = typeof(AtomUI.Desktop.Controls.Spin),
+            ["PART_ProgressBar"]      = typeof(AtomUI.Desktop.Controls.ProgressBar),
+            ["PART_MessageBlock"]     = typeof(AtomUI.Desktop.Controls.TextBlock),
+            ["PART_DetailBlock"]      = typeof(AtomUI.Desktop.Controls.TextBlock),
+            ["PART_FooterPresenter"]  = typeof(ContentPresenter)
+        };
+
+        var parts = typeof(AtomUI.Desktop.Controls.Splash)
+                    .GetCustomAttributes(typeof(TemplatePartAttribute), false)
+                    .Cast<TemplatePartAttribute>()
+                    .ToDictionary(part => part.Name, part => part.Type);
+
+        parts.Count.ShouldBe(expectedParts.Count);
+        foreach (var (name, expectedType) in expectedParts)
+        {
+            parts.TryGetValue(name, out var actualType).ShouldBeTrue(name);
+            actualType.ShouldBe(expectedType);
+        }
     }
 
     [Fact]
