@@ -9,9 +9,9 @@
 
     <ItemGroup>
         <AvaloniaResource Include="Assets/**/*.*"/>
-        <AdditionalFiles Include="ShowCases/**/*.axaml" />
-        <AdditionalFiles Include="ShowCases/**/*.axaml.cs" />
-        <AdditionalFiles Include="ShowCases/**/ViewModels/**/*.cs" />
+        <GallerySourceCodeDisplaySource Include="ShowCases/**/*.axaml" />
+        <GallerySourceCodeDisplaySource Include="ShowCases/**/*.axaml.cs" />
+        <GallerySourceCodeDisplaySource Include="ShowCases/**/ViewModels/**/*.cs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -46,5 +46,25 @@
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="AvaloniaUI.DiagnosticsSupport"/>
         <PackageReference Include="AsyncImageLoader.Avalonia" />
     </ItemGroup>
+
+    <Target Name="PrepareGallerySourceCodeDisplayAdditionalFiles"
+            BeforeTargets="CoreCompile">
+        <ItemGroup>
+            <_GallerySourceCodeDisplayFile Include="@(GallerySourceCodeDisplaySource)">
+                <GallerySourceOriginalPath>%(FullPath)</GallerySourceOriginalPath>
+                <GallerySourceMirrorPath>$(IntermediateOutputPath)GallerySourceCodeDisplay/%(Identity).gallerysource</GallerySourceMirrorPath>
+            </_GallerySourceCodeDisplayFile>
+        </ItemGroup>
+
+        <Copy SourceFiles="@(_GallerySourceCodeDisplayFile)"
+              DestinationFiles="@(_GallerySourceCodeDisplayFile->'%(GallerySourceMirrorPath)')"
+              SkipUnchangedFiles="true" />
+
+        <ItemGroup>
+            <AdditionalFiles Include="@(_GallerySourceCodeDisplayFile->'%(GallerySourceMirrorPath)')">
+                <GallerySourceOriginalPath>%(_GallerySourceCodeDisplayFile.GallerySourceOriginalPath)</GallerySourceOriginalPath>
+            </AdditionalFiles>
+        </ItemGroup>
+    </Target>
 
 </Project>

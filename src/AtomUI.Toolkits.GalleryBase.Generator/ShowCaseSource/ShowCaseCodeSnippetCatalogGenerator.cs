@@ -14,6 +14,8 @@ public sealed class ShowCaseCodeSnippetCatalogGenerator : IIncrementalGenerator
 {
     private const string CatalogFileName = "ShowCaseCodeSnippetCatalog.g.cs";
     private const string DefaultNamespace = "Gallery.Generated";
+    private const string GallerySourceOriginalPathMetadataKey =
+        "build_metadata.AdditionalFiles.GallerySourceOriginalPath";
 
 #pragma warning disable RS2008
     private static readonly DiagnosticDescriptor PanelMissingNameDescriptor = new(
@@ -28,11 +30,17 @@ public sealed class ShowCaseCodeSnippetCatalogGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         var sourceFiles = context.AdditionalTextsProvider
-                                 .Where(static file => AdditionalSourceFile.IsSupportedPath(file.Path))
-                                 .Select(static (file, cancellationToken) =>
+                                 .Combine(context.AnalyzerConfigOptionsProvider)
+                                 .Select(static (combined, cancellationToken) =>
                                  {
-                                     var text = file.GetText(cancellationToken);
-                                     return AdditionalSourceFile.Create(file.Path, text?.ToString() ?? string.Empty);
+                                     var sourcePath = ResolveAdditionalSourcePath(combined.Left, combined.Right);
+                                     if (!AdditionalSourceFile.IsSupportedPath(sourcePath))
+                                     {
+                                         return AdditionalSourceFile.CreateIgnored(sourcePath);
+                                     }
+
+                                     var text = combined.Left.GetText(cancellationToken);
+                                     return AdditionalSourceFile.Create(sourcePath, text?.ToString() ?? string.Empty);
                                  })
                                  .Where(static file => file.Kind != AdditionalSourceFileKind.Ignored)
                                  .Collect();
@@ -64,6 +72,15 @@ public sealed class ShowCaseCodeSnippetCatalogGenerator : IIncrementalGenerator
 
             context.AddSource(CatalogFileName, SourceText.From(WriteCatalog(outputNamespace, groups), Encoding.UTF8));
         });
+    }
+
+    private static string ResolveAdditionalSourcePath(AdditionalText file, AnalyzerConfigOptionsProvider optionsProvider)
+    {
+        var options = optionsProvider.GetOptions(file);
+        return options.TryGetValue(GallerySourceOriginalPathMetadataKey, out var sourcePath) &&
+               !string.IsNullOrWhiteSpace(sourcePath)
+            ? sourcePath
+            : file.Path;
     }
 
     private static void ExtractFile(AdditionalSourceFile file,
@@ -1320,6 +1337,11 @@ public sealed class ShowCaseCodeSnippetCatalogGenerator : IIncrementalGenerator
         public static AdditionalSourceFile Create(string path, string text)
         {
             return new AdditionalSourceFile(path, text, Classify(path));
+        }
+
+        public static AdditionalSourceFile CreateIgnored(string path)
+        {
+            return new AdditionalSourceFile(path, string.Empty, AdditionalSourceFileKind.Ignored);
         }
 
         public static bool IsSupportedPath(string path)
