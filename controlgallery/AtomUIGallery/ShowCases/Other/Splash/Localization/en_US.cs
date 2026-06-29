@@ -11,6 +11,7 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioDesignToken = "Design Token";
     public const string ComponentCategory = "Other";
     public const string ComponentStatusPreview = "Preview";
+    public const string ComponentIntroducedVersion = "v6.0.7";
     public const string PageSubtitle = "Present desktop startup progress before the main workspace is ready.";
     public const string PageDescription = "Splash combines a compact branded surface, loading indicator, determinate progress, status copy, and optional footer. The service API can host it in a borderless startup window, while the visual control can be previewed directly in Gallery.";
     public const string InfoNamespaceLabel = "Namespace:";

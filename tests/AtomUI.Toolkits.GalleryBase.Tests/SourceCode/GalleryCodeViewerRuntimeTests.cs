@@ -8,6 +8,7 @@ using AtomUI.Toolkits.GalleryBase.SourceCode;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Headless;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -16,6 +17,7 @@ using Avalonia.Threading;
 using Avalonia.VisualTree;
 using AvaloniaEdit;
 using AvaloniaEdit.Editing;
+using AvaloniaEdit.TextMate;
 using Shouldly;
 using TextMateSharp.Registry;
 using TextMateSharp.Grammars;
@@ -133,6 +135,7 @@ public class GalleryCodeViewerRuntimeTests
             var horizontalScrollBar = editor.GetVisualDescendants()
                                             .OfType<ScrollBar>()
                                             .Single(scrollBar => scrollBar.Orientation == Orientation.Horizontal);
+            var scrollViewer = GetEditorScrollViewer(editor);
 
             // Drive the editor through a range of horizontal scroll offsets, forcing a layout
             // pass at each step. This reproduces the auto-scroll-while-selecting feedback loop:
@@ -140,7 +143,7 @@ public class GalleryCodeViewerRuntimeTests
             // previously re-triggered layout forever and hung the UI thread).
             double MeasureInsetAfterScroll(double offset)
             {
-                editor.ScrollToHorizontalOffset(offset);
+                scrollViewer.Offset = new Vector(offset, scrollViewer.Offset.Y);
                 editor.InvalidateMeasure();
                 editor.InvalidateArrange();
                 Dispatcher.UIThread.RunJobs();
@@ -162,6 +165,192 @@ public class GalleryCodeViewerRuntimeTests
             // The inset stays pinned to the (non-scrolling) gutter width, independent of offset.
             settled.ShouldBeGreaterThan(0);
         });
+    }
+
+    [Fact]
+    public void GalleryCodeViewer_Selection_Drag_AutoScroll_Does_Not_Hang()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = string.Join(
+                "\n",
+                Enumerable.Range(1, 40).Select(index => $"{index}: {new string('x', 260)}")),
+            Language = "csharp"
+        };
+        var window = new Window
+        {
+            Width   = 640,
+            Height  = 480,
+            Content = viewer
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            viewer.ApplyTemplate();
+
+            var editor = viewer.GetVisualDescendants()
+                               .OfType<TextEditor>()
+                               .Single();
+            editor.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+
+            var textView = editor.TextArea.TextView;
+            var startPoint = textView.TranslatePoint(new Point(80, 22), window).ShouldNotBeNull();
+            var dragPoint = textView.TranslatePoint(new Point(textView.Bounds.Width + 160, 82), window)
+                                    .ShouldNotBeNull();
+
+            window.MouseMove(startPoint);
+            window.MouseDown(startPoint, MouseButton.Left);
+            window.MouseMove(dragPoint);
+
+            for (var i = 0; i < 8; i++)
+            {
+                Dispatcher.UIThread.RunJobs();
+            }
+
+            window.MouseUp(dragPoint, MouseButton.Left);
+            Dispatcher.UIThread.RunJobs();
+
+            editor.HorizontalOffset.ShouldBeGreaterThan(0);
+            editor.TextArea.Selection.IsEmpty.ShouldBeFalse();
+            editor.TextArea.TextView.LineTransformers
+                  .OfType<TextMateColoringTransformer>()
+                  .ShouldNotBeEmpty();
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+            viewer.Dispose();
+        }
+    }
+
+    [Fact]
+    public void GalleryCodeViewer_Keeps_TextMate_When_Click_Does_Not_Start_Selection_Drag()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = string.Join(
+                "\n",
+                Enumerable.Repeat(
+                    "    <atom:TextBlock Foreground=\"{atom:SharedTokenResource ColorTextTertiary}\" Text=\"{Binding Description}\" />",
+                    40)),
+            Language = "axaml"
+        };
+        var window = new Window
+        {
+            Width   = 640,
+            Height  = 480,
+            Content = viewer
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            viewer.ApplyTemplate();
+
+            var editor = viewer.GetVisualDescendants()
+                               .OfType<TextEditor>()
+                               .Single();
+            editor.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+
+            editor.TextArea.TextView.LineTransformers
+                  .OfType<TextMateColoringTransformer>()
+                  .ShouldNotBeEmpty();
+
+            var startPoint = editor.TextArea.TextView.TranslatePoint(new Point(80, 22), window)
+                                   .ShouldNotBeNull();
+
+            window.MouseMove(startPoint);
+            window.MouseDown(startPoint, MouseButton.Left);
+            Dispatcher.UIThread.RunJobs();
+
+            editor.TextArea.TextView.LineTransformers
+                  .OfType<TextMateColoringTransformer>()
+                  .ShouldNotBeEmpty();
+
+            window.MouseUp(startPoint, MouseButton.Left);
+            Dispatcher.UIThread.RunJobs();
+
+            editor.TextArea.TextView.LineTransformers
+                  .OfType<TextMateColoringTransformer>()
+                  .ShouldNotBeEmpty();
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+            viewer.Dispose();
+        }
+    }
+
+    [Fact]
+    public void GalleryCodeViewer_Keeps_TextMate_During_Pointer_Selection_Drag()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = string.Join(
+                "\n",
+                Enumerable.Repeat(
+                    "    <atom:TextBlock Foreground=\"{atom:SharedTokenResource ColorTextTertiary}\" Text=\"{Binding Description}\" />",
+                    40)),
+            Language = "axaml"
+        };
+        var window = new Window
+        {
+            Width   = 640,
+            Height  = 480,
+            Content = viewer
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            viewer.ApplyTemplate();
+
+            var editor = viewer.GetVisualDescendants()
+                               .OfType<TextEditor>()
+                               .Single();
+            editor.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+
+            editor.TextArea.TextView.LineTransformers
+                  .OfType<TextMateColoringTransformer>()
+                  .ShouldNotBeEmpty();
+
+            var textView = editor.TextArea.TextView;
+            var startPoint = textView.TranslatePoint(new Point(80, 22), window)
+                                     .ShouldNotBeNull();
+            var dragPoint = textView.TranslatePoint(new Point(180, 52), window)
+                                    .ShouldNotBeNull();
+
+            window.MouseMove(startPoint);
+            window.MouseDown(startPoint, MouseButton.Left);
+            window.MouseMove(dragPoint);
+            Dispatcher.UIThread.RunJobs();
+
+            editor.TextArea.TextView.LineTransformers
+                  .OfType<TextMateColoringTransformer>()
+                  .ShouldNotBeEmpty();
+
+            window.MouseUp(dragPoint, MouseButton.Left);
+            Dispatcher.UIThread.RunJobs();
+
+            editor.TextArea.TextView.LineTransformers
+                  .OfType<TextMateColoringTransformer>()
+                  .ShouldNotBeEmpty();
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+            viewer.Dispose();
+        }
     }
 
     [Fact]
@@ -605,6 +794,16 @@ public class GalleryCodeViewerRuntimeTests
         syntaxThemeField.ShouldNotBeNull();
 
         return syntaxThemeField.GetValue(viewer).ShouldBeOfType<ThemeName>();
+    }
+
+    private static Avalonia.Controls.ScrollViewer GetEditorScrollViewer(TextEditor editor)
+    {
+        var scrollViewerProperty = typeof(TextEditor).GetProperty(
+            "ScrollViewer",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        scrollViewerProperty.ShouldNotBeNull();
+
+        return scrollViewerProperty.GetValue(editor).ShouldBeOfType<Avalonia.Controls.ScrollViewer>();
     }
 
     private static string? GetAxamlTagNameColor(GalleryCodeViewer viewer)

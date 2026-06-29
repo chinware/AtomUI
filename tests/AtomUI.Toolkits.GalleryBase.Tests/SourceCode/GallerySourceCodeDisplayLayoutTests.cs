@@ -54,6 +54,34 @@ public class GallerySourceCodeDisplayLayoutTests
         viewerMarkup.ShouldContain("x:Key=\"ThemeForegroundColor\"");
     }
 
+    [Fact]
+    public void Code_Viewer_Does_Not_Keep_A_Permanent_LayoutUpdated_Scrollbar_Adjuster()
+    {
+        var viewerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryCodeViewer.cs"));
+
+        var requestMethodIndex = viewerSource.IndexOf(
+            "private void RequestHorizontalScrollBarGutterInsetUpdate()",
+            StringComparison.Ordinal);
+        var subscriptionIndex = viewerSource.IndexOf(
+            "_editor.LayoutUpdated += HandleEditorLayoutUpdated",
+            StringComparison.Ordinal);
+        var handlerIndex = viewerSource.IndexOf(
+            "private void HandleEditorLayoutUpdated",
+            StringComparison.Ordinal);
+        var cancelInHandlerIndex = viewerSource.IndexOf(
+            "CancelHorizontalScrollBarGutterInsetUpdate();",
+            handlerIndex,
+            StringComparison.Ordinal);
+        var updateInHandlerIndex = viewerSource.IndexOf(
+            "UpdateHorizontalScrollBarGutterInset();",
+            handlerIndex,
+            StringComparison.Ordinal);
+
+        requestMethodIndex.ShouldBeGreaterThanOrEqualTo(0);
+        subscriptionIndex.ShouldBeGreaterThan(requestMethodIndex);
+        cancelInHandlerIndex.ShouldBeLessThan(updateInHandlerIndex);
+    }
+
     private static string GetRepoFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

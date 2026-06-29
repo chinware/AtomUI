@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 using AtomUI.Controls;
 using AtomUI.Theme;
 using Avalonia;
@@ -8,10 +9,15 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Styling;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using AvaloniaEdit;
+using AvaloniaEdit.Document;
 using AvaloniaEdit.TextMate;
+using TextMateSharp.Model;
 using TextMateSharp.Grammars;
+using TextMateSharp.Registry;
+using TextMateSharp.Themes;
 using AtomUIContextMenu = AtomUI.Desktop.Controls.ContextMenu;
 using AtomUIMenuItem = AtomUI.Desktop.Controls.MenuItem;
 
@@ -42,13 +48,14 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         IsEnabled = false
     };
 
-    private TextMate.Installation? _textMateInstallation;
+    private GalleryTextMateInstallation? _textMateInstallation;
     private RegistryOptions? _registryOptions;
     private ScrollBar? _horizontalScrollBar;
     private Application? _subscribedApplication;
     private IThemeManager? _subscribedThemeManager;
     private IDisposable? _themeVariantSubscription;
     private ThemeName? _currentSyntaxTheme;
+    private bool _isHorizontalScrollBarInsetUpdatePending;
     private bool _isUpdatingScrollBarInset;
     private bool _isDisposed;
 
@@ -56,7 +63,6 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
     {
         InitializeComponent();
         _editor = this.FindControl<TextEditor>("PART_Editor")!;
-        _editor.LayoutUpdated += HandleEditorLayoutUpdated;
         _editor.TextArea.SelectionChanged += HandleEditorSelectionChanged;
         ActualThemeVariantChanged += HandleActualThemeVariantChanged;
         ConfigureEditorContextMenu();
@@ -107,7 +113,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         _textMateInstallation = null;
         _registryOptions      = null;
         ReleaseThemeVariantSubscriptions();
-        _editor.LayoutUpdated -= HandleEditorLayoutUpdated;
+        CancelHorizontalScrollBarGutterInsetUpdate();
         _editor.TextArea.SelectionChanged -= HandleEditorSelectionChanged;
         _editor.Document      = null;
         _copyMenuItem.Click -= HandleCopyMenuItemClick;
@@ -136,7 +142,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         else if (change.Property == ShowLineNumbersProperty)
         {
             _editor.ShowLineNumbers = ShowLineNumbers;
-            UpdateHorizontalScrollBarGutterInset();
+            RequestHorizontalScrollBarGutterInsetUpdate();
         }
         else if (change.Property == LightSyntaxThemeProperty ||
                  change.Property == DarkSyntaxThemeProperty)
@@ -150,16 +156,19 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         base.OnAttachedToVisualTree(e);
         SubscribeThemeVariantChanges();
         ApplySyntaxTheme();
+        RequestHorizontalScrollBarGutterInsetUpdate();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        CancelHorizontalScrollBarGutterInsetUpdate();
         ReleaseThemeVariantSubscriptions();
         base.OnDetachedFromVisualTree(e);
     }
 
     private void HandleEditorLayoutUpdated(object? sender, EventArgs e)
     {
+        CancelHorizontalScrollBarGutterInsetUpdate();
         UpdateHorizontalScrollBarGutterInset();
     }
 
@@ -201,12 +210,33 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         ApplySyntaxTheme();
     }
 
+    private void RequestHorizontalScrollBarGutterInsetUpdate()
+    {
+        if (_isDisposed || _isHorizontalScrollBarInsetUpdatePending)
+        {
+            return;
+        }
+
+        _isHorizontalScrollBarInsetUpdatePending = true;
+        _editor.LayoutUpdated += HandleEditorLayoutUpdated;
+    }
+
+    private void CancelHorizontalScrollBarGutterInsetUpdate()
+    {
+        if (!_isHorizontalScrollBarInsetUpdatePending)
+        {
+            return;
+        }
+
+        _isHorizontalScrollBarInsetUpdatePending = false;
+        _editor.LayoutUpdated -= HandleEditorLayoutUpdated;
+    }
+
     private void UpdateHorizontalScrollBarGutterInset()
     {
-        // This runs from LayoutUpdated. Mutating the scroll bar Margin below triggers another
-        // layout pass, which re-enters here. Without this guard, dragging a selection past the
-        // right edge (which auto-scrolls and fires LayoutUpdated continuously) spins the layout
-        // system forever and hangs the UI thread.
+        // Mutating the scroll bar Margin triggers another layout pass, so this method must only
+        // run from the one-shot request path above. Drag selection auto-scroll produces repeated
+        // LayoutUpdated ticks, and a permanent handler can spin the UI thread.
         if (_isUpdatingScrollBarInset)
         {
             return;
@@ -277,6 +307,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
     private void UpdateText()
     {
         _editor.Text = CodeText ?? string.Empty;
+        RequestHorizontalScrollBarGutterInsetUpdate();
     }
 
     private void ConfigureEditorContextMenu()
@@ -290,7 +321,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
 
     private void UpdateCopyMenuItemState()
     {
-        _copyMenuItem.IsEnabled = !string.IsNullOrEmpty(GetSelectedCodeText());
+        _copyMenuItem.IsEnabled = !_editor.TextArea.Selection.IsEmpty;
     }
 
     private string GetSelectedCodeText()
@@ -331,7 +362,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
 
         var syntaxTheme = ResolveSyntaxTheme();
         _registryOptions = new RegistryOptions(syntaxTheme);
-        _textMateInstallation = _editor.InstallTextMate(_registryOptions);
+        _textMateInstallation = new GalleryTextMateInstallation(_editor, _registryOptions);
         _currentSyntaxTheme = syntaxTheme;
     }
 
@@ -442,5 +473,440 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         };
 
         return _registryOptions?.GetScopeByExtension(extension);
+    }
+
+    private sealed class GalleryTextMateInstallation : IDisposable
+    {
+        private readonly object _lock = new();
+        private readonly Registry _textMateRegistry;
+        private readonly TextEditor _editor;
+        private readonly TextMateColoringTransformer _transformer;
+        private readonly bool _ownsTransformer;
+        private Action<Exception>? _exceptionHandler;
+        private GalleryTextEditorModel? _editorModel;
+        private IGrammar? _grammar;
+        private TMModel? _tmModel;
+        private ReadOnlyDictionary<string, string>? _themeColorsDictionary;
+        private bool _isDisposed;
+
+        public GalleryTextMateInstallation(TextEditor editor,
+                                           IRegistryOptions registryOptions,
+                                           Action<Exception>? exceptionHandler = null)
+        {
+            RegistryOptions = registryOptions ?? throw new ArgumentNullException(nameof(registryOptions));
+            _editor = editor ?? throw new ArgumentNullException(nameof(editor));
+            _exceptionHandler = exceptionHandler;
+            _textMateRegistry = new Registry(registryOptions);
+            _transformer = _editor.TextArea.TextView.LineTransformers
+                                  .OfType<TextMateColoringTransformer>()
+                                  .FirstOrDefault() ??
+                           new TextMateColoringTransformer(_editor.TextArea.TextView, _exceptionHandler);
+
+            if (!_editor.TextArea.TextView.LineTransformers.Contains(_transformer))
+            {
+                _editor.TextArea.TextView.LineTransformers.Add(_transformer);
+                _ownsTransformer = true;
+            }
+
+            SetTheme(registryOptions.GetDefaultTheme());
+            _editor.DocumentChanged += HandleEditorDocumentChanged;
+            HandleEditorDocumentChanged(_editor, EventArgs.Empty);
+        }
+
+        public IRegistryOptions RegistryOptions { get; }
+
+        public void SetGrammar(string scopeName)
+        {
+            ThrowIfDisposed();
+            lock (_lock)
+            {
+                ThrowIfDisposed();
+                SetGrammarInternal(_textMateRegistry.LoadGrammar(scopeName));
+                ForceTokenizeDocument();
+            }
+            _editor.TextArea.TextView.Redraw();
+        }
+
+        public bool TryGetThemeColor(string colorKey, out string? colorString)
+        {
+            ThrowIfDisposed();
+            return (_themeColorsDictionary ?? throw new ObjectDisposedException(nameof(GalleryTextMateInstallation)))
+                .TryGetValue(colorKey, out colorString);
+        }
+
+        public void SetTheme(IRawTheme theme)
+        {
+            ThrowIfDisposed();
+            lock (_lock)
+            {
+                ThrowIfDisposed();
+                _textMateRegistry.SetTheme(theme);
+                var textMateTheme = _textMateRegistry.GetTheme();
+                _transformer.SetTheme(textMateTheme);
+                _tmModel?.InvalidateLine(0);
+                _editorModel?.InvalidateViewPortLines();
+                _themeColorsDictionary = textMateTheme.GetGuiColorDictionary();
+            }
+        }
+
+        public void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            GalleryTextEditorModel? editorModel;
+            TMModel? tmModel;
+            lock (_lock)
+            {
+                if (_isDisposed)
+                {
+                    return;
+                }
+
+                _isDisposed = true;
+                editorModel = _editorModel;
+                _editorModel = null;
+                tmModel = _tmModel;
+                _tmModel = null;
+                _grammar = null;
+                _themeColorsDictionary = null;
+                _exceptionHandler = null;
+            }
+
+            _editor.DocumentChanged -= HandleEditorDocumentChanged;
+            editorModel?.Dispose();
+            DisposeTMModel(tmModel);
+
+            if (_ownsTransformer)
+            {
+                _editor.TextArea.TextView.LineTransformers.Remove(_transformer);
+                _transformer.Dispose();
+            }
+            else
+            {
+                _transformer.SetModel(null, null);
+            }
+        }
+
+        private void HandleEditorDocumentChanged(object? sender, EventArgs e)
+        {
+            if (_isDisposed || _editor.Document is null)
+            {
+                return;
+            }
+
+            lock (_lock)
+            {
+                if (_isDisposed || _editor.Document is null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    _editorModel?.Dispose();
+                    DisposeTMModel(_tmModel);
+                    _editorModel = new GalleryTextEditorModel(
+                        _editor.TextArea.TextView,
+                        _editor.Document,
+                        _exceptionHandler);
+                    _tmModel = new TMModel(_editorModel);
+                    _tmModel.SetGrammar(_grammar);
+                    _transformer.SetModel(_editor.Document, _tmModel);
+                    _tmModel.AddModelTokensChangedListener(_transformer);
+                    ForceTokenizeDocument();
+                }
+                catch (Exception ex)
+                {
+                    _exceptionHandler?.Invoke(ex);
+                }
+            }
+        }
+
+        private void SetGrammarInternal(IGrammar grammar)
+        {
+            _grammar = grammar;
+            _transformer.SetGrammar(_grammar);
+        }
+
+        private void ForceTokenizeDocument()
+        {
+            _editorModel?.ForceTokenizeAllLines();
+        }
+
+        private void ThrowIfDisposed()
+        {
+            if (_isDisposed)
+            {
+                throw new ObjectDisposedException(nameof(GalleryTextMateInstallation));
+            }
+        }
+
+        private void DisposeTMModel(TMModel? tmModel)
+        {
+            if (tmModel is null)
+            {
+                return;
+            }
+
+            tmModel.RemoveModelTokensChangedListener(_transformer);
+            tmModel.Dispose();
+        }
+    }
+
+    private sealed class GalleryTextEditorModel : AbstractLineList, IDisposable
+    {
+        private readonly TextDocument _document;
+        private readonly AvaloniaEdit.Rendering.TextView _textView;
+        private readonly Action<Exception>? _exceptionHandler;
+        private DocumentSnapshot _documentSnapshot;
+        private InvalidLineRange? _invalidRange;
+        private bool _isViewportTokenizationPending;
+        private int _pendingViewportStartLine = -1;
+        private int _pendingViewportEndLine = -1;
+        private bool _isDisposed;
+
+        public GalleryTextEditorModel(AvaloniaEdit.Rendering.TextView textView,
+                                      TextDocument document,
+                                      Action<Exception>? exceptionHandler)
+        {
+            _textView = textView;
+            _document = document;
+            _exceptionHandler = exceptionHandler;
+            _documentSnapshot = new DocumentSnapshot(_document);
+            for (var i = 0; i < _document.LineCount; i++)
+            {
+                AddLine(i);
+            }
+
+            _document.Changing += HandleDocumentChanging;
+            _document.Changed += HandleDocumentChanged;
+            _document.UpdateFinished += HandleDocumentUpdateFinished;
+            _textView.ScrollOffsetChanged += HandleTextViewScrollOffsetChanged;
+        }
+
+        public override void Dispose()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            _isDisposed = true;
+            _document.Changing -= HandleDocumentChanging;
+            _document.Changed -= HandleDocumentChanged;
+            _document.UpdateFinished -= HandleDocumentUpdateFinished;
+            _textView.ScrollOffsetChanged -= HandleTextViewScrollOffsetChanged;
+        }
+
+        public override void UpdateLine(int lineIndex)
+        {
+        }
+
+        public override int GetNumberOfLines()
+        {
+            return _documentSnapshot.LineCount;
+        }
+
+        public override LineText GetLineTextIncludingTerminators(int lineIndex)
+        {
+            return _documentSnapshot.GetLineTextIncludingTerminatorAsMemory(lineIndex);
+        }
+
+        public override int GetLineLength(int lineIndex)
+        {
+            return _documentSnapshot.GetLineLength(lineIndex);
+        }
+
+        public void InvalidateViewPortLines()
+        {
+            if (_textView.VisualLinesValid && _textView.VisualLines.Count != 0)
+            {
+                InvalidateLineRange(GetFirstVisibleLineIndex(), GetLastVisibleLineIndex());
+            }
+        }
+
+        public void ForceTokenizeAllLines()
+        {
+            var lineCount = _documentSnapshot.LineCount;
+            if (lineCount > 0)
+            {
+                ForceTokenization(0, lineCount - 1);
+            }
+        }
+
+        private void HandleTextViewScrollOffsetChanged(object? sender, EventArgs e)
+        {
+            try
+            {
+                RequestViewportTokenization();
+            }
+            catch (Exception ex)
+            {
+                _exceptionHandler?.Invoke(ex);
+            }
+        }
+
+        private void RequestViewportTokenization()
+        {
+            if (_isDisposed || !_textView.VisualLinesValid || _textView.VisualLines.Count == 0)
+            {
+                return;
+            }
+
+            var startLine = GetFirstVisibleLineIndex();
+            var endLine = GetLastVisibleLineIndex();
+            if (_pendingViewportStartLine < 0)
+            {
+                _pendingViewportStartLine = startLine;
+                _pendingViewportEndLine = endLine;
+            }
+            else
+            {
+                _pendingViewportStartLine = Math.Min(_pendingViewportStartLine, startLine);
+                _pendingViewportEndLine = Math.Max(_pendingViewportEndLine, endLine);
+            }
+
+            if (_isViewportTokenizationPending)
+            {
+                return;
+            }
+
+            _isViewportTokenizationPending = true;
+            Avalonia.Threading.Dispatcher.UIThread.Post(
+                ProcessPendingViewportTokenization,
+                DispatcherPriority.Background);
+        }
+
+        private void ProcessPendingViewportTokenization()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            var startLine = _pendingViewportStartLine;
+            var endLine = _pendingViewportEndLine;
+            _pendingViewportStartLine = -1;
+            _pendingViewportEndLine = -1;
+            _isViewportTokenizationPending = false;
+            if (startLine >= 0 && endLine >= startLine)
+            {
+                ForceTokenization(startLine, endLine);
+            }
+        }
+
+        private void HandleDocumentChanging(object? sender, DocumentChangeEventArgs e)
+        {
+            try
+            {
+                if (e.RemovalLength <= 0)
+                {
+                    return;
+                }
+
+                var startLine = _document.GetLineByOffset(e.Offset).LineNumber - 1;
+                var endLine = _document.GetLineByOffset(e.Offset + e.RemovalLength).LineNumber - 1;
+                for (var line = endLine; line > startLine; line--)
+                {
+                    RemoveLine(line);
+                }
+                _documentSnapshot.RemoveLines(startLine, endLine);
+            }
+            catch (Exception ex)
+            {
+                _exceptionHandler?.Invoke(ex);
+            }
+        }
+
+        private void HandleDocumentChanged(object? sender, DocumentChangeEventArgs e)
+        {
+            try
+            {
+                var startLine = _document.GetLineByOffset(e.Offset).LineNumber - 1;
+                var endLine = startLine;
+                if (e.InsertionLength > 0)
+                {
+                    endLine = _document.GetLineByOffset(e.Offset + e.InsertionLength).LineNumber - 1;
+                    for (var line = startLine; line < endLine; line++)
+                    {
+                        AddLine(line);
+                    }
+                }
+
+                _documentSnapshot.Update(e);
+                SetInvalidRange(startLine == 0 ? startLine : startLine - 1, endLine);
+            }
+            catch (Exception ex)
+            {
+                _exceptionHandler?.Invoke(ex);
+            }
+        }
+
+        private void SetInvalidRange(int startLine, int endLine)
+        {
+            if (!_document.IsInUpdate)
+            {
+                InvalidateLineRange(startLine, endLine);
+            }
+            else if (_invalidRange is null)
+            {
+                _invalidRange = new InvalidLineRange(startLine, endLine);
+            }
+            else
+            {
+                _invalidRange.SetInvalidRange(startLine, endLine);
+            }
+        }
+
+        private void HandleDocumentUpdateFinished(object? sender, EventArgs e)
+        {
+            if (_invalidRange is null)
+            {
+                return;
+            }
+
+            try
+            {
+                var startLine = Math.Clamp(_invalidRange.StartLine, 0, _documentSnapshot.LineCount - 1);
+                var endLine = Math.Clamp(_invalidRange.EndLine, 0, _documentSnapshot.LineCount - 1);
+                InvalidateLineRange(startLine, endLine);
+            }
+            finally
+            {
+                _invalidRange = null;
+            }
+        }
+
+        private int GetFirstVisibleLineIndex()
+        {
+            return _textView.VisualLines[0].FirstDocumentLine.LineNumber - 1;
+        }
+
+        private int GetLastVisibleLineIndex()
+        {
+            return _textView.VisualLines[^1].LastDocumentLine.LineNumber - 1;
+        }
+
+        private sealed class InvalidLineRange
+        {
+            public InvalidLineRange(int startLine, int endLine)
+            {
+                StartLine = startLine;
+                EndLine = endLine;
+            }
+
+            public int StartLine { get; private set; }
+
+            public int EndLine { get; private set; }
+
+            public void SetInvalidRange(int startLine, int endLine)
+            {
+                StartLine = Math.Min(StartLine, startLine);
+                EndLine = Math.Max(EndLine, endLine);
+            }
+        }
     }
 }
