@@ -78,9 +78,14 @@ public class SplashWindow : AvaloniaWindow
 
     public override void Show()
     {
-        _shownAt = DateTimeOffset.UtcNow;
-        _hasShown = true;
+        MarkShown();
         base.Show();
+    }
+
+    public new void Show(AvaloniaWindow owner)
+    {
+        MarkShown();
+        base.Show(owner);
     }
 
     public Task CloseAsync(CancellationToken cancellationToken = default)
@@ -108,6 +113,12 @@ public class SplashWindow : AvaloniaWindow
         }
 
         await RunOnUiThreadAsync(Close, cancellationToken);
+    }
+
+    private void MarkShown()
+    {
+        _shownAt = DateTimeOffset.UtcNow;
+        _hasShown = true;
     }
 
     private async Task DelayForCloseScheduleAsync(CancellationToken cancellationToken)

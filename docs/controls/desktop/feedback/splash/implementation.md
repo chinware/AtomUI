@@ -140,11 +140,14 @@ Splash static API
 - `SplashWindow.Splash` 是可空 `StyledProperty<Splash?>`，默认值为 `null`；窗口模板只通过 `TemplateBinding` 承载该属性。
 - `SplashWindow.MinimumShowDuration`、`SplashWindow.CloseDelay`、`SplashWindow.FadeOutDuration` 是 `StyledProperty<TimeSpan>`，用于窗口关闭调度；`SplashWindow.IsCloseRequested` 是只读运行时 `DirectProperty`。
 - `SplashWindowTheme.axaml` 负责 `Background`、`TransparencyBackgroundFallback`、`TransparencyLevelHint`、`ExtendClientAreaToDecorationsHint`、`WindowDecorations`、`ShowInTaskbar`、`CanResize`、`SizeToContent`、`WindowStartupLocation`、`Topmost` 和 `PART_SurfaceHost`。
+- `SplashWindowTheme.axaml` 必须保持 `ExtendClientAreaToDecorationsHint=False`、`WindowDecorations=None`、`CanResize=False` 和 `WindowStartupLocation=CenterScreen`；SplashWindow 不提供标题栏或客户区拖动，默认显示在屏幕正中央。
 - `SplashWindowTheme.axaml` 中的 `PART_SurfaceHost` 直接使用 `{atom:SplashTokenResource SurfaceBoxShadow}` 和 `{atom:SplashTokenResource SurfaceCornerRadius}`；不得为这两个资源再引入 C# `TokenResourceBinder` 桥接对象。
 - `SplashWindow.Show()` 记录展示开始时间，供 `MinimumShowDuration` 使用。
 - `SplashWindow.CloseAsync()` 先等待最短展示时间和 `CloseDelay`，再执行淡出，最后关闭窗口。
+- `SplashWindow.Show()` 和 `SplashWindow.Show(owner)` 必须共享同一套 shown 状态记录；服务使用 owned window 显示时，关闭调度仍要基于真实展示时间，并且 `CloseAsync()` 必须真正关闭窗口。
 - `SplashService.ShowAsync()` 创建新窗口前必须处理已有窗口；重复 show 不应产生不可追踪窗口。
 - `SplashService.ShowAsync()` 默认先创建未应用调用方 options 的 `SplashWindow`，再由服务创建或复用 `SplashWindow.Splash`，并统一把 `SplashOptions` 写入窗口和 `Splash` 控件。
+- `SplashService.ShowAsync()` 在 desktop lifetime 中必须优先把 `SplashWindow` 作为当前可见主窗口的 owned window 显示；点击过 SplashWindow 后再关闭时，平台输入、激活和 pointer tracking 应回到主窗口。找不到可见主窗口时才退回普通 `Show()`。
 - `SplashService.CloseAsync()` 必须在成功、取消和异常路径释放 `CurrentWindow` 和订阅。
 - 控件卸载、窗口关闭、服务替换或取消时必须释放事件订阅和任务引用。
 
@@ -176,6 +179,7 @@ Splash 的交互事件应从启动服务收敛到控件状态：
 维护者需要重点关注以下流程：
 
 - `SplashService.ShowAsync()` 的重复调用处理和窗口创建顺序。
+- `SplashService.ShowAsync()` 的 owner 解析和 `Show(ownerWindow)` / `Show()` fallback 分支。
 - `SplashService` 对 UI thread 的调度边界。
 - `Splash.SetProgress`、`Splash.SetStatus`、`Splash.SetError` 对 `Progress`、`IsIndeterminate`、`Status` 的优先级归一。
 - `SplashWindow.CloseAsync()` 的最短展示时间、关闭延迟、淡出和幂等。

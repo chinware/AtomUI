@@ -273,6 +273,8 @@ internal class ShadowsAwareContainer : Decorator
         }
 
         _shadowsRenderer                        = new Border();
+        _shadowsRenderer.ClipToBounds           = true;
+        _shadowsRenderer.Background             = Brushes.Transparent;
         _shadowsRenderer[!BoxShadowProperty]    = this[!BoxShadowProperty];
         _shadowsRenderer[!CornerRadiusProperty] = this[!CornerRadiusProperty];
         ((ISetLogicalParent)_shadowsRenderer).SetParent(this);
