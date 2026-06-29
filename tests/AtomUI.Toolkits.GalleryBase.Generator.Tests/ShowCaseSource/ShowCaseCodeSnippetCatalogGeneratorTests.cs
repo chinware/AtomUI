@@ -163,6 +163,112 @@ public class ShowCaseCodeSnippetCatalogGeneratorTests
     }
 
     [Fact]
+    public void GeneratesCodeBehindAndViewModelSnippetsFromAttachedToVisualTreeDependency()
+    {
+        var compilation = CreateCompilation();
+        var additionalFiles = ImmutableArray.Create<AdditionalText>(
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml",
+                """
+                <UserControl
+                    xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gallery="https://atomui.net/toolkits/gallery-base"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:vm="using:AtomUIGallery.ShowCases.DataDisplay.DataGrid.ViewModels"
+                    x:Class="AtomUIGallery.ShowCases.DataDisplay.DataGrid.Views.DataGridShowCase">
+                    <gallery:ShowCasePanel Name="ExamplesContent">
+                        <gallery:ShowCaseItem Title="Basic">
+                            <gallery:ShowCaseItem.DeferredContentTemplate>
+                                <DataTemplate x:DataType="vm:DataGridViewModel">
+                                    <atom:DataGrid x:Name="BasicCaseGrid"
+                                                   x:DataType="vm:DataGridBaseInfo"
+                                                   AttachedToVisualTree="HandleExampleDataGridAttached"
+                                                   DetachedFromVisualTree="HandleExampleDataGridDetached">
+                                        <atom:DataGrid.Columns>
+                                            <atom:DataGridTextColumn Header="Name" Binding="{Binding Name}" />
+                                        </atom:DataGrid.Columns>
+                                    </atom:DataGrid>
+                                </DataTemplate>
+                            </gallery:ShowCaseItem.DeferredContentTemplate>
+                        </gallery:ShowCaseItem>
+                    </gallery:ShowCasePanel>
+                </UserControl>
+                """),
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/Views/DataGridShowCase.axaml.cs",
+                """
+                namespace AtomUIGallery.ShowCases.DataDisplay.DataGrid.Views;
+
+                public partial class DataGridShowCase
+                {
+                    private void HandleExampleDataGridAttached(object? sender, VisualTreeAttachmentEventArgs args)
+                    {
+                        if (sender is AtomDataGrid dataGrid)
+                        {
+                            SetExampleDataGridItemsSource(dataGrid);
+                        }
+                    }
+
+                    private void HandleExampleDataGridDetached(object? sender, VisualTreeAttachmentEventArgs args)
+                    {
+                        if (sender is AtomDataGrid dataGrid)
+                        {
+                            dataGrid.ItemsSource = null;
+                        }
+                    }
+
+                    private void SetExampleDataGridItemsSource(AtomDataGrid dataGrid)
+                    {
+                        if (DataContext is not AtomUIGallery.ShowCases.DataDisplay.DataGrid.ViewModels.DataGridViewModel viewModel)
+                        {
+                            return;
+                        }
+
+                        viewModel.BasicCaseDataSource = [];
+                        dataGrid.ItemsSource = viewModel.BasicCaseDataSource;
+                    }
+                }
+                """),
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/DataDisplay/DataGrid/ViewModels/DataGridViewModel.cs",
+                """
+                namespace AtomUIGallery.ShowCases.DataDisplay.DataGrid.ViewModels;
+
+                public class DataGridViewModel
+                {
+                    public List<DataGridBaseInfo>? BasicCaseDataSource { get; set; }
+                }
+
+                public class DataGridBaseInfo
+                {
+                    public string Name { get; set; } = string.Empty;
+                }
+                """));
+
+        var outputCompilation = RunGenerator(compilation, additionalFiles, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+        outputCompilation.GetDiagnostics(TestContext.Current.CancellationToken)
+                         .Where(static diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+                         .ShouldBeEmpty();
+
+        var generatedSource = outputCompilation.SyntaxTrees
+                                               .Single(tree => tree.FilePath.EndsWith("ShowCaseCodeSnippetCatalog.g.cs"))
+                                               .GetText(TestContext.Current.CancellationToken)
+                                               .ToString();
+
+        generatedSource.ShouldContain("TabTitle: \"AXAML\"");
+        generatedSource.ShouldContain("TabTitle: \"Code-behind\"");
+        generatedSource.ShouldContain("TabTitle: \"ViewModel\"");
+        generatedSource.ShouldContain("HandleExampleDataGridAttached");
+        generatedSource.ShouldContain("HandleExampleDataGridDetached");
+        generatedSource.ShouldContain("SetExampleDataGridItemsSource");
+        generatedSource.ShouldContain("BasicCaseDataSource");
+        generatedSource.ShouldContain("DataGridBaseInfo");
+    }
+
+    [Fact]
     public void GeneratesSnippetsFromMirroredAdditionalFilesUsingOriginalSourcePathMetadata()
     {
         var compilation = CreateCompilation();
@@ -283,6 +389,51 @@ public class ShowCaseCodeSnippetCatalogGeneratorTests
         generatedSource.ShouldContain("<atom:StepsItem Header=\\\"Finished\\\" />");
         generatedSource.ShouldContain("<atom:StepsItem Header=\\\"Waiting\\\" />");
         generatedSource.ShouldContain("</atom:Steps>");
+    }
+
+    [Fact]
+    public void ExtractsFullMultiLineSelfClosingAxamlElement()
+    {
+        var compilation = CreateCompilation();
+        var additionalFiles = ImmutableArray.Create<AdditionalText>(
+            new InMemoryAdditionalText(
+                "/repo/controlgallery/AtomUIGallery/ShowCases/DataEntry/Select/Views/SelectShowCase.axaml",
+                """
+                <UserControl
+                    xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gallery="https://atomui.net/toolkits/gallery-base"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:vm="using:AtomUIGallery.ShowCases.DataEntry.Select.ViewModels"
+                    x:Class="AtomUIGallery.ShowCases.DataEntry.Select.Views.SelectShowCase">
+                    <gallery:ShowCasePanel Name="ExamplesContent">
+                        <gallery:ShowCaseItem Title="Custom Search">
+                            <gallery:ShowCaseItem.DeferredContentTemplate>
+                                <DataTemplate x:DataType="vm:SelectViewModel">
+                                    <atom:Select Name="CustomSearchSelect"
+                                                 AttachedToVisualTree="HandleCustomSearchSelectAttached"
+                                                 Mode="Single"
+                                                 IsFilterEnabled="True"
+                                                 OptionsSource="{Binding SearchOptions}" />
+                                </DataTemplate>
+                            </gallery:ShowCaseItem.DeferredContentTemplate>
+                        </gallery:ShowCaseItem>
+                    </gallery:ShowCasePanel>
+                </UserControl>
+                """));
+
+        var outputCompilation = RunGenerator(compilation, additionalFiles, out var diagnostics);
+
+        diagnostics.ShouldBeEmpty();
+
+        var generatedSource = outputCompilation.SyntaxTrees
+                                               .Single(tree => tree.FilePath.EndsWith("ShowCaseCodeSnippetCatalog.g.cs"))
+                                               .GetText(TestContext.Current.CancellationToken)
+                                               .ToString();
+
+        generatedSource.ShouldContain("<atom:Select Name=\\\"CustomSearchSelect\\\"");
+        generatedSource.ShouldContain("AttachedToVisualTree=\\\"HandleCustomSearchSelectAttached\\\"");
+        generatedSource.ShouldContain("OptionsSource=\\\"{Binding SearchOptions}\\\" />");
     }
 
     [Fact]

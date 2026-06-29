@@ -375,6 +375,8 @@ public sealed class ShowCaseCodeSnippetCatalogGenerator : IIncrementalGenerator
         return attributeName == "Click" ||
                attributeName == "Loaded" ||
                attributeName == "Unloaded" ||
+               attributeName == "AttachedToVisualTree" ||
+               attributeName == "DetachedFromVisualTree" ||
                attributeName == "KeyDown" ||
                attributeName == "KeyUp" ||
                attributeName.EndsWith("Changed", StringComparison.Ordinal) ||
@@ -481,105 +483,171 @@ public sealed class ShowCaseCodeSnippetCatalogGenerator : IIncrementalGenerator
             return startLine;
         }
 
-        // Prefer the start line of the next sibling (or the parent's end) as a hard upper
-        // bound, then walk back to the real closing token. This is robust to namespace
-        // prefixes (e.g. </atom:Steps>) which a naive "</LocalName" scan misses.
+        var text = sourceText.ToString();
+        var searchPosition = GetElementStartPosition(sourceText, element, startLine);
         var localName = element.Name.LocalName;
         var depth = 0;
-        for (var index = startLine - 1; index < sourceText.Lines.Count; index++)
+        while (searchPosition < text.Length)
         {
-            var lineText = sourceText.Lines[index].ToString();
-            depth += CountElementOpenings(lineText, localName);
-            depth -= CountSelfClosings(lineText, localName);
-            depth -= CountElementClosings(lineText, localName);
-            if (depth <= 0)
-            {
-                return index + 1;
-            }
-        }
-
-        return startLine;
-    }
-
-    private static int CountElementOpenings(string lineText, string localName)
-    {
-        // Matches "<Name" and "<prefix:Name" that are NOT closing tags ("</...").
-        return CountTagOccurrences(lineText, localName, requireSlashBefore: false);
-    }
-
-    private static int CountElementClosings(string lineText, string localName)
-    {
-        // Matches "</Name>" and "</prefix:Name>".
-        return CountTagOccurrences(lineText, localName, requireSlashBefore: true);
-    }
-
-    private static int CountSelfClosings(string lineText, string localName)
-    {
-        // An opening tag on this line that also self-closes ("<Name ... />") contributes a
-        // net depth of zero, so cancel the opening we already counted.
-        var count = 0;
-        var searchStart = 0;
-        while (true)
-        {
-            var openIndex = FindTagStart(lineText, localName, searchStart, requireSlashBefore: false);
-            if (openIndex < 0)
+            var tagStart = text.IndexOf('<', searchPosition);
+            if (tagStart < 0)
             {
                 break;
             }
 
-            var tagEnd = lineText.IndexOf('>', openIndex);
+            if (TrySkipSpecialTag(text, tagStart, out var afterSpecialTag))
+            {
+                searchPosition = afterSpecialTag;
+                continue;
+            }
+
+            var nameStart = tagStart + 1;
+            var isClosingTag = nameStart < text.Length && text[nameStart] == '/';
+            if (isClosingTag)
+            {
+                nameStart++;
+            }
+
+            if (!TryReadTagLocalName(text, nameStart, out var tagLocalName))
+            {
+                searchPosition = tagStart + 1;
+                continue;
+            }
+
+            var tagEnd = FindTagEnd(text, nameStart);
             if (tagEnd < 0)
             {
                 break;
             }
 
-            if (tagEnd > 0 && lineText[tagEnd - 1] == '/')
+            if (string.Equals(tagLocalName, localName, StringComparison.Ordinal))
             {
-                count++;
+                if (isClosingTag)
+                {
+                    if (depth > 0)
+                    {
+                        depth--;
+                        if (depth == 0)
+                        {
+                            return GetLineNumber(sourceText, tagEnd);
+                        }
+                    }
+                }
+                else if (IsSelfClosingTag(text, tagEnd))
+                {
+                    if (depth == 0)
+                    {
+                        return GetLineNumber(sourceText, tagEnd);
+                    }
+                }
+                else
+                {
+                    depth++;
+                }
             }
 
-            searchStart = tagEnd + 1;
+            searchPosition = tagEnd + 1;
         }
 
-        return count;
+        return startLine;
     }
 
-    private static int CountTagOccurrences(string lineText, string localName, bool requireSlashBefore)
+    private static int GetElementStartPosition(SourceText sourceText, XElement element, int startLine)
     {
-        var count = 0;
-        var searchStart = 0;
-        while (true)
+        var line = sourceText.Lines[startLine - 1];
+        var offset = 0;
+        if (element is IXmlLineInfo lineInfo && lineInfo.HasLineInfo())
         {
-            var index = FindTagStart(lineText, localName, searchStart, requireSlashBefore);
-            if (index < 0)
-            {
-                break;
-            }
-
-            count++;
-            searchStart = index + 1;
+            offset = Math.Max(lineInfo.LinePosition - 1, 0);
         }
 
-        return count;
+        var lineText = line.ToString();
+        if (lineText.Length == 0)
+        {
+            return line.Start;
+        }
+
+        var scanStart = Math.Min(offset, lineText.Length - 1);
+        var tagStart = lineText.LastIndexOf('<', scanStart);
+        return tagStart >= 0
+            ? line.Start + tagStart
+            : Math.Min(line.Start + offset, sourceText.Length);
     }
 
-    private static int FindTagStart(string lineText, string localName, int searchStart, bool requireSlashBefore)
+    private static bool TrySkipSpecialTag(string text, int tagStart, out int nextPosition)
     {
-        for (var index = lineText.IndexOf('<', searchStart); index >= 0; index = lineText.IndexOf('<', index + 1))
+        nextPosition = tagStart;
+        if (tagStart + 1 >= text.Length)
         {
-            var cursor = index + 1;
-            var isClosing = cursor < lineText.Length && lineText[cursor] == '/';
-            if (isClosing)
-            {
-                cursor++;
-            }
+            return false;
+        }
 
-            if (requireSlashBefore != isClosing)
+        if (MatchesAt(text, tagStart, "<!--"))
+        {
+            var commentEnd = text.IndexOf("-->", tagStart + 4, StringComparison.Ordinal);
+            nextPosition = commentEnd < 0 ? text.Length : commentEnd + 3;
+            return true;
+        }
+
+        if (MatchesAt(text, tagStart, "<![CDATA["))
+        {
+            var cdataEnd = text.IndexOf("]]>", tagStart + 9, StringComparison.Ordinal);
+            nextPosition = cdataEnd < 0 ? text.Length : cdataEnd + 3;
+            return true;
+        }
+
+        if (text[tagStart + 1] == '!' || text[tagStart + 1] == '?')
+        {
+            var endToken = text[tagStart + 1] == '?' ? "?>" : ">";
+            var specialEnd = text.IndexOf(endToken, tagStart + 2, StringComparison.Ordinal);
+            nextPosition = specialEnd < 0 ? text.Length : specialEnd + endToken.Length;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryReadTagLocalName(string text, int nameStart, out string localName)
+    {
+        localName = string.Empty;
+        var nameEnd = nameStart;
+        while (nameEnd < text.Length && IsXmlNameChar(text[nameEnd]))
+        {
+            nameEnd++;
+        }
+
+        if (nameEnd == nameStart)
+        {
+            return false;
+        }
+
+        var colonIndex = text.LastIndexOf(':', nameEnd - 1, nameEnd - nameStart);
+        var localNameStart = colonIndex >= nameStart ? colonIndex + 1 : nameStart;
+        localName = text.Substring(localNameStart, nameEnd - localNameStart);
+        return localName.Length > 0;
+    }
+
+    private static int FindTagEnd(string text, int searchStart)
+    {
+        var quote = '\0';
+        for (var index = searchStart; index < text.Length; index++)
+        {
+            var ch = text[index];
+            if (quote != '\0')
             {
+                if (ch == quote)
+                {
+                    quote = '\0';
+                }
+
                 continue;
             }
 
-            if (MatchesElementName(lineText, cursor, localName))
+            if (ch == '"' || ch == '\'')
+            {
+                quote = ch;
+            }
+            else if (ch == '>')
             {
                 return index;
             }
@@ -588,45 +656,41 @@ public sealed class ShowCaseCodeSnippetCatalogGenerator : IIncrementalGenerator
         return -1;
     }
 
-    private static bool MatchesElementName(string lineText, int cursor, string localName)
+    private static bool IsSelfClosingTag(string text, int tagEnd)
     {
-        // Optional "prefix:" segment before the local name.
-        var nameStart = cursor;
-        var scan = cursor;
-        while (scan < lineText.Length && (char.IsLetterOrDigit(lineText[scan]) || lineText[scan] == '_' || lineText[scan] == '.'))
+        for (var index = tagEnd - 1; index >= 0; index--)
         {
-            scan++;
-        }
-
-        if (scan < lineText.Length && lineText[scan] == ':')
-        {
-            nameStart = scan + 1;
-            scan = nameStart;
-            while (scan < lineText.Length && (char.IsLetterOrDigit(lineText[scan]) || lineText[scan] == '_' || lineText[scan] == '.'))
+            var ch = text[index];
+            if (char.IsWhiteSpace(ch))
             {
-                scan++;
+                continue;
             }
+
+            return ch == '/';
         }
 
-        if (string.CompareOrdinal(lineText, nameStart, localName, 0, localName.Length) != 0)
-        {
-            return false;
-        }
+        return false;
+    }
 
-        var afterName = nameStart + localName.Length;
-        if (afterName != scan)
-        {
-            return false;
-        }
+    private static int GetLineNumber(SourceText sourceText, int position)
+    {
+        return sourceText.Lines.GetLinePosition(position).Line + 1;
+    }
 
-        // The character right after the name must be a tag delimiter, not part of a longer name.
-        if (afterName >= lineText.Length)
-        {
-            return true;
-        }
+    private static bool MatchesAt(string text, int index, string value)
+    {
+        return index >= 0 &&
+               index + value.Length <= text.Length &&
+               string.CompareOrdinal(text, index, value, 0, value.Length) == 0;
+    }
 
-        var next = lineText[afterName];
-        return char.IsWhiteSpace(next) || next == '>' || next == '/';
+    private static bool IsXmlNameChar(char ch)
+    {
+        return char.IsLetterOrDigit(ch) ||
+               ch == '_' ||
+               ch == '-' ||
+               ch == '.' ||
+               ch == ':';
     }
 
     private static int GetLineNumber(XObject node)
