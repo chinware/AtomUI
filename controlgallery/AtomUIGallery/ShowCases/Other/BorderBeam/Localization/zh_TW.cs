@@ -10,7 +10,7 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變數";
     public const string ComponentCategory = "其他";
-    public const string ComponentStatusPreview = "v6.0.5";
+    public const string ComponentIntroducedVersion = "v6.0.5";
     public const string PageSubtitle = "沿容器邊界繪製動態高光。";
     public const string PageDescription = "BorderBeam 包裹一個內容控制項，並在其邊界上渲染不參與互動的流光層。它只承擔裝飾性強調，遵守主題動效設定，並支援單色或漸變停靠點。";
     public const string InfoNamespaceLabel = "命名空間:";

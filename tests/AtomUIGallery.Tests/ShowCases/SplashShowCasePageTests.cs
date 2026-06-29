@@ -50,6 +50,7 @@ public class SplashShowCasePageTests
         source.ShouldContain("SplashShowCaseLangResource PageDescription");
         source.ShouldContain("SplashShowCaseLangResource ComponentCategory");
         source.ShouldContain("SplashShowCaseLangResource ComponentStatusPreview");
+        source.ShouldContain("SplashShowCaseLangResource ComponentIntroducedVersion");
         source.ShouldContain("SplashShowCaseLangResource ScenarioExamples");
         source.ShouldContain("SplashShowCaseLangResource ScenarioApi");
         source.ShouldContain("SplashShowCaseLangResource ScenarioDesignToken");
@@ -65,6 +66,29 @@ public class SplashShowCasePageTests
         source.ShouldContain("Tag=\"DesignToken\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
+    }
+
+    [Fact]
+    public void Splash_ShowCase_Header_Centers_Title_Tags_And_Adds_Blue_Introduced_Version_Tag()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashShowCase.axaml");
+        var enSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/en_US.cs");
+        var zhCnSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh_CN.cs");
+        var zhTwSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh_TW.cs");
+        var header = ExtractHeaderTitleMarkup(source);
+
+        header.ShouldContain("<Grid ColumnDefinitions=\"Auto,*\"");
+        header.ShouldContain("<WrapPanel Grid.Column=\"1\"");
+        header.ShouldContain("VerticalAlignment=\"Center\"");
+        header.ShouldContain("Text=\"{gallery:SplashShowCaseLangResource ComponentStatusPreview}\"");
+        header.ShouldContain("Text=\"{gallery:SplashShowCaseLangResource ComponentIntroducedVersion}\"");
+        header.ShouldContain("TagColor=\"blue\"");
+        header.ShouldContain("IsBordered=\"False\"");
+
+        foreach (var localizationSource in new[] { enSource, zhCnSource, zhTwSource })
+        {
+            localizationSource.ShouldContain("public const string ComponentIntroducedVersion = \"v6.0.7\";");
+        }
     }
 
     [Fact]
@@ -255,6 +279,21 @@ public class SplashShowCasePageTests
         itemEnd.ShouldBeGreaterThan(itemStart);
 
         return source[itemStart..(itemEnd + itemEndMarker.Length)];
+    }
+
+    private static string ExtractHeaderTitleMarkup(string source)
+    {
+        const string headerStartMarker = "Text=\"Splash\"";
+        const string headerEndMarker = "SplashShowCaseLangResource PageSubtitle";
+
+        var titleIndex = source.IndexOf(headerStartMarker, StringComparison.Ordinal);
+        titleIndex.ShouldBeGreaterThanOrEqualTo(0);
+        var headerStart = source.LastIndexOf("<Grid", titleIndex, StringComparison.Ordinal);
+        headerStart.ShouldBeGreaterThanOrEqualTo(0);
+        var headerEnd = source.IndexOf(headerEndMarker, headerStart, StringComparison.Ordinal);
+        headerEnd.ShouldBeGreaterThan(headerStart);
+
+        return source[headerStart..headerEnd];
     }
 
     private static IEnumerable<GalleryNavigationNode> Walk(IEnumerable<GalleryNavigationNode> nodes)

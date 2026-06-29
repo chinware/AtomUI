@@ -50,7 +50,7 @@ public class BorderBeamShowCasePageTests
         source.ShouldContain("BorderBeamShowCaseLangResource PageSubtitle");
         source.ShouldContain("BorderBeamShowCaseLangResource PageDescription");
         source.ShouldContain("BorderBeamShowCaseLangResource ComponentCategory");
-        source.ShouldContain("BorderBeamShowCaseLangResource ComponentStatusPreview");
+        source.ShouldContain("BorderBeamShowCaseLangResource ComponentIntroducedVersion");
         source.ShouldContain("BorderBeamShowCaseLangResource ScenarioExamples");
         source.ShouldContain("BorderBeamShowCaseLangResource ScenarioApi");
         source.ShouldContain("BorderBeamShowCaseLangResource ScenarioDesignToken");
@@ -66,6 +66,30 @@ public class BorderBeamShowCasePageTests
         source.ShouldContain("Tag=\"DesignToken\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
+    }
+
+    [Fact]
+    public void BorderBeam_ShowCase_Header_Centers_Title_Tags_And_Uses_Blue_Introduced_Version_Tag()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Views/BorderBeamShowCase.axaml");
+        var enSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/en_US.cs");
+        var zhCnSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/zh_CN.cs");
+        var zhTwSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/zh_TW.cs");
+        var header = ExtractHeaderTitleMarkup(source);
+
+        header.ShouldContain("<Grid ColumnDefinitions=\"Auto,*\"");
+        header.ShouldContain("<WrapPanel Grid.Column=\"1\"");
+        header.ShouldContain("VerticalAlignment=\"Center\"");
+        header.ShouldContain("Text=\"{gallery:BorderBeamShowCaseLangResource ComponentIntroducedVersion}\"");
+        header.ShouldContain("TagColor=\"blue\"");
+        header.ShouldContain("IsBordered=\"False\"");
+        header.ShouldNotContain("ComponentStatusPreview");
+
+        foreach (var localizationSource in new[] { enSource, zhCnSource, zhTwSource })
+        {
+            localizationSource.ShouldContain("public const string ComponentIntroducedVersion = \"v6.0.5\";");
+            localizationSource.ShouldNotContain("ComponentStatusPreview");
+        }
     }
 
     [Fact]
@@ -187,6 +211,21 @@ public class BorderBeamShowCasePageTests
         itemEnd.ShouldBeGreaterThan(itemStart);
 
         return source[itemStart..(itemEnd + itemEndMarker.Length)];
+    }
+
+    private static string ExtractHeaderTitleMarkup(string source)
+    {
+        const string headerStartMarker = "Text=\"BorderBeam\"";
+        const string headerEndMarker = "BorderBeamShowCaseLangResource PageSubtitle";
+
+        var titleIndex = source.IndexOf(headerStartMarker, StringComparison.Ordinal);
+        titleIndex.ShouldBeGreaterThanOrEqualTo(0);
+        var headerStart = source.LastIndexOf("<Grid", titleIndex, StringComparison.Ordinal);
+        headerStart.ShouldBeGreaterThanOrEqualTo(0);
+        var headerEnd = source.IndexOf(headerEndMarker, headerStart, StringComparison.Ordinal);
+        headerEnd.ShouldBeGreaterThan(headerStart);
+
+        return source[headerStart..headerEnd];
     }
 
     private static IEnumerable<GalleryNavigationNode> Walk(IEnumerable<GalleryNavigationNode> nodes)

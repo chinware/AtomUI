@@ -10,7 +10,7 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";
     public const string ComponentCategory = "Other";
-    public const string ComponentStatusPreview = "v6.0.5";
+    public const string ComponentIntroducedVersion = "v6.0.5";
     public const string PageSubtitle = "Draw an animated highlight along a container boundary.";
     public const string PageDescription = "BorderBeam wraps a content control and renders a non-interactive beam on its border. It is decorative, follows theme motion settings, and can use a solid color or gradient stops.";
     public const string InfoNamespaceLabel = "Namespace:";

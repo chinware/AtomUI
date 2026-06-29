@@ -11,20 +11,27 @@
                 <StackPanel Margin="28,24,28,18"
                             Spacing="16">
                     <StackPanel Spacing="6">
-                        <StackPanel Orientation="Horizontal"
-                                    Spacing="10"
-                                    VerticalAlignment="Center">
-                            <atom:TextBlock Text="BorderBeam"
+                        <Grid ColumnDefinitions="Auto,*"
+                              VerticalAlignment="Center">
+                            <atom:TextBlock Grid.Column="0"
+                                            Text="BorderBeam"
                                             FontSize="26"
                                             FontWeight="Bold"
                                             VerticalAlignment="Center" />
-                            <atom:Tag Text="{gallery:BorderBeamShowCaseLangResource ComponentCategory}"
-                                      TagColor="geekblue"
-                                      VerticalAlignment="Center" />
-                            <atom:Tag Text="{gallery:BorderBeamShowCaseLangResource ComponentStatusPreview}"
-                                      TagColor="processing"
-                                      VerticalAlignment="Center" />
-                        </StackPanel>
+                            <WrapPanel Grid.Column="1"
+                                       Margin="10,0,0,0"
+                                       ItemSpacing="10"
+                                       LineSpacing="6"
+                                       VerticalAlignment="Center">
+                                <atom:Tag Text="{gallery:BorderBeamShowCaseLangResource ComponentCategory}"
+                                          TagColor="blue"
+                                          VerticalAlignment="Center" />
+                                <atom:Tag Text="{gallery:BorderBeamShowCaseLangResource ComponentIntroducedVersion}"
+                                          TagColor="blue"
+                                          IsBordered="False"
+                                          VerticalAlignment="Center" />
+                            </WrapPanel>
+                        </Grid>
                         <atom:TextBlock Text="{gallery:BorderBeamShowCaseLangResource PageSubtitle}"
                                         FontSize="15"
                                         Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
