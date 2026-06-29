@@ -2,6 +2,7 @@ using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
 
@@ -12,6 +13,19 @@ namespace AtomUI.Desktop.Controls;
     SplashPseudoClass.Error,
     SplashPseudoClass.Indeterminate,
     SplashPseudoClass.Determinate)]
+[TemplatePart("PART_RootLayout", typeof(Border))]
+[TemplatePart("PART_SurfaceLayout", typeof(Border))]
+[TemplatePart("PART_ContentLayout", typeof(StackPanel))]
+[TemplatePart("PART_LogoPresenter", typeof(ContentPresenter))]
+[TemplatePart("PART_TitleBlock", typeof(TextBlock))]
+[TemplatePart("PART_SubtitleBlock", typeof(TextBlock))]
+[TemplatePart("PART_ContentPresenter", typeof(ContentPresenter))]
+[TemplatePart("PART_ProgressLayout", typeof(Panel))]
+[TemplatePart("PART_Spin", typeof(Spin))]
+[TemplatePart("PART_ProgressBar", typeof(ProgressBar))]
+[TemplatePart("PART_MessageBlock", typeof(TextBlock))]
+[TemplatePart("PART_DetailBlock", typeof(TextBlock))]
+[TemplatePart("PART_FooterPresenter", typeof(ContentPresenter))]
 public partial class Splash : ContentControl
 {
     #region 公共属性定义

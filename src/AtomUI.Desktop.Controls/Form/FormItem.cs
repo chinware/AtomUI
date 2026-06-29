@@ -998,6 +998,10 @@ public partial class FormItem : TemplatedControl, IFormItem
         {
             gridLength = info.ExtraExtraLarge;
         }
+        else if (breakPoint == MediaBreakPoint.ExtraExtraExtraLarge)
+        {
+            gridLength = info.ExtraExtraLarge;
+        }
 
         return gridLength;
     }

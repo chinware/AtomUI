@@ -1,9 +1,12 @@
 using System.IO;
+using System.Linq;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Layout;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AvaloniaWindow = Avalonia.Controls.Window;
@@ -245,6 +248,54 @@ public class FormBehaviorTests
         }
     }
 
+    [Fact]
+    public void FormItem_Uses_Configured_Columns_For_ExtraExtraExtraLarge_Breakpoint()
+    {
+        var form = new global::AtomUI.Desktop.Controls.Form
+        {
+            FormLayout          = FormLayout.Horizontal,
+            LabelColInfo        = new MediaBreakGridLength(new GridLength(120)),
+            WrapperColInfo      = new MediaBreakGridLength(GridLength.Star),
+            HorizontalAlignment = HorizontalAlignment.Stretch
+        };
+        var formItem = new FormItem
+        {
+            LabelText           = "Name",
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            Content = new LineEdit
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            }
+        };
+        form.Items.Add(formItem);
+        var mediaHost = new MediaBreakAwarePanel(MediaBreakPoint.ExtraExtraExtraLarge)
+        {
+            Width  = 728,
+            Height = 80
+        };
+        mediaHost.Children.Add(form);
+        var window = CreateWindow(mediaHost);
+
+        try
+        {
+            window.Show();
+            RunLayoutJobs();
+            mediaHost.RaiseMediaBreakPointChanged();
+            RunLayoutJobs();
+
+            var bodyLayout = formItem.GetVisualDescendants()
+                                     .OfType<Avalonia.Controls.Grid>()
+                                     .Single(item => item.Name == "PART_BodyLayout");
+
+            bodyLayout.ColumnDefinitions[0].Width.ShouldBe(new GridLength(120));
+            bodyLayout.ColumnDefinitions[1].Width.ShouldBe(GridLength.Star);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static string ReadRepoFile(string relativePath)
     {
         return File.ReadAllText(Path.Combine(GetRepositoryRoot(), relativePath));
@@ -274,6 +325,12 @@ public class FormBehaviorTests
             Height  = 320,
             Content = content
         };
+    }
+
+    private static void RunLayoutJobs()
+    {
+        Dispatcher.UIThread.RunJobs();
+        Dispatcher.UIThread.RunJobs();
     }
 
     private sealed class FeedbackAwareFormControl : Control, IFormItemAware, IFormItemFeedbackAware
@@ -317,6 +374,18 @@ public class FormBehaviorTests
         public void RaiseValueChanged()
         {
             _valueChanged?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private sealed class MediaBreakAwarePanel(MediaBreakPoint mediaBreakPoint) : Panel, IMediaBreakAwareControl
+    {
+        public MediaBreakPoint MediaBreakPoint { get; } = mediaBreakPoint;
+
+        public event EventHandler<MediaBreakPointChangedEventArgs>? MediaBreakPointChanged;
+
+        public void RaiseMediaBreakPointChanged()
+        {
+            MediaBreakPointChanged?.Invoke(this, new MediaBreakPointChangedEventArgs(MediaBreakPoint));
         }
     }
 
