@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using AtomUI.Controls;
+using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -243,6 +244,33 @@ public class ButtonBehaviorTests
         });
     }
 
+    [Theory]
+    [InlineData("button-type-primary")]
+    [InlineData("explicit-primary-solid")]
+    public void Button_Primary_Variant_Background_Follows_Scoped_ColorPrimary(
+        string scenario)
+    {
+        var scopedPrimaryColor = Color.Parse("#00A1D6");
+        var button             = CreateScopedPrimaryButton(scenario);
+        var provider = new ThemeConfigProvider
+        {
+            SharedTokenSetters =
+            [
+                new TokenSetter(null, "ColorPrimary", "#00A1D6")
+            ],
+            Content = button
+        };
+
+        ShowInWindow(provider, () =>
+        {
+            BrushShouldHaveColor(button.Background, scopedPrimaryColor);
+            BrushShouldHaveColor(GetInternalPropertyValue<IBrush?>(button, "VariantBackgroundBrush"),
+                scopedPrimaryColor);
+            BrushShouldHaveSameColor(button.Background,
+                GetInternalPropertyValue<IBrush?>(button, "VariantBackgroundBrush"));
+        });
+    }
+
     [Fact]
     public void Button_Ghost_Solid_Variant_Becomes_Outlined()
     {
@@ -433,6 +461,29 @@ public class ButtonBehaviorTests
         return button;
     }
 
+    private static AtomUIButton CreateScopedPrimaryButton(string scenario)
+    {
+        var button = new AtomUIButton
+        {
+            IsMotionEnabled = false
+        };
+
+        switch (scenario)
+        {
+            case "button-type-primary":
+                button.ButtonType = ButtonType.Primary;
+                break;
+            case "explicit-primary-solid":
+                button.Color   = ButtonColor.Primary;
+                button.Variant = ButtonVariant.Solid;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(scenario), scenario, null);
+        }
+
+        return button;
+    }
+
     private static LinearGradientBrush CreateCustomBackground()
     {
         return new LinearGradientBrush
@@ -524,6 +575,11 @@ public class ButtonBehaviorTests
     private static void BrushShouldHaveSameColor(IBrush? actual, IBrush? expected)
     {
         GetSolidBrushColor(actual).ShouldBe(GetSolidBrushColor(expected));
+    }
+
+    private static void BrushShouldHaveColor(IBrush? actual, Color expected)
+    {
+        GetSolidBrushColor(actual).ShouldBe(expected);
     }
 
     private static Color GetSolidBrushColor(IBrush? brush)
