@@ -7,7 +7,7 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="TransparencyBackgroundFallback" Value="Transparent" />
         <Setter Property="TransparencyLevelHint" Value="Transparent" />
-        <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
+        <Setter Property="ExtendClientAreaToDecorationsHint" Value="False" />
         <Setter Property="WindowDecorations" Value="None" />
         <Setter Property="ShowInTaskbar" Value="False" />
         <Setter Property="CanResize" Value="False" />

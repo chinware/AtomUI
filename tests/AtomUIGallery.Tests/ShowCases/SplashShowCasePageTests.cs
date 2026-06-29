@@ -129,8 +129,10 @@ public class SplashShowCasePageTests
         codeBehindSource.ShouldContain("MinHeight           = WindowSplashMinHeight");
         codeBehindSource.ShouldContain("Logo                = WindowSplashLogo");
         codeBehindSource.ShouldContain("LogoTemplate        = CreateWindowSplashLogoTemplate()");
-        codeBehindSource.ShouldContain("Content             = WindowSplashStages");
-        codeBehindSource.ShouldContain("ContentTemplate     = CreateWindowSplashStagesTemplate()");
+        codeBehindSource.ShouldNotContain("Content             = WindowSplashStages");
+        codeBehindSource.ShouldNotContain("ContentTemplate     = CreateWindowSplashStagesTemplate()");
+        codeBehindSource.ShouldNotContain("CreateWindowSplashStagesTemplate");
+        codeBehindSource.ShouldNotContain("CreateWindowSplashStage");
         codeBehindSource.ShouldContain("FooterTemplate      = CreateWindowSplashFooterTemplate()");
         codeBehindSource.ShouldContain("LinearGradientBrush");
         codeBehindSource.ShouldContain("TimeSpan.FromSeconds(5)");

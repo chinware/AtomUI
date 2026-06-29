@@ -152,6 +152,50 @@ public class SplashBehaviorTests
     }
 
     [Fact]
+    public async Task SplashWindow_CloseAsync_Closes_Window_Shown_With_Owner()
+    {
+        var owner = new Avalonia.Controls.Window
+        {
+            Width         = 240,
+            Height        = 160,
+            ShowInTaskbar = false
+        };
+        var window = new SplashWindow
+        {
+            Splash              = new AtomUI.Desktop.Controls.Splash(),
+            MinimumShowDuration = TimeSpan.Zero,
+            CloseDelay          = TimeSpan.Zero,
+            FadeOutDuration     = TimeSpan.Zero
+        };
+        var cancellationToken = TestContext.Current.CancellationToken;
+        var closed            = false;
+        window.Closed += (_, _) => closed = true;
+
+        try
+        {
+            owner.Show();
+            window.Show(owner);
+
+            await window.CloseAsync(cancellationToken);
+
+            closed.ShouldBeTrue();
+            window.IsVisible.ShouldBeFalse();
+        }
+        finally
+        {
+            if (window.IsVisible)
+            {
+                window.Close();
+            }
+
+            if (owner.IsVisible)
+            {
+                owner.Close();
+            }
+        }
+    }
+
+    [Fact]
     public void SplashWindow_Size_Options_Apply_To_Splash_Without_Constructor_Content_Host()
     {
         var service = new InspectingSplashService();
@@ -190,7 +234,7 @@ public class SplashBehaviorTests
             GetSolidBrushColor(window.Background).ShouldBe(Colors.Transparent);
             GetSolidBrushColor(window.TransparencyBackgroundFallback).ShouldBe(Colors.Transparent);
             window.TransparencyLevelHint.ShouldContain(WindowTransparencyLevel.Transparent);
-            window.ExtendClientAreaToDecorationsHint.ShouldBeTrue();
+            window.ExtendClientAreaToDecorationsHint.ShouldBeFalse();
             window.WindowDecorations.ShouldBe(WindowDecorations.None);
             window.ShowInTaskbar.ShouldBeFalse();
             window.CanResize.ShouldBeFalse();
@@ -282,6 +326,17 @@ public class SplashBehaviorTests
     }
 
     [Fact]
+    public void SplashService_Source_Shows_SplashWindow_With_Desktop_MainWindow_Owner()
+    {
+        var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls.Extras/Splash/SplashService.cs"));
+
+        source.ShouldContain("IClassicDesktopStyleApplicationLifetime");
+        source.ShouldContain("MainWindow");
+        source.ShouldContain("window.Show(ownerWindow)");
+        source.ShouldContain("window.Show()");
+    }
+
+    [Fact]
     public void Splash_Themes_Include_SplashWindow_Theme()
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls.Extras/Splash/Themes/SplashThemes.axaml"));
@@ -314,7 +369,7 @@ public class SplashBehaviorTests
             (string?)setter.Attribute("Value") == "Transparent");
         theme.Elements(av + "Setter").ShouldContain(setter =>
             (string?)setter.Attribute("Property") == "ExtendClientAreaToDecorationsHint" &&
-            (string?)setter.Attribute("Value") == "True");
+            (string?)setter.Attribute("Value") == "False");
         theme.Elements(av + "Setter").ShouldContain(setter =>
             (string?)setter.Attribute("Property") == "WindowDecorations" &&
             (string?)setter.Attribute("Value") == "None");

@@ -28,20 +28,11 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
     private static readonly IBrush WindowSplashTitleBrush = Brushes.White;
     private static readonly IBrush WindowSplashPrimaryTextBrush = new SolidColorBrush(Color.Parse("#F5F8FF"));
     private static readonly IBrush WindowSplashSubtleTextBrush = new SolidColorBrush(Color.Parse("#D6E4FF"));
-    private static readonly IBrush WindowSplashStageTextBrush = new SolidColorBrush(Color.Parse("#314659"));
-    private static readonly IBrush WindowSplashStageIndexBrush = Brushes.White;
 
     private static readonly SplashLogoInfo WindowSplashLogo = new(
         "A6",
         CreateWindowSplashLogoBrush(),
         Brushes.White);
-
-    private static readonly WindowSplashStageInfo[] WindowSplashStages =
-    [
-        new("01", SplashShowCaseLangResourceKind.P2ContentModuleCore, en_US.P2ContentModuleCore, Color.Parse("#1677FF")),
-        new("02", SplashShowCaseLangResourceKind.P2ContentModuleTheme, en_US.P2ContentModuleTheme, Color.Parse("#13C2C2")),
-        new("03", SplashShowCaseLangResourceKind.P2ContentModuleGallery, en_US.P2ContentModuleGallery, Color.Parse("#722ED1"))
-    ];
 
     private static readonly (SplashShowCaseLangResourceKind ResourceKind, string Fallback)[] WindowSplashProgressMessages =
     [
@@ -117,8 +108,6 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
                 LogoTemplate        = CreateWindowSplashLogoTemplate(),
                 Title               = "AtomUI Gallery",
                 Subtitle            = Lang(SplashShowCaseLangResourceKind.P2WindowSplashSubtitle, en_US.P2WindowSplashSubtitle),
-                Content             = WindowSplashStages,
-                ContentTemplate     = CreateWindowSplashStagesTemplate(),
                 Message             = Lang(SplashShowCaseLangResourceKind.P2WindowSplashMessageStarting, en_US.P2WindowSplashMessageStarting),
                 Detail              = Lang(SplashShowCaseLangResourceKind.P2WindowSplashDetailStarting, en_US.P2WindowSplashDetailStarting),
                 Footer              = Lang(SplashShowCaseLangResourceKind.P2WindowSplashFooter, en_US.P2WindowSplashFooter),
@@ -202,80 +191,6 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
         });
     }
 
-    private static IDataTemplate CreateWindowSplashStagesTemplate()
-    {
-        return new FuncDataTemplate<WindowSplashStageInfo[]>((stages, _) =>
-        {
-            var stagePanel = new WrapPanel
-            {
-                HorizontalAlignment = HorizontalAlignment.Center,
-                Orientation         = Orientation.Horizontal,
-                ItemSpacing         = 8,
-                LineSpacing         = 8
-            };
-
-            if (stages is not null)
-            {
-                foreach (var stage in stages)
-                {
-                    stagePanel.Children.Add(CreateWindowSplashStage(stage));
-                }
-            }
-
-            return new Border
-            {
-                Width        = 480,
-                CornerRadius = new CornerRadius(10),
-                Padding      = new Thickness(12, 10),
-                Background   = CreateWindowSplashPanelBrush(),
-
-            };
-        });
-    }
-
-    private static Control CreateWindowSplashStage(WindowSplashStageInfo stage)
-    {
-        return new Border
-        {
-            CornerRadius = new CornerRadius(999),
-            Padding      = new Thickness(8, 4),
-            Background   = new SolidColorBrush(Color.Parse("#FFFFFF")),
-            Child = new StackPanel
-            {
-                Orientation = Orientation.Horizontal,
-                Spacing     = 6,
-                Children =
-                {
-                    new Border
-                    {
-                        Width            = 22,
-                        Height           = 22,
-                        CornerRadius     = new CornerRadius(11),
-                        Background       = new SolidColorBrush(stage.AccentColor),
-                        VerticalAlignment = VerticalAlignment.Center,
-                        Child = new AtomUITextBlock
-                        {
-                            Text                = stage.Index,
-                            Foreground          = WindowSplashStageIndexBrush,
-                            FontSize            = 10,
-                            FontWeight          = FontWeight.Bold,
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment   = VerticalAlignment.Center
-                        }
-                    },
-                    new AtomUITextBlock
-                    {
-                        Text              = Lang(stage.ResourceKind, stage.Fallback),
-                        Foreground        = WindowSplashStageTextBrush,
-                        FontSize          = 12,
-                        FontWeight        = FontWeight.SemiBold,
-                        VerticalAlignment = VerticalAlignment.Center
-                    }
-                }
-            }
-        };
-    }
-
     private static IDataTemplate CreateWindowSplashFooterTemplate()
     {
         return new FuncDataTemplate<string>((text, _) =>
@@ -312,21 +227,6 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
         };
     }
 
-    private static LinearGradientBrush CreateWindowSplashPanelBrush()
-    {
-        return new LinearGradientBrush
-        {
-            StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
-            EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
-            GradientStops = new GradientStops
-            {
-                new(Color.Parse("#F0F7FF"), 0),
-                new(Color.Parse("#F9F0FF"), 0.58),
-                new(Color.Parse("#F6FFED"), 1)
-            }
-        };
-    }
-
     private static LinearGradientBrush CreateWindowSplashSurfaceBrush()
     {
         return new LinearGradientBrush
@@ -356,10 +256,4 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
             return window;
         }
     }
-
-    private sealed record WindowSplashStageInfo(
-        string Index,
-        SplashShowCaseLangResourceKind ResourceKind,
-        string Fallback,
-        Color AccentColor);
 }

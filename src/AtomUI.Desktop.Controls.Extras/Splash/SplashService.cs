@@ -1,6 +1,10 @@
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
+
+using AvaloniaWindow = Avalonia.Controls.Window;
 
 public class SplashService : ISplashService
 {
@@ -21,7 +25,8 @@ public class SplashService : ISplashService
             ConfigureWindow(window, options);
             CurrentWindow = window;
             window.Closed += HandleWindowClosed;
-            window.Show();
+            var ownerWindow = ResolveOwnerWindow(window);
+            ShowWindow(window, ownerWindow);
             return window.Splash ?? throw new InvalidOperationException("SplashWindow.Splash must be configured before showing.");
         }, cancellationToken);
     }
@@ -114,6 +119,40 @@ public class SplashService : ISplashService
     {
         window.Closed -= HandleWindowClosed;
         CurrentWindow = null;
+    }
+
+    private static AvaloniaWindow? ResolveOwnerWindow(SplashWindow window)
+    {
+        if (window.Owner is AvaloniaWindow existingOwner &&
+            IsValidOwnerWindow(existingOwner, window))
+        {
+            return existingOwner;
+        }
+
+        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktopLifetime &&
+            desktopLifetime.MainWindow is {} mainWindow &&
+            IsValidOwnerWindow(mainWindow, window))
+        {
+            return mainWindow;
+        }
+
+        return null;
+    }
+
+    private static bool IsValidOwnerWindow(AvaloniaWindow ownerWindow, SplashWindow window)
+    {
+        return !ReferenceEquals(ownerWindow, window) && ownerWindow.IsVisible;
+    }
+
+    private static void ShowWindow(SplashWindow window, AvaloniaWindow? ownerWindow)
+    {
+        if (ownerWindow is not null)
+        {
+            window.Show(ownerWindow);
+            return;
+        }
+
+        window.Show();
     }
 
     private static Task RunOnUiThreadAsync(Action action, CancellationToken cancellationToken)
