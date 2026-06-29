@@ -315,6 +315,8 @@ controlgallery/AtomUIGallery/ShowCases/**/ViewModels/*.cs
 
 产品项目应在编译前把这些源文件复制到 `$(IntermediateOutputPath)` 下的源码镜像文件，例如 `.gallerysource`，然后只把镜像文件注册为 `AdditionalFiles`，并通过 `GallerySourceOriginalPath` metadata 传递真实源文件路径。Generator 使用该 metadata 做路径分类、同组文件匹配、诊断位置和 `SourceFilePath` 输出；镜像文件路径只作为 Roslyn `AdditionalText` 的物理载体。
 
+`GallerySourceOriginalPath` 必须通过 `CompilerVisibleItemMetadata` 暴露给 Roslyn analyzer config，并且准备镜像 `AdditionalFiles` 的 MSBuild target 必须早于 `GenerateMSBuildEditorConfigFileShouldRun` 执行。只在 `BeforeTargets="CoreCompile"` 中追加 metadata 不够，因为此时 `GeneratedMSBuildEditorConfig` 可能已经生成，Generator 会读到空 metadata，进而把 `.gallerysource` 镜像路径当成真实路径并忽略 C# 镜像文件。
+
 Generator 只读取 `AdditionalFiles`，不通过运行时文件系统、MSBuild project model 或 assembly metadata 反向扫描源码。
 
 ### 8.1 Item 级源码切片规则
@@ -330,6 +332,7 @@ Generator 以 `ShowCaseItem` 为切片单位，而不是以整个 ShowCase 页�
 - 默认生成 `Language="axaml"`、`TabTitle="AXAML"`。
 - 从 item AXAML 中收集 `x:DataType`、`{Binding ...}` 根路径、事件属性、`Name` / `x:Name`。
 - 事件属性只在 code-behind 中存在同名方法时才视为事件处理器；普通字符串属性不进入 C# 依赖集合。
+- 事件属性识别必须覆盖 Avalonia 常见事件入口，例如 `Click`、`Loaded`、`Unloaded`、`AttachedToVisualTree`、`DetachedFromVisualTree`、键盘事件、指针事件和 `Changed` / `Opened` / `Closed` 等后缀事件。
 - Binding 根路径用于选择 ViewModel 成员，例如 `SelectedColorPreset.Name` 选择 `SelectedColorPreset`，不把 `Name` 当成独立 ViewModel 依赖。
 - `Name` / `x:Name` 只作为 code-behind 依赖辅助输入，用于识别事件处理器或 helper 中访问的示例控件，不单独生成片段。
 

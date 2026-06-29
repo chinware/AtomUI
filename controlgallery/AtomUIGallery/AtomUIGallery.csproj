@@ -12,6 +12,7 @@
         <GallerySourceCodeDisplaySource Include="ShowCases/**/*.axaml" />
         <GallerySourceCodeDisplaySource Include="ShowCases/**/*.axaml.cs" />
         <GallerySourceCodeDisplaySource Include="ShowCases/**/ViewModels/**/*.cs" />
+        <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="GallerySourceOriginalPath" />
     </ItemGroup>
 
     <ItemGroup>
@@ -48,7 +49,7 @@
     </ItemGroup>
 
     <Target Name="PrepareGallerySourceCodeDisplayAdditionalFiles"
-            BeforeTargets="CoreCompile">
+            BeforeTargets="GenerateMSBuildEditorConfigFileShouldRun;CoreCompile">
         <ItemGroup>
             <_GallerySourceCodeDisplayFile Include="@(GallerySourceCodeDisplaySource)">
                 <GallerySourceOriginalPath>%(FullPath)</GallerySourceOriginalPath>
