@@ -163,6 +163,83 @@ public class ShowCaseCodeSnippetCatalogGeneratorTests
     }
 
     [Fact]
+    public void GeneratesSnippetsFromMirroredAdditionalFilesUsingOriginalSourcePathMetadata()
+    {
+        var compilation = CreateCompilation();
+        var axamlOriginalPath = "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml";
+        var codeBehindOriginalPath = "/repo/controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml.cs";
+        var axamlMirrorPath = "/repo/output/AtomUIGallery/obj/Debug/GallerySourceCodeDisplay/ShowCases/General/Foo/Views/FooShowCase.axaml.gallerysource";
+        var codeBehindMirrorPath = "/repo/output/AtomUIGallery/obj/Debug/GallerySourceCodeDisplay/ShowCases/General/Foo/Views/FooShowCase.axaml.cs.gallerysource";
+        var additionalFiles = ImmutableArray.Create<AdditionalText>(
+            new InMemoryAdditionalText(
+                axamlMirrorPath,
+                """
+                <UserControl
+                    xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:gallery="https://atomui.net/toolkits/gallery-base"
+                    x:Class="AtomUIGallery.ShowCases.General.Foo.Views.FooShowCase">
+                    <gallery:ShowCasePanel Name="ExamplesContent">
+                        <gallery:ShowCaseItem Title="Basic">
+                            <gallery:ShowCaseItem.DeferredContentTemplate>
+                                <DataTemplate>
+                                    <Button Content="Change" Click="HandleChangeClick" />
+                                </DataTemplate>
+                            </gallery:ShowCaseItem.DeferredContentTemplate>
+                        </gallery:ShowCaseItem>
+                    </gallery:ShowCasePanel>
+                </UserControl>
+                """),
+            new InMemoryAdditionalText(
+                codeBehindMirrorPath,
+                """
+                namespace AtomUIGallery.ShowCases.General.Foo.Views;
+
+                public partial class FooShowCase
+                {
+                    private void HandleChangeClick(object? sender, RoutedEventArgs e)
+                    {
+                        DoWork();
+                    }
+
+                    private void DoWork()
+                    {
+                    }
+                }
+                """));
+
+        var outputCompilation = RunGenerator(
+            compilation,
+            additionalFiles,
+            out var diagnostics,
+            new Dictionary<string, IReadOnlyDictionary<string, string>>
+            {
+                [axamlMirrorPath] = new Dictionary<string, string>
+                {
+                    ["build_metadata.AdditionalFiles.GallerySourceOriginalPath"] = axamlOriginalPath
+                },
+                [codeBehindMirrorPath] = new Dictionary<string, string>
+                {
+                    ["build_metadata.AdditionalFiles.GallerySourceOriginalPath"] = codeBehindOriginalPath
+                }
+            });
+
+        diagnostics.ShouldBeEmpty();
+
+        var generatedSource = outputCompilation.SyntaxTrees
+                                               .Single(tree => tree.FilePath.EndsWith("ShowCaseCodeSnippetCatalog.g.cs"))
+                                               .GetText(TestContext.Current.CancellationToken)
+                                               .ToString();
+
+        generatedSource.ShouldContain("TabTitle: \"AXAML\"");
+        generatedSource.ShouldContain("TabTitle: \"Code-behind\"");
+        generatedSource.ShouldContain("SourceFilePath: \"controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml\"");
+        generatedSource.ShouldContain("SourceFilePath: \"controlgallery/AtomUIGallery/ShowCases/General/Foo/Views/FooShowCase.axaml.cs\"");
+        generatedSource.ShouldContain("HandleChangeClick");
+        generatedSource.ShouldContain("DoWork");
+    }
+
+    [Fact]
     public void ExtractsFullMultiLineAxamlElementWithPrefixedClosingTag()
     {
         var compilation = CreateCompilation();
@@ -434,7 +511,8 @@ public class ShowCaseCodeSnippetCatalogGeneratorTests
 
     private static CSharpCompilation RunGenerator(CSharpCompilation compilation,
                                                   ImmutableArray<AdditionalText> additionalFiles,
-                                                  out ImmutableArray<Diagnostic> diagnostics)
+                                                  out ImmutableArray<Diagnostic> diagnostics,
+                                                  IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>? additionalFileOptions = null)
     {
         var cancellationToken = TestContext.Current.CancellationToken;
         var driver = CSharpGeneratorDriver.Create(
@@ -446,7 +524,8 @@ public class ShowCaseCodeSnippetCatalogGeneratorTests
                 {
                     ["build_property.RootNamespace"] = "AtomUIGallery",
                     ["build_property.ProjectDir"]    = "/repo/"
-                }));
+                },
+                additionalFileOptions));
 
         driver.RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out diagnostics, cancellationToken);
         return (CSharpCompilation)outputCompilation;
@@ -489,9 +568,14 @@ public class ShowCaseCodeSnippetCatalogGeneratorTests
     {
         private readonly AnalyzerConfigOptions _globalOptions;
 
-        public InMemoryAnalyzerConfigOptionsProvider(IReadOnlyDictionary<string, string> globalOptions)
+        private readonly IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>? _additionalFileOptions;
+
+        public InMemoryAnalyzerConfigOptionsProvider(
+            IReadOnlyDictionary<string, string> globalOptions,
+            IReadOnlyDictionary<string, IReadOnlyDictionary<string, string>>? additionalFileOptions = null)
         {
             _globalOptions = new InMemoryAnalyzerConfigOptions(globalOptions);
+            _additionalFileOptions = additionalFileOptions;
         }
 
         public override AnalyzerConfigOptions GlobalOptions => _globalOptions;
@@ -503,6 +587,12 @@ public class ShowCaseCodeSnippetCatalogGeneratorTests
 
         public override AnalyzerConfigOptions GetOptions(AdditionalText textFile)
         {
+            if (_additionalFileOptions is not null &&
+                _additionalFileOptions.TryGetValue(textFile.Path, out var options))
+            {
+                return new InMemoryAnalyzerConfigOptions(options);
+            }
+
             return _globalOptions;
         }
     }

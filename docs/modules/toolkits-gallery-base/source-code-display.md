@@ -297,8 +297,8 @@ public class GalleryCodeViewer : TemplatedControl
 | 项目 | 归属 | 说明 |
 |---|---|---|
 | `src/AtomUI.Toolkits.GalleryBase` | 运行时 | 定义源码查看 UI、options、key、snippet、provider 契约 |
-| `src/AtomUI.Toolkits.GalleryBase.Generator` | 编译期 | 读取产品 Gallery 的 `AdditionalFiles` 并生成 catalog |
-| `controlgallery/AtomUIGallery` | 产品侧 | 添加 `AdditionalFiles`、实现 provider、注册 options |
+| `src/AtomUI.Toolkits.GalleryBase.Generator` | 编译期 | 读取产品 Gallery 的源码镜像 `AdditionalFiles` 并生成 catalog |
+| `controlgallery/AtomUIGallery` | 产品侧 | 准备源码镜像输入、实现 provider、注册 options |
 | `tests/AtomUI.Toolkits.GalleryBase.Generator.Tests` | 编译期测试 | 覆盖 AXAML 提取、诊断和生成物稳定性 |
 
 Generator 项目使用 `netstandard2.0`，设置 `IsRoslynComponent=true`，并通过 `TreatAsLocalProperty` 隔离 `PublishAot`、`PublishTrimmed`、`RuntimeIdentifier` 等发布属性。产品项目引用 generator 时使用 Analyzer 引用，不把 generator assembly 带入运行时发布产物。
@@ -311,7 +311,11 @@ controlgallery/AtomUIGallery/ShowCases/**/*.axaml.cs
 controlgallery/AtomUIGallery/ShowCases/**/ViewModels/*.cs
 ```
 
-产品项目通过 `AdditionalFiles` 将 ShowCase AXAML、code-behind 和 ViewModel 源文件传给 generator。Generator 只读取 AdditionalFiles，不通过运行时文件系统、MSBuild project model 或 assembly metadata 反向扫描源码。
+产品项目不要把真实 ShowCase AXAML、code-behind 和 ViewModel 源文件直接注册为 `AdditionalFiles`。真实 `.axaml` / `.cs` 文件已经有 Avalonia、Compile 和 IDE 语义角色，再叠加 `AdditionalFiles` 会污染 Rider 等 IDE 的设计时模型。
+
+产品项目应在编译前把这些源文件复制到 `$(IntermediateOutputPath)` 下的源码镜像文件，例如 `.gallerysource`，然后只把镜像文件注册为 `AdditionalFiles`，并通过 `GallerySourceOriginalPath` metadata 传递真实源文件路径。Generator 使用该 metadata 做路径分类、同组文件匹配、诊断位置和 `SourceFilePath` 输出；镜像文件路径只作为 Roslyn `AdditionalText` 的物理载体。
+
+Generator 只读取 `AdditionalFiles`，不通过运行时文件系统、MSBuild project model 或 assembly metadata 反向扫描源码。
 
 ### 8.1 Item 级源码切片规则
 
