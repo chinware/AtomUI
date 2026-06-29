@@ -82,7 +82,7 @@ internal class ShadowsAwareContainer : Decorator
     }
     #endregion
     
-    private Border? _shadowsRenderer;
+    private BoxShadowRenderer? _shadowsRenderer;
     private IDisposable? _shadowsRenderDisposable;
     private IDisposable? _contentPresenterChildSubscription;
 
@@ -106,6 +106,7 @@ internal class ShadowsAwareContainer : Decorator
             IsArrowVisibleProperty,
             IsOverlayModeProperty,
             ArrowIndicatorLayoutBoundsProperty);
+        AffectsRender<ShadowsAwareContainer>(CornerRadiusProperty);
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)
@@ -181,6 +182,7 @@ internal class ShadowsAwareContainer : Decorator
         {
             finalSize = base.ArrangeOverride(finalSize);
         }
+        
         if (HasBoxShadow && _shadowsRenderer != null)
         {
             var shadowBounds = Child?.Bounds ?? default;
@@ -272,11 +274,9 @@ internal class ShadowsAwareContainer : Decorator
             return;
         }
 
-        _shadowsRenderer                        = new Border();
-        _shadowsRenderer.ClipToBounds           = true;
-        _shadowsRenderer.Background             = Brushes.Transparent;
-        _shadowsRenderer[!BoxShadowProperty]    = this[!BoxShadowProperty];
-        _shadowsRenderer[!CornerRadiusProperty] = this[!CornerRadiusProperty];
+        _shadowsRenderer = new BoxShadowRenderer();
+        _shadowsRenderer[!BoxShadowRenderer.BoxShadowProperty]    = this[!BoxShadowProperty];
+        _shadowsRenderer[!BoxShadowRenderer.CornerRadiusProperty] = this[!CornerRadiusProperty];
         ((ISetLogicalParent)_shadowsRenderer).SetParent(this);
         VisualChildren.Insert(0, _shadowsRenderer);
         LogicalChildren.Insert(0, _shadowsRenderer);
@@ -304,12 +304,57 @@ internal class ShadowsAwareContainer : Decorator
         else if (child is Border bordered)
         {
             SetCurrentValue(IsArrowVisibleProperty, false);
-            this[!CornerRadiusProperty] = bordered[!CornerRadiusProperty];
+            this[!CornerRadiusProperty] = bordered[!Border.CornerRadiusProperty];
         }
         else if (child is TemplatedControl templatedControl)
         {
             SetCurrentValue(IsArrowVisibleProperty, false);
-            this[!CornerRadiusProperty] = templatedControl[!CornerRadiusProperty];
+            this[!CornerRadiusProperty] = templatedControl[!TemplatedControl.CornerRadiusProperty];
+        }
+    }
+
+    private sealed class BoxShadowRenderer : Control
+    {
+        public static readonly StyledProperty<BoxShadows> BoxShadowProperty =
+            AvaloniaProperty.Register<BoxShadowRenderer, BoxShadows>(nameof(BoxShadow));
+
+        public static readonly StyledProperty<CornerRadius> CornerRadiusProperty =
+            AvaloniaProperty.Register<BoxShadowRenderer, CornerRadius>(nameof(CornerRadius));
+
+        public BoxShadows BoxShadow
+        {
+            get => GetValue(BoxShadowProperty);
+            set => SetValue(BoxShadowProperty, value);
+        }
+
+        public CornerRadius CornerRadius
+        {
+            get => GetValue(CornerRadiusProperty);
+            set => SetValue(CornerRadiusProperty, value);
+        }
+
+        static BoxShadowRenderer()
+        {
+            ClipToBoundsProperty.OverrideDefaultValue<BoxShadowRenderer>(false);
+            AffectsRender<BoxShadowRenderer>(BoxShadowProperty, CornerRadiusProperty);
+        }
+
+        public override void Render(DrawingContext context)
+        {
+            var bounds = new Rect(Bounds.Size);
+            if (BoxShadow.Count == 0 || bounds.Width <= 0 || bounds.Height <= 0)
+            {
+                return;
+            }
+
+            var cornerRadius = CornerRadius;
+            var roundedRect = new RoundedRect(
+                bounds,
+                cornerRadius.TopLeft,
+                cornerRadius.TopRight,
+                cornerRadius.BottomRight,
+                cornerRadius.BottomLeft);
+            context.DrawRectangle(Brushes.Transparent, null, roundedRect, BoxShadow);
         }
     }
 }

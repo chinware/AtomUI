@@ -2,6 +2,7 @@ using System.Diagnostics;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
+using AtomUI.Data;
 using AtomUI.Media;
 using AtomUI.Theme;
 using AtomUI.Theme.Palette;
@@ -806,10 +807,9 @@ public class Button : AvaloniaButton,
 
     private void ConfigureVariantThemeVariables()
     {
-        var activatedTheme = ThemeManager.Current?.ActivatedTheme;
-        var sharedToken    = activatedTheme?.SharedToken;
-        var buttonToken    = activatedTheme?.GetControlToken(ButtonToken.ID) as ButtonToken;
-        if (sharedToken is null || buttonToken is null)
+        var sharedToken = TokenFinderUtils.FindSharedToken(this);
+        var buttonToken = TokenFinderUtils.FindControlToken(this, ButtonToken.ID) as ButtonToken;
+        if (buttonToken is null)
         {
             return;
         }
@@ -1109,8 +1109,7 @@ public class Button : AvaloniaButton,
 
     private Color GetDefaultBackgroundColor()
     {
-        var activatedTheme = ThemeManager.Current?.ActivatedTheme;
-        var buttonToken    = activatedTheme?.GetControlToken(ButtonToken.ID) as ButtonToken;
+        var buttonToken = TokenFinderUtils.FindControlToken(this, ButtonToken.ID) as ButtonToken;
         return buttonToken?.DefaultBg ?? Colors.Transparent;
     }
 
