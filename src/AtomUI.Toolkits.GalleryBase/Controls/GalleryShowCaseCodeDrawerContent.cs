@@ -74,10 +74,8 @@ internal sealed class GalleryShowCaseCodeDrawerContent : UserControl, IDisposabl
         }
 
         _pendingSnippets.Remove(tabItem);
-        var viewer = new GalleryCodeViewer
+        var viewer = new GalleryCodeViewer(snippet.Text, snippet.Language)
         {
-            CodeText = snippet.Text,
-            Language = snippet.Language,
             ShowLineNumbers = true,
             HorizontalAlignment = HorizontalAlignment.Stretch,
             VerticalAlignment = VerticalAlignment.Stretch

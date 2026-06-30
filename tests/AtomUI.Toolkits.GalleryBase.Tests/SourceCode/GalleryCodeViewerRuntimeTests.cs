@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using AtomUI.Controls;
 using AtomUI.Theme;
@@ -12,6 +14,7 @@ using Avalonia.Headless;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -168,6 +171,50 @@ public class GalleryCodeViewerRuntimeTests
     }
 
     [Fact]
+    public void GalleryCodeViewer_Max_Horizontal_Scroll_Keeps_Text_Clear_Of_Vertical_ScrollBar()
+    {
+        var longLine = "public class MessageViewModel : ReactiveObject, IRoutableViewModel, IActivatableViewModel";
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = string.Join(
+                "\n",
+                new[] { longLine }.Concat(Enumerable.Range(1, 60).Select(index => $"Line {index}"))),
+            Language = "csharp"
+        };
+
+        ShowInWindow(viewer, editor =>
+        {
+            var scrollViewer = GetEditorScrollViewer(editor);
+            var verticalScrollBar = editor.GetVisualDescendants()
+                                          .OfType<ScrollBar>()
+                                          .Single(scrollBar => scrollBar.Orientation == Orientation.Vertical);
+
+            verticalScrollBar.IsVisible.ShouldBeTrue();
+            editor.TextArea.TextView.EnsureVisualLines();
+
+            scrollViewer.Offset = new Vector(scrollViewer.Extent.Width, scrollViewer.Offset.Y);
+            editor.InvalidateMeasure();
+            editor.InvalidateArrange();
+            Dispatcher.UIThread.RunJobs();
+            editor.TextArea.TextView.EnsureVisualLines();
+
+            var visualLine = editor.TextArea.TextView.VisualLines
+                                   .Single(line => line.FirstDocumentLine.LineNumber == 1);
+            var longestTextLineWidth = visualLine.TextLines.Max(line => line.WidthIncludingTrailingWhitespace);
+            var textRight = editor.TextArea.TextView.TranslatePoint(
+                                new Point(longestTextLineWidth - editor.TextArea.TextView.HorizontalOffset, 0),
+                                editor)
+                            .ShouldNotBeNull()
+                            .X;
+            var scrollBarLeft = verticalScrollBar.TranslatePoint(new Point(), editor)
+                                                 .ShouldNotBeNull()
+                                                 .X;
+
+            textRight.ShouldBeLessThanOrEqualTo(scrollBarLeft - 1);
+        });
+    }
+
+    [Fact]
     public void GalleryCodeViewer_Selection_Drag_AutoScroll_Does_Not_Hang()
     {
         var viewer = new GalleryCodeViewer
@@ -218,6 +265,67 @@ public class GalleryCodeViewerRuntimeTests
             editor.TextArea.TextView.LineTransformers
                   .OfType<TextMateColoringTransformer>()
                   .ShouldNotBeEmpty();
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+            viewer.Dispose();
+        }
+    }
+
+    [Fact]
+    public void GalleryCodeViewer_Selection_Drag_To_Right_Edge_Does_Not_Rebound_On_Mouse_Up()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = string.Join(
+                "\n",
+                Enumerable.Range(1, 70).Select(index =>
+                    $"{index}: <atom:TextBlock Text=\"{{Binding Text}}\" Foreground=\"{{Binding Foreground}}\" FontSize=\"18\" FontWeight=\"Bold\" HorizontalAlignment=\"Center\" VerticalAlignment=\"Center\" />")),
+            Language = "axaml"
+        };
+        var window = new Window
+        {
+            Width   = 640,
+            Height  = 480,
+            Content = viewer
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            viewer.ApplyTemplate();
+
+            var editor = viewer.GetVisualDescendants()
+                               .OfType<TextEditor>()
+                               .Single();
+            editor.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+
+            var textView = editor.TextArea.TextView;
+            var startPoint = textView.TranslatePoint(new Point(120, 28), window)
+                                     .ShouldNotBeNull();
+            var dragPoint = textView.TranslatePoint(new Point(textView.Bounds.Width + 240, 120), window)
+                                    .ShouldNotBeNull();
+
+            window.MouseMove(startPoint);
+            window.MouseDown(startPoint, MouseButton.Left);
+            window.MouseMove(dragPoint);
+
+            for (var i = 0; i < 16; i++)
+            {
+                Dispatcher.UIThread.RunJobs();
+            }
+
+            var offsetBeforeMouseUp = editor.HorizontalOffset;
+            window.MouseUp(dragPoint, MouseButton.Left);
+            Dispatcher.UIThread.RunJobs();
+            var offsetAfterMouseUp = editor.HorizontalOffset;
+
+            offsetBeforeMouseUp.ShouldBeGreaterThan(0);
+            offsetAfterMouseUp.ShouldBeGreaterThanOrEqualTo(offsetBeforeMouseUp - 0.5);
         }
         finally
         {
@@ -381,6 +489,54 @@ public class GalleryCodeViewerRuntimeTests
             application.SetDarkThemeMode(previousDarkMode);
             Dispatcher.UIThread.RunJobs();
         }
+    }
+
+    [Fact]
+    public void GalleryCodeViewer_Axaml_Syntax_Theme_Colors_Attribute_Names_And_Values()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = "<StackPanel Margin=\"20\" Spacing=\"12\" />",
+            Language = "axaml"
+        };
+
+        ShowInWindow(viewer, _ =>
+        {
+            GetAxamlTokenColor(viewer, "StackPanel").ShouldNotBeNull();
+            GetAxamlTokenColor(viewer, "Margin").ShouldNotBeNull();
+            GetAxamlTokenColor(viewer, "20").ShouldNotBeNull();
+        });
+    }
+
+    [Fact]
+    public void GalleryCodeViewer_Axaml_Syntax_Foregrounds_Are_Applied_To_Visible_Elements()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = CreateSplashAxamlSnippet(),
+            Language = "axaml"
+        };
+
+        ShowInWindow(viewer, editor =>
+        {
+            editor.TextArea.TextView.EnsureVisualLines();
+            Dispatcher.UIThread.RunJobs();
+            editor.TextArea.TextView.EnsureVisualLines();
+
+            var tagNameColor = Color.Parse(GetAxamlTokenColor(viewer, "StackPanel").ShouldNotBeNull());
+            var splashColor = GetVisibleTextForegroundColor(editor, "Splash");
+            splashColor.ShouldBe(
+                tagNameColor,
+                $"Scopes: {string.Join(" | ", GetLineTokenScopes(viewer, 0))}; {GetTextMateDiagnostics(viewer, 0)}");
+            GetVisibleTextForegroundColor(editor, "Width")
+                .ShouldBe(Color.Parse(GetAxamlTokenColor(viewer, "Margin").ShouldNotBeNull()));
+            GetVisibleTextForegroundColor(editor, "420")
+                .ShouldBe(Color.Parse(GetAxamlTokenColor(viewer, "20").ShouldNotBeNull()));
+            GetVisibleTextForegroundColor(editor, "StackPanel")
+                .ShouldBe(Color.Parse(GetAxamlTokenColor(viewer, "StackPanel").ShouldNotBeNull()));
+            GetVisibleTextForegroundColor(editor, "Orientation")
+                .ShouldBe(Color.Parse(GetAxamlTokenColor(viewer, "Margin").ShouldNotBeNull()));
+        });
     }
 
     [Fact]
@@ -619,6 +775,204 @@ public class GalleryCodeViewerRuntimeTests
     }
 
     [Fact]
+    public void DrawerContent_Materialized_Viewer_Has_Syntax_Tokens_For_Selected_Snippet()
+    {
+        var group = new ShowCaseCodeSnippetGroup(
+            "Basic",
+            new[]
+            {
+                CreateSnippet("AXAML", "axaml", "<StackPanel Margin=\"20\"><Button Content=\"Demo\" /></StackPanel>"),
+                CreateSnippet("Code-behind", "csharp", "public sealed class DemoView { }")
+            });
+
+        ShowDrawerContentInWindow(group, content =>
+        {
+            var tabControl = content.GetVisualDescendants()
+                                    .OfType<DesktopTabControl>()
+                                    .Single();
+            var tabItems = tabControl.Items.OfType<DesktopTabItem>().ToArray();
+
+            var initialViewer = tabItems[0].Content.ShouldBeOfType<GalleryCodeViewer>();
+            var initialScopes = WaitForLineTokenScopes(
+                initialViewer,
+                0,
+                scope => scope.Contains("meta.tag.xml", StringComparison.Ordinal));
+            initialScopes.Any(scope => scope.Contains("meta.tag.xml", StringComparison.Ordinal))
+                         .ShouldBeTrue(
+                             $"Scopes: {string.Join(" | ", initialScopes)}; {GetTextMateDiagnostics(initialViewer, 0)}");
+
+            tabControl.SelectedIndex = 1;
+
+            var selectedViewer = tabItems[1].Content.ShouldBeOfType<GalleryCodeViewer>();
+            var selectedScopes = WaitForLineTokenScopes(
+                selectedViewer,
+                0,
+                scope => scope.Contains("storage.modifier", StringComparison.Ordinal) ||
+                         scope.Contains("keyword", StringComparison.Ordinal));
+            selectedScopes.Any(scope => scope.Contains("storage.modifier", StringComparison.Ordinal) ||
+                                        scope.Contains("keyword", StringComparison.Ordinal))
+                          .ShouldBeTrue($"Scopes: {string.Join(" | ", selectedScopes)}");
+        });
+    }
+
+    [Fact]
+    public void DrawerContent_Materialized_Viewer_Applies_Syntax_Foregrounds_For_Selected_Snippet()
+    {
+        var group = new ShowCaseCodeSnippetGroup(
+            "Logo, content and footer",
+            new[]
+            {
+                CreateSnippet("AXAML", "axaml", CreateSplashAxamlSnippet()),
+                CreateSnippet("ViewModel", "csharp", "public sealed class SplashViewModel { }")
+            });
+
+        ShowDrawerContentInWindow(group, content =>
+        {
+            var tabControl = content.GetVisualDescendants()
+                                    .OfType<DesktopTabControl>()
+                                    .Single();
+            var tabItems = tabControl.Items.OfType<DesktopTabItem>().ToArray();
+            var viewer = tabItems[0].Content.ShouldBeOfType<GalleryCodeViewer>();
+            var editor = viewer.GetVisualDescendants()
+                               .OfType<TextEditor>()
+                               .Single();
+
+            editor.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+            editor.TextArea.TextView.EnsureVisualLines();
+            Dispatcher.UIThread.RunJobs();
+            editor.TextArea.TextView.EnsureVisualLines();
+
+            var tagNameColor = Color.Parse(GetAxamlTokenColor(viewer, "StackPanel").ShouldNotBeNull());
+            var splashColor = GetVisibleTextForegroundColor(editor, "Splash");
+            splashColor.ShouldBe(
+                tagNameColor,
+                $"Scopes: {string.Join(" | ", GetLineTokenScopes(viewer, 0))}; {GetTextMateDiagnostics(viewer, 0)}");
+            GetVisibleTextForegroundColor(editor, "Width")
+                .ShouldBe(Color.Parse(GetAxamlTokenColor(viewer, "Margin").ShouldNotBeNull()));
+            GetVisibleTextForegroundColor(editor, "420")
+                .ShouldBe(Color.Parse(GetAxamlTokenColor(viewer, "20").ShouldNotBeNull()));
+            GetVisibleTextForegroundColor(editor, "StackPanel")
+                .ShouldBe(Color.Parse(GetAxamlTokenColor(viewer, "StackPanel").ShouldNotBeNull()));
+            GetVisibleTextForegroundColor(editor, "Orientation")
+                .ShouldBe(Color.Parse(GetAxamlTokenColor(viewer, "Margin").ShouldNotBeNull()));
+        });
+    }
+
+    [Fact]
+    public void DrawerContent_Tokenizes_Lines_That_Enter_Viewport_After_First_Layout()
+    {
+        var group = new ShowCaseCodeSnippetGroup(
+            "Logo, content and footer",
+            new[]
+            {
+                CreateSnippet("AXAML", "axaml", CreateSplashAxamlSnippet())
+            });
+        var content = new GalleryShowCaseCodeDrawerContent(
+            group,
+            new ShowCaseCodeSnippetKey("Demo", "ExamplesContent", 0));
+        var window = new Window
+        {
+            Width = 640,
+            Height = 180,
+            Content = content
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+            content.ApplyTemplate();
+            Dispatcher.UIThread.RunJobs();
+
+            var viewer = content.GetVisualDescendants()
+                                .OfType<GalleryCodeViewer>()
+                                .Single();
+            var editor = viewer.GetVisualDescendants()
+                               .OfType<TextEditor>()
+                               .Single();
+            editor.ApplyTemplate();
+            editor.TextArea.TextView.EnsureVisualLines();
+            Dispatcher.UIThread.RunJobs();
+
+            ClearLineTokens(viewer, 11);
+
+            window.Height = 720;
+            editor.InvalidateMeasure();
+            editor.InvalidateArrange();
+            Dispatcher.UIThread.RunJobs();
+            editor.TextArea.TextView.EnsureVisualLines();
+            Dispatcher.UIThread.RunJobs();
+            editor.TextArea.TextView.EnsureVisualLines();
+
+            GetVisibleTextForegroundColor(editor, "StackPanel")
+                .ShouldBe(Color.Parse(GetAxamlTokenColor(viewer, "StackPanel").ShouldNotBeNull()));
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+            content.Dispose();
+        }
+    }
+
+    [Fact]
+    public void GalleryCodeViewer_Does_Not_Immediately_Requeue_Visible_Tokenization_While_Grammar_Is_Compiling()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = CreateSplashAxamlSnippet(),
+            Language = "axaml"
+        };
+
+        try
+        {
+            var installation = GetTextMateInstallation(viewer);
+            var tmModel = GetTextMateModel(installation);
+            var compilingGrammar = new AlwaysCompilingGrammar();
+            tmModel.GetType()
+                   .GetMethod("SetGrammar")!
+                   .Invoke(tmModel, new object[] { compilingGrammar });
+            installation.GetType()
+                        .GetField("_grammar", BindingFlags.Instance | BindingFlags.NonPublic)!
+                        .SetValue(installation, compilingGrammar);
+            ClearLineTokens(viewer, 11);
+
+            installation.GetType()
+                        .GetField("_pendingVisibleStartLine", BindingFlags.Instance | BindingFlags.NonPublic)!
+                        .SetValue(installation, 11);
+            installation.GetType()
+                        .GetField("_pendingVisibleEndLine", BindingFlags.Instance | BindingFlags.NonPublic)!
+                        .SetValue(installation, 11);
+            installation.GetType()
+                        .GetField("_isVisibleLineTokenizationQueued", BindingFlags.Instance | BindingFlags.NonPublic)!
+                        .SetValue(installation, true);
+
+            installation.GetType()
+                        .GetMethod("ProcessVisibleLineTokenization", BindingFlags.Instance | BindingFlags.NonPublic)!
+                        .Invoke(installation, Array.Empty<object>());
+
+            installation.GetType()
+                        .GetField("_isVisibleLineTokenizationQueued", BindingFlags.Instance | BindingFlags.NonPublic)!
+                        .GetValue(installation)
+                        .ShouldBe(false);
+            installation.GetType()
+                        .GetField("_pendingVisibleStartLine", BindingFlags.Instance | BindingFlags.NonPublic)!
+                        .GetValue(installation)
+                        .ShouldBe(11);
+            installation.GetType()
+                        .GetField("_pendingVisibleEndLine", BindingFlags.Instance | BindingFlags.NonPublic)!
+                        .GetValue(installation)
+                        .ShouldBe(11);
+        }
+        finally
+        {
+            viewer.Dispose();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
     public void DrawerContent_Shows_Placeholder_When_No_Snippets_Available()
     {
         var key = new ShowCaseCodeSnippetKey(
@@ -642,6 +996,62 @@ public class GalleryCodeViewerRuntimeTests
     private static ShowCaseCodeSnippet CreateSnippet(string tabTitle, string language, string text)
     {
         return new ShowCaseCodeSnippet(tabTitle, language, text, SourceFilePath: null, StartLine: 1, EndLine: 1);
+    }
+
+    private static string CreateSplashAxamlSnippet()
+    {
+        return string.Join(
+            "\n",
+            "<atom:Splash Width=\"420\"",
+            "             MinHeight=\"300\"",
+            "             Logo=\"{Binding ComposedLogo}\"",
+            "             Title=\"AtomUI Gallery\"",
+            "             Subtitle=\"{gallery:SplashShowCaseLangResource P2SubtitleDesktopBoot}\"",
+            "             Message=\"{gallery:SplashShowCaseLangResource P2MessageLoadingModules}\"",
+            "             Detail=\"{gallery:SplashShowCaseLangResource P2DetailProgress}\"",
+            "             Progress=\"{Binding ProgressValue}\"",
+            "             IsIndeterminate=\"False\"",
+            "             Footer=\"{Binding ComposedFooter}\"",
+            "             HorizontalAlignment=\"Left\">",
+            "    <StackPanel Orientation=\"Horizontal\"",
+            "                Spacing=\"8\"",
+            "                HorizontalAlignment=\"Center\">",
+            "        <atom:Tag Text=\"{gallery:SplashShowCaseLangResource P2ContentModuleCore}\"",
+            "                  TagColor=\"success\" />",
+            "        <atom:Tag Text=\"{gallery:SplashShowCaseLangResource P2ContentModuleTheme}\"",
+            "                  TagColor=\"processing\" />",
+            "        <atom:Tag Text=\"{gallery:SplashShowCaseLangResource P2ContentModuleGallery}\"",
+            "                  TagColor=\"warning\" />",
+            "    </StackPanel>",
+            "    <atom:Splash.LogoTemplate>",
+            "        <DataTemplate x:DataType=\"vm:SplashLogoInfo\">",
+            "            <Border Width=\"56\"",
+            "                    Height=\"56\"",
+            "                    CornerRadius=\"18\"",
+            "                    Background=\"{Binding Background}\">",
+            "                <atom:TextBlock Text=\"{Binding Text}\"",
+            "                                Foreground=\"{Binding Foreground}\"",
+            "                                FontSize=\"18\"",
+            "                                FontWeight=\"Bold\"",
+            "                                HorizontalAlignment=\"Center\"",
+            "                                VerticalAlignment=\"Center\" />",
+            "            </Border>",
+            "        </DataTemplate>",
+            "    </atom:Splash.LogoTemplate>",
+            "    <atom:Splash.FooterTemplate>",
+            "        <DataTemplate x:DataType=\"vm:SplashFooterInfo\">",
+            "            <StackPanel Orientation=\"Horizontal\"",
+            "                        Spacing=\"8\"",
+            "                        VerticalAlignment=\"Center\">",
+            "                <atom:Tag Text=\"{Binding Version}\"",
+            "                          TagColor=\"geekblue\" />",
+            "                <atom:TextBlock Text=\"{Binding Description}\"",
+            "                                Foreground=\"{atom:SharedTokenResource ColorTextTertiary}\"",
+            "                                VerticalAlignment=\"Center\" />",
+            "            </StackPanel>",
+            "        </DataTemplate>",
+            "    </atom:Splash.FooterTemplate>",
+            "</atom:Splash>");
     }
 
     private static void ShowDrawerContentInWindow(ShowCaseCodeSnippetGroup group,
@@ -832,5 +1242,207 @@ public class GalleryCodeViewerRuntimeTests
         }
 
         return foregroundColorId > 0 ? theme.GetColor(foregroundColorId) : null;
+    }
+
+    private static Color GetVisibleTextForegroundColor(TextEditor editor, string text)
+    {
+        var textView = editor.TextArea.TextView;
+        textView.EnsureVisualLines();
+        var document = editor.Document.ShouldNotBeNull();
+        var visibleText = new List<string>();
+        foreach (var visualLine in textView.VisualLines)
+        {
+            var lineStartOffset = visualLine.FirstDocumentLine.Offset;
+            foreach (var element in visualLine.Elements)
+            {
+                if (element.DocumentLength <= 0)
+                {
+                    continue;
+                }
+
+                var elementText = document.GetText(lineStartOffset + element.RelativeTextOffset, element.DocumentLength);
+                visibleText.Add(elementText);
+                if (!elementText.Contains(text, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                return element.TextRunProperties
+                              .ForegroundBrush
+                              .ShouldBeAssignableTo<ISolidColorBrush>()
+                              .Color;
+            }
+        }
+
+        throw new InvalidOperationException($"Visible text '{text}' was not found. Elements: {string.Join("|", visibleText)}");
+    }
+
+    private static string[] WaitForLineTokenScopes(GalleryCodeViewer viewer,
+                                                   int lineIndex,
+                                                   Func<string, bool> expectedScope)
+    {
+        string[] scopes = [];
+        for (var i = 0; i < 20; i++)
+        {
+            scopes = GetLineTokenScopes(viewer, lineIndex);
+            if (scopes.Any(expectedScope))
+            {
+                return scopes;
+            }
+
+            Dispatcher.UIThread.RunJobs();
+            Thread.Sleep(10);
+        }
+
+        return scopes;
+    }
+
+    private static string[] GetLineTokenScopes(GalleryCodeViewer viewer, int lineIndex)
+    {
+        var installation = GetTextMateInstallation(viewer);
+        var tmModel = GetTextMateModel(installation);
+
+        var tokens = tmModel.GetType()
+                            .GetMethod("GetLineTokens")!
+                            .Invoke(tmModel, new object[] { lineIndex });
+        if (tokens is null)
+        {
+            return [];
+        }
+
+        return tokens.ShouldBeAssignableTo<IEnumerable>()
+                     .Cast<object>()
+                     .SelectMany(token =>
+                     {
+                         var scopesProperty = token.GetType().GetProperty("Scopes");
+                         scopesProperty.ShouldNotBeNull();
+                         return scopesProperty.GetValue(token)
+                                              .ShouldNotBeNull()
+                                              .ShouldBeAssignableTo<IEnumerable>()
+                                              .Cast<string>();
+                     })
+                     .ToArray();
+    }
+
+    private static void ClearLineTokens(GalleryCodeViewer viewer, int lineIndex)
+    {
+        var installation = GetTextMateInstallation(viewer);
+        var tmModel = GetTextMateModel(installation);
+
+        var lines = tmModel.GetType()
+                           .GetMethod("GetLines")!
+                           .Invoke(tmModel, Array.Empty<object>());
+        lines.ShouldNotBeNull();
+
+        var modelLine = lines.GetType()
+                             .GetMethod("Get")!
+                             .Invoke(lines, new object[] { lineIndex });
+        modelLine.ShouldNotBeNull();
+
+        modelLine.GetType()
+                 .GetProperty("Tokens")!
+                 .SetValue(modelLine, null);
+        modelLine.GetType()
+                 .GetProperty("IsInvalid")!
+                 .SetValue(modelLine, true);
+    }
+
+    private static object GetTextMateInstallation(GalleryCodeViewer viewer)
+    {
+        var installationField = typeof(GalleryCodeViewer).GetField(
+            "_textMateInstallation",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        installationField.ShouldNotBeNull();
+
+        var installation = installationField.GetValue(viewer);
+        installation.ShouldNotBeNull();
+        return installation;
+    }
+
+    private static object GetTextMateModel(object installation)
+    {
+        var tmModelField = installation.GetType()
+                                       .GetField("_tmModel", BindingFlags.Instance | BindingFlags.NonPublic);
+        tmModelField.ShouldNotBeNull();
+
+        var tmModel = tmModelField.GetValue(installation);
+        tmModel.ShouldNotBeNull();
+        return tmModel;
+    }
+
+    private static string GetTextMateDiagnostics(GalleryCodeViewer viewer, int lineIndex)
+    {
+        var editor = viewer.GetVisualDescendants()
+                           .OfType<TextEditor>()
+                           .SingleOrDefault();
+        var installationField = typeof(GalleryCodeViewer).GetField(
+            "_textMateInstallation",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        var installation = installationField?.GetValue(viewer);
+        var grammarField = installation?.GetType()
+                                        .GetField("_grammar", BindingFlags.Instance | BindingFlags.NonPublic);
+        var tmModelField = installation?.GetType()
+                                       .GetField("_tmModel", BindingFlags.Instance | BindingFlags.NonPublic);
+        var grammar = grammarField?.GetValue(installation);
+        var tmModel = tmModelField?.GetValue(installation);
+        var tmGrammar = tmModel?.GetType()
+                                .GetMethod("GetGrammar")
+                                ?.Invoke(tmModel, Array.Empty<object>());
+        var isStopped = tmModel?.GetType()
+                               .GetProperty("IsStopped")
+                               ?.GetValue(tmModel);
+        var isInvalid = tmModel?.GetType()
+                               .GetMethod("IsLineInvalid")
+                               ?.Invoke(tmModel, new object[] { lineIndex });
+        var text = editor?.Text ?? viewer.CodeText ?? string.Empty;
+        return string.Join(
+            "; ",
+            $"Language={viewer.Language}",
+            $"TextLength={text.Length}",
+            $"TextPrefix={text[..Math.Min(text.Length, 40)]}",
+            $"InstallationGrammar={grammar?.GetType().GetMethod("GetScopeName")?.Invoke(grammar, Array.Empty<object>())}",
+            $"TMGrammar={tmGrammar?.GetType().GetMethod("GetScopeName")?.Invoke(tmGrammar, Array.Empty<object>())}",
+            $"IsStopped={isStopped}",
+            $"IsLineInvalid={isInvalid}");
+    }
+
+    private sealed class AlwaysCompilingGrammar : IGrammar
+    {
+        public bool IsCompiling => true;
+
+        public string GetName()
+        {
+            return "Always compiling";
+        }
+
+        public string GetScopeName()
+        {
+            return "source.always-compiling";
+        }
+
+        public ICollection<string> GetFileTypes()
+        {
+            return Array.Empty<string>();
+        }
+
+        public ITokenizeLineResult TokenizeLine(LineText lineText)
+        {
+            throw new InvalidOperationException("The compiling grammar must not be tokenized.");
+        }
+
+        public ITokenizeLineResult TokenizeLine(LineText lineText, IStateStack prevState, TimeSpan timeLimit)
+        {
+            throw new InvalidOperationException("The compiling grammar must not be tokenized.");
+        }
+
+        public ITokenizeLineResult2 TokenizeLine2(LineText lineText)
+        {
+            throw new InvalidOperationException("The compiling grammar must not be tokenized.");
+        }
+
+        public ITokenizeLineResult2 TokenizeLine2(LineText lineText, IStateStack prevState, TimeSpan timeLimit)
+        {
+            throw new InvalidOperationException("The compiling grammar must not be tokenized.");
+        }
     }
 }

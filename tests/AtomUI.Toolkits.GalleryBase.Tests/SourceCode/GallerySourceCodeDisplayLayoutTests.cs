@@ -60,7 +60,7 @@ public class GallerySourceCodeDisplayLayoutTests
         var viewerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryCodeViewer.cs"));
 
         var requestMethodIndex = viewerSource.IndexOf(
-            "private void RequestHorizontalScrollBarGutterInsetUpdate()",
+            "private void RequestScrollBarInsetUpdate()",
             StringComparison.Ordinal);
         var subscriptionIndex = viewerSource.IndexOf(
             "_editor.LayoutUpdated += HandleEditorLayoutUpdated",
@@ -69,17 +69,27 @@ public class GallerySourceCodeDisplayLayoutTests
             "private void HandleEditorLayoutUpdated",
             StringComparison.Ordinal);
         var cancelInHandlerIndex = viewerSource.IndexOf(
-            "CancelHorizontalScrollBarGutterInsetUpdate();",
+            "CancelScrollBarInsetUpdate();",
             handlerIndex,
             StringComparison.Ordinal);
         var updateInHandlerIndex = viewerSource.IndexOf(
-            "UpdateHorizontalScrollBarGutterInset();",
+            "UpdateScrollBarInsets();",
             handlerIndex,
             StringComparison.Ordinal);
 
         requestMethodIndex.ShouldBeGreaterThanOrEqualTo(0);
         subscriptionIndex.ShouldBeGreaterThan(requestMethodIndex);
         cancelInHandlerIndex.ShouldBeLessThan(updateInHandlerIndex);
+    }
+
+    [Fact]
+    public void Drawer_Content_Initializes_Code_Viewer_Source_Atomically()
+    {
+        var contentSource = File.ReadAllText(GetRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseCodeDrawerContent.cs"));
+
+        contentSource.ShouldContain("new GalleryCodeViewer(snippet.Text, snippet.Language)");
+        contentSource.ShouldNotContain("CodeText = snippet.Text");
+        contentSource.ShouldNotContain("Language = snippet.Language");
     }
 
     private static string GetRepoFile(string relativePath)

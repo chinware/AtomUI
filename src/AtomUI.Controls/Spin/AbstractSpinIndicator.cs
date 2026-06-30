@@ -137,14 +137,22 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ICustomizableSiz
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        StopIndicatorAnimation();
         base.OnDetachedFromVisualTree(e);
-        ReleaseTemplateParts();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        ReleaseTemplateParts();
+
+        StopIndicatorAnimation();
+        if (_customIndicatorPresenter is not null)
+        {
+            _customIndicatorPresenter.PropertyChanged -= HandleIndicatorPresenterPropertyChanged;
+        }
+
+        _builtInIndicatorLayout   = null;
+        _customIndicatorPresenter = null;
 
         _builtInIndicatorLayout = e.NameScope.Find<SpinIndicatorDotPanel>("BuiltInIndicatorLayout");
         _customIndicatorPresenter = e.NameScope.Find<ContentPresenter>("PART_CustomIndicatorPresenter");
@@ -423,18 +431,6 @@ public abstract class AbstractSpinIndicator : TemplatedControl, ICustomizableSiz
         {
             UpdateCustomIndicatorSize();
         }
-    }
-
-    private void ReleaseTemplateParts()
-    {
-        StopIndicatorAnimation();
-        if (_customIndicatorPresenter is not null)
-        {
-            _customIndicatorPresenter.PropertyChanged -= HandleIndicatorPresenterPropertyChanged;
-        }
-
-        _builtInIndicatorLayout   = null;
-        _customIndicatorPresenter = null;
     }
 
     private void UpdateCustomIndicatorSize()
