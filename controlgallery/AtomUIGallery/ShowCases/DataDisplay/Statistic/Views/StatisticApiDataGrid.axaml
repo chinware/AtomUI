@@ -23,7 +23,7 @@
                                              Width="230">
                     <atom:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate x:DataType="viewModels:StatisticApiRow">
-                            <atom:TextBlock Text="{Binding Property}"
+                            <gallery:GallerySelectableTextBlock Text="{Binding Property}"
                                             FontFamily="Consolas"
                                             VerticalAlignment="Center" />
                         </DataTemplate>
@@ -34,7 +34,7 @@
                                              Width="*">
                     <atom:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate x:DataType="viewModels:StatisticApiRow">
-                            <atom:TextBlock Text="{Binding Description}"
+                            <gallery:GallerySelectableTextBlock Text="{Binding Description}"
                                             TextWrapping="Wrap"
                                             VerticalAlignment="Center" />
                         </DataTemplate>
@@ -54,7 +54,7 @@
                                              Width="180">
                     <atom:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate x:DataType="viewModels:StatisticApiRow">
-                            <atom:TextBlock Text="{Binding Default}"
+                            <gallery:GallerySelectableTextBlock Text="{Binding Default}"
                                             FontFamily="Consolas"
                                             VerticalAlignment="Center" />
                         </DataTemplate>

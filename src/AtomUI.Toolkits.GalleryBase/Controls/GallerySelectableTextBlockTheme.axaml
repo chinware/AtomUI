@@ -1,0 +1,12 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atom="https://atomui.net"
+                    xmlns:gallery="https://atomui.net/toolkits/gallery-base">
+    <ControlTheme x:Key="{x:Type gallery:GallerySelectableTextBlock}"
+                  TargetType="gallery:GallerySelectableTextBlock">
+        <Setter Property="SelectionBrush" Value="{atom:SharedTokenResource SelectionBackground}" />
+        <Setter Property="SelectionForegroundBrush" Value="{atom:SharedTokenResource SelectionForeground}" />
+        <Setter Property="LineHeight" Value="{atom:SharedTokenResource FontHeight}" />
+        <Setter Property="Cursor" Value="IBeam" />
+    </ControlTheme>
+</ResourceDictionary>
