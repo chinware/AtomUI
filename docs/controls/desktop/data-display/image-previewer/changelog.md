@@ -2,6 +2,13 @@
 
 本文档记录 ImagePreviewer 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-06-30
+
+- Docs
+  - Document the redesigned `ImageSourceUri` image source contract for local, asset and remote image loading.
+  - Add the `ImagePreviewItem` loading state model, default Skeleton/Spin loading behavior, fallback handling and renderer layout invalidation requirements.
+  - Define `IImageSourceLoader` responsibilities for asynchronous loading, cancellation, source identity and stale result prevention.
+
 ## 2026-06-26
 
 - Docs

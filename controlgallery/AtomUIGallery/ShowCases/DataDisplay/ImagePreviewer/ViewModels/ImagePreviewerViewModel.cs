@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using AtomUI.Controls;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Threading;
@@ -16,41 +17,49 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
 
     public string UrlPathSegment { get; } = ID.ToString();
 
-    private IList<string>? _defaultImages;
+    private ImageSourceUri? _remoteImage;
 
-    public IList<string>? DefaultImages
+    public ImageSourceUri? RemoteImage
+    {
+        get => _remoteImage;
+        set => this.RaiseAndSetIfChanged(ref _remoteImage, value);
+    }
+
+    private IList<ImageSourceUri>? _defaultImages;
+
+    public IList<ImageSourceUri>? DefaultImages
     {
         get => _defaultImages;
         set => this.RaiseAndSetIfChanged(ref _defaultImages, value);
     }
 
-    private IList<string>? _twoImages;
+    private IList<ImageSourceUri>? _twoImages;
 
-    public IList<string>? TwoImages
+    public IList<ImageSourceUri>? TwoImages
     {
         get => _twoImages;
         set => this.RaiseAndSetIfChanged(ref _twoImages, value);
     }
 
-    private IList<string>? _threeImages;
+    private IList<ImageSourceUri>? _threeImages;
 
-    public IList<string>? ThreeImages
+    public IList<ImageSourceUri>? ThreeImages
     {
         get => _threeImages;
         set => this.RaiseAndSetIfChanged(ref _threeImages, value);
     }
 
-    private string? _fallbackImage;
+    private ImageSourceUri? _fallbackImage;
 
-    public string? FallbackImage
+    public ImageSourceUri? FallbackImage
     {
         get => _fallbackImage;
         set => this.RaiseAndSetIfChanged(ref _fallbackImage, value);
     }
 
-    private string? _blurImage;
+    private ImageSourceUri? _blurImage;
 
-    public string? BlurImage
+    public ImageSourceUri? BlurImage
     {
         get => _blurImage;
         set => this.RaiseAndSetIfChanged(ref _blurImage, value);
@@ -78,6 +87,7 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
 
     public void EnsurePreviewAssets()
     {
+        RemoteImage = "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png";
         DefaultImages =
         [
             "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/1.png"
@@ -99,6 +109,7 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
 
     public void ClearPreviewAssets()
     {
+        RemoteImage   = null;
         DefaultImages = null;
         ThreeImages   = null;
         TwoImages     = null;
@@ -115,13 +126,18 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
 
         ApiRows =
         [
-            new ImagePreviewerApiRow("ItemsSource", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyItemsSource), "IList<string>?", "cyan", "null"),
-            new ImagePreviewerApiRow("FallbackImageSrc", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyFallbackImageSrc), "string?", "cyan", "null"),
+            new ImagePreviewerApiRow("SourceUri", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUri), "ImageSourceUri?", "cyan", "null"),
+            new ImagePreviewerApiRow("SourceUris", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUris), "IList<ImageSourceUri>?", "cyan", "null"),
+            new ImagePreviewerApiRow("FallbackSourceUri", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyFallbackSourceUri), "ImageSourceUri?", "cyan", "null"),
             new ImagePreviewerApiRow("IsOpen", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyIsOpen), "bool", "green", "false"),
             new ImagePreviewerApiRow("CoverWidth", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverWidth), "double", "green", "NaN"),
             new ImagePreviewerApiRow("CoverHeight", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverHeight), "double", "green", "NaN"),
             new ImagePreviewerApiRow("CurrentIndex", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCurrentIndex), "int", "green", "0"),
-            new ImagePreviewerApiRow("CoverImageSrc", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverImageSrc), "string?", "cyan", "null"),
+            new ImagePreviewerApiRow("CoverSourceUri", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverSourceUri), "ImageSourceUri?", "cyan", "null"),
+            new ImagePreviewerApiRow("LoadingContent", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContent), "object?", "cyan", "null"),
+            new ImagePreviewerApiRow("LoadingContentTemplate", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContentTemplate), "IDataTemplate?", "cyan", "null"),
+            new ImagePreviewerApiRow("ErrorContent", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyErrorContent), "object?", "cyan", "null"),
+            new ImagePreviewerApiRow("ErrorContentTemplate", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyErrorContentTemplate), "IDataTemplate?", "cyan", "null"),
             new ImagePreviewerApiRow("IsShowCoverMask", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyIsShowCoverMask), "bool", "green", "true"),
             new ImagePreviewerApiRow("ImageScaleStep", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyImageScaleStep), "double", "green", "0.5"),
             new ImagePreviewerApiRow("ImageMinScale", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyImageMinScale), "double", "green", "1.0"),
@@ -166,13 +182,20 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
     {
         return kind switch
         {
-            ImagePreviewerShowCaseLangResourceKind.ApiPropertyItemsSource                 => en_US.ApiPropertyItemsSource,
-            ImagePreviewerShowCaseLangResourceKind.ApiPropertyFallbackImageSrc            => en_US.ApiPropertyFallbackImageSrc,
+            ImagePreviewerShowCaseLangResourceKind.RemoteImageLoadingTitle              => en_US.RemoteImageLoadingTitle,
+            ImagePreviewerShowCaseLangResourceKind.RemoteImageLoadingDescription        => en_US.RemoteImageLoadingDescription,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUri                   => en_US.ApiPropertySourceUri,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUris                  => en_US.ApiPropertySourceUris,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertyFallbackSourceUri           => en_US.ApiPropertyFallbackSourceUri,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyIsOpen                      => en_US.ApiPropertyIsOpen,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverWidth                  => en_US.ApiPropertyCoverWidth,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverHeight                 => en_US.ApiPropertyCoverHeight,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyCurrentIndex                => en_US.ApiPropertyCurrentIndex,
-            ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverImageSrc               => en_US.ApiPropertyCoverImageSrc,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverSourceUri              => en_US.ApiPropertyCoverSourceUri,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContent              => en_US.ApiPropertyLoadingContent,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContentTemplate      => en_US.ApiPropertyLoadingContentTemplate,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertyErrorContent                => en_US.ApiPropertyErrorContent,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertyErrorContentTemplate        => en_US.ApiPropertyErrorContentTemplate,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyIsShowCoverMask             => en_US.ApiPropertyIsShowCoverMask,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyImageScaleStep              => en_US.ApiPropertyImageScaleStep,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyImageMinScale               => en_US.ApiPropertyImageMinScale,

@@ -29,7 +29,7 @@ ImagePreviewer 的设计语言围绕控件职责、可观察状态和主题契�
 | 维度 | 含义 | ImagePreviewer 中的表达 |
 | --- | --- | --- |
 | 产品语义 | 控件在界面中承担的稳定职责。 | ImagePreviewer 是 AtomUI 桌面控件体系中的图片预览控件，用于查看、缩放、旋转、切换和窗口化预览图片。 |
-| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `CoverImageSrc`、`CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`FallbackImageSrc`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageSource` 等 14 项。 |
+| 内容承载 | 用户数据、展示内容、集合项或操作入口如何进入控件。 | `SourceUri`、`SourceUris`、`CoverSourceUri`、`FallbackSourceUri`、`CoverIndicatorContent`、`LoadingContent`、`ErrorContent`、`ImageScaleStep`。 |
 | 状态反馈 | public API、内部状态和伪类如何形成用户可感知反馈。 | selection/checked/active、open/close、collection/filter、input/value、motion。 |
 | 主题语义 | ControlTheme、SharedToken、组件 Token 和模板绑定如何表达视觉。 | ImagePreviewer Token + ControlTheme。 |
 
@@ -41,7 +41,8 @@ ImagePreviewer 的公共契约由 public/protected 类型成员、Avalonia 属�
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 内容与数据 | `CoverImageSrc`、`CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`FallbackImageSrc`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageSource`、`ImageTranslateX`、`ImageTranslateY` 等 14 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
+| 图片来源 | `SourceUri`、`SourceUris`、`CoverSourceUri`、`FallbackSourceUri` | 统一表达单图、多图、封面和失败兜底图片来源。 |
+| 内容与数据 | `CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`LoadingContent`、`LoadingContentTemplate`、`ErrorContent`、`ErrorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageTranslateX`、`ImageTranslateY` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `Count`、`CurrentIndex` | 维护选择、展开、过滤、分页、分组或集合状态。 |
 | 交互与状态 | `IsDialogModal`、`IsDialogTopmost`、`IsModal`、`IsMotionEnabled`、`IsOpen`、`IsShowCoverMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `CoverHeight`、`CoverWidth` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
@@ -187,7 +188,7 @@ ImagePreviewer Token 只表达组件级视觉变量，例如尺寸、间距、�
 - 不通过运行时反射扫描 public API、Token 或 Gallery 表格数据。
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
-- 缓存对象必须与控件、窗口、弹层或数据 owner 生命周期一致。
+- 图片加载结果必须与控件、窗口、弹层或数据 owner 生命周期一致。
 - Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
 
 性能边界：

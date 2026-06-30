@@ -11,13 +11,13 @@ internal class ImagePreviewRenderer : Control
 {
     #region 公告属性定义
 
-    public static readonly StyledProperty<PreviewImageSource?> SourceProperty =
-        AvaloniaProperty.Register<ImagePreviewRenderer, PreviewImageSource?>(nameof(Source));
+    public static readonly StyledProperty<LoadedImageSource?> SourceProperty =
+        AvaloniaProperty.Register<ImagePreviewRenderer, LoadedImageSource?>(nameof(Source));
     
     public static readonly StyledProperty<Stretch> StretchProperty =
         AvaloniaProperty.Register<ImagePreviewRenderer, Stretch>(nameof (Stretch), Stretch.Uniform);
     
-    public PreviewImageSource? Source
+    public LoadedImageSource? Source
     {
         get => GetValue(SourceProperty);
         set => SetValue(SourceProperty, value);
@@ -25,8 +25,8 @@ internal class ImagePreviewRenderer : Control
     
     public Stretch Stretch
     {
-        get => GetValue(Image.StretchProperty);
-        set => SetValue(Image.StretchProperty, value);
+        get => GetValue(StretchProperty);
+        set => SetValue(StretchProperty, value);
     }
 
     public Size SourceSize => GetSourceOriginSize();
@@ -44,8 +44,8 @@ internal class ImagePreviewRenderer : Control
     
     private void HandleSourceChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        var oldSource = (PreviewImageSource?)e.OldValue;
-        var newSource = (PreviewImageSource?)e.NewValue;
+        var oldSource = (LoadedImageSource?)e.OldValue;
+        var newSource = (LoadedImageSource?)e.NewValue;
 
         if (oldSource != null)
         {

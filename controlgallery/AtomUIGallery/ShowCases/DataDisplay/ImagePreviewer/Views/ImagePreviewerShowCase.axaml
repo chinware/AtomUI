@@ -137,7 +137,19 @@
                         <gallery:ShowCaseItem.DeferredContentTemplate>
                             <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                                 <atom:ImagePreviewer Width="200"
-                                                     ItemsSource="{Binding DefaultImages}" />
+                                                     SourceUris="{Binding DefaultImages}" />
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:ImagePreviewerShowCaseLangResource RemoteImageLoadingTitle}"
+                        Description="{gallery:ImagePreviewerShowCaseLangResource RemoteImageLoadingDescription}"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                                <atom:ImagePreviewer Width="200"
+                                                     SourceUri="{Binding RemoteImage}" />
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
@@ -149,7 +161,7 @@
                         <gallery:ShowCaseItem.DeferredContentTemplate>
                             <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                                 <atom:ImagePreviewer Width="200"
-                                                     FallbackImageSrc="{Binding FallbackImage}" />
+                                                     FallbackSourceUri="{Binding FallbackImage}" />
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
@@ -161,7 +173,7 @@
                         <gallery:ShowCaseItem.DeferredContentTemplate>
                             <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                                 <atom:ImagePreviewer Width="200"
-                                                     ItemsSource="{Binding ThreeImages}" />
+                                                     SourceUris="{Binding ThreeImages}" />
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
@@ -173,8 +185,8 @@
                         <gallery:ShowCaseItem.DeferredContentTemplate>
                             <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                                 <atom:ImagePreviewer Width="200"
-                                                     ItemsSource="{Binding DefaultImages}"
-                                                     CoverImageSrc="{Binding BlurImage}" />
+                                                     SourceUris="{Binding DefaultImages}"
+                                                     CoverSourceUri="{Binding BlurImage}" />
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
@@ -188,7 +200,7 @@
                             <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                                 <atom:ImageGroupPreviewer CoverWidth="200"
                                                           CoverHeight="200"
-                                                          ItemsSource="{Binding TwoImages}" />
+                                                          SourceUris="{Binding TwoImages}" />
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>

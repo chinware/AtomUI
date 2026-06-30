@@ -12,11 +12,17 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <ItemsControl Name="PART_CoverItemsControl"
-                                  ItemsSource="{TemplateBinding EffectiveSources}"
+                                  ItemsSource="{TemplateBinding EffectiveItems}"
                                   ItemsPanel="{TemplateBinding ItemsPanel}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <atom:ImagePreviewerCover ImageSource="{Binding}"
+                            <DataTemplate x:DataType="atom:ImagePreviewItem">
+                                <atom:ImagePreviewerCover ImageSource="{Binding LoadedSource}"
+                                                          IsLoading="{Binding IsLoading}"
+                                                          IsFailed="{Binding IsFailed}"
+                                                          LoadingContent="{Binding LoadingContent, RelativeSource={RelativeSource AncestorType=atom:ImageGroupPreviewer}}"
+                                                          LoadingContentTemplate="{Binding LoadingContentTemplate, RelativeSource={RelativeSource AncestorType=atom:ImageGroupPreviewer}}"
+                                                          ErrorContent="{Binding ErrorContent, RelativeSource={RelativeSource AncestorType=atom:ImageGroupPreviewer}}"
+                                                          ErrorContentTemplate="{Binding ErrorContentTemplate, RelativeSource={RelativeSource AncestorType=atom:ImageGroupPreviewer}}"
                                                           Width="{Binding CoverWidth, RelativeSource={RelativeSource AncestorType=atom:ImageGroupPreviewer}}"
                                                           Height="{Binding CoverHeight, RelativeSource={RelativeSource AncestorType=atom:ImageGroupPreviewer}}" />
                             </DataTemplate>

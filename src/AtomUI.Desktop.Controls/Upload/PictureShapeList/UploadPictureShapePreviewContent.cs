@@ -8,10 +8,10 @@ internal class UploadPictureShapePreviewContent : AbstractUploadPictureContent
 {
     #region 公共属性定义
 
-    public static readonly StyledProperty<IList<string>?> SourcesProperty =
-        AvaloniaProperty.Register<UploadPictureShapePreviewContent, IList<string>?>(nameof(Sources));
+    public static readonly StyledProperty<IList<ImageSourceUri>?> SourcesProperty =
+        AvaloniaProperty.Register<UploadPictureShapePreviewContent, IList<ImageSourceUri>?>(nameof(Sources));
     
-    public IList<string>? Sources
+    public IList<ImageSourceUri>? Sources
     {
         get => GetValue(SourcesProperty);
         set => SetValue(SourcesProperty, value);
@@ -33,7 +33,7 @@ internal class UploadPictureShapePreviewContent : AbstractUploadPictureContent
         {
             if (FilePath != null)
             {
-                SetCurrentValue(SourcesProperty, new[] { FilePath.ToString() });
+                SetCurrentValue(SourcesProperty, new[] { ImageSourceUri.Parse(FilePath.ToString()) });
             }
             else
             {

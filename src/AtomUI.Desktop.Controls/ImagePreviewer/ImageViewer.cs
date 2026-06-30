@@ -4,6 +4,7 @@ using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -34,6 +35,18 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ImageViewer>();
+
+    public static readonly StyledProperty<object?> LoadingContentProperty =
+        AvaloniaProperty.Register<ImageViewer, object?>(nameof(LoadingContent));
+
+    public static readonly StyledProperty<IDataTemplate?> LoadingContentTemplateProperty =
+        AvaloniaProperty.Register<ImageViewer, IDataTemplate?>(nameof(LoadingContentTemplate));
+
+    public static readonly StyledProperty<object?> ErrorContentProperty =
+        AvaloniaProperty.Register<ImageViewer, object?>(nameof(ErrorContent));
+
+    public static readonly StyledProperty<IDataTemplate?> ErrorContentTemplateProperty =
+        AvaloniaProperty.Register<ImageViewer, IDataTemplate?>(nameof(ErrorContentTemplate));
     
     public bool IsImageMovable
     {
@@ -71,6 +84,30 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public object? LoadingContent
+    {
+        get => GetValue(LoadingContentProperty);
+        set => SetValue(LoadingContentProperty, value);
+    }
+
+    public IDataTemplate? LoadingContentTemplate
+    {
+        get => GetValue(LoadingContentTemplateProperty);
+        set => SetValue(LoadingContentTemplateProperty, value);
+    }
+
+    public object? ErrorContent
+    {
+        get => GetValue(ErrorContentProperty);
+        set => SetValue(ErrorContentProperty, value);
+    }
+
+    public IDataTemplate? ErrorContentTemplate
+    {
+        get => GetValue(ErrorContentTemplateProperty);
+        set => SetValue(ErrorContentTemplateProperty, value);
     }
     
     #region 公共事件定义
@@ -115,8 +152,8 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     
     #region 内部属性定义
     
-    internal static readonly DirectProperty<ImageViewer, PreviewImageSource?> CurrentImageProperty =
-        AvaloniaProperty.RegisterDirect<ImageViewer, PreviewImageSource?>(
+    internal static readonly DirectProperty<ImageViewer, LoadedImageSource?> CurrentImageProperty =
+        AvaloniaProperty.RegisterDirect<ImageViewer, LoadedImageSource?>(
             nameof(CurrentImage),
             o => o.CurrentImage,
             (o, v) => o.CurrentImage = v);
@@ -138,6 +175,18 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
             nameof(IsFirstImage),
             o => o.IsFirstImage,
             (o, v) => o.IsFirstImage = v);
+
+    internal static readonly DirectProperty<ImageViewer, bool> IsCurrentImageLoadingProperty =
+        AvaloniaProperty.RegisterDirect<ImageViewer, bool>(
+            nameof(IsCurrentImageLoading),
+            o => o.IsCurrentImageLoading,
+            (o, v) => o.IsCurrentImageLoading = v);
+
+    internal static readonly DirectProperty<ImageViewer, bool> IsCurrentImageFailedProperty =
+        AvaloniaProperty.RegisterDirect<ImageViewer, bool>(
+            nameof(IsCurrentImageFailed),
+            o => o.IsCurrentImageFailed,
+            (o, v) => o.IsCurrentImageFailed = v);
     
     internal static readonly DirectProperty<ImageViewer, bool> IsScaleDownEnabledProperty =
         AvaloniaProperty.RegisterDirect<ImageViewer, bool>(
@@ -195,9 +244,9 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
             o => o.SuppressTransformAnimation,
             (o, v) => o.SuppressTransformAnimation = v);
     
-    private PreviewImageSource? _currentImage;
+    private LoadedImageSource? _currentImage;
 
-    internal PreviewImageSource? CurrentImage
+    internal LoadedImageSource? CurrentImage
     {
         get => _currentImage;
         set => SetAndRaise(CurrentImageProperty, ref _currentImage, value);
@@ -225,6 +274,22 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     {
         get => _isFirstImage;
         set => SetAndRaise(IsFirstImageProperty, ref _isFirstImage, value);
+    }
+
+    private bool _isCurrentImageLoading;
+
+    internal bool IsCurrentImageLoading
+    {
+        get => _isCurrentImageLoading;
+        set => SetAndRaise(IsCurrentImageLoadingProperty, ref _isCurrentImageLoading, value);
+    }
+
+    private bool _isCurrentImageFailed;
+
+    internal bool IsCurrentImageFailed
+    {
+        get => _isCurrentImageFailed;
+        set => SetAndRaise(IsCurrentImageFailedProperty, ref _isCurrentImageFailed, value);
     }
     
     private bool _isScaleDownEnabled;
@@ -323,6 +388,8 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
         get => _wheelScaleStep;
         private set => _wheelScaleStep = value;
     }
+
+    private bool CanTransformCurrentImage => CurrentImage != null;
     
     static ImageViewer()
     {
@@ -333,6 +400,15 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        if (_previousButton != null)
+        {
+            _previousButton.Click -= HandleButtonClick;
+        }
+        if (_nextButton != null)
+        {
+            _nextButton.Click -= HandleButtonClick;
+        }
+
         _image          = e.NameScope.Find<ImagePreviewRenderer>("PART_ImageRenderer");
         _previousButton = e.NameScope.Find<ImagePreviewNavButton>("PART_PreviousButton");
         _nextButton     = e.NameScope.Find<ImagePreviewNavButton>("PART_NextButton");
@@ -384,12 +460,13 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
         else if (change.Property == CurrentImageProperty)
         {
             _isSelfChangedPosition = false;
+            InvalidateMeasure();
         }
     }
 
     protected override Size MeasureOverride(Size availableSize)
     {
-        if (_image != null)
+        if (_image != null && CanTransformCurrentImage)
         {
             if (IsImageFitToWindow && !ImageScaleChanged)
             {
@@ -410,7 +487,7 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     {
         _isArrangeQueued = false;
         var size = base.ArrangeOverride(finalSize);
-        if (_image != null)
+        if (_image != null && CanTransformCurrentImage)
         {
             if (!_isSelfChangedPosition)
             {
@@ -442,7 +519,7 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     protected override void OnPointerMoved(PointerEventArgs e)
     {
         base.OnPointerMoved(e);
-        if (IsImageMovable && _lastestPoint.HasValue && e.Properties.IsLeftButtonPressed)
+        if (CanTransformCurrentImage && IsImageMovable && _lastestPoint.HasValue && e.Properties.IsLeftButtonPressed)
         {
             var delta             = e.GetPosition(this) - _lastestPoint.Value;
             var manhattanDistance = Math.Abs(delta.X) + Math.Abs(delta.Y);
@@ -463,7 +540,7 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     {
         base.OnPointerWheelChanged(e);
         
-        if (_image == null || MathUtils.AreClose(e.Delta.Y, 0.0))
+        if (_image == null || !CanTransformCurrentImage || MathUtils.AreClose(e.Delta.Y, 0.0))
         {
             return;
         }
@@ -509,7 +586,7 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
 
     private void ConstrainImagePosition()
     {
-        if (_image != null)
+        if (_image != null && CanTransformCurrentImage)
         {
             var originalWidth     = _image.DesiredSize.Width;
             var originalHeight    = _image.DesiredSize.Height;
@@ -628,7 +705,7 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
-        if (_image != null && IsImageMovable && e.Properties.IsLeftButtonPressed)
+        if (_image != null && CanTransformCurrentImage && IsImageMovable && e.Properties.IsLeftButtonPressed)
         {
             e.Handled           = true;
             _lastestPoint       = e.GetPosition(this);
@@ -650,7 +727,7 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
 
     private void HandleScaleChanged()
     {
-        if (_image != null)
+        if (_image != null && CanTransformCurrentImage)
         {
             var originalWidth     = _image.DesiredSize.Width;
             var originalHeight    = _image.DesiredSize.Height;
@@ -731,7 +808,7 @@ internal class ImageViewer : TemplatedControl, IMotionAwareControl
 
     private void HandleFitToWindowChanged()
     {
-        if (_image != null)
+        if (_image != null && CanTransformCurrentImage)
         {
             _isSelfChangedPosition = false;
             double offsetX = 0.0;

@@ -8,13 +8,49 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Canvas Name="PART_ImageViewerScene">
+                    <Canvas Name="PART_ImageViewerScene"
+                            IsVisible="{TemplateBinding CurrentImage, Converter={x:Static ObjectConverters.IsNotNull}}">
                         <atom:ImagePreviewRenderer
                             Name="PART_ImageRenderer"
                             Source="{TemplateBinding CurrentImage}" Stretch="Uniform"
                             RenderTransform="{TemplateBinding ImageRenderTransform}"
                             RenderTransformOrigin="{x:Static RelativePoint.Center}" />
                     </Canvas>
+                    <Border Name="PART_LoadingPresenter"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            IsVisible="{TemplateBinding IsCurrentImageLoading}">
+                        <Panel HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                            <atom:Spin IsSpinning="True"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{TemplateBinding LoadingContent, Converter={x:Static ObjectConverters.IsNull}}" />
+                            <ContentPresenter Content="{TemplateBinding LoadingContent}"
+                                              ContentTemplate="{TemplateBinding LoadingContentTemplate}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              IsVisible="{TemplateBinding LoadingContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        </Panel>
+                    </Border>
+                    <Border Name="PART_ErrorPresenter"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            IsVisible="{TemplateBinding IsCurrentImageFailed}">
+                        <Panel HorizontalAlignment="Center"
+                               VerticalAlignment="Center">
+                            <TextBlock Name="DefaultErrorText"
+                                       Text="Image load failed"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNull}}" />
+                            <ContentPresenter Content="{TemplateBinding ErrorContent}"
+                                              ContentTemplate="{TemplateBinding ErrorContentTemplate}"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        </Panel>
+                    </Border>
                     <atom:ImagePreviewNavButton Name="PART_PreviousButton"
                                                 Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
                                                 HorizontalAlignment="Left"
@@ -44,8 +80,11 @@
         <Style Selector="^ /template/ atom|ImagePreviewNavButton">
             <Setter Property="Margin" Value="{atom:SharedTokenResource Margin}" />
         </Style>
-        <Style Selector="^ /template/ Image#PART_ImageRenderer">
+        <Style Selector="^ /template/ atom|ImagePreviewRenderer#PART_ImageRenderer">
             <Setter Property="Cursor" Value="DragMove" />
+        </Style>
+        <Style Selector="^ /template/ TextBlock#DefaultErrorText">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextTertiary}" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

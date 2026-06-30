@@ -12,10 +12,48 @@
                         BorderBrush="{TemplateBinding BorderBrush}"
                         CornerRadius="{TemplateBinding CornerRadius}">
                     <Panel>
-                        <atom:ImagePreviewRenderer Source="{TemplateBinding ImageSource}" Stretch="Uniform" />
+                        <atom:ImagePreviewRenderer Source="{TemplateBinding ImageSource}"
+                                                   Stretch="Uniform"
+                                                   IsVisible="{TemplateBinding ImageSource, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <Border Name="PART_LoadingPresenter"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                IsVisible="{TemplateBinding IsLoading}">
+                            <Panel HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">
+                                <Border HorizontalAlignment="Stretch"
+                                        VerticalAlignment="Stretch"
+                                        Background="{atom:SharedTokenResource ColorFillTertiary}"
+                                        IsVisible="{TemplateBinding LoadingContent, Converter={x:Static ObjectConverters.IsNull}}" />
+                                <ContentPresenter Content="{TemplateBinding LoadingContent}"
+                                                  ContentTemplate="{TemplateBinding LoadingContentTemplate}"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  IsVisible="{TemplateBinding LoadingContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            </Panel>
+                        </Border>
+                        <Border Name="PART_ErrorPresenter"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Background="{atom:SharedTokenResource ColorFillTertiary}"
+                                IsVisible="{TemplateBinding IsFailed}">
+                            <Panel HorizontalAlignment="Center"
+                                   VerticalAlignment="Center">
+                                <TextBlock Name="DefaultErrorText"
+                                           Text="Image load failed"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNull}}" />
+                                <ContentPresenter Content="{TemplateBinding ErrorContent}"
+                                                  ContentTemplate="{TemplateBinding ErrorContentTemplate}"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            </Panel>
+                        </Border>
                         <Border Name="Mask" 
                                 Opacity="{TemplateBinding MaskOpacity}"
-                                IsVisible="{TemplateBinding IsShowCoverMask}">
+                                IsVisible="{TemplateBinding IsCoverMaskVisible}">
                             <ContentPresenter Name="MaskContentPresenter"
                                               Content="{TemplateBinding Content}"
                                               ContentTemplate="{TemplateBinding ContentTemplate}" />
@@ -25,7 +63,7 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^[IsShowCoverMask=True]">
+        <Style Selector="^[IsCoverMaskVisible=True]">
             <Setter Property="Cursor" Value="Hand" />
         </Style>
       
@@ -36,8 +74,11 @@
             <Setter Property="TemplatedControl.Foreground"
                     Value="{atom:SharedTokenResource ColorTextLightSolid}" />
         </Style>
+        <Style Selector="^ /template/ TextBlock#DefaultErrorText">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextTertiary}" />
+        </Style>
 
-        <Style Selector="^:pointerover">
+        <Style Selector="^[IsCoverMaskVisible=True]:pointerover">
             <Setter Property="MaskOpacity" Value="1" />
         </Style>
 

@@ -14,7 +14,8 @@ public class ImagePreviewerShowCasePageTests
     [Fact]
     public void ImagePreviewer_ShowCase_Uses_Document_Layout_With_Examples_And_Tables()
     {
-        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml");
+        var source      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/Views/ImagePreviewerShowCase.axaml");
+        var viewModelCs = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/ImagePreviewer/ViewModels/ImagePreviewerViewModel.cs");
 
         source.ShouldContain("ImagePreviewerShowCaseLangResource PageSubtitle");
         source.ShouldContain("ImagePreviewerShowCaseLangResource PageDescription");
@@ -46,18 +47,21 @@ public class ImagePreviewerShowCasePageTests
         source.ShouldContain("LineHeight=\"22\"");
         source.ShouldContain("Text=\"{gallery:ImagePreviewerShowCaseLangResource PageDescription}\"");
         source.ShouldContain("HorizontalAlignment=\"Left\"");
-        CountShowCaseItemElements(source).ShouldBe(5);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(5);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(5);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:ImagePreviewerViewModel\"").ShouldBe(5);
+        CountShowCaseItemElements(source).ShouldBe(6);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(6);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(6);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:ImagePreviewerViewModel\"").ShouldBe(6);
         source.ShouldContain("ImagePreviewerShowCaseLangResource BasicUsageTitle");
+        source.ShouldContain("ImagePreviewerShowCaseLangResource RemoteImageLoadingTitle");
         source.ShouldContain("ImagePreviewerShowCaseLangResource MultipleImagePreviewTitle");
         source.ShouldContain("IsOccupyEntireRow=\"True\"");
-        source.ShouldContain("ItemsSource=\"{Binding DefaultImages}\"");
-        source.ShouldContain("FallbackImageSrc=\"{Binding FallbackImage}\"");
-        source.ShouldContain("ItemsSource=\"{Binding ThreeImages}\"");
-        source.ShouldContain("CoverImageSrc=\"{Binding BlurImage}\"");
-        source.ShouldContain("ItemsSource=\"{Binding TwoImages}\"");
+        source.ShouldContain("SourceUris=\"{Binding DefaultImages}\"");
+        source.ShouldContain("SourceUri=\"{Binding RemoteImage}\"");
+        source.ShouldContain("FallbackSourceUri=\"{Binding FallbackImage}\"");
+        source.ShouldContain("SourceUris=\"{Binding ThreeImages}\"");
+        source.ShouldContain("CoverSourceUri=\"{Binding BlurImage}\"");
+        source.ShouldContain("SourceUris=\"{Binding TwoImages}\"");
+        viewModelCs.ShouldContain("https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
@@ -147,9 +151,14 @@ public class ImagePreviewerShowCasePageTests
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
             source.ShouldContain("InfoNamespaceLabel");
-            source.ShouldContain("ApiPropertyItemsSource");
-            source.ShouldContain("ApiPropertyFallbackImageSrc");
-            source.ShouldContain("ApiPropertyCoverImageSrc");
+            source.ShouldContain("RemoteImageLoadingTitle");
+            source.ShouldContain("RemoteImageLoadingDescription");
+            source.ShouldContain("ApiPropertySourceUri");
+            source.ShouldContain("ApiPropertySourceUris");
+            source.ShouldContain("ApiPropertyFallbackSourceUri");
+            source.ShouldContain("ApiPropertyCoverSourceUri");
+            source.ShouldContain("ApiPropertyLoadingContent");
+            source.ShouldContain("ApiPropertyErrorContent");
             source.ShouldContain("ApiPropertyIsOpen");
             source.ShouldContain("TokenNamePreviewOperationSize");
             source.ShouldContain("TokenNameImagePreviewSwitchSize");
