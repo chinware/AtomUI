@@ -23,7 +23,7 @@
                                              Width="220">
                     <atom:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate x:DataType="viewModels:InfoFlyoutDesignTokenRow">
-                            <atom:TextBlock Text="{Binding Token}"
+                            <gallery:GallerySelectableTextBlock Text="{Binding Token}"
                                             FontFamily="Consolas"
                                             VerticalAlignment="Center" />
                         </DataTemplate>
@@ -34,7 +34,7 @@
                                              Width="*">
                     <atom:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate x:DataType="viewModels:InfoFlyoutDesignTokenRow">
-                            <atom:TextBlock Text="{Binding Description}"
+                            <gallery:GallerySelectableTextBlock Text="{Binding Description}"
                                             TextWrapping="Wrap"
                                             VerticalAlignment="Center" />
                         </DataTemplate>

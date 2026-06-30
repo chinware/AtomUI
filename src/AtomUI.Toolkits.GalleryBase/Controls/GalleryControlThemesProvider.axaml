@@ -12,5 +12,6 @@
         <ResourceInclude Source="IconGalleryTheme.axaml" />
         <ResourceInclude Source="IconInfoItemTheme.axaml" />
         <ResourceInclude Source="GalleryWindowTitleBarTheme.axaml" />
+        <ResourceInclude Source="GallerySelectableTextBlockTheme.axaml" />
     </atom:ControlThemesProvider.ControlThemes>
 </atom:ControlThemesProvider>
