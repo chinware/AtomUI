@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using AtomUI;
+using AtomUI.Controls.Commons;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Threading;
@@ -75,6 +77,31 @@ public class SpinIndicatorCustomSizeTests
         });
     }
 
+    [Fact]
+    public void BuiltIn_Indicator_Template_Parts_Survive_ContentHost_Detach_And_Reattach()
+    {
+        var indicator = new AtomUISpinIndicator();
+        var host = new ContentControl
+        {
+            Content = indicator
+        };
+        var replacement = new Border();
+
+        ShowInWindow(host, () =>
+        {
+            var initialLayout = GetBuiltInLayoutField(indicator);
+            initialLayout.ShouldNotBeNull();
+
+            host.Content = replacement;
+            Dispatcher.UIThread.RunJobs();
+
+            host.Content = indicator;
+            Dispatcher.UIThread.RunJobs();
+
+            GetBuiltInLayoutField(indicator).ShouldBeSameAs(initialLayout);
+        });
+    }
+
     private static Control FindBuiltInLayout(Control control)
     {
         var layout = control.GetVisualDescendants()
@@ -89,6 +116,15 @@ public class SpinIndicatorCustomSizeTests
         var dots = control.GetVisualDescendants().OfType<Ellipse>().ToArray();
         dots.Length.ShouldBe(4);
         return dots;
+    }
+
+    private static Control? GetBuiltInLayoutField(AtomUISpinIndicator indicator)
+    {
+        var field = typeof(AbstractSpinIndicator).GetField(
+            "_builtInIndicatorLayout",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+        return (Control?)field!.GetValue(indicator);
     }
 
     private static void ShowInWindow(Control content, Action assertion)

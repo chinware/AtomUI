@@ -93,15 +93,44 @@ public class DataGridGroupColumnHeadersPresenter : Panel, IChildIndexProvider
 
     int IChildIndexProvider.GetChildIndex(ILogical child)
     {
-        return child is DataGridColumnHeader header
-            ? header.OwningColumn?.DisplayIndex ?? -1
-            : throw new InvalidOperationException("Invalid cell type");
+        return child is DataGridHeaderViewItem headerViewItem
+            ? GetHeaderViewItemIndex(headerViewItem)
+            : -1;
     }
 
     bool IChildIndexProvider.TryGetTotalCount(out int count)
     {
-        count = Children.Count - 1; // Adjust for filler column
+        count = 0;
+        foreach (var child in Children)
+        {
+            if (child is DataGridHeaderViewItem)
+            {
+                count++;
+            }
+        }
+
         return true;
+    }
+
+    private int GetHeaderViewItemIndex(DataGridHeaderViewItem headerViewItem)
+    {
+        var index = 0;
+        foreach (var child in Children)
+        {
+            if (child is not DataGridHeaderViewItem currentHeaderViewItem)
+            {
+                continue;
+            }
+
+            if (ReferenceEquals(currentHeaderViewItem, headerViewItem))
+            {
+                return index;
+            }
+
+            index++;
+        }
+
+        return -1;
     }
 
     protected override void ChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)

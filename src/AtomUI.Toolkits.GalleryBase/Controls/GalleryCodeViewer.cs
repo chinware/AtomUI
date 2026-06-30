@@ -51,24 +51,30 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
     private GalleryTextMateInstallation? _textMateInstallation;
     private RegistryOptions? _registryOptions;
     private ScrollBar? _horizontalScrollBar;
+    private ScrollBar? _verticalScrollBar;
     private Application? _subscribedApplication;
     private IThemeManager? _subscribedThemeManager;
+    private IDisposable? _editorBoundsSubscription;
     private IDisposable? _themeVariantSubscription;
     private ThemeName? _currentSyntaxTheme;
-    private bool _isHorizontalScrollBarInsetUpdatePending;
+    private bool _isScrollBarInsetUpdatePending;
     private bool _isUpdatingScrollBarInset;
     private bool _isDisposed;
 
-    public GalleryCodeViewer()
+    public GalleryCodeViewer() : this(null, null)
+    {
+    }
+
+    internal GalleryCodeViewer(string? codeText, string? language)
     {
         InitializeComponent();
         _editor = this.FindControl<TextEditor>("PART_Editor")!;
         _editor.TextArea.SelectionChanged += HandleEditorSelectionChanged;
+        _editorBoundsSubscription = _editor.GetObservable(BoundsProperty)
+                                           .Subscribe(_ => RequestScrollBarInsetUpdate());
         ActualThemeVariantChanged += HandleActualThemeVariantChanged;
         ConfigureEditorContextMenu();
-        EnsureTextMateInstalled();
-        UpdateText();
-        ApplyGrammar();
+        InitializeSource(codeText, language);
     }
 
     public string? CodeText
@@ -113,7 +119,9 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         _textMateInstallation = null;
         _registryOptions      = null;
         ReleaseThemeVariantSubscriptions();
-        CancelHorizontalScrollBarGutterInsetUpdate();
+        CancelScrollBarInsetUpdate();
+        _editorBoundsSubscription?.Dispose();
+        _editorBoundsSubscription = null;
         _editor.TextArea.SelectionChanged -= HandleEditorSelectionChanged;
         _editor.Document      = null;
         _copyMenuItem.Click -= HandleCopyMenuItemClick;
@@ -125,6 +133,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         }
         ActualThemeVariantChanged -= HandleActualThemeVariantChanged;
         _horizontalScrollBar  = null;
+        _verticalScrollBar    = null;
         _currentSyntaxTheme   = null;
     }
 
@@ -142,7 +151,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         else if (change.Property == ShowLineNumbersProperty)
         {
             _editor.ShowLineNumbers = ShowLineNumbers;
-            RequestHorizontalScrollBarGutterInsetUpdate();
+            RequestScrollBarInsetUpdate();
         }
         else if (change.Property == LightSyntaxThemeProperty ||
                  change.Property == DarkSyntaxThemeProperty)
@@ -156,20 +165,20 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         base.OnAttachedToVisualTree(e);
         SubscribeThemeVariantChanges();
         ApplySyntaxTheme();
-        RequestHorizontalScrollBarGutterInsetUpdate();
+        RequestScrollBarInsetUpdate();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
-        CancelHorizontalScrollBarGutterInsetUpdate();
+        CancelScrollBarInsetUpdate();
         ReleaseThemeVariantSubscriptions();
         base.OnDetachedFromVisualTree(e);
     }
 
     private void HandleEditorLayoutUpdated(object? sender, EventArgs e)
     {
-        CancelHorizontalScrollBarGutterInsetUpdate();
-        UpdateHorizontalScrollBarGutterInset();
+        CancelScrollBarInsetUpdate();
+        UpdateScrollBarInsets();
     }
 
     private void HandleEditorSelectionChanged(object? sender, EventArgs e)
@@ -210,38 +219,52 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         ApplySyntaxTheme();
     }
 
-    private void RequestHorizontalScrollBarGutterInsetUpdate()
+    private void RequestScrollBarInsetUpdate()
     {
-        if (_isDisposed || _isHorizontalScrollBarInsetUpdatePending)
+        if (_isDisposed || _isScrollBarInsetUpdatePending)
         {
             return;
         }
 
-        _isHorizontalScrollBarInsetUpdatePending = true;
+        _isScrollBarInsetUpdatePending = true;
         _editor.LayoutUpdated += HandleEditorLayoutUpdated;
     }
 
-    private void CancelHorizontalScrollBarGutterInsetUpdate()
+    private void CancelScrollBarInsetUpdate()
     {
-        if (!_isHorizontalScrollBarInsetUpdatePending)
+        if (!_isScrollBarInsetUpdatePending)
         {
             return;
         }
 
-        _isHorizontalScrollBarInsetUpdatePending = false;
+        _isScrollBarInsetUpdatePending = false;
         _editor.LayoutUpdated -= HandleEditorLayoutUpdated;
     }
 
-    private void UpdateHorizontalScrollBarGutterInset()
+    private void UpdateScrollBarInsets()
     {
-        // Mutating the scroll bar Margin triggers another layout pass, so this method must only
-        // run from the one-shot request path above. Drag selection auto-scroll produces repeated
-        // LayoutUpdated ticks, and a permanent handler can spin the UI thread.
+        // Mutating scrollbar/TextView margins triggers another layout pass, so this method must
+        // only run from the one-shot request path above. Drag selection auto-scroll produces
+        // repeated LayoutUpdated ticks, and a permanent handler can spin the UI thread.
         if (_isUpdatingScrollBarInset)
         {
             return;
         }
 
+        _isUpdatingScrollBarInset = true;
+        try
+        {
+            UpdateHorizontalScrollBarGutterInset();
+            UpdateTextViewVerticalScrollBarInset();
+        }
+        finally
+        {
+            _isUpdatingScrollBarInset = false;
+        }
+    }
+
+    private void UpdateHorizontalScrollBarGutterInset()
+    {
         var horizontalScrollBar = GetHorizontalScrollBar();
         if (horizontalScrollBar is null)
         {
@@ -255,19 +278,31 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             return;
         }
 
-        _isUpdatingScrollBarInset = true;
-        try
+        horizontalScrollBar.Margin = new Thickness(
+            gutterWidth,
+            currentMargin.Top,
+            currentMargin.Right,
+            currentMargin.Bottom);
+    }
+
+    private void UpdateTextViewVerticalScrollBarInset()
+    {
+        var verticalScrollBar = GetVerticalScrollBar();
+        var rightInset = verticalScrollBar is { IsVisible: true }
+            ? verticalScrollBar.Bounds.Width + 1
+            : 0;
+        var textView = _editor.TextArea.TextView;
+        var currentMargin = textView.Margin;
+        if (Math.Abs(currentMargin.Right - rightInset) <= 0.5)
         {
-            horizontalScrollBar.Margin = new Thickness(
-                gutterWidth,
-                currentMargin.Top,
-                currentMargin.Right,
-                currentMargin.Bottom);
+            return;
         }
-        finally
-        {
-            _isUpdatingScrollBarInset = false;
-        }
+
+        textView.Margin = new Thickness(
+            currentMargin.Left,
+            currentMargin.Top,
+            rightInset,
+            currentMargin.Bottom);
     }
 
     private ScrollBar? GetHorizontalScrollBar()
@@ -282,6 +317,20 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
                                       .OfType<ScrollBar>()
                                       .FirstOrDefault(scrollBar => scrollBar.Orientation == Orientation.Horizontal);
         return _horizontalScrollBar;
+    }
+
+    private ScrollBar? GetVerticalScrollBar()
+    {
+        if (_verticalScrollBar is { } verticalScrollBar &&
+            TopLevel.GetTopLevel(verticalScrollBar) == TopLevel.GetTopLevel(_editor))
+        {
+            return verticalScrollBar;
+        }
+
+        _verticalScrollBar = _editor.GetVisualDescendants()
+                                    .OfType<ScrollBar>()
+                                    .FirstOrDefault(scrollBar => scrollBar.Orientation == Orientation.Vertical);
+        return _verticalScrollBar;
     }
 
     private double GetTextAreaLeftMarginsRightEdge()
@@ -307,7 +356,30 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
     private void UpdateText()
     {
         _editor.Text = CodeText ?? string.Empty;
-        RequestHorizontalScrollBarGutterInsetUpdate();
+        RequestScrollBarInsetUpdate();
+    }
+
+    private void InitializeSource(string? codeText, string? language)
+    {
+        EnsureTextMateInstalled();
+
+        if (codeText is not null)
+        {
+            SetCurrentValue(CodeTextProperty, codeText);
+        }
+        else
+        {
+            UpdateText();
+        }
+
+        if (!string.IsNullOrWhiteSpace(language))
+        {
+            SetCurrentValue(LanguageProperty, language);
+        }
+        else
+        {
+            ApplyGrammar();
+        }
     }
 
     private void ConfigureEditorContextMenu()
@@ -487,6 +559,9 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         private IGrammar? _grammar;
         private TMModel? _tmModel;
         private ReadOnlyDictionary<string, string>? _themeColorsDictionary;
+        private int _pendingVisibleStartLine = -1;
+        private int _pendingVisibleEndLine = -1;
+        private bool _isVisibleLineTokenizationQueued;
         private bool _isDisposed;
 
         public GalleryTextMateInstallation(TextEditor editor,
@@ -509,6 +584,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             }
 
             SetTheme(registryOptions.GetDefaultTheme());
+            _editor.TextArea.TextView.VisualLinesChanged += HandleTextViewVisualLinesChanged;
             _editor.DocumentChanged += HandleEditorDocumentChanged;
             HandleEditorDocumentChanged(_editor, EventArgs.Empty);
         }
@@ -521,8 +597,12 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             lock (_lock)
             {
                 ThrowIfDisposed();
-                SetGrammarInternal(_textMateRegistry.LoadGrammar(scopeName));
+                var grammar = _textMateRegistry.LoadGrammar(scopeName);
+                WarmUpGrammar(grammar, _editor.Document);
+                SetGrammarInternal(grammar);
+                WarmUpGrammar(grammar, _editor.Document);
                 ForceTokenizeDocument();
+                RequestVisibleLineTokenization();
             }
             _editor.TextArea.TextView.Redraw();
         }
@@ -547,6 +627,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
                 _editorModel?.InvalidateViewPortLines();
                 _themeColorsDictionary = textMateTheme.GetGuiColorDictionary();
             }
+            RequestVisibleLineTokenization();
         }
 
         public void Dispose()
@@ -576,6 +657,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             }
 
             _editor.DocumentChanged -= HandleEditorDocumentChanged;
+            _editor.TextArea.TextView.VisualLinesChanged -= HandleTextViewVisualLinesChanged;
             editorModel?.Dispose();
             DisposeTMModel(tmModel);
 
@@ -617,11 +699,29 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
                     _transformer.SetModel(_editor.Document, _tmModel);
                     _tmModel.AddModelTokensChangedListener(_transformer);
                     ForceTokenizeDocument();
+                    RequestVisibleLineTokenization();
                 }
                 catch (Exception ex)
                 {
                     _exceptionHandler?.Invoke(ex);
                 }
+            }
+        }
+
+        private void HandleTextViewVisualLinesChanged(object? sender, EventArgs e)
+        {
+            RequestVisibleLineTokenizationSafely();
+        }
+
+        private void RequestVisibleLineTokenizationSafely()
+        {
+            try
+            {
+                RequestVisibleLineTokenization();
+            }
+            catch (Exception ex)
+            {
+                _exceptionHandler?.Invoke(ex);
             }
         }
 
@@ -631,9 +731,227 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             _transformer.SetGrammar(_grammar);
         }
 
+        private static void WarmUpGrammar(IGrammar grammar, TextDocument? document)
+        {
+            if (document is null || document.LineCount == 0)
+            {
+                grammar.TokenizeLine(string.Empty);
+                return;
+            }
+
+            // TextMateSharp compiles grammar rules lazily. TMModel skips forced tokenization
+            // while the grammar is compiling, so compile the rules used by the current snippet
+            // before the model is asked to produce the first visible tokens.
+            IStateStack? state = null;
+            var lineCount = Math.Min(document.LineCount, 200);
+            var timeLimit = TimeSpan.FromMilliseconds(1000);
+            for (var lineNumber = 1; lineNumber <= lineCount; lineNumber++)
+            {
+                var line = document.GetLineByNumber(lineNumber);
+                var text = document.GetText(line.Offset, Math.Min(line.Length, 10000));
+                var result = state is null
+                    ? grammar.TokenizeLine(text)
+                    : grammar.TokenizeLine(text, state, timeLimit);
+                state = result.RuleStack;
+            }
+        }
+
         private void ForceTokenizeDocument()
         {
             _editorModel?.ForceTokenizeAllLines();
+        }
+
+        private void RequestVisibleLineTokenization()
+        {
+            if (_isDisposed ||
+                !TryGetVisibleLineRange(out var startLine, out var endLine) ||
+                !TryGetTokenizationContext(out var editorModel, out var tmModel, out _) ||
+                !NeedsLineTokenization(editorModel, tmModel, startLine, endLine))
+            {
+                return;
+            }
+
+            IncludePendingVisibleLineRange(startLine, endLine);
+            QueueVisibleLineTokenization();
+        }
+
+        private void QueueVisibleLineTokenization()
+        {
+            if (_isDisposed || _isVisibleLineTokenizationQueued)
+            {
+                return;
+            }
+
+            _isVisibleLineTokenizationQueued = true;
+            Dispatcher.UIThread.Post(ProcessVisibleLineTokenization, DispatcherPriority.Background);
+        }
+
+        private void ProcessVisibleLineTokenization()
+        {
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            int startLine;
+            int endLine;
+            lock (_lock)
+            {
+                _isVisibleLineTokenizationQueued = false;
+                startLine = _pendingVisibleStartLine;
+                endLine = _pendingVisibleEndLine;
+                _pendingVisibleStartLine = -1;
+                _pendingVisibleEndLine = -1;
+            }
+
+            if (startLine < 0 ||
+                endLine < startLine ||
+                !TryGetTokenizationContext(out var editorModel, out var tmModel, out var grammar))
+            {
+                return;
+            }
+
+            NormalizeLineRange(editorModel, ref startLine, ref endLine);
+            if (startLine < 0)
+            {
+                return;
+            }
+
+            if (!NeedsLineTokenization(editorModel, tmModel, startLine, endLine))
+            {
+                return;
+            }
+
+            if (grammar.IsCompiling)
+            {
+                IncludePendingVisibleLineRange(startLine, endLine);
+                return;
+            }
+
+            editorModel.ForceTokenizeLineRange(startLine, endLine);
+            if (NeedsLineTokenization(editorModel, tmModel, startLine, endLine))
+            {
+                IncludePendingVisibleLineRange(startLine, endLine);
+                return;
+            }
+
+            RedrawLineRange(startLine, endLine);
+        }
+
+        private bool TryGetVisibleLineRange(out int startLine, out int endLine)
+        {
+            startLine = -1;
+            endLine = -1;
+
+            var textView = _editor.TextArea.TextView;
+            if (!textView.VisualLinesValid || textView.VisualLines.Count == 0)
+            {
+                return false;
+            }
+
+            startLine = textView.VisualLines[0].FirstDocumentLine.LineNumber - 1;
+            endLine = textView.VisualLines[^1].LastDocumentLine.LineNumber - 1;
+            return endLine >= startLine;
+        }
+
+        private bool TryGetTokenizationContext(out GalleryTextEditorModel editorModel,
+                                               out TMModel tmModel,
+                                               out IGrammar grammar)
+        {
+            lock (_lock)
+            {
+                if (_isDisposed || _editorModel is null || _tmModel is null || _grammar is null)
+                {
+                    editorModel = null!;
+                    tmModel = null!;
+                    grammar = null!;
+                    return false;
+                }
+
+                editorModel = _editorModel;
+                tmModel = _tmModel;
+                grammar = _grammar;
+                return true;
+            }
+        }
+
+        private void IncludePendingVisibleLineRange(int startLine, int endLine)
+        {
+            lock (_lock)
+            {
+                if (_pendingVisibleStartLine < 0)
+                {
+                    _pendingVisibleStartLine = startLine;
+                    _pendingVisibleEndLine = endLine;
+                }
+                else
+                {
+                    _pendingVisibleStartLine = Math.Min(_pendingVisibleStartLine, startLine);
+                    _pendingVisibleEndLine = Math.Max(_pendingVisibleEndLine, endLine);
+                }
+            }
+        }
+
+        private static bool NeedsLineTokenization(GalleryTextEditorModel editorModel,
+                                                  TMModel tmModel,
+                                                  int startLine,
+                                                  int endLine)
+        {
+            NormalizeLineRange(editorModel, ref startLine, ref endLine);
+            if (startLine < 0)
+            {
+                return false;
+            }
+
+            for (var line = startLine; line <= endLine; line++)
+            {
+                if (tmModel.IsLineInvalid(line))
+                {
+                    return true;
+                }
+
+                var tokens = tmModel.GetLineTokens(line);
+                if (editorModel.GetLineLength(line) > 0 &&
+                    (tokens is null || tokens.Count == 0))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private static void NormalizeLineRange(GalleryTextEditorModel editorModel,
+                                               ref int startLine,
+                                               ref int endLine)
+        {
+            var lineCount = editorModel.GetNumberOfLines();
+            if (lineCount <= 0)
+            {
+                startLine = -1;
+                endLine = -1;
+                return;
+            }
+
+            startLine = Math.Clamp(startLine, 0, lineCount - 1);
+            endLine = Math.Clamp(endLine, startLine, lineCount - 1);
+        }
+
+        private void RedrawLineRange(int startLine, int endLine)
+        {
+            var document = _editor.Document;
+            if (document is null || document.LineCount == 0)
+            {
+                return;
+            }
+
+            startLine = Math.Clamp(startLine, 0, document.LineCount - 1);
+            endLine = Math.Clamp(endLine, startLine, document.LineCount - 1);
+            var firstLine = document.GetLineByNumber(startLine + 1);
+            var lastLine = document.GetLineByNumber(endLine + 1);
+            _editor.TextArea.TextView.Redraw(
+                firstLine.Offset,
+                lastLine.Offset + lastLine.TotalLength - firstLine.Offset);
         }
 
         private void ThrowIfDisposed()
@@ -735,6 +1053,19 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             {
                 ForceTokenization(0, lineCount - 1);
             }
+        }
+
+        public void ForceTokenizeLineRange(int startLine, int endLine)
+        {
+            var lineCount = _documentSnapshot.LineCount;
+            if (lineCount <= 0)
+            {
+                return;
+            }
+
+            var normalizedStartLine = Math.Clamp(startLine, 0, lineCount - 1);
+            var normalizedEndLine = Math.Clamp(endLine, normalizedStartLine, lineCount - 1);
+            ForceTokenization(normalizedStartLine, normalizedEndLine);
         }
 
         private void HandleTextViewScrollOffsetChanged(object? sender, EventArgs e)
