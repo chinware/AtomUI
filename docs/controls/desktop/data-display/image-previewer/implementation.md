@@ -44,6 +44,8 @@
 - `ImagePreviewItem`：图片项状态 owner，维护来源、加载状态、加载版本、取消令牌和加载结果。
 - `LoadedImageSource`：加载完成后的 renderer 输入，封装 Bitmap、SVG 文本、源尺寸和释放语义。
 - `IImageSourceLoader`：统一图片加载服务，封装 `avares://`、本地文件、`file://`、相对路径和 `http(s)://` 的异步加载。
+- `IImagePreviewTitleResolver`：预览标题解析接口，基于当前图片来源和集合上下文同步返回可显示标题。
+- `ImagePreviewTitleResolveContext`：标题解析上下文，承载 current effective item、显示索引和总数等只读输入。
 - `en_US`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `zh_CN`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `zh_TW`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
@@ -68,11 +70,32 @@ Public API / ImageSourceUri / Command / Event
   -> renderer / popup / adorner / Gallery observable behavior
 ```
 
+当前项状态流必须保持为一条共享路径：
+
+```text
+SourceUri / SourceUris
+  -> EffectiveItems
+CurrentIndex
+  -> current effective item (clamped for display)
+  -> inline cover (unless CoverSourceUri)
+  -> dialog / overlay current item
+```
+
+预览标题状态流必须使用同一 current effective item：
+
+```text
+Window.Title / PreviewTitle / PreviewTitleResolver
+current effective item + CurrentIndex + Count
+  -> effective preview title
+  -> ImagePreviewerTitleBar title
+```
+
 源码中的状态入口按以下语义维护：
 
 - 图片来源：`SourceUri`、`SourceUris`、`CoverSourceUri`、`FallbackSourceUri`。
 - 内容与数据：`CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`LoadingContent`、`LoadingContentTemplate`、`ErrorContent`、`ErrorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageTranslateX`、`ImageTranslateY`。
-- 选择与集合：`Count`、`CurrentIndex`。
+- 选择与集合：`Count`、`CurrentIndex`。`CurrentIndex` 是控件级当前项索引，不是弹层局部状态；未设置 `CoverSourceUri` 时，普通封面和弹出预览宿主都必须从同一 current effective item 派生展示内容。
+- 预览标题：`PreviewTitle`、`PreviewTitleResolver`、`IImagePreviewTitleResolver`、`ImagePreviewTitleResolveContext`。非空白显式标题优先；显式标题为空时从 current effective item 解析标题。
 - 交互与状态：`IsDialogModal`、`IsDialogTopmost`、`IsModal`、`IsMotionEnabled`、`IsOpen`、`IsShowCoverMask`。
 - 视觉与布局：`CoverHeight`、`CoverWidth`。
 - 其他稳定入口：`MaxScale`、`MinScale`、`ScaleStep`、`Stretch`、`Transform`。
@@ -81,6 +104,10 @@ Public API / ImageSourceUri / Command / Event
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、当前项、图片来源替换、fallback 和异步 loader 必须能处理 reset、replace 和 clear。
+- `CurrentIndexProperty` 变更、`SourceUri` / `SourceUris` 变更、fallback 状态变化和 effective items 重建都必须触发封面 effective item 重新解析。
+- 封面 effective item resolver 必须使用 clamp 后的 `CurrentIndex` 选择项，不能把默认封面硬编码为 `EffectiveItems[0]`。
+- `CoverSourceUri` 拥有最高封面优先级；它命中时封面走独立的来源、加载和 fallback 路径，不能反向改写 `CurrentIndex`。
+- 标题 effective state 必须在 `CurrentIndex`、effective items、显式标题和 resolver 变化时重新计算，且不能使用已经被集合替换或 clamp 结果变更前的旧图片项。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
 
@@ -109,6 +136,7 @@ ImageSourceUri
 - 图片加载任务由图片项或控件 owner 创建取消令牌。`SourceUri` 变更、`SourceUris` 替换、弹层关闭、控件 detach 和 owner dispose 时必须取消仍在运行的加载。
 - 加载完成后需要通知 `ImagePreviewRenderer` 和 `ImageViewer` 重新 measure/arrange，保证居中、fit-to-window、缩放按钮状态和拖拽边界基于真实图片尺寸计算。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
+- 预览 dialog 的 title bar 不直接恢复通用 `Window.Title` 绑定；`Window.Title` 只作为显式标题输入参与 effective preview title 算法，最终由 `ImagePreviewerTitleBar` 显示算法结果。
 
 稳定 template part 接入点：
 
@@ -151,6 +179,10 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - `IImageSourceLoader` 对 `avares://`、本地路径、`file://`、相对路径和 `http(s)://` 的统一异步加载。
 - `ImagePreviewItemState` 的 pending、loading、loaded、failed 迁移，以及 fallback 加载路径。
 - 快速切换图片来源时的取消、版本校验和过期结果释放。
+- current effective item resolver：从 effective items 和 `CurrentIndex` 计算展示项，显示层对越界索引进行 clamp，并保持 public `CurrentIndex` 原值不被静默改写。
+- 封面来源解析：先判断 `CoverSourceUri`，命中时使用显式封面；否则使用 current effective item，使普通封面、dialog 和 overlay 的当前项语义一致。
+- 预览标题解析：先检查预览窗口或宿主的 `Window.Title`，非空白时直接使用；否则检查 `PreviewTitle`；仍为空时使用 `PreviewTitleResolver` 基于 current effective item 解析标题；解析不到标题时保持空态。
+- 默认标题 resolver：本地路径和 `file://` 从 `ImageSourceUri.LocalPath` 提取文件名，`http(s)://` 从 `Uri.AbsolutePath` 最后一个非空 path segment 提取文件名并忽略 query/fragment，`avares://` 从资源路径最后一个非空 path segment 提取文件名，unsupported 或无法提取名称时返回 `null`。
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - `SourceUris`、current item 和弹层宿主之间的集合同步。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
@@ -166,6 +198,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 网络图片必须通过异步加载服务处理，不允许在 UI 线程同步等待网络 I/O。
 - 本地、资源和远程图片共享同一来源身份 key 规范化规则，用于去重、旧结果判定和后续扩展。
+- 标题 resolver 必须是同步、确定性的纯解析逻辑；不得访问文件系统、发起网络请求、等待异步任务或通过运行时反射发现模型成员。
 - `LoadedImageSource` 由控件当前加载项持有；来源替换、取消或控件释放时必须释放旧结果。
 - Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
 
@@ -185,6 +218,8 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - 图片加载状态的单 owner：`ImageSourceUri` 是来源，`ImagePreviewItem` 是状态，`LoadedImageSource` 是结果，`ImagePreviewRenderer` 只负责渲染。
 - `SourceUri`、`SourceUris`、`CoverSourceUri` 和 `FallbackSourceUri` 的加载、取消、来源身份和失败处理一致性。
+- `CurrentIndex` 的单一语义：普通封面、dialog 和 overlay 使用同一 current effective item；`CoverSourceUri` 只覆盖封面来源，不改变弹层当前项。
+- 预览标题的单一算法：非空白 `Window.Title` 或 `PreviewTitle` 优先，resolver 只在显式标题为空时运行；标题必须跟随 current effective item，不能保留旧集合项的文件名。
 - 加载完成后必须重新计算 `ImageViewer` 的布局、居中、fit-to-window 和交互边界。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。
@@ -196,6 +231,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - 图片加载模型变更覆盖 `ImageSourceUri` 解析、本地文件、`avares://`、fake HTTP、取消、防旧结果回写、fallback 和 loading/error 模板状态。
+- 预览标题模型变更覆盖显式标题优先级、默认文件名解析、current item 切换、集合替换、越界 `CurrentIndex` clamp 和 resolver 更换。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例、API 表或 Token 表变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

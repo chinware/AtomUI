@@ -89,6 +89,27 @@ public class ImagePreviewerSourceLoadingTests
     }
 
     [Fact]
+    public void Cover_Uses_CurrentIndex_When_CoverSourceUri_Is_Not_Set()
+    {
+        var firstPath  = CreatePngFile();
+        var secondPath = CreatePngFile();
+        var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+        {
+            SourceUris = [ImageSourceUri.Parse(firstPath), ImageSourceUri.Parse(secondPath)]
+        };
+
+        WaitUntil(() => previewer.EffectiveItems is { Count: 2 } items &&
+                        items.All(item => item.State == ImagePreviewItemState.Loaded) &&
+                        previewer.EffectiveCoverImage is not null)
+            .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
+
+        previewer.CurrentIndex = 1;
+        Dispatcher.UIThread.RunJobs();
+
+        previewer.EffectiveCoverImage.ShouldBeSameAs(previewer.EffectiveItems![1].LoadedSource);
+    }
+
+    [Fact]
     public void FallbackSourceUri_Change_Retries_Failed_Cover_Fallback()
     {
         var missingCoverPath = Path.Combine(Path.GetTempPath(), $"atomui-missing-cover-{Guid.NewGuid():N}.png");
