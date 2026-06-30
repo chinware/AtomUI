@@ -13,22 +13,42 @@ public static class AssetsLoader
 
     public static Stream OpenStream(string path)
     {
-        Uri? uri = null;
-        if (path.StartsWith("avares:"))
+        if (TryResolveLocalFilePath(path, out var localFilePath))
         {
-            uri = new Uri(path);
+            return new FileStream(localFilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
-        else
-        {
-            uri = path.StartsWith("/")
-                ? new Uri(path, UriKind.Relative)
-                : new Uri(path, UriKind.RelativeOrAbsolute);
-        }
-        if (uri.IsAbsoluteUri && uri.IsFile)
-        {
-            return new FileStream(uri.LocalPath, FileMode.Open, FileAccess.Read);
-        }
+
         var assets = AvaloniaLocator.Current.GetRequiredService<IAssetLoader>();
-        return assets.Open(uri);
+        return assets.Open(new Uri(path, UriKind.RelativeOrAbsolute));
+    }
+
+    internal static bool TryResolveLocalFilePath(string path, out string localFilePath)
+    {
+        if (Uri.TryCreate(path, UriKind.Absolute, out var uri))
+        {
+            if (uri.IsFile)
+            {
+                localFilePath = uri.LocalPath;
+                return true;
+            }
+
+            localFilePath = string.Empty;
+            return false;
+        }
+
+        if (Path.IsPathFullyQualified(path) || Path.IsPathRooted(path))
+        {
+            localFilePath = Path.GetFullPath(path);
+            return true;
+        }
+
+        if (!path.StartsWith("avares:", StringComparison.OrdinalIgnoreCase))
+        {
+            localFilePath = Path.GetFullPath(path);
+            return true;
+        }
+
+        localFilePath = string.Empty;
+        return false;
     }
 }

@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using AtomUI.Controls;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -13,8 +15,8 @@ internal class ImagePreviewerDialog : Window,
                                       IMotionAwareControl
 {
     #region 公共属性定义
-    public static readonly StyledProperty<IList<PreviewImageSource>?> ItemsSourceProperty =
-        AvaloniaProperty.Register<ImagePreviewerDialog, IList<PreviewImageSource>?>(nameof(ItemsSource));
+    public static readonly StyledProperty<IList<ImagePreviewItem>?> ItemsSourceProperty =
+        AvaloniaProperty.Register<ImagePreviewerDialog, IList<ImagePreviewItem>?>(nameof(ItemsSource));
 
     public static readonly StyledProperty<bool> IsImageMovableProperty =
         ImagePreviewer.IsImageMovableProperty.AddOwner<ImagePreviewerDialog>();
@@ -31,6 +33,18 @@ internal class ImagePreviewerDialog : Window,
     public static readonly StyledProperty<bool> IsModalProperty =
         AvaloniaProperty.Register<ImagePreviewerDialog, bool>(nameof(IsModal));
 
+    public static readonly StyledProperty<object?> LoadingContentProperty =
+        AvaloniaProperty.Register<ImagePreviewerDialog, object?>(nameof(LoadingContent));
+
+    public static readonly StyledProperty<IDataTemplate?> LoadingContentTemplateProperty =
+        AvaloniaProperty.Register<ImagePreviewerDialog, IDataTemplate?>(nameof(LoadingContentTemplate));
+
+    public static readonly StyledProperty<object?> ErrorContentProperty =
+        AvaloniaProperty.Register<ImagePreviewerDialog, object?>(nameof(ErrorContent));
+
+    public static readonly StyledProperty<IDataTemplate?> ErrorContentTemplateProperty =
+        AvaloniaProperty.Register<ImagePreviewerDialog, IDataTemplate?>(nameof(ErrorContentTemplate));
+
     public static readonly StyledProperty<int> CurrentIndexProperty =
         AvaloniaProperty.Register<ImagePreviewerDialog, int>(nameof(CurrentIndex), 0);
 
@@ -45,7 +59,7 @@ internal class ImagePreviewerDialog : Window,
     public static readonly StyledProperty<Transform?> TransformProperty =
         AvaloniaProperty.Register<ImagePreviewerDialog, Transform?>(nameof(Transform));
 
-    public IList<PreviewImageSource>? ItemsSource
+    public IList<ImagePreviewItem>? ItemsSource
     {
         get => GetValue(ItemsSourceProperty);
         set => SetValue(ItemsSourceProperty, value);
@@ -81,6 +95,30 @@ internal class ImagePreviewerDialog : Window,
         set => SetValue(IsModalProperty, value);
     }
 
+    public object? LoadingContent
+    {
+        get => GetValue(LoadingContentProperty);
+        set => SetValue(LoadingContentProperty, value);
+    }
+
+    public IDataTemplate? LoadingContentTemplate
+    {
+        get => GetValue(LoadingContentTemplateProperty);
+        set => SetValue(LoadingContentTemplateProperty, value);
+    }
+
+    public object? ErrorContent
+    {
+        get => GetValue(ErrorContentProperty);
+        set => SetValue(ErrorContentProperty, value);
+    }
+
+    public IDataTemplate? ErrorContentTemplate
+    {
+        get => GetValue(ErrorContentTemplateProperty);
+        set => SetValue(ErrorContentTemplateProperty, value);
+    }
+
     public int CurrentIndex
     {
         get => GetValue(CurrentIndexProperty);
@@ -113,8 +151,8 @@ internal class ImagePreviewerDialog : Window,
 
     #region 内部属性定义
 
-    internal static readonly DirectProperty<ImagePreviewerDialog, PreviewImageSource?> CurrentImageProperty =
-        AvaloniaProperty.RegisterDirect<ImagePreviewerDialog, PreviewImageSource?>(
+    internal static readonly DirectProperty<ImagePreviewerDialog, LoadedImageSource?> CurrentImageProperty =
+        AvaloniaProperty.RegisterDirect<ImagePreviewerDialog, LoadedImageSource?>(
             nameof(CurrentImage),
             o => o.CurrentImage,
             (o, v) => o.CurrentImage = v);
@@ -136,6 +174,18 @@ internal class ImagePreviewerDialog : Window,
             nameof(IsFirstImage),
             o => o.IsFirstImage,
             (o, v) => o.IsFirstImage = v);
+
+    internal static readonly DirectProperty<ImagePreviewerDialog, bool> IsCurrentImageLoadingProperty =
+        AvaloniaProperty.RegisterDirect<ImagePreviewerDialog, bool>(
+            nameof(IsCurrentImageLoading),
+            o => o.IsCurrentImageLoading,
+            (o, v) => o.IsCurrentImageLoading = v);
+
+    internal static readonly DirectProperty<ImagePreviewerDialog, bool> IsCurrentImageFailedProperty =
+        AvaloniaProperty.RegisterDirect<ImagePreviewerDialog, bool>(
+            nameof(IsCurrentImageFailed),
+            o => o.IsCurrentImageFailed,
+            (o, v) => o.IsCurrentImageFailed = v);
 
     internal static readonly DirectProperty<ImagePreviewerDialog, bool> IsScaleDownEnabledProperty =
         AvaloniaProperty.RegisterDirect<ImagePreviewerDialog, bool>(
@@ -185,9 +235,9 @@ internal class ImagePreviewerDialog : Window,
             o => o.SuppressTransformAnimation,
             (o, v) => o.SuppressTransformAnimation = v);
 
-    private PreviewImageSource? _currentImage;
+    private LoadedImageSource? _currentImage;
 
-    internal PreviewImageSource? CurrentImage
+    internal LoadedImageSource? CurrentImage
     {
         get => _currentImage;
         set => SetAndRaise(CurrentImageProperty, ref _currentImage, value);
@@ -215,6 +265,22 @@ internal class ImagePreviewerDialog : Window,
     {
         get => _isFirstImage;
         set => SetAndRaise(IsFirstImageProperty, ref _isFirstImage, value);
+    }
+
+    private bool _isCurrentImageLoading;
+
+    internal bool IsCurrentImageLoading
+    {
+        get => _isCurrentImageLoading;
+        set => SetAndRaise(IsCurrentImageLoadingProperty, ref _isCurrentImageLoading, value);
+    }
+
+    private bool _isCurrentImageFailed;
+
+    internal bool IsCurrentImageFailed
+    {
+        get => _isCurrentImageFailed;
+        set => SetAndRaise(IsCurrentImageFailedProperty, ref _isCurrentImageFailed, value);
     }
 
     private bool _isScaleDownEnabled;
@@ -287,6 +353,7 @@ internal class ImagePreviewerDialog : Window,
 
     private readonly AbstractImagePreviewer _imagePreviewer;
     private readonly ImageViewer _imageViewer;
+    private ImagePreviewItem? _currentItem;
     private bool _firstSizeCalculated;
     private ImageSwitchTransformPolicy _switchTransformPolicy = ImageSwitchTransformPolicy.CreateDefault();
 
@@ -381,6 +448,12 @@ internal class ImagePreviewerDialog : Window,
         viewer[!ImageViewer.CountProperty]                      = this[!CountProperty];
         viewer[!ImageViewer.CurrentIndexProperty]               = this[!CurrentIndexProperty];
         viewer[!ImageViewer.CurrentImageProperty]               = this[!CurrentImageProperty];
+        viewer[!ImageViewer.IsCurrentImageLoadingProperty]      = this[!IsCurrentImageLoadingProperty];
+        viewer[!ImageViewer.IsCurrentImageFailedProperty]       = this[!IsCurrentImageFailedProperty];
+        viewer[!ImageViewer.LoadingContentProperty]             = this[!LoadingContentProperty];
+        viewer[!ImageViewer.LoadingContentTemplateProperty]     = this[!LoadingContentTemplateProperty];
+        viewer[!ImageViewer.ErrorContentProperty]               = this[!ErrorContentProperty];
+        viewer[!ImageViewer.ErrorContentTemplateProperty]       = this[!ErrorContentTemplateProperty];
         viewer[!ImageViewer.IsFirstImageProperty]               = this[!IsFirstImageProperty];
         viewer[!ImageViewer.IsLastImageProperty]                = this[!IsLastImageProperty];
         viewer[!ImageViewer.IsMultiImagesProperty]              = this[!IsMultiImagesProperty];
@@ -471,8 +544,7 @@ internal class ImagePreviewerDialog : Window,
         if (change.Property == ImageScaleXProperty ||
             change.Property == ImageScaleYProperty)
         {
-            SetCurrentValue(IsScaleDownEnabledProperty, MathUtils.GreaterThan(Math.Abs(ImageScaleX), MinScale) && MathUtils.GreaterThan(Math.Abs(ImageScaleY), MinScale));
-            SetCurrentValue(IsScaleUpEnabledProperty, MathUtils.LessThan(Math.Abs(ImageScaleX), MaxScale) && MathUtils.LessThan(Math.Abs(ImageScaleY), MaxScale));
+            UpdateScaleCapability();
         }
     }
 
@@ -480,19 +552,75 @@ internal class ImagePreviewerDialog : Window,
     {
         if (ItemsSource?.Count > 0 && CurrentIndex >= 0 && CurrentIndex < ItemsSource.Count)
         {
-            SetCurrentValue(CurrentImageProperty, ItemsSource[CurrentIndex]);
+            SetCurrentItem(ItemsSource[CurrentIndex]);
             SetCurrentValue(IsFirstImageProperty, CurrentIndex == 0);
             SetCurrentValue(IsLastImageProperty, CurrentIndex == ItemsSource.Count - 1);
         }
         else if (ItemsSource == null || ItemsSource?.Count == 0)
         {
+            SetCurrentItem(null);
             SetCurrentValue(IsLastImageProperty, false);
             SetCurrentValue(IsFirstImageProperty, false);
         }
     }
 
+    private void SetCurrentItem(ImagePreviewItem? item)
+    {
+        if (ReferenceEquals(_currentItem, item))
+        {
+            UpdateCurrentImageState();
+            return;
+        }
+
+        if (_currentItem != null)
+        {
+            _currentItem.PropertyChanged -= HandleCurrentItemPropertyChanged;
+        }
+
+        _currentItem = item;
+        if (_currentItem != null)
+        {
+            _currentItem.PropertyChanged += HandleCurrentItemPropertyChanged;
+        }
+
+        UpdateCurrentImageState();
+    }
+
+    private void HandleCurrentItemPropertyChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == nameof(ImagePreviewItem.LoadedSource) ||
+            args.PropertyName == nameof(ImagePreviewItem.State) ||
+            args.PropertyName == nameof(ImagePreviewItem.IsLoading) ||
+            args.PropertyName == nameof(ImagePreviewItem.IsFailed))
+        {
+            UpdateCurrentImageState();
+        }
+    }
+
+    private void UpdateCurrentImageState()
+    {
+        SetCurrentValue(CurrentImageProperty, _currentItem?.LoadedSource);
+        SetCurrentValue(IsCurrentImageLoadingProperty, _currentItem?.IsLoading == true);
+        SetCurrentValue(IsCurrentImageFailedProperty, _currentItem?.IsFailed == true);
+        UpdateScaleCapability();
+    }
+
+    private void UpdateScaleCapability()
+    {
+        var canTransform = CurrentImage != null;
+        SetCurrentValue(IsScaleDownEnabledProperty,
+            canTransform &&
+            MathUtils.GreaterThan(Math.Abs(ImageScaleX), MinScale) &&
+            MathUtils.GreaterThan(Math.Abs(ImageScaleY), MinScale));
+        SetCurrentValue(IsScaleUpEnabledProperty,
+            canTransform &&
+            MathUtils.LessThan(Math.Abs(ImageScaleX), MaxScale) &&
+            MathUtils.LessThan(Math.Abs(ImageScaleY), MaxScale));
+    }
+
     public void Close(Action? callback = null)
     {
+        SetCurrentItem(null);
         base.Close();
         callback?.Invoke();
     }
@@ -521,6 +649,11 @@ internal class ImagePreviewerDialog : Window,
 
     private void HandleHorizontalFlipRequest(ImagePreviewToolbarRequestEventArgs args)
     {
+        if (CurrentImage == null)
+        {
+            return;
+        }
+
         UpdateSwitchTransformPolicy(args.ToolbarSource);
         SetCurrentValue(ImageScaleXProperty, -1 * ImageScaleX);
         if (ShouldRetainFlipRotateOnSwitch)
@@ -531,6 +664,11 @@ internal class ImagePreviewerDialog : Window,
 
     private void HandleVerticalFlipRequest(ImagePreviewToolbarRequestEventArgs args)
     {
+        if (CurrentImage == null)
+        {
+            return;
+        }
+
         UpdateSwitchTransformPolicy(args.ToolbarSource);
         SetCurrentValue(ImageScaleYProperty, -1 * ImageScaleY);
         if (ShouldRetainFlipRotateOnSwitch)
@@ -541,6 +679,11 @@ internal class ImagePreviewerDialog : Window,
 
     private void HandleRotateLeftRequest(ImagePreviewToolbarRequestEventArgs args)
     {
+        if (CurrentImage == null)
+        {
+            return;
+        }
+
         UpdateSwitchTransformPolicy(args.ToolbarSource);
         SetCurrentValue(ImageRotateProperty, ImageRotate - MathUtils.Deg2Rad(90));
         if (ShouldRetainFlipRotateOnSwitch)
@@ -551,6 +694,11 @@ internal class ImagePreviewerDialog : Window,
 
     private void HandleRotateRightRequest(ImagePreviewToolbarRequestEventArgs args)
     {
+        if (CurrentImage == null)
+        {
+            return;
+        }
+
         UpdateSwitchTransformPolicy(args.ToolbarSource);
         SetCurrentValue(ImageRotateProperty, ImageRotate + MathUtils.Deg2Rad(90));
         if (ShouldRetainFlipRotateOnSwitch)
@@ -561,6 +709,11 @@ internal class ImagePreviewerDialog : Window,
 
     private void HandleScaleDownRequest(double? scaleStep = null)
     {
+        if (CurrentImage == null)
+        {
+            return;
+        }
+
         var step = ResolveScaleStep(scaleStep);
         var scaleX = ImageScaleX * (1 / (1 + step));
         var scaleY = ImageScaleY * (1 / (1 + step));
@@ -593,6 +746,11 @@ internal class ImagePreviewerDialog : Window,
 
     private void HandleScaleUpRequest(double? scaleStep = null)
     {
+        if (CurrentImage == null)
+        {
+            return;
+        }
+
         var step = ResolveScaleStep(scaleStep);
         var scaleX = ImageScaleX * (1 + step);
         var scaleY = ImageScaleY * (1 + step);
@@ -668,6 +826,11 @@ internal class ImagePreviewerDialog : Window,
 
     private void HandleFitToWindowRequest(bool isFitToWindow)
     {
+        if (CurrentImage == null)
+        {
+            return;
+        }
+
         SetCurrentValue(ImageScaleXProperty, ImageScaleX > 0.0 ? 1.0 : -1.0);
         SetCurrentValue(ImageScaleYProperty, ImageScaleY > 0.0 ? 1.0 : -1.0);
         SetCurrentValue(ImageScaleChangedProperty, false);

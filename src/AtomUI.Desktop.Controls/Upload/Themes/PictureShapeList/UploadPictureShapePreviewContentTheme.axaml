@@ -22,7 +22,7 @@
                                                        IsShowCoverMask="False"
                                                        HorizontalAlignment="Stretch"
                                                        VerticalAlignment="Stretch"
-                                                       ItemsSource="{TemplateBinding Sources}" />
+                                                       SourceUris="{TemplateBinding Sources}" />
                             <Border Name="Mask" Opacity="{TemplateBinding MaskOpacity}">
                                 <StackPanel Name="ActionsLayout" Orientation="Horizontal" HorizontalAlignment="Center"
                                             VerticalAlignment="Center">
