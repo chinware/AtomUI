@@ -31,6 +31,14 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     public static readonly StyledProperty<ImageSourceUri?> FallbackSourceUriProperty =
         AvaloniaProperty.Register<AbstractImagePreviewer, ImageSourceUri?>(nameof(FallbackSourceUri));
 
+    public static readonly StyledProperty<string?> PreviewTitleProperty =
+        AvaloniaProperty.Register<AbstractImagePreviewer, string?>(nameof(PreviewTitle));
+
+    public static readonly StyledProperty<IImagePreviewTitleResolver?> PreviewTitleResolverProperty =
+        AvaloniaProperty.Register<AbstractImagePreviewer, IImagePreviewTitleResolver?>(
+            nameof(PreviewTitleResolver),
+            DefaultImagePreviewTitleResolver.Instance);
+
     public static readonly StyledProperty<object?> LoadingContentProperty =
         AvaloniaProperty.Register<AbstractImagePreviewer, object?>(nameof(LoadingContent));
 
@@ -74,6 +82,18 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     {
         get => GetValue(FallbackSourceUriProperty);
         set => SetValue(FallbackSourceUriProperty, value);
+    }
+
+    public string? PreviewTitle
+    {
+        get => GetValue(PreviewTitleProperty);
+        set => SetValue(PreviewTitleProperty, value);
+    }
+
+    public IImagePreviewTitleResolver? PreviewTitleResolver
+    {
+        get => GetValue(PreviewTitleResolverProperty);
+        set => SetValue(PreviewTitleResolverProperty, value);
     }
 
     [DependsOn(nameof(LoadingContentTemplate))]
@@ -752,6 +772,8 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, dialogHost, ImagePreviewerDialog.IsMotionEnabledProperty));
         disposables.Add(BindUtils.RelayBind(this, IsDialogModalProperty, dialogHost, ImagePreviewerDialog.IsModalProperty));
         disposables.Add(BindUtils.RelayBind(this, CurrentIndexProperty, dialogHost, ImagePreviewerDialog.CurrentIndexProperty));
+        disposables.Add(BindUtils.RelayBind(this, PreviewTitleProperty, dialogHost, Window.TitleProperty));
+        disposables.Add(BindUtils.RelayBind(this, PreviewTitleResolverProperty, dialogHost, ImagePreviewerDialog.PreviewTitleResolverProperty));
     }
 
     private void RelayOverlayHostBindings(CompositeDisposable disposables, ImagePreviewerOverlayHost overlayHost)

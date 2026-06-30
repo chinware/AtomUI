@@ -8,6 +8,156 @@
         <atom:WindowTitleBarTheme TargetType="atom:ImagePreviewerTitleBar" />
     </ControlTheme.BasedOn>
 
+    <Style Selector="^[OsType=Linux]">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:ImagePreviewerTitleBar">
+                <Border Name="Frame" Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}">
+                    <Panel>
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          IsHitTestVisible="False"
+                                          ClipToBounds="True"
+                                          Content="{TemplateBinding Title}"
+                                          ContentTemplate="{TemplateBinding TitleTemplate}"
+                                          IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <DockPanel LastChildFill="False"
+                                   HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
+                                        DockPanel.Dock="Left">
+                                <ContentPresenter Name="PART_Logo"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalContentAlignment="Center"
+                                                  VerticalContentAlignment="Center"
+                                                  Content="{TemplateBinding Logo}"
+                                                  ContentTemplate="{TemplateBinding LogoTemplate}"
+                                                  IsVisible="{TemplateBinding IsEffectiveLogoVisible}" />
+                                <ContentPresenter Name="PART_LeftAddOn"
+                                                  Content="{TemplateBinding LeftAddOn}"
+                                                  ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                                                  IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            </StackPanel>
+
+                            <atom:CaptionButtonGroup DockPanel.Dock="Right"
+                                                     Name="PART_CaptionButtonGroup"
+                                                     IsWindowActive="{TemplateBinding IsWindowActive}"
+                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                            <ContentPresenter Name="PART_RightAddOn"
+                                              DockPanel.Dock="Right"
+                                              Content="{TemplateBinding RightAddOn}"
+                                              ContentTemplate="{TemplateBinding RightAddOnTemplate}"
+                                              IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        </DockPanel>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="^[OsType=Windows]">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:ImagePreviewerTitleBar">
+                <DockPanel LastChildFill="True">
+                    <atom:CaptionButtonGroup DockPanel.Dock="Right"
+                                             Name="PART_CaptionButtonGroup"
+                                             IsWindowActive="{TemplateBinding IsWindowActive}"
+                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                    <Border Name="Frame" Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+                        <Panel>
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              IsHitTestVisible="False"
+                                              ClipToBounds="True"
+                                              Content="{TemplateBinding Title}"
+                                              ContentTemplate="{TemplateBinding TitleTemplate}"
+                                              IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            <DockPanel LastChildFill="False"
+                                       HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
+                                            DockPanel.Dock="Left">
+                                    <ContentPresenter Name="PART_Logo"
+                                                      HorizontalAlignment="Left"
+                                                      VerticalAlignment="Center"
+                                                      HorizontalContentAlignment="Center"
+                                                      VerticalContentAlignment="Center"
+                                                      Content="{TemplateBinding Logo}"
+                                                      ContentTemplate="{TemplateBinding LogoTemplate}"
+                                                      IsVisible="{TemplateBinding IsEffectiveLogoVisible}" />
+                                    <ContentPresenter Name="PART_LeftAddOn"
+                                                      Content="{TemplateBinding LeftAddOn}"
+                                                      ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                                                      IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                </StackPanel>
+
+                                <ContentPresenter Name="PART_RightAddOn"
+                                                  DockPanel.Dock="Right"
+                                                  Content="{TemplateBinding RightAddOn}"
+                                                  ContentTemplate="{TemplateBinding RightAddOnTemplate}"
+                                                  IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            </DockPanel>
+                        </Panel>
+                    </Border>
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="^[OsType=macOS]">
+        <Setter Property="Template">
+            <ControlTemplate TargetType="atom:ImagePreviewerTitleBar">
+                <Border Name="Frame" Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}">
+                    <Panel>
+                        <ContentPresenter Name="PART_ContentPresenter"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          IsHitTestVisible="False"
+                                          ClipToBounds="True"
+                                          Content="{TemplateBinding Title}"
+                                          ContentTemplate="{TemplateBinding TitleTemplate}"
+                                          IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        <DockPanel LastChildFill="False"
+                                   VerticalAlignment="Center"
+                                   HorizontalSpacing="{atom:WindowTitleBarTokenResource HeaderHorizontalSpacing}">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="{atom:WindowTitleBarTokenResource LogoAndTitleSpacing}"
+                                        DockPanel.Dock="Left">
+                                <ContentPresenter Name="PART_Logo"
+                                                  HorizontalAlignment="Left"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalContentAlignment="Center"
+                                                  VerticalContentAlignment="Center"
+                                                  Content="{TemplateBinding Logo}"
+                                                  ContentTemplate="{TemplateBinding LogoTemplate}"
+                                                  IsVisible="{TemplateBinding IsEffectiveLogoVisible}" />
+                                <ContentPresenter Name="PART_LeftAddOn"
+                                                  Content="{TemplateBinding LeftAddOn}"
+                                                  ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                                                  IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                            </StackPanel>
+
+                            <atom:CaptionButtonGroup DockPanel.Dock="Right"
+                                                     Name="PART_CaptionButtonGroup"
+                                                     IsWindowActive="{TemplateBinding IsWindowActive}"
+                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                            <ContentPresenter Name="PART_RightAddOn"
+                                              DockPanel.Dock="Right"
+                                              Content="{TemplateBinding RightAddOn}"
+                                              ContentTemplate="{TemplateBinding RightAddOnTemplate}"
+                                              IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        </DockPanel>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
     <Style Selector="^[OsType=macOS] /template/ ContentPresenter#PART_Logo">
         <Setter Property="IsVisible" Value="False" />
     </Style>

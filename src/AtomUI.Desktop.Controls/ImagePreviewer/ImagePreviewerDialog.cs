@@ -51,6 +51,9 @@ internal class ImagePreviewerDialog : Window,
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<ImagePreviewerDialog>();
 
+    public static readonly StyledProperty<IImagePreviewTitleResolver?> PreviewTitleResolverProperty =
+        AbstractImagePreviewer.PreviewTitleResolverProperty.AddOwner<ImagePreviewerDialog>();
+
     public static readonly DirectProperty<ImagePreviewerDialog, int> CountProperty =
         AvaloniaProperty.RegisterDirect<ImagePreviewerDialog, int>(
             nameof(Count),
@@ -129,6 +132,12 @@ internal class ImagePreviewerDialog : Window,
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public IImagePreviewTitleResolver? PreviewTitleResolver
+    {
+        get => GetValue(PreviewTitleResolverProperty);
+        set => SetValue(PreviewTitleResolverProperty, value);
     }
 
     public Transform? Transform
@@ -234,6 +243,12 @@ internal class ImagePreviewerDialog : Window,
             nameof(SuppressTransformAnimation),
             o => o.SuppressTransformAnimation,
             (o, v) => o.SuppressTransformAnimation = v);
+
+    internal static readonly DirectProperty<ImagePreviewerDialog, string?> EffectivePreviewTitleProperty =
+        AvaloniaProperty.RegisterDirect<ImagePreviewerDialog, string?>(
+            nameof(EffectivePreviewTitle),
+            o => o.EffectivePreviewTitle,
+            (o, v) => o.EffectivePreviewTitle = v);
 
     private LoadedImageSource? _currentImage;
 
@@ -347,6 +362,14 @@ internal class ImagePreviewerDialog : Window,
         set => SetAndRaise(SuppressTransformAnimationProperty, ref _suppressTransformAnimation, value);
     }
 
+    private string? _effectivePreviewTitle;
+
+    internal string? EffectivePreviewTitle
+    {
+        get => _effectivePreviewTitle;
+        set => SetAndRaise(EffectivePreviewTitleProperty, ref _effectivePreviewTitle, value);
+    }
+
     #endregion
 
     protected override Type StyleKeyOverride { get; } = typeof(ImagePreviewerDialog);
@@ -435,6 +458,7 @@ internal class ImagePreviewerDialog : Window,
         _imagePreviewer = imagePreviewer;
         _imageViewer    = CreateImageViewer();
         Content         = _imageViewer;
+        SetCurrentValue(TitleProperty, null);
 
         AddHandler(KeyDownEvent, HandleDialogKeyDown, RoutingStrategies.Tunnel | RoutingStrategies.Bubble, handledEventsToo: true);
     }
@@ -540,6 +564,11 @@ internal class ImagePreviewerDialog : Window,
             // CurrentImage 仍为 null,图片无法居中。这里直接再调一次保证 CurrentImage 被设上。
             HandleCurrentIndexChanged();
         }
+        else if (change.Property == TitleProperty ||
+                 change.Property == PreviewTitleResolverProperty)
+        {
+            UpdateEffectivePreviewTitle();
+        }
 
         if (change.Property == ImageScaleXProperty ||
             change.Property == ImageScaleYProperty)
@@ -550,11 +579,12 @@ internal class ImagePreviewerDialog : Window,
 
     private void HandleCurrentIndexChanged()
     {
-        if (ItemsSource?.Count > 0 && CurrentIndex >= 0 && CurrentIndex < ItemsSource.Count)
+        if (ItemsSource is { Count: > 0 } items)
         {
-            SetCurrentItem(ItemsSource[CurrentIndex]);
-            SetCurrentValue(IsFirstImageProperty, CurrentIndex == 0);
-            SetCurrentValue(IsLastImageProperty, CurrentIndex == ItemsSource.Count - 1);
+            var currentIndex = ResolveDisplayCurrentIndex(items.Count);
+            SetCurrentItem(items[currentIndex]);
+            SetCurrentValue(IsFirstImageProperty, currentIndex == 0);
+            SetCurrentValue(IsLastImageProperty, currentIndex == items.Count - 1);
         }
         else if (ItemsSource == null || ItemsSource?.Count == 0)
         {
@@ -562,6 +592,8 @@ internal class ImagePreviewerDialog : Window,
             SetCurrentValue(IsLastImageProperty, false);
             SetCurrentValue(IsFirstImageProperty, false);
         }
+
+        UpdateEffectivePreviewTitle();
     }
 
     private void SetCurrentItem(ImagePreviewItem? item)
@@ -603,6 +635,46 @@ internal class ImagePreviewerDialog : Window,
         SetCurrentValue(IsCurrentImageLoadingProperty, _currentItem?.IsLoading == true);
         SetCurrentValue(IsCurrentImageFailedProperty, _currentItem?.IsFailed == true);
         UpdateScaleCapability();
+    }
+
+    private void UpdateEffectivePreviewTitle()
+    {
+        if (!string.IsNullOrWhiteSpace(Title))
+        {
+            SetCurrentValue(EffectivePreviewTitleProperty, Title);
+            return;
+        }
+
+        SetCurrentValue(EffectivePreviewTitleProperty, ResolvePreviewTitle());
+    }
+
+    private string? ResolvePreviewTitle()
+    {
+        if (PreviewTitleResolver is null ||
+            ItemsSource is not { Count: > 0 } items)
+        {
+            return null;
+        }
+
+        var currentIndex = ResolveDisplayCurrentIndex(items.Count);
+        var context      = new ImagePreviewTitleResolveContext(items[currentIndex].SourceUri, currentIndex, items.Count);
+        var title        = PreviewTitleResolver.ResolveTitle(context);
+        return string.IsNullOrWhiteSpace(title) ? null : title;
+    }
+
+    private int ResolveDisplayCurrentIndex(int count)
+    {
+        if (CurrentIndex < 0)
+        {
+            return 0;
+        }
+
+        if (CurrentIndex >= count)
+        {
+            return count - 1;
+        }
+
+        return CurrentIndex;
     }
 
     private void UpdateScaleCapability()
@@ -923,7 +995,8 @@ internal class ImagePreviewerDialog : Window,
 
     protected override void NotifyConfigureTitleBar(WindowTitleBar titleBar)
     {
-        // 跳过 base 对 TitleProperty 的绑定,预览弹窗不展示 Window.Title。
+        // 使用预览标题算法结果，而不是直接展示 Window.Title。
+        titleBar[!WindowTitleBar.TitleProperty]        = this[!EffectivePreviewTitleProperty];
         titleBar[!WindowTitleBar.LogoProperty]         = this[!LogoProperty];
         titleBar[!WindowTitleBar.LogoTemplateProperty] = this[!LogoTemplateProperty];
 

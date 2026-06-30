@@ -111,7 +111,8 @@ public class ImagePreviewer : AbstractImagePreviewer
             ConfigureEffectiveCoverItem();
         }
         
-        else if (change.Property == EffectiveItemsProperty)
+        else if (change.Property == EffectiveItemsProperty ||
+                 change.Property == CurrentIndexProperty)
         {
             ConfigureEffectiveCoverItem();
         }
@@ -151,9 +152,10 @@ public class ImagePreviewer : AbstractImagePreviewer
             return;
         }
 
-        if (EffectiveItems is { Count: > 0 })
+        var currentCoverItem = ResolveCurrentCoverItem();
+        if (currentCoverItem is not null)
         {
-            SetCoverItem(EffectiveItems[0], ownsItem: false);
+            SetCoverItem(currentCoverItem, ownsItem: false);
             return;
         }
 
@@ -165,6 +167,26 @@ public class ImagePreviewer : AbstractImagePreviewer
         {
             SetCoverItem(null, ownsItem: false);
         }
+    }
+
+    private ImagePreviewItem? ResolveCurrentCoverItem()
+    {
+        if (EffectiveItems is not { Count: > 0 } effectiveItems)
+        {
+            return null;
+        }
+
+        var currentIndex = CurrentIndex;
+        if (currentIndex < 0)
+        {
+            currentIndex = 0;
+        }
+        else if (currentIndex >= effectiveItems.Count)
+        {
+            currentIndex = effectiveItems.Count - 1;
+        }
+
+        return effectiveItems[currentIndex];
     }
 
     private void SetOwnedCoverItem(ImagePreviewItem item, bool allowFallback)
