@@ -36,6 +36,9 @@ internal partial class zh_TW : LanguageProvider
     public const string ApiPropertyCoverWidth = "圖片封面的寬度。";
     public const string ApiPropertyCoverHeight = "圖片封面的高度。";
     public const string ApiPropertyCurrentIndex = "多圖預覽中的當前圖片索引。";
+    public const string ApiPropertyPreviewTitle = "預覽視窗標題列顯示的顯式標題。";
+    public const string ApiPropertyPreviewTitleIcon = "顯示在預覽視窗標題左側的可選圖標。";
+    public const string ApiPropertyPreviewTitleResolver = "PreviewTitle 為空時用於解析預覽視窗標題的 resolver。";
     public const string ApiPropertyCoverSourceUri = "ImagePreviewer 的自定義封面圖片源 URI。";
     public const string ApiPropertyLoadingContent = "圖片載入中顯示的自定義內容。";
     public const string ApiPropertyLoadingContentTemplate = "用於渲染自定義載入內容的模板。";

@@ -90,12 +90,21 @@ current effective item + CurrentIndex + Count
   -> ImagePreviewerTitleBar title
 ```
 
+预览窗口标题图标使用 ImagePreviewer 自有的 PathIcon 路径：
+
+```text
+PreviewTitleIcon
+  -> ImagePreviewerDialog.TitleIcon
+  -> ImagePreviewerTitleBar.Icon
+  -> IconPresenter#PART_IconPresenter
+```
+
 源码中的状态入口按以下语义维护：
 
 - 图片来源：`SourceUri`、`SourceUris`、`CoverSourceUri`、`FallbackSourceUri`。
 - 内容与数据：`CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`LoadingContent`、`LoadingContentTemplate`、`ErrorContent`、`ErrorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageTranslateX`、`ImageTranslateY`。
 - 选择与集合：`Count`、`CurrentIndex`。`CurrentIndex` 是控件级当前项索引，不是弹层局部状态；未设置 `CoverSourceUri` 时，普通封面和弹出预览宿主都必须从同一 current effective item 派生展示内容。
-- 预览标题：`PreviewTitle`、`PreviewTitleResolver`、`IImagePreviewTitleResolver`、`ImagePreviewTitleResolveContext`。非空白显式标题优先；显式标题为空时从 current effective item 解析标题。
+- 预览标题：`PreviewTitle`、`PreviewTitleIcon`、`PreviewTitleResolver`、`IImagePreviewTitleResolver`、`ImagePreviewTitleResolveContext`。非空白显式标题优先；显式标题为空时从 current effective item 解析标题；标题图标使用 `PathIcon?`，只在显式设置时进入预览标题栏。
 - 交互与状态：`IsDialogModal`、`IsDialogTopmost`、`IsModal`、`IsMotionEnabled`、`IsOpen`、`IsShowCoverMask`。
 - 视觉与布局：`CoverHeight`、`CoverWidth`。
 - 其他稳定入口：`MaxScale`、`MinScale`、`ScaleStep`、`Stretch`、`Transform`。
@@ -125,7 +134,71 @@ ImageSourceUri
 
 `ImagePreviewItemState` 只能由 item owner 写入。加载任务返回时必须校验版本号和取消状态；过期结果必须释放后丢弃，不能覆盖新来源。
 
-## 5. 生命周期与模板接入
+## 5. 组合结构模型
+
+ImagePreviewer 家族由 public 控件、预览宿主、标题栏、图片场景、封面、toolbar 和图片项状态对象协作完成。组合结构优先以 `Themes/` 中的 ControlTheme 和 template part 为准；C# 创建的 dialog / overlay host 用于补充打开状态和宿主生命周期。
+
+### 控件角色图
+
+```text
+ImagePreviewer (ImagePreviewerTheme.axaml)
+  -> Border
+     -> ImagePreviewerCover
+        -> ImagePreviewRenderer
+        -> Border#PART_LoadingPresenter
+        -> Border#PART_ErrorPresenter
+        -> Border#Mask
+           -> ContentPresenter#MaskContentPresenter
+
+ImageGroupPreviewer (ImageGroupPreviewerTheme.axaml)
+  -> ItemsControl#PART_CoverItemsControl
+
+ImagePreviewerDialog (ImagePreviewerDialogTheme.axaml + WindowTheme)
+  -> ImagePreviewerTitleBar (window title bar)
+     -> StackPanel#PART_TitleLayout
+        -> IconPresenter#PART_IconPresenter
+        -> ContentPresenter#PART_ContentPresenter
+  -> ImageViewer
+     -> Canvas#PART_ImageViewerScene
+        -> ImagePreviewRenderer#PART_ImageRenderer
+     -> Border#PART_LoadingPresenter
+     -> Border#PART_ErrorPresenter
+     -> ImagePreviewNavButton#PART_PreviousButton
+     -> ImagePreviewNavButton#PART_NextButton
+     -> ImagePreviewFloatToolbar
+        -> IconButton#PART_ScaleDownButton
+        -> IconButton#PART_ScaleUpButton
+        -> ToggleIconButton#PART_FitToWindowButton
+        -> IconButton#PART_HorizontalFlipButton
+        -> IconButton#PART_VerticalFlipButton
+        -> IconButton#PART_RotateLeftButton
+        -> IconButton#PART_RotateRightButton
+
+ImagePreviewerOverlayHost (ImagePreviewerThemes.axaml + runtime host)
+  -> IconButton#PART_CloseButton
+  -> ImageViewer
+  -> ImagePreviewToolbar
+```
+
+### 协作节点
+
+| 节点 | 类型 | 来源 | 生命周期 owner | 影响的 public API | 稳定性 | Agent 使用边界 |
+| --- | --- | --- | --- | --- | --- | --- |
+| `ImagePreviewer` / `ImageGroupPreviewer` | public control | `ImagePreviewerTheme.axaml`、`ImageGroupPreviewerTheme.axaml` | 控件实例 | `SourceUri`、`SourceUris`、`CoverSourceUri`、`CurrentIndex`、`IsOpen` | public | 可作为用户 API 和主题入口理解。 |
+| `ImagePreviewerCover` | public control | `ImagePreviewerCoverTheme.axaml` | 控件实例 / cover template | `CoverIndicatorContent`、`LoadingContent`、`ErrorContent`、`IsShowCoverMask` | public | 可作为封面视觉语义理解；内部 mask 节点不作为用户 API。 |
+| `ImagePreviewerDialog` | public window subclass | `ImagePreviewerDialogTheme.axaml`、runtime open path | `AbstractImagePreviewer` 打开状态 | `IsOpen`、`IsDialogModal`、`IsDialogTopmost`、`PreviewTitle`、`PreviewTitleIcon` | internal-observable | 用户通过 ImagePreviewer API 间接配置，不依赖 dialog 模板内部结构。 |
+| `ImagePreviewerTitleBar` | title bar control | `ImagePreviewerTitleBarTheme.axaml` | `ImagePreviewerDialog` / Window template | `PreviewTitle`、`PreviewTitleIcon` | template-stable | `PART_TitleLayout`、`PART_IconPresenter` 是主题维护契约；不得通过 `Window.Icon` 或 `Window.Logo` 显示预览标题图标。 |
+| `ImageViewer` | public control | `ImageViewerTheme.axaml` | dialog / overlay host | `CurrentIndex`、`ImageScaleStep`、`ImageMinScale`、`ImageMaxScale`、toolbar request events | public | 负责预览层图片场景和 toolbar 状态，不拥有图片加载任务。 |
+| `ImagePreviewRenderer` | renderer control | `ImageViewerTheme.axaml`、`ImagePreviewerCoverTheme.axaml` | cover / viewer template | `Stretch`、`Transform`、loaded image result | template-stable | 只消费 `LoadedImageSource`；不得在 renderer 内发起来源加载。 |
+| `ImagePreviewToolbar` / `ImagePreviewFloatToolbar` | toolbar controls | `ImagePreviewToolbarTheme.axaml`、`ImagePreviewFloatToolbarTheme.axaml` | viewer / overlay host | request events、`CurrentIndex`、`Count` | template-stable | 动作按钮 part 可用于主题维护；事件顺序属于兼容边界。 |
+| `ImagePreviewItem` | state object | C# runtime model | `AbstractImagePreviewer` / effective items | `SourceUri`、`SourceUris`、`FallbackSourceUri`、loading/error 状态 | internal-observable | 是图片加载状态 owner，不应反向持有视觉对象。 |
+| `IImageSourceLoader` | service contract | C# loading model | 控件或注入服务 owner | 图片来源加载、取消、fallback | internal-observable | 统一本地、资源和远程加载；不得同步等待网络 I/O。 |
+
+标题图标组合只允许通过 `PreviewTitleIcon -> ImagePreviewerDialog.TitleIcon -> ImagePreviewerTitleBar.Icon -> PART_IconPresenter` 这条路径进入标题栏。`PART_IconPresenter` 的位置是标题区域视觉契约，图标来源是 ImagePreviewer 自有 `PathIcon?` 契约；未设置时必须保持无图标状态，不能从应用图标、主窗口图标、`Window.Icon` 或 `Window.Logo` fallback。
+
+`PreviewTitleIcon -> ImagePreviewerDialog.TitleIcon` 由打开预览时创建的 runtime open state 建立 C# relay，并在宿主关闭时随 open state 释放，因为 `ImagePreviewerDialog` 不是 `ImagePreviewer` 控件模板中的稳定 AXAML 节点。`ImagePreviewerDialog.TitleIcon -> ImagePreviewerTitleBar.Icon` 由 `Window.NotifyConfigureTitleBar(...)` 建立绑定，因为标题栏由 `Window.NotifyCreateTitleBar(...)` 运行时创建，不属于 `ImagePreviewerDialogTheme.axaml` 的静态模板节点。`ImagePreviewerTitleBar.Icon -> PART_IconPresenter.Icon` 必须留在 `ImagePreviewerTitleBarTheme.axaml` 中使用 `TemplateBinding` 表达。
+
+## 6. 生命周期与模板接入
 
 生命周期规则：
 
@@ -148,7 +221,8 @@ ImageSourceUri
 - `PART_ImageViewerScene`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_LoadingPresenter`：承载图片加载状态内容。默认封面使用 Skeleton 风格占位，预览层使用居中 Spin。
 - `PART_ErrorPresenter`：承载图片加载失败内容；存在 `FallbackSourceUri` 时优先展示 fallback 结果。
-- `PART_Logo`：稳定模板协作入口，重命名前必须同步主题和实现。
+- `PART_IconPresenter`：预览窗口标题图标展示入口，内容来自 `ImagePreviewer.PreviewTitleIcon`，位于 `PART_TitleLayout` 内的标题文字左侧。
+- `PART_TitleLayout`：标题图标和标题文字的水平布局，使用 `WindowTitleBarToken.LogoAndTitleSpacing` 作为二者间距。
 - `PART_NextButton`：承载用户触发入口、导航或关闭动作。
 - `PART_PreviousButton`：承载用户触发入口、导航或关闭动作。
 - `PART_RotateLeftButton`：承载用户触发入口、导航或关闭动作。
@@ -157,7 +231,7 @@ ImageSourceUri
 - `PART_ScaleUpButton`：承载用户触发入口、导航或关闭动作。
 - `PART_VerticalFlipButton`：承载用户触发入口、导航或关闭动作。
 
-## 6. 交互与事件处理
+## 7. 交互与事件处理
 
 ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 
@@ -169,7 +243,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 
 稳定事件路径包括 `FitToWindowRequest`、`HorizontalFlipRequest`、`NextRequest`、`PreviousRequest`、`RotateLeftRequest`、`RotateRightRequest`、`ScaleDownRequest`、`ScaleUpRequest`、`VerticalFlipRequest`。事件参数和触发时机属于兼容边界。
 
-## 7. 内部算法与关键流程
+## 8. 内部算法与关键流程
 
 维护者需要重点关注以下流程：
 
@@ -182,6 +256,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - current effective item resolver：从 effective items 和 `CurrentIndex` 计算展示项，显示层对越界索引进行 clamp，并保持 public `CurrentIndex` 原值不被静默改写。
 - 封面来源解析：先判断 `CoverSourceUri`，命中时使用显式封面；否则使用 current effective item，使普通封面、dialog 和 overlay 的当前项语义一致。
 - 预览标题解析：先检查预览窗口或宿主的 `Window.Title`，非空白时直接使用；否则检查 `PreviewTitle`；仍为空时使用 `PreviewTitleResolver` 基于 current effective item 解析标题；解析不到标题时保持空态。
+- 预览窗口标题图标：`PreviewTitleIcon` relay 到 `ImagePreviewerDialog.TitleIcon`，再绑定到 `ImagePreviewerTitleBar.Icon`；主题只负责用 `PART_IconPresenter` 把显式 `PathIcon` 放在标题文字左侧，不创建右侧按钮或 action slot 语义，也不走 `Window.Icon` fallback。
 - 默认标题 resolver：本地路径和 `file://` 从 `ImageSourceUri.LocalPath` 提取文件名，`http(s)://` 从 `Uri.AbsolutePath` 最后一个非空 path segment 提取文件名并忽略 query/fragment，`avares://` 从资源路径最后一个非空 path segment 提取文件名，unsupported 或无法提取名称时返回 `null`。
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - `SourceUris`、current item 和弹层宿主之间的集合同步。
@@ -189,7 +264,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
-## 8. 资源、性能与 AOT 边界
+## 9. 资源、性能与 AOT 边界
 
 资源和 AOT 约束：
 
@@ -199,6 +274,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - 网络图片必须通过异步加载服务处理，不允许在 UI 线程同步等待网络 I/O。
 - 本地、资源和远程图片共享同一来源身份 key 规范化规则，用于去重、旧结果判定和后续扩展。
 - 标题 resolver 必须是同步、确定性的纯解析逻辑；不得访问文件系统、发起网络请求、等待异步任务或通过运行时反射发现模型成员。
+- 预览标题图标必须使用 `PathIcon? PreviewTitleIcon` 链路，不通过运行时反射、文件探测、平台特判、`Window.Icon` 或主窗口 fallback 生成额外图标模型。
 - `LoadedImageSource` 由控件当前加载项持有；来源替换、取消或控件释放时必须释放旧结果。
 - Source generator 生成文件不手工编辑；需要修改时改输入源或 generator。
 
@@ -209,7 +285,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 - loading 视觉可延迟显示以避免本地文件和 `avares://` 快速完成时闪烁；延迟只影响视觉，不改变状态机和取消语义。
 
-## 9. 维护不变量
+## 10. 维护不变量
 
 维护 ImagePreviewer 时不得破坏：
 
@@ -220,18 +296,19 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - `SourceUri`、`SourceUris`、`CoverSourceUri` 和 `FallbackSourceUri` 的加载、取消、来源身份和失败处理一致性。
 - `CurrentIndex` 的单一语义：普通封面、dialog 和 overlay 使用同一 current effective item；`CoverSourceUri` 只覆盖封面来源，不改变弹层当前项。
 - 预览标题的单一算法：非空白 `Window.Title` 或 `PreviewTitle` 优先，resolver 只在显式标题为空时运行；标题必须跟随 current effective item，不能保留旧集合项的文件名。
+- 预览标题图标的单一路径：`PreviewTitleIcon` 只能进入 `ImagePreviewerDialog.TitleIcon`，再绑定到 `ImagePreviewerTitleBar.Icon` 和 `PART_IconPresenter`；不得转接 `Window.Icon`、`Window.Logo` 或右侧扩展区域来表达标题图标。
 - 加载完成后必须重新计算 `ImageViewer` 的布局、居中、fit-to-window 和交互边界。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。
 
-## 10. 测试与验证
+## 11. 测试与验证
 
 推荐验证：
 
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - 图片加载模型变更覆盖 `ImageSourceUri` 解析、本地文件、`avares://`、fake HTTP、取消、防旧结果回写、fallback 和 loading/error 模板状态。
-- 预览标题模型变更覆盖显式标题优先级、默认文件名解析、current item 切换、集合替换、越界 `CurrentIndex` clamp 和 resolver 更换。
+- 预览标题模型变更覆盖显式标题优先级、默认文件名解析、current item 切换、集合替换、越界 `CurrentIndex` clamp、resolver 更换、`PreviewTitleIcon` 到 `TitleIcon` 的转接、未设置图标时不显示 fallback 图标，以及标题栏 `PART_IconPresenter` 布局。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例、API 表或 Token 表变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。
