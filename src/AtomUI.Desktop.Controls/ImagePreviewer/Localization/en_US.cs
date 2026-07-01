@@ -11,6 +11,8 @@ internal class en_US : LanguageProvider
     {
     }
 
+    public const string ImageLoadFailed = "Image load failed";
+
     public const string Preview = "Preview";
     
     protected override Type GetResourceKindType() => typeof(ImagePreviewerLangResourceKind);

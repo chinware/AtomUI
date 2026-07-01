@@ -2,6 +2,7 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:atom="https://atomui.net"
+    xmlns:antdicons="https://atomui.net/icons/antdesign"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:ImagePreviewerCover}" TargetType="atom:ImagePreviewerCover">
         <Setter Property="Template">
@@ -18,13 +19,14 @@
                         <Border Name="PART_LoadingPresenter"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
+                                MinWidth="{atom:ImagePreviewerTokenResource CoverImageWidth}"
+                                MinHeight="{atom:ImagePreviewerTokenResource CoverImageWidth}"
+                                Background="{atom:SharedTokenResource ColorFillTertiary}"
                                 IsVisible="{TemplateBinding IsLoading}">
                             <Panel HorizontalAlignment="Center"
                                    VerticalAlignment="Center">
-                                <Border HorizontalAlignment="Stretch"
-                                        VerticalAlignment="Stretch"
-                                        Background="{atom:SharedTokenResource ColorFillTertiary}"
-                                        IsVisible="{TemplateBinding LoadingContent, Converter={x:Static ObjectConverters.IsNull}}" />
+                                <atom:SkeletonImage IsActive="True"
+                                                    IsVisible="{TemplateBinding LoadingContent, Converter={x:Static ObjectConverters.IsNull}}" />
                                 <ContentPresenter Content="{TemplateBinding LoadingContent}"
                                                   ContentTemplate="{TemplateBinding LoadingContentTemplate}"
                                                   HorizontalAlignment="Center"
@@ -35,15 +37,24 @@
                         <Border Name="PART_ErrorPresenter"
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Stretch"
+                                MinWidth="{atom:ImagePreviewerTokenResource CoverImageWidth}"
+                                MinHeight="{atom:ImagePreviewerTokenResource CoverImageWidth}"
                                 Background="{atom:SharedTokenResource ColorFillTertiary}"
                                 IsVisible="{TemplateBinding IsFailed}">
                             <Panel HorizontalAlignment="Center"
                                    VerticalAlignment="Center">
-                                <TextBlock Name="DefaultErrorText"
-                                           Text="Image load failed"
-                                           HorizontalAlignment="Center"
-                                           VerticalAlignment="Center"
-                                           IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNull}}" />
+                                <StackPanel Name="DefaultErrorLayout"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Spacing="{atom:SharedTokenResource SpacingXXS}"
+                                            IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNull}}">
+                                    <antdicons:PictureOutlined Name="DefaultErrorIcon"
+                                                              HorizontalAlignment="Center" />
+                                    <TextBlock Name="DefaultErrorText"
+                                               Text="{atom:ImagePreviewerLangResource ImageLoadFailed}"
+                                               HorizontalAlignment="Center"
+                                               TextAlignment="Center" />
+                                </StackPanel>
                                 <ContentPresenter Content="{TemplateBinding ErrorContent}"
                                                   ContentTemplate="{TemplateBinding ErrorContentTemplate}"
                                                   HorizontalAlignment="Center"
@@ -76,6 +87,11 @@
         </Style>
         <Style Selector="^ /template/ TextBlock#DefaultErrorText">
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextTertiary}" />
+        </Style>
+        <Style Selector="^ /template/ atom|Icon#DefaultErrorIcon">
+            <Setter Property="Width" Value="48" />
+            <Setter Property="Height" Value="48" />
+            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextTertiary}" />
         </Style>
 
         <Style Selector="^[IsCoverMaskVisible=True]:pointerover">

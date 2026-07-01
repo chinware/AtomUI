@@ -31,6 +31,8 @@ ImagePreviewer 的控件专项模型通过 Theme 消费 Token：
 - AXAML/ControlTheme 负责把 Token 映射到背景、前景、边框、padding、尺寸和动效。
 - Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
 - Gallery Token 表应显式维护，不依赖运行时反射扫描。
+- 默认 loading/error 占位复用 Skeleton、Spin、SharedToken 和 `CoverImageWidth` 的视觉语义，不为 `Loading`、`Failed` 或网络图片失败新增实例状态 Token。
+- `CoverImageWidth` 只能作为没有显式 `CoverWidth` / `CoverHeight` 且没有有效布局约束时的封面占位尺寸兜底；它不表达图片自然尺寸，也不表达失败状态。
 
 ## 4. 控件家族影响
 
@@ -47,6 +49,7 @@ ImagePreviewer 的控件专项模型通过 Theme 消费 Token：
 - 不删除或重命名已生成的 TokenKind、TokenResource key 和 AXAML 引用。
 - 不把实例状态、交互状态或 `EffectiveXxx` 状态写成 Token。
 - 不在 Token 中展开颜色、variant 和状态的组合矩阵；组合关系应由 Theme selector 表达。
+- 不为默认失败文案、加载中状态或远程图片失败状态新增 Token；文案走语言资源，状态走 `ImagePreviewItemState`，视觉由主题和 SharedToken 表达。
 - Token 默认值变更必须同步评估 Gallery 示例和截图可观察外观。
 - 如需引入新 Token，必须同步源码、生成文件、Gallery Token 表和本文档。
 

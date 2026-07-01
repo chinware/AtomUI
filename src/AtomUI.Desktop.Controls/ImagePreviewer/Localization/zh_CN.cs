@@ -11,6 +11,8 @@ internal class zh_CN : LanguageProvider
     {
     }
 
+    public const string ImageLoadFailed = "图片加载失败";
+
     public const string Preview = "预览";
 
     protected override Type GetResourceKindType() => typeof(ImagePreviewerLangResourceKind);

@@ -12,6 +12,8 @@
 - Docs
   - Document the `PathIcon` based preview title icon model and the `PART_TitleLayout` / `PART_IconPresenter` title group contract.
   - Align ImagePreviewer docs with the control documentation structure by adding the composition model and making semantic parts and template parts source-specific.
+  - Define the remote image loading UX contract: inline cover loading uses an image Skeleton, loading/error placeholders keep a stable cover size, default failure text is localized, and custom `LoadingContent` / `ErrorContent` only replaces presenter content.
+  - Document that single `ImagePreviewer` and `ImageGroupPreviewer` must consume `CoverWidth` / `CoverHeight` consistently so failed remote images do not collapse to text-height strips.
 
 ## 2026-06-30
 
