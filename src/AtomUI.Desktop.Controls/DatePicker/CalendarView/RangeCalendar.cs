@@ -57,6 +57,22 @@ internal class RangeCalendar : Calendar
     public event EventHandler<RangeDateSelectedEventArgs>? RangeDateSelected;
 
     #endregion
+
+    static RangeCalendar()
+    {
+        SecondarySelectedDateProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnSecondarySelectedDateChanged(e));
+    }
+
+    protected virtual void OnSecondarySelectedDateChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        var selectedDate = change.NewValue as DateTime?;
+        if (!IsValidDateSelection(this, selectedDate))
+        {
+            throw new ArgumentOutOfRangeException(nameof(change), "SecondarySelectedDate value is not valid.");
+        }
+
+        UpdateMonths();
+    }
     
     protected override void SetupDisplayDateInternal(DateTime displayDate)
     {

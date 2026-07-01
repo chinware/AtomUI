@@ -188,12 +188,24 @@ internal class DatePickerPresenter : PickerPresenterBase
     {
         DetachTemplateEventHandlers();
         base.OnApplyTemplate(e);
+        ResolveTemplateParts(e);
+        SetupButtonStatus();
+        AttachTemplateEventHandlers();
+        SetupConfirmButtonEnableStatus();
+        RefreshPointerSubscriptionsIfAttached();
+    }
+
+    private void ResolveTemplateParts(TemplateAppliedEventArgs e)
+    {
         NowButton     = e.NameScope.Get<Button>("PART_NowButton");
         TodayButton   = e.NameScope.Get<Button>("PART_TodayButton");
         ConfirmButton = e.NameScope.Get<Button>("PART_ConfirmButton");
         CalendarView  = e.NameScope.Get<PickerCalendar>("PART_CalendarView");
         TimeView      = e.NameScope.Find<TimeView>("PART_TimeView");
-        SetupButtonStatus();
+    }
+
+    private void AttachTemplateEventHandlers()
+    {
         if (CalendarView is not null)
         {
             CalendarView.HoverDateChanged += HandleCalendarViewDateHoverChanged;
@@ -233,8 +245,10 @@ internal class DatePickerPresenter : PickerPresenterBase
             ConfirmButton.PointerEntered += HandleConfirmButtonPointerEntered;
             ConfirmButton.PointerExited  += HandleConfirmButtonPointerExited;
         }
+    }
 
-        SetupConfirmButtonEnableStatus();
+    private void RefreshPointerSubscriptionsIfAttached()
+    {
         if (this.IsAttachedToVisualTree())
         {
             RefreshPointerSubscriptions();

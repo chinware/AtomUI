@@ -1,9 +1,16 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Desktop.Controls.CalendarView;
 
+[TemplatePart("PART_SecondaryMonthView", typeof(Grid))]
+[TemplatePart("PART_SecondaryHeaderButton", typeof(HeadTextButton))]
+[TemplatePart("PART_SecondaryPreviousButton", typeof(IconButton))]
+[TemplatePart("PART_SecondaryPreviousMonthButton", typeof(IconButton))]
+[TemplatePart("PART_SecondaryNextButton", typeof(IconButton))]
+[TemplatePart("PART_SecondaryNextMonthButton", typeof(IconButton))]
 internal class DualMonthCalendarItem : RangeCalendarItem
 {
     protected override Type StyleKeyOverride => typeof(DualMonthCalendarItem);
@@ -157,6 +164,11 @@ internal class DualMonthCalendarItem : RangeCalendarItem
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        if (SecondaryMonthView is not null)
+        {
+            ClearGeneratedMonthView(SecondaryMonthView);
+        }
+
         SecondaryMonthView    = e.NameScope.Get<Grid>("PART_SecondaryMonthView");
         SecondaryHeaderButton = e.NameScope.Get<HeadTextButton>("PART_SecondaryHeaderButton");
         SecondaryPreviousButton = e.NameScope.Get<IconButton>("PART_SecondaryPreviousButton");
@@ -222,6 +234,15 @@ internal class DualMonthCalendarItem : RangeCalendarItem
         if (SecondaryMonthView != null)
         {
             PopulateMonthViewGrid(SecondaryMonthView);
+        }
+    }
+
+    protected override void ClearGeneratedMonthViews()
+    {
+        base.ClearGeneratedMonthViews();
+        if (SecondaryMonthView is not null)
+        {
+            ClearGeneratedMonthView(SecondaryMonthView);
         }
     }
 

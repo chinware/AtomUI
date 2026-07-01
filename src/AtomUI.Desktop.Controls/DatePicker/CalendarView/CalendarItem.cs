@@ -17,6 +17,8 @@ using Avalonia.Media;
 namespace AtomUI.Desktop.Controls.CalendarView;
 
 [TemplatePart("PART_HeaderButton", typeof(HeadTextButton))]
+[TemplatePart("PART_HeaderLayout", typeof(Panel))]
+[TemplatePart("PART_MonthViewLayout", typeof(UniformGrid))]
 [TemplatePart("PART_MonthView", typeof(Grid))]
 [TemplatePart("PART_PreviousButton", typeof(IconButton))]
 [TemplatePart("PART_PreviousMonthButton", typeof(IconButton))]
@@ -333,6 +335,74 @@ internal class CalendarItem : TemplatedControl
         monthView.Children.AddRange(children);
     }
 
+    protected virtual void ClearGeneratedMonthViews()
+    {
+        if (MonthView is not null)
+        {
+            ClearGeneratedMonthView(MonthView);
+        }
+    }
+
+    protected void ClearGeneratedMonthView(Grid monthView)
+    {
+        foreach (var child in monthView.Children)
+        {
+            if (child is CalendarDayButton dayButton)
+            {
+                var owner = dayButton.Owner;
+                if (owner?.FocusButton == dayButton)
+                {
+                    dayButton.IsCurrent = false;
+                    owner.FocusButton = null;
+                }
+
+                dayButton.CalendarDayButtonMouseDown -= HandleCellMouseLeftButtonDown;
+                dayButton.CalendarDayButtonMouseUp   -= HandleCellMouseLeftButtonUp;
+                dayButton.PointerEntered             -= HandleCellMouseEntered;
+                dayButton.Click                      -= HandleCellClick;
+                dayButton.ClearValue(CalendarDayButton.IsMotionEnabledProperty);
+                dayButton.Owner = null;
+            }
+        }
+
+        monthView.Children.Clear();
+    }
+
+    private void ClearGeneratedYearView()
+    {
+        if (YearView is null)
+        {
+            return;
+        }
+
+        foreach (var child in YearView.Children)
+        {
+            if (child is CalendarButton monthButton)
+            {
+                var owner = monthButton.Owner;
+                if (owner?.FocusCalendarButton == monthButton)
+                {
+                    monthButton.IsCalendarButtonFocused = false;
+                    owner.FocusCalendarButton = null;
+                }
+
+                monthButton.CalendarLeftMouseButtonDown -= HandleMonthCalendarButtonMouseDown;
+                monthButton.CalendarLeftMouseButtonUp   -= HandleMonthCalendarButtonMouseUp;
+                monthButton.PointerEntered              -= HandleMonthMouseEntered;
+                monthButton.ClearValue(CalendarButton.IsMotionEnabledProperty);
+                monthButton.Owner = null;
+            }
+        }
+
+        YearView.Children.Clear();
+    }
+
+    private void ClearGeneratedGrids()
+    {
+        ClearGeneratedMonthViews();
+        ClearGeneratedYearView();
+    }
+
     /// <summary>
     /// Builds the visual tree for the
     /// <see cref="T:Controls.Primitives.CalendarItem" />
@@ -340,6 +410,7 @@ internal class CalendarItem : TemplatedControl
     /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
+        ClearGeneratedGrids();
         base.OnApplyTemplate(e);
         HeaderButton   = e.NameScope.Get<HeadTextButton>("PART_HeaderButton");
         PreviousButton = e.NameScope.Get<IconButton>("PART_PreviousButton");
@@ -812,7 +883,7 @@ internal class CalendarItem : TemplatedControl
     {
         if (Owner != null && calendarButton?.DataContext is DateTime selectedDate)
         {
-            Owner.FocusCalendarButton!.IsCalendarButtonFocused = false;
+            Owner.FocusCalendarButton?.IsCalendarButtonFocused = false;
             Owner.FocusCalendarButton = calendarButton;
             calendarButton.IsCalendarButtonFocused = Owner.HasFocusInternal;
 
