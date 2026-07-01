@@ -18,9 +18,9 @@ public class MessageShowCasePageTests
 
         source.ShouldContain("MessageShowCaseLangResource PageSubtitle");
         source.ShouldContain("MessageShowCaseLangResource PageDescription");
-        source.ShouldContain("MessageShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("MessageShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("MessageShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("MessageShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("MessageShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("MessageShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("MessageShowCaseLangResource ComponentCategory");
         source.ShouldContain("MessageShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("MessageShowCaseLangResource ScenarioExamples");
@@ -123,7 +123,7 @@ public class MessageShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyMessageContent");
             source.ShouldContain("ApiPropertyManagerMaxItems");
             source.ShouldContain("ApiMethodManagerShow");

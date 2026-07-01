@@ -16,9 +16,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ScenarioDesignToken = "设计 Token";
     public const string PageSubtitle = "在紧凑输入框中从层级数据里选择值。";
     public const string PageDescription = "TreeSelect 将输入选择器与树形导航结合，适用于层级分类、组织节点、权限和其他嵌套选项集合。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ComponentCategory = "数据录入";
     public const string ComponentStatusStable = "稳定";
     public const string ApiColumnProperty = "属性";

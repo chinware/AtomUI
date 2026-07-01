@@ -13,9 +13,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變量";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最基礎的用法。";
     public const string NonModalTitle = "非模態";

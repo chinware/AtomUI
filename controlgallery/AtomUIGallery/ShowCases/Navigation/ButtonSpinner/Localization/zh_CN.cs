@@ -10,9 +10,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = "稳定";
     public const string PageSubtitle = "带按钮操作柄的紧凑微调输入控件。";
     public const string PageDescription = "ButtonSpinner 将输入式内容区与递增/递减按钮结合，支持前后置标签、内部前后缀、状态、尺寸和视觉形态。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计令牌";

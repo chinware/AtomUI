@@ -10,9 +10,6 @@ internal partial class en_US : LanguageProvider
     public const string PageDescription = "Calendar presents dates in month, year, or decade views and supports single, range, and multiple-range selection.";
     public const string ComponentCategory = "Data Display";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

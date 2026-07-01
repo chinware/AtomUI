@@ -15,9 +15,9 @@ public class TimelineShowCasePageTests
 
         source.ShouldContain("TimelineShowCaseLangResource PageSubtitle");
         source.ShouldContain("TimelineShowCaseLangResource PageDescription");
-        source.ShouldContain("TimelineShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("TimelineShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("TimelineShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("TimelineShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("TimelineShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("TimelineShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("TimelineShowCaseLangResource ComponentCategory");
         source.ShouldContain("TimelineShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("TimelineShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class TimelineShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:TimelineShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:TimelineShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("TimelineShowCaseLangResource BasicUsageTitle");
         source.ShouldContain("TimelineShowCaseLangResource ColorTitle");
@@ -136,7 +135,7 @@ public class TimelineShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyMode");
             source.ShouldContain("ApiPropertyPending");
             source.ShouldContain("ApiPropertyIsReverse");

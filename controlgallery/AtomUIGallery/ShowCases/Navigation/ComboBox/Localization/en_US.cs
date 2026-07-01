@@ -10,9 +10,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "A selection input for choosing from a compact popup list.";
     public const string PageDescription = "ComboBox combines input-style layout with dropdown selection, supporting item templates, add-ons, prefixes, suffixes, validation status, and size variants.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

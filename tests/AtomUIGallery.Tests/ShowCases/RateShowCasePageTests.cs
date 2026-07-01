@@ -15,9 +15,9 @@ public class RateShowCasePageTests
 
         source.ShouldContain("RateShowCaseLangResource PageSubtitle");
         source.ShouldContain("RateShowCaseLangResource PageDescription");
-        source.ShouldContain("RateShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("RateShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("RateShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("RateShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("RateShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("RateShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("RateShowCaseLangResource ComponentCategory");
         source.ShouldContain("RateShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("RateShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class RateShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:RateShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:RateShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("RateShowCaseLangResource BasicTitle");
         source.ShouldContain("RateShowCaseLangResource HalfStarTitle");
@@ -126,7 +125,7 @@ public class RateShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyIsAllowClear");
             source.ShouldContain("ApiPropertyIsAllowHalf");
             source.ShouldContain("ApiPropertyToolTips");

@@ -18,9 +18,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ScenarioDesignToken = "设计 Token";
     public const string PageSubtitle = "引导用户理解有顺序的任务和流程状态。";
     public const string PageDescription = "Steps 用于展示任务序列、进度、导航状态以及可选的步骤内容，适合需要清晰阶段感的流程。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ComponentCategory = "导航";
     public const string ComponentStatusStable = "稳定";
     public const string ApiColumnProperty = "属性";

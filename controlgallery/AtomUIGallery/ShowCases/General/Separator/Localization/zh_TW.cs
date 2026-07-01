@@ -13,9 +13,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "用水平或垂直分割線分隔內容區塊。";
     public const string PageDescription = "Separator 用於建立內容之間的視覺節奏，支持標題文本、普通文本樣式、垂直分割、線型變體和不同間距尺寸。";
-    public const string InfoNamespaceLabel = "命名空間:";
-    public const string InfoPackageLabel = "包:";
-    public const string InfoBaseClassLabel = "基類:";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

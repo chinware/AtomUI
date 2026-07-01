@@ -18,9 +18,9 @@ public class FormShowCasePageTests
 
         source.ShouldContain("FormShowCaseLangResource PageSubtitle");
         source.ShouldContain("FormShowCaseLangResource PageDescription");
-        source.ShouldContain("FormShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("FormShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("FormShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("FormShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("FormShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("FormShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("FormShowCaseLangResource ComponentCategory");
         source.ShouldContain("FormShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("FormShowCaseLangResource ScenarioExamples");
@@ -40,13 +40,12 @@ public class FormShowCasePageTests
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
         source.ShouldContain("FormThemes.axaml");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:FormShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:FormShowCaseLangResource PageDescription}\"");
         CountShowCaseItemElements(source).ShouldBe(20);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(20);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(20);
@@ -160,7 +159,7 @@ public class FormShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyFormLayout");
             source.ShouldContain("ApiPropertyLabelColInfo");
             source.ShouldContain("ApiPropertyRequiredMark");

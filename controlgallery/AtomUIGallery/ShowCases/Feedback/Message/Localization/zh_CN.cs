@@ -18,9 +18,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = "稳定";
     public const string PageSubtitle = "用于轻量级操作反馈的全局提示消息。";
     public const string PageDescription = "Message 在当前窗口顶层显示简短反馈，适用于保存结果、校验反馈、异步进度和连续完成提示。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包名";
-    public const string InfoBaseClassLabel = "管理器";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计变量";

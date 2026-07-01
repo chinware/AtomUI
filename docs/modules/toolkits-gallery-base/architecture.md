@@ -30,7 +30,7 @@ GalleryBase 可以依赖 AtomUI 作为 UI 具体实现。这里的中立不是 U
 
 | 职责 | 当前状态 | 迁移目标 |
 |---|---|---|
-| Gallery 底层控件 | `ShowCasePanel`、`ShowCaseItem`、Sticky Tabs、场景 lazy controller 已位于 GalleryBase | 保持产品中立并由产品 Gallery 复用 |
+| Gallery 底层控件 | `ShowCasePanel`、`ShowCaseItem`、`GalleryShowCaseHeader`、Sticky Tabs、场景 lazy controller 已位于 GalleryBase | 保持产品中立并由产品 Gallery 复用 |
 | Gallery Shell | Sidebar、footer、routing host、Browser overlay 和 media breakpoint 已位于 GalleryBase；产品侧保留标题栏菜单和导航视图适配 | 后续继续抽出可复用标题栏菜单和平台日志 helper |
 | AtomUI 产品内容 | AtomUI 示例页面、首页、社区页、logo、链接、版本、语言文案 | 保留在 `AtomUIGallery` |
 
@@ -263,13 +263,14 @@ Desktop 与 Browser 的差异只保留在宿主边界：
 
 ## 展示控件迁移
 
-第一阶段迁入以下控件和支持类型：
+第一阶段迁入以下控件和支持类型，并在同一展示控件层补入 ShowCase Header：
 
 | 类型 | 迁移目标 |
 |---|---|
 | `ShowCaseItem` | `AtomUI.Toolkits.GalleryBase.Controls` |
 | `ShowCasePanel` | `AtomUI.Toolkits.GalleryBase.Controls` |
 | `ShowCaseMasonryPanel` | `AtomUI.Toolkits.GalleryBase.Controls` |
+| `GalleryShowCaseHeader` | `AtomUI.Toolkits.GalleryBase.Controls` |
 | `GalleryStickyTabsHost` | `AtomUI.Toolkits.GalleryBase.Controls` |
 | `GalleryStickyTabsPanel` | `AtomUI.Toolkits.GalleryBase.Controls` |
 | `GalleryShowCaseScenarioController` | `AtomUI.Toolkits.GalleryBase.Controls` |
@@ -278,12 +279,15 @@ Desktop 与 Browser 的差异只保留在宿主边界：
 
 控件名称第一阶段保持不变。它们已经表达 Gallery 页面中的 ShowCase 范式，且当前大量 XAML 依赖这些名称。为追求术语中立而立即改名会制造大量无价值变更。
 
+`GalleryShowCaseHeader` 是针对 ShowCase 页面重复 XAML 的最小公共抽象。它只统一文档页头的 title、Tag、简介和 metadata，不接管 `TabStrip`、Examples、API/Design Token DataGrid 或页面 code-behind。所有主 ShowCase 页面已经迁移到该控件；完整页面壳抽象只有在场景切换和特殊页面差异继续收敛后再评估。
+
 ## 主题和 Token
 
 GalleryBase 维护自己的 Control Token：
 
 - `ShowCaseItemToken`
 - `ShowCasePanelToken`
+- `GalleryShowCaseHeaderToken`
 - `GalleryStickyTabsHostToken`
 - `GalleryWindowTitleBarToken`
 

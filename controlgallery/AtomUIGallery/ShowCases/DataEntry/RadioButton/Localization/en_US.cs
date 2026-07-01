@@ -62,9 +62,6 @@ internal partial class en_US : LanguageProvider
         "RadioButton covers individual selections, grouped choices, data-driven options, option-button styles, icons, disabled states and size variants.";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

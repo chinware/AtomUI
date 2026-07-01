@@ -15,9 +15,9 @@ public class TooltipShowCasePageTests
 
         source.ShouldContain("TooltipShowCaseLangResource PageSubtitle");
         source.ShouldContain("TooltipShowCaseLangResource PageDescription");
-        source.ShouldContain("TooltipShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("TooltipShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("TooltipShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("TooltipShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("TooltipShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("TooltipShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("TooltipShowCaseLangResource ComponentCategory");
         source.ShouldContain("TooltipShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("TooltipShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class TooltipShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:TooltipShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:TooltipShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("TooltipShowCaseLangResource BasicTitle");
         source.ShouldContain("TooltipShowCaseLangResource PlacementTitle");
@@ -129,7 +128,7 @@ public class TooltipShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyTip");
             source.ShouldContain("ApiPropertyPlacement");
             source.ShouldContain("ApiPropertyIsArrowVisible");

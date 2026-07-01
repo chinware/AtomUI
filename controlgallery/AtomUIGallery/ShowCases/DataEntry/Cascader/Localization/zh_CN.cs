@@ -15,9 +15,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ScenarioDesignToken = "设计 Token";
     public const string PageSubtitle = "分层选择与级联选项浏览。";
     public const string PageDescription = "Cascader 将输入选择器与联动选项列组合起来，CascaderView 则直接暴露列式浏览器，用于嵌入式选择场景。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ComponentCategory = "数据录入";
     public const string ComponentStatusStable = "稳定";
     public const string ApiColumnProperty = "属性";

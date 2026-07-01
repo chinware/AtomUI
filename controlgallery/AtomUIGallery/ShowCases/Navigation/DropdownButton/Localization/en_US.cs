@@ -10,9 +10,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "A button that opens contextual menu actions.";
     public const string PageDescription = "DropdownButton combines a button trigger with a MenuFlyout, supporting hover or click triggers, arrow indicators, placement options, button variants, and forwarded menu item click events.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

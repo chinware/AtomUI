@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "Select a numeric value or range from a continuous or graduated track.";
     public const string PageDescription = "Slider supports single-value and range selection, horizontal or vertical orientation, snap-to-tick behavior, formatted tooltips, marks, included tracks, disabled states, and keyboard interaction.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

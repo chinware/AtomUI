@@ -45,9 +45,6 @@ internal partial class zh_CN : LanguageProvider
         "Mentions 提供基于触发符的候选弹窗、异步选项加载、自定义触发符、输入变体、弹出位置、状态和自动高度场景。";
     public const string ComponentCategory = "数据录入";
     public const string ComponentStatusStable = "稳定";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

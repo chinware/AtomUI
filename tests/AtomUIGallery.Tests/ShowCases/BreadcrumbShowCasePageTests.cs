@@ -15,9 +15,9 @@ public class BreadcrumbShowCasePageTests
 
         source.ShouldContain("BreadcrumbShowCaseLangResource PageSubtitle");
         source.ShouldContain("BreadcrumbShowCaseLangResource PageDescription");
-        source.ShouldContain("BreadcrumbShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("BreadcrumbShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("BreadcrumbShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("BreadcrumbShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("BreadcrumbShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("BreadcrumbShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("BreadcrumbShowCaseLangResource ComponentCategory");
         source.ShouldContain("BreadcrumbShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("BreadcrumbShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class BreadcrumbShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:BreadcrumbShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:BreadcrumbShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("BreadcrumbShowCaseLangResource BasicUsageTitle");
         source.ShouldContain("BreadcrumbShowCaseLangResource WithIconTitle");
@@ -126,7 +125,7 @@ public class BreadcrumbShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertySeparator");
             source.ShouldContain("ApiPropertyNavigateRequest");
             source.ShouldContain("ApiPropertyIcon");

@@ -45,9 +45,6 @@ internal partial class en_US : LanguageProvider
     public const string PageDescription = "Upload supports button selection, avatar validation, default file lists, picture walls, drag-and-drop areas, max-count constraints, directory upload, and file type filtering.";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

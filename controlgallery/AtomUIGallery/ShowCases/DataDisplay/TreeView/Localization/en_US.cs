@@ -10,9 +10,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Display hierarchical data with selectable, checkable, searchable, draggable, and async-loaded nodes.";
     public const string PageDescription = "TreeView organizes nested data into expandable nodes and supports templated data sources, checkbox selection, filtering, custom switcher icons, context menus, and lazy child loading.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

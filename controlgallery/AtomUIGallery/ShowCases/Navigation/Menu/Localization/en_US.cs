@@ -15,9 +15,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Menus organize commands and navigation actions.";
     public const string PageDescription = "Menu, ContextMenu, MenuFlyout, and NavMenu provide command lists, contextual actions, nested navigation, data-driven menu generation, and vertical, inline, or horizontal navigation layouts.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

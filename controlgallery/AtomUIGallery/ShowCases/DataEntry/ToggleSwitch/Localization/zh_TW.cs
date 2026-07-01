@@ -13,9 +13,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "在兩個互斥狀態之間切換，並支持文本、圖標、加載和尺寸變體。";
     public const string PageDescription = "ToggleSwitch 用於即時的開關選擇，支持禁用、加載、自定義開關內容、圖標內容、尺寸變體、動效和波紋反饋。";
-    public const string InfoNamespaceLabel = "命名空間：";
-    public const string InfoPackageLabel = "包：";
-    public const string InfoBaseClassLabel = "基類：";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentIntroducedVersion = "v6.0.5";
     public const string PageSubtitle = "Draw an animated highlight along a container boundary.";
     public const string PageDescription = "BorderBeam wraps a content control and renders a non-interactive beam on its border. It is decorative, follows theme motion settings, and can use a solid color or gradient stops.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Wrap a card to emphasize an important workspace summary without changing the card interaction model.";
     public const string CustomizedColorTitle = "Customized color";

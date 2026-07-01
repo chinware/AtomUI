@@ -18,9 +18,9 @@ public class SplitButtonShowCasePageTests
 
         source.ShouldContain("SplitButtonShowCaseLangResource PageSubtitle");
         source.ShouldContain("SplitButtonShowCaseLangResource PageDescription");
-        source.ShouldContain("SplitButtonShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("SplitButtonShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("SplitButtonShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("SplitButtonShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("SplitButtonShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("SplitButtonShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("SplitButtonShowCaseLangResource ComponentCategory");
         source.ShouldContain("SplitButtonShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("SplitButtonShowCaseLangResource ScenarioExamples");
@@ -39,13 +39,12 @@ public class SplitButtonShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:SplitButtonShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:SplitButtonShowCaseLangResource PageDescription}\"");
         CountShowCaseItemElements(source).ShouldBe(5);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(5);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(5);
@@ -134,7 +133,7 @@ public class SplitButtonShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyCommand");
             source.ShouldContain("ApiPropertyFlyout");
             source.ShouldContain("ApiPropertyTriggerType");

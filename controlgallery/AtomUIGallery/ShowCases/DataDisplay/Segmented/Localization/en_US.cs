@@ -41,9 +41,6 @@ internal partial class en_US : LanguageProvider
         "Segmented presents a small set of related options with single selection, optional icons, responsive expansion and token-based sizing.";
     public const string ComponentCategory = "Data Display";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

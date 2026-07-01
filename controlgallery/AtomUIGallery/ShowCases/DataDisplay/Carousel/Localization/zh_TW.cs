@@ -13,9 +13,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "在有限空間中輪播展示多組內容面板。";
     public const string PageDescription = "Carousel 用於輪播圖片、卡片或推廣內容，支持自動播放、分頁位置、淡入切換、導航箭頭、無限循環、進度指示和滑動手勢。";
-    public const string InfoNamespaceLabel = "命名空間:";
-    public const string InfoPackageLabel = "包:";
-    public const string InfoBaseClassLabel = "基類:";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

@@ -13,9 +13,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "通过共享令牌、算法、组件令牌和局部嵌套作用域定制 AtomUI 主题。";
     public const string PageDescription = "Customize Theme 展示 ThemeConfigProvider 如何覆盖 Seed Token、派生 Token、预设算法、组件级 Token 和嵌套主题上下文，而不需要修改应用全局主题。";
-    public const string InfoNamespaceLabel = "命名空间：";
-    public const string InfoPackageLabel = "包：";
-    public const string InfoBaseClassLabel = "基类：";
     public const string ApiColumnMember = "成员";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

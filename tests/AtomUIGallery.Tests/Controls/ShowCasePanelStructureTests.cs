@@ -61,6 +61,89 @@ public class ShowCasePanelStructureTests
     }
 
     [Fact]
+    public void GalleryShowCaseHeader_Uses_Gallery_Token_Theme_And_Localization_Conventions()
+    {
+        var headerSource      = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeader.cs");
+        var headerTheme       = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeaderTheme.axaml");
+        var headerToken       = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryShowCaseHeaderToken.cs");
+        var provider          = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/GalleryControlThemesProvider.axaml");
+        var assemblyInfo      = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Properties/AssemblyInfo.cs");
+        var tokenResources    = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.TokenResourceKeyGenerator/TokenResourceConst.g.cs");
+        var languageResources = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator/LanguageResourceConst.g.cs");
+        var languagePool      = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/GeneratedFiles/AtomUI.Generator/AtomUI.Generator.LanguageGenerator/LanguageProviderPool.g.cs");
+
+        headerSource.ShouldContain("public const string LanguageId = \"GalleryShowCaseHeader\"");
+        headerSource.ShouldContain("RegisterTokenResourceScope(GalleryShowCaseHeaderToken.ScopeProvider)");
+        headerSource.ShouldContain("CategoryTagColorProperty");
+        headerSource.ShouldContain("StatusTagColorProperty");
+        headerSource.ShouldContain("IntroducedVersionProperty");
+        headerSource.ShouldContain("IsIntroducedVersionTagBorderedProperty");
+        headerSource.ShouldContain("MetadataLabelWidthProperty");
+        headerSource.ShouldContain("MetadataValueWidthProperty");
+        headerSource.ShouldContain("MetadataLabelWidthProperty,\n            MetadataValueWidthProperty");
+        headerSource.ShouldContain("IsMetadataVisibleProperty");
+
+        headerToken.ShouldContain("[ControlDesignToken]");
+        headerToken.ShouldContain("public const string ID = \"GalleryShowCaseHeader\"");
+        headerToken.ShouldContain("MetadataLabelWidth");
+        headerToken.ShouldContain("MetadataValueWidth");
+
+        headerTheme.ShouldContain("GalleryShowCaseHeaderTokenResource");
+        headerTheme.ShouldContain("GalleryShowCaseHeaderLangResource");
+        headerTheme.ShouldContain("PART_IntroducedVersionTag");
+        headerTheme.ShouldContain("VerticalAlignment=\"Center\"");
+        headerTheme.ShouldContain("Text=\"{gallery:GalleryShowCaseHeaderLangResource NamespaceLabel}\"");
+        headerTheme.ShouldContain("Text=\"{gallery:GalleryShowCaseHeaderLangResource PackageLabel}\"");
+        headerTheme.ShouldContain("Text=\"{gallery:GalleryShowCaseHeaderLangResource BaseClassLabel}\"");
+
+        provider.ShouldContain("<ResourceInclude Source=\"GalleryShowCaseHeaderTheme.axaml\" />");
+        assemblyInfo.ShouldContain("AtomUI.Toolkits.GalleryBase.Localization");
+        tokenResources.ShouldContain("enum GalleryShowCaseHeaderTokenKind");
+        tokenResources.ShouldContain("GalleryShowCaseHeaderTokenResourceExtension");
+        languageResources.ShouldContain("enum GalleryShowCaseHeaderLangResourceKind");
+        languageResources.ShouldContain("NamespaceLabel");
+        languageResources.ShouldContain("PackageLabel");
+        languageResources.ShouldContain("BaseClassLabel");
+        languagePool.ShouldContain("GalleryShowCaseHeaderEnUSLanguageProvider");
+        languagePool.ShouldContain("GalleryShowCaseHeaderZhCNLanguageProvider");
+        languagePool.ShouldContain("GalleryShowCaseHeaderZhTWLanguageProvider");
+    }
+
+    [Fact]
+    public void Standard_ShowCases_Use_Shared_Header_Instead_Of_Hand_Written_Header_Layout()
+    {
+        var showCasesRoot = GetRepoFile("controlgallery/AtomUIGallery/ShowCases");
+        var allShowCaseFiles = Directory.GetFiles(showCasesRoot, "*ShowCase.axaml", SearchOption.AllDirectories)
+                                        .Where(IsMainShowCasePage)
+                                        .OrderBy(path => path, StringComparer.Ordinal)
+                                        .ToList();
+
+        allShowCaseFiles.Count.ShouldBeGreaterThan(0);
+        foreach (var showCasePath in allShowCaseFiles)
+        {
+            var source = ReadRepoFile(showCasePath);
+
+            CountOccurrences(source, "<gallery:GalleryShowCaseHeader").ShouldBe(1);
+            if (source.Contains("<gallery:GalleryStickyTabsHost", StringComparison.Ordinal))
+            {
+                source.ShouldContain("<gallery:GalleryStickyTabsHost.Header>");
+            }
+
+            source.ShouldNotContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoPackageLabel");
+            source.ShouldNotContain("InfoBaseClassLabel");
+            source.ShouldNotContain("<Border Background=\"{atom:SharedTokenResource ColorBgContainer}\"");
+        }
+    }
+
+    private static bool IsMainShowCasePage(string path)
+    {
+        var fileName     = Path.GetFileNameWithoutExtension(path);
+        var controlName  = Directory.GetParent(path)?.Parent?.Name;
+        return string.Equals(fileName, $"{controlName}ShowCase", StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ShowCaseItem_Integrates_RibbonBadge_For_Feature_Version_Marker()
     {
         var itemSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCaseItem.axaml.cs");
@@ -366,11 +449,16 @@ public class ShowCasePanelStructureTests
 
     private static string GetRepoFile(string relativePath)
     {
+        if (Path.IsPathRooted(relativePath))
+        {
+            return relativePath;
+        }
+
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory is not null)
         {
             var candidate = Path.Combine(directory.FullName, relativePath);
-            if (File.Exists(candidate))
+            if (File.Exists(candidate) || Directory.Exists(candidate))
             {
                 return candidate;
             }

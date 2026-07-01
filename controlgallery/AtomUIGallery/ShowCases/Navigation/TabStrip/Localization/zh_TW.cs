@@ -34,9 +34,6 @@ internal partial class zh_TW : LanguageProvider
     public const string PageDescription = "TabStrip 和 CardTabStrip 為自訂內容宿主提供輕量標籤導航，支援資料模板標籤、可關閉標籤、位置控制以及新增標籤操作。";
     public const string ComponentCategory = "導航";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "套件";
-    public const string InfoBaseClassLabel = "基底類別";
     public const string ScenarioExamples = "範例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變數";

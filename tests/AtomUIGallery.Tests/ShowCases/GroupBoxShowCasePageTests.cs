@@ -15,9 +15,9 @@ public class GroupBoxShowCasePageTests
 
         source.ShouldContain("GroupBoxShowCaseLangResource PageSubtitle");
         source.ShouldContain("GroupBoxShowCaseLangResource PageDescription");
-        source.ShouldContain("GroupBoxShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("GroupBoxShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("GroupBoxShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("GroupBoxShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("GroupBoxShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("GroupBoxShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("GroupBoxShowCaseLangResource ComponentCategory");
         source.ShouldContain("GroupBoxShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("GroupBoxShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class GroupBoxShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:GroupBoxShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:GroupBoxShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("GroupBoxShowCaseLangResource BasicTitle");
         source.ShouldContain("GroupBoxShowCaseLangResource HeaderPositionTitle");
@@ -124,7 +123,7 @@ public class GroupBoxShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyHeaderTitle");
             source.ShouldContain("ApiPropertyHeaderTitlePosition");
             source.ShouldContain("ApiPropertyHeaderIcon");

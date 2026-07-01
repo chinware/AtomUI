@@ -13,9 +13,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentIntroducedVersion = "v6.0.5";
     public const string PageSubtitle = "沿容器邊界繪製動態高光。";
     public const string PageDescription = "BorderBeam 包裹一個內容控制項，並在其邊界上渲染不參與互動的流光層。它只承擔裝飾性強調，遵守主題動效設定，並支援單色或漸變停靠點。";
-    public const string InfoNamespaceLabel = "命名空間:";
-    public const string InfoPackageLabel = "套件:";
-    public const string InfoBaseClassLabel = "基底類別:";
     public const string BasicTitle = "基礎";
     public const string BasicDescription = "包裹卡片以強調重要的工作台概覽，同時不改變卡片自身互動模型。";
     public const string CustomizedColorTitle = "自訂顏色";

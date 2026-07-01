@@ -39,9 +39,6 @@ internal partial class zh_TW : LanguageProvider
     public const string PageDescription = "TimePicker 支援 12 小時和 24 小時制、尺寸變體、禁用狀態、分鐘和秒的步進選項、視覺變體、校驗狀態以及範圍選擇。";
     public const string ComponentCategory = "資料錄入";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "套件";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變數";

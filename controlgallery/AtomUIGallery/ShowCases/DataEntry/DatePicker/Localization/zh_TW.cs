@@ -45,9 +45,6 @@ internal partial class zh_TW : LanguageProvider
     public const string PageDescription = "DatePicker 支援單選與範圍選擇、確認流程、時間選擇、禁用狀態、尺寸變體、校驗狀態、視覺變體和自定義彈出位置。";
     public const string ComponentCategory = "資料錄入";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變量";

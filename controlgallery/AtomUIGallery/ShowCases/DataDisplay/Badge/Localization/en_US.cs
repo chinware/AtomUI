@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Highlight counts, statuses, and contextual labels near related content.";
     public const string PageDescription = "Badge draws attention to notifications, counts, status dots, and ribbon labels without interrupting the user's workflow.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

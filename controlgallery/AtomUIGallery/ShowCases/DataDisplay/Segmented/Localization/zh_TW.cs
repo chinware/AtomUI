@@ -41,9 +41,6 @@ internal partial class zh_TW : LanguageProvider
         "Segmented 用於展示一組少量相關選項，支持單選、圖標、橫向鋪滿和基於 Token 的尺寸樣式。";
     public const string ComponentCategory = "數據展示";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

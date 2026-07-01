@@ -16,9 +16,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ScenarioDesignToken = "设计 Token";
     public const string PageSubtitle = "支持单选、多选、搜索和标签输入的选项选择。";
     public const string PageDescription = "Select 用于从选项列表中选择值，支持筛选、分组、异步加载、自定义渲染和多选行为。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ComponentCategory = "数据录入";
     public const string ComponentStatusStable = "稳定";
     public const string ApiColumnProperty = "属性";

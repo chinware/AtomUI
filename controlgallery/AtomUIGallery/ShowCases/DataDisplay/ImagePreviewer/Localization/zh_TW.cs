@@ -13,9 +13,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = "穩定";
     public const string PageSubtitle = "在覆蓋層中預覽單張或多張圖片，並支援縮放、移動和切換。";
     public const string PageDescription = "ImagePreviewer 展示圖片封面，點擊後打開預覽介面。它支援容錯圖片、自定義封面、多圖預覽、縮放範圍和預覽視窗生命週期事件。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "套件";
-    public const string InfoBaseClassLabel = "基礎類";
     public const string BasicUsageTitle = "基礎用法";
     public const string BasicUsageDescription = "點擊圖片放大預覽。";
     public const string RemoteImageLoadingTitle = "遠程圖片載入";

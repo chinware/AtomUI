@@ -55,6 +55,16 @@ public class BorderBeamShowCasePageTests
         source.ShouldContain("BorderBeamShowCaseLangResource ScenarioApi");
         source.ShouldContain("BorderBeamShowCaseLangResource ScenarioDesignToken");
         source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHeader");
+        source.ShouldContain("Title=\"BorderBeam\"");
+        source.ShouldContain("Category=\"{gallery:BorderBeamShowCaseLangResource ComponentCategory}\"");
+        source.ShouldContain("IntroducedVersion=\"{gallery:BorderBeamShowCaseLangResource ComponentIntroducedVersion}\"");
+        source.ShouldContain("Subtitle=\"{gallery:BorderBeamShowCaseLangResource PageSubtitle}\"");
+        source.ShouldContain("Description=\"{gallery:BorderBeamShowCaseLangResource PageDescription}\"");
+        source.ShouldContain("Namespace=\"AtomUI.Desktop.Controls\"");
+        source.ShouldContain("Package=\"AtomUI.Desktop.Controls\"");
+        source.ShouldContain("BaseClass=\"ContentControl\"");
+        source.ShouldContain("MetadataValueWidth=\"220\"");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -75,15 +85,12 @@ public class BorderBeamShowCasePageTests
         var enSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/en_US.cs");
         var zhCnSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/zh_CN.cs");
         var zhTwSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/BorderBeam/Localization/zh_TW.cs");
-        var header = ExtractHeaderTitleMarkup(source);
 
-        header.ShouldContain("<Grid ColumnDefinitions=\"Auto,*\"");
-        header.ShouldContain("<WrapPanel Grid.Column=\"1\"");
-        header.ShouldContain("VerticalAlignment=\"Center\"");
-        header.ShouldContain("Text=\"{gallery:BorderBeamShowCaseLangResource ComponentIntroducedVersion}\"");
-        header.ShouldContain("TagColor=\"blue\"");
-        header.ShouldContain("IsBordered=\"False\"");
-        header.ShouldNotContain("ComponentStatusPreview");
+        source.ShouldContain("<gallery:GalleryShowCaseHeader");
+        source.ShouldContain("IntroducedVersion=\"{gallery:BorderBeamShowCaseLangResource ComponentIntroducedVersion}\"");
+        source.ShouldNotContain("Status=\"{gallery:BorderBeamShowCaseLangResource ComponentStatusPreview}\"");
+        source.ShouldNotContain("IntroducedVersionTagColor=");
+        source.ShouldNotContain("IsIntroducedVersionTagBordered=");
 
         foreach (var localizationSource in new[] { enSource, zhCnSource, zhTwSource })
         {

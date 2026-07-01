@@ -16,9 +16,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioDesignToken = "設計變量";
     public const string PageSubtitle = "使用類似 CSS Flexbox 的佈局規則排列子控件。";
     public const string PageDescription = "FlexPanel 提供方向、換行、對齊、間距和單項 flex 尺寸控制，適合響應式佈局。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ComponentCategory = "佈局";
     public const string ComponentStatusStable = "穩定";
     public const string ApiColumnProperty = "屬性";

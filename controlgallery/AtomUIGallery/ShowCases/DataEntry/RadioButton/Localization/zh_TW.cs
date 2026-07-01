@@ -62,9 +62,6 @@ internal partial class zh_TW : LanguageProvider
         "RadioButton 覆蓋單個選擇、分組選項、數據驅動選項、選項按鈕樣式、圖標、禁用狀態和尺寸變體。";
     public const string ComponentCategory = "數據錄入";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

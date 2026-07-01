@@ -18,9 +18,9 @@ public class PopupConfirmShowCasePageTests
 
         source.ShouldContain("PopupConfirmShowCaseLangResource PageSubtitle");
         source.ShouldContain("PopupConfirmShowCaseLangResource PageDescription");
-        source.ShouldContain("PopupConfirmShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("PopupConfirmShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("PopupConfirmShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("PopupConfirmShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("PopupConfirmShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("PopupConfirmShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("PopupConfirmShowCaseLangResource ComponentCategory");
         source.ShouldContain("PopupConfirmShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("PopupConfirmShowCaseLangResource ScenarioExamples");
@@ -123,7 +123,7 @@ public class PopupConfirmShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyPopupConfirmTitle");
             source.ShouldContain("ApiPropertyPopupConfirmConfirmStatus");
             source.ShouldContain("ApiEventPopupConfirmPopupClick");

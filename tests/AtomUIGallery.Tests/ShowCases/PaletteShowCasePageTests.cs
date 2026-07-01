@@ -18,9 +18,9 @@ public class PaletteShowCasePageTests
 
         source.ShouldContain("PaletteShowCaseLangResource PageSubtitle");
         source.ShouldContain("PaletteShowCaseLangResource PageDescription");
-        source.ShouldContain("PaletteShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("PaletteShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("PaletteShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("PaletteShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("PaletteShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("PaletteShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("PaletteShowCaseLangResource ComponentCategory");
         source.ShouldContain("PaletteShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("PaletteShowCaseLangResource P2HeaderLight");
@@ -33,13 +33,12 @@ public class PaletteShowCasePageTests
         source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("LightPaletteContentTemplate");
         source.ShouldContain("DarkPaletteContentTemplate");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:PaletteShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:PaletteShowCaseLangResource PageDescription}\"");
         CountOccurrences(source, "<gallery:ColorListControl").ShouldBe(4);
         CountOccurrences(source, "PaletteMetaInfo=\"{Binding Left}\"").ShouldBe(2);
         CountOccurrences(source, "PaletteMetaInfo=\"{Binding Right}\"").ShouldBe(2);
@@ -79,9 +78,9 @@ public class PaletteShowCasePageTests
             source.ShouldContain("ComponentStatusStable");
             source.ShouldContain("PageSubtitle");
             source.ShouldContain("PageDescription");
-            source.ShouldContain("InfoNamespaceLabel");
-            source.ShouldContain("InfoPackageLabel");
-            source.ShouldContain("InfoBaseClassLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoPackageLabel");
+            source.ShouldNotContain("InfoBaseClassLabel");
             source.ShouldContain("P2HeaderLight");
             source.ShouldContain("P2HeaderDark");
         }

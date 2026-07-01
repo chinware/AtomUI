@@ -12,10 +12,10 @@ public class GalleryBasePackagingTests
     [Fact]
     public void Main_Release_Workflow_Builds_And_Packs_GalleryBase()
     {
-        var workflow = ReadRepoFile(".github/workflows/release-atomui.yml");
+        var workflow = ReadRepoFile(".github/workflows/release-nuget-packages.yml");
         var workflowProject = $"./{GalleryBaseProject}";
 
-        workflow.ShouldContain($"dotnet build --configuration ${{{{ inputs.BuildConfiguration }}}} {workflowProject}");
+        workflow.ShouldContain($"dotnet build --configuration ${{{{ inputs.BuildType }}}} {workflowProject}");
         workflow.ShouldContain($"\"{workflowProject}\"");
     }
 

@@ -45,9 +45,6 @@ internal partial class zh_TW : LanguageProvider
         "Mentions 提供基於觸發符的候選彈窗、異步選項加載、自定義觸發符、輸入變體、彈出位置、狀態和自動高度場景。";
     public const string ComponentCategory = "數據錄入";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

@@ -77,6 +77,42 @@ dotnet test tests/AtomUI.Toolkits.GalleryBase.Tests/AtomUI.Toolkits.GalleryBase.
 dotnet test tests/AtomUIGallery.Tests/AtomUIGallery.Tests.csproj --nologo /nr:false
 ```
 
+### 阶段 2.1：抽取 ShowCase Header（已完成）
+
+阶段 2 完成基础展示控件迁移后，已把各主 ShowCase 页面重复的 `GalleryStickyTabsHost.Header` 布局抽为 `GalleryShowCaseHeader`。这是一个受控的小步迁移，不等同于抽取完整 ShowCase 页面壳。
+
+新增：
+
+```text
+GalleryShowCaseHeader*
+GalleryShowCaseHeaderToken
+GalleryShowCaseHeaderTheme.axaml
+GalleryShowCaseHeaderLang*
+```
+
+迁移范围：
+
+- 替换 Header 内的 title、category/status/version Tag、subtitle、description 和 metadata 区域。
+- 保留各页面已有的 `GalleryStickyTabsHost`、`TabStrip`、`ScenarioContentHost`、`ExamplesContent` 和 `GalleryShowCaseScenarioController`。
+- 不迁移 ShowCase demo 内容，不改 API/Design Token DataGrid，不调整 ViewModel。
+
+覆盖组合：
+
+| 页面 | 覆盖场景 |
+|---|---|
+| `AutoCompleteShowCase` | 标准 Stable 页面 |
+| `SplashShowCase` | Preview 状态 + 引入版本 Tag |
+| `BorderBeamShowCase` | 无状态 Tag + 引入版本 Tag |
+
+验收：
+
+- 所有主 ShowCase 页面使用 `GalleryShowCaseHeader`，不再手写 title、Tag、subtitle、description 和 metadata 布局。
+- `AutoCompleteShowCase`、`SplashShowCase`、`BorderBeamShowCase` 作为关键组合回归样本，Header 视觉与迁移前等价，Tag 垂直居中，窄宽度下可换行。
+- `Namespace`、`Package`、`Base class` label 来自 GalleryBase 通用语言资源。
+- Header 之外的 XAML diff 只包含必要的 namespace/resource 删除。
+- `GalleryShowCaseHeaderTests` 覆盖属性组合、metadata label、空值隐藏和窄宽度布局。
+- `ShowCasePanelStructureTests` 覆盖所有主 ShowCase 页面只使用一个共享 Header，且不再引用 per-page metadata label 资源。
+
 ## 阶段 3：引入配置和路由注册（已完成）
 
 新增：
@@ -220,12 +256,14 @@ BaseGalleryApplication 或产品 Application
 | 测试 | 目标项目 |
 |---|---|
 | ShowCase 控件布局和延迟创建 | `AtomUI.Toolkits.GalleryBase.Tests` |
+| ShowCase Header 属性组合、metadata label 和窄宽度布局 | `AtomUI.Toolkits.GalleryBase.Tests` |
 | Sticky host 行为 | `AtomUI.Toolkits.GalleryBase.Tests` |
 | Gallery route/navigation 配置校验 | `AtomUI.Toolkits.GalleryBase.Tests` |
 | Shell 不含产品硬编码 | `AtomUI.Toolkits.GalleryBase.Tests` |
 | AtomUI 具体导航树 | `AtomUIGallery.Tests` |
 | AtomUI Overview/Community 页面 | `AtomUIGallery.Tests` |
 | 控件 ShowCase 快照 | `AtomUIGallery.Tests` |
+| 控件 ShowCase 是否使用标准 Header | `AtomUIGallery.Tests` |
 | Browser 使用产品模块注册 | `AtomUIGallery.Tests` |
 
 ## 验证命令

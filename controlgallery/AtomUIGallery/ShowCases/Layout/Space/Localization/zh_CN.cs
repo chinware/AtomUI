@@ -34,9 +34,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ScenarioDesignToken = "设计变量";
     public const string PageSubtitle = "用一致的间距或紧凑组合排列控件。";
     public const string PageDescription = "Space 提供水平和垂直间距、项目对齐、分隔渲染以及紧凑输入和按钮组合，适合高密度工具界面。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ComponentCategory = "布局";
     public const string ComponentStatusStable = "稳定";
     public const string ApiColumnProperty = "属性";

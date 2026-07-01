@@ -82,9 +82,6 @@ internal partial class zh_CN : LanguageProvider
         "Tooltip 提供简洁的辅助说明，支持弹出位置、箭头行为以及预设或自定义颜色，适合轻量级上下文引导。";
     public const string ComponentCategory = "数据展示";
     public const string ComponentStatusStable = "稳定";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

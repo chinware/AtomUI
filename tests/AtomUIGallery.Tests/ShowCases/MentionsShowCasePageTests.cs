@@ -17,9 +17,9 @@ public class MentionsShowCasePageTests
 
         source.ShouldContain("MentionsShowCaseLangResource PageSubtitle");
         source.ShouldContain("MentionsShowCaseLangResource PageDescription");
-        source.ShouldContain("MentionsShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("MentionsShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("MentionsShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("MentionsShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("MentionsShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("MentionsShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("MentionsShowCaseLangResource ComponentCategory");
         source.ShouldContain("MentionsShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("MentionsShowCaseLangResource ScenarioExamples");
@@ -38,13 +38,12 @@ public class MentionsShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:MentionsShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:MentionsShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(10);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(10);
@@ -159,7 +158,7 @@ public class MentionsShowCasePageTests
             source.ShouldContain("P2PlaceholderTextSmall");
             source.ShouldContain("P2PlaceholderTextCustom");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyOptionsSource");
             source.ShouldContain("ApiPropertyOptionsAsyncLoader");
             source.ShouldContain("ApiPropertyTriggerPrefix");

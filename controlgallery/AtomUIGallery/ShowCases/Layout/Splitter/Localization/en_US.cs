@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "Resize adjacent panes with draggable handles, constraints, collapse controls, and lazy updates.";
     public const string PageDescription = "Splitter divides a region into resizable panels. It supports horizontal and vertical layouts, nested splitters, fixed or constrained panels, collapsible handles, multiple panels, and lazy resize feedback.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

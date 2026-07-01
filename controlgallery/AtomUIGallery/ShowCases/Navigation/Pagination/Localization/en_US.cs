@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "Navigate long lists with page numbers, sizes, totals, and quick jumps.";
     public const string PageDescription = "Pagination divides large data sets into predictable pages. It supports alignment, page size selection, quick jump input, total information, mini size, and simple read-only or editable modes.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

@@ -15,9 +15,9 @@ public class CalendarShowCasePageTests
 
         source.ShouldContain("CalendarShowCaseLangResource PageSubtitle");
         source.ShouldContain("CalendarShowCaseLangResource PageDescription");
-        source.ShouldContain("CalendarShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("CalendarShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("CalendarShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("CalendarShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("CalendarShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("CalendarShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("CalendarShowCaseLangResource ComponentCategory");
         source.ShouldContain("CalendarShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("CalendarShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class CalendarShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:CalendarShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:CalendarShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("CalendarShowCaseLangResource BasicTitle");
         source.ShouldNotContain("<atom:TabControl");
@@ -121,7 +120,7 @@ public class CalendarShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyFirstDayOfWeek");
             source.ShouldContain("ApiPropertySelectionMode");
             source.ShouldContain("ApiPropertySelectedDate");

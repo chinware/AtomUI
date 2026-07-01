@@ -10,9 +10,6 @@ internal partial class zh_CN : LanguageProvider
     public const string PageDescription = "Descriptions 用于展示相关的标签和值，支持边框、标题、额外操作、响应式列数和垂直布局。";
     public const string ComponentCategory = "数据展示";
     public const string ComponentStatusStable = "稳定";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计 Token";

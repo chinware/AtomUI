@@ -28,9 +28,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = "稳定";
     public const string PageSubtitle = "用于聚焦决策和阻塞式流程的模态对话框。";
     public const string PageDescription = "Modal 在当前页面或窗口之上显示对话框，适用于确认操作、异步流程、消息框以及自定义对话框内容。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计变量";

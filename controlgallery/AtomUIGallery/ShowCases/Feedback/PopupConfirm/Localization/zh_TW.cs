@@ -18,9 +18,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = "穩定";
     public const string PageSubtitle = "在輕量級危險操作或風險操作前進行就地確認。";
     public const string PageDescription = "PopupConfirm 將觸發控件與確認浮層組合在一起，適用於需要快速二次確認、但不需要阻塞式模態框的操作。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變量";

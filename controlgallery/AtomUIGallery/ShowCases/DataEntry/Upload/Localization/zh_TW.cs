@@ -45,9 +45,6 @@ internal partial class zh_TW : LanguageProvider
     public const string PageDescription = "Upload 支援按鈕選擇、頭像校驗、默認文件列表、圖片牆、拖拽區域、最大數量限制、目錄上傳和文件類型過濾。";
     public const string ComponentCategory = "資料錄入";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "套件";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變數";

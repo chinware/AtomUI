@@ -86,9 +86,6 @@ internal partial class zh_CN : LanguageProvider
     public const string PageDescription = "LineEdit 覆盖标准输入框、前后置附加、清除操作、密码显示、前缀后缀、校验状态、SearchEdit 和 TextArea 场景。";
     public const string ComponentCategory = "数据录入";
     public const string ComponentStatusStable = "稳定";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计变量";

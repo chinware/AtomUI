@@ -17,9 +17,9 @@ public class NumberUpDownShowCasePageTests
 
         source.ShouldContain("NumberUpDownShowCaseLangResource PageSubtitle");
         source.ShouldContain("NumberUpDownShowCaseLangResource PageDescription");
-        source.ShouldContain("NumberUpDownShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("NumberUpDownShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("NumberUpDownShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("NumberUpDownShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("NumberUpDownShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("NumberUpDownShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("NumberUpDownShowCaseLangResource ComponentCategory");
         source.ShouldContain("NumberUpDownShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("NumberUpDownShowCaseLangResource ScenarioExamples");
@@ -38,14 +38,13 @@ public class NumberUpDownShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
         source.ShouldContain("Selector=\"atom|NumericUpDown\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:NumberUpDownShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:NumberUpDownShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(14);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(14);
@@ -152,7 +151,7 @@ public class NumberUpDownShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyValue");
             source.ShouldContain("ApiPropertyStringValue");
             source.ShouldContain("ApiPropertyIsStringMode");

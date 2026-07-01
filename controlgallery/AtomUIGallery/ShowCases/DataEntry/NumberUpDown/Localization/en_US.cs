@@ -59,9 +59,6 @@ internal partial class en_US : LanguageProvider
         "NumberUpDown combines numeric input, precision string mode, min/max constraints, decimal steps, input variants, add-ons, clear affordances and validation status.";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

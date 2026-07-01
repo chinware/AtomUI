@@ -12,13 +12,14 @@
 
 ## 控件清单
 
-第一阶段迁入 GalleryBase：
+GalleryBase 展示控件清单：
 
 | 类型 | 职责 |
 |---|---|
 | `ShowCaseItem` | 示例卡片，包含标题、描述、内容和延迟内容模板 |
 | `ShowCasePanel` | 示例集合宿主，支持瀑布流、内部滚动开关、viewport 延迟创建 |
 | `ShowCaseMasonryPanel` | 瀑布流布局面板 |
+| `GalleryShowCaseHeader` | 标准 ShowCase 文档页头，统一标题、标签、简介和 metadata 信息区 |
 | `GalleryStickyTabsHost` | 文档式页面宿主，Header、StickyContent、Content 同一滚动上下文 |
 | `GalleryStickyTabsPanel` | StickyContent 吸顶布局实现 |
 | `GalleryShowCaseScenarioController` | Examples/API/Design Token 等场景 lazy 创建和缓存 |
@@ -127,6 +128,109 @@ public class ShowCasePanel : TemplatedControl
 
 该面板保持简单，不引入 ItemsControl、ItemsSource 或数据模板。ShowCase 页面是文档式页面，不是无限列表。
 
+## GalleryShowCaseHeader
+
+`GalleryShowCaseHeader` 用于替代各 ShowCase 页面在 `GalleryStickyTabsHost.Header` 中重复手写的标题、Tag、简介和 metadata 区域。它只负责页头展示，不接管 Tab、Examples、API、Design Token 或页面 code-behind 生命周期。
+
+职责：
+
+- 渲染控件名、分类 Tag、状态 Tag、引入版本 Tag。
+- 渲染 subtitle、description。
+- 渲染标准 metadata：namespace、package、base class。
+- 统一 Header margin、标题字号、Tag 垂直居中、WrapPanel 换行、metadata 卡片边框和文本省略。
+- 把 `Namespace`、`Package`、`Base class` 这类通用 label 收敛到 GalleryBase 语言资源。
+
+非职责：
+
+- 不创建或切换 `TabStrip`。
+- 不管理 `ScenarioContentHost`。
+- 不创建 API 或 Design Token DataGrid。
+- 不承载 ShowCase demo 内容。
+- 不读取产品路由、导航、ViewModel 或反射发现页面元数据。
+
+核心属性：
+
+```csharp
+public class GalleryShowCaseHeader : TemplatedControl
+{
+    public string? Title { get; set; }
+    public string? Category { get; set; }
+    public string? CategoryTagColor { get; set; }
+    public string? Status { get; set; }
+    public string? StatusTagColor { get; set; }
+    public string? IntroducedVersion { get; set; }
+    public string? IntroducedVersionTagColor { get; set; }
+    public bool IsIntroducedVersionTagBordered { get; set; }
+    public string? Subtitle { get; set; }
+    public string? Description { get; set; }
+    public string? Namespace { get; set; }
+    public string? Package { get; set; }
+    public string? BaseClass { get; set; }
+    public double MetadataLabelWidth { get; set; }
+    public double MetadataValueWidth { get; set; }
+}
+```
+
+默认值：
+
+| 属性 | 默认值 | 说明 |
+|---|---|---|
+| `CategoryTagColor` | `blue` | 分类 Tag 默认使用蓝色 |
+| `StatusTagColor` | `success` | 稳定状态默认使用成功色；Preview 页面显式覆盖为 `processing` |
+| `IntroducedVersionTagColor` | `blue` | 引入版本 Tag 使用蓝色，与分类区分靠位置和文本 |
+| `IsIntroducedVersionTagBordered` | `false` | 版本 Tag 默认实底显示，避免和状态 Tag 混淆 |
+| `MetadataLabelWidth` | token 默认值 | label 宽度由主题控制，页面只在确有长文案时覆盖 |
+| `MetadataValueWidth` | token 默认值 | value 宽度由主题控制，页面只在包名较长时覆盖 |
+
+渲染规则：
+
+- `Category`、`Status`、`IntroducedVersion` 为空或空白时，对应 Tag 不渲染。
+- Tag 顺序固定为 category、status、introduced version。
+- `Subtitle` 或 `Description` 为空或空白时，对应文本行不渲染。
+- `Namespace`、`Package`、`BaseClass` 为空或空白时，对应 metadata 项不渲染。
+- 三个 metadata 值全部为空时，metadata 卡片不渲染。
+- metadata 顺序固定为 namespace、package、base class。
+
+标准用法：
+
+```xml
+<gallery:GalleryStickyTabsHost.Header>
+    <gallery:GalleryShowCaseHeader
+        Title="AutoComplete"
+        Category="{gallery:AutoCompleteShowCaseLangResource ComponentCategory}"
+        Status="{gallery:AutoCompleteShowCaseLangResource ComponentStatusStable}"
+        Subtitle="{gallery:AutoCompleteShowCaseLangResource PageSubtitle}"
+        Description="{gallery:AutoCompleteShowCaseLangResource PageDescription}"
+        Namespace="AtomUI.Desktop.Controls"
+        Package="AtomUI.Desktop.Controls"
+        BaseClass="AbstractAutoComplete" />
+</gallery:GalleryStickyTabsHost.Header>
+```
+
+带引入版本和 Preview 状态的用法：
+
+```xml
+<gallery:GalleryShowCaseHeader
+    Title="Splash"
+    Category="{gallery:SplashShowCaseLangResource ComponentCategory}"
+    Status="{gallery:SplashShowCaseLangResource ComponentStatusPreview}"
+    StatusTagColor="processing"
+    IntroducedVersion="{gallery:SplashShowCaseLangResource ComponentIntroducedVersion}"
+    Subtitle="{gallery:SplashShowCaseLangResource PageSubtitle}"
+    Description="{gallery:SplashShowCaseLangResource PageDescription}"
+    Namespace="AtomUI.Desktop.Controls"
+    Package="AtomUI.Desktop.Controls.Extras"
+    BaseClass="ContentControl"
+    MetadataValueWidth="240" />
+```
+
+迁移边界：
+
+- 已迁移的主 ShowCase 页面只替换 Header 内部重复布局。
+- 不同时抽取完整 `GalleryShowCaseDocumentPage`，因为 `TabStrip` 名称、`ScenarioContentHost`、`ExamplesContent`、lazy content 工厂和页面事件仍然由各 ShowCase 自己控制。
+- Header 抽取不能改变 Examples、API、Design Token、ViewModel 或 code-behind 行为。
+- 所有主 ShowCase 页面都使用 `GalleryShowCaseHeader`；`AutoComplete`、`Splash`、`BorderBeam` 保留为标准 Stable、Preview + 引入版本、无状态但有引入版本三类组合的回归样本。
+
 ## GalleryStickyTabsHost
 
 结构：
@@ -215,6 +319,7 @@ ShowCase 控件主题迁入 GalleryBase：
 
 - `ShowCaseItemTheme.axaml`
 - `ShowCasePanelTheme.axaml`
+- `GalleryShowCaseHeaderTheme.axaml`
 - `GalleryStickyTabsHostTheme.axaml`
 
 主题必须使用 GalleryBase 的 XAML namespace：
@@ -231,5 +336,9 @@ xmlns:gallery="https://atomui.net/toolkits/gallery-base"
 - `ShowCasePanel` 只使用一个 panel 级 viewport 监听。
 - Browser 渐进挂载不影响 deferred content 策略。
 - Masonry full span item 占满整行。
+- `GalleryShowCaseHeader` 可按属性组合渲染分类、状态、引入版本和 metadata。
+- `GalleryShowCaseHeader` 对空值 Tag、空值文本行和空值 metadata 项执行隐藏规则。
+- `GalleryShowCaseHeader` 的 Tag 行在窄宽度下换行且不挤压标题。
+- `GalleryShowCaseHeader` metadata label 使用 GalleryBase 通用语言资源。
 - Sticky host detach 后释放 sticky mirror。
 - Scenario controller 首次切换创建 lazy content，后续切换复用缓存。

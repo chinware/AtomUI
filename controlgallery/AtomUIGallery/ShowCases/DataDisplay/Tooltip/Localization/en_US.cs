@@ -82,9 +82,6 @@ internal partial class en_US : LanguageProvider
         "Tooltip provides concise helper text, placement control, arrow behavior and preset or custom colors for lightweight contextual guidance.";
     public const string ComponentCategory = "Data Display";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

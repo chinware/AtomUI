@@ -16,9 +16,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ScenarioDesignToken = "设计变量";
     public const string PageSubtitle = "使用行和列构建响应式 24 栅格布局。";
     public const string PageDescription = "Grid 提供行间距、对齐、偏移、排序和断点级列尺寸控制，适合应用布局。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ComponentCategory = "布局";
     public const string ComponentStatusStable = "稳定";
     public const string ApiColumnProperty = "属性";

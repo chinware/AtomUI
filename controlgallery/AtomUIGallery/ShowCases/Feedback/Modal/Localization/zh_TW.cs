@@ -28,9 +28,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = "穩定";
     public const string PageSubtitle = "用於聚焦決策和阻塞式流程的模態對話框。";
     public const string PageDescription = "Modal 在當前頁面或窗口之上顯示對話框，適用於確認操作、異步流程、消息框以及自定義對話框內容。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變量";

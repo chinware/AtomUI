@@ -13,9 +13,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "展示或隐藏一段可折叠的辅助内容。";
     public const string PageDescription = "Expander 用于在当前上下文中按需展开内容。它支持多种展开方向、尺寸、图标位置、仅图标触发、嵌套面板、幽灵样式和自定义间距。";
-    public const string InfoNamespaceLabel = "命名空间:";
-    public const string InfoPackageLabel = "包:";
-    public const string InfoBaseClassLabel = "基类:";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

@@ -41,9 +41,6 @@ internal partial class en_US : LanguageProvider
         "Timeline is used to organize milestones, progress updates and historical events with optional labels, custom indicators and pending nodes.";
     public const string ComponentCategory = "Data Display";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

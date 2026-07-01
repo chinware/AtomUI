@@ -13,9 +13,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = "稳定";
     public const string PageSubtitle = "触发操作，并通过清晰的视觉层级表达操作意图。";
     public const string PageDescription = "Button 是 AtomUI 中最基础的动作控件。通过类型、形状、尺寸、图标和加载状态，可以构建可预期的操作流程，同时保持 Ant Design 的交互模型。";
-    public const string InfoNamespaceLabel = "命名空间：";
-    public const string InfoPackageLabel = "包：";
-    public const string InfoBaseClassLabel = "基类：";
     public const string ExampleGroupBasicTitle = "按钮类型";
     public const string ExampleGroupBasicDescription = "通过按钮类型表达当前区域内操作的优先级。";
     public const string ExampleGroupShapeTitle = "形状与图标";

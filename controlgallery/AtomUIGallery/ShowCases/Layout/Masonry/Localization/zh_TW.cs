@@ -12,9 +12,6 @@ internal partial class zh_TW : LanguageProvider
     public const string PageSubtitle = "將高度不一的子元素按列組織成均衡的瀑布流。";
     public const string PageDescription =
         "Masonry 把卡片、圖片或任意控件按最短列策略排列成瀑布流，支援固定列數或自適應列數以及行列間距。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基底類別";
     public const string ComponentCategory = "佈局";
     public const string ComponentStatusStable = "穩定";
     public const string ApiColumnProperty = "屬性";

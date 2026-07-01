@@ -45,9 +45,6 @@ internal partial class zh_CN : LanguageProvider
     public const string PageDescription = "Upload 支持按钮选择、头像校验、默认文件列表、图片墙、拖拽区域、最大数量限制、目录上传和文件类型过滤。";
     public const string ComponentCategory = "数据录入";
     public const string ComponentStatusStable = "稳定";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包名";
-    public const string InfoBaseClassLabel = "基类";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计变量";

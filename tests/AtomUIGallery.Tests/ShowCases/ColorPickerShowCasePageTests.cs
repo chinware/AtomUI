@@ -15,9 +15,9 @@ public class ColorPickerShowCasePageTests
 
         source.ShouldContain("ColorPickerShowCaseLangResource PageSubtitle");
         source.ShouldContain("ColorPickerShowCaseLangResource PageDescription");
-        source.ShouldContain("ColorPickerShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("ColorPickerShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("ColorPickerShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("ColorPickerShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("ColorPickerShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("ColorPickerShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("ColorPickerShowCaseLangResource ComponentCategory");
         source.ShouldContain("ColorPickerShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("ColorPickerShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class ColorPickerShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:ColorPickerShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:ColorPickerShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("ColorPickerShowCaseLangResource BasicTitle");
         source.ShouldContain("ColorPickerShowCaseLangResource PresetColorsTitle");
@@ -134,7 +133,7 @@ public class ColorPickerShowCasePageTests
             source.ShouldContain("P2LabelSizeTypeLarge");
             source.ShouldContain("P2LabelSizeTypeCustom");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyDefaultValue");
             source.ShouldContain("ApiPropertyValueSyncStrategy");
             source.ShouldContain("ApiPropertyIsPaletteGroupEnabled");

@@ -13,9 +13,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "展示一组相关项目，并支持选择、分组、排序、筛选和分页。";
     public const string PageDescription = "List 用紧凑的纵向结构呈现重复信息。它支持 ListView 的分组、选择指示器、空状态、筛选、排序和分页，也覆盖简单的 ListBox 用法。";
-    public const string InfoNamespaceLabel = "命名空间:";
-    public const string InfoPackageLabel = "包:";
-    public const string InfoBaseClassLabel = "基类:";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

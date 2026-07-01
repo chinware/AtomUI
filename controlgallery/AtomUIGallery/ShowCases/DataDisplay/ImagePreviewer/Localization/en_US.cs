@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Preview single or multiple images in an overlay with zooming, moving, and switching controls.";
     public const string PageDescription = "ImagePreviewer displays an image cover that opens a preview surface. It supports fallback images, custom covers, image groups, scaling limits, and dialog lifecycle events.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string BasicUsageTitle = "Basic Usage";
     public const string BasicUsageDescription = "Click the image to zoom in.";
     public const string RemoteImageLoadingTitle = "Remote image loading";

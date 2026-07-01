@@ -36,9 +36,6 @@ internal partial class en_US : LanguageProvider
     public const string PageDescription = "TabControl and CardTabControl provide document-style navigation, item-template tabs, closable tabs, flexible placement, and optional tab bar actions.";
     public const string ComponentCategory = "Navigation";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

@@ -16,9 +16,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ScenarioDesignToken = "设计 Token";
     public const string PageSubtitle = "在两个集合之间移动条目，支持搜索、分页和树形数据。";
     public const string PageDescription = "Transfer 在左侧展示候选条目，在右侧展示已选条目。它支持单向移动、筛选、分页、自定义条目模板和基于树的数据源。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ComponentCategory = "数据录入";
     public const string ComponentStatusStable = "稳定";
     public const string ApiColumnProperty = "属性";

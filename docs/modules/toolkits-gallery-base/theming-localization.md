@@ -71,10 +71,11 @@ Controls/
   GalleryControlThemesProvider.cs
 ```
 
-当前 Provider 汇总：
+Provider 汇总：
 
 - `ShowCaseItemTheme.axaml`
 - `ShowCasePanelTheme.axaml`
+- `GalleryShowCaseHeaderTheme.axaml`
 - `GalleryStickyTabsHostTheme.axaml`
 - `ColorItemControlTheme.axaml`
 - `ColorListControlTheme.axaml`
@@ -86,12 +87,13 @@ Controls/
 
 ## Control Token
 
-GalleryBase Token：
+GalleryBase Token 清单：
 
 | Token | 职责 |
 |---|---|
 | `ShowCaseItemToken` | 卡片 padding、圆角、阴影、标题权重、placeholder |
 | `ShowCasePanelToken` | item 宽度、列数、行列间距、内容 margin |
+| `GalleryShowCaseHeaderToken` | Header margin、标题字号、Tag 间距、metadata 卡片 padding、label/value 宽度 |
 | `GalleryStickyTabsHostToken` | sticky 背景、边线、padding |
 | `GalleryWindowTitleBarToken` | 标题栏菜单字体和间距 |
 | `GallerySidebarToken` | 侧边栏宽度、brand/footer padding、分隔线 |
@@ -111,6 +113,8 @@ internal class ShowCaseItemToken : AbstractControlDesignToken
 ```xml
 Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
 ```
+
+`GalleryShowCaseHeaderToken` 只承载 Gallery 文档页头的结构性视觉值，例如 margin、间距、字号、metadata 卡片边框和默认宽度。分类、状态、引入版本 Tag 的颜色仍通过 `GalleryShowCaseHeader` 属性传给 AtomUI `Tag`，不在 token 中写死具体业务状态。
 
 ## Shared Token 使用规则
 
@@ -155,6 +159,16 @@ Localization/
 | 语言菜单 | Language |
 | 搜索提示 | Search |
 
+GalleryBase 也提供 ShowCase Header 的通用 metadata label：
+
+| 资源 | 示例 |
+|---|---|
+| Namespace label | Namespace |
+| Package label | Package |
+| Base class label | Base class |
+
+这些 label 属于通用文档页头结构，不应再由每个产品 ShowCase 重复定义。产品页面继续提供控件自己的 title、category、status、subtitle、description 和引入版本文案。
+
 不属于 GalleryBase 的资源：
 
 - `Button`
@@ -164,6 +178,7 @@ Localization/
 - `Install`
 - `API`
 - `Design Token` 页面内容
+- 控件分类、稳定状态、Preview 状态和页面描述
 
 这些由产品项目定义。
 
@@ -213,7 +228,9 @@ Browser 使用同一套主题 Provider，但要避免：
 
 - GalleryBase AssemblyInfo 不包含产品 ShowCase namespace。
 - `UseGalleryBase` 注册 GalleryBase token 和 theme provider。
+- `GalleryControlThemesProvider` 包含 `GalleryShowCaseHeaderTheme.axaml`。
 - GalleryBase 语言 Provider 不包含产品页面语言资源。
+- GalleryBase 语言 Provider 包含 ShowCase Header metadata 通用 label。
 - 主题文件不包含 `AtomUIGallery/Assets` 或产品 URI。
 - Browser 构建时能解析 GalleryBase theme provider。
 - 语言切换后 Shell 菜单状态和文案刷新。

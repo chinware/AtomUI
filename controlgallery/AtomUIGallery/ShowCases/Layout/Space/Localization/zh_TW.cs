@@ -34,9 +34,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioDesignToken = "設計變量";
     public const string PageSubtitle = "用一致的間距或緊湊組合排列控件。";
     public const string PageDescription = "Space 提供水平和垂直間距、項目對齊、分隔渲染以及緊湊輸入和按鈕組合，適合高密度工具界面。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ComponentCategory = "佈局";
     public const string ComponentStatusStable = "穩定";
     public const string ApiColumnProperty = "屬性";

@@ -18,9 +18,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Inline confirmation before a lightweight destructive or risky action.";
     public const string PageDescription = "PopupConfirm combines a trigger control with a confirmation flyout. It is useful when an operation needs a quick second step but does not justify a blocking modal dialog.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

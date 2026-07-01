@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "Display a rotating set of content panels in a limited space.";
     public const string PageDescription = "Carousel cycles through images, cards, or promotion panels. It supports autoplay, pagination positions, fade transitions, navigation arrows, infinite scrolling, progress indicators, and swipe gestures.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

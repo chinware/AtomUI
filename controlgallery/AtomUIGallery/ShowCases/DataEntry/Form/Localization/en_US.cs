@@ -52,9 +52,6 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "High-performance data entry with validation, layout, and form item coordination.";
     public const string PageDescription = "Form coordinates fields, validation rules, submit/reset actions, and reusable form item controls for structured data entry workflows.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
     public const string ApiColumnProperty = "Property";

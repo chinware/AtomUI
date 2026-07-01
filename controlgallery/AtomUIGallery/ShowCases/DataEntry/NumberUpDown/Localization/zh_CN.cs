@@ -59,9 +59,6 @@ internal partial class zh_CN : LanguageProvider
         "NumberUpDown 组合了数值输入、高精度字符串模式、最小/最大约束、小数步长、输入变体、附加内容、清除入口和校验状态。";
     public const string ComponentCategory = "数据录入";
     public const string ComponentStatusStable = "稳定";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

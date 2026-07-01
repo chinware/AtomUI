@@ -28,9 +28,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Modal dialogs for focused decisions and blocking workflows.";
     public const string PageDescription = "Modal displays a dialog above the current page or window. It is useful for confirmations, async operations, message boxes, and custom dialog content.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

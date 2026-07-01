@@ -18,9 +18,6 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Guide users through ordered tasks and process states.";
     public const string PageDescription = "Steps display a sequence of tasks, progress, navigation states, and optional step content for workflows that need clear stage awareness.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ComponentCategory = "Navigation";
     public const string ComponentStatusStable = "Stable";
     public const string ApiColumnProperty = "Property";

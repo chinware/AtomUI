@@ -18,9 +18,9 @@ public class TabStripShowCasePageTests
 
         source.ShouldContain("TabStripShowCaseLangResource PageSubtitle");
         source.ShouldContain("TabStripShowCaseLangResource PageDescription");
-        source.ShouldContain("TabStripShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("TabStripShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("TabStripShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("TabStripShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("TabStripShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("TabStripShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("TabStripShowCaseLangResource ComponentCategory");
         source.ShouldContain("TabStripShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("TabStripShowCaseLangResource ScenarioExamples");
@@ -39,13 +39,12 @@ public class TabStripShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:TabStripShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:TabStripShowCaseLangResource PageDescription}\"");
         CountShowCaseItemElements(source).ShouldBe(12);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(12);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(12);
@@ -142,7 +141,7 @@ public class TabStripShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertySelectedIndex");
             source.ShouldContain("ApiPropertyTabStripPlacement");
             source.ShouldContain("ApiPropertyIsTabClosable");

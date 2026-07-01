@@ -41,9 +41,6 @@ internal partial class zh_TW : LanguageProvider
         "Timeline 用於組織里程碑、進度更新和歷史事件，支持標籤、自定義節點指示器和待處理節點。";
     public const string ComponentCategory = "數據展示";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

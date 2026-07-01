@@ -13,9 +13,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = "稳定";
     public const string PageSubtitle = "在覆盖层中预览单张或多张图片，并支持缩放、移动和切换。";
     public const string PageDescription = "ImagePreviewer 展示图片封面，点击后打开预览界面。它支持容错图片、自定义封面、多图预览、缩放范围和预览窗口生命周期事件。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基础类";
     public const string BasicUsageTitle = "基础用法";
     public const string BasicUsageDescription = "点击图片放大预览。";
     public const string RemoteImageLoadingTitle = "远程图片加载";

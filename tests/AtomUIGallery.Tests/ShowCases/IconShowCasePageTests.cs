@@ -19,9 +19,9 @@ public class IconShowCasePageTests
 
         source.ShouldContain("IconShowCaseLangResource PageSubtitle");
         source.ShouldContain("IconShowCaseLangResource PageDescription");
-        source.ShouldContain("IconShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("IconShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("IconShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("IconShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("IconShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("IconShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("IconShowCaseLangResource ComponentCategory");
         source.ShouldContain("IconShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("IconShowCaseLangResource P2HeaderOutlined");
@@ -36,13 +36,12 @@ public class IconShowCasePageTests
         source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\"");
         source.ShouldContain("Grid.Row=\"2\"");
         source.ShouldContain("Margin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:IconShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:IconShowCaseLangResource PageDescription}\"");
         source.ShouldNotContain("<gallery:GalleryStickyTabsHost");
         source.ShouldNotContain("<atom:ScrollViewer");
         source.ShouldNotContain("<atom:TabControl");
@@ -82,9 +81,9 @@ public class IconShowCasePageTests
             source.ShouldContain("ComponentStatusStable");
             source.ShouldContain("PageSubtitle");
             source.ShouldContain("PageDescription");
-            source.ShouldContain("InfoNamespaceLabel");
-            source.ShouldContain("InfoPackageLabel");
-            source.ShouldContain("InfoBaseClassLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoPackageLabel");
+            source.ShouldNotContain("InfoBaseClassLabel");
             source.ShouldContain("P2HeaderOutlined");
             source.ShouldContain("P2HeaderFilled");
             source.ShouldContain("P2HeaderTwoTone");

@@ -18,7 +18,15 @@ ButtonShowCase 从“单一 ShowCasePanel 承载全部内容”升级为“文�
 ```xml
 <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
     <gallery:GalleryStickyTabsHost.Header>
-        <!-- title, tags, description, metadata -->
+        <gallery:GalleryShowCaseHeader
+            Title="Button"
+            Category="{gallery:ButtonShowCaseLangResource ComponentCategory}"
+            Status="{gallery:ButtonShowCaseLangResource ComponentStatusStable}"
+            Subtitle="{gallery:ButtonShowCaseLangResource PageSubtitle}"
+            Description="{gallery:ButtonShowCaseLangResource PageDescription}"
+            Namespace="AtomUI.Controls"
+            Package="AtomUI.Controls"
+            BaseClass="Button" />
     </gallery:GalleryStickyTabsHost.Header>
 
     <gallery:GalleryStickyTabsHost.StickyContent>
@@ -84,6 +92,8 @@ ShowCase Page
 
 Header 负责让用户快速理解这个控件是什么、处于什么状态、来自哪个包。
 
+标准 ShowCase 页面应在 `GalleryStickyTabsHost.Header` 中使用 `GalleryShowCaseHeader`，不再为每个页面手写 `StackPanel + Tag + Border + WrapPanel` 的页头结构。主 ShowCase 页面已经统一迁移到该 Header；完整页面壳、Tab、Examples、API 和 Design Token 暂不合并成单个大控件。
+
 推荐内容：
 
 - 控件名，例如 `Button`。
@@ -92,6 +102,52 @@ Header 负责让用户快速理解这个控件是什么、处于什么状态、�
 - 一句话 subtitle，说明控件用途。
 - 一段 description，说明主要使用场景。
 - 一块紧凑 metadata 信息，例如 namespace、package、base class。
+
+推荐写法：
+
+```xml
+<gallery:GalleryStickyTabsHost.Header>
+    <gallery:GalleryShowCaseHeader
+        Title="AutoComplete"
+        Category="{gallery:AutoCompleteShowCaseLangResource ComponentCategory}"
+        Status="{gallery:AutoCompleteShowCaseLangResource ComponentStatusStable}"
+        Subtitle="{gallery:AutoCompleteShowCaseLangResource PageSubtitle}"
+        Description="{gallery:AutoCompleteShowCaseLangResource PageDescription}"
+        Namespace="AtomUI.Desktop.Controls"
+        Package="AtomUI.Desktop.Controls"
+        BaseClass="AbstractAutoComplete" />
+</gallery:GalleryStickyTabsHost.Header>
+```
+
+需要展示引入版本时，使用 `IntroducedVersion`，版本 Tag 默认使用蓝色实底样式：
+
+```xml
+<gallery:GalleryShowCaseHeader
+    Title="BorderBeam"
+    Category="{gallery:BorderBeamShowCaseLangResource ComponentCategory}"
+    IntroducedVersion="{gallery:BorderBeamShowCaseLangResource ComponentIntroducedVersion}"
+    Subtitle="{gallery:BorderBeamShowCaseLangResource PageSubtitle}"
+    Description="{gallery:BorderBeamShowCaseLangResource PageDescription}"
+    Namespace="AtomUI.Desktop.Controls"
+    Package="AtomUI.Desktop.Controls.Extras"
+    BaseClass="TemplatedControl" />
+```
+
+Preview 页面显式覆盖状态 Tag 颜色：
+
+```xml
+<gallery:GalleryShowCaseHeader
+    Title="Splash"
+    Category="{gallery:SplashShowCaseLangResource ComponentCategory}"
+    Status="{gallery:SplashShowCaseLangResource ComponentStatusPreview}"
+    StatusTagColor="processing"
+    IntroducedVersion="{gallery:SplashShowCaseLangResource ComponentIntroducedVersion}"
+    Subtitle="{gallery:SplashShowCaseLangResource PageSubtitle}"
+    Description="{gallery:SplashShowCaseLangResource PageDescription}"
+    Namespace="AtomUI.Desktop.Controls"
+    Package="AtomUI.Desktop.Controls.Extras"
+    BaseClass="ContentControl" />
+```
 
 Header 不应放：
 
@@ -106,6 +162,15 @@ Header 的布局要求：
 - 信息区允许横向排列，也要支持 WrapPanel 换行。
 - 中文和英文环境都要避免挤压、错位和不可读。
 - metadata 的 label 可以固定窄宽度，value 可以固定合理宽度并使用省略。
+- Tag 必须在标题行垂直居中；当可用宽度不足时，Tag 区域换行，而不是压缩标题或溢出。
+- `Namespace`、`Package`、`Base class` 的 label 来自 GalleryBase 通用语言资源，不再在每个 ShowCase 的语言资源中重复定义。
+
+迁移规则：
+
+- 只替换 Header 结构时，不允许改 `StickyContent`、`ScenarioContentHost`、`ExamplesContent` 和 code-behind。
+- Header 抽取后，页面仍然继续使用 `GalleryShowCaseScenarioController` 管理场景切换。
+- 对已有特殊 Header 的页面，先判断差异是否属于通用能力；能通过 `Status`、`IntroducedVersion`、metadata 宽度等属性表达的，必须收敛到 `GalleryShowCaseHeader`。
+- 所有控件主 ShowCase 页面都必须使用 `GalleryShowCaseHeader`。`AutoComplete`、`Splash`、`BorderBeam` 作为标准 Stable、Preview + 引入版本、无状态但有引入版本三种组合的回归样本保留。
 
 ## Tabs 范式
 
@@ -399,6 +464,7 @@ private static Control CreateScenarioContent(string scenario)
 结构测试：
 
 - 页面使用 `GalleryStickyTabsHost`。
+- 标准页面在 `GalleryStickyTabsHost.Header` 中使用 `GalleryShowCaseHeader`；Icon 等特殊页面也使用同一个 Header 控件。
 - 页面使用 `TabStrip`，不使用 `TabControl`。
 - 存在 `ScenarioContentHost`。
 - Examples 的 `ShowCasePanel` 设置 `IsScrollEnabled=False`。
@@ -425,7 +491,7 @@ private static Control CreateScenarioContent(string scenario)
 迁移其它控件 ShowCase 时按以下顺序处理：
 
 1. 保留原 `ShowCaseItem` 内容，先建立 snapshot。
-2. 增加 Header 区域，包括 title、tags、subtitle、description、metadata。
+2. 保持 `GalleryShowCaseHeader`，包括 title、tags、subtitle、description、metadata。
 3. 用 `GalleryStickyTabsHost` 包裹页面主体。
 4. 用 `TabStrip` 替代 `TabControl`。
 5. 新增 `ScenarioContentHost`。
@@ -436,12 +502,15 @@ private static Control CreateScenarioContent(string scenario)
 10. 统一 Header、Tab、Content 左右边距。
 11. 跑结构测试、deferred 创建测试、snapshot 测试、Gallery Desktop 构建。
 
+仅做 Header 去重迁移时，可以只执行第 2、10、11 步，但必须确认 Header 之外的 XAML diff 为空或只包含必要的 namespace/resource 删除。
+
 ## 不做事项
 
 为了避免再次把页面结构和示例内容耦合在一起，下面这些行为应避免：
 
 - 在页面改造时顺手改控件演示内容。
 - 迁移后仍把演示控件直接写在 `ShowCaseItem` 内容区。
+- 迁移后仍在每个页面手写标准 Header 的 `StackPanel + Tag + metadata Border`。
 - 只开启 `ShowCasePanel.IsDeferredLoadingEnabled`，但不把 item 演示控件移入 `DeferredContentTemplate`。
 - 修改全局 Window 或 NavMenu 来解决单个 ShowCase 页面布局问题。
 - 为 sticky tabs 复制一份隐藏 TabStrip。

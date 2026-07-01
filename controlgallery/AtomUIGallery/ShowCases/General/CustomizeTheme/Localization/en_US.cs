@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "Customize AtomUI themes with shared tokens, algorithms, component tokens, and nested local theme scopes.";
     public const string PageDescription = "Customize Theme demonstrates the ThemeConfigProvider model used to override seed tokens, derived tokens, preset algorithms, component-scoped tokens, and nested theme contexts without changing the global application theme.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ApiColumnMember = "Member";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";
