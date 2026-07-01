@@ -296,12 +296,16 @@ internal class Calendar : TemplatedControl
             if (FocusButton != null)
             {
                 FocusButton.IsCurrent = false;
+                FocusButton = null;
             }
 
-            FocusButton = FindDayButtonFromDay(LastSelectedDate!.Value);
-            if (FocusButton != null)
+            if (value.HasValue)
             {
-                FocusButton.IsCurrent = HasFocusInternal;
+                FocusButton = FindDayButtonFromDay(value.Value);
+                if (FocusButton != null)
+                {
+                    FocusButton.IsCurrent = HasFocusInternal;
+                }
             }
         }
     }
@@ -387,6 +391,7 @@ internal class Calendar : TemplatedControl
         DisplayDateProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateChanged(e));
         DisplayDateStartProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateStartChanged(e));
         DisplayDateEndProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateEndChanged(e));
+        SelectedDateProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnSelectedDateChanged(e));
         KeyDownEvent.AddClassHandler<Calendar>((x, e) => x.HandleCalendarKeyDown(e));
         HorizontalAlignmentProperty.OverrideDefaultValue<Calendar>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<Calendar>(VerticalAlignment.Top);
@@ -537,6 +542,27 @@ internal class Calendar : TemplatedControl
         c.SetupDisplayDateInternal(addedDate);
         c.UpdateMonths();
         c.OnDisplayDate(new CalendarDateChangedEventArgs(removedDate, addedDate));
+    }
+
+    protected virtual void OnSelectedDateChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        var selectedDate = change.NewValue as DateTime?;
+        if (!IsValidDateSelection(this, selectedDate))
+        {
+            throw new ArgumentOutOfRangeException(nameof(change), "SelectedDate value is not valid.");
+        }
+
+        LastSelectedDate = selectedDate;
+
+        if (selectedDate.HasValue &&
+            DateTimeHelper.CompareYearMonth(selectedDate.Value, DisplayDateInternal) != 0)
+        {
+            SetCurrentValue(DisplayDateProperty, selectedDate.Value);
+        }
+        else
+        {
+            UpdateMonths();
+        }
     }
 
     protected virtual void SetupDisplayDateInternal(DateTime displayDate)
@@ -730,17 +756,22 @@ internal class Calendar : TemplatedControl
             return false;
         }
 
-        cal._displayDateIsChanging = true;
-        if (DateTime.Compare(value.Value, cal.DisplayDateRangeStart) < 0)
+        try
         {
-            cal.DisplayDateStart = value;
+            cal._displayDateIsChanging = true;
+            if (DateTime.Compare(value.Value, cal.DisplayDateRangeStart) < 0)
+            {
+                cal.DisplayDateStart = value;
+            }
+            else if (DateTime.Compare(value.Value, cal.DisplayDateRangeEnd) > 0)
+            {
+                cal.DisplayDateEnd = value;
+            }
         }
-        else if (DateTime.Compare(value.Value, cal.DisplayDateRangeEnd) > 0)
+        finally
         {
-            cal.DisplayDateEnd = value;
+            cal._displayDateIsChanging = false;
         }
-
-        cal._displayDateIsChanging = false;
 
         return true;
     }
@@ -1439,6 +1470,8 @@ internal class Calendar : TemplatedControl
         if (CalendarItem != null)
         {
             CalendarItem.Owner = this;
+            CalendarItem.UpdateDisabled(IsEnabled);
+            UpdateMonths();
         }
     }
     

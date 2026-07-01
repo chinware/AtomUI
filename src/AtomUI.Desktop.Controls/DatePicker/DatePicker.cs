@@ -1,11 +1,6 @@
-﻿using System.Globalization;
-using AtomUI.Controls.Utils;
-using AtomUI.Data;
-using AtomUI.Desktop.Controls.CalendarView;
-using AtomUI.Desktop.Controls.Localization;
+﻿using AtomUI.Desktop.Controls.CalendarView;
 using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Media;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -147,25 +142,7 @@ public class DatePicker : InfoPickerInput
 
     private string GetEffectiveFormat()
     {
-        if (Format is not null)
-        {
-            return Format;
-        }
-
-        var format = "yyyy-MM-dd";
-        if (IsShowTime)
-        {
-            if (ClockIdentifier == ClockIdentifierType.HourClock12)
-            {
-                format = $"{format} hh:mm:ss tt";
-            }
-            else
-            {
-                format = $"{format} HH:mm:ss";
-            }
-        }
-
-        return format;
+        return DatePickerFormattingHelper.GetEffectiveFormat(Format, IsShowTime, ClockIdentifier);
     }
 
     protected string FormatDateTime(DateTime? dateTime)
@@ -176,24 +153,8 @@ public class DatePicker : InfoPickerInput
         }
 
         var format = GetEffectiveFormat();
-        if (ClockIdentifier == ClockIdentifierType.HourClock12)
-        {
-            var amDesignator = AmText ??
-                               LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText);
-            var pmDesignator = PmText ??
-                               LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText);
-            if (amDesignator is not null && pmDesignator is not null)
-            {
-                var formatInfo = new DateTimeFormatInfo
-                {
-                    AMDesignator = amDesignator,
-                    PMDesignator = pmDesignator
-                };
-                return dateTime.Value.ToString(format, formatInfo);
-            }
-        }
-
-        return dateTime.Value.ToString(format);
+        var formatInfo = DatePickerFormattingHelper.CreateFormatInfo(ClockIdentifier, AmText, PmText);
+        return DatePickerFormattingHelper.FormatDateTime(dateTime.Value, format, formatInfo);
     }
 
     protected override Control CreatePickerPresenter()
@@ -346,23 +307,16 @@ public class DatePicker : InfoPickerInput
         else
         {
             var format = GetEffectiveFormat();
-            DateTimeFormatInfo? formatInfo = null;
-            if (ClockIdentifier == ClockIdentifierType.HourClock12)
-            {
-                var amDesignator = AmText ??
-                                   LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.AMText);
-                var pmDesignator = PmText ??
-                                   LanguageResourceBinder.GetLangResource(TimePickerLangResourceKind.PMText);
-                if (amDesignator is not null && pmDesignator is not null)
-                {
-                    formatInfo = new DateTimeFormatInfo
-                    {
-                        AMDesignator = amDesignator,
-                        PMDesignator = pmDesignator
-                    };
-                }
-            }
-            var preferredInputWidth = CalculateContentPreferredWidth(Text, PlaceholderText, format, formatInfo);
+            var formatInfo = DatePickerFormattingHelper.CreateFormatInfo(ClockIdentifier, AmText, PmText);
+            var preferredInputWidth = DatePickerFormattingHelper.CalculateContentPreferredWidth(
+                Text,
+                PlaceholderText,
+                format,
+                FontSize,
+                FontFamily,
+                FontStyle,
+                FontWeight,
+                formatInfo);
 
             if (!double.IsNaN(MinWidth))
             {
@@ -375,26 +329,6 @@ public class DatePicker : InfoPickerInput
             }
             PreferredInputWidth = preferredInputWidth;
         }
-    }
-
-    private double CalculateContentPreferredWidth(
-        string? text,
-        string? placeholderText,
-        string format,
-        DateTimeFormatInfo? formatInfo)
-    {
-        if (!string.IsNullOrEmpty(text))
-        {
-            return TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
-        }
-
-        if (!string.IsNullOrEmpty(placeholderText))
-        {
-            return TextUtils.CalculateTextSize(placeholderText, FontSize, FontFamily, FontStyle, FontWeight).Width;
-        }
-
-        return DateTimeUtils.CalculateWidestFormattedDateTimeSize(
-            format, FontSize, FontFamily, FontStyle, FontWeight, formatInfo).Width;
     }
 
     protected override bool ShowClearButtonPredicate()
