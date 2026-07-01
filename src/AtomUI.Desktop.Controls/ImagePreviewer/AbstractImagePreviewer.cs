@@ -34,6 +34,9 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     public static readonly StyledProperty<string?> PreviewTitleProperty =
         AvaloniaProperty.Register<AbstractImagePreviewer, string?>(nameof(PreviewTitle));
 
+    public static readonly StyledProperty<PathIcon?> PreviewTitleIconProperty =
+        AvaloniaProperty.Register<AbstractImagePreviewer, PathIcon?>(nameof(PreviewTitleIcon));
+
     public static readonly StyledProperty<IImagePreviewTitleResolver?> PreviewTitleResolverProperty =
         AvaloniaProperty.Register<AbstractImagePreviewer, IImagePreviewTitleResolver?>(
             nameof(PreviewTitleResolver),
@@ -88,6 +91,12 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     {
         get => GetValue(PreviewTitleProperty);
         set => SetValue(PreviewTitleProperty, value);
+    }
+
+    public PathIcon? PreviewTitleIcon
+    {
+        get => GetValue(PreviewTitleIconProperty);
+        set => SetValue(PreviewTitleIconProperty, value);
     }
 
     public IImagePreviewTitleResolver? PreviewTitleResolver
@@ -773,6 +782,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         disposables.Add(BindUtils.RelayBind(this, IsDialogModalProperty, dialogHost, ImagePreviewerDialog.IsModalProperty));
         disposables.Add(BindUtils.RelayBind(this, CurrentIndexProperty, dialogHost, ImagePreviewerDialog.CurrentIndexProperty));
         disposables.Add(BindUtils.RelayBind(this, PreviewTitleProperty, dialogHost, Window.TitleProperty));
+        disposables.Add(BindUtils.RelayBind(this, PreviewTitleIconProperty, dialogHost, ImagePreviewerDialog.TitleIconProperty));
         disposables.Add(BindUtils.RelayBind(this, PreviewTitleResolverProperty, dialogHost, ImagePreviewerDialog.PreviewTitleResolverProperty));
     }
 

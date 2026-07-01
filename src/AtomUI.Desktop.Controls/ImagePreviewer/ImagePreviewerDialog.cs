@@ -54,6 +54,9 @@ internal class ImagePreviewerDialog : Window,
     public static readonly StyledProperty<IImagePreviewTitleResolver?> PreviewTitleResolverProperty =
         AbstractImagePreviewer.PreviewTitleResolverProperty.AddOwner<ImagePreviewerDialog>();
 
+    public static readonly StyledProperty<PathIcon?> TitleIconProperty =
+        AvaloniaProperty.Register<ImagePreviewerDialog, PathIcon?>(nameof(TitleIcon));
+
     public static readonly DirectProperty<ImagePreviewerDialog, int> CountProperty =
         AvaloniaProperty.RegisterDirect<ImagePreviewerDialog, int>(
             nameof(Count),
@@ -138,6 +141,12 @@ internal class ImagePreviewerDialog : Window,
     {
         get => GetValue(PreviewTitleResolverProperty);
         set => SetValue(PreviewTitleResolverProperty, value);
+    }
+
+    public PathIcon? TitleIcon
+    {
+        get => GetValue(TitleIconProperty);
+        set => SetValue(TitleIconProperty, value);
     }
 
     public Transform? Transform
@@ -996,12 +1005,11 @@ internal class ImagePreviewerDialog : Window,
     protected override void NotifyConfigureTitleBar(WindowTitleBar titleBar)
     {
         // 使用预览标题算法结果，而不是直接展示 Window.Title。
-        titleBar[!WindowTitleBar.TitleProperty]        = this[!EffectivePreviewTitleProperty];
-        titleBar[!WindowTitleBar.LogoProperty]         = this[!LogoProperty];
-        titleBar[!WindowTitleBar.LogoTemplateProperty] = this[!LogoTemplateProperty];
+        titleBar[!WindowTitleBar.TitleProperty] = this[!EffectivePreviewTitleProperty];
 
         if (titleBar is ImagePreviewerTitleBar previewerTitleBar)
         {
+            previewerTitleBar[!ImagePreviewerTitleBar.IconProperty]               = this[!TitleIconProperty];
             previewerTitleBar[!ImagePreviewerTitleBar.CurrentIndexProperty]       = this[!CurrentIndexProperty];
             previewerTitleBar[!ImagePreviewerTitleBar.CountProperty]              = this[!CountProperty];
             previewerTitleBar[!ImagePreviewerTitleBar.IsScaleDownEnabledProperty] = this[!IsScaleDownEnabledProperty];

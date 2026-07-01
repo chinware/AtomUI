@@ -42,7 +42,7 @@ ImagePreviewer 的公共契约由 public/protected 类型成员、Avalonia 属�
 | 图片来源 | `SourceUri`、`SourceUris`、`CoverSourceUri`、`FallbackSourceUri` | 统一表达单图、多图、封面和失败兜底图片来源，来源可以是 `avares://`、本地路径、`file://` 或 `http(s)://`。 |
 | 内容与数据 | `CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`LoadingContent`、`LoadingContentTemplate`、`ErrorContent`、`ErrorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageTranslateX`、`ImageTranslateY` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `Count`、`CurrentIndex` | 维护当前预览项、多图切换和集合状态；`CurrentIndex` 是控件级当前项索引，未设置 `CoverSourceUri` 时也决定普通 `ImagePreviewer` 的封面图片。 |
-| 预览标题 | `PreviewTitle`、`PreviewTitleResolver`、`IImagePreviewTitleResolver`、`ImagePreviewTitleResolveContext` | 定义预览宿主标题解析契约。显式标题非空时优先显示；显式标题为空时由 resolver 基于 current effective item 解析标题。 |
+| 预览标题 | `PreviewTitle`、`PreviewTitleIcon`、`PreviewTitleResolver`、`IImagePreviewTitleResolver`、`ImagePreviewTitleResolveContext` | 定义预览宿主标题和标题图标契约。显式标题非空时优先显示；显式标题为空时由 resolver 基于 current effective item 解析标题；`PreviewTitleIcon` 使用 `PathIcon?`，只在显式设置时显示，不继承应用或主窗口图标。 |
 | 交互与状态 | `IsDialogModal`、`IsDialogTopmost`、`IsModal`、`IsMotionEnabled`、`IsOpen`、`IsShowCoverMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `CoverHeight`、`CoverWidth` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `MaxScale`、`MinScale`、`ScaleStep`、`Stretch`、`Transform` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
@@ -58,22 +58,23 @@ ImagePreviewer 的公共契约由 public/protected 类型成员、Avalonia 属�
 
 | Template Part | 类型 | 职责 |
 | --- | --- | --- |
-| `PART_CloseButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_CoverItemsControl` | `?` | 承载集合项、布局面板或虚拟化内容。 |
-| `PART_FitToWindowButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_HorizontalFlipButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_ImageRenderer` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_ImageViewerScene` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_LoadingPresenter` | `ContentPresenter` | 承载图片加载状态内容。默认封面使用 Skeleton 风格占位，预览层使用居中 Spin。 |
-| `PART_ErrorPresenter` | `ContentPresenter` | 承载图片加载失败内容；存在 `FallbackSourceUri` 时优先展示 fallback 结果。 |
-| `PART_Logo` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
-| `PART_NextButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_PreviousButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_RotateLeftButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_RotateRightButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_ScaleDownButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_ScaleUpButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
-| `PART_VerticalFlipButton` | `?` | 承载用户触发入口、导航或关闭动作。 |
+| `PART_CloseButton` | `IconButton` | 承载预览宿主关闭动作。 |
+| `PART_CoverItemsControl` | `ItemsControl` | 承载多图封面项。 |
+| `PART_FitToWindowButton` | `ToggleIconButton` | 承载 fit-to-window 切换动作。 |
+| `PART_HorizontalFlipButton` | `IconButton` | 承载水平翻转动作。 |
+| `PART_ImageRenderer` | `ImagePreviewRenderer` | 承载当前图片渲染。 |
+| `PART_ImageViewerScene` | `Canvas` | 承载预览层图片场景、变换和拖拽坐标空间。 |
+| `PART_LoadingPresenter` | `Border` | 承载图片加载状态内容。默认封面使用 Skeleton 风格占位，预览层使用居中 Spin。 |
+| `PART_ErrorPresenter` | `Border` | 承载图片加载失败内容；存在 `FallbackSourceUri` 时优先展示 fallback 结果。 |
+| `PART_IconPresenter` | `IconPresenter` | 承载预览窗口标题图标，内容来自 `ImagePreviewer.PreviewTitleIcon`。 |
+| `PART_TitleLayout` | `StackPanel` | 承载预览窗口标题图标和标题文字，两者使用标题栏 Logo 与 Title 间距。 |
+| `PART_NextButton` | `ImagePreviewNavButton` / `IconButton` | 承载下一张导航动作。 |
+| `PART_PreviousButton` | `ImagePreviewNavButton` / `IconButton` | 承载上一张导航动作。 |
+| `PART_RotateLeftButton` | `IconButton` | 承载向左旋转动作。 |
+| `PART_RotateRightButton` | `IconButton` | 承载向右旋转动作。 |
+| `PART_ScaleDownButton` | `IconButton` | 承载缩小动作。 |
+| `PART_ScaleUpButton` | `IconButton` | 承载放大动作。 |
+| `PART_VerticalFlipButton` | `IconButton` | 承载垂直翻转动作。 |
 
 当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
 
@@ -118,6 +119,8 @@ ImagePreviewer 的视觉模型由控件模板、ControlTheme、SharedToken 和�
 | `ImageViewerTheme.axaml` | 提供控件模板、selector、资源绑定和状态视觉。 |
 
 ImagePreviewer 使用 `ImagePreviewerToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 current item、open/close、image loading、loaded/failed、fallback 或 motion 运行时状态。
+
+预览窗口标题栏使用 `ImagePreviewer.PreviewTitleIcon` 作为标题图标来源。`PreviewTitleIcon` 是 `PathIcon?` 契约，表示只属于 ImagePreviewer 预览窗口标题的显式图标；未设置时标题栏不显示图标，也不从 `Window.Icon`、`Window.Logo`、应用图标或主窗口图标回退。`ImagePreviewerTitleBarTheme` 将 `PART_IconPresenter` 和标题内容放入 `PART_TitleLayout`，图标位于标题左侧，二者之间使用 `WindowTitleBarToken.LogoAndTitleSpacing`。Windows 和 Linux 模板把系统 caption buttons 放在标题区域右侧之外；macOS 模板依赖 `Window.TitleBarOffsetMargin` 给左侧原生窗口按钮预留安全区，不能通过继承应用图标规避碰撞。
 
 加载视觉遵循以下规则：
 
@@ -223,6 +226,8 @@ ImagePreviewer 涉及弹层、窗口或 overlay 宿主时，打开状态、取�
 
 标题必须在 `CurrentIndex`、effective items、`PreviewTitle` 和 `PreviewTitleResolver` 变化时重新计算。预览弹窗的标题栏不应恢复通用 `Window.Title` 绑定并绕过该算法；它应显示算法生成的 effective preview title。
 
+`PreviewTitleIcon` 只负责预览窗口标题左侧图标，不参与标题文本解析。它使用 AtomUI `PathIcon` 语义：用户传入图标时，标题栏模板在标题文字左侧展示该图标；未设置时标题栏保持无图标状态。该属性不得转接到 `Window.Icon`，因为 `Window.Icon` 会参与普通窗口图标和主窗口 fallback 逻辑。
+
 ### 8.4 图片来源与加载模型
 
 ImagePreviewer 使用 `ImageSourceUri` 作为图片来源公共契约。`ImageSourceUri` 表示图片来源地址，不表示加载结果；它支持 `avares://`、本地绝对路径、本地相对路径、`file://`、`http://` 和 `https://`。
@@ -262,11 +267,12 @@ LLMS 语义区域：
 
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
-| `root` | `ImagePreviewer` | 数据展示控件根语义区域，承载 public API、数据状态和主题入口。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `item` | `条目或容器区域` | 承载集合项、单元格、标签、时间节点、卡片或展示单元。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `header` | `标题或头部区域` | 承载标题、字段名、列头、操作入口或摘要信息。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `content` | `内容区域` | 承载主体内容、媒体、文本、空状态、加载状态或详情区域。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
-| `motion` | `动效或浮层区域` | 表达展开收起、轮播、tooltip、tour、预览或虚拟化反馈。 | 见 API 与契约模型 | 见视觉与主题模型 | stable |
+| `root` | `ImagePreviewer` / `ImageGroupPreviewer` | 图片预览控件根语义区域，承载 public API、图片来源、当前项和主题入口。 | `SourceUri`、`SourceUris`、`CurrentIndex`、`IsOpen` | `ImagePreviewerToken` | stable |
+| `cover` | `ImagePreviewerCover` | 普通页面中的封面展示区域，承载封面图片、mask、loading 和 error 内容。 | `CoverSourceUri`、`CoverIndicatorContent`、`IsShowCoverMask`、`LoadingContent`、`ErrorContent` | `MaskBgColor` | stable |
+| `viewer` | `ImageViewer` / `PART_ImageViewerScene` / `PART_ImageRenderer` | 预览宿主中的图片场景和渲染区域，承载缩放、旋转、翻转和拖拽坐标空间。 | `ImageScaleStep`、`ImageMinScale`、`ImageMaxScale`、`Stretch`、`Transform` | `DialogMinWidth`、`DialogMinHeight` | stable |
+| `title` | `ImagePreviewerTitleBar` / `PART_TitleLayout` / `PART_IconPresenter` | 预览窗口标题区域，承载 effective title 和显式标题图标。 | `PreviewTitle`、`PreviewTitleIcon`、`PreviewTitleResolver` | `TitleBarBackgroundColor`、`WindowTitleBarToken.LogoAndTitleSpacing` | template-stable |
+| `toolbar` | `ImagePreviewToolbar` / `ImagePreviewFloatToolbar` | 预览操作区域，承载上一张、下一张、缩放、fit-to-window、翻转和旋转动作。 | toolbar request events、`CurrentIndex`、`Count` | `ToolbarBoxShadow`、`ToolbarBgColor` | stable |
+| `host` | `ImagePreviewerDialog` / `ImagePreviewerOverlayHost` | 预览宿主区域，承载窗口化或 overlay 打开、关闭、modal、topmost 和释放语义。 | `IsOpen`、`IsDialogModal`、`IsDialogTopmost`、`IsModal` | `DialogMinWidth`、`DialogMinHeight` | internal-observable |
 
 LLMS 导出来源：
 

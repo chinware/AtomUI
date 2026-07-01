@@ -36,6 +36,9 @@ internal partial class en_US : LanguageProvider
     public const string ApiPropertyCoverWidth = "Width of the image cover.";
     public const string ApiPropertyCoverHeight = "Height of the image cover.";
     public const string ApiPropertyCurrentIndex = "Current preview image index in a group.";
+    public const string ApiPropertyPreviewTitle = "Explicit title shown in the preview dialog title bar.";
+    public const string ApiPropertyPreviewTitleIcon = "Optional icon shown before the preview dialog title.";
+    public const string ApiPropertyPreviewTitleResolver = "Resolver used to derive the preview dialog title when PreviewTitle is empty.";
     public const string ApiPropertyCoverSourceUri = "Custom cover image source URI for ImagePreviewer.";
     public const string ApiPropertyLoadingContent = "Custom content displayed while an image is loading.";
     public const string ApiPropertyLoadingContentTemplate = "Template used to render custom loading content.";

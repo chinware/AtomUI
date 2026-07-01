@@ -79,6 +79,35 @@ public class ImagePreviewerTitleTests
         });
     }
 
+    [Fact]
+    public void ImagePreviewer_Exposes_PreviewTitleIcon_As_PathIcon_Without_Window_Icon_Fallback()
+    {
+        var previewerSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/ImagePreviewer/AbstractImagePreviewer.cs"));
+        var dialogSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/ImagePreviewer/ImagePreviewerDialog.cs"));
+        var titleBarSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/ImagePreviewer/ImagePreviewerTitleBar.cs"));
+
+        previewerSource.ShouldContain("StyledProperty<PathIcon?> PreviewTitleIconProperty");
+        previewerSource.ShouldContain("nameof(PreviewTitleIcon)");
+        previewerSource.ShouldContain("public PathIcon? PreviewTitleIcon");
+        previewerSource.ShouldContain("BindUtils.RelayBind(this, PreviewTitleIconProperty, dialogHost, ImagePreviewerDialog.TitleIconProperty)");
+        previewerSource.ShouldNotContain("StyledProperty<PathIcon?> IconProperty");
+        previewerSource.ShouldNotContain("public PathIcon? Icon");
+        previewerSource.ShouldNotContain("PreviewWindowIcon");
+        previewerSource.ShouldNotContain("Window.IconProperty");
+
+        dialogSource.ShouldContain("StyledProperty<PathIcon?> TitleIconProperty");
+        dialogSource.ShouldContain("previewerTitleBar[!ImagePreviewerTitleBar.IconProperty]");
+        dialogSource.ShouldContain("this[!TitleIconProperty]");
+        dialogSource.ShouldNotContain("titleBar[!WindowTitleBar.LogoProperty]");
+        dialogSource.ShouldNotContain("titleBar[!WindowTitleBar.LogoTemplateProperty]");
+
+        titleBarSource.ShouldContain("StyledProperty<PathIcon?> IconProperty");
+        titleBarSource.ShouldContain("public PathIcon? Icon");
+    }
+
     private static string? Resolve(string source)
     {
         var sourceUri = ImageSourceUri.Parse(source);
@@ -94,6 +123,23 @@ public class ImagePreviewerTitleTests
             ItemsSource = sources.Select(source => new ImagePreviewItem(ImageSourceUri.Parse(source))).ToList()
         };
         return dialog;
+    }
+
+    private static string GetRepoFile(string relativePath)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, relativePath);
+            if (File.Exists(candidate))
+            {
+                return candidate;
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new FileNotFoundException($"Could not find repository file: {relativePath}");
     }
 
     private sealed class PrefixTitleResolver : IImagePreviewTitleResolver

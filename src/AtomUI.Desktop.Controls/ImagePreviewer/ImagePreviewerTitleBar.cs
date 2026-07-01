@@ -1,10 +1,17 @@
+using AtomUI.Controls;
 using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Metadata;
 
 namespace AtomUI.Desktop.Controls;
 
+[TemplatePart("PART_IconPresenter", typeof(IconPresenter))]
 internal class ImagePreviewerTitleBar : WindowTitleBar
 {
     #region 内部属性定义
+
+    internal static readonly StyledProperty<PathIcon?> IconProperty =
+        AvaloniaProperty.Register<ImagePreviewerTitleBar, PathIcon?>(nameof(Icon));
 
     internal static readonly DirectProperty<ImagePreviewerTitleBar, int> CurrentIndexProperty =
         AvaloniaProperty.RegisterDirect<ImagePreviewerTitleBar, int>(
@@ -49,6 +56,12 @@ internal class ImagePreviewerTitleBar : WindowTitleBar
             (o, v) => o.IsLastImage = v);
 
     private int _currentIndex;
+
+    public PathIcon? Icon
+    {
+        get => GetValue(IconProperty);
+        set => SetValue(IconProperty, value);
+    }
 
     internal int CurrentIndex
     {

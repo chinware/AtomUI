@@ -10026,6 +10026,9 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyIsShowCoverMask] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.ApiPropertyIsShowCoverMask;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContent] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.ApiPropertyLoadingContent;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContentTemplate] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.ApiPropertyLoadingContentTemplate;
+                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.ApiPropertyPreviewTitle;
+                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitleIcon] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.ApiPropertyPreviewTitleIcon;
+                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitleResolver] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.ApiPropertyPreviewTitleResolver;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUri] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.ApiPropertySourceUri;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUris] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.ApiPropertySourceUris;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.BasicUsageDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.BasicUsageDescription;
@@ -10108,6 +10111,9 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyIsShowCoverMask] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.ApiPropertyIsShowCoverMask;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContent] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.ApiPropertyLoadingContent;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContentTemplate] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.ApiPropertyLoadingContentTemplate;
+                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.ApiPropertyPreviewTitle;
+                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitleIcon] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.ApiPropertyPreviewTitleIcon;
+                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitleResolver] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.ApiPropertyPreviewTitleResolver;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUri] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.ApiPropertySourceUri;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUris] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.ApiPropertySourceUris;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.BasicUsageDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.BasicUsageDescription;
@@ -10190,6 +10196,9 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyIsShowCoverMask] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.ApiPropertyIsShowCoverMask;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContent] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.ApiPropertyLoadingContent;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContentTemplate] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.ApiPropertyLoadingContentTemplate;
+                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.ApiPropertyPreviewTitle;
+                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitleIcon] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.ApiPropertyPreviewTitleIcon;
+                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitleResolver] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.ApiPropertyPreviewTitleResolver;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUri] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.ApiPropertySourceUri;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUris] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.ApiPropertySourceUris;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.BasicUsageDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.BasicUsageDescription;
