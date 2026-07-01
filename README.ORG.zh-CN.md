@@ -1,4 +1,4 @@
-# AtomUI
+![AtomUI 组织横幅](resources/images/readme/organization-banner.png)
 
 AtomUI 是面向 Avalonia/.NET 桌面应用的 UI 组件体系，围绕 Ant Design 设计规范提供跨平台控件、主题能力、文档和示例项目。
 

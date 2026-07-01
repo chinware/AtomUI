@@ -1,4 +1,4 @@
-# AtomUI
+![AtomUI organization banner](resources/images/readme/organization-banner.png)
 
 AtomUI provides Ant Design-style UI components for Avalonia and .NET desktop applications.
 
