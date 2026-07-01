@@ -15,9 +15,6 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Hierarchical selection and cascaded option browsing.";
     public const string PageDescription = "Cascader combines an input selector with linked option columns, while CascaderView exposes the column browser directly for embedded selection workflows.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
     public const string ApiColumnProperty = "Property";

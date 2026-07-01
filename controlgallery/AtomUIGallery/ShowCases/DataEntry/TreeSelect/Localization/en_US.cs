@@ -16,9 +16,6 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Select values from hierarchical data in a compact input.";
     public const string PageDescription = "TreeSelect combines an input selector with tree navigation, making it suitable for hierarchical categories, organization nodes, permissions, and other nested option sets.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
     public const string ApiColumnProperty = "Property";

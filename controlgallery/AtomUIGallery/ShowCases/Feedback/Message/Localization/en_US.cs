@@ -18,9 +18,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Global prompt messages for lightweight operation feedback.";
     public const string PageDescription = "Message displays brief feedback at the top layer of the current window. It is useful for save results, validation feedback, async progress, and chained completion notices.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Manager";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

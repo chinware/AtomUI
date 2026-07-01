@@ -57,9 +57,6 @@ internal partial class zh_TW : LanguageProvider
         "Tag 用於展示短標籤，支持預設顏色、自定義顏色、圖標、可關閉操作和無邊框狀態樣式。";
     public const string ComponentCategory = "數據展示";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

@@ -15,9 +15,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioDesignToken = "設計 Token";
     public const string PageSubtitle = "分層選擇與級聯選項瀏覽。";
     public const string PageDescription = "Cascader 將輸入選擇器與聯動選項列組合起來，CascaderView 則直接暴露列式瀏覽器，用於嵌入式選擇場景。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ComponentCategory = "數據錄入";
     public const string ComponentStatusStable = "穩定";
     public const string ApiColumnProperty = "屬性";

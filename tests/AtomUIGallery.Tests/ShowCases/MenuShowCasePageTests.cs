@@ -18,9 +18,9 @@ public class MenuShowCasePageTests
 
         source.ShouldContain("MenuShowCaseLangResource PageSubtitle");
         source.ShouldContain("MenuShowCaseLangResource PageDescription");
-        source.ShouldContain("MenuShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("MenuShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("MenuShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("MenuShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("MenuShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("MenuShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("MenuShowCaseLangResource ComponentCategory");
         source.ShouldContain("MenuShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("MenuShowCaseLangResource ScenarioExamples");
@@ -39,13 +39,12 @@ public class MenuShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:MenuShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:MenuShowCaseLangResource PageDescription}\"");
         CountShowCaseItemElements(source).ShouldBe(16);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(16);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(16);
@@ -161,7 +160,7 @@ public class MenuShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyMenuSizeType");
             source.ShouldContain("ApiPropertyMenuDisplayPageSize");
             source.ShouldContain("ApiPropertyNavMenuMode");

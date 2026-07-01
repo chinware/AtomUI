@@ -34,9 +34,9 @@ public class ComboBoxShowCasePageTests
 
         source.ShouldContain("ComboBoxShowCaseLangResource PageSubtitle");
         source.ShouldContain("ComboBoxShowCaseLangResource PageDescription");
-        source.ShouldContain("ComboBoxShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("ComboBoxShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("ComboBoxShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("ComboBoxShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("ComboBoxShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("ComboBoxShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("ComboBoxShowCaseLangResource ComponentCategory");
         source.ShouldContain("ComboBoxShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("ComboBoxShowCaseLangResource ScenarioExamples");
@@ -55,13 +55,12 @@ public class ComboBoxShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:ComboBoxShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:ComboBoxShowCaseLangResource PageDescription}\"");
         CountShowCaseItemElements(source).ShouldBe(9);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(9);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(9);
@@ -162,7 +161,7 @@ public class ComboBoxShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("EditableFilterTitle");
             source.ShouldContain("P2PlaceholderTextTypeToFilter");
             source.ShouldContain("ApiPropertyIsFilterEnabled");

@@ -18,9 +18,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioDesignToken = "設計 Token";
     public const string PageSubtitle = "引導使用者理解有順序的任務和流程狀態。";
     public const string PageDescription = "Steps 用於展示任務序列、進度、導航狀態以及可選的步驟內容，適合需要清晰階段感的流程。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "套件";
-    public const string InfoBaseClassLabel = "基類";
     public const string ComponentCategory = "導航";
     public const string ComponentStatusStable = "穩定";
     public const string ApiColumnProperty = "屬性";

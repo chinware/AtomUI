@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The most basic usage.";
     public const string NonModalTitle = "Non-modal";

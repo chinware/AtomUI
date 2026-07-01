@@ -46,9 +46,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.DescriptionTitle] = global::AtomUIGallery.ShowCases.Alert.en_US.DescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.IconDescription] = global::AtomUIGallery.ShowCases.Alert.en_US.IconDescription;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Alert.en_US.IconTitle;
-                dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Alert.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Alert.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Alert.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.LoopBannerDescription] = global::AtomUIGallery.ShowCases.Alert.en_US.LoopBannerDescription;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.LoopBannerTitle] = global::AtomUIGallery.ShowCases.Alert.en_US.LoopBannerTitle;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.MoreTypesDescription] = global::AtomUIGallery.ShowCases.Alert.en_US.MoreTypesDescription;
@@ -153,9 +150,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.DescriptionTitle] = global::AtomUIGallery.ShowCases.Alert.zh_CN.DescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.IconDescription] = global::AtomUIGallery.ShowCases.Alert.zh_CN.IconDescription;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Alert.zh_CN.IconTitle;
-                dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Alert.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Alert.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Alert.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.LoopBannerDescription] = global::AtomUIGallery.ShowCases.Alert.zh_CN.LoopBannerDescription;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.LoopBannerTitle] = global::AtomUIGallery.ShowCases.Alert.zh_CN.LoopBannerTitle;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.MoreTypesDescription] = global::AtomUIGallery.ShowCases.Alert.zh_CN.MoreTypesDescription;
@@ -260,9 +254,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.DescriptionTitle] = global::AtomUIGallery.ShowCases.Alert.zh_TW.DescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.IconDescription] = global::AtomUIGallery.ShowCases.Alert.zh_TW.IconDescription;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Alert.zh_TW.IconTitle;
-                dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Alert.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Alert.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Alert.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.LoopBannerDescription] = global::AtomUIGallery.ShowCases.Alert.zh_TW.LoopBannerDescription;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.LoopBannerTitle] = global::AtomUIGallery.ShowCases.Alert.zh_TW.LoopBannerTitle;
                 dictionary[global::AtomUIGallery.Localization.AlertShowCaseLangResourceKind.MoreTypesDescription] = global::AtomUIGallery.ShowCases.Alert.zh_TW.MoreTypesDescription;
@@ -374,9 +365,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.CustomizedTitle] = global::AtomUIGallery.ShowCases.AutoComplete.en_US.CustomizedTitle;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.CustomOptionRenderingDescription] = global::AtomUIGallery.ShowCases.AutoComplete.en_US.CustomOptionRenderingDescription;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.CustomOptionRenderingTitle] = global::AtomUIGallery.ShowCases.AutoComplete.en_US.CustomOptionRenderingTitle;
-                dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.AutoComplete.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.AutoComplete.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.AutoComplete.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.LookupPatternsUncertainCategoryDescription] = global::AtomUIGallery.ShowCases.AutoComplete.en_US.LookupPatternsUncertainCategoryDescription;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.LookupPatternsUncertainCategoryTitle] = global::AtomUIGallery.ShowCases.AutoComplete.en_US.LookupPatternsUncertainCategoryTitle;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.NonCaseSensitiveDescription] = global::AtomUIGallery.ShowCases.AutoComplete.en_US.NonCaseSensitiveDescription;
@@ -476,9 +464,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.CustomizedTitle] = global::AtomUIGallery.ShowCases.AutoComplete.zh_CN.CustomizedTitle;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.CustomOptionRenderingDescription] = global::AtomUIGallery.ShowCases.AutoComplete.zh_CN.CustomOptionRenderingDescription;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.CustomOptionRenderingTitle] = global::AtomUIGallery.ShowCases.AutoComplete.zh_CN.CustomOptionRenderingTitle;
-                dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.AutoComplete.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.AutoComplete.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.AutoComplete.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.LookupPatternsUncertainCategoryDescription] = global::AtomUIGallery.ShowCases.AutoComplete.zh_CN.LookupPatternsUncertainCategoryDescription;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.LookupPatternsUncertainCategoryTitle] = global::AtomUIGallery.ShowCases.AutoComplete.zh_CN.LookupPatternsUncertainCategoryTitle;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.NonCaseSensitiveDescription] = global::AtomUIGallery.ShowCases.AutoComplete.zh_CN.NonCaseSensitiveDescription;
@@ -578,9 +563,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.CustomizedTitle] = global::AtomUIGallery.ShowCases.AutoComplete.zh_TW.CustomizedTitle;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.CustomOptionRenderingDescription] = global::AtomUIGallery.ShowCases.AutoComplete.zh_TW.CustomOptionRenderingDescription;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.CustomOptionRenderingTitle] = global::AtomUIGallery.ShowCases.AutoComplete.zh_TW.CustomOptionRenderingTitle;
-                dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.AutoComplete.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.AutoComplete.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.AutoComplete.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.LookupPatternsUncertainCategoryDescription] = global::AtomUIGallery.ShowCases.AutoComplete.zh_TW.LookupPatternsUncertainCategoryDescription;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.LookupPatternsUncertainCategoryTitle] = global::AtomUIGallery.ShowCases.AutoComplete.zh_TW.LookupPatternsUncertainCategoryTitle;
                 dictionary[global::AtomUIGallery.Localization.AutoCompleteShowCaseLangResourceKind.NonCaseSensitiveDescription] = global::AtomUIGallery.ShowCases.AutoComplete.zh_TW.NonCaseSensitiveDescription;
@@ -668,9 +650,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Avatar.en_US.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Avatar.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Avatar.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Avatar.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Avatar.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Avatar.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.P2ContentA] = global::AtomUIGallery.ShowCases.Avatar.en_US.P2ContentA;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.P2ContentChangegap] = global::AtomUIGallery.ShowCases.Avatar.en_US.P2ContentChangegap;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.P2ContentChangeuser] = global::AtomUIGallery.ShowCases.Avatar.en_US.P2ContentChangeuser;
@@ -741,9 +720,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Avatar.zh_CN.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Avatar.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Avatar.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Avatar.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Avatar.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Avatar.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.P2ContentA] = global::AtomUIGallery.ShowCases.Avatar.zh_CN.P2ContentA;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.P2ContentChangegap] = global::AtomUIGallery.ShowCases.Avatar.zh_CN.P2ContentChangegap;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.P2ContentChangeuser] = global::AtomUIGallery.ShowCases.Avatar.zh_CN.P2ContentChangeuser;
@@ -814,9 +790,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Avatar.zh_TW.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Avatar.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Avatar.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Avatar.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Avatar.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Avatar.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.P2ContentA] = global::AtomUIGallery.ShowCases.Avatar.zh_TW.P2ContentA;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.P2ContentChangegap] = global::AtomUIGallery.ShowCases.Avatar.zh_TW.P2ContentChangegap;
                 dictionary[global::AtomUIGallery.Localization.AvatarShowCaseLangResourceKind.P2ContentChangeuser] = global::AtomUIGallery.ShowCases.Avatar.zh_TW.P2ContentChangeuser;
@@ -891,9 +864,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Badge.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.DynamicDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Badge.en_US.DynamicTitle;
-                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Badge.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Badge.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Badge.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.OffsetDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetTitle] = global::AtomUIGallery.ShowCases.Badge.en_US.OffsetTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OverflowCountDescription] = global::AtomUIGallery.ShowCases.Badge.en_US.OverflowCountDescription;
@@ -1008,9 +978,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Badge.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.DynamicDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.DynamicTitle;
-                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Badge.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Badge.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Badge.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.OffsetDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetTitle] = global::AtomUIGallery.ShowCases.Badge.zh_CN.OffsetTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OverflowCountDescription] = global::AtomUIGallery.ShowCases.Badge.zh_CN.OverflowCountDescription;
@@ -1125,9 +1092,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Badge.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.DynamicDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.DynamicTitle;
-                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Badge.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Badge.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Badge.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.OffsetDescription;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OffsetTitle] = global::AtomUIGallery.ShowCases.Badge.zh_TW.OffsetTitle;
                 dictionary[global::AtomUIGallery.Localization.BadgeShowCaseLangResourceKind.OverflowCountDescription] = global::AtomUIGallery.ShowCases.Badge.zh_TW.OverflowCountDescription;
@@ -1237,9 +1201,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.CustomizedColorCardDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.CustomizedColorDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorTitle] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.CustomizedColorTitle;
-                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.NonUniformRadiusCardDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusDescription] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.NonUniformRadiusDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusTitle] = global::AtomUIGallery.ShowCases.BorderBeam.en_US.NonUniformRadiusTitle;
@@ -1303,9 +1264,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.CustomizedColorCardDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.CustomizedColorDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorTitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.CustomizedColorTitle;
-                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.NonUniformRadiusCardDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.NonUniformRadiusDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusTitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_CN.NonUniformRadiusTitle;
@@ -1369,9 +1327,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.CustomizedColorCardDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.CustomizedColorDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.CustomizedColorTitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.CustomizedColorTitle;
-                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusCardDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.NonUniformRadiusCardDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusDescription] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.NonUniformRadiusDescription;
                 dictionary[global::AtomUIGallery.Localization.BorderBeamShowCaseLangResourceKind.NonUniformRadiusTitle] = global::AtomUIGallery.ShowCases.BorderBeam.zh_TW.NonUniformRadiusTitle;
@@ -1440,9 +1395,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.ConfiguringSeparatorTitle] = global::AtomUIGallery.ShowCases.Breadcrumb.en_US.ConfiguringSeparatorTitle;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.GenerateByTemplateDescription] = global::AtomUIGallery.ShowCases.Breadcrumb.en_US.GenerateByTemplateDescription;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.GenerateByTemplateTitle] = global::AtomUIGallery.ShowCases.Breadcrumb.en_US.GenerateByTemplateTitle;
-                dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Breadcrumb.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Breadcrumb.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Breadcrumb.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.P2ContentAnApplication] = global::AtomUIGallery.ShowCases.Breadcrumb.en_US.P2ContentAnApplication;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.P2ContentApplication] = global::AtomUIGallery.ShowCases.Breadcrumb.en_US.P2ContentApplication;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.P2ContentApplicationCenter] = global::AtomUIGallery.ShowCases.Breadcrumb.en_US.P2ContentApplicationCenter;
@@ -1525,9 +1477,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.ConfiguringSeparatorTitle] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_CN.ConfiguringSeparatorTitle;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.GenerateByTemplateDescription] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_CN.GenerateByTemplateDescription;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.GenerateByTemplateTitle] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_CN.GenerateByTemplateTitle;
-                dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.P2ContentAnApplication] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_CN.P2ContentAnApplication;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.P2ContentApplication] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_CN.P2ContentApplication;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.P2ContentApplicationCenter] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_CN.P2ContentApplicationCenter;
@@ -1610,9 +1559,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.ConfiguringSeparatorTitle] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_TW.ConfiguringSeparatorTitle;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.GenerateByTemplateDescription] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_TW.GenerateByTemplateDescription;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.GenerateByTemplateTitle] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_TW.GenerateByTemplateTitle;
-                dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.P2ContentAnApplication] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_TW.P2ContentAnApplication;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.P2ContentApplication] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_TW.P2ContentApplication;
                 dictionary[global::AtomUIGallery.Localization.BreadcrumbShowCaseLangResourceKind.P2ContentApplicationCenter] = global::AtomUIGallery.ShowCases.Breadcrumb.zh_TW.P2ContentApplicationCenter;
@@ -1715,9 +1661,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconPlacementDescription] = global::AtomUIGallery.ShowCases.Button.en_US.IconPlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconPlacementTitle] = global::AtomUIGallery.ShowCases.Button.en_US.IconPlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Button.en_US.IconTitle;
-                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Button.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Button.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Button.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Button.en_US.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Button.en_US.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ColorCyan] = global::AtomUIGallery.ShowCases.Button.en_US.P2ColorCyan;
@@ -1858,9 +1801,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconPlacementDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.IconPlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconPlacementTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.IconPlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.IconTitle;
-                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Button.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Button.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Button.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Button.zh_CN.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Button.zh_CN.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ColorCyan] = global::AtomUIGallery.ShowCases.Button.zh_CN.P2ColorCyan;
@@ -2001,9 +1941,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconPlacementDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.IconPlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconPlacementTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.IconPlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.IconTitle;
-                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Button.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Button.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Button.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Button.zh_TW.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Button.zh_TW.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ButtonShowCaseLangResourceKind.P2ColorCyan] = global::AtomUIGallery.ShowCases.Button.zh_TW.P2ColorCyan;
@@ -2124,9 +2061,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.ButtonSpinner.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.ButtonSpinner.en_US.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ButtonSpinner.en_US.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ButtonSpinner.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ButtonSpinner.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ButtonSpinner.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.P2LabelSizeTypeCustom] = global::AtomUIGallery.ShowCases.ButtonSpinner.en_US.P2LabelSizeTypeCustom;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.P2LabelSizeTypeLarge] = global::AtomUIGallery.ShowCases.ButtonSpinner.en_US.P2LabelSizeTypeLarge;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.P2LabelSizeTypeMiddle] = global::AtomUIGallery.ShowCases.ButtonSpinner.en_US.P2LabelSizeTypeMiddle;
@@ -2213,9 +2147,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_CN.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_CN.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.P2LabelSizeTypeCustom] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_CN.P2LabelSizeTypeCustom;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.P2LabelSizeTypeLarge] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_CN.P2LabelSizeTypeLarge;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.P2LabelSizeTypeMiddle] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_CN.P2LabelSizeTypeMiddle;
@@ -2302,9 +2233,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_TW.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_TW.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.P2LabelSizeTypeCustom] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_TW.P2LabelSizeTypeCustom;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.P2LabelSizeTypeLarge] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_TW.P2LabelSizeTypeLarge;
                 dictionary[global::AtomUIGallery.Localization.ButtonSpinnerShowCaseLangResourceKind.P2LabelSizeTypeMiddle] = global::AtomUIGallery.ShowCases.ButtonSpinner.zh_TW.P2LabelSizeTypeMiddle;
@@ -2385,9 +2313,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Calendar.en_US.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Calendar.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Calendar.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Calendar.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Calendar.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Calendar.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Calendar.en_US.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Calendar.en_US.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Calendar.en_US.ScenarioApi;
@@ -2454,9 +2379,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Calendar.zh_CN.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Calendar.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Calendar.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Calendar.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Calendar.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Calendar.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Calendar.zh_CN.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Calendar.zh_CN.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Calendar.zh_CN.ScenarioApi;
@@ -2523,9 +2445,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Calendar.zh_TW.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Calendar.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Calendar.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Calendar.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Calendar.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Calendar.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Calendar.zh_TW.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Calendar.zh_TW.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.CalendarShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.Calendar.zh_TW.ScenarioApi;
@@ -2600,9 +2519,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.CustomizedContentTitle] = global::AtomUIGallery.ShowCases.Card.en_US.CustomizedContentTitle;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.GridCardDescription] = global::AtomUIGallery.ShowCases.Card.en_US.GridCardDescription;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.GridCardTitle] = global::AtomUIGallery.ShowCases.Card.en_US.GridCardTitle;
-                dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Card.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Card.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Card.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InnerCardDescription] = global::AtomUIGallery.ShowCases.Card.en_US.InnerCardDescription;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InnerCardTitle] = global::AtomUIGallery.ShowCases.Card.en_US.InnerCardTitle;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.LoadingCardDescription] = global::AtomUIGallery.ShowCases.Card.en_US.LoadingCardDescription;
@@ -2718,9 +2634,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.CustomizedContentTitle] = global::AtomUIGallery.ShowCases.Card.zh_CN.CustomizedContentTitle;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.GridCardDescription] = global::AtomUIGallery.ShowCases.Card.zh_CN.GridCardDescription;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.GridCardTitle] = global::AtomUIGallery.ShowCases.Card.zh_CN.GridCardTitle;
-                dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Card.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Card.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Card.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InnerCardDescription] = global::AtomUIGallery.ShowCases.Card.zh_CN.InnerCardDescription;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InnerCardTitle] = global::AtomUIGallery.ShowCases.Card.zh_CN.InnerCardTitle;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.LoadingCardDescription] = global::AtomUIGallery.ShowCases.Card.zh_CN.LoadingCardDescription;
@@ -2836,9 +2749,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.CustomizedContentTitle] = global::AtomUIGallery.ShowCases.Card.zh_TW.CustomizedContentTitle;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.GridCardDescription] = global::AtomUIGallery.ShowCases.Card.zh_TW.GridCardDescription;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.GridCardTitle] = global::AtomUIGallery.ShowCases.Card.zh_TW.GridCardTitle;
-                dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Card.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Card.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Card.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InnerCardDescription] = global::AtomUIGallery.ShowCases.Card.zh_TW.InnerCardDescription;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.InnerCardTitle] = global::AtomUIGallery.ShowCases.Card.zh_TW.InnerCardTitle;
                 dictionary[global::AtomUIGallery.Localization.CardShowCaseLangResourceKind.LoadingCardDescription] = global::AtomUIGallery.ShowCases.Card.zh_TW.LoadingCardDescription;
@@ -2955,9 +2865,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.DotsProgressTitle] = global::AtomUIGallery.ShowCases.Carousel.en_US.DotsProgressTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInDescription] = global::AtomUIGallery.ShowCases.Carousel.en_US.FadeInDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInTitle] = global::AtomUIGallery.ShowCases.Carousel.en_US.FadeInTitle;
-                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Carousel.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Carousel.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Carousel.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Carousel.en_US.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentLeft] = global::AtomUIGallery.ShowCases.Carousel.en_US.P2ContentLeft;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentRight] = global::AtomUIGallery.ShowCases.Carousel.en_US.P2ContentRight;
@@ -3036,9 +2943,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.DotsProgressTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.DotsProgressTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.FadeInDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.FadeInTitle;
-                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentLeft] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.P2ContentLeft;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentRight] = global::AtomUIGallery.ShowCases.Carousel.zh_CN.P2ContentRight;
@@ -3117,9 +3021,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.DotsProgressTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.DotsProgressTitle;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInDescription] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.FadeInDescription;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.FadeInTitle] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.FadeInTitle;
-                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentLeft] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.P2ContentLeft;
                 dictionary[global::AtomUIGallery.Localization.CarouselShowCaseLangResourceKind.P2ContentRight] = global::AtomUIGallery.ShowCases.Carousel.zh_TW.P2ContentRight;
@@ -3212,9 +3113,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.GenerateByTemplateTitle] = global::AtomUIGallery.ShowCases.Cascader.en_US.GenerateByTemplateTitle;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.HoverDescription] = global::AtomUIGallery.ShowCases.Cascader.en_US.HoverDescription;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.HoverTitle] = global::AtomUIGallery.ShowCases.Cascader.en_US.HoverTitle;
-                dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Cascader.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Cascader.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Cascader.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.LoadOptionsLazilyDescription] = global::AtomUIGallery.ShowCases.Cascader.en_US.LoadOptionsLazilyDescription;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.LoadOptionsLazilyTitle] = global::AtomUIGallery.ShowCases.Cascader.en_US.LoadOptionsLazilyTitle;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.MultipleDescription] = global::AtomUIGallery.ShowCases.Cascader.en_US.MultipleDescription;
@@ -3378,9 +3276,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.GenerateByTemplateTitle] = global::AtomUIGallery.ShowCases.Cascader.zh_CN.GenerateByTemplateTitle;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.HoverDescription] = global::AtomUIGallery.ShowCases.Cascader.zh_CN.HoverDescription;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.HoverTitle] = global::AtomUIGallery.ShowCases.Cascader.zh_CN.HoverTitle;
-                dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Cascader.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Cascader.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Cascader.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.LoadOptionsLazilyDescription] = global::AtomUIGallery.ShowCases.Cascader.zh_CN.LoadOptionsLazilyDescription;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.LoadOptionsLazilyTitle] = global::AtomUIGallery.ShowCases.Cascader.zh_CN.LoadOptionsLazilyTitle;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.MultipleDescription] = global::AtomUIGallery.ShowCases.Cascader.zh_CN.MultipleDescription;
@@ -3544,9 +3439,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.GenerateByTemplateTitle] = global::AtomUIGallery.ShowCases.Cascader.zh_TW.GenerateByTemplateTitle;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.HoverDescription] = global::AtomUIGallery.ShowCases.Cascader.zh_TW.HoverDescription;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.HoverTitle] = global::AtomUIGallery.ShowCases.Cascader.zh_TW.HoverTitle;
-                dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Cascader.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Cascader.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Cascader.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.LoadOptionsLazilyDescription] = global::AtomUIGallery.ShowCases.Cascader.zh_TW.LoadOptionsLazilyDescription;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.LoadOptionsLazilyTitle] = global::AtomUIGallery.ShowCases.Cascader.zh_TW.LoadOptionsLazilyTitle;
                 dictionary[global::AtomUIGallery.Localization.CascaderShowCaseLangResourceKind.MultipleDescription] = global::AtomUIGallery.ShowCases.Cascader.zh_TW.MultipleDescription;
@@ -3695,9 +3587,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.ControlledCheckboxTitle] = global::AtomUIGallery.ShowCases.CheckBox.en_US.ControlledCheckboxTitle;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.CheckBox.en_US.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.CheckBox.en_US.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.CheckBox.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.CheckBox.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.CheckBox.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.P2ContentA] = global::AtomUIGallery.ShowCases.CheckBox.en_US.P2ContentA;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.P2ContentApple] = global::AtomUIGallery.ShowCases.CheckBox.en_US.P2ContentApple;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.P2ContentB] = global::AtomUIGallery.ShowCases.CheckBox.en_US.P2ContentB;
@@ -3786,9 +3675,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.ControlledCheckboxTitle] = global::AtomUIGallery.ShowCases.CheckBox.zh_CN.ControlledCheckboxTitle;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.CheckBox.zh_CN.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.CheckBox.zh_CN.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.CheckBox.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.CheckBox.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.CheckBox.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.P2ContentA] = global::AtomUIGallery.ShowCases.CheckBox.zh_CN.P2ContentA;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.P2ContentApple] = global::AtomUIGallery.ShowCases.CheckBox.zh_CN.P2ContentApple;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.P2ContentB] = global::AtomUIGallery.ShowCases.CheckBox.zh_CN.P2ContentB;
@@ -3877,9 +3763,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.ControlledCheckboxTitle] = global::AtomUIGallery.ShowCases.CheckBox.zh_TW.ControlledCheckboxTitle;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.CheckBox.zh_TW.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.CheckBox.zh_TW.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.CheckBox.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.CheckBox.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.CheckBox.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.P2ContentA] = global::AtomUIGallery.ShowCases.CheckBox.zh_TW.P2ContentA;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.P2ContentApple] = global::AtomUIGallery.ShowCases.CheckBox.zh_TW.P2ContentApple;
                 dictionary[global::AtomUIGallery.Localization.CheckBoxShowCaseLangResourceKind.P2ContentB] = global::AtomUIGallery.ShowCases.CheckBox.zh_TW.P2ContentB;
@@ -3978,9 +3861,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.ExpandIconLocationTitle] = global::AtomUIGallery.ShowCases.Collapse.en_US.ExpandIconLocationTitle;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.GhostCollapseDescription] = global::AtomUIGallery.ShowCases.Collapse.en_US.GhostCollapseDescription;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.GhostCollapseTitle] = global::AtomUIGallery.ShowCases.Collapse.en_US.GhostCollapseTitle;
-                dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Collapse.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Collapse.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Collapse.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.NestedPanelDescription] = global::AtomUIGallery.ShowCases.Collapse.en_US.NestedPanelDescription;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.NestedPanelTitle] = global::AtomUIGallery.ShowCases.Collapse.en_US.NestedPanelTitle;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.NoArrowDescription] = global::AtomUIGallery.ShowCases.Collapse.en_US.NoArrowDescription;
@@ -4090,9 +3970,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.ExpandIconLocationTitle] = global::AtomUIGallery.ShowCases.Collapse.zh_CN.ExpandIconLocationTitle;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.GhostCollapseDescription] = global::AtomUIGallery.ShowCases.Collapse.zh_CN.GhostCollapseDescription;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.GhostCollapseTitle] = global::AtomUIGallery.ShowCases.Collapse.zh_CN.GhostCollapseTitle;
-                dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Collapse.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Collapse.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Collapse.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.NestedPanelDescription] = global::AtomUIGallery.ShowCases.Collapse.zh_CN.NestedPanelDescription;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.NestedPanelTitle] = global::AtomUIGallery.ShowCases.Collapse.zh_CN.NestedPanelTitle;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.NoArrowDescription] = global::AtomUIGallery.ShowCases.Collapse.zh_CN.NoArrowDescription;
@@ -4202,9 +4079,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.ExpandIconLocationTitle] = global::AtomUIGallery.ShowCases.Collapse.zh_TW.ExpandIconLocationTitle;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.GhostCollapseDescription] = global::AtomUIGallery.ShowCases.Collapse.zh_TW.GhostCollapseDescription;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.GhostCollapseTitle] = global::AtomUIGallery.ShowCases.Collapse.zh_TW.GhostCollapseTitle;
-                dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Collapse.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Collapse.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Collapse.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.NestedPanelDescription] = global::AtomUIGallery.ShowCases.Collapse.zh_TW.NestedPanelDescription;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.NestedPanelTitle] = global::AtomUIGallery.ShowCases.Collapse.zh_TW.NestedPanelTitle;
                 dictionary[global::AtomUIGallery.Localization.CollapseShowCaseLangResourceKind.NoArrowDescription] = global::AtomUIGallery.ShowCases.Collapse.zh_TW.NoArrowDescription;
@@ -4308,9 +4182,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.DisabledAlphaTitle] = global::AtomUIGallery.ShowCases.ColorPicker.en_US.DisabledAlphaTitle;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.ColorPicker.en_US.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ColorPicker.en_US.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ColorPicker.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ColorPicker.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ColorPicker.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.LineGradientDescription] = global::AtomUIGallery.ShowCases.ColorPicker.en_US.LineGradientDescription;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.LineGradientTitle] = global::AtomUIGallery.ShowCases.ColorPicker.en_US.LineGradientTitle;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.P2LabelSizeTypeCustom] = global::AtomUIGallery.ShowCases.ColorPicker.en_US.P2LabelSizeTypeCustom;
@@ -4399,9 +4270,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.DisabledAlphaTitle] = global::AtomUIGallery.ShowCases.ColorPicker.zh_CN.DisabledAlphaTitle;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.ColorPicker.zh_CN.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ColorPicker.zh_CN.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ColorPicker.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ColorPicker.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ColorPicker.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.LineGradientDescription] = global::AtomUIGallery.ShowCases.ColorPicker.zh_CN.LineGradientDescription;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.LineGradientTitle] = global::AtomUIGallery.ShowCases.ColorPicker.zh_CN.LineGradientTitle;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.P2LabelSizeTypeCustom] = global::AtomUIGallery.ShowCases.ColorPicker.zh_CN.P2LabelSizeTypeCustom;
@@ -4490,9 +4358,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.DisabledAlphaTitle] = global::AtomUIGallery.ShowCases.ColorPicker.zh_TW.DisabledAlphaTitle;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.ColorPicker.zh_TW.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ColorPicker.zh_TW.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ColorPicker.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ColorPicker.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ColorPicker.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.LineGradientDescription] = global::AtomUIGallery.ShowCases.ColorPicker.zh_TW.LineGradientDescription;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.LineGradientTitle] = global::AtomUIGallery.ShowCases.ColorPicker.zh_TW.LineGradientTitle;
                 dictionary[global::AtomUIGallery.Localization.ColorPickerShowCaseLangResourceKind.P2LabelSizeTypeCustom] = global::AtomUIGallery.ShowCases.ColorPicker.zh_TW.P2LabelSizeTypeCustom;
@@ -4585,9 +4450,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ComboBox.en_US.DisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.EditableFilterDescription] = global::AtomUIGallery.ShowCases.ComboBox.en_US.EditableFilterDescription;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.EditableFilterTitle] = global::AtomUIGallery.ShowCases.ComboBox.en_US.EditableFilterTitle;
-                dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ComboBox.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ComboBox.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ComboBox.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.ItemsSourceDescription] = global::AtomUIGallery.ShowCases.ComboBox.en_US.ItemsSourceDescription;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.ItemsSourceTitle] = global::AtomUIGallery.ShowCases.ComboBox.en_US.ItemsSourceTitle;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.P2ContentPoemLine1] = global::AtomUIGallery.ShowCases.ComboBox.en_US.P2ContentPoemLine1;
@@ -4702,9 +4564,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ComboBox.zh_CN.DisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.EditableFilterDescription] = global::AtomUIGallery.ShowCases.ComboBox.zh_CN.EditableFilterDescription;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.EditableFilterTitle] = global::AtomUIGallery.ShowCases.ComboBox.zh_CN.EditableFilterTitle;
-                dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ComboBox.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ComboBox.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ComboBox.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.ItemsSourceDescription] = global::AtomUIGallery.ShowCases.ComboBox.zh_CN.ItemsSourceDescription;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.ItemsSourceTitle] = global::AtomUIGallery.ShowCases.ComboBox.zh_CN.ItemsSourceTitle;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.P2ContentPoemLine1] = global::AtomUIGallery.ShowCases.ComboBox.zh_CN.P2ContentPoemLine1;
@@ -4819,9 +4678,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.DisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.EditableFilterDescription] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.EditableFilterDescription;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.EditableFilterTitle] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.EditableFilterTitle;
-                dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.ItemsSourceDescription] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.ItemsSourceDescription;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.ItemsSourceTitle] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.ItemsSourceTitle;
                 dictionary[global::AtomUIGallery.Localization.ComboBoxShowCaseLangResourceKind.P2ContentPoemLine1] = global::AtomUIGallery.ShowCases.ComboBox.zh_TW.P2ContentPoemLine1;
@@ -5041,9 +4897,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.CustomizeComponentTokenTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.CustomizeComponentTokenTitle;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.CustomizeDesignTokenDescription] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.CustomizeDesignTokenDescription;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.CustomizeDesignTokenTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.CustomizeDesignTokenTitle;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.NestedThemeDescription] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.NestedThemeDescription;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.NestedThemeTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.NestedThemeTitle;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentApple] = global::AtomUIGallery.ShowCases.CustomizeTheme.en_US.P2ContentApple;
@@ -5123,9 +4976,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.CustomizeComponentTokenTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.CustomizeComponentTokenTitle;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.CustomizeDesignTokenDescription] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.CustomizeDesignTokenDescription;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.CustomizeDesignTokenTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.CustomizeDesignTokenTitle;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.NestedThemeDescription] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.NestedThemeDescription;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.NestedThemeTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.NestedThemeTitle;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentApple] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_CN.P2ContentApple;
@@ -5205,9 +5055,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.CustomizeComponentTokenTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.CustomizeComponentTokenTitle;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.CustomizeDesignTokenDescription] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.CustomizeDesignTokenDescription;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.CustomizeDesignTokenTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.CustomizeDesignTokenTitle;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.NestedThemeDescription] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.NestedThemeDescription;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.NestedThemeTitle] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.NestedThemeTitle;
                 dictionary[global::AtomUIGallery.Localization.CustomizeThemeShowCaseLangResourceKind.P2ContentApple] = global::AtomUIGallery.ShowCases.CustomizeTheme.zh_TW.P2ContentApple;
@@ -5323,9 +5170,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.GroupingTableHeadTitle] = global::AtomUIGallery.ShowCases.DataGrid.en_US.GroupingTableHeadTitle;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.HiddenColumnsDescription] = global::AtomUIGallery.ShowCases.DataGrid.en_US.HiddenColumnsDescription;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.HiddenColumnsTitle] = global::AtomUIGallery.ShowCases.DataGrid.en_US.HiddenColumnsTitle;
-                dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.DataGrid.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.DataGrid.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.DataGrid.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.MultipleSorterDescription] = global::AtomUIGallery.ShowCases.DataGrid.en_US.MultipleSorterDescription;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.MultipleSorterTitle] = global::AtomUIGallery.ShowCases.DataGrid.en_US.MultipleSorterTitle;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.OrderSpecificColumnDescription] = global::AtomUIGallery.ShowCases.DataGrid.en_US.OrderSpecificColumnDescription;
@@ -5548,9 +5392,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.GroupingTableHeadTitle] = global::AtomUIGallery.ShowCases.DataGrid.zh_CN.GroupingTableHeadTitle;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.HiddenColumnsDescription] = global::AtomUIGallery.ShowCases.DataGrid.zh_CN.HiddenColumnsDescription;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.HiddenColumnsTitle] = global::AtomUIGallery.ShowCases.DataGrid.zh_CN.HiddenColumnsTitle;
-                dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.DataGrid.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.DataGrid.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.DataGrid.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.MultipleSorterDescription] = global::AtomUIGallery.ShowCases.DataGrid.zh_CN.MultipleSorterDescription;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.MultipleSorterTitle] = global::AtomUIGallery.ShowCases.DataGrid.zh_CN.MultipleSorterTitle;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.OrderSpecificColumnDescription] = global::AtomUIGallery.ShowCases.DataGrid.zh_CN.OrderSpecificColumnDescription;
@@ -5773,9 +5614,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.GroupingTableHeadTitle] = global::AtomUIGallery.ShowCases.DataGrid.zh_TW.GroupingTableHeadTitle;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.HiddenColumnsDescription] = global::AtomUIGallery.ShowCases.DataGrid.zh_TW.HiddenColumnsDescription;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.HiddenColumnsTitle] = global::AtomUIGallery.ShowCases.DataGrid.zh_TW.HiddenColumnsTitle;
-                dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.DataGrid.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.DataGrid.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.DataGrid.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.MultipleSorterDescription] = global::AtomUIGallery.ShowCases.DataGrid.zh_TW.MultipleSorterDescription;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.MultipleSorterTitle] = global::AtomUIGallery.ShowCases.DataGrid.zh_TW.MultipleSorterTitle;
                 dictionary[global::AtomUIGallery.Localization.DataGridShowCaseLangResourceKind.OrderSpecificColumnDescription] = global::AtomUIGallery.ShowCases.DataGrid.zh_TW.OrderSpecificColumnDescription;
@@ -5965,9 +5803,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.DatePicker.en_US.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.DatePicker.en_US.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.DatePicker.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.DatePicker.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.DatePicker.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.NeedConfirmDescription] = global::AtomUIGallery.ShowCases.DatePicker.en_US.NeedConfirmDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.NeedConfirmTitle] = global::AtomUIGallery.ShowCases.DatePicker.en_US.NeedConfirmTitle;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2ContentBottomleft] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2ContentBottomleft;
@@ -6066,9 +5901,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.NeedConfirmDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.NeedConfirmDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.NeedConfirmTitle] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.NeedConfirmTitle;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2ContentBottomleft] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2ContentBottomleft;
@@ -6167,9 +5999,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.NeedConfirmDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.NeedConfirmDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.NeedConfirmTitle] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.NeedConfirmTitle;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2ContentBottomleft] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2ContentBottomleft;
@@ -6269,9 +6098,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Descriptions.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.CustomSizeDescription] = global::AtomUIGallery.ShowCases.Descriptions.en_US.CustomSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.CustomSizeTitle] = global::AtomUIGallery.ShowCases.Descriptions.en_US.CustomSizeTitle;
-                dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Descriptions.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Descriptions.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Descriptions.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.P2ContentAddress] = global::AtomUIGallery.ShowCases.Descriptions.en_US.P2ContentAddress;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.P2ContentCloudDatabase] = global::AtomUIGallery.ShowCases.Descriptions.en_US.P2ContentCloudDatabase;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.P2ContentEdit] = global::AtomUIGallery.ShowCases.Descriptions.en_US.P2ContentEdit;
@@ -6392,9 +6218,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Descriptions.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.CustomSizeDescription] = global::AtomUIGallery.ShowCases.Descriptions.zh_CN.CustomSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.CustomSizeTitle] = global::AtomUIGallery.ShowCases.Descriptions.zh_CN.CustomSizeTitle;
-                dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Descriptions.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Descriptions.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Descriptions.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.P2ContentAddress] = global::AtomUIGallery.ShowCases.Descriptions.zh_CN.P2ContentAddress;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.P2ContentCloudDatabase] = global::AtomUIGallery.ShowCases.Descriptions.zh_CN.P2ContentCloudDatabase;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.P2ContentEdit] = global::AtomUIGallery.ShowCases.Descriptions.zh_CN.P2ContentEdit;
@@ -6515,9 +6338,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Descriptions.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.CustomSizeDescription] = global::AtomUIGallery.ShowCases.Descriptions.zh_TW.CustomSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.CustomSizeTitle] = global::AtomUIGallery.ShowCases.Descriptions.zh_TW.CustomSizeTitle;
-                dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Descriptions.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Descriptions.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Descriptions.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.P2ContentAddress] = global::AtomUIGallery.ShowCases.Descriptions.zh_TW.P2ContentAddress;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.P2ContentCloudDatabase] = global::AtomUIGallery.ShowCases.Descriptions.zh_TW.P2ContentCloudDatabase;
                 dictionary[global::AtomUIGallery.Localization.DescriptionsShowCaseLangResourceKind.P2ContentEdit] = global::AtomUIGallery.ShowCases.Descriptions.zh_TW.P2ContentEdit;
@@ -6643,9 +6463,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.CustomPlacementTitle] = global::AtomUIGallery.ShowCases.Drawer.en_US.CustomPlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.ExtraAndFooterDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterTitle] = global::AtomUIGallery.ShowCases.Drawer.en_US.ExtraAndFooterTitle;
-                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Drawer.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Drawer.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Drawer.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.MultiLevelDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelTitle] = global::AtomUIGallery.ShowCases.Drawer.en_US.MultiLevelTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.NoMaskDescription] = global::AtomUIGallery.ShowCases.Drawer.en_US.NoMaskDescription;
@@ -6753,9 +6570,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.CustomPlacementTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.CustomPlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ExtraAndFooterDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.ExtraAndFooterTitle;
-                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.MultiLevelDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.MultiLevelTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.NoMaskDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_CN.NoMaskDescription;
@@ -6863,9 +6677,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.CustomPlacementTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.CustomPlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ExtraAndFooterDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.ExtraAndFooterTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.ExtraAndFooterTitle;
-                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.MultiLevelDescription;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.MultiLevelTitle] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.MultiLevelTitle;
                 dictionary[global::AtomUIGallery.Localization.DrawerShowCaseLangResourceKind.NoMaskDescription] = global::AtomUIGallery.ShowCases.Drawer.zh_TW.NoMaskDescription;
@@ -6977,9 +6788,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.ButtonTypesTitle] = global::AtomUIGallery.ShowCases.DropdownButton.en_US.ButtonTypesTitle;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.DropdownButton.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.DropdownButton.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.DropdownButton.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.DropdownButton.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.DropdownButton.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.DropdownButton.en_US.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.P2ContentBottomLeft] = global::AtomUIGallery.ShowCases.DropdownButton.en_US.P2ContentBottomLeft;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.P2ContentBottomRight] = global::AtomUIGallery.ShowCases.DropdownButton.en_US.P2ContentBottomRight;
@@ -7083,9 +6891,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.ButtonTypesTitle] = global::AtomUIGallery.ShowCases.DropdownButton.zh_CN.ButtonTypesTitle;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.DropdownButton.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.DropdownButton.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.DropdownButton.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.DropdownButton.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.DropdownButton.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.DropdownButton.zh_CN.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.P2ContentBottomLeft] = global::AtomUIGallery.ShowCases.DropdownButton.zh_CN.P2ContentBottomLeft;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.P2ContentBottomRight] = global::AtomUIGallery.ShowCases.DropdownButton.zh_CN.P2ContentBottomRight;
@@ -7189,9 +6994,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.ButtonTypesTitle] = global::AtomUIGallery.ShowCases.DropdownButton.zh_TW.ButtonTypesTitle;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.DropdownButton.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.DropdownButton.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.DropdownButton.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.DropdownButton.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.DropdownButton.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.DropdownButton.zh_TW.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.P2ContentBottomLeft] = global::AtomUIGallery.ShowCases.DropdownButton.zh_TW.P2ContentBottomLeft;
                 dictionary[global::AtomUIGallery.Localization.DropdownButtonShowCaseLangResourceKind.P2ContentBottomRight] = global::AtomUIGallery.ShowCases.DropdownButton.zh_TW.P2ContentBottomRight;
@@ -7279,9 +7081,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Empty.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.CustomizeDescription] = global::AtomUIGallery.ShowCases.Empty.en_US.CustomizeDescription;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.CustomizeTitle] = global::AtomUIGallery.ShowCases.Empty.en_US.CustomizeTitle;
-                dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Empty.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Empty.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Empty.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.NoDescriptionDescription] = global::AtomUIGallery.ShowCases.Empty.en_US.NoDescriptionDescription;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.NoDescriptionTitle] = global::AtomUIGallery.ShowCases.Empty.en_US.NoDescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.P2ContentCreateNow] = global::AtomUIGallery.ShowCases.Empty.en_US.P2ContentCreateNow;
@@ -7346,9 +7145,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Empty.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.CustomizeDescription] = global::AtomUIGallery.ShowCases.Empty.zh_CN.CustomizeDescription;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.CustomizeTitle] = global::AtomUIGallery.ShowCases.Empty.zh_CN.CustomizeTitle;
-                dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Empty.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Empty.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Empty.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.NoDescriptionDescription] = global::AtomUIGallery.ShowCases.Empty.zh_CN.NoDescriptionDescription;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.NoDescriptionTitle] = global::AtomUIGallery.ShowCases.Empty.zh_CN.NoDescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.P2ContentCreateNow] = global::AtomUIGallery.ShowCases.Empty.zh_CN.P2ContentCreateNow;
@@ -7413,9 +7209,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Empty.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.CustomizeDescription] = global::AtomUIGallery.ShowCases.Empty.zh_TW.CustomizeDescription;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.CustomizeTitle] = global::AtomUIGallery.ShowCases.Empty.zh_TW.CustomizeTitle;
-                dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Empty.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Empty.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Empty.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.NoDescriptionDescription] = global::AtomUIGallery.ShowCases.Empty.zh_TW.NoDescriptionDescription;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.NoDescriptionTitle] = global::AtomUIGallery.ShowCases.Empty.zh_TW.NoDescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.EmptyShowCaseLangResourceKind.P2ContentCreateNow] = global::AtomUIGallery.ShowCases.Empty.zh_TW.P2ContentCreateNow;
@@ -7497,9 +7290,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.ExpandingDirectionTitle] = global::AtomUIGallery.ShowCases.Expander.en_US.ExpandingDirectionTitle;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.GhostCollapseDescription] = global::AtomUIGallery.ShowCases.Expander.en_US.GhostCollapseDescription;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.GhostCollapseTitle] = global::AtomUIGallery.ShowCases.Expander.en_US.GhostCollapseTitle;
-                dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Expander.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Expander.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Expander.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.NestedPanelDescription] = global::AtomUIGallery.ShowCases.Expander.en_US.NestedPanelDescription;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.NestedPanelTitle] = global::AtomUIGallery.ShowCases.Expander.en_US.NestedPanelTitle;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.NoArrowDescription] = global::AtomUIGallery.ShowCases.Expander.en_US.NoArrowDescription;
@@ -7613,9 +7403,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.ExpandingDirectionTitle] = global::AtomUIGallery.ShowCases.Expander.zh_CN.ExpandingDirectionTitle;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.GhostCollapseDescription] = global::AtomUIGallery.ShowCases.Expander.zh_CN.GhostCollapseDescription;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.GhostCollapseTitle] = global::AtomUIGallery.ShowCases.Expander.zh_CN.GhostCollapseTitle;
-                dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Expander.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Expander.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Expander.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.NestedPanelDescription] = global::AtomUIGallery.ShowCases.Expander.zh_CN.NestedPanelDescription;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.NestedPanelTitle] = global::AtomUIGallery.ShowCases.Expander.zh_CN.NestedPanelTitle;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.NoArrowDescription] = global::AtomUIGallery.ShowCases.Expander.zh_CN.NoArrowDescription;
@@ -7729,9 +7516,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.ExpandingDirectionTitle] = global::AtomUIGallery.ShowCases.Expander.zh_TW.ExpandingDirectionTitle;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.GhostCollapseDescription] = global::AtomUIGallery.ShowCases.Expander.zh_TW.GhostCollapseDescription;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.GhostCollapseTitle] = global::AtomUIGallery.ShowCases.Expander.zh_TW.GhostCollapseTitle;
-                dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Expander.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Expander.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Expander.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.NestedPanelDescription] = global::AtomUIGallery.ShowCases.Expander.zh_TW.NestedPanelDescription;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.NestedPanelTitle] = global::AtomUIGallery.ShowCases.Expander.zh_TW.NestedPanelTitle;
                 dictionary[global::AtomUIGallery.Localization.ExpanderShowCaseLangResourceKind.NoArrowDescription] = global::AtomUIGallery.ShowCases.Expander.zh_TW.NoArrowDescription;
@@ -7848,9 +7632,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.FlexShrinkTitle] = global::AtomUIGallery.ShowCases.FlexPanel.en_US.FlexShrinkTitle;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.GapDescription] = global::AtomUIGallery.ShowCases.FlexPanel.en_US.GapDescription;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.GapTitle] = global::AtomUIGallery.ShowCases.FlexPanel.en_US.GapTitle;
-                dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.FlexPanel.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.FlexPanel.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.FlexPanel.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.OrderDescription] = global::AtomUIGallery.ShowCases.FlexPanel.en_US.OrderDescription;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.OrderTitle] = global::AtomUIGallery.ShowCases.FlexPanel.en_US.OrderTitle;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.P2ContentA] = global::AtomUIGallery.ShowCases.FlexPanel.en_US.P2ContentA;
@@ -8005,9 +7786,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.FlexShrinkTitle] = global::AtomUIGallery.ShowCases.FlexPanel.zh_CN.FlexShrinkTitle;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.GapDescription] = global::AtomUIGallery.ShowCases.FlexPanel.zh_CN.GapDescription;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.GapTitle] = global::AtomUIGallery.ShowCases.FlexPanel.zh_CN.GapTitle;
-                dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.FlexPanel.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.FlexPanel.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.FlexPanel.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.OrderDescription] = global::AtomUIGallery.ShowCases.FlexPanel.zh_CN.OrderDescription;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.OrderTitle] = global::AtomUIGallery.ShowCases.FlexPanel.zh_CN.OrderTitle;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.P2ContentA] = global::AtomUIGallery.ShowCases.FlexPanel.zh_CN.P2ContentA;
@@ -8162,9 +7940,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.FlexShrinkTitle] = global::AtomUIGallery.ShowCases.FlexPanel.zh_TW.FlexShrinkTitle;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.GapDescription] = global::AtomUIGallery.ShowCases.FlexPanel.zh_TW.GapDescription;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.GapTitle] = global::AtomUIGallery.ShowCases.FlexPanel.zh_TW.GapTitle;
-                dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.FlexPanel.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.FlexPanel.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.FlexPanel.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.OrderDescription] = global::AtomUIGallery.ShowCases.FlexPanel.zh_TW.OrderDescription;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.OrderTitle] = global::AtomUIGallery.ShowCases.FlexPanel.zh_TW.OrderTitle;
                 dictionary[global::AtomUIGallery.Localization.FlexPanelShowCaseLangResourceKind.P2ContentA] = global::AtomUIGallery.ShowCases.FlexPanel.zh_TW.P2ContentA;
@@ -8323,9 +8098,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.DescriptionTitle] = global::AtomUIGallery.ShowCases.FloatButton.en_US.DescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.GroupDescription] = global::AtomUIGallery.ShowCases.FloatButton.en_US.GroupDescription;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.GroupTitle] = global::AtomUIGallery.ShowCases.FloatButton.en_US.GroupTitle;
-                dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.FloatButton.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.FloatButton.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.FloatButton.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.MenuModeDescription] = global::AtomUIGallery.ShowCases.FloatButton.en_US.MenuModeDescription;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.MenuModeTitle] = global::AtomUIGallery.ShowCases.FloatButton.en_US.MenuModeTitle;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.P2DescriptionHelpInfo] = global::AtomUIGallery.ShowCases.FloatButton.en_US.P2DescriptionHelpInfo;
@@ -8425,9 +8197,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.DescriptionTitle] = global::AtomUIGallery.ShowCases.FloatButton.zh_CN.DescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.GroupDescription] = global::AtomUIGallery.ShowCases.FloatButton.zh_CN.GroupDescription;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.GroupTitle] = global::AtomUIGallery.ShowCases.FloatButton.zh_CN.GroupTitle;
-                dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.FloatButton.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.FloatButton.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.FloatButton.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.MenuModeDescription] = global::AtomUIGallery.ShowCases.FloatButton.zh_CN.MenuModeDescription;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.MenuModeTitle] = global::AtomUIGallery.ShowCases.FloatButton.zh_CN.MenuModeTitle;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.P2DescriptionHelpInfo] = global::AtomUIGallery.ShowCases.FloatButton.zh_CN.P2DescriptionHelpInfo;
@@ -8527,9 +8296,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.DescriptionTitle] = global::AtomUIGallery.ShowCases.FloatButton.zh_TW.DescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.GroupDescription] = global::AtomUIGallery.ShowCases.FloatButton.zh_TW.GroupDescription;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.GroupTitle] = global::AtomUIGallery.ShowCases.FloatButton.zh_TW.GroupTitle;
-                dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.FloatButton.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.FloatButton.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.FloatButton.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.MenuModeDescription] = global::AtomUIGallery.ShowCases.FloatButton.zh_TW.MenuModeDescription;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.MenuModeTitle] = global::AtomUIGallery.ShowCases.FloatButton.zh_TW.MenuModeTitle;
                 dictionary[global::AtomUIGallery.Localization.FloatButtonShowCaseLangResourceKind.P2DescriptionHelpInfo] = global::AtomUIGallery.ShowCases.FloatButton.zh_TW.P2DescriptionHelpInfo;
@@ -8623,9 +8389,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.FormMethodsTitle] = global::AtomUIGallery.ShowCases.Form.en_US.FormMethodsTitle;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.FormVariantsDescription] = global::AtomUIGallery.ShowCases.Form.en_US.FormVariantsDescription;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.FormVariantsTitle] = global::AtomUIGallery.ShowCases.Form.en_US.FormVariantsTitle;
-                dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Form.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Form.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Form.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InlineLoginFormDescription] = global::AtomUIGallery.ShowCases.Form.en_US.InlineLoginFormDescription;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InlineLoginFormTitle] = global::AtomUIGallery.ShowCases.Form.en_US.InlineLoginFormTitle;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.LabelCanWrapDescription] = global::AtomUIGallery.ShowCases.Form.en_US.LabelCanWrapDescription;
@@ -8943,9 +8706,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.FormMethodsTitle] = global::AtomUIGallery.ShowCases.Form.zh_CN.FormMethodsTitle;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.FormVariantsDescription] = global::AtomUIGallery.ShowCases.Form.zh_CN.FormVariantsDescription;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.FormVariantsTitle] = global::AtomUIGallery.ShowCases.Form.zh_CN.FormVariantsTitle;
-                dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Form.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Form.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Form.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InlineLoginFormDescription] = global::AtomUIGallery.ShowCases.Form.zh_CN.InlineLoginFormDescription;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InlineLoginFormTitle] = global::AtomUIGallery.ShowCases.Form.zh_CN.InlineLoginFormTitle;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.LabelCanWrapDescription] = global::AtomUIGallery.ShowCases.Form.zh_CN.LabelCanWrapDescription;
@@ -9263,9 +9023,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.FormMethodsTitle] = global::AtomUIGallery.ShowCases.Form.zh_TW.FormMethodsTitle;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.FormVariantsDescription] = global::AtomUIGallery.ShowCases.Form.zh_TW.FormVariantsDescription;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.FormVariantsTitle] = global::AtomUIGallery.ShowCases.Form.zh_TW.FormVariantsTitle;
-                dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Form.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Form.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Form.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InlineLoginFormDescription] = global::AtomUIGallery.ShowCases.Form.zh_TW.InlineLoginFormDescription;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.InlineLoginFormTitle] = global::AtomUIGallery.ShowCases.Form.zh_TW.InlineLoginFormTitle;
                 dictionary[global::AtomUIGallery.Localization.FormShowCaseLangResourceKind.LabelCanWrapDescription] = global::AtomUIGallery.ShowCases.Form.zh_TW.LabelCanWrapDescription;
@@ -9579,9 +9336,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.FlexTitle] = global::AtomUIGallery.ShowCases.Grid.en_US.FlexTitle;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.GutterDescription] = global::AtomUIGallery.ShowCases.Grid.en_US.GutterDescription;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.GutterTitle] = global::AtomUIGallery.ShowCases.Grid.en_US.GutterTitle;
-                dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Grid.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Grid.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Grid.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.JustifyDescription] = global::AtomUIGallery.ShowCases.Grid.en_US.JustifyDescription;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.JustifyTitle] = global::AtomUIGallery.ShowCases.Grid.en_US.JustifyTitle;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.OffsetDescription] = global::AtomUIGallery.ShowCases.Grid.en_US.OffsetDescription;
@@ -9715,9 +9469,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.FlexTitle] = global::AtomUIGallery.ShowCases.Grid.zh_CN.FlexTitle;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.GutterDescription] = global::AtomUIGallery.ShowCases.Grid.zh_CN.GutterDescription;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.GutterTitle] = global::AtomUIGallery.ShowCases.Grid.zh_CN.GutterTitle;
-                dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Grid.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Grid.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Grid.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.JustifyDescription] = global::AtomUIGallery.ShowCases.Grid.zh_CN.JustifyDescription;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.JustifyTitle] = global::AtomUIGallery.ShowCases.Grid.zh_CN.JustifyTitle;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.OffsetDescription] = global::AtomUIGallery.ShowCases.Grid.zh_CN.OffsetDescription;
@@ -9851,9 +9602,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.FlexTitle] = global::AtomUIGallery.ShowCases.Grid.zh_TW.FlexTitle;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.GutterDescription] = global::AtomUIGallery.ShowCases.Grid.zh_TW.GutterDescription;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.GutterTitle] = global::AtomUIGallery.ShowCases.Grid.zh_TW.GutterTitle;
-                dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Grid.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Grid.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Grid.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.JustifyDescription] = global::AtomUIGallery.ShowCases.Grid.zh_TW.JustifyDescription;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.JustifyTitle] = global::AtomUIGallery.ShowCases.Grid.zh_TW.JustifyTitle;
                 dictionary[global::AtomUIGallery.Localization.GridShowCaseLangResourceKind.OffsetDescription] = global::AtomUIGallery.ShowCases.Grid.zh_TW.OffsetDescription;
@@ -9978,9 +9726,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.HeaderPositionTitle] = global::AtomUIGallery.ShowCases.GroupBox.en_US.HeaderPositionTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.HeaderStyleDescription] = global::AtomUIGallery.ShowCases.GroupBox.en_US.HeaderStyleDescription;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.HeaderStyleTitle] = global::AtomUIGallery.ShowCases.GroupBox.en_US.HeaderStyleTitle;
-                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.GroupBox.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.GroupBox.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.GroupBox.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.P2HeaderTitleTitleInfo] = global::AtomUIGallery.ShowCases.GroupBox.en_US.P2HeaderTitleTitleInfo;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.P2TextContentOfGroupBox] = global::AtomUIGallery.ShowCases.GroupBox.en_US.P2TextContentOfGroupBox;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.GroupBox.en_US.PageDescription;
@@ -10048,9 +9793,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.HeaderPositionTitle] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.HeaderPositionTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.HeaderStyleDescription] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.HeaderStyleDescription;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.HeaderStyleTitle] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.HeaderStyleTitle;
-                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.P2HeaderTitleTitleInfo] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.P2HeaderTitleTitleInfo;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.P2TextContentOfGroupBox] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.P2TextContentOfGroupBox;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.PageDescription;
@@ -10118,9 +9860,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.HeaderPositionTitle] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.HeaderPositionTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.HeaderStyleDescription] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.HeaderStyleDescription;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.HeaderStyleTitle] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.HeaderStyleTitle;
-                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.P2HeaderTitleTitleInfo] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.P2HeaderTitleTitleInfo;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.P2TextContentOfGroupBox] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.P2TextContentOfGroupBox;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.PageDescription;
@@ -10169,9 +9908,6 @@ namespace AtomUI.Theme.Language
             {
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Icon.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Icon.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Icon.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Icon.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Icon.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.P2HeaderFilled] = global::AtomUIGallery.ShowCases.Icon.en_US.P2HeaderFilled;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.P2HeaderOutlined] = global::AtomUIGallery.ShowCases.Icon.en_US.P2HeaderOutlined;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.P2HeaderTwoTone] = global::AtomUIGallery.ShowCases.Icon.en_US.P2HeaderTwoTone;
@@ -10205,9 +9941,6 @@ namespace AtomUI.Theme.Language
             {
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Icon.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Icon.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Icon.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Icon.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Icon.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.P2HeaderFilled] = global::AtomUIGallery.ShowCases.Icon.zh_CN.P2HeaderFilled;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.P2HeaderOutlined] = global::AtomUIGallery.ShowCases.Icon.zh_CN.P2HeaderOutlined;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.P2HeaderTwoTone] = global::AtomUIGallery.ShowCases.Icon.zh_CN.P2HeaderTwoTone;
@@ -10241,9 +9974,6 @@ namespace AtomUI.Theme.Language
             {
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Icon.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Icon.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Icon.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Icon.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Icon.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.P2HeaderFilled] = global::AtomUIGallery.ShowCases.Icon.zh_TW.P2HeaderFilled;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.P2HeaderOutlined] = global::AtomUIGallery.ShowCases.Icon.zh_TW.P2HeaderOutlined;
                 dictionary[global::AtomUIGallery.Localization.IconShowCaseLangResourceKind.P2HeaderTwoTone] = global::AtomUIGallery.ShowCases.Icon.zh_TW.P2HeaderTwoTone;
@@ -10306,9 +10036,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.CustomPreviewImageTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.CustomPreviewImageTitle;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.FaultTolerantDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.FaultTolerantDescription;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.FaultTolerantTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.FaultTolerantTitle;
-                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.MultipleImagePreviewDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.MultipleImagePreviewDescription;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.MultipleImagePreviewTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.MultipleImagePreviewTitle;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.en_US.PageDescription;
@@ -10391,9 +10118,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.CustomPreviewImageTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.CustomPreviewImageTitle;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.FaultTolerantDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.FaultTolerantDescription;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.FaultTolerantTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.FaultTolerantTitle;
-                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.MultipleImagePreviewDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.MultipleImagePreviewDescription;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.MultipleImagePreviewTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.MultipleImagePreviewTitle;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_CN.PageDescription;
@@ -10476,9 +10200,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.CustomPreviewImageTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.CustomPreviewImageTitle;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.FaultTolerantDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.FaultTolerantDescription;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.FaultTolerantTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.FaultTolerantTitle;
-                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.MultipleImagePreviewDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.MultipleImagePreviewDescription;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.MultipleImagePreviewTitle] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.MultipleImagePreviewTitle;
                 dictionary[global::AtomUIGallery.Localization.ImagePreviewerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.ImagePreviewer.zh_TW.PageDescription;
@@ -10551,9 +10272,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.InfoFlyout.en_US.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.InfoFlyout.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.InfoFlyout.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.InfoFlyout.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.InfoFlyout.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.InfoFlyout.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.P2ContentBL] = global::AtomUIGallery.ShowCases.InfoFlyout.en_US.P2ContentBL;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.InfoFlyout.en_US.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.P2ContentBR] = global::AtomUIGallery.ShowCases.InfoFlyout.en_US.P2ContentBR;
@@ -10640,9 +10358,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_CN.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.P2ContentBL] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_CN.P2ContentBL;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_CN.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.P2ContentBR] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_CN.P2ContentBR;
@@ -10729,9 +10444,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_TW.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.P2ContentBL] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_TW.P2ContentBL;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_TW.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.InfoFlyoutShowCaseLangResourceKind.P2ContentBR] = global::AtomUIGallery.ShowCases.InfoFlyout.zh_TW.P2ContentBR;
@@ -10831,9 +10543,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.DisabledSearchBoxDescription] = global::AtomUIGallery.ShowCases.LineEdit.en_US.DisabledSearchBoxDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.DisabledSearchBoxTitle] = global::AtomUIGallery.ShowCases.LineEdit.en_US.DisabledSearchBoxTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.LineEdit.en_US.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.LineEdit.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.LineEdit.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.LineEdit.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InputSizesDescription] = global::AtomUIGallery.ShowCases.LineEdit.en_US.InputSizesDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InputSizesTitle] = global::AtomUIGallery.ShowCases.LineEdit.en_US.InputSizesTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InputStatusDescription] = global::AtomUIGallery.ShowCases.LineEdit.en_US.InputStatusDescription;
@@ -10979,9 +10688,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.DisabledSearchBoxDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.DisabledSearchBoxDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.DisabledSearchBoxTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.DisabledSearchBoxTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InputSizesDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.InputSizesDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InputSizesTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.InputSizesTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InputStatusDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_CN.InputStatusDescription;
@@ -11127,9 +10833,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.DisabledSearchBoxDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.DisabledSearchBoxDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.DisabledSearchBoxTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.DisabledSearchBoxTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InputSizesDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.InputSizesDescription;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InputSizesTitle] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.InputSizesTitle;
                 dictionary[global::AtomUIGallery.Localization.LineEditShowCaseLangResourceKind.InputStatusDescription] = global::AtomUIGallery.ShowCases.LineEdit.zh_TW.InputStatusDescription;
@@ -11271,9 +10974,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.FilterTitle] = global::AtomUIGallery.ShowCases.List.en_US.FilterTitle;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.GroupDescription] = global::AtomUIGallery.ShowCases.List.en_US.GroupDescription;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.GroupTitle] = global::AtomUIGallery.ShowCases.List.en_US.GroupTitle;
-                dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.List.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.List.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.List.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.ItemDisabledDescription] = global::AtomUIGallery.ShowCases.List.en_US.ItemDisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.ItemDisabledTitle] = global::AtomUIGallery.ShowCases.List.en_US.ItemDisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.OrderedDescription] = global::AtomUIGallery.ShowCases.List.en_US.OrderedDescription;
@@ -11410,9 +11110,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.FilterTitle] = global::AtomUIGallery.ShowCases.List.zh_CN.FilterTitle;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.GroupDescription] = global::AtomUIGallery.ShowCases.List.zh_CN.GroupDescription;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.GroupTitle] = global::AtomUIGallery.ShowCases.List.zh_CN.GroupTitle;
-                dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.List.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.List.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.List.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.ItemDisabledDescription] = global::AtomUIGallery.ShowCases.List.zh_CN.ItemDisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.ItemDisabledTitle] = global::AtomUIGallery.ShowCases.List.zh_CN.ItemDisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.OrderedDescription] = global::AtomUIGallery.ShowCases.List.zh_CN.OrderedDescription;
@@ -11549,9 +11246,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.FilterTitle] = global::AtomUIGallery.ShowCases.List.zh_TW.FilterTitle;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.GroupDescription] = global::AtomUIGallery.ShowCases.List.zh_TW.GroupDescription;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.GroupTitle] = global::AtomUIGallery.ShowCases.List.zh_TW.GroupTitle;
-                dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.List.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.List.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.List.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.ItemDisabledDescription] = global::AtomUIGallery.ShowCases.List.zh_TW.ItemDisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.ItemDisabledTitle] = global::AtomUIGallery.ShowCases.List.zh_TW.ItemDisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.ListShowCaseLangResourceKind.OrderedDescription] = global::AtomUIGallery.ShowCases.List.zh_TW.OrderedDescription;
@@ -11683,9 +11377,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Masonry.en_US.DynamicTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageDescription] = global::AtomUIGallery.ShowCases.Masonry.en_US.ImageDescription;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageTitle] = global::AtomUIGallery.ShowCases.Masonry.en_US.ImageTitle;
-                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Masonry.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Masonry.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Masonry.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Masonry.en_US.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Masonry.en_US.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ResponsiveDescription] = global::AtomUIGallery.ShowCases.Masonry.en_US.ResponsiveDescription;
@@ -11751,9 +11442,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.DynamicTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ImageDescription;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ImageTitle;
-                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ResponsiveDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_CN.ResponsiveDescription;
@@ -11819,9 +11507,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.DynamicTitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ImageDescription;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ImageTitle] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ImageTitle;
-                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.MasonryShowCaseLangResourceKind.ResponsiveDescription] = global::AtomUIGallery.ShowCases.Masonry.zh_TW.ResponsiveDescription;
@@ -11899,9 +11584,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.CustomizeTriggerTokenTitle] = global::AtomUIGallery.ShowCases.Mentions.en_US.CustomizeTriggerTokenTitle;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.DisabledOrReadOnlyDescription] = global::AtomUIGallery.ShowCases.Mentions.en_US.DisabledOrReadOnlyDescription;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.DisabledOrReadOnlyTitle] = global::AtomUIGallery.ShowCases.Mentions.en_US.DisabledOrReadOnlyTitle;
-                dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Mentions.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Mentions.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Mentions.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.P2PlaceholderTextBorderless] = global::AtomUIGallery.ShowCases.Mentions.en_US.P2PlaceholderTextBorderless;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.P2PlaceholderTextCustom] = global::AtomUIGallery.ShowCases.Mentions.en_US.P2PlaceholderTextCustom;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.P2PlaceholderTextFilled] = global::AtomUIGallery.ShowCases.Mentions.en_US.P2PlaceholderTextFilled;
@@ -12000,9 +11682,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.CustomizeTriggerTokenTitle] = global::AtomUIGallery.ShowCases.Mentions.zh_CN.CustomizeTriggerTokenTitle;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.DisabledOrReadOnlyDescription] = global::AtomUIGallery.ShowCases.Mentions.zh_CN.DisabledOrReadOnlyDescription;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.DisabledOrReadOnlyTitle] = global::AtomUIGallery.ShowCases.Mentions.zh_CN.DisabledOrReadOnlyTitle;
-                dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Mentions.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Mentions.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Mentions.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.P2PlaceholderTextBorderless] = global::AtomUIGallery.ShowCases.Mentions.zh_CN.P2PlaceholderTextBorderless;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.P2PlaceholderTextCustom] = global::AtomUIGallery.ShowCases.Mentions.zh_CN.P2PlaceholderTextCustom;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.P2PlaceholderTextFilled] = global::AtomUIGallery.ShowCases.Mentions.zh_CN.P2PlaceholderTextFilled;
@@ -12101,9 +11780,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.CustomizeTriggerTokenTitle] = global::AtomUIGallery.ShowCases.Mentions.zh_TW.CustomizeTriggerTokenTitle;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.DisabledOrReadOnlyDescription] = global::AtomUIGallery.ShowCases.Mentions.zh_TW.DisabledOrReadOnlyDescription;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.DisabledOrReadOnlyTitle] = global::AtomUIGallery.ShowCases.Mentions.zh_TW.DisabledOrReadOnlyTitle;
-                dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Mentions.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Mentions.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Mentions.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.P2PlaceholderTextBorderless] = global::AtomUIGallery.ShowCases.Mentions.zh_TW.P2PlaceholderTextBorderless;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.P2PlaceholderTextCustom] = global::AtomUIGallery.ShowCases.Mentions.zh_TW.P2PlaceholderTextCustom;
                 dictionary[global::AtomUIGallery.Localization.MentionsShowCaseLangResourceKind.P2PlaceholderTextFilled] = global::AtomUIGallery.ShowCases.Mentions.zh_TW.P2PlaceholderTextFilled;
@@ -12199,9 +11875,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.DefaultOpenedPathsTitle] = global::AtomUIGallery.ShowCases.Menu.en_US.DefaultOpenedPathsTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.IconAndSubmenuDescription] = global::AtomUIGallery.ShowCases.Menu.en_US.IconAndSubmenuDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.IconAndSubmenuTitle] = global::AtomUIGallery.ShowCases.Menu.en_US.IconAndSubmenuTitle;
-                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Menu.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Menu.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Menu.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuDescription] = global::AtomUIGallery.ShowCases.Menu.en_US.InlineCollapsedMenuDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuTitle] = global::AtomUIGallery.ShowCases.Menu.en_US.InlineCollapsedMenuTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineMenuDescription] = global::AtomUIGallery.ShowCases.Menu.en_US.InlineMenuDescription;
@@ -12355,9 +12028,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.DefaultOpenedPathsTitle] = global::AtomUIGallery.ShowCases.Menu.zh_CN.DefaultOpenedPathsTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.IconAndSubmenuDescription] = global::AtomUIGallery.ShowCases.Menu.zh_CN.IconAndSubmenuDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.IconAndSubmenuTitle] = global::AtomUIGallery.ShowCases.Menu.zh_CN.IconAndSubmenuTitle;
-                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuDescription] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InlineCollapsedMenuDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuTitle] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InlineCollapsedMenuTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineMenuDescription] = global::AtomUIGallery.ShowCases.Menu.zh_CN.InlineMenuDescription;
@@ -12511,9 +12181,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.DefaultOpenedPathsTitle] = global::AtomUIGallery.ShowCases.Menu.zh_TW.DefaultOpenedPathsTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.IconAndSubmenuDescription] = global::AtomUIGallery.ShowCases.Menu.zh_TW.IconAndSubmenuDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.IconAndSubmenuTitle] = global::AtomUIGallery.ShowCases.Menu.zh_TW.IconAndSubmenuTitle;
-                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuDescription] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InlineCollapsedMenuDescription;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineCollapsedMenuTitle] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InlineCollapsedMenuTitle;
                 dictionary[global::AtomUIGallery.Localization.MenuShowCaseLangResourceKind.InlineMenuDescription] = global::AtomUIGallery.ShowCases.Menu.zh_TW.InlineMenuDescription;
@@ -12652,9 +12319,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.CallbackTitle] = global::AtomUIGallery.ShowCases.Message.en_US.CallbackTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Message.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Message.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Message.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Message.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Message.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorDescription] = global::AtomUIGallery.ShowCases.Message.en_US.LoadingIndicatorDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorTitle] = global::AtomUIGallery.ShowCases.Message.en_US.LoadingIndicatorTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.OtherTypesDescription] = global::AtomUIGallery.ShowCases.Message.en_US.OtherTypesDescription;
@@ -12734,9 +12398,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.CallbackTitle] = global::AtomUIGallery.ShowCases.Message.zh_CN.CallbackTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Message.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Message.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Message.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Message.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Message.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorDescription] = global::AtomUIGallery.ShowCases.Message.zh_CN.LoadingIndicatorDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorTitle] = global::AtomUIGallery.ShowCases.Message.zh_CN.LoadingIndicatorTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.OtherTypesDescription] = global::AtomUIGallery.ShowCases.Message.zh_CN.OtherTypesDescription;
@@ -12816,9 +12477,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.CallbackTitle] = global::AtomUIGallery.ShowCases.Message.zh_TW.CallbackTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Message.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Message.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Message.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Message.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Message.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorDescription] = global::AtomUIGallery.ShowCases.Message.zh_TW.LoadingIndicatorDescription;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.LoadingIndicatorTitle] = global::AtomUIGallery.ShowCases.Message.zh_TW.LoadingIndicatorTitle;
                 dictionary[global::AtomUIGallery.Localization.MessageShowCaseLangResourceKind.OtherTypesDescription] = global::AtomUIGallery.ShowCases.Message.zh_TW.OtherTypesDescription;
@@ -12905,9 +12563,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomFooterButtonsTitle] = global::AtomUIGallery.ShowCases.Modal.en_US.CustomFooterButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.CustomizeFooterButtonPropsDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsTitle] = global::AtomUIGallery.ShowCases.Modal.en_US.CustomizeFooterButtonPropsTitle;
-                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Modal.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Modal.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Modal.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Modal.en_US.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ManualUpdateDestroyDescription] = global::AtomUIGallery.ShowCases.Modal.en_US.ManualUpdateDestroyDescription;
@@ -13031,9 +12686,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomFooterButtonsTitle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.CustomFooterButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.CustomizeFooterButtonPropsDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsTitle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.CustomizeFooterButtonPropsTitle;
-                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Modal.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Modal.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Modal.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ManualUpdateDestroyDescription] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ManualUpdateDestroyDescription;
@@ -13157,9 +12809,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomFooterButtonsTitle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.CustomFooterButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.CustomizeFooterButtonPropsDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.CustomizeFooterButtonPropsTitle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.CustomizeFooterButtonPropsTitle;
-                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Modal.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Modal.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Modal.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ManualUpdateDestroyDescription] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ManualUpdateDestroyDescription;
@@ -13282,9 +12931,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.CustomizedIconTitle] = global::AtomUIGallery.ShowCases.Notification.en_US.CustomizedIconTitle;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.DurationDescription] = global::AtomUIGallery.ShowCases.Notification.en_US.DurationDescription;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.DurationTitle] = global::AtomUIGallery.ShowCases.Notification.en_US.DurationTitle;
-                dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Notification.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Notification.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Notification.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Notification.en_US.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.P2ContentBottomleft] = global::AtomUIGallery.ShowCases.Notification.en_US.P2ContentBottomleft;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.P2ContentBottomright] = global::AtomUIGallery.ShowCases.Notification.en_US.P2ContentBottomright;
@@ -13389,9 +13035,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.CustomizedIconTitle] = global::AtomUIGallery.ShowCases.Notification.zh_CN.CustomizedIconTitle;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.DurationDescription] = global::AtomUIGallery.ShowCases.Notification.zh_CN.DurationDescription;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.DurationTitle] = global::AtomUIGallery.ShowCases.Notification.zh_CN.DurationTitle;
-                dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Notification.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Notification.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Notification.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Notification.zh_CN.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.P2ContentBottomleft] = global::AtomUIGallery.ShowCases.Notification.zh_CN.P2ContentBottomleft;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.P2ContentBottomright] = global::AtomUIGallery.ShowCases.Notification.zh_CN.P2ContentBottomright;
@@ -13496,9 +13139,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.CustomizedIconTitle] = global::AtomUIGallery.ShowCases.Notification.zh_TW.CustomizedIconTitle;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.DurationDescription] = global::AtomUIGallery.ShowCases.Notification.zh_TW.DurationDescription;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.DurationTitle] = global::AtomUIGallery.ShowCases.Notification.zh_TW.DurationTitle;
-                dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Notification.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Notification.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Notification.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Notification.zh_TW.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.P2ContentBottomleft] = global::AtomUIGallery.ShowCases.Notification.zh_TW.P2ContentBottomleft;
                 dictionary[global::AtomUIGallery.Localization.NotificationShowCaseLangResourceKind.P2ContentBottomright] = global::AtomUIGallery.ShowCases.Notification.zh_TW.P2ContentBottomright;
@@ -13608,9 +13248,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DecimalStepTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.DecimalStepTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.KeyboardBehaviorDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.KeyboardBehaviorTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.MinMaxDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.MinMaxDescription;
@@ -13723,9 +13360,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DecimalStepTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.DecimalStepTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.KeyboardBehaviorDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.KeyboardBehaviorTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.MinMaxDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.MinMaxDescription;
@@ -13838,9 +13472,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DecimalStepTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.DecimalStepTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.KeyboardBehaviorDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.KeyboardBehaviorTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.MinMaxDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.MinMaxDescription;
@@ -14064,9 +13695,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Pagination.en_US.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Pagination.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Pagination.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Pagination.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Pagination.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Pagination.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.MiniSizeDescription] = global::AtomUIGallery.ShowCases.Pagination.en_US.MiniSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.MiniSizeTitle] = global::AtomUIGallery.ShowCases.Pagination.en_US.MiniSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.MoreDescription] = global::AtomUIGallery.ShowCases.Pagination.en_US.MoreDescription;
@@ -14150,9 +13778,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Pagination.zh_CN.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Pagination.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Pagination.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Pagination.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Pagination.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Pagination.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.MiniSizeDescription] = global::AtomUIGallery.ShowCases.Pagination.zh_CN.MiniSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.MiniSizeTitle] = global::AtomUIGallery.ShowCases.Pagination.zh_CN.MiniSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.MoreDescription] = global::AtomUIGallery.ShowCases.Pagination.zh_CN.MoreDescription;
@@ -14236,9 +13861,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Pagination.zh_TW.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Pagination.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Pagination.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Pagination.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Pagination.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Pagination.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.MiniSizeDescription] = global::AtomUIGallery.ShowCases.Pagination.zh_TW.MiniSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.MiniSizeTitle] = global::AtomUIGallery.ShowCases.Pagination.zh_TW.MiniSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.PaginationShowCaseLangResourceKind.MoreDescription] = global::AtomUIGallery.ShowCases.Pagination.zh_TW.MoreDescription;
@@ -14300,9 +13922,6 @@ namespace AtomUI.Theme.Language
             {
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Palette.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Palette.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Palette.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Palette.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Palette.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderDark] = global::AtomUIGallery.ShowCases.Palette.en_US.P2HeaderDark;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderLight] = global::AtomUIGallery.ShowCases.Palette.en_US.P2HeaderLight;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Palette.en_US.PageDescription;
@@ -14335,9 +13954,6 @@ namespace AtomUI.Theme.Language
             {
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Palette.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Palette.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Palette.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Palette.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Palette.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderDark] = global::AtomUIGallery.ShowCases.Palette.zh_CN.P2HeaderDark;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderLight] = global::AtomUIGallery.ShowCases.Palette.zh_CN.P2HeaderLight;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Palette.zh_CN.PageDescription;
@@ -14370,9 +13986,6 @@ namespace AtomUI.Theme.Language
             {
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Palette.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Palette.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Palette.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Palette.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Palette.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderDark] = global::AtomUIGallery.ShowCases.Palette.zh_TW.P2HeaderDark;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.P2HeaderLight] = global::AtomUIGallery.ShowCases.Palette.zh_TW.P2HeaderLight;
                 dictionary[global::AtomUIGallery.Localization.PaletteShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Palette.zh_TW.PageDescription;
@@ -14425,9 +14038,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.CustomizeIconDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.CustomizeIconTitle;
-                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.LocaleTextDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.LocaleTextTitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2CancelTextCancel] = global::AtomUIGallery.ShowCases.PopupConfirm.en_US.P2CancelTextCancel;
@@ -14515,9 +14125,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.CustomizeIconDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.CustomizeIconTitle;
-                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.LocaleTextDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.LocaleTextTitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2CancelTextCancel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_CN.P2CancelTextCancel;
@@ -14605,9 +14212,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.CustomizeIconDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.CustomizeIconTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.CustomizeIconTitle;
-                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextDescription] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.LocaleTextDescription;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.LocaleTextTitle] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.LocaleTextTitle;
                 dictionary[global::AtomUIGallery.Localization.PopupConfirmShowCaseLangResourceKind.P2CancelTextCancel] = global::AtomUIGallery.ShowCases.PopupConfirm.zh_TW.P2CancelTextCancel;
@@ -14713,9 +14317,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.DashboardTitle] = global::AtomUIGallery.ShowCases.ProgressBar.en_US.DashboardTitle;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.ProgressBar.en_US.DynamicDescription;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.ProgressBar.en_US.DynamicTitle;
-                dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ProgressBar.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ProgressBar.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ProgressBar.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.MiniSizeDescription] = global::AtomUIGallery.ShowCases.ProgressBar.en_US.MiniSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.MiniSizeTitle] = global::AtomUIGallery.ShowCases.ProgressBar.en_US.MiniSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.P2ContentAdd] = global::AtomUIGallery.ShowCases.ProgressBar.en_US.P2ContentAdd;
@@ -14830,9 +14431,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.DashboardTitle] = global::AtomUIGallery.ShowCases.ProgressBar.zh_CN.DashboardTitle;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.ProgressBar.zh_CN.DynamicDescription;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.ProgressBar.zh_CN.DynamicTitle;
-                dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ProgressBar.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ProgressBar.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ProgressBar.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.MiniSizeDescription] = global::AtomUIGallery.ShowCases.ProgressBar.zh_CN.MiniSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.MiniSizeTitle] = global::AtomUIGallery.ShowCases.ProgressBar.zh_CN.MiniSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.P2ContentAdd] = global::AtomUIGallery.ShowCases.ProgressBar.zh_CN.P2ContentAdd;
@@ -14947,9 +14545,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.DashboardTitle] = global::AtomUIGallery.ShowCases.ProgressBar.zh_TW.DashboardTitle;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.DynamicDescription] = global::AtomUIGallery.ShowCases.ProgressBar.zh_TW.DynamicDescription;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.DynamicTitle] = global::AtomUIGallery.ShowCases.ProgressBar.zh_TW.DynamicTitle;
-                dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ProgressBar.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ProgressBar.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ProgressBar.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.MiniSizeDescription] = global::AtomUIGallery.ShowCases.ProgressBar.zh_TW.MiniSizeDescription;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.MiniSizeTitle] = global::AtomUIGallery.ShowCases.ProgressBar.zh_TW.MiniSizeTitle;
                 dictionary[global::AtomUIGallery.Localization.ProgressBarShowCaseLangResourceKind.P2ContentAdd] = global::AtomUIGallery.ShowCases.ProgressBar.zh_TW.P2ContentAdd;
@@ -15057,9 +14652,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.DifferentStatusTitle] = global::AtomUIGallery.ShowCases.QRCode.en_US.DifferentStatusTitle;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.ErrorLevelDescription] = global::AtomUIGallery.ShowCases.QRCode.en_US.ErrorLevelDescription;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.ErrorLevelTitle] = global::AtomUIGallery.ShowCases.QRCode.en_US.ErrorLevelTitle;
-                dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.QRCode.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.QRCode.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.QRCode.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.P2ContentClickToRefresh] = global::AtomUIGallery.ShowCases.QRCode.en_US.P2ContentClickToRefresh;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.P2ContentHoverMe] = global::AtomUIGallery.ShowCases.QRCode.en_US.P2ContentHoverMe;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.P2ContentLarger] = global::AtomUIGallery.ShowCases.QRCode.en_US.P2ContentLarger;
@@ -15141,9 +14733,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.DifferentStatusTitle] = global::AtomUIGallery.ShowCases.QRCode.zh_CN.DifferentStatusTitle;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.ErrorLevelDescription] = global::AtomUIGallery.ShowCases.QRCode.zh_CN.ErrorLevelDescription;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.ErrorLevelTitle] = global::AtomUIGallery.ShowCases.QRCode.zh_CN.ErrorLevelTitle;
-                dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.QRCode.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.QRCode.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.QRCode.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.P2ContentClickToRefresh] = global::AtomUIGallery.ShowCases.QRCode.zh_CN.P2ContentClickToRefresh;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.P2ContentHoverMe] = global::AtomUIGallery.ShowCases.QRCode.zh_CN.P2ContentHoverMe;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.P2ContentLarger] = global::AtomUIGallery.ShowCases.QRCode.zh_CN.P2ContentLarger;
@@ -15225,9 +14814,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.DifferentStatusTitle] = global::AtomUIGallery.ShowCases.QRCode.zh_TW.DifferentStatusTitle;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.ErrorLevelDescription] = global::AtomUIGallery.ShowCases.QRCode.zh_TW.ErrorLevelDescription;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.ErrorLevelTitle] = global::AtomUIGallery.ShowCases.QRCode.zh_TW.ErrorLevelTitle;
-                dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.QRCode.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.QRCode.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.QRCode.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.P2ContentClickToRefresh] = global::AtomUIGallery.ShowCases.QRCode.zh_TW.P2ContentClickToRefresh;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.P2ContentHoverMe] = global::AtomUIGallery.ShowCases.QRCode.zh_TW.P2ContentHoverMe;
                 dictionary[global::AtomUIGallery.Localization.QRCodeShowCaseLangResourceKind.P2ContentLarger] = global::AtomUIGallery.ShowCases.QRCode.zh_TW.P2ContentLarger;
@@ -15301,9 +14887,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.RadioButton.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.RadioButton.en_US.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.RadioButton.en_US.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.RadioButton.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.RadioButton.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.RadioButton.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.ItemsSourceRadioGroupDescription] = global::AtomUIGallery.ShowCases.RadioButton.en_US.ItemsSourceRadioGroupDescription;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.ItemsSourceRadioGroupTitle] = global::AtomUIGallery.ShowCases.RadioButton.en_US.ItemsSourceRadioGroupTitle;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.OptionButtonDescription] = global::AtomUIGallery.ShowCases.RadioButton.en_US.OptionButtonDescription;
@@ -15421,9 +15004,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.RadioButton.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.RadioButton.zh_CN.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.RadioButton.zh_CN.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.RadioButton.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.RadioButton.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.RadioButton.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.ItemsSourceRadioGroupDescription] = global::AtomUIGallery.ShowCases.RadioButton.zh_CN.ItemsSourceRadioGroupDescription;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.ItemsSourceRadioGroupTitle] = global::AtomUIGallery.ShowCases.RadioButton.zh_CN.ItemsSourceRadioGroupTitle;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.OptionButtonDescription] = global::AtomUIGallery.ShowCases.RadioButton.zh_CN.OptionButtonDescription;
@@ -15541,9 +15121,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.RadioButton.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.RadioButton.zh_TW.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.RadioButton.zh_TW.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.RadioButton.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.RadioButton.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.RadioButton.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.ItemsSourceRadioGroupDescription] = global::AtomUIGallery.ShowCases.RadioButton.zh_TW.ItemsSourceRadioGroupDescription;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.ItemsSourceRadioGroupTitle] = global::AtomUIGallery.ShowCases.RadioButton.zh_TW.ItemsSourceRadioGroupTitle;
                 dictionary[global::AtomUIGallery.Localization.RadioButtonShowCaseLangResourceKind.OptionButtonDescription] = global::AtomUIGallery.ShowCases.RadioButton.zh_TW.OptionButtonDescription;
@@ -15662,9 +15239,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Rate.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.HalfStarDescription] = global::AtomUIGallery.ShowCases.Rate.en_US.HalfStarDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.HalfStarTitle] = global::AtomUIGallery.ShowCases.Rate.en_US.HalfStarTitle;
-                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Rate.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Rate.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Rate.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterDescription] = global::AtomUIGallery.ShowCases.Rate.en_US.OtherCharacterDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterTitle] = global::AtomUIGallery.ShowCases.Rate.en_US.OtherCharacterTitle;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TextIsallowclearFalse] = global::AtomUIGallery.ShowCases.Rate.en_US.P2TextIsallowclearFalse;
@@ -15747,9 +15321,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Rate.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.HalfStarDescription] = global::AtomUIGallery.ShowCases.Rate.zh_CN.HalfStarDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.HalfStarTitle] = global::AtomUIGallery.ShowCases.Rate.zh_CN.HalfStarTitle;
-                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Rate.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Rate.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Rate.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterDescription] = global::AtomUIGallery.ShowCases.Rate.zh_CN.OtherCharacterDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterTitle] = global::AtomUIGallery.ShowCases.Rate.zh_CN.OtherCharacterTitle;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TextIsallowclearFalse] = global::AtomUIGallery.ShowCases.Rate.zh_CN.P2TextIsallowclearFalse;
@@ -15832,9 +15403,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Rate.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.HalfStarDescription] = global::AtomUIGallery.ShowCases.Rate.zh_TW.HalfStarDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.HalfStarTitle] = global::AtomUIGallery.ShowCases.Rate.zh_TW.HalfStarTitle;
-                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Rate.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Rate.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Rate.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterDescription] = global::AtomUIGallery.ShowCases.Rate.zh_TW.OtherCharacterDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterTitle] = global::AtomUIGallery.ShowCases.Rate.zh_TW.OtherCharacterTitle;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TextIsallowclearFalse] = global::AtomUIGallery.ShowCases.Rate.zh_TW.P2TextIsallowclearFalse;
@@ -15912,10 +15480,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.ErrorTitle] = global::AtomUIGallery.ShowCases.Result.en_US.ErrorTitle;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.ForbiddenDescription] = global::AtomUIGallery.ShowCases.Result.en_US.ForbiddenDescription;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.ForbiddenTitle] = global::AtomUIGallery.ShowCases.Result.en_US.ForbiddenTitle;
-                dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Result.en_US.InfoBaseClassLabel;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoDescription] = global::AtomUIGallery.ShowCases.Result.en_US.InfoDescription;
-                dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Result.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Result.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoTitle] = global::AtomUIGallery.ShowCases.Result.en_US.InfoTitle;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.NotFoundDescription] = global::AtomUIGallery.ShowCases.Result.en_US.NotFoundDescription;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.NotFoundTitle] = global::AtomUIGallery.ShowCases.Result.en_US.NotFoundTitle;
@@ -16017,10 +15582,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.ErrorTitle] = global::AtomUIGallery.ShowCases.Result.zh_CN.ErrorTitle;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.ForbiddenDescription] = global::AtomUIGallery.ShowCases.Result.zh_CN.ForbiddenDescription;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.ForbiddenTitle] = global::AtomUIGallery.ShowCases.Result.zh_CN.ForbiddenTitle;
-                dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Result.zh_CN.InfoBaseClassLabel;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoDescription] = global::AtomUIGallery.ShowCases.Result.zh_CN.InfoDescription;
-                dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Result.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Result.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoTitle] = global::AtomUIGallery.ShowCases.Result.zh_CN.InfoTitle;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.NotFoundDescription] = global::AtomUIGallery.ShowCases.Result.zh_CN.NotFoundDescription;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.NotFoundTitle] = global::AtomUIGallery.ShowCases.Result.zh_CN.NotFoundTitle;
@@ -16122,10 +15684,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.ErrorTitle] = global::AtomUIGallery.ShowCases.Result.zh_TW.ErrorTitle;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.ForbiddenDescription] = global::AtomUIGallery.ShowCases.Result.zh_TW.ForbiddenDescription;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.ForbiddenTitle] = global::AtomUIGallery.ShowCases.Result.zh_TW.ForbiddenTitle;
-                dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Result.zh_TW.InfoBaseClassLabel;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoDescription] = global::AtomUIGallery.ShowCases.Result.zh_TW.InfoDescription;
-                dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Result.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Result.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.InfoTitle] = global::AtomUIGallery.ShowCases.Result.zh_TW.InfoTitle;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.NotFoundDescription] = global::AtomUIGallery.ShowCases.Result.zh_TW.NotFoundDescription;
                 dictionary[global::AtomUIGallery.Localization.ResultShowCaseLangResourceKind.NotFoundTitle] = global::AtomUIGallery.ShowCases.Result.zh_TW.NotFoundTitle;
@@ -16228,9 +15787,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.Segmented.en_US.DisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.IconOnlyDescription] = global::AtomUIGallery.ShowCases.Segmented.en_US.IconOnlyDescription;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.IconOnlyTitle] = global::AtomUIGallery.ShowCases.Segmented.en_US.IconOnlyTitle;
-                dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Segmented.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Segmented.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Segmented.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.P2ContentAtomUI] = global::AtomUIGallery.ShowCases.Segmented.en_US.P2ContentAtomUI;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.P2ContentAva] = global::AtomUIGallery.ShowCases.Segmented.en_US.P2ContentAva;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.P2ContentDaily] = global::AtomUIGallery.ShowCases.Segmented.en_US.P2ContentDaily;
@@ -16318,9 +15874,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.Segmented.zh_CN.DisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.IconOnlyDescription] = global::AtomUIGallery.ShowCases.Segmented.zh_CN.IconOnlyDescription;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.IconOnlyTitle] = global::AtomUIGallery.ShowCases.Segmented.zh_CN.IconOnlyTitle;
-                dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Segmented.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Segmented.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Segmented.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.P2ContentAtomUI] = global::AtomUIGallery.ShowCases.Segmented.zh_CN.P2ContentAtomUI;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.P2ContentAva] = global::AtomUIGallery.ShowCases.Segmented.zh_CN.P2ContentAva;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.P2ContentDaily] = global::AtomUIGallery.ShowCases.Segmented.zh_CN.P2ContentDaily;
@@ -16408,9 +15961,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.Segmented.zh_TW.DisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.IconOnlyDescription] = global::AtomUIGallery.ShowCases.Segmented.zh_TW.IconOnlyDescription;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.IconOnlyTitle] = global::AtomUIGallery.ShowCases.Segmented.zh_TW.IconOnlyTitle;
-                dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Segmented.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Segmented.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Segmented.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.P2ContentAtomUI] = global::AtomUIGallery.ShowCases.Segmented.zh_TW.P2ContentAtomUI;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.P2ContentAva] = global::AtomUIGallery.ShowCases.Segmented.zh_TW.P2ContentAva;
                 dictionary[global::AtomUIGallery.Localization.SegmentedShowCaseLangResourceKind.P2ContentDaily] = global::AtomUIGallery.ShowCases.Segmented.zh_TW.P2ContentDaily;
@@ -16507,9 +16057,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.CustomSearchTitle] = global::AtomUIGallery.ShowCases.Select.en_US.CustomSearchTitle;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.HideAlreadySelectedDescription] = global::AtomUIGallery.ShowCases.Select.en_US.HideAlreadySelectedDescription;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.HideAlreadySelectedTitle] = global::AtomUIGallery.ShowCases.Select.en_US.HideAlreadySelectedTitle;
-                dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Select.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Select.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Select.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.MaxCountDescription] = global::AtomUIGallery.ShowCases.Select.en_US.MaxCountDescription;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.MaxCountTitle] = global::AtomUIGallery.ShowCases.Select.en_US.MaxCountTitle;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.MultipleSelectionDescription] = global::AtomUIGallery.ShowCases.Select.en_US.MultipleSelectionDescription;
@@ -16657,9 +16204,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.CustomSearchTitle] = global::AtomUIGallery.ShowCases.Select.zh_CN.CustomSearchTitle;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.HideAlreadySelectedDescription] = global::AtomUIGallery.ShowCases.Select.zh_CN.HideAlreadySelectedDescription;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.HideAlreadySelectedTitle] = global::AtomUIGallery.ShowCases.Select.zh_CN.HideAlreadySelectedTitle;
-                dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Select.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Select.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Select.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.MaxCountDescription] = global::AtomUIGallery.ShowCases.Select.zh_CN.MaxCountDescription;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.MaxCountTitle] = global::AtomUIGallery.ShowCases.Select.zh_CN.MaxCountTitle;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.MultipleSelectionDescription] = global::AtomUIGallery.ShowCases.Select.zh_CN.MultipleSelectionDescription;
@@ -16807,9 +16351,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.CustomSearchTitle] = global::AtomUIGallery.ShowCases.Select.zh_TW.CustomSearchTitle;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.HideAlreadySelectedDescription] = global::AtomUIGallery.ShowCases.Select.zh_TW.HideAlreadySelectedDescription;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.HideAlreadySelectedTitle] = global::AtomUIGallery.ShowCases.Select.zh_TW.HideAlreadySelectedTitle;
-                dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Select.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Select.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Select.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.MaxCountDescription] = global::AtomUIGallery.ShowCases.Select.zh_TW.MaxCountDescription;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.MaxCountTitle] = global::AtomUIGallery.ShowCases.Select.zh_TW.MaxCountTitle;
                 dictionary[global::AtomUIGallery.Localization.SelectShowCaseLangResourceKind.MultipleSelectionDescription] = global::AtomUIGallery.ShowCases.Select.zh_TW.MultipleSelectionDescription;
@@ -16947,9 +16488,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.DividerWithTitleTitle] = global::AtomUIGallery.ShowCases.Separator.en_US.DividerWithTitleTitle;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.HorizontalDescription] = global::AtomUIGallery.ShowCases.Separator.en_US.HorizontalDescription;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.HorizontalTitle] = global::AtomUIGallery.ShowCases.Separator.en_US.HorizontalTitle;
-                dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Separator.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Separator.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Separator.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.P2TextItem1] = global::AtomUIGallery.ShowCases.Separator.en_US.P2TextItem1;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.P2TextItem2] = global::AtomUIGallery.ShowCases.Separator.en_US.P2TextItem2;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.P2TextItem3] = global::AtomUIGallery.ShowCases.Separator.en_US.P2TextItem3;
@@ -17037,9 +16575,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.DividerWithTitleTitle] = global::AtomUIGallery.ShowCases.Separator.zh_CN.DividerWithTitleTitle;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.HorizontalDescription] = global::AtomUIGallery.ShowCases.Separator.zh_CN.HorizontalDescription;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.HorizontalTitle] = global::AtomUIGallery.ShowCases.Separator.zh_CN.HorizontalTitle;
-                dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Separator.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Separator.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Separator.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.P2TextItem1] = global::AtomUIGallery.ShowCases.Separator.zh_CN.P2TextItem1;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.P2TextItem2] = global::AtomUIGallery.ShowCases.Separator.zh_CN.P2TextItem2;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.P2TextItem3] = global::AtomUIGallery.ShowCases.Separator.zh_CN.P2TextItem3;
@@ -17127,9 +16662,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.DividerWithTitleTitle] = global::AtomUIGallery.ShowCases.Separator.zh_TW.DividerWithTitleTitle;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.HorizontalDescription] = global::AtomUIGallery.ShowCases.Separator.zh_TW.HorizontalDescription;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.HorizontalTitle] = global::AtomUIGallery.ShowCases.Separator.zh_TW.HorizontalTitle;
-                dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Separator.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Separator.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Separator.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.P2TextItem1] = global::AtomUIGallery.ShowCases.Separator.zh_TW.P2TextItem1;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.P2TextItem2] = global::AtomUIGallery.ShowCases.Separator.zh_TW.P2TextItem2;
                 dictionary[global::AtomUIGallery.Localization.SeparatorShowCaseLangResourceKind.P2TextItem3] = global::AtomUIGallery.ShowCases.Separator.zh_TW.P2TextItem3;
@@ -17235,9 +16767,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Skeleton.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.ContainsSubComponentDescription] = global::AtomUIGallery.ShowCases.Skeleton.en_US.ContainsSubComponentDescription;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.ContainsSubComponentTitle] = global::AtomUIGallery.ShowCases.Skeleton.en_US.ContainsSubComponentTitle;
-                dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Skeleton.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Skeleton.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Skeleton.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.P2ContentCircle] = global::AtomUIGallery.ShowCases.Skeleton.en_US.P2ContentCircle;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.Skeleton.en_US.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.Skeleton.en_US.P2ContentLarge;
@@ -17343,9 +16872,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Skeleton.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.ContainsSubComponentDescription] = global::AtomUIGallery.ShowCases.Skeleton.zh_CN.ContainsSubComponentDescription;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.ContainsSubComponentTitle] = global::AtomUIGallery.ShowCases.Skeleton.zh_CN.ContainsSubComponentTitle;
-                dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Skeleton.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Skeleton.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Skeleton.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.P2ContentCircle] = global::AtomUIGallery.ShowCases.Skeleton.zh_CN.P2ContentCircle;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.Skeleton.zh_CN.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.Skeleton.zh_CN.P2ContentLarge;
@@ -17451,9 +16977,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Skeleton.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.ContainsSubComponentDescription] = global::AtomUIGallery.ShowCases.Skeleton.zh_TW.ContainsSubComponentDescription;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.ContainsSubComponentTitle] = global::AtomUIGallery.ShowCases.Skeleton.zh_TW.ContainsSubComponentTitle;
-                dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Skeleton.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Skeleton.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Skeleton.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.P2ContentCircle] = global::AtomUIGallery.ShowCases.Skeleton.zh_TW.P2ContentCircle;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.Skeleton.zh_TW.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.SkeletonShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.Skeleton.zh_TW.P2ContentLarge;
@@ -17548,9 +17071,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.CustomizeTooltipTitle] = global::AtomUIGallery.ShowCases.Slider.en_US.CustomizeTooltipTitle;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.GraduatedSliderDescription] = global::AtomUIGallery.ShowCases.Slider.en_US.GraduatedSliderDescription;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.GraduatedSliderTitle] = global::AtomUIGallery.ShowCases.Slider.en_US.GraduatedSliderTitle;
-                dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Slider.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Slider.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Slider.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.P2TextEnabled] = global::AtomUIGallery.ShowCases.Slider.en_US.P2TextEnabled;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.P2TextIncludedFalse] = global::AtomUIGallery.ShowCases.Slider.en_US.P2TextIncludedFalse;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.P2TextIncludedTrue] = global::AtomUIGallery.ShowCases.Slider.en_US.P2TextIncludedTrue;
@@ -17646,9 +17166,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.CustomizeTooltipTitle] = global::AtomUIGallery.ShowCases.Slider.zh_CN.CustomizeTooltipTitle;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.GraduatedSliderDescription] = global::AtomUIGallery.ShowCases.Slider.zh_CN.GraduatedSliderDescription;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.GraduatedSliderTitle] = global::AtomUIGallery.ShowCases.Slider.zh_CN.GraduatedSliderTitle;
-                dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Slider.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Slider.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Slider.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.P2TextEnabled] = global::AtomUIGallery.ShowCases.Slider.zh_CN.P2TextEnabled;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.P2TextIncludedFalse] = global::AtomUIGallery.ShowCases.Slider.zh_CN.P2TextIncludedFalse;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.P2TextIncludedTrue] = global::AtomUIGallery.ShowCases.Slider.zh_CN.P2TextIncludedTrue;
@@ -17744,9 +17261,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.CustomizeTooltipTitle] = global::AtomUIGallery.ShowCases.Slider.zh_TW.CustomizeTooltipTitle;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.GraduatedSliderDescription] = global::AtomUIGallery.ShowCases.Slider.zh_TW.GraduatedSliderDescription;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.GraduatedSliderTitle] = global::AtomUIGallery.ShowCases.Slider.zh_TW.GraduatedSliderTitle;
-                dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Slider.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Slider.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Slider.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.P2TextEnabled] = global::AtomUIGallery.ShowCases.Slider.zh_TW.P2TextEnabled;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.P2TextIncludedFalse] = global::AtomUIGallery.ShowCases.Slider.zh_TW.P2TextIncludedFalse;
                 dictionary[global::AtomUIGallery.Localization.SliderShowCaseLangResourceKind.P2TextIncludedTrue] = global::AtomUIGallery.ShowCases.Slider.zh_TW.P2TextIncludedTrue;
@@ -17839,9 +17353,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.CompactFormTitle] = global::AtomUIGallery.ShowCases.Space.en_US.CompactFormTitle;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Space.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Space.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Space.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Space.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Space.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.P2CancelTextCancel] = global::AtomUIGallery.ShowCases.Space.en_US.P2CancelTextCancel;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.P2ConfirmContentAreYouSureToDeleteThisTask] = global::AtomUIGallery.ShowCases.Space.en_US.P2ConfirmContentAreYouSureToDeleteThisTask;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.P2ContentButton] = global::AtomUIGallery.ShowCases.Space.en_US.P2ContentButton;
@@ -18004,9 +17515,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.CompactFormTitle] = global::AtomUIGallery.ShowCases.Space.zh_CN.CompactFormTitle;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Space.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Space.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Space.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Space.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Space.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.P2CancelTextCancel] = global::AtomUIGallery.ShowCases.Space.zh_CN.P2CancelTextCancel;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.P2ConfirmContentAreYouSureToDeleteThisTask] = global::AtomUIGallery.ShowCases.Space.zh_CN.P2ConfirmContentAreYouSureToDeleteThisTask;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.P2ContentButton] = global::AtomUIGallery.ShowCases.Space.zh_CN.P2ContentButton;
@@ -18169,9 +17677,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.CompactFormTitle] = global::AtomUIGallery.ShowCases.Space.zh_TW.CompactFormTitle;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Space.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Space.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Space.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Space.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Space.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.P2CancelTextCancel] = global::AtomUIGallery.ShowCases.Space.zh_TW.P2CancelTextCancel;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.P2ConfirmContentAreYouSureToDeleteThisTask] = global::AtomUIGallery.ShowCases.Space.zh_TW.P2ConfirmContentAreYouSureToDeleteThisTask;
                 dictionary[global::AtomUIGallery.Localization.SpaceShowCaseLangResourceKind.P2ContentButton] = global::AtomUIGallery.ShowCases.Space.zh_TW.P2ContentButton;
@@ -18342,9 +17847,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.CustomizedDescriptionTitle] = global::AtomUIGallery.ShowCases.Spin.en_US.CustomizedDescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.EmbeddedModeDescription] = global::AtomUIGallery.ShowCases.Spin.en_US.EmbeddedModeDescription;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.EmbeddedModeTitle] = global::AtomUIGallery.ShowCases.Spin.en_US.EmbeddedModeTitle;
-                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Spin.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Spin.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Spin.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.P2DescriptionFurtherDetailsAboutTheContextOfThisAlert] = global::AtomUIGallery.ShowCases.Spin.en_US.P2DescriptionFurtherDetailsAboutTheContextOfThisAlert;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.P2MessageAlertMessageTitle] = global::AtomUIGallery.ShowCases.Spin.en_US.P2MessageAlertMessageTitle;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.P2TextLoadingState] = global::AtomUIGallery.ShowCases.Spin.en_US.P2TextLoadingState;
@@ -18428,9 +17930,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.CustomizedDescriptionTitle] = global::AtomUIGallery.ShowCases.Spin.zh_CN.CustomizedDescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.EmbeddedModeDescription] = global::AtomUIGallery.ShowCases.Spin.zh_CN.EmbeddedModeDescription;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.EmbeddedModeTitle] = global::AtomUIGallery.ShowCases.Spin.zh_CN.EmbeddedModeTitle;
-                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Spin.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Spin.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Spin.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.P2DescriptionFurtherDetailsAboutTheContextOfThisAlert] = global::AtomUIGallery.ShowCases.Spin.zh_CN.P2DescriptionFurtherDetailsAboutTheContextOfThisAlert;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.P2MessageAlertMessageTitle] = global::AtomUIGallery.ShowCases.Spin.zh_CN.P2MessageAlertMessageTitle;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.P2TextLoadingState] = global::AtomUIGallery.ShowCases.Spin.zh_CN.P2TextLoadingState;
@@ -18514,9 +18013,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.CustomizedDescriptionTitle] = global::AtomUIGallery.ShowCases.Spin.zh_TW.CustomizedDescriptionTitle;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.EmbeddedModeDescription] = global::AtomUIGallery.ShowCases.Spin.zh_TW.EmbeddedModeDescription;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.EmbeddedModeTitle] = global::AtomUIGallery.ShowCases.Spin.zh_TW.EmbeddedModeTitle;
-                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Spin.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Spin.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Spin.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.P2DescriptionFurtherDetailsAboutTheContextOfThisAlert] = global::AtomUIGallery.ShowCases.Spin.zh_TW.P2DescriptionFurtherDetailsAboutTheContextOfThisAlert;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.P2MessageAlertMessageTitle] = global::AtomUIGallery.ShowCases.Spin.zh_TW.P2MessageAlertMessageTitle;
                 dictionary[global::AtomUIGallery.Localization.SpinShowCaseLangResourceKind.P2TextLoadingState] = global::AtomUIGallery.ShowCases.Spin.zh_TW.P2TextLoadingState;
@@ -18595,9 +18091,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComposedTitle] = global::AtomUIGallery.ShowCases.Splash.en_US.ComposedTitle;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateDescription] = global::AtomUIGallery.ShowCases.Splash.en_US.DeterminateDescription;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateTitle] = global::AtomUIGallery.ShowCases.Splash.en_US.DeterminateTitle;
-                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Splash.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Splash.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Splash.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleCore] = global::AtomUIGallery.ShowCases.Splash.en_US.P2ContentModuleCore;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleGallery] = global::AtomUIGallery.ShowCases.Splash.en_US.P2ContentModuleGallery;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleTheme] = global::AtomUIGallery.ShowCases.Splash.en_US.P2ContentModuleTheme;
@@ -18709,9 +18202,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComposedTitle] = global::AtomUIGallery.ShowCases.Splash.zh_CN.ComposedTitle;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateDescription] = global::AtomUIGallery.ShowCases.Splash.zh_CN.DeterminateDescription;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateTitle] = global::AtomUIGallery.ShowCases.Splash.zh_CN.DeterminateTitle;
-                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Splash.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Splash.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Splash.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleCore] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2ContentModuleCore;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleGallery] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2ContentModuleGallery;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleTheme] = global::AtomUIGallery.ShowCases.Splash.zh_CN.P2ContentModuleTheme;
@@ -18823,9 +18313,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.ComposedTitle] = global::AtomUIGallery.ShowCases.Splash.zh_TW.ComposedTitle;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateDescription] = global::AtomUIGallery.ShowCases.Splash.zh_TW.DeterminateDescription;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.DeterminateTitle] = global::AtomUIGallery.ShowCases.Splash.zh_TW.DeterminateTitle;
-                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Splash.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Splash.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Splash.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleCore] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2ContentModuleCore;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleGallery] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2ContentModuleGallery;
                 dictionary[global::AtomUIGallery.Localization.SplashShowCaseLangResourceKind.P2ContentModuleTheme] = global::AtomUIGallery.ShowCases.Splash.zh_TW.P2ContentModuleTheme;
@@ -18943,9 +18430,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.DangerButtonsTitle] = global::AtomUIGallery.ShowCases.SplitButton.en_US.DangerButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeDescription] = global::AtomUIGallery.ShowCases.SplitButton.en_US.FlyoutTriggerTypeDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeTitle] = global::AtomUIGallery.ShowCases.SplitButton.en_US.FlyoutTriggerTypeTitle;
-                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.SplitButton.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.SplitButton.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.SplitButton.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2ContentClickMe;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.SplitButton.en_US.P2ContentDefault;
@@ -19038,9 +18522,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.DangerButtonsTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.DangerButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.FlyoutTriggerTypeDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.FlyoutTriggerTypeTitle;
-                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2ContentClickMe;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.SplitButton.zh_CN.P2ContentDefault;
@@ -19133,9 +18614,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.DangerButtonsTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.DangerButtonsTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeDescription] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.FlyoutTriggerTypeDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.FlyoutTriggerTypeTitle] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.FlyoutTriggerTypeTitle;
-                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentClickMe] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2ContentClickMe;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2ContentCustom;
                 dictionary[global::AtomUIGallery.Localization.SplitButtonShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.SplitButton.zh_TW.P2ContentDefault;
@@ -19222,9 +18700,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.CompositeTitle] = global::AtomUIGallery.ShowCases.Splitter.en_US.CompositeTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.HorizontalDescription] = global::AtomUIGallery.ShowCases.Splitter.en_US.HorizontalDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.HorizontalTitle] = global::AtomUIGallery.ShowCases.Splitter.en_US.HorizontalTitle;
-                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Splitter.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Splitter.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Splitter.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyDescription] = global::AtomUIGallery.ShowCases.Splitter.en_US.LazyDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyTitle] = global::AtomUIGallery.ShowCases.Splitter.en_US.LazyTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.MultiPanelsDescription] = global::AtomUIGallery.ShowCases.Splitter.en_US.MultiPanelsDescription;
@@ -19329,9 +18804,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.CompositeTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.CompositeTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.HorizontalDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.HorizontalDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.HorizontalTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.HorizontalTitle;
-                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.LazyDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.LazyTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.MultiPanelsDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.MultiPanelsDescription;
@@ -19436,9 +18908,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.CompositeTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.CompositeTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.HorizontalDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.HorizontalDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.HorizontalTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.HorizontalTitle;
-                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.LazyDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.LazyTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.MultiPanelsDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.MultiPanelsDescription;
@@ -19543,9 +19012,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Statistic.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InCardDescription] = global::AtomUIGallery.ShowCases.Statistic.en_US.InCardDescription;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InCardTitle] = global::AtomUIGallery.ShowCases.Statistic.en_US.InCardTitle;
-                dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Statistic.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Statistic.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Statistic.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.P2ContentRecharge] = global::AtomUIGallery.ShowCases.Statistic.en_US.P2ContentRecharge;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.P2DayLevelFormat] = global::AtomUIGallery.ShowCases.Statistic.en_US.P2DayLevelFormat;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.P2HeaderAccountBalanceCny] = global::AtomUIGallery.ShowCases.Statistic.en_US.P2HeaderAccountBalanceCny;
@@ -19630,9 +19096,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Statistic.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InCardDescription] = global::AtomUIGallery.ShowCases.Statistic.zh_CN.InCardDescription;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InCardTitle] = global::AtomUIGallery.ShowCases.Statistic.zh_CN.InCardTitle;
-                dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Statistic.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Statistic.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Statistic.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.P2ContentRecharge] = global::AtomUIGallery.ShowCases.Statistic.zh_CN.P2ContentRecharge;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.P2DayLevelFormat] = global::AtomUIGallery.ShowCases.Statistic.zh_CN.P2DayLevelFormat;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.P2HeaderAccountBalanceCny] = global::AtomUIGallery.ShowCases.Statistic.zh_CN.P2HeaderAccountBalanceCny;
@@ -19717,9 +19180,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Statistic.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InCardDescription] = global::AtomUIGallery.ShowCases.Statistic.zh_TW.InCardDescription;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InCardTitle] = global::AtomUIGallery.ShowCases.Statistic.zh_TW.InCardTitle;
-                dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Statistic.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Statistic.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Statistic.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.P2ContentRecharge] = global::AtomUIGallery.ShowCases.Statistic.zh_TW.P2ContentRecharge;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.P2DayLevelFormat] = global::AtomUIGallery.ShowCases.Statistic.zh_TW.P2DayLevelFormat;
                 dictionary[global::AtomUIGallery.Localization.StatisticShowCaseLangResourceKind.P2HeaderAccountBalanceCny] = global::AtomUIGallery.ShowCases.Statistic.zh_TW.P2HeaderAccountBalanceCny;
@@ -19809,9 +19269,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.DotStyleVerticalTitle] = global::AtomUIGallery.ShowCases.Steps.en_US.DotStyleVerticalTitle;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.ErrorStatusDescription] = global::AtomUIGallery.ShowCases.Steps.en_US.ErrorStatusDescription;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.ErrorStatusTitle] = global::AtomUIGallery.ShowCases.Steps.en_US.ErrorStatusTitle;
-                dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Steps.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Steps.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Steps.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InlineStepsDescription] = global::AtomUIGallery.ShowCases.Steps.en_US.InlineStepsDescription;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InlineStepsTitle] = global::AtomUIGallery.ShowCases.Steps.en_US.InlineStepsTitle;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.LabelPlacementDescription] = global::AtomUIGallery.ShowCases.Steps.en_US.LabelPlacementDescription;
@@ -19956,9 +19413,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.DotStyleVerticalTitle] = global::AtomUIGallery.ShowCases.Steps.zh_CN.DotStyleVerticalTitle;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.ErrorStatusDescription] = global::AtomUIGallery.ShowCases.Steps.zh_CN.ErrorStatusDescription;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.ErrorStatusTitle] = global::AtomUIGallery.ShowCases.Steps.zh_CN.ErrorStatusTitle;
-                dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Steps.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Steps.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Steps.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InlineStepsDescription] = global::AtomUIGallery.ShowCases.Steps.zh_CN.InlineStepsDescription;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InlineStepsTitle] = global::AtomUIGallery.ShowCases.Steps.zh_CN.InlineStepsTitle;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.LabelPlacementDescription] = global::AtomUIGallery.ShowCases.Steps.zh_CN.LabelPlacementDescription;
@@ -20103,9 +19557,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.DotStyleVerticalTitle] = global::AtomUIGallery.ShowCases.Steps.zh_TW.DotStyleVerticalTitle;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.ErrorStatusDescription] = global::AtomUIGallery.ShowCases.Steps.zh_TW.ErrorStatusDescription;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.ErrorStatusTitle] = global::AtomUIGallery.ShowCases.Steps.zh_TW.ErrorStatusTitle;
-                dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Steps.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Steps.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Steps.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InlineStepsDescription] = global::AtomUIGallery.ShowCases.Steps.zh_TW.InlineStepsDescription;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.InlineStepsTitle] = global::AtomUIGallery.ShowCases.Steps.zh_TW.InlineStepsTitle;
                 dictionary[global::AtomUIGallery.Localization.StepsShowCaseLangResourceKind.LabelPlacementDescription] = global::AtomUIGallery.ShowCases.Steps.zh_TW.LabelPlacementDescription;
@@ -20236,9 +19687,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyTabStripPlacement] = global::AtomUIGallery.ShowCases.TabControl.en_US.ApiPropertyTabStripPlacement;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.TabControl.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TabControl.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TabControl.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TabControl.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TabControl.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.TabControl.en_US.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN1] = global::AtomUIGallery.ShowCases.TabControl.en_US.P2ContentContentOfTabPaneN1;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN10] = global::AtomUIGallery.ShowCases.TabControl.en_US.P2ContentContentOfTabPaneN10;
@@ -20389,9 +19837,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyTabStripPlacement] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ApiPropertyTabStripPlacement;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN1] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.P2ContentContentOfTabPaneN1;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN10] = global::AtomUIGallery.ShowCases.TabControl.zh_CN.P2ContentContentOfTabPaneN10;
@@ -20542,9 +19987,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ApiPropertyTabStripPlacement] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ApiPropertyTabStripPlacement;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN1] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.P2ContentContentOfTabPaneN1;
                 dictionary[global::AtomUIGallery.Localization.TabControlShowCaseLangResourceKind.P2ContentContentOfTabPaneN10] = global::AtomUIGallery.ShowCases.TabControl.zh_TW.P2ContentContentOfTabPaneN10;
@@ -20695,9 +20137,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.ApiPropertyTabStripPlacement] = global::AtomUIGallery.ShowCases.TabStrip.en_US.ApiPropertyTabStripPlacement;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.TabStrip.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TabStrip.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TabStrip.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TabStrip.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TabStrip.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.TabStrip.en_US.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.TabStrip.en_US.P2ContentLarge;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.P2ContentLeft] = global::AtomUIGallery.ShowCases.TabStrip.en_US.P2ContentLeft;
@@ -20825,9 +20264,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.ApiPropertyTabStripPlacement] = global::AtomUIGallery.ShowCases.TabStrip.zh_CN.ApiPropertyTabStripPlacement;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.TabStrip.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TabStrip.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TabStrip.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TabStrip.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TabStrip.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.TabStrip.zh_CN.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.TabStrip.zh_CN.P2ContentLarge;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.P2ContentLeft] = global::AtomUIGallery.ShowCases.TabStrip.zh_CN.P2ContentLeft;
@@ -20955,9 +20391,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.ApiPropertyTabStripPlacement] = global::AtomUIGallery.ShowCases.TabStrip.zh_TW.ApiPropertyTabStripPlacement;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.TabStrip.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TabStrip.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TabStrip.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TabStrip.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TabStrip.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.TabStrip.zh_TW.P2ContentBottom;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.P2ContentLarge] = global::AtomUIGallery.ShowCases.TabStrip.zh_TW.P2ContentLarge;
                 dictionary[global::AtomUIGallery.Localization.TabStripShowCaseLangResourceKind.P2ContentLeft] = global::AtomUIGallery.ShowCases.TabStrip.zh_TW.P2ContentLeft;
@@ -21087,9 +20520,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Tag.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.IconDescription] = global::AtomUIGallery.ShowCases.Tag.en_US.IconDescription;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Tag.en_US.IconTitle;
-                dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tag.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tag.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tag.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.P2ContentBlue] = global::AtomUIGallery.ShowCases.Tag.en_US.P2ContentBlue;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.P2ContentCyan] = global::AtomUIGallery.ShowCases.Tag.en_US.P2ContentCyan;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.Tag.en_US.P2ContentDefault;
@@ -21191,9 +20621,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Tag.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.IconDescription] = global::AtomUIGallery.ShowCases.Tag.zh_CN.IconDescription;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Tag.zh_CN.IconTitle;
-                dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tag.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tag.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tag.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.P2ContentBlue] = global::AtomUIGallery.ShowCases.Tag.zh_CN.P2ContentBlue;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.P2ContentCyan] = global::AtomUIGallery.ShowCases.Tag.zh_CN.P2ContentCyan;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.Tag.zh_CN.P2ContentDefault;
@@ -21295,9 +20722,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Tag.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.IconDescription] = global::AtomUIGallery.ShowCases.Tag.zh_TW.IconDescription;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.IconTitle] = global::AtomUIGallery.ShowCases.Tag.zh_TW.IconTitle;
-                dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tag.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tag.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tag.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.P2ContentBlue] = global::AtomUIGallery.ShowCases.Tag.zh_TW.P2ContentBlue;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.P2ContentCyan] = global::AtomUIGallery.ShowCases.Tag.zh_TW.P2ContentCyan;
                 dictionary[global::AtomUIGallery.Localization.TagShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.Tag.zh_TW.P2ContentDefault;
@@ -21397,9 +20821,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.ColorTitle] = global::AtomUIGallery.ShowCases.Timeline.en_US.ColorTitle;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Timeline.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Timeline.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Timeline.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Timeline.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Timeline.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.LabelDescription] = global::AtomUIGallery.ShowCases.Timeline.en_US.LabelDescription;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.LabelTitle] = global::AtomUIGallery.ShowCases.Timeline.en_US.LabelTitle;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.LastNodeAndReversingDescription] = global::AtomUIGallery.ShowCases.Timeline.en_US.LastNodeAndReversingDescription;
@@ -21488,9 +20909,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.ColorTitle] = global::AtomUIGallery.ShowCases.Timeline.zh_CN.ColorTitle;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Timeline.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Timeline.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Timeline.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Timeline.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Timeline.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.LabelDescription] = global::AtomUIGallery.ShowCases.Timeline.zh_CN.LabelDescription;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.LabelTitle] = global::AtomUIGallery.ShowCases.Timeline.zh_CN.LabelTitle;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.LastNodeAndReversingDescription] = global::AtomUIGallery.ShowCases.Timeline.zh_CN.LastNodeAndReversingDescription;
@@ -21579,9 +20997,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.ColorTitle] = global::AtomUIGallery.ShowCases.Timeline.zh_TW.ColorTitle;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Timeline.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Timeline.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Timeline.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Timeline.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Timeline.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.LabelDescription] = global::AtomUIGallery.ShowCases.Timeline.zh_TW.LabelDescription;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.LabelTitle] = global::AtomUIGallery.ShowCases.Timeline.zh_TW.LabelTitle;
                 dictionary[global::AtomUIGallery.Localization.TimelineShowCaseLangResourceKind.LastNodeAndReversingDescription] = global::AtomUIGallery.ShowCases.Timeline.zh_TW.LastNodeAndReversingDescription;
@@ -21674,9 +21089,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.TimePicker.en_US.DisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.HourFormatsDescription] = global::AtomUIGallery.ShowCases.TimePicker.en_US.HourFormatsDescription;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.HourFormatsTitle] = global::AtomUIGallery.ShowCases.TimePicker.en_US.HourFormatsTitle;
-                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TimePicker.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TimePicker.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TimePicker.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.IntervalOptionDescription] = global::AtomUIGallery.ShowCases.TimePicker.en_US.IntervalOptionDescription;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.IntervalOptionTitle] = global::AtomUIGallery.ShowCases.TimePicker.en_US.IntervalOptionTitle;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.TimePicker.en_US.P2ContentCustom;
@@ -21768,9 +21180,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.DisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.HourFormatsDescription] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.HourFormatsDescription;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.HourFormatsTitle] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.HourFormatsTitle;
-                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.IntervalOptionDescription] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.IntervalOptionDescription;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.IntervalOptionTitle] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.IntervalOptionTitle;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.P2ContentCustom;
@@ -21862,9 +21271,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.DisabledTitle;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.HourFormatsDescription] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.HourFormatsDescription;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.HourFormatsTitle] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.HourFormatsTitle;
-                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.IntervalOptionDescription] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.IntervalOptionDescription;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.IntervalOptionTitle] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.IntervalOptionTitle;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.P2ContentCustom;
@@ -21953,9 +21359,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.ToggleSwitch.en_US.P2ContentCustom;
@@ -22047,9 +21450,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_CN.P2ContentCustom;
@@ -22141,9 +21541,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.DisabledTitle;
-                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingDescription] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.LoadingDescription;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.LoadingTitle] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.LoadingTitle;
                 dictionary[global::AtomUIGallery.Localization.ToggleSwitchShowCaseLangResourceKind.P2ContentCustom] = global::AtomUIGallery.ShowCases.ToggleSwitch.zh_TW.P2ContentCustom;
@@ -22235,9 +21632,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ColorfulTooltipTitle] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ColorfulTooltipTitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Tooltip.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tooltip.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tooltip.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tooltip.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBL] = global::AtomUIGallery.ShowCases.Tooltip.en_US.P2ContentBL;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBlue] = global::AtomUIGallery.ShowCases.Tooltip.en_US.P2ContentBlue;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Tooltip.en_US.P2ContentBottom;
@@ -22336,9 +21730,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ColorfulTooltipTitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ColorfulTooltipTitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBL] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.P2ContentBL;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBlue] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.P2ContentBlue;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Tooltip.zh_CN.P2ContentBottom;
@@ -22437,9 +21828,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ColorfulTooltipTitle] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ColorfulTooltipTitle;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBL] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.P2ContentBL;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBlue] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.P2ContentBlue;
                 dictionary[global::AtomUIGallery.Localization.TooltipShowCaseLangResourceKind.P2ContentBottom] = global::AtomUIGallery.ShowCases.Tooltip.zh_TW.P2ContentBottom;
@@ -22556,9 +21944,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.CustomIndicatorTitle] = global::AtomUIGallery.ShowCases.Tour.en_US.CustomIndicatorTitle;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.CustomMaskDescription] = global::AtomUIGallery.ShowCases.Tour.en_US.CustomMaskDescription;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.CustomMaskTitle] = global::AtomUIGallery.ShowCases.Tour.en_US.CustomMaskTitle;
-                dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tour.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tour.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tour.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.NonModalDescription] = global::AtomUIGallery.ShowCases.Tour.en_US.NonModalDescription;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.NonModalTitle] = global::AtomUIGallery.ShowCases.Tour.en_US.NonModalTitle;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.P2ContentBeginNonModalTour] = global::AtomUIGallery.ShowCases.Tour.en_US.P2ContentBeginNonModalTour;
@@ -22666,9 +22051,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.CustomIndicatorTitle] = global::AtomUIGallery.ShowCases.Tour.zh_CN.CustomIndicatorTitle;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.CustomMaskDescription] = global::AtomUIGallery.ShowCases.Tour.zh_CN.CustomMaskDescription;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.CustomMaskTitle] = global::AtomUIGallery.ShowCases.Tour.zh_CN.CustomMaskTitle;
-                dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tour.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tour.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tour.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.NonModalDescription] = global::AtomUIGallery.ShowCases.Tour.zh_CN.NonModalDescription;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.NonModalTitle] = global::AtomUIGallery.ShowCases.Tour.zh_CN.NonModalTitle;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.P2ContentBeginNonModalTour] = global::AtomUIGallery.ShowCases.Tour.zh_CN.P2ContentBeginNonModalTour;
@@ -22776,9 +22158,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.CustomIndicatorTitle] = global::AtomUIGallery.ShowCases.Tour.zh_TW.CustomIndicatorTitle;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.CustomMaskDescription] = global::AtomUIGallery.ShowCases.Tour.zh_TW.CustomMaskDescription;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.CustomMaskTitle] = global::AtomUIGallery.ShowCases.Tour.zh_TW.CustomMaskTitle;
-                dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Tour.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Tour.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Tour.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.NonModalDescription] = global::AtomUIGallery.ShowCases.Tour.zh_TW.NonModalDescription;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.NonModalTitle] = global::AtomUIGallery.ShowCases.Tour.zh_TW.NonModalTitle;
                 dictionary[global::AtomUIGallery.Localization.TourShowCaseLangResourceKind.P2ContentBeginNonModalTour] = global::AtomUIGallery.ShowCases.Tour.zh_TW.P2ContentBeginNonModalTour;
@@ -22870,9 +22249,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Transfer.en_US.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Transfer.en_US.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Transfer.en_US.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Transfer.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Transfer.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Transfer.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.OneWayDescription] = global::AtomUIGallery.ShowCases.Transfer.en_US.OneWayDescription;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.OneWayTitle] = global::AtomUIGallery.ShowCases.Transfer.en_US.OneWayTitle;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.P2ContentLeftButtonReload] = global::AtomUIGallery.ShowCases.Transfer.en_US.P2ContentLeftButtonReload;
@@ -22974,9 +22350,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Transfer.zh_CN.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Transfer.zh_CN.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Transfer.zh_CN.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Transfer.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Transfer.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Transfer.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.OneWayDescription] = global::AtomUIGallery.ShowCases.Transfer.zh_CN.OneWayDescription;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.OneWayTitle] = global::AtomUIGallery.ShowCases.Transfer.zh_CN.OneWayTitle;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.P2ContentLeftButtonReload] = global::AtomUIGallery.ShowCases.Transfer.zh_CN.P2ContentLeftButtonReload;
@@ -23078,9 +22451,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.Transfer.zh_TW.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.Transfer.zh_TW.ComponentCategory;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.Transfer.zh_TW.ComponentStatusStable;
-                dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Transfer.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Transfer.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Transfer.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.OneWayDescription] = global::AtomUIGallery.ShowCases.Transfer.zh_TW.OneWayDescription;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.OneWayTitle] = global::AtomUIGallery.ShowCases.Transfer.zh_TW.OneWayTitle;
                 dictionary[global::AtomUIGallery.Localization.TransferShowCaseLangResourceKind.P2ContentLeftButtonReload] = global::AtomUIGallery.ShowCases.Transfer.zh_TW.P2ContentLeftButtonReload;
@@ -23186,9 +22556,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.GenerateFromTreeDataDescription] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.GenerateFromTreeDataDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.GenerateFromTreeDataTitle] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.GenerateFromTreeDataTitle;
-                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.MaxCountDescription] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.MaxCountDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.MaxCountTitle] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.MaxCountTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.MultipleSelectionDescription] = global::AtomUIGallery.ShowCases.TreeSelect.en_US.MultipleSelectionDescription;
@@ -23314,9 +22681,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.GenerateFromTreeDataDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.GenerateFromTreeDataDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.GenerateFromTreeDataTitle] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.GenerateFromTreeDataTitle;
-                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.MaxCountDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.MaxCountDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.MaxCountTitle] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.MaxCountTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.MultipleSelectionDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_CN.MultipleSelectionDescription;
@@ -23442,9 +22806,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.ComponentStatusStable] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.ComponentStatusStable;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.GenerateFromTreeDataDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.GenerateFromTreeDataDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.GenerateFromTreeDataTitle] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.GenerateFromTreeDataTitle;
-                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.MaxCountDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.MaxCountDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.MaxCountTitle] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.MaxCountTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeSelectShowCaseLangResourceKind.MultipleSelectionDescription] = global::AtomUIGallery.ShowCases.TreeSelect.zh_TW.MultipleSelectionDescription;
@@ -23579,9 +22940,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.DraggableTitle] = global::AtomUIGallery.ShowCases.TreeView.en_US.DraggableTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.GenerateByTemplateDescription] = global::AtomUIGallery.ShowCases.TreeView.en_US.GenerateByTemplateDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.GenerateByTemplateTitle] = global::AtomUIGallery.ShowCases.TreeView.en_US.GenerateByTemplateTitle;
-                dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TreeView.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TreeView.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TreeView.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.P2ContentBlock] = global::AtomUIGallery.ShowCases.TreeView.en_US.P2ContentBlock;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.TreeView.en_US.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.P2ContentWholeline] = global::AtomUIGallery.ShowCases.TreeView.en_US.P2ContentWholeline;
@@ -23727,9 +23085,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.DraggableTitle] = global::AtomUIGallery.ShowCases.TreeView.zh_CN.DraggableTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.GenerateByTemplateDescription] = global::AtomUIGallery.ShowCases.TreeView.zh_CN.GenerateByTemplateDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.GenerateByTemplateTitle] = global::AtomUIGallery.ShowCases.TreeView.zh_CN.GenerateByTemplateTitle;
-                dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TreeView.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TreeView.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TreeView.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.P2ContentBlock] = global::AtomUIGallery.ShowCases.TreeView.zh_CN.P2ContentBlock;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.TreeView.zh_CN.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.P2ContentWholeline] = global::AtomUIGallery.ShowCases.TreeView.zh_CN.P2ContentWholeline;
@@ -23875,9 +23230,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.DraggableTitle] = global::AtomUIGallery.ShowCases.TreeView.zh_TW.DraggableTitle;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.GenerateByTemplateDescription] = global::AtomUIGallery.ShowCases.TreeView.zh_TW.GenerateByTemplateDescription;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.GenerateByTemplateTitle] = global::AtomUIGallery.ShowCases.TreeView.zh_TW.GenerateByTemplateTitle;
-                dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.TreeView.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.TreeView.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.TreeView.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.P2ContentBlock] = global::AtomUIGallery.ShowCases.TreeView.zh_TW.P2ContentBlock;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.P2ContentDefault] = global::AtomUIGallery.ShowCases.TreeView.zh_TW.P2ContentDefault;
                 dictionary[global::AtomUIGallery.Localization.TreeViewShowCaseLangResourceKind.P2ContentWholeline] = global::AtomUIGallery.ShowCases.TreeView.zh_TW.P2ContentWholeline;
@@ -24012,9 +23364,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.DefaultFilesTitle] = global::AtomUIGallery.ShowCases.Upload.en_US.DefaultFilesTitle;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.DragAndDropDescription] = global::AtomUIGallery.ShowCases.Upload.en_US.DragAndDropDescription;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.DragAndDropTitle] = global::AtomUIGallery.ShowCases.Upload.en_US.DragAndDropTitle;
-                dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Upload.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Upload.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Upload.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.MaxCountDescription] = global::AtomUIGallery.ShowCases.Upload.en_US.MaxCountDescription;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.MaxCountTitle] = global::AtomUIGallery.ShowCases.Upload.en_US.MaxCountTitle;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.P2CancelImageSize] = global::AtomUIGallery.ShowCases.Upload.en_US.P2CancelImageSize;
@@ -24115,9 +23464,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.DefaultFilesTitle] = global::AtomUIGallery.ShowCases.Upload.zh_CN.DefaultFilesTitle;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.DragAndDropDescription] = global::AtomUIGallery.ShowCases.Upload.zh_CN.DragAndDropDescription;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.DragAndDropTitle] = global::AtomUIGallery.ShowCases.Upload.zh_CN.DragAndDropTitle;
-                dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Upload.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Upload.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Upload.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.MaxCountDescription] = global::AtomUIGallery.ShowCases.Upload.zh_CN.MaxCountDescription;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.MaxCountTitle] = global::AtomUIGallery.ShowCases.Upload.zh_CN.MaxCountTitle;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.P2CancelImageSize] = global::AtomUIGallery.ShowCases.Upload.zh_CN.P2CancelImageSize;
@@ -24218,9 +23564,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.DefaultFilesTitle] = global::AtomUIGallery.ShowCases.Upload.zh_TW.DefaultFilesTitle;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.DragAndDropDescription] = global::AtomUIGallery.ShowCases.Upload.zh_TW.DragAndDropDescription;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.DragAndDropTitle] = global::AtomUIGallery.ShowCases.Upload.zh_TW.DragAndDropTitle;
-                dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Upload.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Upload.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Upload.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.MaxCountDescription] = global::AtomUIGallery.ShowCases.Upload.zh_TW.MaxCountDescription;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.MaxCountTitle] = global::AtomUIGallery.ShowCases.Upload.zh_TW.MaxCountTitle;
                 dictionary[global::AtomUIGallery.Localization.UploadShowCaseLangResourceKind.P2CancelImageSize] = global::AtomUIGallery.ShowCases.Upload.zh_TW.P2CancelImageSize;
@@ -24323,9 +23666,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.CustomConfigurationTitle] = global::AtomUIGallery.ShowCases.Watermark.en_US.CustomConfigurationTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkDescription] = global::AtomUIGallery.ShowCases.Watermark.en_US.ImageWatermarkDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkTitle] = global::AtomUIGallery.ShowCases.Watermark.en_US.ImageWatermarkTitle;
-                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Watermark.en_US.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Watermark.en_US.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Watermark.en_US.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineDescription] = global::AtomUIGallery.ShowCases.Watermark.en_US.MultiLineDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineTitle] = global::AtomUIGallery.ShowCases.Watermark.en_US.MultiLineTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.P2TextNaturalInteractionDescription] = global::AtomUIGallery.ShowCases.Watermark.en_US.P2TextNaturalInteractionDescription;
@@ -24394,9 +23734,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.CustomConfigurationTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.CustomConfigurationTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ImageWatermarkDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.ImageWatermarkTitle;
-                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.MultiLineDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.MultiLineTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.P2TextNaturalInteractionDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_CN.P2TextNaturalInteractionDescription;
@@ -24465,9 +23802,6 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.CustomConfigurationTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.CustomConfigurationTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ImageWatermarkDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.ImageWatermarkTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.ImageWatermarkTitle;
-                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoBaseClassLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.InfoBaseClassLabel;
-                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoNamespaceLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.InfoNamespaceLabel;
-                dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.InfoPackageLabel] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.InfoPackageLabel;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.MultiLineDescription;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.MultiLineTitle] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.MultiLineTitle;
                 dictionary[global::AtomUIGallery.Localization.WatermarkShowCaseLangResourceKind.P2TextNaturalInteractionDescription] = global::AtomUIGallery.ShowCases.Watermark.zh_TW.P2TextNaturalInteractionDescription;

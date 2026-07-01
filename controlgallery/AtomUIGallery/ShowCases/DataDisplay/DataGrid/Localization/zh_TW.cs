@@ -148,9 +148,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = "穩定";
     public const string PageSubtitle = "展示、查看和編輯結構化數據。";
     public const string PageDescription = "DataGrid 用於呈現大型表格數據，支援選擇、排序、篩選、固定列、行詳情、編輯、拖拽排序和分頁。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計令牌";

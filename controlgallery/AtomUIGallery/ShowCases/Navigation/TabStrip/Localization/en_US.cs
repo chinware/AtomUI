@@ -34,9 +34,6 @@ internal partial class en_US : LanguageProvider
     public const string PageDescription = "TabStrip and CardTabStrip provide lightweight tab navigation for custom content hosts, including item-template tabs, closable tabs, placement control, and add-tab actions.";
     public const string ComponentCategory = "Navigation";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

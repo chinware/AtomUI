@@ -18,9 +18,9 @@ public class NotificationShowCasePageTests
 
         source.ShouldContain("NotificationShowCaseLangResource PageSubtitle");
         source.ShouldContain("NotificationShowCaseLangResource PageDescription");
-        source.ShouldContain("NotificationShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("NotificationShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("NotificationShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("NotificationShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("NotificationShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("NotificationShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("NotificationShowCaseLangResource ComponentCategory");
         source.ShouldContain("NotificationShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("NotificationShowCaseLangResource ScenarioExamples");
@@ -125,7 +125,7 @@ public class NotificationShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyNotificationTitle");
             source.ShouldContain("ApiPropertyManagerPosition");
             source.ShouldContain("ApiMethodManagerShow");

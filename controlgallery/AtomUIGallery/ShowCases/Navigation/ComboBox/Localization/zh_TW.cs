@@ -10,9 +10,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = "穩定";
     public const string PageSubtitle = "用於從緊湊彈出列表中選擇內容的選擇輸入控件。";
     public const string PageDescription = "ComboBox 將輸入式佈局與下拉選擇結合，支持項模板、前後置標籤、內部前後綴、校驗狀態和尺寸形態。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計令牌";

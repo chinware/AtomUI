@@ -24,9 +24,6 @@ internal partial class zh_TW : LanguageProvider
         "GroupBox 通過帶邊框的容器包裹相關內容，並支持配置標題、位置、圖標和字體樣式。";
     public const string ComponentCategory = "資料展示";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

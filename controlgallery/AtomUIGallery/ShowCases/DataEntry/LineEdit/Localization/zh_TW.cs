@@ -86,9 +86,6 @@ internal partial class zh_TW : LanguageProvider
     public const string PageDescription = "LineEdit 覆蓋標準輸入框、前後置附加、清除操作、密碼顯示、前綴後綴、校驗狀態、SearchEdit 和 TextArea 場景。";
     public const string ComponentCategory = "數據錄入";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變量";

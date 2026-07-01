@@ -15,9 +15,9 @@ public class WatermarkShowCasePageTests
 
         source.ShouldContain("WatermarkShowCaseLangResource PageSubtitle");
         source.ShouldContain("WatermarkShowCaseLangResource PageDescription");
-        source.ShouldContain("WatermarkShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("WatermarkShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("WatermarkShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("WatermarkShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("WatermarkShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("WatermarkShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("WatermarkShowCaseLangResource ComponentCategory");
         source.ShouldContain("WatermarkShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("WatermarkShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class WatermarkShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:WatermarkShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:WatermarkShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("WatermarkShowCaseLangResource BasicTitle");
         source.ShouldContain("WatermarkShowCaseLangResource MultiLineTitle");
@@ -135,7 +134,7 @@ public class WatermarkShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyGlyph");
             source.ShouldContain("ApiPropertyText");
             source.ShouldContain("ApiPropertySource");

@@ -48,9 +48,6 @@ internal partial class en_US : LanguageProvider
         "AutoComplete combines text input with candidate filtering, async loading, custom option rendering, status feedback and specialized search or text area variants.";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

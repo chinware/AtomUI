@@ -36,9 +36,6 @@ internal partial class en_US : LanguageProvider
     public const string PageDescription = "ColorPicker supports solid and gradient values, trigger sizing, alpha control, text rendering, value synchronization, hover or click triggers, and preset palettes.";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

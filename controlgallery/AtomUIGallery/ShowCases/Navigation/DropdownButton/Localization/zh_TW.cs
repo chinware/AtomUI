@@ -10,9 +10,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = "穩定";
     public const string PageSubtitle = "用於打開上下文菜單操作的按鈕。";
     public const string PageDescription = "DropdownButton 將按鈕觸發器與 MenuFlyout 結合，支持懸停或點擊觸發、箭頭指示、彈出位置、按鈕形態和菜單項點擊事件轉發。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計令牌";

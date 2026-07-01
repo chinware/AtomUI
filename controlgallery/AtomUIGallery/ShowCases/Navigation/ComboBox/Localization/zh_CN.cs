@@ -10,9 +10,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = "稳定";
     public const string PageSubtitle = "用于从紧凑弹出列表中选择内容的选择输入控件。";
     public const string PageDescription = "ComboBox 将输入式布局与下拉选择结合，支持项模板、前后置标签、内部前后缀、校验状态和尺寸形态。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计令牌";

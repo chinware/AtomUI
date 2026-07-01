@@ -13,9 +13,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "展示当前页面在导航层级中的位置。";
     public const string PageDescription = "Breadcrumb 帮助用户理解当前位置，并沿父级路径返回。它支持图标、自定义分隔符、路由上下文、URI 导航和条目模板。";
-    public const string InfoNamespaceLabel = "命名空间:";
-    public const string InfoPackageLabel = "包:";
-    public const string InfoBaseClassLabel = "基类:";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

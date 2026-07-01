@@ -18,9 +18,9 @@ public class CascaderShowCasePageTests
 
         source.ShouldContain("CascaderShowCaseLangResource PageSubtitle");
         source.ShouldContain("CascaderShowCaseLangResource PageDescription");
-        source.ShouldContain("CascaderShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("CascaderShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("CascaderShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("CascaderShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("CascaderShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("CascaderShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("CascaderShowCaseLangResource ComponentCategory");
         source.ShouldContain("CascaderShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("CascaderShowCaseLangResource ScenarioExamples");
@@ -39,13 +39,12 @@ public class CascaderShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:CascaderShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:CascaderShowCaseLangResource PageDescription}\"");
         CountShowCaseItemElements(source).ShouldBe(20);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(20);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(20);
@@ -152,7 +151,7 @@ public class CascaderShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("SizeDescription");
             source.ShouldContain("Custom");
             source.ShouldContain("P2PlaceholderSizeTypeLarge");

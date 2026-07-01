@@ -22,9 +22,6 @@ internal partial class en_US : LanguageProvider
     public const string PageDescription = "CheckBox supports checked, unchecked, indeterminate, disabled, controlled, grouped, and check-all states for forms and option lists.";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

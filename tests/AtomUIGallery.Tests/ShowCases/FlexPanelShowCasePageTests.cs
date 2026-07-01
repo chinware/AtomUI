@@ -18,9 +18,9 @@ public class FlexPanelShowCasePageTests
 
         source.ShouldContain("FlexPanelShowCaseLangResource PageSubtitle");
         source.ShouldContain("FlexPanelShowCaseLangResource PageDescription");
-        source.ShouldContain("FlexPanelShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("FlexPanelShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("FlexPanelShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("FlexPanelShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("FlexPanelShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("FlexPanelShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("FlexPanelShowCaseLangResource ComponentCategory");
         source.ShouldContain("FlexPanelShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("FlexPanelShowCaseLangResource ScenarioExamples");
@@ -39,13 +39,12 @@ public class FlexPanelShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:FlexPanelShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:FlexPanelShowCaseLangResource PageDescription}\"");
         CountShowCaseItemElements(source).ShouldBe(11);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(11);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(11);
@@ -204,7 +203,7 @@ public class FlexPanelShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyDirection");
             source.ShouldContain("ApiPropertyWrap");
             source.ShouldContain("ApiPropertyJustifyContent");

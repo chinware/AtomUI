@@ -5,6 +5,7 @@ using Avalonia.Metadata;
 [assembly: XmlnsDefinition("https://atomui.net/toolkits/gallery-base", "AtomUI.Toolkits.GalleryBase")]
 [assembly: XmlnsDefinition("https://atomui.net/toolkits/gallery-base", "AtomUI.Toolkits.GalleryBase.Controls")]
 [assembly: XmlnsDefinition("https://atomui.net/toolkits/gallery-base", "AtomUI.Toolkits.GalleryBase.Controls.DesignTokens")]
+[assembly: XmlnsDefinition("https://atomui.net/toolkits/gallery-base", "AtomUI.Toolkits.GalleryBase.Localization")]
 [assembly: XmlnsDefinition("https://atomui.net/toolkits/gallery-base", "AtomUI.Toolkits.GalleryBase.Models")]
 [assembly: XmlnsDefinition("https://atomui.net/toolkits/gallery-base", "AtomUI.Toolkits.GalleryBase.Shell")]
 
@@ -12,6 +13,7 @@ using Avalonia.Metadata;
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUI.Toolkits.GalleryBase")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUI.Toolkits.GalleryBase.Controls")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUI.Toolkits.GalleryBase.Controls.DesignTokens")]
+[assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUI.Toolkits.GalleryBase.Localization")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUI.Toolkits.GalleryBase.Models")]
 [assembly: XmlnsDefinition("https://atomui.net/oss-controls/gallery", "AtomUI.Toolkits.GalleryBase.Shell")]
 

@@ -10,9 +10,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = "稳定";
     public const string PageSubtitle = "展示层级数据，支持选择、勾选、搜索、拖拽和异步加载节点。";
     public const string PageDescription = "TreeView 将嵌套数据组织为可展开节点，并支持模板化数据源、复选选择、过滤、自定义展开图标、上下文菜单和懒加载子节点。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计 Token";

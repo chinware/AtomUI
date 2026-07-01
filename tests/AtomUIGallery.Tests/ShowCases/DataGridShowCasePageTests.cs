@@ -18,9 +18,9 @@ public class DataGridShowCasePageTests
 
         source.ShouldContain("DataGridShowCaseLangResource PageSubtitle");
         source.ShouldContain("DataGridShowCaseLangResource PageDescription");
-        source.ShouldContain("DataGridShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("DataGridShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("DataGridShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("DataGridShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("DataGridShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("DataGridShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("DataGridShowCaseLangResource ComponentCategory");
         source.ShouldContain("DataGridShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("DataGridShowCaseLangResource ScenarioExamples");
@@ -39,13 +39,12 @@ public class DataGridShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:DataGridShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:DataGridShowCaseLangResource PageDescription}\"");
         CountShowCaseItemElements(source).ShouldBe(22);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(22);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(22);
@@ -144,7 +143,7 @@ public class DataGridShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyItemsSource");
             source.ShouldContain("ApiPropertyAutoGenerateColumns");
             source.ShouldContain("ApiPropertyCanUserFilterColumns");

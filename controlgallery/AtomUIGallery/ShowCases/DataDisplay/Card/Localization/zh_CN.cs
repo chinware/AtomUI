@@ -13,9 +13,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "用紧凑容器组织相关内容与操作。";
     public const string PageDescription = "Card 用于在独立的内容面板中呈现信息，支持标题、额外操作、封面媒体、元信息、栅格区域、标签页、加载占位、悬停反馈和无边框样式。";
-    public const string InfoNamespaceLabel = "命名空间:";
-    public const string InfoPackageLabel = "包:";
-    public const string InfoBaseClassLabel = "基类:";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

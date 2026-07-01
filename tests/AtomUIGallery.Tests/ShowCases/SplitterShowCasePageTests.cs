@@ -15,9 +15,9 @@ public class SplitterShowCasePageTests
 
         source.ShouldContain("SplitterShowCaseLangResource PageSubtitle");
         source.ShouldContain("SplitterShowCaseLangResource PageDescription");
-        source.ShouldContain("SplitterShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("SplitterShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("SplitterShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("SplitterShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("SplitterShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("SplitterShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("SplitterShowCaseLangResource ComponentCategory");
         source.ShouldContain("SplitterShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("SplitterShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class SplitterShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:SplitterShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:SplitterShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("SplitterShowCaseLangResource BasicTitle");
         source.ShouldContain("SplitterShowCaseLangResource HorizontalTitle");
@@ -127,7 +126,7 @@ public class SplitterShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyOrientation");
             source.ShouldContain("ApiPropertyIsLazy");
             source.ShouldContain("ApiPropertyHandleSize");

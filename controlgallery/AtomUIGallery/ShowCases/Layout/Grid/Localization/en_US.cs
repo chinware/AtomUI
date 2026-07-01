@@ -16,9 +16,6 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Build responsive 24-column layouts with rows and columns.";
     public const string PageDescription = "Grid provides row gutters, alignment, offsets, ordering, and breakpoint-specific column sizing for application layouts.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ComponentCategory = "Layout";
     public const string ComponentStatusStable = "Stable";
     public const string ApiColumnProperty = "Property";

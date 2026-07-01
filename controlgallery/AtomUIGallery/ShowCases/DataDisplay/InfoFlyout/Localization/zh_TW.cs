@@ -53,9 +53,6 @@ internal partial class zh_TW : LanguageProvider
         "InfoFlyout 可以把自定義浮層錨定到目標控件上，並支持配置觸發方式、彈出位置和箭頭行為。";
     public const string ComponentCategory = "數據展示";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

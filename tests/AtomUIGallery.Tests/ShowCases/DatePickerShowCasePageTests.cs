@@ -15,9 +15,9 @@ public class DatePickerShowCasePageTests
 
         source.ShouldContain("DatePickerShowCaseLangResource PageSubtitle");
         source.ShouldContain("DatePickerShowCaseLangResource PageDescription");
-        source.ShouldContain("DatePickerShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("DatePickerShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("DatePickerShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("DatePickerShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("DatePickerShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("DatePickerShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("DatePickerShowCaseLangResource ComponentCategory");
         source.ShouldContain("DatePickerShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("DatePickerShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class DatePickerShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:DatePickerShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:DatePickerShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("DatePickerShowCaseLangResource BasicTitle");
         source.ShouldContain("DatePickerShowCaseLangResource PlacementTitle");
@@ -137,7 +136,7 @@ public class DatePickerShowCasePageTests
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("P2ContentCustom");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertySelectedDateTime");
             source.ShouldContain("ApiPropertyPickerPlacement");
             source.ShouldContain("ApiPropertyIsNeedConfirm");

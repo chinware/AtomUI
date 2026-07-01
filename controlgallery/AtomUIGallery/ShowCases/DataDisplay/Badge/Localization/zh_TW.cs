@@ -13,9 +13,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = "穩定";
     public const string PageSubtitle = "在相關內容旁突出數量、狀態和上下文標籤。";
     public const string PageDescription = "Badge 用於提示通知、計數、狀態點和緞帶標籤，在不打斷使用者流程的情況下強調需要關注的資訊。";
-    public const string InfoNamespaceLabel = "命名空間:";
-    public const string InfoPackageLabel = "套件:";
-    public const string InfoBaseClassLabel = "基類:";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

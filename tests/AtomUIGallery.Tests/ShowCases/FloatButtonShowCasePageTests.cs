@@ -17,9 +17,9 @@ public class FloatButtonShowCasePageTests
 
         source.ShouldContain("FloatButtonShowCaseLangResource PageSubtitle");
         source.ShouldContain("FloatButtonShowCaseLangResource PageDescription");
-        source.ShouldContain("FloatButtonShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("FloatButtonShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("FloatButtonShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("FloatButtonShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("FloatButtonShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("FloatButtonShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("FloatButtonShowCaseLangResource ComponentCategory");
         source.ShouldContain("FloatButtonShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("FloatButtonShowCaseLangResource ScenarioExamples");
@@ -38,13 +38,12 @@ public class FloatButtonShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:FloatButtonShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:FloatButtonShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(11);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(11);
@@ -135,7 +134,7 @@ public class FloatButtonShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyPlacement");
             source.ShouldContain("ApiPropertyButtonType");
             source.ShouldContain("ApiPropertyTrigger");

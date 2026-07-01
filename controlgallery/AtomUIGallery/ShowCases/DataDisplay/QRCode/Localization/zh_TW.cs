@@ -37,9 +37,6 @@ internal partial class zh_TW : LanguageProvider
         "QRCode 將文字或 URL 編碼成二維碼圖片，並支持配置尺寸、顏色、圖標、糾錯等級和狀態內容。";
     public const string ComponentCategory = "資料展示";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

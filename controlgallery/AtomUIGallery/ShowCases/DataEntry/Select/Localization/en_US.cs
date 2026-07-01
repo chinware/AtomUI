@@ -16,9 +16,6 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Single, multiple, searchable, and tag-based option selection.";
     public const string PageDescription = "Select lets users choose values from option lists with filtering, grouping, async loading, custom rendering, and multiple selection behaviors.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
     public const string ApiColumnProperty = "Property";

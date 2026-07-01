@@ -3,6 +3,29 @@ using AtomUI.Theme;
 
 namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
 {
+    public enum GalleryShowCaseHeaderTokenKind
+    {
+        HeaderMargin,
+        HeaderSpacing,
+        MetadataCornerRadius,
+        MetadataItemSpacing,
+        MetadataLabelWidth,
+        MetadataLineHeight,
+        MetadataLineSpacing,
+        MetadataMinHeight,
+        MetadataPadding,
+        MetadataPairSpacing,
+        MetadataValueFontFamily,
+        MetadataValueWidth,
+        SubtitleFontSize,
+        SummarySpacing,
+        TagItemSpacing,
+        TagLineSpacing,
+        TagsMargin,
+        TitleFontSize,
+        TitleFontWeight
+    }
+
     public enum GalleryStickyTabsHostTokenKind
     {
         StickyBackground,
@@ -35,6 +58,17 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
         MaxColumns,
         MinItemWidth,
         RowGap
+    }
+
+    public class GalleryShowCaseHeaderTokenResourceExtension : TokenResourceExtension<GalleryShowCaseHeaderTokenKind>
+    {
+        public GalleryShowCaseHeaderTokenResourceExtension()
+        {
+        }
+
+        public GalleryShowCaseHeaderTokenResourceExtension(GalleryShowCaseHeaderTokenKind kind) : base(kind)
+        {
+        }
     }
 
     public class GalleryStickyTabsHostTokenResourceExtension : TokenResourceExtension<GalleryStickyTabsHostTokenKind>

@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "Stack related content sections that can expand or collapse independently.";
     public const string PageDescription = "Collapse organizes dense information into panels. It supports accordion behavior, nested panels, borderless and ghost styles, custom spacing, icon placement, and icon-only trigger mode.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

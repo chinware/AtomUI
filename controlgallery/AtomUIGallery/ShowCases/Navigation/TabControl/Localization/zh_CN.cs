@@ -36,9 +36,6 @@ internal partial class zh_CN : LanguageProvider
     public const string PageDescription = "TabControl 和 CardTabControl 提供文档式导航、数据模板标签、可关闭标签、灵活位置以及可选的标签栏操作。";
     public const string ComponentCategory = "导航";
     public const string ComponentStatusStable = "稳定";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计变量";

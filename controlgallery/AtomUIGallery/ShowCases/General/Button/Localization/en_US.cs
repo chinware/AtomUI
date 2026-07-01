@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Trigger actions and express intent with clear visual priority.";
     public const string PageDescription = "Button is the primary action control in AtomUI. Use type, shape, size, icon and loading states to build predictable workflows without losing the Ant Design interaction model.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ExampleGroupBasicTitle = "Button type";
     public const string ExampleGroupBasicDescription = "Use button type to express action priority in the current region.";
     public const string ExampleGroupShapeTitle = "Shape and icon";

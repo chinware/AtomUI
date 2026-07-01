@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "Display a collection of related items with selection, grouping, sorting, filtering, and paging.";
     public const string PageDescription = "List presents repeated information in a compact vertical format. It supports ListView scenarios such as grouping, selection indicators, empty state, filtering, ordering, and pagination, plus simple ListBox usage.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

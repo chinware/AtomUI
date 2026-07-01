@@ -55,6 +55,18 @@ public class SplashShowCasePageTests
         source.ShouldContain("SplashShowCaseLangResource ScenarioApi");
         source.ShouldContain("SplashShowCaseLangResource ScenarioDesignToken");
         source.ShouldContain("<gallery:GalleryStickyTabsHost");
+        source.ShouldContain("<gallery:GalleryShowCaseHeader");
+        source.ShouldContain("Title=\"Splash\"");
+        source.ShouldContain("Category=\"{gallery:SplashShowCaseLangResource ComponentCategory}\"");
+        source.ShouldContain("Status=\"{gallery:SplashShowCaseLangResource ComponentStatusPreview}\"");
+        source.ShouldContain("StatusTagColor=\"processing\"");
+        source.ShouldContain("IntroducedVersion=\"{gallery:SplashShowCaseLangResource ComponentIntroducedVersion}\"");
+        source.ShouldContain("Subtitle=\"{gallery:SplashShowCaseLangResource PageSubtitle}\"");
+        source.ShouldContain("Description=\"{gallery:SplashShowCaseLangResource PageDescription}\"");
+        source.ShouldContain("Namespace=\"AtomUI.Desktop.Controls\"");
+        source.ShouldContain("Package=\"AtomUI.Desktop.Controls.Extras\"");
+        source.ShouldContain("BaseClass=\"ContentControl\"");
+        source.ShouldContain("MetadataValueWidth=\"240\"");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
         source.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
         source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
@@ -75,15 +87,13 @@ public class SplashShowCasePageTests
         var enSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/en_US.cs");
         var zhCnSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh_CN.cs");
         var zhTwSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Localization/zh_TW.cs");
-        var header = ExtractHeaderTitleMarkup(source);
 
-        header.ShouldContain("<Grid ColumnDefinitions=\"Auto,*\"");
-        header.ShouldContain("<WrapPanel Grid.Column=\"1\"");
-        header.ShouldContain("VerticalAlignment=\"Center\"");
-        header.ShouldContain("Text=\"{gallery:SplashShowCaseLangResource ComponentStatusPreview}\"");
-        header.ShouldContain("Text=\"{gallery:SplashShowCaseLangResource ComponentIntroducedVersion}\"");
-        header.ShouldContain("TagColor=\"blue\"");
-        header.ShouldContain("IsBordered=\"False\"");
+        source.ShouldContain("<gallery:GalleryShowCaseHeader");
+        source.ShouldContain("Status=\"{gallery:SplashShowCaseLangResource ComponentStatusPreview}\"");
+        source.ShouldContain("StatusTagColor=\"processing\"");
+        source.ShouldContain("IntroducedVersion=\"{gallery:SplashShowCaseLangResource ComponentIntroducedVersion}\"");
+        source.ShouldNotContain("IntroducedVersionTagColor=");
+        source.ShouldNotContain("IsIntroducedVersionTagBordered=");
 
         foreach (var localizationSource in new[] { enSource, zhCnSource, zhTwSource })
         {

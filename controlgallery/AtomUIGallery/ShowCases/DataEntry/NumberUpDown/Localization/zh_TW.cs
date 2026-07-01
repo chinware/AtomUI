@@ -59,9 +59,6 @@ internal partial class zh_TW : LanguageProvider
         "NumberUpDown 組合了數值輸入、高精度字符串模式、最小/最大約束、小數步長、輸入變體、附加內容、清除入口和校驗狀態。";
     public const string ComponentCategory = "數據錄入";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

@@ -36,9 +36,6 @@ internal partial class zh_TW : LanguageProvider
     public const string PageDescription = "ColorPicker 支援純色與漸變值、觸發器尺寸、透明度控制、文字渲染、值同步策略、點擊或懸浮觸發，以及預設調色板。";
     public const string ComponentCategory = "資料錄入";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變量";

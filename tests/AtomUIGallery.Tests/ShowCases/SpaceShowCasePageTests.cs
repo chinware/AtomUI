@@ -18,9 +18,9 @@ public class SpaceShowCasePageTests
 
         source.ShouldContain("SpaceShowCaseLangResource PageSubtitle");
         source.ShouldContain("SpaceShowCaseLangResource PageDescription");
-        source.ShouldContain("SpaceShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("SpaceShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("SpaceShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("SpaceShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("SpaceShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("SpaceShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("SpaceShowCaseLangResource ComponentCategory");
         source.ShouldContain("SpaceShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("SpaceShowCaseLangResource ScenarioExamples");
@@ -39,13 +39,12 @@ public class SpaceShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:SpaceShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:SpaceShowCaseLangResource PageDescription}\"");
         CountShowCaseItemElements(source).ShouldBe(9);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(9);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(9);
@@ -142,7 +141,7 @@ public class SpaceShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertySpaceItemSpacing");
             source.ShouldContain("ApiPropertySpaceLineSpacing");
             source.ShouldContain("ApiPropertySpaceItemsAlignment");

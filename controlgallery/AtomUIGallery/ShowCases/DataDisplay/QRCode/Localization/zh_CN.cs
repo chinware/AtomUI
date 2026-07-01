@@ -37,9 +37,6 @@ internal partial class zh_CN : LanguageProvider
         "QRCode 将文本或 URL 编码成二维码图片，并支持配置尺寸、颜色、图标、纠错等级和状态内容。";
     public const string ComponentCategory = "数据展示";
     public const string ComponentStatusStable = "稳定";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

@@ -148,9 +148,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Display, inspect, and edit structured data.";
     public const string PageDescription = "DataGrid presents large tabular datasets with selection, sorting, filtering, frozen columns, row details, editing, drag sorting, and pagination.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

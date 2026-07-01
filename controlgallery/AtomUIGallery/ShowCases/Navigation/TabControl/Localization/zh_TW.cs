@@ -36,9 +36,6 @@ internal partial class zh_TW : LanguageProvider
     public const string PageDescription = "TabControl 和 CardTabControl 提供文件式導航、資料模板標籤、可關閉標籤、彈性位置以及可選的標籤列操作。";
     public const string ComponentCategory = "導航";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "套件";
-    public const string InfoBaseClassLabel = "基底類別";
     public const string ScenarioExamples = "範例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變數";

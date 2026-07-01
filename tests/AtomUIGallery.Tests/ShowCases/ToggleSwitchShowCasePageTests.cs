@@ -15,9 +15,9 @@ public class ToggleSwitchShowCasePageTests
 
         source.ShouldContain("ToggleSwitchShowCaseLangResource PageSubtitle");
         source.ShouldContain("ToggleSwitchShowCaseLangResource PageDescription");
-        source.ShouldContain("ToggleSwitchShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("ToggleSwitchShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("ToggleSwitchShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("ToggleSwitchShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("ToggleSwitchShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("ToggleSwitchShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("ToggleSwitchShowCaseLangResource ComponentCategory");
         source.ShouldContain("ToggleSwitchShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("ToggleSwitchShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class ToggleSwitchShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:ToggleSwitchShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:ToggleSwitchShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("ToggleSwitchShowCaseLangResource BasicTitle");
         source.ShouldContain("ToggleSwitchShowCaseLangResource DisabledTitle");
@@ -125,7 +124,7 @@ public class ToggleSwitchShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyOnContent");
             source.ShouldContain("ApiPropertyOffContent");
             source.ShouldContain("ApiPropertySizeType");

@@ -10,9 +10,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = "稳定";
     public const string PageSubtitle = "用于打开上下文菜单操作的按钮。";
     public const string PageDescription = "DropdownButton 将按钮触发器与 MenuFlyout 结合，支持悬停或点击触发、箭头指示、弹出位置、按钮形态和菜单项点击事件转发。";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计令牌";

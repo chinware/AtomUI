@@ -70,18 +70,21 @@ Height="36"
 PlaceholderText="{gallery:AutoCompleteShowCaseLangResource P2PlaceholderSizeTypeCustom}" />
 </StackPanel>
 </gallery:ShowCaseItem>
-<gallery:ShowCaseItem Title="{gallery:AutoCompleteShowCaseLangResource LookupPatternsUncertainCategoryTitle}"
+<gallery:ShowCaseItem
+Title="{gallery:AutoCompleteShowCaseLangResource LookupPatternsUncertainCategoryTitle}"
 Description="{gallery:AutoCompleteShowCaseLangResource LookupPatternsUncertainCategoryDescription}">
 <atom:AutoCompleteSearchEdit Name="SearchAutoComplete"
 OptionsAsyncLoader="{Binding SearchEditOptionsAsyncLoader}"
-PlaceholderText="{gallery:AutoCompleteShowCaseLangResource P2PlaceholderTextInputHere}" Width="300"
+PlaceholderText="{gallery:AutoCompleteShowCaseLangResource P2PlaceholderTextInputHere}"
+Width="300"
 SizeType="Large"
 SearchButtonStyle="Primary"
 Filter="{atom:ValueFilterProvider Contains}">
 <atom:AutoCompleteSearchEdit.OptionTemplate>
 <DataTemplate x:DataType="vm:CustomAutoCompleteOption">
 <DockPanel LastChildFill="True">
-<TextBlock Text="{gallery:AutoCompleteShowCaseLangResource P2TextResults}"
+<TextBlock
+Text="{gallery:AutoCompleteShowCaseLangResource P2TextResults}"
 DockPanel.Dock="Right"
 Margin="5 0 0 0" />
 <TextBlock Text="{Binding ResultCount}"
@@ -93,7 +96,8 @@ TextTrimming="CharacterEllipsis" />
 </atom:AutoCompleteSearchEdit.OptionTemplate>
 </atom:AutoCompleteSearchEdit>
 </gallery:ShowCaseItem>
-<gallery:ShowCaseItem Title="{gallery:AutoCompleteShowCaseLangResource TextAreaAutoCompletionTitle}"
+<gallery:ShowCaseItem
+Title="{gallery:AutoCompleteShowCaseLangResource TextAreaAutoCompletionTitle}"
 Description="{gallery:AutoCompleteShowCaseLangResource TextAreaAutoCompletionDescription}">
 <atom:AutoCompleteTextArea Name="TextAreaAutoComplete"
 OptionsAsyncLoader="{Binding BasicOptionsAsyncLoader}"

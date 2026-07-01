@@ -13,9 +13,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "從連續或帶刻度的軌道中選擇數值或範圍。";
     public const string PageDescription = "Slider 支持單值和範圍選擇、水平或垂直方向、按刻度吸附、格式化提示、刻度標記、包含軌道、禁用狀態和鍵盤交互。";
-    public const string InfoNamespaceLabel = "命名空間：";
-    public const string InfoPackageLabel = "包：";
-    public const string InfoBaseClassLabel = "基類：";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

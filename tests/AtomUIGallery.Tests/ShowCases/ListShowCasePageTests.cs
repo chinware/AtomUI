@@ -15,9 +15,9 @@ public class ListShowCasePageTests
 
         source.ShouldContain("ListShowCaseLangResource PageSubtitle");
         source.ShouldContain("ListShowCaseLangResource PageDescription");
-        source.ShouldContain("ListShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("ListShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("ListShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("ListShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("ListShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("ListShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("ListShowCaseLangResource ComponentCategory");
         source.ShouldContain("ListShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("ListShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class ListShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:ListShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:ListShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("ListShowCaseLangResource BasicUsageTitle");
         source.ShouldContain("ListShowCaseLangResource SelectionTitle");
@@ -130,7 +129,7 @@ public class ListShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyIsGroupEnabled");
             source.ShouldContain("ApiPropertyFilterValue");
             source.ShouldContain("ApiPropertyPaginationVisibility");

@@ -15,9 +15,9 @@ public class SeparatorShowCasePageTests
 
         source.ShouldContain("SeparatorShowCaseLangResource PageSubtitle");
         source.ShouldContain("SeparatorShowCaseLangResource PageDescription");
-        source.ShouldContain("SeparatorShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("SeparatorShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("SeparatorShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("SeparatorShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("SeparatorShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("SeparatorShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("SeparatorShowCaseLangResource ComponentCategory");
         source.ShouldContain("SeparatorShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("SeparatorShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class SeparatorShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:SeparatorShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:SeparatorShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("SeparatorShowCaseLangResource HorizontalTitle");
         source.ShouldContain("SeparatorShowCaseLangResource DividerWithTitleTitle");
@@ -126,7 +125,7 @@ public class SeparatorShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyTitle");
             source.ShouldContain("ApiPropertyTitlePosition");
             source.ShouldContain("ApiPropertyOrientation");

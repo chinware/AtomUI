@@ -14,9 +14,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentIntroducedVersion = "v6.0.7";
     public const string PageSubtitle = "在主工作區準備完成前呈現桌面啟動進度。";
     public const string PageDescription = "Splash 組合緊湊的品牌面板、載入指示、確定進度、狀態文案和可選頁腳。服務 API 可將它託管在無邊框啟動視窗中，視覺控件也可以直接在 Gallery 中預覽。";
-    public const string InfoNamespaceLabel = "命名空間：";
-    public const string InfoPackageLabel = "套件：";
-    public const string InfoBaseClassLabel = "基類：";
     public const string BasicTitle = "基礎";
     public const string BasicDescription = "使用 Splash 視覺控件展示啟動文案和不確定載入指示。";
     public const string DeterminateTitle = "確定進度";

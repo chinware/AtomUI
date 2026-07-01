@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Represent people or entities with image, icon, or text avatars.";
     public const string PageDescription = "Avatar provides compact identity visuals for users, teams, and objects. It supports circle and square shapes, explicit sizes, automatic text scaling, and grouped overflow display.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

@@ -13,9 +13,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "將相關內容組織成可獨立展開和收起的面板。";
     public const string PageDescription = "Collapse 用於把密集信息分組到多個面板中，支持手風琴、嵌套面板、無邊框與幽靈樣式、自定義間距、圖標位置和僅圖標觸發展開。";
-    public const string InfoNamespaceLabel = "命名空間:";
-    public const string InfoPackageLabel = "包:";
-    public const string InfoBaseClassLabel = "基類:";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

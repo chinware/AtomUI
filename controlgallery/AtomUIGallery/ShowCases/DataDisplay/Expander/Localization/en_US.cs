@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "Show or hide a single section of supporting content.";
     public const string PageDescription = "Expander reveals content on demand without leaving the current context. It supports multiple expansion directions, size variants, icon placement, icon-only triggers, nested panels, ghost style, and custom spacing.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

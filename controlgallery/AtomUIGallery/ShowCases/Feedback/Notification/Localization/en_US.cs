@@ -22,9 +22,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "Desktop notifications for longer feedback and non-blocking updates.";
     public const string PageDescription = "Notification displays rich feedback cards near the edge of the window. It supports semantic types, custom icons, placement, manual duration, hover pause, and auto-close progress.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Manager";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

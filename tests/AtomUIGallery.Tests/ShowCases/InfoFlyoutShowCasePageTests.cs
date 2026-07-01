@@ -15,9 +15,9 @@ public class InfoFlyoutShowCasePageTests
 
         source.ShouldContain("InfoFlyoutShowCaseLangResource PageSubtitle");
         source.ShouldContain("InfoFlyoutShowCaseLangResource PageDescription");
-        source.ShouldContain("InfoFlyoutShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("InfoFlyoutShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("InfoFlyoutShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("InfoFlyoutShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("InfoFlyoutShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("InfoFlyoutShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("InfoFlyoutShowCaseLangResource ComponentCategory");
         source.ShouldContain("InfoFlyoutShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("InfoFlyoutShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class InfoFlyoutShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:InfoFlyoutShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:InfoFlyoutShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("InfoFlyoutShowCaseLangResource BasicTitle");
         source.ShouldContain("InfoFlyoutShowCaseLangResource TriggerWaysTitle");
@@ -128,7 +127,7 @@ public class InfoFlyoutShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyTrigger");
             source.ShouldContain("ApiPropertyPlacement");
             source.ShouldContain("ApiPropertyIsArrowVisible");

@@ -15,9 +15,9 @@ public class CarouselShowCasePageTests
 
         source.ShouldContain("CarouselShowCaseLangResource PageSubtitle");
         source.ShouldContain("CarouselShowCaseLangResource PageDescription");
-        source.ShouldContain("CarouselShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("CarouselShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("CarouselShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("CarouselShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("CarouselShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("CarouselShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("CarouselShowCaseLangResource ComponentCategory");
         source.ShouldContain("CarouselShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("CarouselShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class CarouselShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:CarouselShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:CarouselShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("CarouselShowCaseLangResource BasicTitle");
         source.ShouldContain("CarouselShowCaseLangResource CardShapePositionTitle");
@@ -128,7 +127,7 @@ public class CarouselShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyIsShowNavButtons");
             source.ShouldContain("ApiPropertyIsAutoPlay");
             source.ShouldContain("ApiPropertyPaginationPosition");

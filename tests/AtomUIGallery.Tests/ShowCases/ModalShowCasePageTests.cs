@@ -18,9 +18,9 @@ public class ModalShowCasePageTests
 
         source.ShouldContain("ModalShowCaseLangResource PageSubtitle");
         source.ShouldContain("ModalShowCaseLangResource PageDescription");
-        source.ShouldContain("ModalShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("ModalShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("ModalShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("ModalShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("ModalShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("ModalShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("ModalShowCaseLangResource ComponentCategory");
         source.ShouldContain("ModalShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("ModalShowCaseLangResource ScenarioExamples");
@@ -126,7 +126,7 @@ public class ModalShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyDialogIsOpen");
             source.ShouldContain("ApiPropertyDialogDialogHostType");
             source.ShouldContain("ApiMethodDialogShowDialogModalAsync");

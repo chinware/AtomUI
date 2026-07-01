@@ -15,9 +15,9 @@ public class CollapseShowCasePageTests
 
         source.ShouldContain("CollapseShowCaseLangResource PageSubtitle");
         source.ShouldContain("CollapseShowCaseLangResource PageDescription");
-        source.ShouldContain("CollapseShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("CollapseShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("CollapseShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("CollapseShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("CollapseShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("CollapseShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("CollapseShowCaseLangResource ComponentCategory");
         source.ShouldContain("CollapseShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("CollapseShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class CollapseShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:CollapseShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:CollapseShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("CollapseShowCaseLangResource CollapseTitle");
         source.ShouldContain("CollapseShowCaseLangResource BorderlessTitle");
@@ -125,7 +124,7 @@ public class CollapseShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyIsAccordion");
             source.ShouldContain("ApiPropertyTriggerType");
             source.ShouldContain("ApiPropertyIsShowExpandIcon");

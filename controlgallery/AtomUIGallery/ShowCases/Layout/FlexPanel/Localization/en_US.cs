@@ -16,9 +16,6 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Arrange children with CSS Flexbox-style layout rules.";
     public const string PageDescription = "FlexPanel provides direction, wrapping, alignment, spacing, and per-item flex sizing for responsive layouts.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ComponentCategory = "Layout";
     public const string ComponentStatusStable = "Stable";
     public const string ApiColumnProperty = "Property";

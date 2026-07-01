@@ -16,9 +16,6 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Move items between two collections with optional search, paging, and tree views.";
     public const string PageDescription = "Transfer presents candidate items on the left and selected items on the right. It supports one-way movement, filtering, pagination, custom item templates, and tree-backed source data.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ComponentCategory = "Data Entry";
     public const string ComponentStatusStable = "Stable";
     public const string ApiColumnProperty = "Property";

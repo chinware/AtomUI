@@ -62,9 +62,6 @@ internal partial class zh_CN : LanguageProvider
         "RadioButton 覆盖单个选择、分组选项、数据驱动选项、选项按钮样式、图标、禁用状态和尺寸变体。";
     public const string ComponentCategory = "数据录入";
     public const string ComponentStatusStable = "稳定";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

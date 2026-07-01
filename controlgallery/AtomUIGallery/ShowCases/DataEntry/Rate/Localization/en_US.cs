@@ -13,9 +13,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "Collect lightweight ratings with star, half-star, custom character, and tooltip support.";
     public const string PageDescription = "Rate lets users express preference or quality on an ordered scale. It supports clearable values, half selection, read-only display, keyboard interaction, custom glyphs, and localized copywriting.";
-    public const string InfoNamespaceLabel = "Namespace:";
-    public const string InfoPackageLabel = "Package:";
-    public const string InfoBaseClassLabel = "Base class:";
     public const string ApiColumnProperty = "Property";
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";

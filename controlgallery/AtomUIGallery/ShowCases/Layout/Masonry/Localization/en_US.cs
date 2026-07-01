@@ -12,9 +12,6 @@ internal partial class en_US : LanguageProvider
     public const string PageSubtitle = "Lay out children of unequal heights into balanced columns.";
     public const string PageDescription =
         "Masonry arranges cards, images, or arbitrary controls into a shortest-column waterfall layout, with fixed or adaptive column counts and row/column gaps.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ComponentCategory = "Layout";
     public const string ComponentStatusStable = "Stable";
     public const string ApiColumnProperty = "Property";

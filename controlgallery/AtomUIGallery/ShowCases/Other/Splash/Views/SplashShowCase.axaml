@@ -8,115 +8,18 @@
     <Grid Background="{atom:SharedTokenResource ColorBgLayout}">
         <gallery:GalleryStickyTabsHost StickyContentPadding="28,0,28,0">
             <gallery:GalleryStickyTabsHost.Header>
-                <StackPanel Margin="28,24,28,18"
-                            Spacing="16">
-                    <StackPanel Spacing="6">
-                        <Grid ColumnDefinitions="Auto,*"
-                              VerticalAlignment="Center">
-                            <atom:TextBlock Grid.Column="0"
-                                            Text="Splash"
-                                            FontSize="26"
-                                            FontWeight="Bold"
-                                            VerticalAlignment="Center" />
-                            <WrapPanel Grid.Column="1"
-                                       Margin="10,0,0,0"
-                                       ItemSpacing="10"
-                                       LineSpacing="6"
-                                       VerticalAlignment="Center">
-                                <atom:Tag Text="{gallery:SplashShowCaseLangResource ComponentCategory}"
-                                          TagColor="blue"
-                                          VerticalAlignment="Center" />
-                                <atom:Tag Text="{gallery:SplashShowCaseLangResource ComponentStatusPreview}"
-                                          TagColor="processing"
-                                          VerticalAlignment="Center" />
-                                <atom:Tag Text="{gallery:SplashShowCaseLangResource ComponentIntroducedVersion}"
-                                          TagColor="blue"
-                                          IsBordered="False"
-                                          VerticalAlignment="Center" />
-                            </WrapPanel>
-                        </Grid>
-                        <atom:TextBlock Text="{gallery:SplashShowCaseLangResource PageSubtitle}"
-                                        FontSize="15"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
-                        <atom:TextBlock Text="{gallery:SplashShowCaseLangResource PageDescription}"
-                                        HorizontalAlignment="Left"
-                                        TextWrapping="Wrap"
-                                        Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
-                    </StackPanel>
-
-                    <Border Background="{atom:SharedTokenResource ColorBgContainer}"
-                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
-                            BorderThickness="1"
-                            CornerRadius="6"
-                            MinHeight="48"
-                            Padding="16,8">
-                        <Border.Styles>
-                            <Style Selector="atom|TextBlock.info-label">
-                                <Setter Property="Width" Value="84" />
-                            </Style>
-                            <Style Selector="atom|TextBlock.info-value">
-                                <Setter Property="Width" Value="240" />
-                                <Setter Property="TextWrapping" Value="NoWrap" />
-                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                            </Style>
-                        </Border.Styles>
-                        <WrapPanel Orientation="Horizontal"
-                                   ItemSpacing="48"
-                                   LineSpacing="8"
-                                   VerticalAlignment="Center">
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="10"
-                                        VerticalAlignment="Center">
-                                <atom:TextBlock Classes="info-label"
-                                                Text="{gallery:SplashShowCaseLangResource InfoNamespaceLabel}"
-                                                FontWeight="Bold"
-                                                LineHeight="22"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                                VerticalAlignment="Center" />
-                                <atom:TextBlock Classes="info-value"
-                                                Text="AtomUI.Desktop.Controls"
-                                                FontFamily="Consolas"
-                                                LineHeight="22"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                                VerticalAlignment="Center" />
-                            </StackPanel>
-
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="10"
-                                        VerticalAlignment="Center">
-                                <atom:TextBlock Classes="info-label"
-                                                Text="{gallery:SplashShowCaseLangResource InfoPackageLabel}"
-                                                FontWeight="Bold"
-                                                LineHeight="22"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                                VerticalAlignment="Center" />
-                                <atom:TextBlock Classes="info-value"
-                                                Text="AtomUI.Desktop.Controls.Extras"
-                                                FontFamily="Consolas"
-                                                LineHeight="22"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                                VerticalAlignment="Center" />
-                            </StackPanel>
-
-                            <StackPanel Orientation="Horizontal"
-                                        Spacing="10"
-                                        VerticalAlignment="Center">
-                                <atom:TextBlock Classes="info-label"
-                                                Text="{gallery:SplashShowCaseLangResource InfoBaseClassLabel}"
-                                                FontWeight="Bold"
-                                                LineHeight="22"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                                VerticalAlignment="Center" />
-                                <atom:TextBlock Classes="info-value"
-                                                Text="ContentControl"
-                                                FontFamily="Consolas"
-                                                LineHeight="22"
-                                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                                VerticalAlignment="Center" />
-                            </StackPanel>
-                        </WrapPanel>
-                    </Border>
-                </StackPanel>
+                <gallery:GalleryShowCaseHeader
+                    Title="Splash"
+                    Category="{gallery:SplashShowCaseLangResource ComponentCategory}"
+                    Status="{gallery:SplashShowCaseLangResource ComponentStatusPreview}"
+                    StatusTagColor="processing"
+                    IntroducedVersion="{gallery:SplashShowCaseLangResource ComponentIntroducedVersion}"
+                    Subtitle="{gallery:SplashShowCaseLangResource PageSubtitle}"
+                    Description="{gallery:SplashShowCaseLangResource PageDescription}"
+                    Namespace="AtomUI.Desktop.Controls"
+                    Package="AtomUI.Desktop.Controls.Extras"
+                    BaseClass="ContentControl"
+                    MetadataValueWidth="240" />
             </gallery:GalleryStickyTabsHost.Header>
 
             <gallery:GalleryStickyTabsHost.StickyContent>

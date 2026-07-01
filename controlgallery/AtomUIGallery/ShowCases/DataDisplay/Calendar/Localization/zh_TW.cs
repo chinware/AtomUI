@@ -10,9 +10,6 @@ internal partial class zh_TW : LanguageProvider
     public const string PageDescription = "Calendar 以月、年、十年檢視呈現日期，並支援單選、範圍選擇和多範圍選擇。";
     public const string ComponentCategory = "資料展示";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "套件";
-    public const string InfoBaseClassLabel = "基底類別";
     public const string ScenarioExamples = "範例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變數";

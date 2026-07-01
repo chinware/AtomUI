@@ -15,9 +15,9 @@ public class AlertShowCasePageTests
 
         source.ShouldContain("AlertShowCaseLangResource PageSubtitle");
         source.ShouldContain("AlertShowCaseLangResource PageDescription");
-        source.ShouldContain("AlertShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("AlertShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("AlertShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("AlertShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("AlertShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("AlertShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("AlertShowCaseLangResource ComponentCategory");
         source.ShouldContain("AlertShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("AlertShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class AlertShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:AlertShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:AlertShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("AlertShowCaseLangResource BasicTitle");
         source.ShouldContain("AlertShowCaseLangResource MoreTypesTitle");
@@ -127,7 +126,7 @@ public class AlertShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyType");
             source.ShouldContain("ApiPropertyMessage");
             source.ShouldContain("ApiPropertyDescription");

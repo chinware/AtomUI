@@ -15,9 +15,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = "穩定";
     public const string PageSubtitle = "用於組織命令與導航動作的菜單控件。";
     public const string PageDescription = "Menu、ContextMenu、MenuFlyout 和 NavMenu 覆蓋命令列表、上下文操作、嵌套導航、數據驅動生成，以及垂直、內聯、水平導航佈局。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變量";

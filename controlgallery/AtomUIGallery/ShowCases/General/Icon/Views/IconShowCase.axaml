@@ -7,106 +7,17 @@
              x:DataType="vm:IconViewModel">
     <Grid Background="{atom:SharedTokenResource ColorBgLayout}"
           RowDefinitions="Auto,Auto,*">
-        <StackPanel Grid.Row="0"
-                    Margin="28,24,28,18"
-                    Spacing="16">
-            <StackPanel Spacing="6">
-                <StackPanel Orientation="Horizontal"
-                            Spacing="10"
-                            VerticalAlignment="Center">
-                    <atom:TextBlock Text="Icon"
-                                    FontSize="26"
-                                    FontWeight="Bold"
-                                    VerticalAlignment="Center" />
-                    <atom:Tag Text="{gallery:IconShowCaseLangResource ComponentCategory}"
-                              TagColor="blue"
-                              VerticalAlignment="Center" />
-                    <atom:Tag Text="{gallery:IconShowCaseLangResource ComponentStatusStable}"
-                              TagColor="success"
-                              VerticalAlignment="Center" />
-                </StackPanel>
-                <atom:TextBlock Text="{gallery:IconShowCaseLangResource PageSubtitle}"
-                                FontSize="15"
-                                Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
-                <atom:TextBlock Text="{gallery:IconShowCaseLangResource PageDescription}"
-                                HorizontalAlignment="Left"
-                                TextWrapping="Wrap"
-                                Foreground="{atom:SharedTokenResource ColorTextTertiary}" />
-            </StackPanel>
-
-            <Border Background="{atom:SharedTokenResource ColorBgContainer}"
-                    BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
-                    BorderThickness="1"
-                    CornerRadius="6"
-                    MinHeight="48"
-                    Padding="16,8">
-                <Border.Styles>
-                    <Style Selector="atom|TextBlock.info-label">
-                        <Setter Property="Width" Value="84" />
-                    </Style>
-                    <Style Selector="atom|TextBlock.info-value">
-                        <Setter Property="Width" Value="220" />
-                        <Setter Property="TextWrapping" Value="NoWrap" />
-                        <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                    </Style>
-                </Border.Styles>
-                <WrapPanel Orientation="Horizontal"
-                           ItemSpacing="48"
-                           LineSpacing="8"
-                           VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="10"
-                                VerticalAlignment="Center">
-                        <atom:TextBlock Classes="info-label"
-                                        Text="{gallery:IconShowCaseLangResource InfoNamespaceLabel}"
-                                        FontWeight="Bold"
-                                        LineHeight="22"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                        VerticalAlignment="Center" />
-                        <atom:TextBlock Classes="info-value"
-                                        Text="AtomUI.Controls"
-                                        FontFamily="Consolas"
-                                        LineHeight="22"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                        VerticalAlignment="Center" />
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="10"
-                                VerticalAlignment="Center">
-                        <atom:TextBlock Classes="info-label"
-                                        Text="{gallery:IconShowCaseLangResource InfoPackageLabel}"
-                                        FontWeight="Bold"
-                                        LineHeight="22"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                        VerticalAlignment="Center" />
-                        <atom:TextBlock Classes="info-value"
-                                        Text="AtomUI.Icons.AntDesign"
-                                        FontFamily="Consolas"
-                                        LineHeight="22"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                        VerticalAlignment="Center" />
-                    </StackPanel>
-
-                    <StackPanel Orientation="Horizontal"
-                                Spacing="10"
-                                VerticalAlignment="Center">
-                        <atom:TextBlock Classes="info-label"
-                                        Text="{gallery:IconShowCaseLangResource InfoBaseClassLabel}"
-                                        FontWeight="Bold"
-                                        LineHeight="22"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                        VerticalAlignment="Center" />
-                        <atom:TextBlock Classes="info-value"
-                                        Text="Icon"
-                                        FontFamily="Consolas"
-                                        LineHeight="22"
-                                        Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                        VerticalAlignment="Center" />
-                    </StackPanel>
-                </WrapPanel>
-            </Border>
-        </StackPanel>
+        <gallery:GalleryShowCaseHeader
+            Grid.Row="0"
+            Title="Icon"
+            Category="{gallery:IconShowCaseLangResource ComponentCategory}"
+            Status="{gallery:IconShowCaseLangResource ComponentStatusStable}"
+            Subtitle="{gallery:IconShowCaseLangResource PageSubtitle}"
+            Description="{gallery:IconShowCaseLangResource PageDescription}"
+            Namespace="AtomUI.Controls"
+            Package="AtomUI.Icons.AntDesign"
+            BaseClass="Icon"
+            MetadataValueWidth="220" />
 
         <atom:TabStrip Name="ScenarioTabs"
                        Grid.Row="1"

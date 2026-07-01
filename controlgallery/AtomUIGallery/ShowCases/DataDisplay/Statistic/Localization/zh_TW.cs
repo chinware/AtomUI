@@ -37,9 +37,6 @@ internal partial class zh_TW : LanguageProvider
         "Statistic 用於展示重要數值，支持單位、圖標、加載狀態、動畫數字，以及基於時間的倒計時或正計時。";
     public const string ComponentCategory = "數據展示";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

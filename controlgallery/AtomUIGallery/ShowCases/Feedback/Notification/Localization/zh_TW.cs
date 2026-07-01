@@ -22,9 +22,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = "穩定";
     public const string PageSubtitle = "用於較長反饋和非阻塞更新的桌面通知。";
     public const string PageDescription = "Notification 在窗口邊緣顯示信息更豐富的反饋卡片，支持語義類型、自定義圖標、彈出位置、手動時長、懸停暫停和自動關閉進度。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "管理器";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計變量";

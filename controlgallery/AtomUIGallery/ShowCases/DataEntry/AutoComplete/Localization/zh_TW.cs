@@ -48,9 +48,6 @@ internal partial class zh_TW : LanguageProvider
         "AutoComplete 將文本輸入與候選過濾、異步加載、自定義選項渲染、狀態反饋以及搜索框或文本域變體組合在一起。";
     public const string ComponentCategory = "數據錄入";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

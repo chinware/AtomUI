@@ -13,9 +13,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "用星级、半星、自定义字符和提示文案收集轻量评分。";
     public const string PageDescription = "Rate 用于让用户按有序等级表达偏好或质量评价，支持清除、半选、只读、键盘交互、自定义图形和本地化文案。";
-    public const string InfoNamespaceLabel = "命名空间：";
-    public const string InfoPackageLabel = "包：";
-    public const string InfoBaseClassLabel = "基类：";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

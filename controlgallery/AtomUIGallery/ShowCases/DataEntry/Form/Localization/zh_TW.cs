@@ -52,9 +52,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioDesignToken = "設計 Token";
     public const string PageSubtitle = "支持校驗、佈局和表單項協同的高效數據錄入。";
     public const string PageDescription = "Form 用於協調字段、校驗規則、提交/重置動作以及可複用表單項控件，適合結構化數據錄入場景。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ComponentCategory = "數據錄入";
     public const string ComponentStatusStable = "穩定";
     public const string ApiColumnProperty = "屬性";

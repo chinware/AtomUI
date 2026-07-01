@@ -45,7 +45,7 @@
 
 `AtomUI.Toolkits.GalleryBase` 位于 AtomUI 上层工具库层。它依赖 AtomUI UI 基础设施，但不反向被 AtomUI 核心控件包依赖。
 
-该模块以 `AtomUI.Toolkits.GalleryBase` NuGet 包发布，版本跟随主库 `AtomUIVersion`，并纳入 `release-atomui.yml` 与 `scripts/PublishToLocalSources.ps1` 的主包发布链路。
+该模块以 `AtomUI.Toolkits.GalleryBase` NuGet 包发布，版本跟随主库 `AtomUIVersion`，并纳入 `release-nuget-packages.yml` 与 `scripts/PublishToLocalSources.ps1` 的主包发布链路。
 
 典型消费方是具体产品 Gallery 应用：
 

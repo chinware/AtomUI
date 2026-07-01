@@ -13,9 +13,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "通过可拖拽把手、约束、折叠控制和延迟更新调整相邻面板尺寸。";
     public const string PageDescription = "Splitter 将区域拆分为可调整大小的面板，支持水平和垂直布局、嵌套分割器、固定或受约束面板、可折叠把手、多面板和延迟拖拽反馈。";
-    public const string InfoNamespaceLabel = "命名空间：";
-    public const string InfoPackageLabel = "包：";
-    public const string InfoBaseClassLabel = "基类：";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

@@ -34,9 +34,6 @@ internal partial class en_US : LanguageProvider
     public const string ScenarioDesignToken = "Design Token";
     public const string PageSubtitle = "Arrange components with consistent spacing or compact grouping.";
     public const string PageDescription = "Space provides inline and vertical spacing, item alignment, split rendering, and compact input/button groups for dense tool surfaces.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base class";
     public const string ComponentCategory = "Layout";
     public const string ComponentStatusStable = "Stable";
     public const string ApiColumnProperty = "Property";

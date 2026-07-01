@@ -19,9 +19,9 @@ public class ImagePreviewerShowCasePageTests
 
         source.ShouldContain("ImagePreviewerShowCaseLangResource PageSubtitle");
         source.ShouldContain("ImagePreviewerShowCaseLangResource PageDescription");
-        source.ShouldContain("ImagePreviewerShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("ImagePreviewerShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("ImagePreviewerShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("ImagePreviewerShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("ImagePreviewerShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("ImagePreviewerShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("ImagePreviewerShowCaseLangResource ComponentCategory");
         source.ShouldContain("ImagePreviewerShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("ImagePreviewerShowCaseLangResource ScenarioExamples");
@@ -40,13 +40,12 @@ public class ImagePreviewerShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:ImagePreviewerShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:ImagePreviewerShowCaseLangResource PageDescription}\"");
         CountShowCaseItemElements(source).ShouldBe(6);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(6);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(6);
@@ -150,7 +149,7 @@ public class ImagePreviewerShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("RemoteImageLoadingTitle");
             source.ShouldContain("RemoteImageLoadingDescription");
             source.ShouldContain("ApiPropertySourceUri");

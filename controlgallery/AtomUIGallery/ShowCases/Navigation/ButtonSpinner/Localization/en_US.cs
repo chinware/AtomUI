@@ -10,9 +10,6 @@ internal partial class en_US : LanguageProvider
     public const string ComponentStatusStable = "Stable";
     public const string PageSubtitle = "A compact spinner input with button handles.";
     public const string PageDescription = "ButtonSpinner combines an input-like content area with increment and decrement handles, and supports add-ons, prefixes, suffixes, statuses, sizes, and visual variants.";
-    public const string InfoNamespaceLabel = "Namespace";
-    public const string InfoPackageLabel = "Package";
-    public const string InfoBaseClassLabel = "Base";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";

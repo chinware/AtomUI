@@ -22,9 +22,6 @@ internal partial class zh_TW : LanguageProvider
     public const string PageDescription = "CheckBox 支援選中、未選中、半選、禁用、受控、分組和全選狀態，適用於表單和選項列表。";
     public const string ComponentCategory = "資料錄入";
     public const string ComponentStatusStable = "穩定";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "套件";
-    public const string InfoBaseClassLabel = "基類";
     public const string ScenarioExamples = "範例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "設計 Token";

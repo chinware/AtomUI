@@ -18,9 +18,9 @@ public class GridShowCasePageTests
 
         source.ShouldContain("GridShowCaseLangResource PageSubtitle");
         source.ShouldContain("GridShowCaseLangResource PageDescription");
-        source.ShouldContain("GridShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("GridShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("GridShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("GridShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("GridShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("GridShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("GridShowCaseLangResource ComponentCategory");
         source.ShouldContain("GridShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("GridShowCaseLangResource ScenarioExamples");
@@ -39,13 +39,12 @@ public class GridShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:GridShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:GridShowCaseLangResource PageDescription}\"");
         CountShowCaseItemElements(source).ShouldBe(9);
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(9);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(9);
@@ -150,7 +149,7 @@ public class GridShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyRowGutter");
             source.ShouldContain("ApiPropertyRowJustifyInfo");
             source.ShouldContain("ApiPropertyRowAlignInfo");

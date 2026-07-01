@@ -15,9 +15,9 @@ public class SpinShowCasePageTests
 
         source.ShouldContain("SpinShowCaseLangResource PageSubtitle");
         source.ShouldContain("SpinShowCaseLangResource PageDescription");
-        source.ShouldContain("SpinShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("SpinShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("SpinShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("SpinShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("SpinShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("SpinShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("SpinShowCaseLangResource ComponentCategory");
         source.ShouldContain("SpinShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("SpinShowCaseLangResource ScenarioExamples");
@@ -33,13 +33,12 @@ public class SpinShowCasePageTests
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:SpinShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:SpinShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("SpinShowCaseLangResource BasicUsageTitle");
         source.ShouldContain("SpinShowCaseLangResource SizeTitle");
@@ -130,7 +129,7 @@ public class SpinShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyIsSpinning");
             source.ShouldContain("ApiPropertyTip");
             source.ShouldContain("ApiPropertyCustomIndicator");

@@ -13,9 +13,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "用星級、半星、自定義字符和提示文案收集輕量評分。";
     public const string PageDescription = "Rate 用於讓用戶按有序等級表達偏好或質量評價，支持清除、半選、只讀、鍵盤交互、自定義圖形和本地化文案。";
-    public const string InfoNamespaceLabel = "命名空間：";
-    public const string InfoPackageLabel = "包：";
-    public const string InfoBaseClassLabel = "基類：";
     public const string ApiColumnProperty = "屬性";
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";

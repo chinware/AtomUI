@@ -13,9 +13,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = "稳定";
     public const string PageSubtitle = "使用图片、图标或文本头像表示用户、团队或对象。";
     public const string PageDescription = "Avatar 用于在紧凑空间中展示身份信息。它支持圆形和方形、显式尺寸、文本自动缩放，以及头像组的折叠展示。";
-    public const string InfoNamespaceLabel = "命名空间：";
-    public const string InfoPackageLabel = "包：";
-    public const string InfoBaseClassLabel = "基类：";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

@@ -16,9 +16,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioDesignToken = "設計變量";
     public const string PageSubtitle = "使用行和列構建響應式 24 柵格佈局。";
     public const string PageDescription = "Grid 提供行間距、對齊、偏移、排序和斷點級列尺寸控制，適合應用佈局。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ComponentCategory = "佈局";
     public const string ComponentStatusStable = "穩定";
     public const string ApiColumnProperty = "屬性";

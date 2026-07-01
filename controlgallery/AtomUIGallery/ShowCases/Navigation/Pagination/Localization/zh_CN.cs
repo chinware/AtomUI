@@ -13,9 +13,6 @@ internal partial class zh_CN : LanguageProvider
     public const string ComponentStatusStable = ".NET 10";
     public const string PageSubtitle = "用页码、页大小、总数和快速跳转浏览长列表。";
     public const string PageDescription = "Pagination 将大型数据集拆分为可预测的页面，支持对齐方式、页大小选择、快速跳转、总数信息、迷你尺寸以及简洁只读或可编辑模式。";
-    public const string InfoNamespaceLabel = "命名空间:";
-    public const string InfoPackageLabel = "包:";
-    public const string InfoBaseClassLabel = "基类:";
     public const string ApiColumnProperty = "属性";
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";

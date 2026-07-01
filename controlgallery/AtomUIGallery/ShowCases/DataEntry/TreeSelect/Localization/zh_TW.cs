@@ -16,9 +16,6 @@ internal partial class zh_TW : LanguageProvider
     public const string ScenarioDesignToken = "設計 Token";
     public const string PageSubtitle = "在緊湊輸入框中從層級數據裡選擇值。";
     public const string PageDescription = "TreeSelect 將輸入選擇器與樹形導航結合，適用於層級分類、組織節點、權限和其他嵌套選項集合。";
-    public const string InfoNamespaceLabel = "命名空間";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基類";
     public const string ComponentCategory = "數據錄入";
     public const string ComponentStatusStable = "穩定";
     public const string ApiColumnProperty = "屬性";

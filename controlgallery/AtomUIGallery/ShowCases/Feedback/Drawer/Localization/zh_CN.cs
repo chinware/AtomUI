@@ -10,9 +10,6 @@ internal partial class zh_CN : LanguageProvider
     public const string PageDescription = "Drawer 从窗口边缘或局部容器边缘滑出，在不打断当前流程的情况下展示次级操作、表单或详情。";
     public const string ComponentCategory = "反馈";
     public const string ComponentStatusStable = "稳定";
-    public const string InfoNamespaceLabel = "命名空间";
-    public const string InfoPackageLabel = "包";
-    public const string InfoBaseClassLabel = "基类";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计变量";

@@ -17,9 +17,9 @@ public class LineEditShowCasePageTests
 
         source.ShouldContain("LineEditShowCaseLangResource PageSubtitle");
         source.ShouldContain("LineEditShowCaseLangResource PageDescription");
-        source.ShouldContain("LineEditShowCaseLangResource InfoNamespaceLabel");
-        source.ShouldContain("LineEditShowCaseLangResource InfoPackageLabel");
-        source.ShouldContain("LineEditShowCaseLangResource InfoBaseClassLabel");
+        source.ShouldNotContain("LineEditShowCaseLangResource InfoNamespaceLabel");
+        source.ShouldNotContain("LineEditShowCaseLangResource InfoPackageLabel");
+        source.ShouldNotContain("LineEditShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("LineEditShowCaseLangResource ComponentCategory");
         source.ShouldContain("LineEditShowCaseLangResource ComponentStatusStable");
         source.ShouldContain("LineEditShowCaseLangResource ScenarioExamples");
@@ -38,13 +38,12 @@ public class LineEditShowCasePageTests
         source.ShouldContain("InitialDeferredLoadItemCount=\"4\"");
         source.ShouldContain("DeferredLoadBatchSize=\"2\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-label\"");
-        source.ShouldContain("Selector=\"atom|TextBlock.info-value\"");
-        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(3);
-        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(3);
-        source.ShouldContain("LineHeight=\"22\"");
-        source.ShouldContain("Text=\"{gallery:LineEditShowCaseLangResource PageDescription}\"");
-        source.ShouldContain("HorizontalAlignment=\"Left\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-label\"");
+        source.ShouldNotContain("Selector=\"atom|TextBlock.info-value\"");
+        CountOccurrences(source, "Classes=\"info-label\"").ShouldBe(0);
+        CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
+        source.ShouldNotContain("LineHeight=\"22\"");
+        source.ShouldContain("Description=\"{gallery:LineEditShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(17);
         CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(17);
@@ -140,7 +139,7 @@ public class LineEditShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
-            source.ShouldContain("InfoNamespaceLabel");
+            source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyIsAllowClear");
             source.ShouldContain("ApiPropertySearchButtonStyle");
             source.ShouldContain("ApiPropertyIsAutoSize");
