@@ -59,8 +59,19 @@
                         IsDeferredContentEnabled="True">
                         <gallery:ShowCaseItem.DeferredContentTemplate>
                             <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
-                                <atom:ImagePreviewer Width="200"
-                                                     SourceUri="{Binding RemoteImage}" />
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="{atom:SharedTokenResource SpacingLG}">
+                                    <atom:ImagePreviewer Width="200"
+                                                         SourceUri="{Binding RemoteImage}" />
+                                    <Border Width="200"
+                                            Height="200"
+                                            Background="{atom:SharedTokenResource ColorFillTertiary}">
+                                        <Panel HorizontalAlignment="Center"
+                                               VerticalAlignment="Center">
+                                            <atom:SkeletonImage IsActive="True" />
+                                        </Panel>
+                                    </Border>
+                                </StackPanel>
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>

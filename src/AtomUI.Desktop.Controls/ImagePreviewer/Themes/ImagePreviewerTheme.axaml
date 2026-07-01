@@ -15,6 +15,8 @@
                     <atom:ImagePreviewerCover ImageSource="{TemplateBinding EffectiveCoverImage}"
                                               IsLoading="{TemplateBinding IsCoverImageLoading}"
                                               IsFailed="{TemplateBinding IsCoverImageFailed}"
+                                              Width="{TemplateBinding CoverWidth}"
+                                              Height="{TemplateBinding CoverHeight}"
                                               LoadingContent="{TemplateBinding LoadingContent}"
                                               LoadingContentTemplate="{TemplateBinding LoadingContentTemplate}"
                                               ErrorContent="{TemplateBinding ErrorContent}"

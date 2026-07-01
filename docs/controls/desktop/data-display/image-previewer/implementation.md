@@ -146,7 +146,9 @@ ImagePreviewer (ImagePreviewerTheme.axaml)
      -> ImagePreviewerCover
         -> ImagePreviewRenderer
         -> Border#PART_LoadingPresenter
+           -> SkeletonImage (default loading content)
         -> Border#PART_ErrorPresenter
+           -> 图片失败占位 (default error content)
         -> Border#Mask
            -> ContentPresenter#MaskContentPresenter
 
@@ -162,7 +164,9 @@ ImagePreviewerDialog (ImagePreviewerDialogTheme.axaml + WindowTheme)
      -> Canvas#PART_ImageViewerScene
         -> ImagePreviewRenderer#PART_ImageRenderer
      -> Border#PART_LoadingPresenter
+        -> Spin (default loading content)
      -> Border#PART_ErrorPresenter
+        -> 图片失败占位 (default error content)
      -> ImagePreviewNavButton#PART_PreviousButton
      -> ImagePreviewNavButton#PART_NextButton
      -> ImagePreviewFloatToolbar
@@ -219,8 +223,8 @@ ImagePreviewerOverlayHost (ImagePreviewerThemes.axaml + runtime host)
 - `PART_HorizontalFlipButton`：承载用户触发入口、导航或关闭动作。
 - `PART_ImageRenderer`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_ImageViewerScene`：稳定模板协作入口，重命名前必须同步主题和实现。
-- `PART_LoadingPresenter`：承载图片加载状态内容。默认封面使用 Skeleton 风格占位，预览层使用居中 Spin。
-- `PART_ErrorPresenter`：承载图片加载失败内容；存在 `FallbackSourceUri` 时优先展示 fallback 结果。
+- `PART_LoadingPresenter`：承载图片加载状态内容。默认封面使用图片 Skeleton 占位，预览层使用居中 Spin；`LoadingContent` / `LoadingContentTemplate` 只替换 presenter 内容，不拥有加载状态。
+- `PART_ErrorPresenter`：承载图片加载失败内容；存在 `FallbackSourceUri` 时优先展示 fallback 结果。没有可用 fallback 时显示 `ErrorContent` / `ErrorContentTemplate` 或默认本地化失败占位。
 - `PART_IconPresenter`：预览窗口标题图标展示入口，内容来自 `ImagePreviewer.PreviewTitleIcon`，位于 `PART_TitleLayout` 内的标题文字左侧。
 - `PART_TitleLayout`：标题图标和标题文字的水平布局，使用 `WindowTitleBarToken.LogoAndTitleSpacing` 作为二者间距。
 - `PART_NextButton`：承载用户触发入口、导航或关闭动作。
@@ -253,11 +257,13 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - `IImageSourceLoader` 对 `avares://`、本地路径、`file://`、相对路径和 `http(s)://` 的统一异步加载。
 - `ImagePreviewItemState` 的 pending、loading、loaded、failed 迁移，以及 fallback 加载路径。
 - 快速切换图片来源时的取消、版本校验和过期结果释放。
+- 封面 loading/error 占位尺寸解析：优先使用显式 `CoverWidth` / `CoverHeight`，其次使用模板布局传入的有效约束，最后使用 `ImagePreviewerToken.CoverImageWidth`。没有 `LoadedImageSource` 时不得让 loading 或 error 内容本身决定封面高度。
 - current effective item resolver：从 effective items 和 `CurrentIndex` 计算展示项，显示层对越界索引进行 clamp，并保持 public `CurrentIndex` 原值不被静默改写。
 - 封面来源解析：先判断 `CoverSourceUri`，命中时使用显式封面；否则使用 current effective item，使普通封面、dialog 和 overlay 的当前项语义一致。
 - 预览标题解析：先检查预览窗口或宿主的 `Window.Title`，非空白时直接使用；否则检查 `PreviewTitle`；仍为空时使用 `PreviewTitleResolver` 基于 current effective item 解析标题；解析不到标题时保持空态。
 - 预览窗口标题图标：`PreviewTitleIcon` relay 到 `ImagePreviewerDialog.TitleIcon`，再绑定到 `ImagePreviewerTitleBar.Icon`；主题只负责用 `PART_IconPresenter` 把显式 `PathIcon` 放在标题文字左侧，不创建右侧按钮或 action slot 语义，也不走 `Window.Icon` fallback。
 - 默认标题 resolver：本地路径和 `file://` 从 `ImageSourceUri.LocalPath` 提取文件名，`http(s)://` 从 `Uri.AbsolutePath` 最后一个非空 path segment 提取文件名并忽略 query/fragment，`avares://` 从资源路径最后一个非空 path segment 提取文件名，unsupported 或无法提取名称时返回 `null`。
+- 默认失败占位：封面和预览层共享本地化失败文案，使用图片失败语义图标和低干扰背景。主题不得硬编码 `Image load failed`，也不得把网络失败显示成仅由文本撑开的灰色窄条。
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - `SourceUris`、current item 和弹层宿主之间的集合同步。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
@@ -272,7 +278,9 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - 不把可静态声明的模板结构迁移到 C# 动态创建。
 - 异步加载、上传、弹层和窗口生命周期必须能取消或释放。
 - 网络图片必须通过异步加载服务处理，不允许在 UI 线程同步等待网络 I/O。
-- 本地、资源和远程图片共享同一来源身份 key 规范化规则，用于去重、旧结果判定和后续扩展。
+- 本地、资源和远程图片共享同一来源身份 key 规范化规则，用于去重、旧结果判定和扩展场景。
+- 默认 loading/error 视觉必须保持 AXAML-first。封面 Skeleton、预览 Spin、失败图标和本地化文本应由模板和资源表达；除非需要计算稳定占位尺寸，否则不要用 C# 动态创建视觉节点。
+- 默认失败文案属于 ImagePreviewer 控件语言资源，新增或调整文案时同步 `en_US`、`zh_CN`、`zh_TW` 语言提供器和生成语言资源，不在主题中写死英文。
 - 标题 resolver 必须是同步、确定性的纯解析逻辑；不得访问文件系统、发起网络请求、等待异步任务或通过运行时反射发现模型成员。
 - 预览标题图标必须使用 `PathIcon? PreviewTitleIcon` 链路，不通过运行时反射、文件探测、平台特判、`Window.Icon` 或主窗口 fallback 生成额外图标模型。
 - `LoadedImageSource` 由控件当前加载项持有；来源替换、取消或控件释放时必须释放旧结果。
@@ -294,6 +302,9 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - 图片加载状态的单 owner：`ImageSourceUri` 是来源，`ImagePreviewItem` 是状态，`LoadedImageSource` 是结果，`ImagePreviewRenderer` 只负责渲染。
 - `SourceUri`、`SourceUris`、`CoverSourceUri` 和 `FallbackSourceUri` 的加载、取消、来源身份和失败处理一致性。
+- 单图 `ImagePreviewer` 与 `ImageGroupPreviewer` 对 `CoverWidth` / `CoverHeight` 的消费一致性。远程图片 loading/failed 时不能因为没有图片自然尺寸而丢失封面高度。
+- 默认 loading/error 视觉不能破坏自定义内容入口。用户设置 `LoadingContent` 或 `ErrorContent` 后，模板仍负责稳定尺寸、状态显隐和 mask 抑制。
+- 默认失败文案必须走控件本地化资源，不允许在 `ImagePreviewerCoverTheme.axaml` 或 `ImageViewerTheme.axaml` 中硬编码英文字符串。
 - `CurrentIndex` 的单一语义：普通封面、dialog 和 overlay 使用同一 current effective item；`CoverSourceUri` 只覆盖封面来源，不改变弹层当前项。
 - 预览标题的单一算法：非空白 `Window.Title` 或 `PreviewTitle` 优先，resolver 只在显式标题为空时运行；标题必须跟随 current effective item，不能保留旧集合项的文件名。
 - 预览标题图标的单一路径：`PreviewTitleIcon` 只能进入 `ImagePreviewerDialog.TitleIcon`，再绑定到 `ImagePreviewerTitleBar.Icon` 和 `PART_IconPresenter`；不得转接 `Window.Icon`、`Window.Logo` 或右侧扩展区域来表达标题图标。
@@ -308,6 +319,7 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - 图片加载模型变更覆盖 `ImageSourceUri` 解析、本地文件、`avares://`、fake HTTP、取消、防旧结果回写、fallback 和 loading/error 模板状态。
+- loading/error 默认视觉变更覆盖：单图和多图封面均消费 `CoverWidth` / `CoverHeight`，封面默认 loading 使用 `SkeletonImage`，封面和预览层默认失败文案来自 `ImagePreviewerLangResource`，主题中不再出现硬编码 `Image load failed`。
 - 预览标题模型变更覆盖显式标题优先级、默认文件名解析、current item 切换、集合替换、越界 `CurrentIndex` clamp、resolver 更换、`PreviewTitleIcon` 到 `TitleIcon` 的转接、未设置图标时不显示 fallback 图标，以及标题栏 `PART_IconPresenter` 布局。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例、API 表或 Token 表变更运行 `tests/AtomUIGallery.Tests`。

@@ -56,6 +56,7 @@ public class ImagePreviewerShowCasePageTests
         source.ShouldContain("IsOccupyEntireRow=\"True\"");
         source.ShouldContain("SourceUris=\"{Binding DefaultImages}\"");
         source.ShouldContain("SourceUri=\"{Binding RemoteImage}\"");
+        source.ShouldContain("<atom:SkeletonImage IsActive=\"True\"");
         source.ShouldContain("FallbackSourceUri=\"{Binding FallbackImage}\"");
         source.ShouldContain("SourceUris=\"{Binding ThreeImages}\"");
         source.ShouldContain("CoverSourceUri=\"{Binding BlurImage}\"");

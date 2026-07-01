@@ -62,6 +62,7 @@ namespace AtomUI.Desktop.Controls.Localization
 {
     public enum ImagePreviewerLangResourceKind
     {
+        ImageLoadFailed,
         Preview
     }
 

@@ -39,11 +39,18 @@
                             IsVisible="{TemplateBinding IsCurrentImageFailed}">
                         <Panel HorizontalAlignment="Center"
                                VerticalAlignment="Center">
-                            <TextBlock Name="DefaultErrorText"
-                                       Text="Image load failed"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNull}}" />
+                            <StackPanel Name="DefaultErrorLayout"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Spacing="{atom:SharedTokenResource SpacingXXS}"
+                                        IsVisible="{TemplateBinding ErrorContent, Converter={x:Static ObjectConverters.IsNull}}">
+                                <antdicons:PictureOutlined Name="DefaultErrorIcon"
+                                                          HorizontalAlignment="Center" />
+                                <TextBlock Name="DefaultErrorText"
+                                           Text="{atom:ImagePreviewerLangResource ImageLoadFailed}"
+                                           HorizontalAlignment="Center"
+                                           TextAlignment="Center" />
+                            </StackPanel>
                             <ContentPresenter Content="{TemplateBinding ErrorContent}"
                                               ContentTemplate="{TemplateBinding ErrorContentTemplate}"
                                               HorizontalAlignment="Center"
@@ -85,6 +92,11 @@
         </Style>
         <Style Selector="^ /template/ TextBlock#DefaultErrorText">
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextTertiary}" />
+        </Style>
+        <Style Selector="^ /template/ atom|Icon#DefaultErrorIcon">
+            <Setter Property="Width" Value="48" />
+            <Setter Property="Height" Value="48" />
+            <Setter Property="StrokeBrush" Value="{atom:SharedTokenResource ColorTextTertiary}" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

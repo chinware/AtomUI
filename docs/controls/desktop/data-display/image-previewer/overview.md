@@ -64,8 +64,8 @@ ImagePreviewer 的公共契约由 public/protected 类型成员、Avalonia 属�
 | `PART_HorizontalFlipButton` | `IconButton` | 承载水平翻转动作。 |
 | `PART_ImageRenderer` | `ImagePreviewRenderer` | 承载当前图片渲染。 |
 | `PART_ImageViewerScene` | `Canvas` | 承载预览层图片场景、变换和拖拽坐标空间。 |
-| `PART_LoadingPresenter` | `Border` | 承载图片加载状态内容。默认封面使用 Skeleton 风格占位，预览层使用居中 Spin。 |
-| `PART_ErrorPresenter` | `Border` | 承载图片加载失败内容；存在 `FallbackSourceUri` 时优先展示 fallback 结果。 |
+| `PART_LoadingPresenter` | `Border` | 承载图片加载状态内容。默认封面使用图片 Skeleton 占位，预览层使用居中 Spin；自定义 `LoadingContent` 只替换内容，不改变加载状态 owner。 |
+| `PART_ErrorPresenter` | `Border` | 承载图片加载失败内容。没有可用 fallback 时展示本地化失败占位；自定义 `ErrorContent` 只替换内容，不改变失败状态 owner。 |
 | `PART_IconPresenter` | `IconPresenter` | 承载预览窗口标题图标，内容来自 `ImagePreviewer.PreviewTitleIcon`。 |
 | `PART_TitleLayout` | `StackPanel` | 承载预览窗口标题图标和标题文字，两者使用标题栏 Logo 与 Title 间距。 |
 | `PART_NextButton` | `ImagePreviewNavButton` / `IconButton` | 承载下一张导航动作。 |
@@ -124,10 +124,12 @@ ImagePreviewer 使用 `ImagePreviewerToken` 作为组件 Token scope。Token 只
 
 加载视觉遵循以下规则：
 
-- 封面加载态使用 Skeleton 风格图片占位，保持封面尺寸稳定，不显示 hover mask。
+- 封面加载态使用图片 Skeleton 占位，保持封面尺寸稳定，不显示 hover mask。
 - 预览层加载态使用居中 Spin，缩放、旋转、拖拽和 fit-to-window 在当前图片未加载完成前禁用。
 - loading 视觉允许短暂延迟显示以避免本地文件或 `avares://` 资源快速完成造成闪烁；延迟只影响视觉，不影响 `ImagePreviewItemState`。
-- `LoadingContent` / `LoadingContentTemplate` 替换默认加载内容，`ErrorContent` / `ErrorContentTemplate` 替换默认失败内容。
+- `LoadingContent` / `LoadingContentTemplate` 替换默认加载内容，`ErrorContent` / `ErrorContentTemplate` 替换默认失败内容；替换内容不得重新定义 `Pending -> Loading -> Loaded/Failed` 状态机。
+- 封面 loading 和 failed 状态必须使用稳定占位尺寸。尺寸解析优先使用显式 `CoverWidth` / `CoverHeight`，其次使用控件布局约束中的有效宽高，最后使用 `ImagePreviewerToken.CoverImageWidth` 作为兜底基准。没有图片自然尺寸时，失败态不能由错误文案撑开成窄条。
+- 默认失败态使用图片失败占位视觉：图标、简短本地化文案和低干扰背景共同表达失败。失败文案来自 ImagePreviewer 控件语言资源，主题中不得硬编码英文 `Image load failed`。
 
 主题维护规则：
 
@@ -242,10 +244,11 @@ ImagePreviewer 使用 `ImageSourceUri` 作为图片来源公共契约。`ImageSo
 
 加载状态可视化分层处理：
 
-- 封面区域在 loading 时显示 Skeleton 风格占位，并保持封面尺寸稳定。
+- 封面区域在 loading 时显示图片 Skeleton 占位，并保持封面尺寸稳定。
 - 预览层在 loading 时显示居中 Spin，禁用依赖真实图片尺寸的缩放、旋转、拖拽和 fit-to-window。
-- 加载失败时先尝试 `FallbackSourceUri`；没有 fallback 或 fallback 失败时显示 `ErrorContent` / `ErrorContentTemplate` 或默认失败占位。
+- 加载失败时先尝试 `FallbackSourceUri`；没有 fallback 或 fallback 失败时显示 `ErrorContent` / `ErrorContentTemplate` 或默认失败占位。默认失败占位必须使用控件本地化资源，不允许硬编码英文。
 - 本地或资源图片快速加载完成时可以延迟显示 loading 视觉以避免闪烁，但状态机仍必须进入 `Loading` 并接受取消。
+- 单图 `ImagePreviewer` 和 `ImageGroupPreviewer` 必须一致消费 `CoverWidth` / `CoverHeight`。封面尺寸契约不能只在多图模板生效，否则远程图片失败或尚未加载时会失去稳定高度。
 
 ### 8.6 集合与数据同步模型
 
@@ -268,7 +271,7 @@ LLMS 语义区域：
 | Part | AtomUI 节点 | 职责 | 相关 API | 相关 Token | 稳定性 |
 | --- | --- | --- | --- | --- | --- |
 | `root` | `ImagePreviewer` / `ImageGroupPreviewer` | 图片预览控件根语义区域，承载 public API、图片来源、当前项和主题入口。 | `SourceUri`、`SourceUris`、`CurrentIndex`、`IsOpen` | `ImagePreviewerToken` | stable |
-| `cover` | `ImagePreviewerCover` | 普通页面中的封面展示区域，承载封面图片、mask、loading 和 error 内容。 | `CoverSourceUri`、`CoverIndicatorContent`、`IsShowCoverMask`、`LoadingContent`、`ErrorContent` | `MaskBgColor` | stable |
+| `cover` | `ImagePreviewerCover` | 普通页面中的封面展示区域，承载封面图片、mask、loading 和 error 内容。 | `CoverSourceUri`、`CoverIndicatorContent`、`CoverWidth`、`CoverHeight`、`IsShowCoverMask`、`LoadingContent`、`ErrorContent` | `MaskBgColor`、`CoverImageWidth` | stable |
 | `viewer` | `ImageViewer` / `PART_ImageViewerScene` / `PART_ImageRenderer` | 预览宿主中的图片场景和渲染区域，承载缩放、旋转、翻转和拖拽坐标空间。 | `ImageScaleStep`、`ImageMinScale`、`ImageMaxScale`、`Stretch`、`Transform` | `DialogMinWidth`、`DialogMinHeight` | stable |
 | `title` | `ImagePreviewerTitleBar` / `PART_TitleLayout` / `PART_IconPresenter` | 预览窗口标题区域，承载 effective title 和显式标题图标。 | `PreviewTitle`、`PreviewTitleIcon`、`PreviewTitleResolver` | `TitleBarBackgroundColor`、`WindowTitleBarToken.LogoAndTitleSpacing` | template-stable |
 | `toolbar` | `ImagePreviewToolbar` / `ImagePreviewFloatToolbar` | 预览操作区域，承载上一张、下一张、缩放、fit-to-window、翻转和旋转动作。 | toolbar request events、`CurrentIndex`、`Count` | `ToolbarBoxShadow`、`ToolbarBgColor` | stable |

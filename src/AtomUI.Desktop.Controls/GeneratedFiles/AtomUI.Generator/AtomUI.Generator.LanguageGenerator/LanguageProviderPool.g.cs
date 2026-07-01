@@ -240,6 +240,7 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUI.Desktop.Controls.Localization.ImagePreviewerLangResourceKind.ImageLoadFailed] = global::AtomUI.Desktop.Controls.ImagePreviewerLang.en_US.ImageLoadFailed;
                 dictionary[global::AtomUI.Desktop.Controls.Localization.ImagePreviewerLangResourceKind.Preview] = global::AtomUI.Desktop.Controls.ImagePreviewerLang.en_US.Preview;
             }
             catch (System.Exception)
@@ -267,6 +268,7 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUI.Desktop.Controls.Localization.ImagePreviewerLangResourceKind.ImageLoadFailed] = global::AtomUI.Desktop.Controls.ImagePreviewerLang.zh_CN.ImageLoadFailed;
                 dictionary[global::AtomUI.Desktop.Controls.Localization.ImagePreviewerLangResourceKind.Preview] = global::AtomUI.Desktop.Controls.ImagePreviewerLang.zh_CN.Preview;
             }
             catch (System.Exception)
@@ -294,6 +296,7 @@ namespace AtomUI.Theme.Language
             var resourceKindType = GetResourceKindType();
             try
             {
+                dictionary[global::AtomUI.Desktop.Controls.Localization.ImagePreviewerLangResourceKind.ImageLoadFailed] = global::AtomUI.Desktop.Controls.ImagePreviewerLang.zh_TW.ImageLoadFailed;
                 dictionary[global::AtomUI.Desktop.Controls.Localization.ImagePreviewerLangResourceKind.Preview] = global::AtomUI.Desktop.Controls.ImagePreviewerLang.zh_TW.Preview;
             }
             catch (System.Exception)
