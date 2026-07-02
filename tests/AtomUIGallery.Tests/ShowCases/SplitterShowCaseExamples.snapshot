@@ -135,3 +135,25 @@ IsOccupyEntireRow="True">
 </StackPanel>
 </Border>
 </gallery:ShowCaseItem>
+<gallery:ShowCaseItem Title="{gallery:SplitterShowCaseLangResource LineStyleTitle}"
+Description="{gallery:SplitterShowCaseLangResource LineStyleDescription}"
+IsOccupyEntireRow="True">
+<atom:Splitter Orientation="Vertical"
+Height="220"
+Background="{atom:SharedTokenResource ColorBgContainer}"
+BorderBrush="{atom:SharedTokenResource ColorBorder}"
+BorderThickness="1"
+CornerRadius="8"
+LineThickness="4"
+LineCornerRadius="4">
+<Border Classes="splitter-panel"
+CornerRadius="8,0,0,8"
+atom:Splitter.Size="45%">
+<TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextFirst}" />
+</Border>
+<Border Classes="splitter-panel alt"
+CornerRadius="0,8,8,0">
+<TextBlock Classes="splitter-label" Text="{gallery:SplitterShowCaseLangResource P2TextSecond}" />
+</Border>
+</atom:Splitter>
+</gallery:ShowCaseItem>

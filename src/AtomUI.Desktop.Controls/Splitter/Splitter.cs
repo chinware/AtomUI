@@ -24,6 +24,12 @@ public class Splitter : TemplatedControl
     public static readonly StyledProperty<double> HandleSizeProperty =
         AvaloniaProperty.Register<Splitter, double>(nameof(HandleSize));
 
+    public static readonly StyledProperty<double> LineThicknessProperty =
+        AvaloniaProperty.Register<Splitter, double>(nameof(LineThickness));
+
+    public static readonly StyledProperty<CornerRadius> LineCornerRadiusProperty =
+        AvaloniaProperty.Register<Splitter, CornerRadius>(nameof(LineCornerRadius));
+
     public static readonly StyledProperty<IconTemplate?> CollapsePreviousIconProperty =
         AvaloniaProperty.Register<Splitter, IconTemplate?>(nameof(CollapsePreviousIcon));
 
@@ -46,6 +52,18 @@ public class Splitter : TemplatedControl
     {
         get => GetValue(HandleSizeProperty);
         set => SetValue(HandleSizeProperty, value);
+    }
+
+    public double LineThickness
+    {
+        get => GetValue(LineThicknessProperty);
+        set => SetValue(LineThicknessProperty, value);
+    }
+
+    public CornerRadius LineCornerRadius
+    {
+        get => GetValue(LineCornerRadiusProperty);
+        set => SetValue(LineCornerRadiusProperty, value);
     }
 
     public IconTemplate? CollapsePreviousIcon

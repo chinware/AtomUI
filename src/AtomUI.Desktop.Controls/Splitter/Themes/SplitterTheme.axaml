@@ -6,9 +6,15 @@
     <ControlTheme x:Key="{x:Type atom:Splitter}" TargetType="atom:Splitter">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame">
+                <Border Name="Frame"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
                     <atom:SplitterPanel Name="PART_SplitterPanel"
                                         HandleSize="{TemplateBinding HandleSize}" 
+                                        LineThickness="{TemplateBinding LineThickness}"
+                                        LineCornerRadius="{TemplateBinding LineCornerRadius}"
                                         Orientation="{TemplateBinding Orientation}"
                                         IsLazy="{TemplateBinding IsLazy}"
                                         CollapsePreviousIcon="{TemplateBinding CollapsePreviousIcon}"
@@ -19,5 +25,7 @@
 
         <Setter Property="ClipToBounds" Value="True" />
         <Setter Property="HandleSize" Value="{atom:SplitterTokenResource SplitBarHandleSize}" />
+        <Setter Property="LineThickness" Value="{atom:SplitterTokenResource HandleLineThickness}" />
+        <Setter Property="LineCornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
     </ControlTheme>
 </ResourceDictionary>

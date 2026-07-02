@@ -16,7 +16,10 @@ internal class SplitterDragBar : AtomUIThumb
         AvaloniaProperty.Register<SplitterDragBar, IBrush?>(nameof(LineBrush));
 
     public static readonly StyledProperty<double> LineThicknessProperty =
-        AvaloniaProperty.Register<SplitterDragBar, double>(nameof(LineThickness));
+        Splitter.LineThicknessProperty.AddOwner<SplitterDragBar>();
+
+    public static readonly StyledProperty<CornerRadius> LineCornerRadiusProperty =
+        Splitter.LineCornerRadiusProperty.AddOwner<SplitterDragBar>();
 
     public static readonly StyledProperty<bool> IsDragEnabledProperty =
         AvaloniaProperty.Register<SplitterDragBar, bool>(nameof(IsDragEnabled), true);
@@ -37,6 +40,12 @@ internal class SplitterDragBar : AtomUIThumb
     {
         get => GetValue(LineThicknessProperty);
         set => SetValue(LineThicknessProperty, value);
+    }
+
+    public CornerRadius LineCornerRadius
+    {
+        get => GetValue(LineCornerRadiusProperty);
+        set => SetValue(LineCornerRadiusProperty, value);
     }
 
     public bool IsDragEnabled
