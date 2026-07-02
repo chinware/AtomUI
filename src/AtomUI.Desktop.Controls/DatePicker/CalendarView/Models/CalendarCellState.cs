@@ -15,4 +15,14 @@ internal readonly record struct CalendarCellState(
     bool IsHidden,
     bool IsRangePreviewStart = false,
     bool IsRangePreviewEnd = false,
-    bool IsRangePreviewMiddle = false);
+    bool IsRangePreviewMiddle = false,
+    bool IsWeekNumber = false,
+    bool IsWeekSelectionStart = false,
+    bool IsWeekSelectionMiddle = false,
+    bool IsWeekSelectionEnd = false,
+    bool IsWeekRangeStart = false,
+    bool IsWeekRangeMiddle = false,
+    bool IsWeekRangeEnd = false,
+    bool IsWeekHoverStart = false,
+    bool IsWeekHoverMiddle = false,
+    bool IsWeekHoverEnd = false);

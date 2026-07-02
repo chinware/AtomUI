@@ -32,6 +32,14 @@ internal partial class zh_TW : LanguageProvider
     public const string P2SecondaryPlaceholderTextEndDate = "結束日期";
     public const string P2PlaceholderTextSelectTime = "選擇時間";
     public const string P2PlaceholderTextStartDate = "開始日期";
+    public const string P2PlaceholderTextStartWeek = "開始週";
+    public const string P2SecondaryPlaceholderTextEndWeek = "結束週";
+    public const string P2PlaceholderTextStartMonth = "開始月份";
+    public const string P2SecondaryPlaceholderTextEndMonth = "結束月份";
+    public const string P2PlaceholderTextStartQuarter = "開始季度";
+    public const string P2SecondaryPlaceholderTextEndQuarter = "結束季度";
+    public const string P2PlaceholderTextStartYear = "開始年份";
+    public const string P2SecondaryPlaceholderTextEndYear = "結束年份";
     public const string P2PlaceholderTextOutline = "描邊風格";
     public const string P2PlaceholderTextFilled = "填充風格";
     public const string P2PlaceholderTextBorderless = "無邊框";

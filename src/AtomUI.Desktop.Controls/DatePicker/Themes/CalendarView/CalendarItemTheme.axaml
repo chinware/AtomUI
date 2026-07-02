@@ -144,4 +144,12 @@
         </Style>
 
     </Style>
+
+    <Style Selector="^:is(calendarView|CalendarItem)[IsQuarterViewMode=True]">
+        <Setter Property="MinHeight" Value="0" />
+
+        <Style Selector="^ /template/ Grid#PART_YearView">
+            <Setter Property="MinHeight" Value="{atom:DatePickerTokenResource WithoutTimeCellHeight}" />
+        </Style>
+    </Style>
 </ControlTheme>

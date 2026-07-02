@@ -9,6 +9,9 @@
 - Changed
   - Propagate picker granularity through presenter templates into CalendarView state, panel model generation and selection normalization.
   - Add a dedicated quarter panel model rendering Q1-Q4 instead of using the month panel as a substitute.
+  - Render `PickerMode=Quarter` with a compact one-row quarter panel instead of inheriting the 12-slot year panel height.
+  - Render `PickerMode=Week` as an 8-column week panel with an ISO week number column and continuous selected-week and hover-week row highlights.
+  - Keep `RangeDatePicker` popup panels dual-pane for Week, Month, Quarter and Year picker modes.
   - Normalize non-date committed values to week start, month start, quarter start or year start while keeping `DateTime?` as the value contract.
   - Make time selection effective only for `PickerMode=Date`.
   - Reserve input width by picker granularity so selected and hover text do not resize the input.

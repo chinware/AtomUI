@@ -16,6 +16,7 @@ internal abstract record CalendarViewAction
     public sealed record SetSelectedMonthAction(DateTime Date) : CalendarViewAction;
     public sealed record SetSelectedYearAction(DateTime Date) : CalendarViewAction;
     public sealed record SetFocusedDateAction(DateTime? Date) : CalendarViewAction;
+    public sealed record SetHoverDateAction(DateTime? Date) : CalendarViewAction;
     public sealed record SetBlackoutDatesAction(IReadOnlyList<CalendarDateRange> Dates) : CalendarViewAction;
     public sealed record SetRangeSelectionAction(
         DateTime? Start,
@@ -62,6 +63,11 @@ internal abstract record CalendarViewAction
     public static CalendarViewAction SetFocusedDate(DateTime? date)
     {
         return new SetFocusedDateAction(date);
+    }
+
+    public static CalendarViewAction SetHoverDate(DateTime? date)
+    {
+        return new SetHoverDateAction(date);
     }
 
     public static CalendarViewAction SetBlackoutDates(IEnumerable<CalendarDateRange> dates)

@@ -82,7 +82,7 @@ DatePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 | `PART_SecondaryMonthView` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | 其他 part | 7 项 | 参见源码和主题文件；维护时按同一生命周期规则检查。 |
 
-控件专属或内部伪类包括 `Blackout=:blackout`、`BtnFocusedPC`、`CalendarDayButtonPseudoClass.Blackout`、`CalendarDayButtonPseudoClass.DayFocused`、`CalendarDayButtonPseudoClass.RangeEnd`、`CalendarDayButtonPseudoClass.RangeMiddle`、`CalendarDayButtonPseudoClass.RangePreviewEnd`、`CalendarDayButtonPseudoClass.RangePreviewMiddle`、`CalendarDayButtonPseudoClass.RangePreviewStart`、`CalendarDayButtonPseudoClass.RangeStart`、`CalendarDayButtonPseudoClass.Today`、`CalendarDisabledPC`、`DayFocused=:dayfocused`、`RangeEnd=:range-end`、`RangeMiddle=:range-middle`、`RangePreviewEnd=:range-preview-end`、`RangePreviewMiddle=:range-preview-middle`、`RangePreviewStart=:range-preview-start` 等。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
+控件专属或内部伪类包括 `Blackout=:blackout`、`BtnFocusedPC`、`CalendarDayButtonPseudoClass.Blackout`、`CalendarDayButtonPseudoClass.DayFocused`、`CalendarDayButtonPseudoClass.RangeEnd`、`CalendarDayButtonPseudoClass.RangeMiddle`、`CalendarDayButtonPseudoClass.RangePreviewEnd`、`CalendarDayButtonPseudoClass.RangePreviewMiddle`、`CalendarDayButtonPseudoClass.RangePreviewStart`、`CalendarDayButtonPseudoClass.RangeStart`、`CalendarDayButtonPseudoClass.Today`、`CalendarDayButtonPseudoClass.WeekHoverStart`、`CalendarDayButtonPseudoClass.WeekHoverMiddle`、`CalendarDayButtonPseudoClass.WeekHoverEnd`、`CalendarDayButtonPseudoClass.WeekSelectionStart`、`CalendarDayButtonPseudoClass.WeekSelectionMiddle`、`CalendarDayButtonPseudoClass.WeekSelectionEnd`、`CalendarDisabledPC`、`DayFocused=:dayfocused`、`RangeEnd=:range-end`、`RangeMiddle=:range-middle`、`RangePreviewEnd=:range-preview-end`、`RangePreviewMiddle=:range-preview-middle`、`RangePreviewStart=:range-preview-start` 等。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
 
 ## 4. 行为与状态模型
 
@@ -101,6 +101,7 @@ Public API / inherited command / item source / user input
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
 - `PickerMode` 决定选择颗粒度和初始面板：`Date`、`Week` 使用月视图，`Month`、`Quarter` 使用年视图，`Year` 使用十年视图。目标颗粒度不能继续降级到更细面板。
+- `PickerMode=Week` 的月视图是带周序号列的 8 列 week panel，不是普通日期面板的 7 个日期按钮逐个选中；选中视觉和 hover 视觉都必须按整周连续行渲染，不能退回单个日期按钮的普通 pointerover 背景。
 - 非 `Date` 颗粒度仍使用 `DateTime?` 保存提交值：`Week` 保存 ISO 周起始日，`Month` 保存当月 1 日，`Quarter` 保存季度首月 1 日，`Year` 保存当年 1 月 1 日。
 - `IsShowTime` 只在 `PickerMode=Date` 时形成有效时间选择；其他颗粒度忽略时间面板和时间拼接。
 - 范围选择的 committed 状态和 hover preview 状态必须分开：`:selected`、`:range-start`、`:range-end`、`:range-middle` 只来自真实端点；hover 只写入 `:range-preview-start`、`:range-preview-end`、`:range-preview-middle`，其中 preview start/end 在视觉上按临时端点显示，但不能污染真实提交状态。

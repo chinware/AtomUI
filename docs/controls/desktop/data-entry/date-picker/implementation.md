@@ -166,7 +166,20 @@ PickerMode 颗粒度维护规则：
 - `Calendar.PickerMode` 必须进入 `CalendarViewState`，panel model 构建和 selected/focused 判断都从同一个 state 读取颗粒度，不能在 renderer 或按钮事件里重新推断。
 - 目标面板映射固定为 `Date` / `Week` -> `CalendarMode.Month`，`Month` / `Quarter` -> `CalendarMode.Year`，`Year` -> `CalendarMode.Decade`。
 - `CalendarItem` 点击年面板按钮时按目标颗粒度决定行为：`Date` / `Week` 继续进入月视图，`Month` / `Quarter` 直接提交，十年面板中的 `Year` 直接提交。
-- `CalendarPanelBuilder.BuildQuarterPanel` 输出 Q1-Q4 四个季度 cell，季度选择不能复用 12 个月面板伪装。
+- `PickerMode=Week` 仍复用月视图容器，但实际结构必须切换为 8 列：首列为 ISO 周序号，后 7 列为日期；`CalendarPanelBuilder.BuildMonthPanel` 通过 `WeekCells` 输出周序号列，renderer 负责按行把周序号和 7 个日期 cell 对齐。
+- Week 模式的选中周必须使用 `:week-selection-start` / `:week-selection-middle` / `:week-selection-end` 这组内部伪类和 `WeekSelectionIndicator` 渲染连续主色行；不能通过给 7 个日期 cell 分别设置普通 `:selected` 背景来模拟。
+- Week 模式的 hover 周必须从 `Calendar.HoverDate` 同步到 `CalendarViewState`，再由 `CalendarPanelBuilder` 输出 `:week-hover-start` / `:week-hover-middle` / `:week-hover-end`；hover 触发范围是整行，`CalendarItem` 必须基于 `PART_MonthView` pointer 位置推导当前周，不能只依赖日期按钮自身 `PointerEntered`。
+- Week 模式的 hover 状态入口必须统一经过 `Calendar.NotifyHoverDateChanged` 归一化为周起始日；`RangeCalendar.HoverDateTime` 与 `Calendar.HoverDate` 必须保存同一个归一化值，不能让输入框 preview 使用归一化值而面板模型继续持有原始日期 cell。
+- 双月 Week 面板的 pointer hit-test 必须同时覆盖主 `PART_MonthView` 和 `PART_SecondaryMonthView`；`DualMonthCalendarItem.IsPointerInMonthView` 与周起点推导逻辑必须保持同一覆盖范围，不能出现“右侧面板判定在月视图内，但周起点只从左侧面板查找”的状态断裂。
+- `CalendarDayButtonTheme.axaml` 使用 `WeekHoverIndicator` 渲染连续浅色行，并排除普通单格 `:pointerover` 背景。
+- Week 模式中 selected 周优先于 hover 周；当 hover 命中已选周时，builder 不输出 week hover 伪类，避免浅色 hover 覆盖主色选中行。
+- Week 范围选择中，已提交范围的端点周继续使用 `:week-selection-*` 主色整行；两个端点之间的中间周使用 `:week-range-start` / `:week-range-middle` / `:week-range-end` 和 `WeekRangeIndicator` 渲染 `CellActiveWithRangeBg` 浅色整行，周号列也必须参与范围背景。
+- Week 范围选择预览中，`CalendarRangeSelectionState.HoverDate` 形成的临时端点周也使用 `:week-selection-*` 主色整行，但 `CalendarCellState.IsSelected` 必须保持 `false`；预览端点之间的中间周复用 `:week-range-*` 浅色整行，且 preview range 优先于 committed range 输出。
+- Week 模式不得输出普通日期范围伪类 `:range-start` / `:range-end` / `:range-middle` / `:range-preview-start` / `:range-preview-end` / `:range-preview-middle`；这些伪类只服务 Date 粒度，否则会与周行 indicator 叠加，导致端点周和中间周背景断裂。
+- `CalendarPanelBuilder.BuildQuarterPanel` 输出 Q1-Q4 四个季度 cell，季度选择不能复用 12 个月面板伪装；`CalendarItem` 在 `PickerMode=Quarter` 且 `DisplayMode=Year` 时必须把 `PART_YearView` 配置为 1 行 4 列紧凑面板，并取消通用年/月/十年面板最小高度，避免未使用的 8 个 slot 撑出空白。
+- `RangeDatePicker` 的弹层始终保持双面板语义：`Date` / `Week` 使用左右双月面板，`Month` 使用左右双年面板，`Quarter` 使用左右双年紧凑季度面板，`Year` 使用左右双十年面板；`DualMonthCalendarItem` 的 secondary 面板必须有独立 `PART_SecondaryYearView`，不能在非月视图时退化成单面板。
+- `CalendarItem.SetupHeaderForDisplayModeChanged()` 是 `CalendarMode` 可见布局的唯一源头：运行时切换 `PickerMode` 或 `DisplayMode` 时，必须同步维护 `PART_MonthViewLayout`、`PART_MonthView` 与 `PART_YearView` 的互斥可见性；`DualMonthCalendarItem` 只在此基础上补齐 `PART_SecondaryMonthView`、`PART_YearViewLayout`、`PART_SecondaryYearView` 和左右导航按钮，不能只依赖 `OnApplyTemplate` 初始化分支。
+- `CalendarItem.OnAttachedToVisualTree` 只能走 `RefreshLocalizedContent()` 的 mode 分发刷新，不能无条件调用 day cell 渲染；否则 `RangeDatePicker` 在 `Month` / `Quarter` / `Year` 颗粒度下会让未初始化或不参与当前 DisplayMode 的 secondary month state 进入月视图构建。
 - 提交值统一由 `DatePickerFormattingHelper.NormalizeDateTime` 归一化：周为 ISO 周起始日，月份为当月 1 日，季度为季度首月 1 日，年份为当年 1 月 1 日。
 - `DatePickerFormattingHelper` 同时负责默认格式、显示文本和预留宽度。输入框宽度按目标颗粒度的最宽文本预留，不能因为 hover 或选中值变化而改变宽度。
 - `IsShowTime` 只在 `PickerMode=Date` 时形成有效时间选择；presenter 使用 `IsTimeSelectionVisible` 控制 TimeView 显示和时间拼接，其他颗粒度忽略时间面板。

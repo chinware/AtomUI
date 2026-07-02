@@ -29,6 +29,7 @@ internal sealed record CalendarViewState
     public DateTime? SelectedDate { get; init; }
     public DateTime? SecondarySelectedDate { get; init; }
     public DateTime? FocusedDate { get; init; }
+    public DateTime? HoverDate { get; init; }
     public DateTime SelectedMonth { get; init; }
     public DateTime SelectedYear { get; init; }
     public DayOfWeek FirstDayOfWeek { get; init; }
@@ -104,6 +105,11 @@ internal sealed record CalendarViewState
     public CalendarViewState WithFocusedDate(DateTime? focusedDate)
     {
         return this with { FocusedDate = focusedDate };
+    }
+
+    public CalendarViewState WithHoverDate(DateTime? hoverDate)
+    {
+        return this with { HoverDate = hoverDate };
     }
 
     public CalendarViewState WithBlackoutDates(IEnumerable<CalendarDateRange> blackoutDates)

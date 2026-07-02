@@ -127,15 +127,15 @@ internal class DatePickerToken : AbstractControlDesignToken
         CellWidth              = SharedToken.ControlHeightSM;
         CellHeight             = SharedToken.ControlHeightSM;
         TextHeight             = SharedToken.ControlHeightLG;
-        WithoutTimeCellHeight  = SharedToken.ControlHeightLG * 1.65;
+        WithoutTimeCellHeight  = (SharedToken.ControlHeightLG * 1.65 + SharedToken.ControlHeightSM) / 2;
         CellMargin             = SharedToken.MarginXXS;
         PanelContentPadding    = SharedToken.PaddingSM;
         ItemPanelMinWidth      = 225;
         ItemPanelMinHeight     = 270;
         MonthViewMinWidth      = 260;
         DayTitleHeight         = SharedToken.ControlHeightSM;
-        HeaderMargin           = new Thickness(0, 0, 0, SharedToken.UniformlyMarginSM);
-        HeaderPadding          = new Thickness(0, 0, 0, SharedToken.UniformlyPaddingSM);
+        HeaderMargin           = new Thickness(0, 0, 0, SharedToken.UniformlyMarginXS);
+        HeaderPadding          = new Thickness(0);
         RangeCalendarSpacing   = 20;
         ButtonsPanelMargin     = new Thickness(0, SharedToken.UniformlyMarginXS, 0, 0);
     }

@@ -143,26 +143,50 @@
                             </Grid>
                         </UniformGrid>
 
-                        <Grid Name="PART_YearView"
-                              IsVisible="False">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                        </Grid>
+                        <UniformGrid Name="PART_YearViewLayout"
+                                     Columns="2"
+                                     IsVisible="False">
+                            <Grid Name="PART_YearView"
+                                  IsVisible="{TemplateBinding IsVisible}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+
+                            <Grid Name="PART_SecondaryYearView"
+                                  IsVisible="{TemplateBinding IsVisible}">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                            </Grid>
+                        </UniformGrid>
                     </DockPanel>
                 </Border>
             </ControlTemplate>
         </Setter>
 
         <Style Selector="^ /template/ UniformGrid#PART_MonthViewLayout">
+            <Setter Property="ColumnSpacing"
+                    Value="{atom:DatePickerTokenResource RangeCalendarSpacing}" />
+        </Style>
+
+        <Style Selector="^ /template/ UniformGrid#PART_YearViewLayout">
             <Setter Property="ColumnSpacing"
                     Value="{atom:DatePickerTokenResource RangeCalendarSpacing}" />
         </Style>
@@ -173,6 +197,14 @@
         
         <Style Selector="^ /template/ Grid#PART_SecondaryMonthView">
             <Setter Property="MinWidth" Value="{atom:DatePickerTokenResource MonthViewMinWidth}" />
+        </Style>
+
+        <Style Selector="^ /template/ Grid#PART_SecondaryYearView">
+            <Setter Property="MinWidth" Value="{atom:DatePickerTokenResource MonthViewMinWidth}" />
+        </Style>
+
+        <Style Selector="^[IsQuarterViewMode=True] /template/ Grid#PART_SecondaryYearView">
+            <Setter Property="MinHeight" Value="{atom:CalendarTokenResource WithoutTimeCellHeight}" />
         </Style>
 
     </ControlTheme>

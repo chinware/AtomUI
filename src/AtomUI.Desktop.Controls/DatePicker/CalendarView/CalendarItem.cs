@@ -2,7 +2,6 @@
 using System.Globalization;
 using AtomUI.Collections.Pooled;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 using AtomUI.Desktop.Controls.CalendarView.Rendering;
 using AtomUI.Desktop.Controls.CalendarView.State;
@@ -67,6 +66,11 @@ internal class CalendarItem : TemplatedControl
         AvaloniaProperty.RegisterDirect<CalendarItem, bool>(nameof(IsMonthViewMode),
             o => o.IsMonthViewMode,
             (o, v) => o.IsMonthViewMode = v);
+
+    internal static readonly DirectProperty<CalendarItem, bool> IsQuarterViewModeProperty =
+        AvaloniaProperty.RegisterDirect<CalendarItem, bool>(nameof(IsQuarterViewMode),
+            o => o.IsQuarterViewMode,
+            (o, v) => o.IsQuarterViewMode = v);
     
     internal static readonly StyledProperty<Thickness> HeaderBorderThicknessProperty =
         AvaloniaProperty.Register<CalendarItem, Thickness>(nameof(HeaderBorderThickness));
@@ -75,6 +79,7 @@ internal class CalendarItem : TemplatedControl
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<CalendarItem>();
 
     private bool _isMonthViewMode = true;
+    private bool _isQuarterViewMode;
 
     /// <summary>
     /// 主要方便在模板中控制导航按钮的显示和关闭
@@ -83,6 +88,12 @@ internal class CalendarItem : TemplatedControl
     {
         get => _isMonthViewMode;
         set => SetAndRaise(IsMonthViewModeProperty, ref _isMonthViewMode, value);
+    }
+
+    internal bool IsQuarterViewMode
+    {
+        get => _isQuarterViewMode;
+        set => SetAndRaise(IsQuarterViewModeProperty, ref _isQuarterViewMode, value);
     }
     
     internal bool IsMotionEnabled
@@ -251,39 +262,46 @@ internal class CalendarItem : TemplatedControl
     private void PopulateGrids()
     {
         PopulateMonthViewsGrid();
+        PopulateYearViewsGrid();
+    }
 
+    protected virtual void PopulateYearViewsGrid()
+    {
         if (YearView != null)
         {
-            var childCount = Calendar.RowsPerYear * Calendar.ColumnsPerYear;
-            using var children = new PooledList<Control>(childCount);
+            PopulateYearViewGrid(YearView);
+        }
+    }
 
-            EventHandler<PointerPressedEventArgs> monthCalendarButtonMouseDown = HandleMonthCalendarButtonMouseDown;
-            EventHandler<PointerReleasedEventArgs> monthCalendarButtonMouseUp = HandleMonthCalendarButtonMouseUp;
-            EventHandler<PointerEventArgs> monthMouseEntered = HandleMonthMouseEntered;
+    protected void PopulateYearViewGrid(Grid yearView)
+    {
+        ConfigureYearViewLayout(yearView);
 
-            for (var i = 0; i < Calendar.RowsPerYear; i++)
+        var childCount = Calendar.RowsPerYear * Calendar.ColumnsPerYear;
+        using var children = new PooledList<Control>(childCount);
+
+        EventHandler<PointerPressedEventArgs> monthCalendarButtonMouseDown = HandleMonthCalendarButtonMouseDown;
+        EventHandler<PointerReleasedEventArgs> monthCalendarButtonMouseUp = HandleMonthCalendarButtonMouseUp;
+        EventHandler<PointerEventArgs> monthMouseEntered = HandleMonthMouseEntered;
+
+        for (var i = 0; i < childCount; i++)
+        {
+            var month = new CalendarButton();
+
+            if (Owner != null)
             {
-                for (var j = 0; j < Calendar.ColumnsPerYear; j++)
-                {
-                    var month = new CalendarButton();
-
-                    if (Owner != null)
-                    {
-                        month.Owner = Owner;
-                        month[!CalendarButton.IsMotionEnabledProperty] = Owner[!Calendar.IsMotionEnabledProperty];
-                    }
-
-                    month.SetValue(Grid.RowProperty, i);
-                    month.SetValue(Grid.ColumnProperty, j);
-                    month.CalendarLeftMouseButtonDown += monthCalendarButtonMouseDown;
-                    month.CalendarLeftMouseButtonUp += monthCalendarButtonMouseUp;
-                    month.PointerEntered += monthMouseEntered;
-                    children.Add(month);
-                }
+                month.Owner = Owner;
+                month[!CalendarButton.IsMotionEnabledProperty] = Owner[!Calendar.IsMotionEnabledProperty];
             }
 
-            YearView.Children.AddRange(children);
+            month.CalendarLeftMouseButtonDown += monthCalendarButtonMouseDown;
+            month.CalendarLeftMouseButtonUp   += monthCalendarButtonMouseUp;
+            month.PointerEntered              += monthMouseEntered;
+            children.Add(month);
         }
+
+        yearView.Children.AddRange(children);
+        ConfigureYearViewLayout(yearView);
     }
 
     protected virtual void PopulateMonthViewsGrid()
@@ -296,10 +314,12 @@ internal class CalendarItem : TemplatedControl
 
     protected void PopulateMonthViewGrid(Grid monthView)
     {
-        var childCount = Calendar.RowsPerMonth + Calendar.RowsPerMonth * Calendar.ColumnsPerMonth;
+        ConfigureMonthViewColumns(monthView);
+        var columnCount = GetMonthPanelColumnCount();
+        var childCount  = columnCount + (Calendar.RowsPerMonth - 1) * columnCount;
         using var children = new PooledList<Control>(childCount);
 
-        for (var i = 0; i < Calendar.ColumnsPerMonth; i++)
+        for (var i = 0; i < columnCount; i++)
         {
             var cell = DayTitleTemplate?.Build();
             if (cell is not null)
@@ -316,7 +336,7 @@ internal class CalendarItem : TemplatedControl
         EventHandler<PointerEventArgs> cellMouseEntered = HandleCellMouseEntered;
         for (var i = 1; i < Calendar.RowsPerMonth; i++)
         {
-            for (var j = 0; j < Calendar.ColumnsPerMonth; j++)
+            for (var j = 0; j < columnCount; j++)
             {
                 var cell = new CalendarDayButton();
 
@@ -338,6 +358,98 @@ internal class CalendarItem : TemplatedControl
         monthView.Children.AddRange(children);
     }
 
+    private int GetMonthPanelColumnCount()
+    {
+        return Owner?.PickerMode == DatePickerMode.Week
+            ? Calendar.ColumnsPerWeekPanel
+            : Calendar.ColumnsPerMonth;
+    }
+
+    private int GetExpectedMonthButtonCount()
+    {
+        return (Calendar.RowsPerMonth - 1) * GetMonthPanelColumnCount();
+    }
+
+    private int GetYearPanelRowCount()
+    {
+        if (Owner?.DisplayMode != CalendarMode.Year)
+        {
+            return Calendar.RowsPerYear;
+        }
+
+        return Owner.PickerMode == DatePickerMode.Quarter
+            ? 1
+            : Calendar.RowsPerMonthSelectionPanel;
+    }
+
+    private int GetYearPanelColumnCount()
+    {
+        if (Owner?.DisplayMode != CalendarMode.Year)
+        {
+            return Calendar.ColumnsPerYear;
+        }
+
+        return Owner.PickerMode == DatePickerMode.Quarter
+            ? Calendar.ColumnsPerYear
+            : Calendar.ColumnsPerMonthSelectionPanel;
+    }
+
+    private void ConfigureMonthViewColumns(Grid monthView)
+    {
+        var columnCount = GetMonthPanelColumnCount();
+        if (monthView.ColumnDefinitions.Count == columnCount)
+        {
+            return;
+        }
+
+        monthView.ColumnDefinitions.Clear();
+        for (var i = 0; i < columnCount; i++)
+        {
+            monthView.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+        }
+    }
+
+    private void ConfigureYearViewLayout()
+    {
+        ConfigureYearViewLayout(YearView);
+    }
+
+    protected void ConfigureYearViewLayout(Grid? yearView)
+    {
+        if (yearView is null)
+        {
+            return;
+        }
+
+        var rowCount = GetYearPanelRowCount();
+        var columnCount = GetYearPanelColumnCount();
+        if (yearView.RowDefinitions.Count != rowCount)
+        {
+            yearView.RowDefinitions.Clear();
+            for (var i = 0; i < rowCount; i++)
+            {
+                yearView.RowDefinitions.Add(new RowDefinition(GridLength.Star));
+            }
+        }
+
+        if (yearView.ColumnDefinitions.Count != columnCount)
+        {
+            yearView.ColumnDefinitions.Clear();
+            for (var i = 0; i < columnCount; i++)
+            {
+                yearView.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Star));
+            }
+        }
+
+        var buttons = yearView.Children.OfType<CalendarButton>().ToArray();
+        for (var i = 0; i < buttons.Length; i++)
+        {
+            var row = Math.Min(i / columnCount, rowCount - 1);
+            buttons[i].SetValue(Grid.RowProperty, row);
+            buttons[i].SetValue(Grid.ColumnProperty, i % columnCount);
+        }
+    }
+
     protected virtual void ClearGeneratedMonthViews()
     {
         if (MonthView is not null)
@@ -351,15 +463,23 @@ internal class CalendarItem : TemplatedControl
         GeneratedContainerManager.ReleaseMonthView(monthView);
     }
 
-    private void ClearGeneratedYearView()
+    protected virtual void ClearGeneratedYearViews()
     {
-        GeneratedContainerManager.ReleaseYearView(YearView);
+        if (YearView is not null)
+        {
+            ClearGeneratedYearView(YearView);
+        }
+    }
+
+    protected void ClearGeneratedYearView(Grid yearView)
+    {
+        GeneratedContainerManager.ReleaseYearView(yearView);
     }
 
     private void ClearGeneratedGrids()
     {
         ClearGeneratedMonthViews();
-        ClearGeneratedYearView();
+        ClearGeneratedYearViews();
     }
 
     private void EnsureGeneratedGrids()
@@ -370,7 +490,7 @@ internal class CalendarItem : TemplatedControl
         }
 
         var monthViewMissing = MonthView is not null &&
-                               !MonthView.Children.OfType<CalendarDayButton>().Any();
+                               MonthView.Children.OfType<CalendarDayButton>().Count() != GetExpectedMonthButtonCount();
         var yearViewMissing = YearView is not null &&
                               !YearView.Children.OfType<CalendarButton>().Any();
         if (!monthViewMissing && !yearViewMissing)
@@ -456,7 +576,19 @@ internal class CalendarItem : TemplatedControl
             return;
         }
 
-        IsMonthViewMode = Owner.DisplayMode == CalendarMode.Month;
+        var isMonthViewMode = Owner.DisplayMode == CalendarMode.Month;
+        IsMonthViewMode   = isMonthViewMode;
+        IsQuarterViewMode = Owner.DisplayMode == CalendarMode.Year && Owner.PickerMode == DatePickerMode.Quarter;
+
+        MonthViewLayout.IsVisible = isMonthViewMode;
+        if (MonthView is not null)
+        {
+            MonthView.IsVisible = isMonthViewMode;
+        }
+        if (YearView is not null)
+        {
+            YearView.IsVisible = !isMonthViewMode;
+        }
     }
 
     protected virtual void SetDayTitles()
@@ -471,16 +603,24 @@ internal class CalendarItem : TemplatedControl
     {
         var state = GetRenderState(displayMonth);
         var panel = CalendarPanelBuilder.BuildMonthPanel(state, displayMonth);
-        for (var childIndex = 0; childIndex < Calendar.ColumnsPerMonth &&
-                               childIndex < monthView.Children.Count &&
-                               childIndex < panel.DayTitles.Count; childIndex++)
+        var columnOffset = panel.WeekCells.Count > 0 ? 1 : 0;
+        if (columnOffset == 1 && monthView.Children.Count > 0)
         {
-            monthView.Children[childIndex].DataContext = panel.DayTitles[childIndex];
+            monthView.Children[0].DataContext = string.Empty;
+        }
+        for (var titleIndex = 0; titleIndex < Calendar.ColumnsPerMonth &&
+                               titleIndex + columnOffset < monthView.Children.Count &&
+                               titleIndex < panel.DayTitles.Count; titleIndex++)
+        {
+            monthView.Children[titleIndex + columnOffset].DataContext = panel.DayTitles[titleIndex];
         }
     }
 
     protected internal virtual void UpdateMonthMode()
     {
+        SetupHeaderForDisplayModeChanged();
+        EnsureGeneratedGrids();
+
         if (Owner != null)
         {
             _currentMonth = Owner.DisplayDateInternal;
@@ -562,7 +702,7 @@ internal class CalendarItem : TemplatedControl
         CalendarItemRenderer.RenderMonthPanel(Owner, monthView, panel);
     }
 
-    private CalendarViewState GetRenderState(DateTime displayMonth)
+    protected CalendarViewState GetRenderState(DateTime displayMonth)
     {
         return Owner?.SyncAndGetCurrentViewState()
                ?? CalendarViewState.CreateDefault(displayMonth, DateTimeHelper.GetCurrentDateFormat());
@@ -570,6 +710,9 @@ internal class CalendarItem : TemplatedControl
 
     internal void UpdateYearMode()
     {
+        SetupHeaderForDisplayModeChanged();
+        ConfigureYearViewLayout();
+
         if (Owner != null)
         {
             _currentMonth = Owner.SelectedMonth;
@@ -614,7 +757,7 @@ internal class CalendarItem : TemplatedControl
         }
     }
 
-    private void SetMonthButtonsForYearMode()
+    protected virtual void SetMonthButtonsForYearMode()
     {
         var state = GetRenderState(_currentMonth);
         if (Owner?.PickerMode == DatePickerMode.Quarter)
@@ -631,6 +774,9 @@ internal class CalendarItem : TemplatedControl
 
     internal void UpdateDecadeMode()
     {
+        SetupHeaderForDisplayModeChanged();
+        ConfigureYearViewLayout();
+
         DateTime selectedYear;
 
         if (Owner != null)
@@ -676,7 +822,7 @@ internal class CalendarItem : TemplatedControl
         }
     }
 
-    private void SetYearButtons(DateTime selectedYear)
+    protected virtual void SetYearButtons(DateTime selectedYear)
     {
         var state = GetRenderState(selectedYear);
         var panel = CalendarPanelBuilder.BuildDecadePanel(state, selectedYear);
@@ -833,6 +979,10 @@ internal class CalendarItem : TemplatedControl
         if (Owner != null)
         {
             Owner.NotifyHoverDateChanged(selectedDate);
+            if (Owner.PickerMode == DatePickerMode.Week)
+            {
+                Owner.UpdateHighlightDays();
+            }
         }
     }
 
@@ -966,8 +1116,84 @@ internal class CalendarItem : TemplatedControl
         else
         {
             Owner.IsPointerInMonthView = true;
+            UpdateWeekHoverDateFromPointerPosition(position);
             NotifyPointerInMonthView(originState);
         }
+    }
+
+    private void UpdateWeekHoverDateFromPointerPosition(Point position)
+    {
+        if (Owner?.PickerMode != DatePickerMode.Week || Owner.DisplayMode != CalendarMode.Month || MonthView is null)
+        {
+            return;
+        }
+
+        if (TryGetWeekStartFromPointerPosition(position, out var weekStart))
+        {
+            if (Owner.HoverDate is null ||
+                !DatePickerFormattingHelper.IsSamePickerUnit(Owner.HoverDate.Value, weekStart, DatePickerMode.Week))
+            {
+                Owner.NotifyHoverDateChanged(weekStart);
+                Owner.UpdateHighlightDays();
+            }
+        }
+        else if (Owner.HoverDate is not null)
+        {
+            Owner.NotifyHoverDateChanged(null);
+            Owner.UpdateHighlightDays();
+        }
+    }
+
+    protected virtual bool TryGetWeekStartFromPointerPosition(Point position, out DateTime weekStart)
+    {
+        return TryGetWeekStartFromMonthViewPosition(MonthView, position, out weekStart);
+    }
+
+    protected bool TryGetWeekStartFromMonthViewPosition(Grid? monthView, Point position, out DateTime weekStart)
+    {
+        weekStart = default;
+        if (monthView is null)
+        {
+            return false;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(monthView);
+        if (topLevel is null)
+        {
+            return false;
+        }
+
+        var monthViewPosition = monthView.TranslatePoint(new Point(0, 0), topLevel);
+        if (monthViewPosition is null)
+        {
+            return false;
+        }
+
+        var weekButtons = monthView.Children
+                                    .OfType<CalendarDayButton>()
+                                    .Where(button => button.IsWeekNumber &&
+                                                     button.IsEnabled &&
+                                                     button.DataContext is DateTime)
+                                    .ToArray();
+        foreach (var weekButton in weekButtons)
+        {
+            var buttonPosition = weekButton.TranslatePoint(new Point(0, 0), topLevel);
+            if (buttonPosition is null)
+            {
+                continue;
+            }
+
+            var rowBounds = new Rect(
+                new Point(monthViewPosition.Value.X, buttonPosition.Value.Y),
+                new Size(monthView.Bounds.Width, weekButton.Bounds.Height));
+            if (rowBounds.Contains(position) && weekButton.DataContext is DateTime date)
+            {
+                weekStart = date;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected virtual void NotifyPointerInMonthView(bool originInMonthView)
@@ -976,6 +1202,11 @@ internal class CalendarItem : TemplatedControl
 
     protected virtual void NotifyPointerOutMonthView(bool originInMonthView)
     {
+        if (originInMonthView && Owner?.PickerMode == DatePickerMode.Week)
+        {
+            Owner.NotifyHoverDateChanged(null);
+            Owner.UpdateHighlightDays();
+        }
     }
 
     private IThemeManager? _subscribedThemeManager;
@@ -987,7 +1218,6 @@ internal class CalendarItem : TemplatedControl
         _pointerTracker ??= new CalendarPointerTracker(this);
         _pointerTracker.Attach(inputManager);
         EnsureGeneratedGrids();
-        SetCalendarDayButtons();
         AttachLanguageVariantListener();
         RefreshLocalizedContent();
     }

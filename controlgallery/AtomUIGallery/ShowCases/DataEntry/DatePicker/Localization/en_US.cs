@@ -32,6 +32,14 @@ internal partial class en_US : LanguageProvider
     public const string P2SecondaryPlaceholderTextEndDate = "End date";
     public const string P2PlaceholderTextSelectTime = "Select time";
     public const string P2PlaceholderTextStartDate = "Start date";
+    public const string P2PlaceholderTextStartWeek = "Start week";
+    public const string P2SecondaryPlaceholderTextEndWeek = "End week";
+    public const string P2PlaceholderTextStartMonth = "Start month";
+    public const string P2SecondaryPlaceholderTextEndMonth = "End month";
+    public const string P2PlaceholderTextStartQuarter = "Start quarter";
+    public const string P2SecondaryPlaceholderTextEndQuarter = "End quarter";
+    public const string P2PlaceholderTextStartYear = "Start year";
+    public const string P2SecondaryPlaceholderTextEndYear = "End year";
     public const string P2PlaceholderTextOutline = "Outline";
     public const string P2PlaceholderTextFilled = "Filled";
     public const string P2PlaceholderTextBorderless = "Borderless";

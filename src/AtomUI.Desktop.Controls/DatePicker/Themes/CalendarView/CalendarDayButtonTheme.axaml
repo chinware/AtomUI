@@ -10,6 +10,24 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Grid ColumnDefinitions="*,*">
+                    <Border Name="WeekRangeIndicator"
+                            Grid.ColumnSpan="2"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                            IsVisible="False"/>
+                    <Border Name="WeekHoverIndicator"
+                            Grid.ColumnSpan="2"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                            IsVisible="False"/>
+                    <Border Name="WeekSelectionIndicator"
+                            Grid.ColumnSpan="2"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                            IsVisible="False"/>
                     <Border Name="RangeIndicator"
                             Grid.ColumnSpan="2"
                             HorizontalAlignment="Stretch"
@@ -60,6 +78,18 @@
         <Style Selector="^ /template/ Border#RangeIndicator">
             <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
         </Style>
+
+        <Style Selector="^ /template/ Border#WeekHoverIndicator">
+            <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#WeekRangeIndicator">
+            <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
+        </Style>
+
+        <Style Selector="^ /template/ Border#WeekSelectionIndicator">
+            <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
+        </Style>
         
         <Style Selector="^ /template/ Border#RangeStartIndicator">
             <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
@@ -75,11 +105,15 @@
             <Setter Property="Margin" Value="{atom:CalendarTokenResource CellMargin}" />
         </Style>
 
-        <Style Selector="^:pointerover">
+        <Style Selector="^:pointerover:not(:week-range-start):not(:week-range-middle):not(:week-range-end):not(:week-hover-start):not(:week-hover-middle):not(:week-hover-end)">
             <Setter Property="Background" Value="{atom:CalendarTokenResource CellHoverBg}" />
         </Style>
 
         <Style Selector="^:inactive">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+        </Style>
+
+        <Style Selector="^:week-number">
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
         </Style>
 
@@ -117,6 +151,34 @@
         <Style Selector="^:range-preview-start:not(:inactive), ^:range-preview-end:not(:inactive)">
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWhite}" />
+        </Style>
+
+        <Style Selector="^:week-range-start, ^:week-range-middle, ^:week-range-end">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Style Selector="^ /template/ Border#WeekRangeIndicator">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="Background" Value="{atom:CalendarTokenResource CellActiveWithRangeBg}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:week-hover-start, ^:week-hover-middle, ^:week-hover-end">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Style Selector="^ /template/ Border#WeekHoverIndicator">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="Background" Value="{atom:CalendarTokenResource CellHoverBg}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:week-selection-start, ^:week-selection-middle, ^:week-selection-end">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWhite}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Style Selector="^ /template/ Border#WeekSelectionIndicator">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
+            </Style>
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

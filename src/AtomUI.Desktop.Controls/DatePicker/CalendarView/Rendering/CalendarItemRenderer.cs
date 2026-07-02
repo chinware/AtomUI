@@ -7,8 +7,13 @@ internal static class CalendarItemRenderer
 {
     public static void RenderMonthPanel(Calendar? owner, Grid monthView, CalendarMonthPanelModel model)
     {
-        RenderDayTitles(monthView, model.DayTitles);
+        if (model.WeekCells.Count > 0)
+        {
+            RenderWeekMonthPanel(owner, monthView, model);
+            return;
+        }
 
+        RenderDayTitles(monthView, model.DayTitles, 0);
         var dayButtons = monthView.Children.OfType<CalendarDayButton>().ToArray();
         var cellCount  = Math.Min(dayButtons.Length, model.Cells.Count);
         for (var i = 0; i < cellCount; i++)
@@ -37,12 +42,53 @@ internal static class CalendarItemRenderer
         RenderCalendarButtons(owner, yearView, model.Years);
     }
 
-    private static void RenderDayTitles(Grid monthView, IReadOnlyList<string> dayTitles)
+    private static void RenderWeekMonthPanel(Calendar? owner, Grid monthView, CalendarMonthPanelModel model)
+    {
+        RenderDayTitles(monthView, model.DayTitles, 1);
+
+        if (monthView.Children.Count > 0)
+        {
+            monthView.Children[0].DataContext = string.Empty;
+        }
+
+        var dayButtons = monthView.Children.OfType<CalendarDayButton>().ToArray();
+        var columnCount = Calendar.ColumnsPerMonth + 1;
+        for (var row = 0; row < model.WeekCells.Count; row++)
+        {
+            var weekButtonIndex = row * columnCount;
+            if (weekButtonIndex >= dayButtons.Length)
+            {
+                return;
+            }
+
+            RenderDayButton(owner, dayButtons[weekButtonIndex], model.WeekCells[row], Calendar.ColumnsPerWeekPanel + weekButtonIndex);
+
+            for (var column = 0; column < Calendar.ColumnsPerMonth; column++)
+            {
+                var cellIndex   = row * Calendar.ColumnsPerMonth + column;
+                var buttonIndex = weekButtonIndex + column + 1;
+                if (buttonIndex >= dayButtons.Length || cellIndex >= model.Cells.Count)
+                {
+                    return;
+                }
+
+                RenderDayButton(owner, dayButtons[buttonIndex], model.Cells[cellIndex], Calendar.ColumnsPerWeekPanel + buttonIndex);
+            }
+        }
+
+        var renderedCount = model.WeekCells.Count * columnCount;
+        for (var i = renderedCount; i < dayButtons.Length; i++)
+        {
+            ClearDayButton(owner, dayButtons[i]);
+        }
+    }
+
+    private static void RenderDayTitles(Grid monthView, IReadOnlyList<string> dayTitles, int columnOffset)
     {
         var titleCount = Math.Min(Calendar.ColumnsPerMonth, dayTitles.Count);
-        for (var i = 0; i < titleCount && i < monthView.Children.Count; i++)
+        for (var i = 0; i < titleCount && i + columnOffset < monthView.Children.Count; i++)
         {
-            monthView.Children[i].DataContext = dayTitles[i];
+            monthView.Children[i + columnOffset].DataContext = dayTitles[i];
         }
     }
 
@@ -63,6 +109,16 @@ internal static class CalendarItemRenderer
         button.IsRangePreviewStart  = cell.IsRangePreviewStart;
         button.IsRangePreviewEnd    = cell.IsRangePreviewEnd;
         button.IsRangePreviewMiddle = cell.IsRangePreviewMiddle;
+        button.IsWeekNumber          = cell.IsWeekNumber;
+        button.IsWeekSelectionStart  = cell.IsWeekSelectionStart;
+        button.IsWeekSelectionMiddle = cell.IsWeekSelectionMiddle;
+        button.IsWeekSelectionEnd    = cell.IsWeekSelectionEnd;
+        button.IsWeekRangeStart      = cell.IsWeekRangeStart;
+        button.IsWeekRangeMiddle     = cell.IsWeekRangeMiddle;
+        button.IsWeekRangeEnd        = cell.IsWeekRangeEnd;
+        button.IsWeekHoverStart      = cell.IsWeekHoverStart;
+        button.IsWeekHoverMiddle     = cell.IsWeekHoverMiddle;
+        button.IsWeekHoverEnd        = cell.IsWeekHoverEnd;
 
         ApplyFocus(owner, button, cell.IsFocused);
     }
@@ -83,6 +139,16 @@ internal static class CalendarItemRenderer
         button.IsRangePreviewStart  = false;
         button.IsRangePreviewEnd    = false;
         button.IsRangePreviewMiddle = false;
+        button.IsWeekNumber          = false;
+        button.IsWeekSelectionStart  = false;
+        button.IsWeekSelectionMiddle = false;
+        button.IsWeekSelectionEnd    = false;
+        button.IsWeekRangeStart      = false;
+        button.IsWeekRangeMiddle     = false;
+        button.IsWeekRangeEnd        = false;
+        button.IsWeekHoverStart      = false;
+        button.IsWeekHoverMiddle     = false;
+        button.IsWeekHoverEnd        = false;
         ApplyFocus(owner, button, false);
     }
 
@@ -124,6 +190,7 @@ internal static class CalendarItemRenderer
         button.IsEnabled  = false;
         button.IsInactive = false;
         button.IsSelected = false;
+        button.IsVisible  = false;
         ApplyCalendarButtonFocus(owner, button, false);
     }
 

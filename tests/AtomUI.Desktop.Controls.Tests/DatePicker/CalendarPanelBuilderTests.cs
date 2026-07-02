@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.Linq;
 using AtomUI.Desktop.Controls;
+using AtomUI.Desktop.Controls.CalendarView.Models;
 using AtomUI.Desktop.Controls.CalendarView.Rendering;
 using AtomUI.Desktop.Controls.CalendarView.State;
 using Shouldly;
@@ -53,6 +54,106 @@ public class CalendarPanelBuilderTests
 
         panel.Cells[0].Date.ShouldBe(new DateTime(2026, 5, 31));
         panel.Cells[1].Date.ShouldBe(new DateTime(2026, 6, 1));
+    }
+
+    [Fact]
+    public void BuildMonthPanel_Week_Mode_Adds_Week_Number_Cells_And_Row_Selection()
+    {
+        var state = CalendarViewState.CreateDefault(new DateTime(2026, 7, 1),
+            CultureInfo.InvariantCulture.DateTimeFormat)
+                                     .WithPickerMode(DatePickerMode.Week)
+                                     .WithFirstDayOfWeek(DayOfWeek.Monday)
+                                     .WithSelectedDate(new DateTime(2026, 7, 6));
+
+        var panel = CalendarPanelBuilder.BuildMonthPanel(state, state.DisplayDate);
+
+        panel.WeekCells.Count.ShouldBe(6);
+        panel.WeekCells.Select(cell => cell.Text)
+             .ShouldBe(new[] { "27", "28", "29", "30", "31", "32" });
+
+        var selectedWeekCell = panel.WeekCells.Single(cell => cell.Date == new DateTime(2026, 7, 6));
+        selectedWeekCell.IsWeekSelectionStart.ShouldBeTrue();
+        selectedWeekCell.IsWeekSelectionMiddle.ShouldBeFalse();
+        selectedWeekCell.IsWeekSelectionEnd.ShouldBeFalse();
+
+        var selectedDates = panel.Cells
+                                 .Where(cell => cell.Date >= new DateTime(2026, 7, 6) &&
+                                                cell.Date <= new DateTime(2026, 7, 12))
+                                 .ToArray();
+        selectedDates.Length.ShouldBe(7);
+        selectedDates.Take(6).ShouldAllBe(cell => cell.IsWeekSelectionMiddle);
+        selectedDates.Last().IsWeekSelectionEnd.ShouldBeTrue();
+        selectedDates.ShouldAllBe(cell => cell.IsSelected);
+    }
+
+    [Fact]
+    public void BuildMonthPanel_Week_Mode_Uses_Hover_Date_For_Row_Hover()
+    {
+        var state = CalendarViewState.CreateDefault(new DateTime(2026, 7, 1),
+            CultureInfo.InvariantCulture.DateTimeFormat)
+                                     .WithPickerMode(DatePickerMode.Week)
+                                     .WithFirstDayOfWeek(DayOfWeek.Monday)
+                                     .WithHoverDate(new DateTime(2026, 7, 22));
+
+        var panel = CalendarPanelBuilder.BuildMonthPanel(state, state.DisplayDate);
+
+        var hoverWeekCell = panel.WeekCells.Single(cell => cell.Date == new DateTime(2026, 7, 20));
+        hoverWeekCell.IsWeekHoverStart.ShouldBeTrue();
+        hoverWeekCell.IsSelected.ShouldBeFalse();
+
+        var hoverDates = panel.Cells
+                              .Where(cell => cell.Date >= new DateTime(2026, 7, 20) &&
+                                             cell.Date <= new DateTime(2026, 7, 26))
+                              .ToArray();
+
+        hoverDates.Length.ShouldBe(7);
+        hoverDates.Take(6).ShouldAllBe(cell => cell.IsWeekHoverMiddle);
+        hoverDates.Last().IsWeekHoverEnd.ShouldBeTrue();
+        hoverDates.ShouldAllBe(cell => !cell.IsSelected);
+    }
+
+    [Fact]
+    public void BuildMonthPanel_Week_Mode_Range_Uses_Row_Range_States_Without_Date_Range_States()
+    {
+        var state = CalendarViewState.CreateDefault(new DateTime(2026, 7, 1),
+            CultureInfo.InvariantCulture.DateTimeFormat)
+                                     .WithPickerMode(DatePickerMode.Week)
+                                     .WithFirstDayOfWeek(DayOfWeek.Monday)
+                                     .WithRangeSelection(new DateTime(2026, 7, 13),
+                                         new DateTime(2026, 8, 17),
+                                         null,
+                                         CalendarRangeActivePart.End,
+                                         true);
+
+        var julyPanel   = CalendarPanelBuilder.BuildMonthPanel(state, new DateTime(2026, 7, 1));
+        var augustPanel = CalendarPanelBuilder.BuildMonthPanel(state, new DateTime(2026, 8, 1));
+
+        AssertSelectedWeekRow(julyPanel, "29", new DateTime(2026, 7, 13), new DateTime(2026, 7, 19));
+        AssertWeekRangeRow(julyPanel, "30", new DateTime(2026, 7, 20), new DateTime(2026, 7, 26));
+        AssertWeekRangeRow(augustPanel, "33", new DateTime(2026, 8, 10), new DateTime(2026, 8, 16));
+        AssertSelectedWeekRow(augustPanel, "34", new DateTime(2026, 8, 17), new DateTime(2026, 8, 23));
+    }
+
+    [Fact]
+    public void BuildMonthPanel_Week_Mode_Range_Preview_Uses_Row_Selection_Endpoint()
+    {
+        var state = CalendarViewState.CreateDefault(new DateTime(2026, 7, 1),
+            CultureInfo.InvariantCulture.DateTimeFormat)
+                                     .WithPickerMode(DatePickerMode.Week)
+                                     .WithFirstDayOfWeek(DayOfWeek.Monday)
+                                     .WithRangeSelection(new DateTime(2026, 7, 13),
+                                         null,
+                                         new DateTime(2026, 8, 10),
+                                         CalendarRangeActivePart.End,
+                                         true);
+
+        var julyPanel   = CalendarPanelBuilder.BuildMonthPanel(state, new DateTime(2026, 7, 1));
+        var augustPanel = CalendarPanelBuilder.BuildMonthPanel(state, new DateTime(2026, 8, 1));
+
+        AssertSelectedWeekRow(julyPanel, "29", new DateTime(2026, 7, 13), new DateTime(2026, 7, 19));
+        AssertWeekRangeRow(julyPanel, "30", new DateTime(2026, 7, 20), new DateTime(2026, 7, 26));
+        AssertWeekRangeRow(augustPanel, "32", new DateTime(2026, 8, 3), new DateTime(2026, 8, 9));
+        AssertPreviewWeekEndpointRow(augustPanel, "33", new DateTime(2026, 8, 10), new DateTime(2026, 8, 16));
     }
 
     [Fact]
@@ -226,4 +327,94 @@ public class CalendarPanelBuilderTests
         panel.Years.Single(cell => cell.Date == new DateTime(2028, 1, 1)).IsFocused.ShouldBeTrue();
         panel.Years.Last().IsInactive.ShouldBeTrue();
     }
+
+    private static void AssertSelectedWeekRow(
+        CalendarMonthPanelModel panel,
+        string weekText,
+        DateTime startDate,
+        DateTime endDate)
+    {
+        var weekCell = panel.WeekCells.Single(cell => cell.Text == weekText);
+        weekCell.IsWeekSelectionStart.ShouldBeTrue();
+        AssertNoDateRangeState(weekCell);
+
+        var dates = panel.Cells
+                         .Where(cell => cell.Date >= startDate && cell.Date <= endDate)
+                         .OrderBy(cell => cell.Date)
+                         .ToArray();
+
+        dates.Length.ShouldBe(7);
+        dates.Take(6).ShouldAllBe(cell => cell.IsWeekSelectionMiddle);
+        dates.Last().IsWeekSelectionEnd.ShouldBeTrue();
+        dates.ShouldAllBe(cell => cell.IsSelected);
+        dates.ShouldAllBe(cell => HasNoDateRangeState(cell));
+        dates.ShouldAllBe(cell => !cell.IsWeekRangeStart &&
+                                  !cell.IsWeekRangeMiddle &&
+                                  !cell.IsWeekRangeEnd);
+    }
+
+    private static void AssertWeekRangeRow(
+        CalendarMonthPanelModel panel,
+        string weekText,
+        DateTime startDate,
+        DateTime endDate)
+    {
+        var weekCell = panel.WeekCells.Single(cell => cell.Text == weekText);
+        weekCell.IsWeekRangeStart.ShouldBeTrue();
+        weekCell.IsWeekSelectionStart.ShouldBeFalse();
+        AssertNoDateRangeState(weekCell);
+
+        var dates = panel.Cells
+                         .Where(cell => cell.Date >= startDate && cell.Date <= endDate)
+                         .OrderBy(cell => cell.Date)
+                         .ToArray();
+
+        dates.Length.ShouldBe(7);
+        dates.Take(6).ShouldAllBe(cell => cell.IsWeekRangeMiddle);
+        dates.Last().IsWeekRangeEnd.ShouldBeTrue();
+        dates.ShouldAllBe(cell => !cell.IsSelected);
+        dates.ShouldAllBe(cell => HasNoDateRangeState(cell));
+    }
+
+    private static void AssertPreviewWeekEndpointRow(
+        CalendarMonthPanelModel panel,
+        string weekText,
+        DateTime startDate,
+        DateTime endDate)
+    {
+        var weekCell = panel.WeekCells.Single(cell => cell.Text == weekText);
+        weekCell.IsWeekSelectionStart.ShouldBeTrue();
+        weekCell.IsSelected.ShouldBeFalse();
+        AssertNoDateRangeState(weekCell);
+
+        var dates = panel.Cells
+                         .Where(cell => cell.Date >= startDate && cell.Date <= endDate)
+                         .OrderBy(cell => cell.Date)
+                         .ToArray();
+
+        dates.Length.ShouldBe(7);
+        dates.Take(6).ShouldAllBe(cell => cell.IsWeekSelectionMiddle);
+        dates.Last().IsWeekSelectionEnd.ShouldBeTrue();
+        dates.ShouldAllBe(cell => !cell.IsSelected);
+        dates.ShouldAllBe(cell => HasNoDateRangeState(cell));
+        dates.ShouldAllBe(cell => !cell.IsWeekRangeStart &&
+                                  !cell.IsWeekRangeMiddle &&
+                                  !cell.IsWeekRangeEnd);
+    }
+
+    private static void AssertNoDateRangeState(CalendarCellState cell)
+    {
+        HasNoDateRangeState(cell).ShouldBeTrue();
+    }
+
+    private static bool HasNoDateRangeState(CalendarCellState cell)
+    {
+        return !cell.IsRangeStart &&
+               !cell.IsRangeEnd &&
+               !cell.IsRangeMiddle &&
+               !cell.IsRangePreviewStart &&
+               !cell.IsRangePreviewEnd &&
+               !cell.IsRangePreviewMiddle;
+    }
+
 }

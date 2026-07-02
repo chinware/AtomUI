@@ -18,8 +18,26 @@ PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelect
 Title="{gallery:DatePickerShowCaseLangResource RangePickerTitle}"
 Description="{gallery:DatePickerShowCaseLangResource RangePickerDescription}">
 <StackPanel Orientation="Vertical" Spacing="10">
-<!-- <atom:RangeDatePicker IsShowTime="true" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}"/> -->
-<atom:RangeDatePicker IsShowTime="False" PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
+<atom:RangeDatePicker PickerMode="Date"
+IsShowTime="False"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextStartDate}"
+SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
+<atom:RangeDatePicker PickerMode="Date"
+IsShowTime="True"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextStartDate}"
+SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
+<atom:RangeDatePicker PickerMode="Week"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextStartWeek}"
+SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndWeek}" />
+<atom:RangeDatePicker PickerMode="Month"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextStartMonth}"
+SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndMonth}" />
+<atom:RangeDatePicker PickerMode="Quarter"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextStartQuarter}"
+SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndQuarter}" />
+<atom:RangeDatePicker PickerMode="Year"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextStartYear}"
+SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndYear}" />
 </StackPanel>
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
