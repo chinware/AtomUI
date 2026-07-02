@@ -12,9 +12,30 @@ internal static class DatePickerFormattingHelper
 {
     internal static string GetEffectiveFormat(string? format, bool isShowTime, ClockIdentifierType clockIdentifier)
     {
+        return GetEffectiveFormat(format, DatePickerMode.Date, isShowTime, clockIdentifier);
+    }
+
+    internal static string GetEffectiveFormat(
+        string? format,
+        DatePickerMode pickerMode,
+        bool isShowTime,
+        ClockIdentifierType clockIdentifier)
+    {
         if (format is not null)
         {
             return format;
+        }
+
+        if (pickerMode != DatePickerMode.Date)
+        {
+            return pickerMode switch
+            {
+                DatePickerMode.Week    => "yyyy-ww周",
+                DatePickerMode.Month   => "yyyy-MM",
+                DatePickerMode.Quarter => "yyyy-'Q'q",
+                DatePickerMode.Year    => "yyyy",
+                _                      => "yyyy-MM-dd"
+            };
         }
 
         var effectiveFormat = "yyyy-MM-dd";
@@ -59,16 +80,41 @@ internal static class DatePickerFormattingHelper
             : dateTime.ToString(format, formatInfo);
     }
 
+    internal static string FormatDateTime(
+        DateTime dateTime,
+        string? format,
+        DatePickerMode pickerMode,
+        bool isShowTime,
+        ClockIdentifierType clockIdentifier,
+        DateTimeFormatInfo? formatInfo)
+    {
+        if (format is not null || pickerMode == DatePickerMode.Date)
+        {
+            return FormatDateTime(dateTime, GetEffectiveFormat(format, pickerMode, isShowTime, clockIdentifier), formatInfo);
+        }
+
+        return pickerMode switch
+        {
+            DatePickerMode.Week    => FormatWeek(dateTime),
+            DatePickerMode.Month   => dateTime.ToString("yyyy-MM", CultureInfo.InvariantCulture),
+            DatePickerMode.Quarter => FormatQuarter(dateTime),
+            DatePickerMode.Year    => dateTime.ToString("yyyy", CultureInfo.InvariantCulture),
+            _                      => FormatDateTime(dateTime, "yyyy-MM-dd", formatInfo)
+        };
+    }
+
     internal static bool IsFormattedTextAffectingProperty(
         AvaloniaProperty property,
         AvaloniaProperty isShowTimeProperty,
         AvaloniaProperty formatProperty,
+        AvaloniaProperty? pickerModeProperty,
         AvaloniaProperty clockIdentifierProperty,
         AvaloniaProperty amTextProperty,
         AvaloniaProperty pmTextProperty)
     {
         return property == isShowTimeProperty ||
                property == formatProperty ||
+               property == pickerModeProperty ||
                property == clockIdentifierProperty ||
                property == amTextProperty ||
                property == pmTextProperty;
@@ -122,9 +168,57 @@ internal static class DatePickerFormattingHelper
         return preferredWidth;
     }
 
+    internal static double CalculatePreferredInputWidth(
+        string? placeholderText,
+        string? format,
+        DatePickerMode pickerMode,
+        bool isShowTime,
+        ClockIdentifierType clockIdentifier,
+        double fontSize,
+        FontFamily fontFamily,
+        FontStyle fontStyle,
+        FontWeight fontWeight,
+        DateTimeFormatInfo? formatInfo)
+    {
+        double preferredWidth;
+        if (format is null && pickerMode != DatePickerMode.Date)
+        {
+            var widestText = pickerMode switch
+            {
+                DatePickerMode.Week    => "9999-99周",
+                DatePickerMode.Month   => "9999-99",
+                DatePickerMode.Quarter => "9999-Q4",
+                DatePickerMode.Year    => "9999",
+                _                      => "9999-99-99"
+            };
+            preferredWidth = TextUtils.CalculateTextSize(widestText, fontSize, fontFamily, fontStyle, fontWeight).Width;
+        }
+        else
+        {
+            preferredWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(
+                GetEffectiveFormat(format, pickerMode, isShowTime, clockIdentifier),
+                fontSize,
+                fontFamily,
+                fontStyle,
+                fontWeight,
+                formatInfo).Width;
+        }
+
+        if (!string.IsNullOrEmpty(placeholderText))
+        {
+            var placeholderWidth = TextUtils.CalculateTextSize(placeholderText, fontSize, fontFamily, fontStyle, fontWeight).Width;
+            preferredWidth = Math.Max(preferredWidth, placeholderWidth);
+        }
+
+        return preferredWidth;
+    }
+
     internal static double CalculateBoundedPreferredInputWidth(
         string? placeholderText,
-        string format,
+        string? format,
+        DatePickerMode pickerMode,
+        bool isShowTime,
+        ClockIdentifierType clockIdentifier,
         double fontSize,
         FontFamily fontFamily,
         FontStyle fontStyle,
@@ -136,6 +230,9 @@ internal static class DatePickerFormattingHelper
         var preferredWidth = CalculatePreferredInputWidth(
             placeholderText,
             format,
+            pickerMode,
+            isShowTime,
+            clockIdentifier,
             fontSize,
             fontFamily,
             fontStyle,
@@ -148,7 +245,10 @@ internal static class DatePickerFormattingHelper
     internal static double CalculateBoundedRangePreferredInputWidth(
         string? placeholderText,
         string? secondaryPlaceholderText,
-        string format,
+        string? format,
+        DatePickerMode pickerMode,
+        bool isShowTime,
+        ClockIdentifierType clockIdentifier,
         double fontSize,
         FontFamily fontFamily,
         FontStyle fontStyle,
@@ -161,6 +261,9 @@ internal static class DatePickerFormattingHelper
             CalculatePreferredInputWidth(
                 placeholderText,
                 format,
+                pickerMode,
+                isShowTime,
+                clockIdentifier,
                 fontSize,
                 fontFamily,
                 fontStyle,
@@ -169,6 +272,9 @@ internal static class DatePickerFormattingHelper
             CalculatePreferredInputWidth(
                 secondaryPlaceholderText,
                 format,
+                pickerMode,
+                isShowTime,
+                clockIdentifier,
                 fontSize,
                 fontFamily,
                 fontStyle,
@@ -176,6 +282,51 @@ internal static class DatePickerFormattingHelper
                 formatInfo));
 
         return ApplyWidthBounds(preferredWidth, minWidth, maxWidth);
+    }
+
+    internal static DateTime NormalizeDateTime(DateTime dateTime, DatePickerMode pickerMode, DayOfWeek firstDayOfWeek = DayOfWeek.Monday)
+    {
+        var date = DateTimeHelper.DiscardTime(dateTime);
+        return pickerMode switch
+        {
+            DatePickerMode.Week    => GetWeekStart(date, firstDayOfWeek),
+            DatePickerMode.Month   => new DateTime(date.Year, date.Month, 1),
+            DatePickerMode.Quarter => new DateTime(date.Year, ((date.Month - 1) / 3 * 3) + 1, 1),
+            DatePickerMode.Year    => new DateTime(date.Year, 1, 1),
+            _                      => date
+        };
+    }
+
+    internal static bool IsSamePickerUnit(DateTime first, DateTime second, DatePickerMode pickerMode)
+    {
+        return pickerMode switch
+        {
+            DatePickerMode.Week    => ISOWeek.GetYear(first) == ISOWeek.GetYear(second) &&
+                                      ISOWeek.GetWeekOfYear(first) == ISOWeek.GetWeekOfYear(second),
+            DatePickerMode.Month   => first.Year == second.Year && first.Month == second.Month,
+            DatePickerMode.Quarter => first.Year == second.Year && ((first.Month - 1) / 3) == ((second.Month - 1) / 3),
+            DatePickerMode.Year    => first.Year == second.Year,
+            _                      => DateTimeHelper.CompareDays(first, second) == 0
+        };
+    }
+
+    private static string FormatWeek(DateTime dateTime)
+    {
+        var weekYear = ISOWeek.GetYear(dateTime);
+        var week     = ISOWeek.GetWeekOfYear(dateTime);
+        return string.Create(CultureInfo.InvariantCulture, $"{weekYear:D4}-{week:D2}周");
+    }
+
+    private static string FormatQuarter(DateTime dateTime)
+    {
+        var quarter = ((dateTime.Month - 1) / 3) + 1;
+        return string.Create(CultureInfo.InvariantCulture, $"{dateTime.Year:D4}-Q{quarter}");
+    }
+
+    private static DateTime GetWeekStart(DateTime date, DayOfWeek firstDayOfWeek)
+    {
+        var offset = ((int)date.DayOfWeek - (int)firstDayOfWeek + 7) % 7;
+        return date.AddDays(-offset);
     }
 
     private static double ApplyWidthBounds(double preferredWidth, double minWidth, double maxWidth)

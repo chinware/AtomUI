@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using AtomUI.Controls;
+using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 using AtomUI.Desktop.Controls.CalendarView.State;
 using Avalonia;
@@ -59,6 +60,9 @@ internal class Calendar : TemplatedControl
     
     public static readonly StyledProperty<DateTime?> SelectedDateProperty =
         AvaloniaProperty.Register<Calendar, DateTime?>(nameof(SelectedDate));
+
+    public static readonly StyledProperty<DatePickerMode> PickerModeProperty =
+        DatePicker.PickerModeProperty.AddOwner<Calendar>();
     
     /// <summary>
     /// Gets or sets the day that is considered the beginning of the week.
@@ -195,6 +199,12 @@ internal class Calendar : TemplatedControl
     {
         get => GetValue(SelectedDateProperty);
         set => SetValue(SelectedDateProperty, value);
+    }
+
+    public DatePickerMode PickerMode
+    {
+        get => GetValue(PickerModeProperty);
+        set => SetValue(PickerModeProperty, value);
     }
     
     /// <summary>
@@ -394,6 +404,7 @@ internal class Calendar : TemplatedControl
         DisplayDateStartProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateStartChanged(e));
         DisplayDateEndProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnDisplayDateEndChanged(e));
         SelectedDateProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnSelectedDateChanged(e));
+        PickerModeProperty.Changed.AddClassHandler<Calendar>((x, e) => x.OnPickerModeChanged(e));
         KeyDownEvent.AddClassHandler<Calendar>((x, e) => x.HandleCalendarKeyDown(e));
         HorizontalAlignmentProperty.OverrideDefaultValue<Calendar>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<Calendar>(VerticalAlignment.Top);
@@ -438,6 +449,7 @@ internal class Calendar : TemplatedControl
         ApplyViewStateAction(CalendarViewAction.SetFirstDayOfWeek(FirstDayOfWeek));
         ApplyViewStateAction(CalendarViewAction.SetTodayHighlighted(IsTodayHighlighted));
         ApplyViewStateAction(CalendarViewAction.SetDisplayMode(DisplayMode));
+        ApplyViewStateAction(CalendarViewAction.SetPickerMode(PickerMode));
         ApplyViewStateAction(CalendarViewAction.SetCulture(_cultureContext.CurrentFormat));
     }
     
@@ -538,6 +550,33 @@ internal class Calendar : TemplatedControl
         OnDisplayModeChanged(new CalendarModeChangedEventArgs((CalendarMode)change.OldValue, mode));
         SyncViewStateFromCurrentProperties();
     }
+
+    private void OnPickerModeChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        var targetDisplayMode = GetTargetDisplayMode((DatePickerMode)change.NewValue!);
+        if (DisplayMode != targetDisplayMode)
+        {
+            SetCurrentValue(DisplayModeProperty, targetDisplayMode);
+        }
+
+        if (PickerMode == DatePickerMode.Week && FirstDayOfWeek != DayOfWeek.Monday)
+        {
+            SetCurrentValue(FirstDayOfWeekProperty, DayOfWeek.Monday);
+        }
+
+        SyncViewStateFromCurrentProperties();
+        UpdateMonths();
+    }
+
+    internal static CalendarMode GetTargetDisplayMode(DatePickerMode pickerMode)
+    {
+        return pickerMode switch
+        {
+            DatePickerMode.Month or DatePickerMode.Quarter => CalendarMode.Year,
+            DatePickerMode.Year                            => CalendarMode.Decade,
+            _                                              => CalendarMode.Month
+        };
+    }
     
     private static bool IsValidDisplayMode(CalendarMode mode)
     {
@@ -583,6 +622,16 @@ internal class Calendar : TemplatedControl
     protected virtual void OnSelectedDateChanged(AvaloniaPropertyChangedEventArgs change)
     {
         var selectedDate = change.NewValue as DateTime?;
+        if (selectedDate.HasValue)
+        {
+            var normalizedDate = NormalizePickerDate(selectedDate.Value);
+            if (DateTimeHelper.CompareDays(normalizedDate, selectedDate.Value) != 0)
+            {
+                SetCurrentValue(SelectedDateProperty, normalizedDate);
+                return;
+            }
+        }
+
         if (!IsValidDateSelection(this, selectedDate))
         {
             SetCurrentValue(SelectedDateProperty, change.OldValue as DateTime?);
@@ -958,10 +1007,24 @@ internal class Calendar : TemplatedControl
     {
         DateSelected?.Invoke(this, new DateSelectedEventArgs(selected));
     }
+
+    internal DateTime NormalizePickerDate(DateTime date)
+    {
+        return DatePickerFormattingHelper.NormalizeDateTime(date, PickerMode, DayOfWeek.Monday);
+    }
+
+    internal void SelectPickerDate(DateTime date)
+    {
+        var normalizedDate = NormalizePickerDate(date);
+        SetCurrentValue(SelectedDateProperty, normalizedDate);
+        NotifyDateSelected(normalizedDate);
+        UpdateHighlightDays();
+    }
     
     internal virtual void NotifyHoverDateChanged(DateTime? hoverDate)
     {
-        HoverDateChanged?.Invoke(this, new DateSelectedEventArgs(hoverDate));
+        HoverDateChanged?.Invoke(this,
+            new DateSelectedEventArgs(hoverDate.HasValue ? NormalizePickerDate(hoverDate.Value) : null));
     }
 
     private void OnMonthClick()
@@ -1259,14 +1322,28 @@ internal class Calendar : TemplatedControl
         {
             case CalendarMode.Year:
             {
-                SetCurrentValue(DisplayDateProperty, SelectedMonth);
-                SetCurrentValue(DisplayModeProperty, CalendarMode.Month);
+                if (PickerMode is DatePickerMode.Month or DatePickerMode.Quarter)
+                {
+                    SelectPickerDate(SelectedMonth);
+                }
+                else
+                {
+                    SetCurrentValue(DisplayDateProperty, SelectedMonth);
+                    SetCurrentValue(DisplayModeProperty, CalendarMode.Month);
+                }
                 return true;
             }
             case CalendarMode.Decade:
             {
-                SelectedMonth = SelectedYear;
-                SetCurrentValue(DisplayModeProperty, CalendarMode.Year);
+                if (PickerMode == DatePickerMode.Year)
+                {
+                    SelectPickerDate(SelectedYear);
+                }
+                else
+                {
+                    SelectedMonth = SelectedYear;
+                    SetCurrentValue(DisplayModeProperty, CalendarMode.Year);
+                }
                 return true;
             }
         }

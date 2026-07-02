@@ -196,6 +196,21 @@ public class CalendarPanelBuilderTests
     }
 
     [Fact]
+    public void BuildQuarterPanel_Generates_Four_Quarter_Cells()
+    {
+        var state = CalendarViewState.CreateDefault(new DateTime(2026, 7, 1),
+            CultureInfo.InvariantCulture.DateTimeFormat)
+                                     .WithPickerMode(DatePickerMode.Quarter)
+                                     .WithSelectedDate(new DateTime(2026, 7, 1));
+
+        var panel = CalendarPanelBuilder.BuildQuarterPanel(state, new DateTime(2026, 1, 1));
+
+        panel.Quarters.Count.ShouldBe(4);
+        panel.Quarters.Select(cell => cell.Text).ShouldBe(new[] { "Q1", "Q2", "Q3", "Q4" });
+        panel.Quarters.Single(cell => cell.Date == new DateTime(2026, 7, 1)).IsSelected.ShouldBeTrue();
+    }
+
+    [Fact]
     public void BuildDecadePanel_Marks_Inactive_Selected_And_Focused_Years()
     {
         var state = CalendarViewState.CreateDefault(new DateTime(2026, 6, 1),

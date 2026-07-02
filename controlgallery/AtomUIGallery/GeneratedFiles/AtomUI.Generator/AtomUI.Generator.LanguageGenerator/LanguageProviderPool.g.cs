@@ -5790,6 +5790,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyFormat] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyFormat;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsNeedConfirm] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyIsNeedConfirm;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsShowTime] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyIsShowTime;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerMode] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyPickerMode;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerPlacement] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyPickerPlacement;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyRangeEndSelectedDate] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyRangeEndSelectedDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyRangeStartSelectedDate] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyRangeStartSelectedDate;
@@ -5817,7 +5818,11 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextFilled] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2PlaceholderTextFilled;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextOutline] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2PlaceholderTextOutline;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectDate] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2PlaceholderTextSelectDate;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectMonth] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2PlaceholderTextSelectMonth;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectQuarter] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2PlaceholderTextSelectQuarter;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectTime] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2PlaceholderTextSelectTime;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectWeek] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2PlaceholderTextSelectWeek;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectYear] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2PlaceholderTextSelectYear;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextStartDate] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2PlaceholderTextStartDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2SecondaryPlaceholderTextEndDate] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2SecondaryPlaceholderTextEndDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2TextExpandDirection] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2TextExpandDirection;
@@ -5888,6 +5893,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyFormat] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyFormat;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsNeedConfirm] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyIsNeedConfirm;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsShowTime] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyIsShowTime;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerMode] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyPickerMode;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerPlacement] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyPickerPlacement;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyRangeEndSelectedDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyRangeEndSelectedDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyRangeStartSelectedDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyRangeStartSelectedDate;
@@ -5915,7 +5921,11 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextFilled] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2PlaceholderTextFilled;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextOutline] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2PlaceholderTextOutline;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2PlaceholderTextSelectDate;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectMonth] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2PlaceholderTextSelectMonth;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectQuarter] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2PlaceholderTextSelectQuarter;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectTime] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2PlaceholderTextSelectTime;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectWeek] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2PlaceholderTextSelectWeek;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectYear] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2PlaceholderTextSelectYear;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextStartDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2PlaceholderTextStartDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2SecondaryPlaceholderTextEndDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2SecondaryPlaceholderTextEndDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2TextExpandDirection] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2TextExpandDirection;
@@ -5986,6 +5996,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyFormat] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyFormat;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsNeedConfirm] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyIsNeedConfirm;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsShowTime] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyIsShowTime;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerMode] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyPickerMode;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerPlacement] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyPickerPlacement;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyRangeEndSelectedDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyRangeEndSelectedDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyRangeStartSelectedDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyRangeStartSelectedDate;
@@ -6013,7 +6024,11 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextFilled] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2PlaceholderTextFilled;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextOutline] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2PlaceholderTextOutline;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2PlaceholderTextSelectDate;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectMonth] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2PlaceholderTextSelectMonth;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectQuarter] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2PlaceholderTextSelectQuarter;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectTime] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2PlaceholderTextSelectTime;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectWeek] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2PlaceholderTextSelectWeek;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextSelectYear] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2PlaceholderTextSelectYear;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2PlaceholderTextStartDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2PlaceholderTextStartDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2SecondaryPlaceholderTextEndDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2SecondaryPlaceholderTextEndDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2TextExpandDirection] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2TextExpandDirection;

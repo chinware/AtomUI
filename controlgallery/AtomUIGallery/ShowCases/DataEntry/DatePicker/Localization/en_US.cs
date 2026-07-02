@@ -25,6 +25,10 @@ internal partial class en_US : LanguageProvider
     public const string PlacementTitle = "Placement";
     public const string PlacementDescription = "You can manually specify the position of the popup via placement.";
     public const string P2PlaceholderTextSelectDate = "Select date";
+    public const string P2PlaceholderTextSelectWeek = "Select week";
+    public const string P2PlaceholderTextSelectMonth = "Select month";
+    public const string P2PlaceholderTextSelectQuarter = "Select quarter";
+    public const string P2PlaceholderTextSelectYear = "Select year";
     public const string P2SecondaryPlaceholderTextEndDate = "End date";
     public const string P2PlaceholderTextSelectTime = "Select time";
     public const string P2PlaceholderTextStartDate = "Start date";
@@ -57,6 +61,7 @@ internal partial class en_US : LanguageProvider
     public const string ApiPropertyRangeStartSelectedDate = "Selected start date for RangeDatePicker.";
     public const string ApiPropertyRangeEndSelectedDate = "Selected end date for RangeDatePicker.";
     public const string ApiPropertyFormat = "Custom date/time formatting string.";
+    public const string ApiPropertyPickerMode = "Selection granularity: Date, Week, Month, Quarter, or Year.";
     public const string ApiPropertyIsShowTime = "Enables the time selection panel.";
     public const string ApiPropertyIsNeedConfirm = "Requires the user to confirm the selected value before committing.";
     public const string ApiPropertyClockIdentifier = "Chooses 12-hour or 24-hour clock display when time selection is enabled.";

@@ -2,6 +2,21 @@
 
 本文档记录 DatePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-02
+
+- API
+  - Add `DatePickerMode` and `PickerMode` to `DatePicker` and `RangeDatePicker` for Date, Week, Month, Quarter and Year selection granularity.
+- Changed
+  - Propagate picker granularity through presenter templates into CalendarView state, panel model generation and selection normalization.
+  - Add a dedicated quarter panel model rendering Q1-Q4 instead of using the month panel as a substitute.
+  - Normalize non-date committed values to week start, month start, quarter start or year start while keeping `DateTime?` as the value contract.
+  - Make time selection effective only for `PickerMode=Date`.
+  - Reserve input width by picker granularity so selected and hover text do not resize the input.
+- Gallery
+  - Update the basic DatePicker showcase to display Date, Week, Month, Quarter and Year modes.
+- Docs
+  - Document the PickerMode granularity model and CalendarView target panel mapping.
+
 ## 2026-07-01
 
 - Docs

@@ -1,4 +1,5 @@
 using System.Globalization;
+using AtomUI.Desktop.Controls;
 
 namespace AtomUI.Desktop.Controls.CalendarView.State;
 
@@ -36,6 +37,7 @@ internal sealed record CalendarViewState
     public DateTimeFormatInfo Culture { get; init; }
     public IReadOnlyList<CalendarDateRange> BlackoutDates { get; init; }
     public CalendarRangeSelectionState RangeSelection { get; init; }
+    public DatePickerMode PickerMode { get; init; } = DatePickerMode.Date;
 
     public static CalendarViewState CreateDefault(DateTime displayDate, DateTimeFormatInfo culture)
     {
@@ -122,6 +124,11 @@ internal sealed record CalendarViewState
     public CalendarViewState WithDisplayMode(CalendarMode mode)
     {
         return this with { DisplayMode = mode };
+    }
+
+    public CalendarViewState WithPickerMode(DatePickerMode pickerMode)
+    {
+        return this with { PickerMode = pickerMode };
     }
 
     public CalendarViewState WithCulture(DateTimeFormatInfo culture)

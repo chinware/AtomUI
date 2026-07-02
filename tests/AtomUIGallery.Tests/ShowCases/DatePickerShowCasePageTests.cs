@@ -84,6 +84,8 @@ public class DatePickerShowCasePageTests
         codeBehindSource.ShouldContain("HandlePickerPlacementCheckedChanged");
         codeBehindSource.ShouldNotContain("PickerSizeTypeOptionGroup.OptionCheckedChanged");
         codeBehindSource.ShouldNotContain("PickerPlacementOptionGroup.OptionCheckedChanged");
+        ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/ViewModels/DatePickerViewModel.cs")
+            .ShouldContain("new DatePickerApiRow(\"PickerMode\"");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:DatePickerApiRow\"");
@@ -123,6 +125,18 @@ public class DatePickerShowCasePageTests
     }
 
     [Fact]
+    public void DatePicker_ShowCase_Basic_Example_Exposes_All_AntDesign_Picker_Modes()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml");
+
+        source.ShouldContain("PickerMode=\"Date\"");
+        source.ShouldContain("PickerMode=\"Week\"");
+        source.ShouldContain("PickerMode=\"Month\"");
+        source.ShouldContain("PickerMode=\"Quarter\"");
+        source.ShouldContain("PickerMode=\"Year\"");
+    }
+
+    [Fact]
     public void DatePicker_ShowCase_Localization_Includes_Page_And_Api_Copy()
     {
         var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Localization/en_US.cs");
@@ -138,8 +152,13 @@ public class DatePickerShowCasePageTests
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertySelectedDateTime");
+            source.ShouldContain("ApiPropertyPickerMode");
             source.ShouldContain("ApiPropertyPickerPlacement");
             source.ShouldContain("ApiPropertyIsNeedConfirm");
+            source.ShouldContain("P2PlaceholderTextSelectWeek");
+            source.ShouldContain("P2PlaceholderTextSelectMonth");
+            source.ShouldContain("P2PlaceholderTextSelectQuarter");
+            source.ShouldContain("P2PlaceholderTextSelectYear");
             source.ShouldContain("TokenNameCellActiveWithRangeBg");
             source.ShouldContain("TokenNameCellHoverBg");
         }

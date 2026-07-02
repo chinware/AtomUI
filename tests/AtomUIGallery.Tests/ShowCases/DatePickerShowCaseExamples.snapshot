@@ -1,7 +1,18 @@
 <gallery:ShowCaseItem
 Title="{gallery:DatePickerShowCaseLangResource BasicTitle}"
 Description="{gallery:DatePickerShowCaseLangResource BasicDescription}">
-<atom:DatePicker PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}"/>
+<StackPanel Orientation="Vertical" Spacing="10">
+<atom:DatePicker PickerMode="Date"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" />
+<atom:DatePicker PickerMode="Week"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectWeek}" />
+<atom:DatePicker PickerMode="Month"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectMonth}" />
+<atom:DatePicker PickerMode="Quarter"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectQuarter}" />
+<atom:DatePicker PickerMode="Year"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectYear}" />
+</StackPanel>
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
 Title="{gallery:DatePickerShowCaseLangResource RangePickerTitle}"

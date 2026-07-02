@@ -1,3 +1,4 @@
+using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.CalendarView.Models;
 using AtomUI.Desktop.Controls.CalendarView.State;
 
@@ -25,6 +26,7 @@ internal static class CalendarPanelBuilder
     {
         var yearStart = new DateTime(displayYear.Year, 1, 1);
         var months    = new List<CalendarCellState>(12);
+        var selectedReference = state.SelectedDate ?? state.DisplayDate;
         for (var month = 1; month <= 12; month++)
         {
             var date       = new DateTime(yearStart.Year, month, 1);
@@ -37,7 +39,7 @@ internal static class CalendarPanelBuilder
                 IsBlackout: false,
                 IsDisabled: isDisabled,
                 IsInactive: false,
-                IsSelected: DateTimeHelper.CompareYearMonth(date, state.DisplayDate) == 0,
+                IsSelected: IsSamePickerUnit(date, selectedReference, DatePickerMode.Month),
                 IsRangeStart: false,
                 IsRangeEnd: false,
                 IsRangeMiddle: false,
@@ -46,6 +48,36 @@ internal static class CalendarPanelBuilder
         }
 
         return new CalendarYearPanelModel(yearStart, months);
+    }
+
+    public static CalendarQuarterPanelModel BuildQuarterPanel(CalendarViewState state, DateTime displayYear)
+    {
+        var yearStart         = new DateTime(displayYear.Year, 1, 1);
+        var selectedReference = state.SelectedDate ?? state.DisplayDate;
+        var quarters          = new List<CalendarCellState>(4);
+        for (var quarter = 1; quarter <= 4; quarter++)
+        {
+            var startMonth = ((quarter - 1) * 3) + 1;
+            var date       = new DateTime(yearStart.Year, startMonth, 1);
+            var endMonth   = new DateTime(yearStart.Year, startMonth + 2, 1);
+            var isDisabled = DateTimeHelper.CompareYearMonth(endMonth, state.DisplayDateStart) < 0 ||
+                             DateTimeHelper.CompareYearMonth(date, state.DisplayDateEnd) > 0;
+            quarters.Add(new CalendarCellState(
+                Date: date,
+                Text: $"Q{quarter}",
+                IsToday: false,
+                IsBlackout: false,
+                IsDisabled: isDisabled,
+                IsInactive: false,
+                IsSelected: IsSamePickerUnit(date, selectedReference, DatePickerMode.Quarter),
+                IsRangeStart: false,
+                IsRangeEnd: false,
+                IsRangeMiddle: false,
+                IsFocused: IsSamePickerUnit(date, state.SelectedMonth, DatePickerMode.Quarter),
+                IsHidden: isDisabled));
+        }
+
+        return new CalendarQuarterPanelModel(yearStart, quarters);
     }
 
     public static CalendarDecadePanelModel BuildDecadePanel(CalendarViewState state, DateTime selectedYear)
@@ -122,11 +154,11 @@ internal static class CalendarPanelBuilder
                                    DateTimeHelper.CompareDays(date, previewRangeStart) > 0 &&
                                    DateTimeHelper.CompareDays(date, previewRangeEnd) < 0;
         var isFocused = state.FocusedDate is not null &&
-                        DateTimeHelper.CompareDays(state.FocusedDate.Value, date) == 0;
+                        IsSamePickerUnit(state.FocusedDate.Value, date, state.PickerMode);
         var isSelected = (state.SelectedDate is not null &&
-                          DateTimeHelper.CompareDays(state.SelectedDate.Value, date) == 0) ||
+                          IsSamePickerUnit(state.SelectedDate.Value, date, state.PickerMode)) ||
                          (state.SecondarySelectedDate is not null &&
-                          DateTimeHelper.CompareDays(state.SecondarySelectedDate.Value, date) == 0);
+                          IsSamePickerUnit(state.SecondarySelectedDate.Value, date, state.PickerMode));
 
         return new CalendarCellState(
             Date: date,
@@ -144,5 +176,10 @@ internal static class CalendarPanelBuilder
             IsRangePreviewStart: isRangePreviewStart,
             IsRangePreviewEnd: isRangePreviewEnd,
             IsRangePreviewMiddle: isRangePreviewMiddle);
+    }
+
+    private static bool IsSamePickerUnit(DateTime first, DateTime second, DatePickerMode pickerMode)
+    {
+        return DatePickerFormattingHelper.IsSamePickerUnit(first, second, pickerMode);
     }
 }

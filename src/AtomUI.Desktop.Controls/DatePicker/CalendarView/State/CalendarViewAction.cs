@@ -1,4 +1,5 @@
 using System.Globalization;
+using AtomUI.Desktop.Controls;
 
 namespace AtomUI.Desktop.Controls.CalendarView.State;
 
@@ -23,6 +24,7 @@ internal abstract record CalendarViewAction
         CalendarRangeActivePart ActivePart,
         bool RepairReverseRange) : CalendarViewAction;
     public sealed record SetDisplayModeAction(CalendarMode Mode) : CalendarViewAction;
+    public sealed record SetPickerModeAction(DatePickerMode PickerMode) : CalendarViewAction;
     public sealed record SetFirstDayOfWeekAction(DayOfWeek FirstDayOfWeek) : CalendarViewAction;
     public sealed record SetTodayHighlightedAction(bool IsTodayHighlighted) : CalendarViewAction;
     public sealed record SetCultureAction(DateTimeFormatInfo Culture) : CalendarViewAction;
@@ -80,6 +82,11 @@ internal abstract record CalendarViewAction
     public static CalendarViewAction SetDisplayMode(CalendarMode mode)
     {
         return new SetDisplayModeAction(mode);
+    }
+
+    public static CalendarViewAction SetPickerMode(DatePickerMode pickerMode)
+    {
+        return new SetPickerModeAction(pickerMode);
     }
 
     public static CalendarViewAction SetFirstDayOfWeek(DayOfWeek firstDayOfWeek)

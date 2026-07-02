@@ -10,7 +10,7 @@
 
 主要源码文件：
 
-- `src/AtomUI.Desktop.Controls/DatePicker`：8 个文件，代表文件 `DatePicker.cs`、`DatePickerPresenter.cs`、`DatePickerToken.cs`、`DualMonthArrowDecoratedBox.cs`、`DualMonthRangeDatePickerPresenter.cs` 等。
+- `src/AtomUI.Desktop.Controls/DatePicker`：DatePicker 控件家族根目录，代表文件 `DatePicker.cs`、`RangeDatePicker.cs`、`DatePickerPresenter.cs`、`DatePickerFormattingHelper.cs`、`DatePickerToken.cs`、`DualMonthRangeDatePickerPresenter.cs` 等。
 - `src/AtomUI.Desktop.Controls/DatePicker/CalendarView`：CalendarView runtime。`State` 保存归一化状态和 action，`Models` 保存纯 panel model，`Rendering` 将 model 应用到 generated buttons，`Infrastructure` 封装 culture 和 pointer tracking。
 - `src/AtomUI.Desktop.Controls/DatePicker/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
 - `src/AtomUI.Desktop.Controls/DatePicker/Themes`：19 个文件，代表文件 `CalendarButtonTheme.axaml`、`CalendarButtonTheme.cs`、`CalendarDayButtonTheme.axaml`、`CalendarItemTheme.axaml`、`CalendarItemTheme.cs` 等。
@@ -70,7 +70,7 @@ Public API / ItemsSource / Command / Event
 源码中的状态入口按以下语义维护：
 
 - 内容与数据：`HeaderBackground`。
-- 选择与集合：`DisplayMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SecondarySelectedDate`、`SecondarySelectedDateTime`、`SelectedDate`、`SelectedDateTime`、`TempSelectedTime`。
+- 选择与集合：`DisplayMode`、`PickerMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SecondarySelectedDate`、`SecondarySelectedDateTime`、`SelectedDate`、`SelectedDateTime`、`TempSelectedTime`。
 - 交互与状态：`IsFloatingArrowPosition`、`IsHorizontalFlipped`、`IsNeedConfirm`、`IsShowNow`、`IsShowTime`、`IsTodayHighlighted`。
 - 视觉与布局：`RangePickerIndicatorOffsetEnd`、`RangePickerIndicatorOffsetStart`。
 - 其他稳定入口：`ClockIdentifier`、`DefaultDateTime`、`DisplayDate`、`DisplayDateEnd`、`DisplayDateStart`、`FirstDayOfWeek`、`Format`。
@@ -159,6 +159,17 @@ DatePicker 的交互事件应从输入源收敛到控件级语义事件：
 - `CalendarDayButton.EffectiveCornerRadius` 必须在 committed endpoint 和 preview endpoint 上压平连接侧圆角，让浅色 range indicator 与主色端点连续。
 - 范围选择的 active part 是面板显示月份的前置状态，`RangeDatePickerPresenter.IsRangeStartActive` 必须先通过模板传给 `RangeCalendar.IsSelectRangeStart`，再同步 `SelectedDate` / `SecondarySelectedDate`。
 - `Calendar.SelectedDate` 在 range 模式中只代表开始端点；只有 Start 端激活时它才允许驱动 `DisplayDate`。End 端激活时，开始端点只能参与范围计算和高亮，不能把双月面板回滚到开始月份。
+
+PickerMode 颗粒度维护规则：
+
+- `DatePickerMode` 是 public 颗粒度契约，外层 `DatePicker` / `RangeDatePicker` 通过 `PickerMode` relay 到 presenter，再由 AXAML `TemplateBinding` 传给 `Calendar` / `RangeCalendar` / `DualMonthRangeCalendar`。
+- `Calendar.PickerMode` 必须进入 `CalendarViewState`，panel model 构建和 selected/focused 判断都从同一个 state 读取颗粒度，不能在 renderer 或按钮事件里重新推断。
+- 目标面板映射固定为 `Date` / `Week` -> `CalendarMode.Month`，`Month` / `Quarter` -> `CalendarMode.Year`，`Year` -> `CalendarMode.Decade`。
+- `CalendarItem` 点击年面板按钮时按目标颗粒度决定行为：`Date` / `Week` 继续进入月视图，`Month` / `Quarter` 直接提交，十年面板中的 `Year` 直接提交。
+- `CalendarPanelBuilder.BuildQuarterPanel` 输出 Q1-Q4 四个季度 cell，季度选择不能复用 12 个月面板伪装。
+- 提交值统一由 `DatePickerFormattingHelper.NormalizeDateTime` 归一化：周为 ISO 周起始日，月份为当月 1 日，季度为季度首月 1 日，年份为当年 1 月 1 日。
+- `DatePickerFormattingHelper` 同时负责默认格式、显示文本和预留宽度。输入框宽度按目标颗粒度的最宽文本预留，不能因为 hover 或选中值变化而改变宽度。
+- `IsShowTime` 只在 `PickerMode=Date` 时形成有效时间选择；presenter 使用 `IsTimeSelectionVisible` 控制 TimeView 显示和时间拼接，其他颗粒度忽略时间面板。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 

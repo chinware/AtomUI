@@ -35,6 +35,9 @@ internal class DatePickerPresenter : PickerPresenterBase
     public static readonly StyledProperty<bool> IsShowTimeProperty =
         DatePicker.IsShowTimeProperty.AddOwner<DatePickerPresenter>();
 
+    public static readonly StyledProperty<DatePickerMode> PickerModeProperty =
+        DatePicker.PickerModeProperty.AddOwner<DatePickerPresenter>();
+
     public static readonly StyledProperty<DateTime?> SelectedDateTimeProperty =
         DatePicker.SelectedDateTimeProperty.AddOwner<DatePickerPresenter>();
 
@@ -59,6 +62,12 @@ internal class DatePickerPresenter : PickerPresenterBase
         set => SetValue(IsShowTimeProperty, value);
     }
 
+    public DatePickerMode PickerMode
+    {
+        get => GetValue(PickerModeProperty);
+        set => SetValue(PickerModeProperty, value);
+    }
+
     public DateTime? SelectedDateTime
     {
         get => GetValue(SelectedDateTimeProperty);
@@ -80,6 +89,11 @@ internal class DatePickerPresenter : PickerPresenterBase
             o => o.IsButtonsPanelVisible,
             (o, v) => o.IsButtonsPanelVisible = v);
 
+    internal static readonly DirectProperty<DatePickerPresenter, bool> IsTimeSelectionVisibleProperty =
+        AvaloniaProperty.RegisterDirect<DatePickerPresenter, bool>(nameof(IsTimeSelectionVisible),
+            o => o.IsTimeSelectionVisible,
+            (o, v) => o.IsTimeSelectionVisible = v);
+
     public static readonly StyledProperty<TimeSpan?> TempSelectedTimeProperty =
         AvaloniaProperty.Register<DatePickerPresenter, TimeSpan?>(nameof(TempSelectedTime));
 
@@ -93,11 +107,18 @@ internal class DatePickerPresenter : PickerPresenterBase
     }
 
     private bool _buttonsPanelVisible = true;
+    private bool _isTimeSelectionVisible;
 
     internal bool IsButtonsPanelVisible
     {
         get => _buttonsPanelVisible;
         set => SetAndRaise(IsButtonsPanelVisibleProperty, ref _buttonsPanelVisible, value);
+    }
+
+    internal bool IsTimeSelectionVisible
+    {
+        get => _isTimeSelectionVisible;
+        set => SetAndRaise(IsTimeSelectionVisibleProperty, ref _isTimeSelectionVisible, value);
     }
 
     public TimeSpan? TempSelectedTime
@@ -165,9 +186,11 @@ internal class DatePickerPresenter : PickerPresenterBase
         base.OnPropertyChanged(change);
         if (change.Property == IsNeedConfirmProperty ||
             change.Property == IsShowNowProperty ||
-            change.Property == IsShowTimeProperty)
+            change.Property == IsShowTimeProperty ||
+            change.Property == PickerModeProperty)
         {
             SetupButtonStatus();
+            CalendarView?.SetCurrentValue(PickerCalendar.PickerModeProperty, PickerMode);
         }
         else if (change.Property == SelectedDateTimeProperty)
         {
@@ -214,7 +237,7 @@ internal class DatePickerPresenter : PickerPresenterBase
 
         if (TimeView is not null)
         {
-            if (IsShowTime)
+            if (IsTimeSelectionVisible)
             {
                 SyncTimeViewTimeValue();
             }
@@ -454,7 +477,7 @@ internal class DatePickerPresenter : PickerPresenterBase
         }
 
         date = date.Value.Date;
-        if (IsShowTime && timeSpan is not null)
+        if (IsTimeSelectionVisible && timeSpan is not null)
         {
             date = date.Value.Add(timeSpan.Value);
         }
@@ -464,6 +487,8 @@ internal class DatePickerPresenter : PickerPresenterBase
 
     private void SetupButtonStatus()
     {
+        IsTimeSelectionVisible = IsShowTime && PickerMode == DatePickerMode.Date;
+
         if (NowButton is null ||
             TodayButton is null ||
             ConfirmButton is null)
@@ -478,11 +503,11 @@ internal class DatePickerPresenter : PickerPresenterBase
         NowButton.HorizontalAlignment   = HorizontalAlignment.Left;
         TodayButton.HorizontalAlignment = HorizontalAlignment.Left;
 
-        if (IsShowNow)
+        if (IsShowNow && PickerMode == DatePickerMode.Date)
         {
             NowButton.IsVisible   = false;
             TodayButton.IsVisible = false;
-            if (IsShowTime)
+            if (IsTimeSelectionVisible)
             {
                 NowButton.IsVisible = true;
             }

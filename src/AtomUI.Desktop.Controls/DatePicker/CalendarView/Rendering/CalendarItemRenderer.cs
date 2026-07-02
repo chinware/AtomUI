@@ -27,6 +27,11 @@ internal static class CalendarItemRenderer
         RenderCalendarButtons(owner, yearView, model.Months);
     }
 
+    public static void RenderQuarterPanel(Calendar? owner, Grid yearView, CalendarQuarterPanelModel model)
+    {
+        RenderCalendarButtons(owner, yearView, model.Quarters);
+    }
+
     public static void RenderDecadePanel(Calendar? owner, Grid yearView, CalendarDecadePanelModel model)
     {
         RenderCalendarButtons(owner, yearView, model.Years);

@@ -40,6 +40,9 @@ public class RangeDatePicker : RangeInfoPickerInput
 
     public static readonly StyledProperty<string?> FormatProperty =
         DatePicker.FormatProperty.AddOwner<RangeDatePicker>();
+
+    public static readonly StyledProperty<DatePickerMode> PickerModeProperty =
+        DatePicker.PickerModeProperty.AddOwner<RangeDatePicker>();
     
     public DateTime? RangeStartSelectedDate
     {
@@ -85,6 +88,12 @@ public class RangeDatePicker : RangeInfoPickerInput
     {
         get => GetValue(FormatProperty);
         set => SetValue(FormatProperty, value);
+    }
+
+    public DatePickerMode PickerMode
+    {
+        get => GetValue(PickerModeProperty);
+        set => SetValue(PickerModeProperty, value);
     }
     
     #endregion
@@ -185,7 +194,7 @@ public class RangeDatePicker : RangeInfoPickerInput
     protected override Control CreatePickerPresenter()
     {
         RangeDatePickerPresenter? presenter = null;
-        if (IsShowTime)
+        if (IsShowTime && PickerMode == DatePickerMode.Date)
         {
             presenter = new TimedRangeDatePickerPresenter()
             {
@@ -203,6 +212,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         presenter[!RangeDatePickerPresenter.IsNeedConfirmProperty]             = this[!IsNeedConfirmProperty];
         presenter[!RangeDatePickerPresenter.IsShowNowProperty]                 = this[!IsShowNowProperty];
         presenter[!RangeDatePickerPresenter.IsShowTimeProperty]                = this[!IsShowTimeProperty];
+        presenter[!RangeDatePickerPresenter.PickerModeProperty]                = this[!PickerModeProperty];
 
         return presenter;
     }
@@ -300,11 +310,6 @@ public class RangeDatePicker : RangeInfoPickerInput
         CalculatePreferredWidth();
     }
     
-    private string GetEffectiveFormat()
-    {
-        return DatePickerFormattingHelper.GetEffectiveFormat(Format, IsShowTime, ClockIdentifier);
-    }
-    
     protected string FormatDateTime(DateTime? dateTime)
     {
         if (dateTime is null)
@@ -312,9 +317,8 @@ public class RangeDatePicker : RangeInfoPickerInput
             return string.Empty;
         }
 
-        var format = GetEffectiveFormat();
         var formatInfo = DatePickerFormattingHelper.CreateFormatInfo(ClockIdentifier, AmText, PmText);
-        return DatePickerFormattingHelper.FormatDateTime(dateTime.Value, format, formatInfo);
+        return DatePickerFormattingHelper.FormatDateTime(dateTime.Value, Format, PickerMode, IsShowTime, ClockIdentifier, formatInfo);
     }
     
     private void HandleHoverDateTimeChanged(object? sender, DateSelectedEventArgs args)
@@ -377,7 +381,8 @@ public class RangeDatePicker : RangeInfoPickerInput
         {
             NotifyRangeActivatedPartChanged();
         }
-        else if (change.Property == IsShowTimeProperty)
+        else if (change.Property == IsShowTimeProperty ||
+                 change.Property == PickerModeProperty)
         {
             SyncNeedConfirmForShowTime();
         }
@@ -409,7 +414,7 @@ public class RangeDatePicker : RangeInfoPickerInput
 
     private void SyncNeedConfirmForShowTime()
     {
-        if (IsShowTime)
+        if (IsShowTime && PickerMode == DatePickerMode.Date)
         {
             _isNeedConfirmBackup = IsNeedConfirm;
             IsNeedConfirm        = true;
@@ -432,6 +437,7 @@ public class RangeDatePicker : RangeInfoPickerInput
             property,
             IsShowTimeProperty,
             FormatProperty,
+            PickerModeProperty,
             ClockIdentifierProperty,
             AmTextProperty,
             PmTextProperty);
@@ -463,12 +469,14 @@ public class RangeDatePicker : RangeInfoPickerInput
         }
         else
         {
-            var format = GetEffectiveFormat();
             var formatInfo = DatePickerFormattingHelper.CreateFormatInfo(ClockIdentifier, AmText, PmText);
             var preferredInputWidth = DatePickerFormattingHelper.CalculateBoundedRangePreferredInputWidth(
                 PlaceholderText,
                 SecondaryPlaceholderText,
-                format,
+                Format,
+                PickerMode,
+                IsShowTime,
+                ClockIdentifier,
                 FontSize,
                 FontFamily,
                 FontStyle,

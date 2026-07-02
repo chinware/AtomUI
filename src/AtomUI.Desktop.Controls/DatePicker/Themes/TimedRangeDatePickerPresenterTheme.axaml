@@ -45,13 +45,14 @@
                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                     IsSelectRangeStart="{TemplateBinding IsRangeStartActive}"
                                                     SelectedDate="{TemplateBinding SelectedDateTime}"
-                                                    SecondarySelectedDate="{TemplateBinding SecondarySelectedDateTime}"/>
+                                                    SecondarySelectedDate="{TemplateBinding SecondarySelectedDateTime}"
+                                                    PickerMode="{TemplateBinding PickerMode}"/>
                         <atom:TimeView
                             Name="PART_TimeView"
                             VerticalAlignment="Top"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" 
                             ClockIdentifier="{TemplateBinding ClockIdentifier}"
-                            IsVisible="{TemplateBinding IsShowTime}"/>
+                            IsVisible="{TemplateBinding IsTimeSelectionVisible}"/>
                         
                     </StackPanel>
                 </DockPanel>
