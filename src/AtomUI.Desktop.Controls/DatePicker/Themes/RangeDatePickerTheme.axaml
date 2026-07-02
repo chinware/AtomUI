@@ -27,8 +27,10 @@
                         RightAddOnTemplate="{TemplateBinding RightAddOnTemplate}"
                         ContentLeftAddOn="{TemplateBinding ContentLeftAddOn}"
                         ContentLeftAddOnTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
-                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                        VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="Stretch"
                         CompactSpaceItemPosition="{TemplateBinding CompactSpaceItemPosition}"
                         CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                         IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">

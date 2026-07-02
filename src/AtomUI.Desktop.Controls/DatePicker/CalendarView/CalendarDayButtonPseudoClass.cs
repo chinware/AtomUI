@@ -8,4 +8,7 @@ internal static class CalendarDayButtonPseudoClass
     public const string RangeStart = ":range-start";
     public const string RangeEnd = ":range-end";
     public const string RangeMiddle = ":range-middle";
+    public const string RangePreviewStart = ":range-preview-start";
+    public const string RangePreviewEnd = ":range-preview-end";
+    public const string RangePreviewMiddle = ":range-preview-middle";
 }

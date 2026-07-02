@@ -11,13 +11,25 @@ using AvaloniaButton = Avalonia.Controls.Button;
 
 namespace AtomUI.Desktop.Controls.CalendarView;
 
-/// <summary>
-/// Represents a button on a
-/// <see cref="T:Avalonia.Controls.Calendar" />.
-/// </summary>
 [PseudoClasses(StdPseudoClass.Selected, StdPseudoClass.InActive, BtnFocusedPC)]
 internal sealed class CalendarButton : AvaloniaButton
 {
+    #region 公共事件定义
+
+    /// <summary>
+    /// Occurs when the left mouse button is pressed over this calendar button.
+    /// </summary>
+    public event EventHandler<PointerPressedEventArgs>? CalendarLeftMouseButtonDown;
+
+    /// <summary>
+    /// Occurs when the left mouse button is released over this calendar button.
+    /// </summary>
+    public event EventHandler<PointerReleasedEventArgs>? CalendarLeftMouseButtonUp;
+
+    #endregion
+
+    #region 内部属性定义
+
     internal const string BtnFocusedPC = ":btnfocused";
     
     internal static readonly StyledProperty<bool> IsMotionEnabledProperty =
@@ -34,6 +46,8 @@ internal sealed class CalendarButton : AvaloniaButton
     /// </summary>
     internal Calendar? Owner { get; set; }
 
+    #endregion
+
     /// <summary>
     /// A value indicating whether the button is focused.
     /// </summary>
@@ -49,14 +63,9 @@ internal sealed class CalendarButton : AvaloniaButton
     /// </summary>
     private bool _isSelected;
 
-    /// <summary>
-    /// Initializes a new instance of the
-    /// <see cref="T:Avalonia.Controls.Primitives.CalendarButton" />
-    /// class.
-    /// </summary>
     public CalendarButton()
     {
-        SetCurrentValue(ContentProperty, DateTimeHelper.GetCurrentDateFormat().AbbreviatedMonthNames[0]);
+        SetCurrentValue(ContentProperty, string.Empty);
     }
 
     /// <summary>
@@ -110,11 +119,6 @@ internal sealed class CalendarButton : AvaloniaButton
         }
     }
 
-    /// <summary>
-    /// Builds the visual tree for the
-    /// <see cref="T:Controls.Primitives.CalendarButton" />
-    /// when a new template is applied.
-    /// </summary>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         UpdatePseudoClasses();
@@ -130,38 +134,6 @@ internal sealed class CalendarButton : AvaloniaButton
         PseudoClasses.Set(BtnFocusedPC, IsCalendarButtonFocused && IsEnabled);
     }
 
-    /// <summary>
-    /// Occurs when the left mouse button is pressed (or when the tip of the
-    /// stylus touches the tablet PC) while the mouse pointer is over a
-    /// UIElement.
-    /// </summary>
-    public event EventHandler<PointerPressedEventArgs>? CalendarLeftMouseButtonDown;
-
-    /// <summary>
-    /// Occurs when the left mouse button is released (or the tip of the
-    /// stylus is removed from the tablet PC) while the mouse (or the
-    /// stylus) is over a UIElement (or while a UIElement holds mouse
-    /// capture).
-    /// </summary>
-    public event EventHandler<PointerReleasedEventArgs>? CalendarLeftMouseButtonUp;
-
-    /// <summary>
-    /// Provides class handling for the MouseLeftButtonDown event that
-    /// occurs when the left mouse button is pressed while the mouse pointer
-    /// is over this control.
-    /// </summary>
-    /// <param name="e">The event data. </param>
-    /// <exception cref="System.ArgumentNullException">
-    /// e is a null reference (Nothing in Visual Basic).
-    /// </exception>
-    /// <remarks>
-    /// This method marks the MouseLeftButtonDown event as handled by
-    /// setting the MouseButtonEventArgs.Handled property of the event data
-    /// to true when the button is enabled and its ClickMode is not set to
-    /// Hover.  Since this method marks the MouseLeftButtonDown event as
-    /// handled in some situations, you should use the Click event instead
-    /// to detect a button click.
-    /// </remarks>
     protected override void OnPointerPressed(PointerPressedEventArgs e)
     {
         base.OnPointerPressed(e);
@@ -172,23 +144,6 @@ internal sealed class CalendarButton : AvaloniaButton
         }
     }
 
-    /// <summary>
-    /// Provides handling for the MouseLeftButtonUp event that occurs when
-    /// the left mouse button is released while the mouse pointer is over
-    /// this control.
-    /// </summary>
-    /// <param name="e">The event data.</param>
-    /// <exception cref="System.ArgumentNullException">
-    /// e is a null reference (Nothing in Visual Basic).
-    /// </exception>
-    /// <remarks>
-    /// This method marks the MouseLeftButtonUp event as handled by setting
-    /// the MouseButtonEventArgs.Handled property of the event data to true
-    /// when the button is enabled and its ClickMode is not set to Hover.
-    /// Since this method marks the MouseLeftButtonUp event as handled in
-    /// some situations, you should use the Click event instead to detect a
-    /// button click.
-    /// </remarks>
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
     {
         base.OnPointerReleased(e);

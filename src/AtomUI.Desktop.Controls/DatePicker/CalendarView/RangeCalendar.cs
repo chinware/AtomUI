@@ -1,7 +1,6 @@
-﻿using System.Diagnostics;
-using System.Text;
+﻿using System.Text;
+using AtomUI.Desktop.Controls.CalendarView.State;
 using Avalonia;
-using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls.CalendarView;
 
@@ -24,6 +23,9 @@ internal class RangeCalendar : Calendar
     public static readonly StyledProperty<DateTime?> SecondarySelectedDateProperty =
         AvaloniaProperty.Register<RangeCalendar, DateTime?>(nameof(SecondarySelectedDate));
 
+    public static readonly StyledProperty<bool> IsSelectRangeStartProperty =
+        AvaloniaProperty.Register<RangeCalendar, bool>(nameof(IsSelectRangeStart), true);
+
     public DateTime? SecondarySelectedDate
     {
         get => GetValue(SecondarySelectedDateProperty);
@@ -38,7 +40,11 @@ internal class RangeCalendar : Calendar
     /// <summary>
     /// 当前是否在选择范围开始日期
     /// </summary>
-    public bool IsSelectRangeStart { get; set; } = true;
+    public bool IsSelectRangeStart
+    {
+        get => GetValue(IsSelectRangeStartProperty);
+        set => SetValue(IsSelectRangeStartProperty, value);
+    }
     
     #endregion
 
@@ -61,6 +67,7 @@ internal class RangeCalendar : Calendar
     static RangeCalendar()
     {
         SecondarySelectedDateProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnSecondarySelectedDateChanged(e));
+        IsSelectRangeStartProperty.Changed.AddClassHandler<RangeCalendar>((x, e) => x.OnIsSelectRangeStartChanged(e));
     }
 
     protected virtual void OnSecondarySelectedDateChanged(AvaloniaPropertyChangedEventArgs change)
@@ -68,10 +75,34 @@ internal class RangeCalendar : Calendar
         var selectedDate = change.NewValue as DateTime?;
         if (!IsValidDateSelection(this, selectedDate))
         {
+            SetCurrentValue(SecondarySelectedDateProperty, change.OldValue as DateTime?);
+            SyncViewStateFromCurrentProperties();
             throw new ArgumentOutOfRangeException(nameof(change), "SecondarySelectedDate value is not valid.");
         }
 
         UpdateMonths();
+        SyncViewStateFromCurrentProperties();
+    }
+
+    protected virtual void OnIsSelectRangeStartChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        UpdateHighlightDays();
+    }
+
+    protected override void SyncViewStateFromCurrentProperties()
+    {
+        base.SyncViewStateFromCurrentProperties();
+        ApplyViewStateAction(CalendarViewAction.SetRangeSelection(
+            SelectedDate,
+            SecondarySelectedDate,
+            HoverDateTime,
+            IsSelectRangeStart ? CalendarRangeActivePart.Start : CalendarRangeActivePart.End,
+            IsRepairReverseRange));
+    }
+
+    protected override bool ShouldSelectedDateUpdateDisplayDate(DateTime selectedDate)
+    {
+        return IsSelectRangeStart;
     }
     
     protected override void SetupDisplayDateInternal(DateTime displayDate)
@@ -82,114 +113,8 @@ internal class RangeCalendar : Calendar
 
     internal override void UpdateHighlightDays()
     {
-        DateTime? rangeStart = default;
-        DateTime? rangeEnd   = default;
-        SortHoverIndexes(out rangeStart, out rangeEnd);
-        Debug.Assert(CalendarItem is not null);
-        if (CalendarItem.MonthView is not null)
-        { 
-            UpdateHighlightDays(CalendarItem.MonthView, rangeStart, rangeEnd);
-        }
-    }
-
-    protected void UpdateHighlightDays(Grid targetMonthView, DateTime? rangeStart, DateTime? rangeEnd)
-    {
-        var count = targetMonthView.Children.Count;
-        for (var i = 0; i < count; i++)
-        {
-            if (targetMonthView.Children[i] is CalendarDayButton dayButton)
-            {
-                if (dayButton.DataContext is DateTime d)
-                {
-                    if (rangeStart is not null && rangeEnd is not null)
-                    {
-                        dayButton.IsSelected    = DateTimeHelper.InRange(d, rangeStart.Value, rangeEnd.Value);
-                        if (dayButton.IsSelected)
-                        {
-                            if (DateTimeHelper.CompareDays(d, rangeStart.Value) == 0)
-                            {
-                                dayButton.IsRangeStart  = true;
-                                dayButton.IsRangeMiddle = false;
-                                dayButton.IsRangeEnd    = false;
-                            }
-                            else if (DateTimeHelper.CompareDays(d, rangeEnd.Value) == 0)
-                            {
-                                dayButton.IsRangeEnd    = true;
-                                dayButton.IsRangeStart  = false;
-                                dayButton.IsRangeMiddle = false;
-                            }
-                            else
-                            {
-                                dayButton.IsRangeMiddle = true;
-                                dayButton.IsRangeStart  = false;
-                                dayButton.IsRangeEnd    = false;
-                            }
-                        }
-                        else
-                        {
-                            dayButton.IsRangeMiddle = false;
-                            dayButton.IsRangeStart  = false;
-                            dayButton.IsRangeEnd    = false;
-                        }
-                    } else if (SelectedDate is not null)
-                    {
-                        dayButton.IsSelected = DateTimeHelper.CompareDays(SelectedDate.Value, d) == 0;
-                    }
-                    else if (SecondarySelectedDate is not null)
-                    {
-                        dayButton.IsSelected = DateTimeHelper.CompareDays(SecondarySelectedDate.Value, d) == 0;
-                    }
-                    else
-                    {
-                        dayButton.IsSelected    = false;
-                        dayButton.IsRangeMiddle = false;
-                        dayButton.IsRangeStart  = false;
-                        dayButton.IsRangeEnd    = false;
-                    }
-
-                    if (dayButton.IsSelected)
-                    {
-                        if (FocusButton != null)
-                        {
-                            FocusButton.IsCurrent = false;
-                        }
-                        
-                        dayButton.IsCurrent     = HasFocusInternal;
-                        FocusButton             = dayButton;
-                    }
-                }
-                else
-                {
-                    dayButton.IsSelected    = false;
-                    dayButton.IsRangeStart  = false;
-                    dayButton.IsRangeEnd    = false;
-                    dayButton.IsRangeMiddle = false;
-                }
-            }
-        }
-    }
-    
-    internal void SortHoverIndexes(out DateTime? rangeStart, out DateTime? rangeEnd)
-    {
-        if (IsSelectRangeStart)
-        {
-            rangeStart = HoverDateTime ?? SelectedDate;
-            rangeEnd   = SecondarySelectedDate;
-        }
-        else
-        {
-            rangeStart = SelectedDate;
-            rangeEnd   = HoverDateTime ?? SecondarySelectedDate;
-        }
-        if (rangeStart is not null && rangeEnd is not null)
-        {
-            if (DateTimeHelper.CompareDateTime(rangeEnd.Value, rangeStart.Value) < 0)
-            {
-                var temp = rangeStart.Value;
-                rangeStart = rangeEnd;
-                rangeEnd   = temp;
-            }
-        }
+        SyncViewStateFromCurrentProperties();
+        UpdateMonths();
     }
     
     public override string ToString()
@@ -243,6 +168,7 @@ internal class RangeCalendar : Calendar
     {
         base.NotifyHoverDateChanged(hoverDate);
         HoverDateTime = hoverDate;
+        SyncViewStateFromCurrentProperties();
     }
     
 }

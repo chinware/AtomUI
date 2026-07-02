@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace AtomUI.Desktop.Controls.CalendarView;
+﻿namespace AtomUI.Desktop.Controls.CalendarView;
 
 internal class DualMonthRangeCalendar : RangeCalendar
 {
@@ -22,35 +20,4 @@ internal class DualMonthRangeCalendar : RangeCalendar
         }
     }
 
-    internal override void UpdateHighlightDays()
-    {
-        DateTime? rangeStart = default;
-        DateTime? rangeEnd   = default;
-        SortHoverIndexes(out rangeStart, out rangeEnd);
-        Debug.Assert(CalendarItem is not null);
-        if (CalendarItem is DualMonthCalendarItem dualMonthCalendarItem)
-        {
-            if (dualMonthCalendarItem.MonthView is not null)
-            {
-                UpdateHighlightDays(dualMonthCalendarItem.MonthView, rangeStart, rangeEnd);
-            }
-
-            if (dualMonthCalendarItem.SecondaryMonthView is not null)
-            {
-                UpdateHighlightDays(dualMonthCalendarItem.SecondaryMonthView, rangeStart, rangeEnd);
-            }
-        }
-    }
-
-    internal override void UnHighlightDays()
-    {
-        base.UnHighlightDays();
-        if (CalendarItem is DualMonthCalendarItem dualMonthCalendarItem)
-        {
-            if (dualMonthCalendarItem.SecondaryMonthView is not null)
-            {
-                UnHighlightDays(dualMonthCalendarItem.SecondaryMonthView);
-            }
-        }
-    }
 }

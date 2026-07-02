@@ -3,8 +3,6 @@ using Avalonia;
 
 namespace AtomUI.Desktop.Controls;
 
-using PickerCalendar = AtomUI.Desktop.Controls.CalendarView.Calendar;
-
 internal class TimedRangeDatePickerPresenter : RangeDatePickerPresenter
 {
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -21,23 +19,7 @@ internal class TimedRangeDatePickerPresenter : RangeDatePickerPresenter
     
     protected override void NotifyNowButtonClicked()
     {
-        if (IsRangeStartActive)
-        {
-            SetCurrentValue(SelectedDateTimeProperty, DateTime.Now);
-        }
-        else
-        {
-            SetCurrentValue(SecondarySelectedDateTimeProperty, DateTime.Now);
-        }
-        if (CalendarView is not null)
-        {
-            CalendarView?.SetCurrentValue(PickerCalendar.SelectedDateProperty, DateTime.Now);
-        }
-
-        if (IsShowTime && TimeView is not null)
-        {
-            TimeView.SelectedTime = DateTime.Now.TimeOfDay;
-        }
+        SelectNowForActiveRangePart();
 
         if (!IsNeedConfirm)
         {

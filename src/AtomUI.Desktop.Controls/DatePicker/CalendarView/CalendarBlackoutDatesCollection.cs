@@ -6,19 +6,14 @@ namespace AtomUI.Desktop.Controls.CalendarView;
 internal sealed class CalendarBlackoutDatesCollection : ObservableCollection<CalendarDateRange>
 {
    /// <summary>
-   /// The Calendar whose dates this object represents.
+   /// Owns the blackout date rules for one AtomUI calendar instance.
    /// </summary>
    private readonly Calendar _owner;
 
    /// <summary>
-   /// Initializes a new instance of the
-   /// <see cref="T:Avalonia.Controls.Primitives.CalendarBlackoutDatesCollection" />
-   /// class.
+   /// Initializes a blackout date collection for the specified calendar.
    /// </summary>
-   /// <param name="owner">
-   /// The <see cref="T:Avalonia.Controls.Calendar" /> whose dates
-   /// this object represents.
-   /// </param>
+   /// <param name="owner">The owning AtomUI calendar.</param>
    public CalendarBlackoutDatesCollection(Calendar owner)
     {
         _owner = owner ?? throw new ArgumentNullException(nameof(owner));

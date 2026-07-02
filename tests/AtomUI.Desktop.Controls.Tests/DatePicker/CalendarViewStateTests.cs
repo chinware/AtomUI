@@ -1,12 +1,16 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls.CalendarView;
+using AtomUI.Desktop.Controls.CalendarView.State;
+using AtomUI.Desktop.Controls.Primitives;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AvaloniaGrid = Avalonia.Controls.Grid;
@@ -65,6 +69,49 @@ public class CalendarViewStateTests
 
             AssertTemplateParts(typeof(PickerDualMonthCalendarItem), expectedParts);
         });
+    }
+
+    [Fact]
+    public void DualMonthRangeCalendar_Theme_BasedOn_CalendarTheme()
+    {
+        var source = ReadRepoFile("src/AtomUI.Desktop.Controls/DatePicker/Themes/CalendarView/DualMonthRangeCalendarTheme.axaml");
+
+        source.ShouldContain("<atom:CalendarTheme TargetType=\"calendarView:DualMonthRangeCalendar\" />");
+        source.ShouldNotContain("<atom:CalendarItemTheme TargetType=\"calendarView:DualMonthRangeCalendar\" />");
+    }
+
+    [Fact]
+    public void RangeDatePickerPresenter_Now_With_Confirm_Confirms_Active_Range_Part()
+    {
+        var presenter = new TestRangeDatePickerPresenter
+        {
+            IsNeedConfirm      = true,
+            IsRangeStartActive = true
+        };
+        var rangePartConfirmedCount = 0;
+        presenter.RangePartConfirmed += (_, _) => rangePartConfirmedCount++;
+
+        presenter.NotifyNowButtonClickedForTest();
+
+        presenter.SelectedDateTime.ShouldNotBeNull();
+        rangePartConfirmedCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public void TimedRangeDatePickerPresenter_Now_With_Confirm_Only_Selects_Active_Date()
+    {
+        var presenter = new TestTimedRangeDatePickerPresenter
+        {
+            IsNeedConfirm      = true,
+            IsRangeStartActive = true
+        };
+        var rangePartConfirmedCount = 0;
+        presenter.RangePartConfirmed += (_, _) => rangePartConfirmedCount++;
+
+        presenter.NotifyNowButtonClickedForTest();
+
+        presenter.SelectedDateTime.ShouldNotBeNull();
+        rangePartConfirmedCount.ShouldBe(0);
     }
 
     [Fact]
@@ -161,10 +208,371 @@ public class CalendarViewStateTests
                 calendar.SecondarySelectedDate = new DateTime(2026, 6, 18);
                 Dispatcher.UIThread.RunJobs();
 
-                IsSelected(FindDayButton(calendar, new DateTime(2026, 6, 15))).ShouldBeTrue();
+                IsSelected(FindDayButton(calendar, new DateTime(2026, 6, 15))).ShouldBeFalse();
                 IsRangeEnd(FindDayButton(calendar, new DateTime(2026, 6, 15))).ShouldBeFalse();
+                IsRangeMiddle(FindDayButton(calendar, new DateTime(2026, 6, 15))).ShouldBeTrue();
                 IsSelected(FindDayButton(calendar, new DateTime(2026, 6, 18))).ShouldBeTrue();
                 IsRangeEnd(FindDayButton(calendar, new DateTime(2026, 6, 18))).ShouldBeTrue();
+            });
+        });
+    }
+
+    [Fact]
+    public void RangeCalendar_HoverDate_Does_Not_Apply_Committed_Range_End_To_Hover_Button()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new RangeCalendar
+            {
+                DisplayDate        = new DateTime(2026, 7, 1),
+                SelectedDate       = new DateTime(2026, 7, 15),
+                HoverDateTime      = new DateTime(2026, 7, 16),
+                IsSelectRangeStart = false
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var hoverButton = FindDayButton(calendar, new DateTime(2026, 7, 16));
+
+                IsSelected(hoverButton).ShouldBeFalse();
+                IsRangeEnd(hoverButton).ShouldBeFalse();
+                IsRangePreviewEnd(hoverButton).ShouldBeTrue();
+            });
+        });
+    }
+
+    [Fact]
+    public void RangeCalendar_Active_Start_HoverDate_Does_Not_Apply_Committed_Range_Start_To_Hover_Button()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new RangeCalendar
+            {
+                DisplayDate           = new DateTime(2026, 7, 1),
+                SecondarySelectedDate = new DateTime(2026, 7, 16),
+                HoverDateTime         = new DateTime(2026, 7, 8),
+                IsSelectRangeStart    = true
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var hoverButton = FindDayButton(calendar, new DateTime(2026, 7, 8));
+                var endButton   = FindDayButton(calendar, new DateTime(2026, 7, 16));
+
+                IsSelected(hoverButton).ShouldBeFalse();
+                IsRangeStart(hoverButton).ShouldBeFalse();
+                IsRangePreviewStart(hoverButton).ShouldBeTrue();
+                IsSelected(endButton).ShouldBeTrue();
+                IsRangeEnd(endButton).ShouldBeFalse();
+                IsRangePreviewEnd(endButton).ShouldBeTrue();
+            });
+        });
+    }
+
+    [Fact]
+    public void Calendar_DisplayDateStart_After_DisplayDateEnd_Clamps_End_To_Start()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                DisplayDate      = new DateTime(2026, 6, 1),
+                DisplayDateEnd   = new DateTime(2026, 6, 10),
+                DisplayDateStart = new DateTime(2026, 6, 20)
+            };
+
+            calendar.DisplayDateEnd.ShouldBe(new DateTime(2026, 6, 20));
+        });
+    }
+
+    [Fact]
+    public void Calendar_SelectedDate_Before_DisplayDateStart_Throws_And_Does_Not_Expand_Range()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                DisplayDateStart = new DateTime(2026, 6, 10),
+                DisplayDateEnd   = new DateTime(2026, 6, 20)
+            };
+
+            Should.Throw<ArgumentOutOfRangeException>(() =>
+            {
+                calendar.SelectedDate = new DateTime(2026, 6, 5);
+            });
+
+            calendar.DisplayDateStart.ShouldBe(new DateTime(2026, 6, 10));
+            calendar.DisplayDateEnd.ShouldBe(new DateTime(2026, 6, 20));
+            calendar.SelectedDate.ShouldBeNull();
+        });
+    }
+
+    [Fact]
+    public void Calendar_Type_Initialization_Does_Not_Read_ThemeManager_Static_State()
+    {
+        var property = PickerCalendar.FirstDayOfWeekProperty;
+
+        property.Name.ShouldBe(nameof(PickerCalendar.FirstDayOfWeek));
+    }
+
+    [Fact]
+    public void CalendarButton_Default_Content_Is_Culture_Free()
+    {
+        RunOnUIThread(() =>
+        {
+            var button = new PickerCalendarButton();
+
+            button.Content.ShouldBe(string.Empty);
+        });
+    }
+
+    [Fact]
+    public void Calendar_CurrentViewState_Tracks_Normalized_Display_Range()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                DisplayDate      = new DateTime(2026, 6, 1),
+                DisplayDateEnd   = new DateTime(2026, 6, 10),
+                DisplayDateStart = new DateTime(2026, 6, 20)
+            };
+
+            var state = calendar.SyncAndGetCurrentViewState();
+
+            state.DisplayDateStart.ShouldBe(new DateTime(2026, 6, 20));
+            state.DisplayDateEnd.ShouldBe(new DateTime(2026, 6, 20));
+            state.DisplayDate.ShouldBe(new DateTime(2026, 6, 1));
+        });
+    }
+
+    [Fact]
+    public void Calendar_CurrentViewState_Tracks_Week_Start_And_CrossMonth_SelectedDate()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                DisplayDate    = new DateTime(2026, 6, 1),
+                FirstDayOfWeek = DayOfWeek.Monday
+            };
+
+            calendar.SyncAndGetCurrentViewState().FirstDayOfWeek.ShouldBe(DayOfWeek.Monday);
+
+            calendar.FirstDayOfWeek = DayOfWeek.Sunday;
+            calendar.SelectedDate   = new DateTime(2026, 8, 12);
+
+            var state = calendar.SyncAndGetCurrentViewState();
+
+            state.FirstDayOfWeek.ShouldBe(DayOfWeek.Sunday);
+            state.SelectedDate.ShouldBe(new DateTime(2026, 8, 12));
+            state.DisplayDate.ShouldBe(new DateTime(2026, 8, 1));
+        });
+    }
+
+    [Fact]
+    public void RangeCalendar_CurrentViewState_Tracks_Range_Selection()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new RangeCalendar
+            {
+                DisplayDate           = new DateTime(2026, 6, 1),
+                SelectedDate          = new DateTime(2026, 6, 10),
+                SecondarySelectedDate = new DateTime(2026, 6, 15),
+                HoverDateTime         = new DateTime(2026, 6, 18),
+                IsSelectRangeStart    = false
+            };
+
+            var state = calendar.SyncAndGetCurrentViewState();
+
+            state.SelectedDate.ShouldBe(new DateTime(2026, 6, 10));
+            state.SecondarySelectedDate.ShouldBe(new DateTime(2026, 6, 15));
+            state.RangeSelection.HoverDate.ShouldBe(new DateTime(2026, 6, 18));
+            state.RangeSelection.ActivePart.ShouldBe(CalendarRangeActivePart.End);
+        });
+    }
+
+    [Fact]
+    public void RangeCalendar_End_Selection_Does_Not_Let_Start_Date_Rewind_DisplayDate()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new RangeCalendar
+            {
+                DisplayDate        = new DateTime(2026, 8, 1),
+                IsSelectRangeStart = false
+            };
+
+            calendar.SelectedDate = new DateTime(2026, 7, 12);
+
+            calendar.DisplayDate.ShouldBe(new DateTime(2026, 8, 1));
+            calendar.SyncAndGetCurrentViewState().DisplayDate.ShouldBe(new DateTime(2026, 8, 1));
+        });
+    }
+
+    [Fact]
+    public void RangeCalendar_TemplateApply_Does_Not_Let_Start_Date_Rewind_DisplayDate_When_End_Is_Active()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new RangeCalendar
+            {
+                SelectedDate       = new DateTime(2026, 7, 12),
+                DisplayDate        = new DateTime(2026, 8, 1),
+                IsSelectRangeStart = false
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                calendar.DisplayDate.ShouldBe(new DateTime(2026, 8, 1));
+                calendar.SyncAndGetCurrentViewState().DisplayDate.ShouldBe(new DateTime(2026, 8, 1));
+            });
+        });
+    }
+
+    [Fact]
+    public void RangeDatePicker_Open_End_Part_Does_Not_Let_Start_Date_Rewind_Calendar_DisplayDate()
+    {
+        RunOnUIThread(() =>
+        {
+            var picker = new TestRangeDatePicker
+            {
+                RangeStartSelectedDate = new DateTime(2024, 1, 12)
+            };
+            picker.RangeActivatedPart = RangeActivatedPart.End;
+
+            var presenter = picker.CreatePickerPresenterForTest();
+            picker.NotifyPickerOpenedForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<DualMonthRangeCalendar>()
+                                        .Single();
+
+                calendar.IsSelectRangeStart.ShouldBeFalse();
+                DateTimeHelper.CompareYearMonth(calendar.DisplayDate, picker.RangeStartSelectedDate.Value)
+                              .ShouldNotBe(0);
+            });
+        });
+    }
+
+    [Fact]
+    public void TimedRangeDatePicker_Open_End_Part_Does_Not_Let_Start_Date_Rewind_Calendar_DisplayDate()
+    {
+        RunOnUIThread(() =>
+        {
+            var picker = new TestRangeDatePicker
+            {
+                IsShowTime             = true,
+                RangeStartSelectedDate = new DateTime(2024, 1, 12, 10, 30, 0)
+            };
+            picker.RangeActivatedPart = RangeActivatedPart.End;
+
+            var presenter = picker.CreatePickerPresenterForTest();
+            picker.NotifyPickerOpenedForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<RangeCalendar>()
+                                        .Single();
+
+                calendar.IsSelectRangeStart.ShouldBeFalse();
+                DateTimeHelper.CompareYearMonth(calendar.DisplayDate, picker.RangeStartSelectedDate.Value)
+                              .ShouldNotBe(0);
+            });
+        });
+    }
+
+    [Fact]
+    public void Calendar_FirstDayOfWeek_Change_Rebuilds_Week_Title_Order()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                DisplayDate    = new DateTime(2026, 6, 1),
+                FirstDayOfWeek = DayOfWeek.Monday
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var titles = calendar.CalendarItem.ShouldNotBeNull()
+                                     .MonthView.ShouldNotBeNull()
+                                     .Children
+                                     .Take(7)
+                                     .Select(child => child.DataContext?.ToString())
+                                     .ToArray();
+
+                titles[0].ShouldNotBeNullOrWhiteSpace();
+                calendar.FirstDayOfWeek = DayOfWeek.Sunday;
+                Dispatcher.UIThread.RunJobs();
+
+                var updatedTitles = calendar.CalendarItem.ShouldNotBeNull()
+                                            .MonthView.ShouldNotBeNull()
+                                            .Children
+                                            .Take(7)
+                                            .Select(child => child.DataContext?.ToString())
+                                            .ToArray();
+
+                updatedTitles.ShouldNotBe(titles);
+            });
+        });
+    }
+
+    [Fact]
+    public void DualMonthRangeCalendar_Secondary_Panel_Uses_Range_Highlight()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new DualMonthRangeCalendar
+            {
+                DisplayDate           = new DateTime(2026, 6, 1),
+                SelectedDate          = new DateTime(2026, 6, 28),
+                SecondarySelectedDate = new DateTime(2026, 7, 3)
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var item = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                var secondaryButton = item.SecondaryMonthView.ShouldNotBeNull()
+                                          .Children
+                                          .OfType<PickerCalendarDayButton>()
+                                          .Single(button => button.DataContext is DateTime day &&
+                                                            DateTimeHelper.CompareDays(day, new DateTime(2026, 7, 3)) == 0);
+
+                IsRangeEnd(secondaryButton).ShouldBeTrue();
+            });
+        });
+    }
+
+    [Fact]
+    public void DualMonthRangeCalendar_Hover_End_Renders_Continuous_Preview_Range_In_Secondary_Panel()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new DualMonthRangeCalendar
+            {
+                DisplayDate        = new DateTime(2026, 7, 1),
+                SelectedDate       = new DateTime(2026, 7, 17),
+                HoverDateTime      = new DateTime(2026, 8, 19),
+                IsSelectRangeStart = false
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var middleButton = FindSecondaryDayButton(calendar, new DateTime(2026, 8, 18));
+                var endButton    = FindSecondaryDayButton(calendar, new DateTime(2026, 8, 19));
+
+                IsRangePreviewMiddle(middleButton).ShouldBeTrue();
+                IsSelected(endButton).ShouldBeFalse();
+                IsRangeEnd(endButton).ShouldBeFalse();
+                IsRangePreviewEnd(endButton).ShouldBeTrue();
+
+                var endIndicator = FindTemplateBorder(endButton, "RangeEndIndicator");
+                endIndicator.Bounds.Width.ShouldBe(endButton.Bounds.Width / 2, 0.5);
             });
         });
     }
@@ -177,6 +585,31 @@ public class CalendarViewStateTests
     private static bool IsRangeEnd(PickerCalendarDayButton button)
     {
         return button.Classes.Contains(":range-end");
+    }
+
+    private static bool IsRangeStart(PickerCalendarDayButton button)
+    {
+        return button.Classes.Contains(":range-start");
+    }
+
+    private static bool IsRangeMiddle(PickerCalendarDayButton button)
+    {
+        return button.Classes.Contains(":range-middle");
+    }
+
+    private static bool IsRangePreviewEnd(PickerCalendarDayButton button)
+    {
+        return button.Classes.Contains(":range-preview-end");
+    }
+
+    private static bool IsRangePreviewStart(PickerCalendarDayButton button)
+    {
+        return button.Classes.Contains(":range-preview-start");
+    }
+
+    private static bool IsRangePreviewMiddle(PickerCalendarDayButton button)
+    {
+        return button.Classes.Contains(":range-preview-middle");
     }
 
     private static void AssertTemplateParts(Type controlType, IReadOnlyDictionary<string, Type> expectedParts)
@@ -220,6 +653,27 @@ public class CalendarViewStateTests
             $"Date {date:yyyy-MM-dd} was not generated. ChildCount: {monthView.Children.Count}; ButtonCount: {buttons.Length}; Actual dates: {actualDates}; ChildTypes: {childTypes}");
     }
 
+    private static PickerCalendarDayButton FindSecondaryDayButton(DualMonthRangeCalendar calendar, DateTime date)
+    {
+        var item    = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+        var buttons = item.SecondaryMonthView.ShouldNotBeNull()
+                          .Children
+                          .OfType<PickerCalendarDayButton>()
+                          .ToArray();
+        return buttons.Single(button =>
+            button.DataContext is DateTime buttonDate &&
+            DateTimeHelper.CompareDays(buttonDate, date) == 0);
+    }
+
+    private static Border FindTemplateBorder(Control control, string name)
+    {
+        control.ApplyTemplate();
+        Dispatcher.UIThread.RunJobs();
+        return control.GetVisualDescendants()
+                      .OfType<Border>()
+                      .Single(border => border.Name == name);
+    }
+
     private static void ShowInWindow(Control content, Action assertion)
     {
         var window = new AvaloniaWindow
@@ -246,11 +700,59 @@ public class CalendarViewStateTests
         Dispatcher.UIThread.Invoke(action);
     }
 
+    private static string ReadRepoFile(string relativePath)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, relativePath);
+            if (File.Exists(candidate))
+            {
+                return File.ReadAllText(candidate);
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new FileNotFoundException($"Could not find repository file: {relativePath}");
+    }
+
     private sealed class TestCalendarItem : PickerCalendarItem
     {
         public void ClearGeneratedMonthViewForTest(AvaloniaGrid monthView)
         {
             ClearGeneratedMonthView(monthView);
+        }
+    }
+
+    private sealed class TestRangeDatePicker : RangeDatePicker
+    {
+        public RangeDatePickerPresenter CreatePickerPresenterForTest()
+        {
+            var presenter = CreatePickerPresenter().ShouldBeAssignableTo<RangeDatePickerPresenter>();
+            NotifyPickerPresenterCreated(presenter);
+            return presenter;
+        }
+
+        public void NotifyPickerOpenedForTest()
+        {
+            NotifyPickerOpened();
+        }
+    }
+
+    private sealed class TestRangeDatePickerPresenter : RangeDatePickerPresenter
+    {
+        public void NotifyNowButtonClickedForTest()
+        {
+            NotifyNowButtonClicked();
+        }
+    }
+
+    private sealed class TestTimedRangeDatePickerPresenter : TimedRangeDatePickerPresenter
+    {
+        public void NotifyNowButtonClickedForTest()
+        {
+            NotifyNowButtonClicked();
         }
     }
 }

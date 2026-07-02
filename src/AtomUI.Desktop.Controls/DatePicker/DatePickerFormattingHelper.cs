@@ -3,6 +3,7 @@ using AtomUI.Controls.Utils;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls.Localization;
 using AtomUI.Media;
+using Avalonia;
 using Avalonia.Media;
 
 namespace AtomUI.Desktop.Controls;
@@ -58,8 +59,49 @@ internal static class DatePickerFormattingHelper
             : dateTime.ToString(format, formatInfo);
     }
 
-    internal static double CalculateContentPreferredWidth(
-        string? text,
+    internal static bool IsFormattedTextAffectingProperty(
+        AvaloniaProperty property,
+        AvaloniaProperty isShowTimeProperty,
+        AvaloniaProperty formatProperty,
+        AvaloniaProperty clockIdentifierProperty,
+        AvaloniaProperty amTextProperty,
+        AvaloniaProperty pmTextProperty)
+    {
+        return property == isShowTimeProperty ||
+               property == formatProperty ||
+               property == clockIdentifierProperty ||
+               property == amTextProperty ||
+               property == pmTextProperty;
+    }
+
+    internal static bool IsPreferredWidthAffectingProperty(
+        AvaloniaProperty property,
+        AvaloniaProperty fontSizeProperty,
+        AvaloniaProperty fontFamilyProperty,
+        AvaloniaProperty fontStyleProperty,
+        AvaloniaProperty fontWeightProperty,
+        AvaloniaProperty placeholderTextProperty,
+        AvaloniaProperty sizeTypeProperty,
+        AvaloniaProperty minWidthProperty,
+        AvaloniaProperty widthProperty,
+        AvaloniaProperty maxWidthProperty,
+        AvaloniaProperty horizontalAlignmentProperty,
+        AvaloniaProperty? secondaryPlaceholderTextProperty = null)
+    {
+        return property == fontSizeProperty ||
+               property == fontFamilyProperty ||
+               property == fontStyleProperty ||
+               property == fontWeightProperty ||
+               property == placeholderTextProperty ||
+               property == secondaryPlaceholderTextProperty ||
+               property == sizeTypeProperty ||
+               property == minWidthProperty ||
+               property == widthProperty ||
+               property == maxWidthProperty ||
+               property == horizontalAlignmentProperty;
+    }
+
+    internal static double CalculatePreferredInputWidth(
         string? placeholderText,
         string format,
         double fontSize,
@@ -68,17 +110,86 @@ internal static class DatePickerFormattingHelper
         FontWeight fontWeight,
         DateTimeFormatInfo? formatInfo)
     {
-        if (!string.IsNullOrEmpty(text))
-        {
-            return TextUtils.CalculateTextSize(text, fontSize, fontFamily, fontStyle, fontWeight).Width;
-        }
+        var preferredWidth = DateTimeUtils.CalculateWidestFormattedDateTimeSize(
+            format, fontSize, fontFamily, fontStyle, fontWeight, formatInfo).Width;
 
         if (!string.IsNullOrEmpty(placeholderText))
         {
-            return TextUtils.CalculateTextSize(placeholderText, fontSize, fontFamily, fontStyle, fontWeight).Width;
+            var placeholderWidth = TextUtils.CalculateTextSize(placeholderText, fontSize, fontFamily, fontStyle, fontWeight).Width;
+            preferredWidth = Math.Max(preferredWidth, placeholderWidth);
         }
 
-        return DateTimeUtils.CalculateWidestFormattedDateTimeSize(
-            format, fontSize, fontFamily, fontStyle, fontWeight, formatInfo).Width;
+        return preferredWidth;
+    }
+
+    internal static double CalculateBoundedPreferredInputWidth(
+        string? placeholderText,
+        string format,
+        double fontSize,
+        FontFamily fontFamily,
+        FontStyle fontStyle,
+        FontWeight fontWeight,
+        double minWidth,
+        double maxWidth,
+        DateTimeFormatInfo? formatInfo)
+    {
+        var preferredWidth = CalculatePreferredInputWidth(
+            placeholderText,
+            format,
+            fontSize,
+            fontFamily,
+            fontStyle,
+            fontWeight,
+            formatInfo);
+
+        return ApplyWidthBounds(preferredWidth, minWidth, maxWidth);
+    }
+
+    internal static double CalculateBoundedRangePreferredInputWidth(
+        string? placeholderText,
+        string? secondaryPlaceholderText,
+        string format,
+        double fontSize,
+        FontFamily fontFamily,
+        FontStyle fontStyle,
+        FontWeight fontWeight,
+        double minWidth,
+        double maxWidth,
+        DateTimeFormatInfo? formatInfo)
+    {
+        var preferredWidth = Math.Max(
+            CalculatePreferredInputWidth(
+                placeholderText,
+                format,
+                fontSize,
+                fontFamily,
+                fontStyle,
+                fontWeight,
+                formatInfo),
+            CalculatePreferredInputWidth(
+                secondaryPlaceholderText,
+                format,
+                fontSize,
+                fontFamily,
+                fontStyle,
+                fontWeight,
+                formatInfo));
+
+        return ApplyWidthBounds(preferredWidth, minWidth, maxWidth);
+    }
+
+    private static double ApplyWidthBounds(double preferredWidth, double minWidth, double maxWidth)
+    {
+        if (!double.IsNaN(minWidth))
+        {
+            preferredWidth = Math.Max(minWidth, preferredWidth);
+        }
+
+        if (!double.IsNaN(maxWidth))
+        {
+            preferredWidth = Math.Min(maxWidth, preferredWidth);
+        }
+
+        return preferredWidth;
     }
 }

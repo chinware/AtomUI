@@ -43,6 +43,7 @@
                         <calendarview:RangeCalendar Name="PART_CalendarView"
                                                     VerticalAlignment="Top"
                                                     IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                                    IsSelectRangeStart="{TemplateBinding IsRangeStartActive}"
                                                     SelectedDate="{TemplateBinding SelectedDateTime}"
                                                     SecondarySelectedDate="{TemplateBinding SecondarySelectedDateTime}"/>
                         <atom:TimeView

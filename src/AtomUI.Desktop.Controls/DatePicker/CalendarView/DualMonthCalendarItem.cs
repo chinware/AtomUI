@@ -251,7 +251,7 @@ internal class DualMonthCalendarItem : RangeCalendarItem
         base.SetDayTitles();
         if (SecondaryMonthView is not null)
         {
-            SetDayTitles(SecondaryMonthView);
+            SetDayTitles(SecondaryMonthView, _nextMonth);
         }
     }
 

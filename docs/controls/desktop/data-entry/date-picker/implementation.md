@@ -1,6 +1,6 @@
 # DatePicker 桌面版实现原理
 
-本文档描述 DatePicker 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [DatePicker 桌面版架构设计](overview.md)，变化记录见 [DatePicker Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [DatePicker Token 设计](token.md)。
+本文档描述 DatePicker 桌面版的内部实现范围、源码职责、状态流、生命周期、资源边界和维护规则。公共设计与 API 契约见 [DatePicker 桌面版架构设计](overview.md)，CalendarView 的系统性优化目标见 [CalendarView 系统性优化设计](calendar-view-system-optimization.md)，变化记录见 [DatePicker Changelog](changelog.md)。涉及组件 Token 的实现应同时阅读 [DatePicker Token 设计](token.md)。
 
 ## 1. 实现定位
 
@@ -11,7 +11,7 @@
 主要源码文件：
 
 - `src/AtomUI.Desktop.Controls/DatePicker`：8 个文件，代表文件 `DatePicker.cs`、`DatePickerPresenter.cs`、`DatePickerToken.cs`、`DualMonthArrowDecoratedBox.cs`、`DualMonthRangeDatePickerPresenter.cs` 等。
-- `src/AtomUI.Desktop.Controls/DatePicker/CalendarView`：10 个文件，代表文件 `Calendar.cs`、`CalendarBlackoutDatesCollection.cs`、`CalendarButton.cs`、`CalendarDayButton.cs`、`CalendarDayButtonPseudoClass.cs` 等。
+- `src/AtomUI.Desktop.Controls/DatePicker/CalendarView`：CalendarView runtime。`State` 保存归一化状态和 action，`Models` 保存纯 panel model，`Rendering` 将 model 应用到 generated buttons，`Infrastructure` 封装 culture 和 pointer tracking。
 - `src/AtomUI.Desktop.Controls/DatePicker/Localization`：3 个文件，代表文件 `en_US.cs`、`zh_CN.cs`、`zh_TW.cs`。
 - `src/AtomUI.Desktop.Controls/DatePicker/Themes`：19 个文件，代表文件 `CalendarButtonTheme.axaml`、`CalendarButtonTheme.cs`、`CalendarDayButtonTheme.axaml`、`CalendarItemTheme.axaml`、`CalendarItemTheme.cs` 等。
 
@@ -21,6 +21,7 @@
 - Theme 文件负责静态视觉结构、template part、selector 和资源绑定。
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
+- CalendarView 的深度重构必须以 [CalendarView 系统性优化设计](calendar-view-system-optimization.md) 中定义的单向状态模型、panel model、renderer 和生命周期规则为边界。
 
 ## 3. 核心类职责
 
@@ -139,6 +140,25 @@ DatePicker 的交互事件应从输入源收敛到控件级语义事件：
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - 内容、命令和视觉状态在模板节点之间的同步。
 - 状态变化时避免创建不必要的视觉对象、订阅或动画对象。
+
+输入宽度维护规则：
+
+- `DatePicker` 和 `RangeDatePicker` 的输入预留宽度以当前有效 `Format` 的最宽格式化日期时间为基线，必要时再取 placeholder 文本宽度兜底。
+- `Text` 和 `SecondaryText` 只表达当前显示值或 hover preview，不作为 `PreferredInputWidth` / `PreferredWidth` 的计算来源。
+- `IsShowTime`、`Format`、`ClockIdentifier`、AM/PM 文本和字体变化会重新计算格式预留宽度；选中值、hover 值和范围端点切换不得改变预留宽度。
+- 范围选择的两端输入使用同一个格式预留宽度，`RangePickerIndicator` 和 popup placement 只跟随稳定输入框 bounds，不反向驱动输入框测量。
+- 范围输入模板的内部 `AddOnDecoratedBox` 和 content presenter 必须在控件内部 stretch；范围整体测量以 `base.MeasureOverride` 的完整宽度为基础，只替换两端输入框宽度为 `PreferredWidth`，不得重新手算 padding、spacing、icon 或 add-on 宽度。
+
+范围日历视觉状态维护规则：
+
+- `CalendarRangeSelectionState` 同时保存真实端点和 hover 日期，但必须通过 committed range 与 preview range 两条路径输出。
+- `CalendarPanelBuilder` 只用真实 `SelectedDate` / `SecondarySelectedDate` 设置 `IsSelected`，不能因为日期处于区间中或 hover 预览中而设置 selected。
+- `IsRangeStart`、`IsRangeEnd`、`IsRangeMiddle` 只描述两个真实端点形成的区间；`IsRangePreviewStart`、`IsRangePreviewEnd`、`IsRangePreviewMiddle` 只描述 hover 形成的预览区间。
+- `CalendarDayButtonTheme.axaml` 必须让 committed endpoint 和 preview endpoint 共用半边 range indicator；半边 indicator 的宽度来自实际 cell slot 的 50%，不能固定为 `CellWidth`，否则双月弹层或宽布局下范围背景会断裂。
+- `CalendarDayButtonTheme.axaml` 必须让 `:range-preview-start` / `:range-preview-end` 使用与 selected endpoint 相同的主色背景和白色前景；这是 hover range 的临时视觉端点，不等价于提交 `:selected`。
+- `CalendarDayButton.EffectiveCornerRadius` 必须在 committed endpoint 和 preview endpoint 上压平连接侧圆角，让浅色 range indicator 与主色端点连续。
+- 范围选择的 active part 是面板显示月份的前置状态，`RangeDatePickerPresenter.IsRangeStartActive` 必须先通过模板传给 `RangeCalendar.IsSelectRangeStart`，再同步 `SelectedDate` / `SecondarySelectedDate`。
+- `Calendar.SelectedDate` 在 range 模式中只代表开始端点；只有 Start 端激活时它才允许驱动 `DisplayDate`。End 端激活时，开始端点只能参与范围计算和高亮，不能把双月面板回滚到开始月份。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
