@@ -262,6 +262,7 @@ jobs:
             run: |
                $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirX64 = "${{ env.GalleryPublishDir }}/linux-x64"
+               $appImageOutputDirX64 = "${{ env.GalleryArtifactsOutputDir }}/appimage/x64"
 
                if (Test-Path "${{ env.SourceDir }}/output") {
                   Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
@@ -276,11 +277,12 @@ jobs:
                  --runtime linux-x64 `
                  --config "$galleryPublishDirX64/config/InstallerConfig.xml" `
                  --packages "$galleryPublishDirX64/packages" `
-                 --output "${{ env.GalleryArtifactsOutputDir }}/appimage/x64" `
+                 --output $appImageOutputDirX64 `
                  --verbosity Detailed `
                  --cleanupBundleOption false
+               & "$galleryScriptsPath/EnsureAppImageLauncher.ps1" -appImageOutputDir $appImageOutputDirX64
                ls -al $galleryPublishDirX64/packages
-               ls -al ${{ env.GalleryArtifactsOutputDir }}/appimage/x64
+               ls -al $appImageOutputDirX64
          -  name: Upload x86_64 AppImage artifacts
             uses: actions/upload-artifact@v7
             with:
@@ -340,6 +342,7 @@ jobs:
             run: |
                $galleryScriptsPath = "${{ env.SourceDir }}/controlgallery/AtomUIGallery.Desktop/scripts"
                $galleryPublishDirArm64 = "${{ env.GalleryPublishDir }}/linux-arm64"
+               $appImageOutputDirArm64 = "${{ env.GalleryArtifactsOutputDir }}/appimage/arm64"
 
                if (Test-Path "${{ env.SourceDir }}/output") {
                   Remove-Item -Path "${{ env.SourceDir }}/output" -Recurse -Force
@@ -354,11 +357,12 @@ jobs:
                  --runtime linux-arm64 `
                  --config "$galleryPublishDirArm64/config/InstallerConfig.xml" `
                  --packages "$galleryPublishDirArm64/packages" `
-                 --output "${{ env.GalleryArtifactsOutputDir }}/appimage/arm64" `
+                 --output $appImageOutputDirArm64 `
                  --verbosity Detailed `
                  --cleanupBundleOption false
+               & "$galleryScriptsPath/EnsureAppImageLauncher.ps1" -appImageOutputDir $appImageOutputDirArm64
                ls -al $galleryPublishDirArm64/packages
-               ls -al ${{ env.GalleryArtifactsOutputDir }}/appimage/arm64
+               ls -al $appImageOutputDirArm64
          -  name: Upload arm64 AppImage artifacts
             uses: actions/upload-artifact@v7
             with:

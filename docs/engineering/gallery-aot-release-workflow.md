@@ -87,6 +87,13 @@ sudo apt-get install -y fuse libfuse2 patchelf desktop-file-utils file clang zli
 
 `clang` 和 `zlib1g-dev` 是 Linux NativeAOT 链接所需的本地工具链依赖。
 
+Linux AppImage 打包后必须包含根目录 `AppRun`。`release-gallery.yml` 在 `AtomUITools.Linux create-appimage` 之后调用 `controlgallery/AtomUIGallery.Desktop/scripts/EnsureAppImageLauncher.ps1`：
+
+- 检查 `AtomUIGallery.AppDir/usr/bin/AtomUIGallery.Desktop` 是否存在。
+- 如果 `AtomUIGallery.AppDir/AppRun` 缺失，生成标准 launcher，设置 `LD_LIBRARY_PATH` 到 `usr/lib`，再执行 Gallery 可执行文件。
+- 用同名 AppImage 重新调用 `appimagetool`，避免上传旧的缺入口产物。
+- 从最终 AppImage 中提取 `AppRun` 并执行 shell 语法检查。缺少 `AppRun` 时直接让 workflow 失败。
+
 ## 维护检查
 
 修改 Gallery 发布 workflow 或 `PublishToLocal.ps1` 后至少运行：
@@ -94,6 +101,7 @@ sudo apt-get install -y fuse libfuse2 patchelf desktop-file-utils file clang zli
 ```bash
 ruby -e 'require "yaml"; YAML.load_file(".github/workflows/release-gallery.yml"); puts "ok"'
 pwsh -NoLogo -NoProfile -Command '$errors = $null; $null = [System.Management.Automation.Language.Parser]::ParseFile("controlgallery/AtomUIGallery.Desktop/scripts/PublishToLocal.ps1", [ref]$null, [ref]$errors); if ($errors.Count) { $errors | Format-List; exit 1 }'
+pwsh -NoLogo -NoProfile -Command '$errors = $null; $null = [System.Management.Automation.Language.Parser]::ParseFile("controlgallery/AtomUIGallery.Desktop/scripts/EnsureAppImageLauncher.ps1", [ref]$null, [ref]$errors); if ($errors.Count) { $errors | Format-List; exit 1 }'
 pwsh -NoLogo -NoProfile -Command '[xml](Get-Content -Path "controlgallery/AtomUIGallery.Desktop/AtomUIGallery.Desktop.csproj" -Raw) | Out-Null'
 git diff --check
 ```
