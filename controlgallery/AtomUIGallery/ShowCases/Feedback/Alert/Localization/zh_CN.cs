@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Alert;
 
 [LanguageProvider(LanguageCode.zh_CN, AlertShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "用于短消息提示的最简单用法。";
@@ -93,5 +93,4 @@ internal partial class zh_CN : LanguageProvider
 
     public const string P2MessageError = "错误";
 
-    protected override Type GetResourceKindType() => typeof(AlertShowCaseLangResourceKind);
 }

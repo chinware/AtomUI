@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Masonry;
 
 [LanguageProvider(LanguageCode.en_US, MasonryShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
@@ -48,5 +48,4 @@ internal partial class en_US : LanguageProvider
     public const string DynamicDescription = "Demonstrate how masonry layout updates dynamically. Use item.column to keep items in place.";
     public const string DynamicAddItemLabel = "Add Item";
 
-    protected override Type GetResourceKindType() => typeof(MasonryShowCaseLangResourceKind);
 }

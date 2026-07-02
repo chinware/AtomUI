@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Separator;
 
 [LanguageProvider(LanguageCode.zh_CN, SeparatorShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
@@ -68,5 +68,4 @@ internal partial class zh_CN : LanguageProvider
     public const string P2TextItem2 = "项目 2";
     public const string P2TextItem3 = "项目 3";
 
-    protected override Type GetResourceKindType() => typeof(SeparatorShowCaseLangResourceKind);
 }

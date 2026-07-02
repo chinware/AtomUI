@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.ColorPicker;
 
 [LanguageProvider(LanguageCode.zh_TW, ColorPickerShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "基礎用法。";
@@ -69,5 +69,4 @@ internal partial class zh_TW : LanguageProvider
     public const string TokenNameTriggerTextMargin = "顏色塊與觸發器文字之間的外間距。";
     public const string TokenNameColorBlockDisabledOpacity = "禁用狀態下顏色塊的不透明度。";
 
-    protected override Type GetResourceKindType() => typeof(ColorPickerShowCaseLangResourceKind);
 }

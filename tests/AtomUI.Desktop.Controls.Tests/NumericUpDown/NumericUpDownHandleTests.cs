@@ -122,6 +122,32 @@ public class NumericUpDownHandleTests
     }
 
     [Fact]
+    public void Input_Mode_Updates_ButtonSpinner_Visibility_From_ShowButtonSpinner()
+    {
+        var numericUpDown = new AtomUINumericUpDown
+        {
+            Width             = 160,
+            Value             = 3,
+            ShowButtonSpinner = false,
+            IsMotionEnabled   = false
+        };
+
+        ShowInWindow(numericUpDown, () =>
+        {
+            var spinner = numericUpDown.GetVisualDescendants()
+                                       .OfType<global::AtomUI.Desktop.Controls.ButtonSpinner>()
+                                       .Single(item => item.Name == "PART_Spinner");
+
+            spinner.IsButtonSpinnerVisible.ShouldBeFalse();
+
+            numericUpDown.ShowButtonSpinner = true;
+            Dispatcher.UIThread.RunJobs();
+
+            spinner.IsButtonSpinnerVisible.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
     public void Spinner_Mode_Uses_Inline_Stepper_Template()
     {
         var numericUpDown = new AtomUINumericUpDown
@@ -148,6 +174,42 @@ public class NumericUpDownHandleTests
                          .OfType<IconButton>()
                          .Single(item => item.Name == "PART_IncreaseButton")
                          .ShouldNotBeNull();
+        });
+    }
+
+    [Fact]
+    public void Spinner_Mode_Updates_Inline_Action_Visibility_From_ShowButtonSpinner()
+    {
+        var numericUpDown = new AtomUINumericUpDown
+        {
+            Width             = 160,
+            Value             = 3,
+            Mode              = NumericUpDownMode.Spinner,
+            ShowButtonSpinner = false,
+            IsMotionEnabled   = false
+        };
+
+        ShowInWindow(numericUpDown, () =>
+        {
+            var decreaseButton = numericUpDown.GetVisualDescendants()
+                                              .OfType<IconButton>()
+                                              .Single(item => item.Name == "PART_DecreaseButton");
+            var increaseButton = numericUpDown.GetVisualDescendants()
+                                              .OfType<IconButton>()
+                                              .Single(item => item.Name == "PART_IncreaseButton");
+            var decreaseSegment = decreaseButton.GetVisualParent();
+            var increaseSegment = increaseButton.GetVisualParent();
+
+            decreaseSegment.ShouldBeAssignableTo<Border>();
+            increaseSegment.ShouldBeAssignableTo<Border>();
+            ((Border)decreaseSegment!).IsVisible.ShouldBeFalse();
+            ((Border)increaseSegment!).IsVisible.ShouldBeFalse();
+
+            numericUpDown.ShowButtonSpinner = true;
+            Dispatcher.UIThread.RunJobs();
+
+            ((Border)decreaseSegment).IsVisible.ShouldBeTrue();
+            ((Border)increaseSegment).IsVisible.ShouldBeTrue();
         });
     }
 

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.TreeSelect;
 
 [LanguageProvider(LanguageCode.zh_CN, TreeSelectShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "最基础的用法。";
@@ -112,5 +112,4 @@ internal partial class zh_CN : LanguageProvider
     public const string P2HeaderExpandToLoad = "展开加载";
     public const string P2HeaderTreeNode = "树节点";
 
-    protected override Type GetResourceKindType() => typeof(TreeSelectShowCaseLangResourceKind);
 }

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Space;
 
 [LanguageProvider(LanguageCode.zh_CN, SpaceShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "为拥挤的组件添加水平间距。";
@@ -151,5 +151,4 @@ internal partial class zh_CN : LanguageProvider
 
     public const string P2ToolTipTipTooltip = "提示";
 
-    protected override Type GetResourceKindType() => typeof(SpaceShowCaseLangResourceKind);
 }

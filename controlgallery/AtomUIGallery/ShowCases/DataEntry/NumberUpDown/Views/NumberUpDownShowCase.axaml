@@ -91,6 +91,29 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:NumberUpDownShowCaseLangResource HideHandleTitle}"
+            BadgeText="v6.0.7"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:NumberUpDownShowCaseLangResource HideHandleDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:NumberUpDownViewModel">
+            <StackPanel Orientation="Vertical"
+                        Spacing="{atom:SharedTokenResource UniformlyMargin}">
+                <atom:NumericUpDown Minimum="1"
+                                    Maximum="10"
+                                    Value="3"
+                                    ShowButtonSpinner="False" />
+                <atom:NumericUpDown Mode="Spinner"
+                                    Minimum="1"
+                                    Maximum="10"
+                                    Value="3"
+                                    ShowButtonSpinner="False" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:NumberUpDownShowCaseLangResource StringModeTitle}"
             IsDeferredContentEnabled="True"
             Description="{gallery:NumberUpDownShowCaseLangResource StringModeDescription}">

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.TabControl;
 
 [LanguageProvider(LanguageCode.en_US, TabControlShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string TabControlBasicTitle = "Basic";
     public const string TabControlBasicDescription = "Default activate first tab.";
@@ -131,5 +131,4 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentEndExtraAction = "End extra action";
     public const string P2HeaderNewTabFormat = "new tab {0}";
 
-    protected override Type GetResourceKindType() => typeof(TabControlShowCaseLangResourceKind);
 }

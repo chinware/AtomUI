@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Cascader;
 
 [LanguageProvider(LanguageCode.zh_CN, CascaderShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string ScenarioBasic = "基础";
     public const string ScenarioMultiple = "多选";
@@ -144,5 +144,4 @@ internal partial class zh_CN : LanguageProvider
     public const string P2ContentBottomleft = "左下";
     public const string P2ContentBottomright = "右下";
 
-    protected override Type GetResourceKindType() => typeof(CascaderShowCaseLangResourceKind);
 }

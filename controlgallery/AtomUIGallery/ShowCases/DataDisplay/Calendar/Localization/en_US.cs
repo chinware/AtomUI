@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Calendar;
 
 [LanguageProvider(LanguageCode.en_US, CalendarShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string PageSubtitle = "Select dates from a monthly calendar panel.";
     public const string PageDescription = "Calendar presents dates in month, year, or decade views and supports single, range, and multiple-range selection.";
@@ -50,5 +50,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenScopeComponent = "Component";
     public const string TokenStatusStable = "Stable";
 
-    protected override Type GetResourceKindType() => typeof(CalendarShowCaseLangResourceKind);
 }

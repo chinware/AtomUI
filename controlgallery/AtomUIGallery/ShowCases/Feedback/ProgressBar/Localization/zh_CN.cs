@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.ProgressBar;
 
 [LanguageProvider(LanguageCode.zh_CN, ProgressBarShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string ScenarioBasic = "基础";
     public const string ScenarioAdvanced = "进阶";
@@ -95,5 +95,4 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenScopeComponent = "组件";
     public const string TokenStatusStable = "稳定";
 
-    protected override Type GetResourceKindType() => typeof(ProgressBarShowCaseLangResourceKind);
 }

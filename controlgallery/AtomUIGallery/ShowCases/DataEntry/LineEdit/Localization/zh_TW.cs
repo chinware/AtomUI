@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.LineEdit;
 
 [LanguageProvider(LanguageCode.zh_TW, LineEditShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ScenarioBasic = "基礎";
     public const string ScenarioState = "狀態";
@@ -129,5 +129,4 @@ internal partial class zh_TW : LanguageProvider
     public const string TokenNameRightAddOnPaddingSM = "TextArea 小號右側附加內邊距。";
     public const string TokenNameRightAddOnPaddingLG = "TextArea 大號右側附加內邊距。";
 
-    protected override Type GetResourceKindType() => typeof(LineEditShowCaseLangResourceKind);
 }

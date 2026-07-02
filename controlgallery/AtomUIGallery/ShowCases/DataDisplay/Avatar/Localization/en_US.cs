@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Avatar;
 
 [LanguageProvider(LanguageCode.en_US, AvatarShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
@@ -51,5 +51,4 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentK = "K";
     public const string P2ContentA = "A";
 
-    protected override Type GetResourceKindType() => typeof(AvatarShowCaseLangResourceKind);
 }

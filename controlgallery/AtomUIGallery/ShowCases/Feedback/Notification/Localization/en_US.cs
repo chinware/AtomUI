@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Notification;
 
 [LanguageProvider(LanguageCode.en_US, NotificationShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The simplest usage for Notification.";
@@ -85,5 +85,4 @@ internal partial class en_US : LanguageProvider
     public const string P2NotificationContent = "This is the content of the notification. This is the content of the notification. This is the content of the notification.";
     public const string P2NotificationNeverCloseContent = "I will never close automatically. This is a purposely very very long description that has many many characters and words.";
 
-    protected override Type GetResourceKindType() => typeof(NotificationShowCaseLangResourceKind);
 }

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.ImagePreviewer;
 
 [LanguageProvider(LanguageCode.en_US, ImagePreviewerShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
@@ -66,5 +66,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenScopeComponent = "Component";
     public const string TokenStatusStable = "Stable";
 
-    protected override Type GetResourceKindType() => typeof(ImagePreviewerShowCaseLangResourceKind);
 }

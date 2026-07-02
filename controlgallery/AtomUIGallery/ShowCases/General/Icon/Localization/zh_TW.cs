@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Icon;
 
 [LanguageProvider(LanguageCode.zh_TW, IconShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ComponentCategory = "通用";
     public const string ComponentStatusStable = ".NET 10";
@@ -14,5 +14,4 @@ internal partial class zh_TW : LanguageProvider
     public const string P2HeaderFilled = "填充風格";
     public const string P2HeaderTwoTone = "雙色風格";
 
-    protected override Type GetResourceKindType() => typeof(IconShowCaseLangResourceKind);
 }

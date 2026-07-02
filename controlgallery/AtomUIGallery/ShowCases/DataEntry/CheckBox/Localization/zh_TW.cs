@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.CheckBox;
 
 [LanguageProvider(LanguageCode.zh_TW, CheckBoxShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最簡單的用法。";
@@ -69,5 +69,4 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentC = "C";
     public const string P2ContentD = "D";
 
-    protected override Type GetResourceKindType() => typeof(CheckBoxShowCaseLangResourceKind);
 }

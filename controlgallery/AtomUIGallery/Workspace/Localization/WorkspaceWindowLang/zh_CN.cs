@@ -5,7 +5,7 @@ using AtomUIGallery.Workspace.Views;
 namespace AtomUIGallery.Workspace.Localization.WorkspaceWindowLang;
 
 [LanguageProvider(LanguageCode.zh_CN, WorkspaceWindow.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string WindowTitle = "AtomUI 桌面控件库";
 
@@ -26,5 +26,4 @@ internal partial class zh_CN : LanguageProvider
     public const string MenuItemEnableMotion = "开启动效";
     public const string MenuItemEnableWaveSpirit = "开启波浪动画";
 
-    protected override Type GetResourceKindType() => typeof(WorkspaceWindowLangResourceKind);
 }

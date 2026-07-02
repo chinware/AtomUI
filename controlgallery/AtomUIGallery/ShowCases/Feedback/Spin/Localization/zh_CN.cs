@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Spin;
 
 [LanguageProvider(LanguageCode.zh_CN, SpinShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string BasicUsageTitle = "基础用法";
     public const string BasicUsageDescription = "简单的加载状态。";
@@ -65,5 +65,4 @@ internal partial class zh_CN : LanguageProvider
 
     public const string P2MessageAlertMessageTitle = "提示消息标题";
 
-    protected override Type GetResourceKindType() => typeof(SpinShowCaseLangResourceKind);
 }

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.NumberUpDown;
 
 [LanguageProvider(LanguageCode.en_US, NumberUpDownShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioBasic = "Basic";
     public const string ScenarioRange = "Range";
@@ -15,6 +15,8 @@ internal partial class en_US : LanguageProvider
     public const string BasicUsageDescription = "Numeric-only NumberUpDown.";
     public const string SpinnerModeTitle = "Spinner";
     public const string SpinnerModeDescription = "Numeric spinner.";
+    public const string HideHandleTitle = "Hide handle";
+    public const string HideHandleDescription = "Hide the spin handle with ShowButtonSpinner=\"False\".";
     public const string StringModeTitle = "String mode (high precision)";
     public const string StringModeDescription = "Keep a high-precision value as a string.";
     public const string KeyboardBehaviorTitle = "Keyboard behavior";
@@ -96,5 +98,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenScopeComponent = "NumericUpDown";
     public const string TokenStatusStable = "Stable";
 
-    protected override Type GetResourceKindType() => typeof(NumberUpDownShowCaseLangResourceKind);
 }

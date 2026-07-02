@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.QRCode;
 
 [LanguageProvider(LanguageCode.zh_CN, QRCodeShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string BasicUsageTitle = "基础用法";
     public const string BasicUsageDescription = "基础用法示例。";
@@ -63,5 +63,4 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenScopeComponent = "组件";
     public const string TokenStatusStable = "稳定";
 
-    protected override Type GetResourceKindType() => typeof(QRCodeShowCaseLangResourceKind);
 }

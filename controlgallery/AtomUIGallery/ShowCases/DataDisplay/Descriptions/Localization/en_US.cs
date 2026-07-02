@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Descriptions;
 
 [LanguageProvider(LanguageCode.en_US, DescriptionsShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string PageSubtitle = "Display grouped read-only details in a responsive layout.";
     public const string PageDescription = "Descriptions presents related label-value pairs with optional borders, headers, extra actions, responsive columns, and vertical layouts.";
@@ -104,5 +104,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenScopeComponent = "Component";
     public const string TokenStatusStable = "Stable";
 
-    protected override Type GetResourceKindType() => typeof(DescriptionsShowCaseLangResourceKind);
 }

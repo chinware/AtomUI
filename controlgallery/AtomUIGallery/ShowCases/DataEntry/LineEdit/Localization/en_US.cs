@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.LineEdit;
 
 [LanguageProvider(LanguageCode.en_US, LineEditShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioBasic = "Basic";
     public const string ScenarioState = "State";
@@ -129,5 +129,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenNameRightAddOnPaddingSM = "Small right add-on padding for TextArea.";
     public const string TokenNameRightAddOnPaddingLG = "Large right add-on padding for TextArea.";
 
-    protected override Type GetResourceKindType() => typeof(LineEditShowCaseLangResourceKind);
 }

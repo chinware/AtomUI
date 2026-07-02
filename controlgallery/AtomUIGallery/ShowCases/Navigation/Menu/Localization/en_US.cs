@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Menu;
 
 [LanguageProvider(LanguageCode.en_US, MenuShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioBasic = "Basic";
     public const string ScenarioFeatures = "Features";
@@ -135,5 +135,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenScopeComponent = "Component";
     public const string TokenStatusStable = "Stable";
 
-    protected override Type GetResourceKindType() => typeof(MenuShowCaseLangResourceKind);
 }

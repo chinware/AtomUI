@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Result;
 
 [LanguageProvider(LanguageCode.en_US, ResultShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string SuccessTitle = "Success";
     public const string SuccessDescription = "Show successful results.";
@@ -83,5 +83,4 @@ internal partial class en_US : LanguageProvider
     public const string P2TextApplyUnlock = "Apply Unlock >";
     public const string P2ContentNext = "Next";
 
-    protected override Type GetResourceKindType() => typeof(ResultShowCaseLangResourceKind);
 }

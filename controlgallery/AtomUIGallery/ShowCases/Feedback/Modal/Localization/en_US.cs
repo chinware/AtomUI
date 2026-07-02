@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Modal;
 
 [LanguageProvider(LanguageCode.en_US, ModalShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Basic modal.";
@@ -104,5 +104,4 @@ internal partial class en_US : LanguageProvider
     public const string P2RunThisModalWillBeDestroyedAfter = "This modal will be destroyed after ";
     public const string P2RunSecond = " second.";
 
-    protected override Type GetResourceKindType() => typeof(ModalShowCaseLangResourceKind);
 }

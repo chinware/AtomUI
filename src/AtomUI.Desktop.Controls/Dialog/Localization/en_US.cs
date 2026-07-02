@@ -4,13 +4,8 @@ using AtomUI.Theme.Language;
 namespace AtomUI.Desktop.Controls.DialogLang;
 
 [LanguageProvider(LanguageCode.en_US, DialogToken.ID)]
-internal class en_US : LanguageProvider
+internal class en_US
 {
-    public en_US()
-        : base(LanguageCode.en_US, DialogToken.ID)
-    {
-    }
-
     public const string Ok = "OK";
     public const string Open = "Open";
     public const string Save = "Save";
@@ -31,5 +26,4 @@ internal class en_US : LanguageProvider
     public const string Retry = "Retry";
     public const string Ignore = "Ignore";
     
-    protected override Type GetResourceKindType() => typeof(DialogLangResourceKind);
 }

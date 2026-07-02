@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.PopupConfirm;
 
 [LanguageProvider(LanguageCode.zh_TW, PopupConfirmShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string BasicUsageTitle = "基礎用法";
     public const string BasicUsageDescription = "基礎示例支持確認框的標題和描述屬性。";
@@ -68,5 +68,4 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentBottom = "底部";
     public const string P2ContentBr = "下右側";
 
-    protected override Type GetResourceKindType() => typeof(PopupConfirmShowCaseLangResourceKind);
 }

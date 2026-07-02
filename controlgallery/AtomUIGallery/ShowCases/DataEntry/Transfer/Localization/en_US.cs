@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Transfer;
 
 [LanguageProvider(LanguageCode.en_US, TransferShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The most basic usage of Transfer involves providing the source data and target keys arrays, plus the rendering and some callback functions.";
@@ -89,5 +89,4 @@ internal partial class en_US : LanguageProvider
     public const string P2TagDog = "dog";
     public const string P2TagBird = "bird";
 
-    protected override Type GetResourceKindType() => typeof(TransferShowCaseLangResourceKind);
 }

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Tour;
 
 [LanguageProvider(LanguageCode.zh_CN, TourShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string PageSubtitle = "通过上下文浮层引导用户完成关键流程。";
     public const string PageDescription = "Tour 组合步骤目标、遮罩、弹出位置、指示器和自定义操作，在不离开当前页面的情况下构建轻量级产品引导。";
@@ -88,5 +88,4 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenScopeComponent = "组件";
     public const string TokenStatusStable = "稳定";
 
-    protected override Type GetResourceKindType() => typeof(TourShowCaseLangResourceKind);
 }

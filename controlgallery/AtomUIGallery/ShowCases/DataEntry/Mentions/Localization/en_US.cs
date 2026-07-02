@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Mentions;
 
 [LanguageProvider(LanguageCode.en_US, MentionsShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The simplest use.";
@@ -80,5 +80,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenScopeComponent = "Mentions";
     public const string TokenStatusStable = "Stable";
 
-    protected override Type GetResourceKindType() => typeof(MentionsShowCaseLangResourceKind);
 }

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Icon;
 
 [LanguageProvider(LanguageCode.en_US, IconShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ComponentCategory = "General";
     public const string ComponentStatusStable = ".NET 10";
@@ -14,5 +14,4 @@ internal partial class en_US : LanguageProvider
     public const string P2HeaderFilled = "Filled";
     public const string P2HeaderTwoTone = "Two Tone";
 
-    protected override Type GetResourceKindType() => typeof(IconShowCaseLangResourceKind);
 }

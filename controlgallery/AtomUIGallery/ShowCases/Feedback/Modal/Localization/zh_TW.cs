@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Modal;
 
 [LanguageProvider(LanguageCode.zh_TW, ModalShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "基礎模態框。";
@@ -104,5 +104,4 @@ internal partial class zh_TW : LanguageProvider
     public const string P2RunThisModalWillBeDestroyedAfter = "此模態框將在 ";
     public const string P2RunSecond = " 秒後銷毀。";
 
-    protected override Type GetResourceKindType() => typeof(ModalShowCaseLangResourceKind);
 }

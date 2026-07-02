@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Upload;
 
 [LanguageProvider(LanguageCode.en_US, UploadShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string UploadByClickingTitle = "Upload by clicking";
     public const string UploadByClickingDescription = "Classic mode. File selection dialog pops up when upload button is clicked.";
@@ -81,5 +81,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenNamePictureListItemMargin = "Margin around picture list items.";
     public const string TokenNamePictureListPreviewerSize = "Preview thumbnail size for picture list items.";
 
-    protected override Type GetResourceKindType() => typeof(UploadShowCaseLangResourceKind);
 }

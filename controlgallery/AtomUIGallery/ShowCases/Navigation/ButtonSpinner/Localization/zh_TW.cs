@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.ButtonSpinner;
 
 [LanguageProvider(LanguageCode.zh_TW, ButtonSpinnerShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ComponentCategory = "導航";
     public const string ComponentStatusStable = "穩定";
@@ -70,5 +70,4 @@ internal partial class zh_TW : LanguageProvider
     public const string TokenScopeComponent = "組件";
     public const string TokenStatusStable = "穩定";
 
-    protected override Type GetResourceKindType() => typeof(ButtonSpinnerShowCaseLangResourceKind);
 }

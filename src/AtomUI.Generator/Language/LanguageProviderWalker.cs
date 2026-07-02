@@ -78,6 +78,7 @@ internal class LanguageProviderWalker : CSharpSyntaxWalker
         if (classDeclaredSymbol is not null)
         {
             LanguageInfo.Accessibility = GetAccessibility(classDeclaredSymbol.DeclaredAccessibility);
+            LanguageInfo.InheritsLanguageProvider = InheritsLanguageProvider(classDeclaredSymbol);
 
             foreach (var attribute in classDeclaredSymbol.GetAttributes())
             {
@@ -135,6 +136,22 @@ internal class LanguageProviderWalker : CSharpSyntaxWalker
 
         return attributeClass.Name == "LanguageProviderAttribute" ||
                attributeClass.ToDisplayString() == TargetMarkConstants.LanguageProviderAttribute;
+    }
+
+    private static bool InheritsLanguageProvider(INamedTypeSymbol classSymbol)
+    {
+        var baseType = classSymbol.BaseType;
+        while (baseType is not null)
+        {
+            if (baseType.ToDisplayString() == TargetMarkConstants.LanguageProvider)
+            {
+                return true;
+            }
+
+            baseType = baseType.BaseType;
+        }
+
+        return false;
     }
 
     private static string? GetLanguageCode(TypedConstant argument)

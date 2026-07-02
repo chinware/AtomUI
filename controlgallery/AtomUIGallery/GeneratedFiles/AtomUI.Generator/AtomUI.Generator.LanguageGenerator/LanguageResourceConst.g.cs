@@ -4225,6 +4225,8 @@ namespace AtomUIGallery.Localization
         DecimalStepTitle,
         DisabledDescription,
         DisabledTitle,
+        HideHandleDescription,
+        HideHandleTitle,
         KeyboardBehaviorDescription,
         KeyboardBehaviorTitle,
         MinMaxDescription,

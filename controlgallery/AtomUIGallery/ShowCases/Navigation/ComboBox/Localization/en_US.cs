@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.ComboBox;
 
 [LanguageProvider(LanguageCode.en_US, ComboBoxShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ComponentCategory = "Navigation";
     public const string ComponentStatusStable = "Stable";
@@ -98,5 +98,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenScopeComponent = "Component";
     public const string TokenStatusStable = "Stable";
 
-    protected override Type GetResourceKindType() => typeof(ComboBoxShowCaseLangResourceKind);
 }

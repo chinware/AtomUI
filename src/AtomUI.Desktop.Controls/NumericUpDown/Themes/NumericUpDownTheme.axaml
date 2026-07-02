@@ -16,7 +16,7 @@
                     SizeType="{TemplateBinding SizeType}"
                     StyleVariant="{TemplateBinding StyleVariant}"
                     Status="{TemplateBinding Status}"
-                    IsButtonSpinnerVisible="True"
+                    IsButtonSpinnerVisible="{TemplateBinding ShowButtonSpinner}"
                     IsButtonSpinnerFloatable="True"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch"
@@ -73,7 +73,7 @@
                         SizeType="{TemplateBinding SizeType}"
                         StyleVariant="{TemplateBinding StyleVariant}"
                         Status="{TemplateBinding Status}"
-                        IsButtonSpinnerVisible="False"
+                        IsButtonSpinnerVisible="{TemplateBinding ShowButtonSpinner}"
                         IsButtonSpinnerFloatable="False"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Stretch"
@@ -125,7 +125,8 @@
                                         <Border
                                             DockPanel.Dock="Left"
                                             BorderBrush="{atom:ButtonSpinnerTokenResource HandleBorderColor}"
-                                            BorderThickness="0,0,1,0">
+                                            BorderThickness="0,0,1,0"
+                                            IsVisible="{TemplateBinding IsButtonSpinnerVisible}">
                                             <atom:IconButton
                                                 Name="PART_DecreaseButton"
                                                 Icon="{antdicons:AntDesignIconProvider MinusOutlined}"
@@ -141,7 +142,8 @@
                                         <Border
                                             DockPanel.Dock="Right"
                                             BorderBrush="{atom:ButtonSpinnerTokenResource HandleBorderColor}"
-                                            BorderThickness="1,0,0,0">
+                                            BorderThickness="1,0,0,0"
+                                            IsVisible="{TemplateBinding IsButtonSpinnerVisible}">
                                             <atom:IconButton
                                                 Name="PART_IncreaseButton"
                                                 Icon="{antdicons:AntDesignIconProvider PlusOutlined}"

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.CustomizeTheme;
 
 [LanguageProvider(LanguageCode.zh_CN, CustomizeThemeShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
@@ -60,5 +60,4 @@ internal partial class zh_CN : LanguageProvider
     public const string P2ContentThemeN1 = "主题 1";
     public const string P2ContentThemeN2 = "主题 2";
 
-    protected override Type GetResourceKindType() => typeof(CustomizeThemeShowCaseLangResourceKind);
 }

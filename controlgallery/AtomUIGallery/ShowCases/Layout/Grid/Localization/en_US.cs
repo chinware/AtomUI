@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Grid;
 
 [LanguageProvider(LanguageCode.en_US, GridShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioBasic = "Basic";
     public const string ScenarioSpacing = "Spacing";
@@ -115,5 +115,4 @@ internal partial class en_US : LanguageProvider
     public const string P2TextResColN3 = "res-col-3";
     public const string P2TextResColN4 = "res-col-4";
 
-    protected override Type GetResourceKindType() => typeof(GridShowCaseLangResourceKind);
 }

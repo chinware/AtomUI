@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.TimePicker;
 
 [LanguageProvider(LanguageCode.en_US, TimePickerShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Click TimePicker, and then we could select or input a time in panel.";
@@ -72,5 +72,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenNameRangePickerIndicatorThickness = "Thickness of the range selection indicator.";
     public const string TokenNameHeaderMargin = "Margin below the time panel header.";
 
-    protected override Type GetResourceKindType() => typeof(TimePickerShowCaseLangResourceKind);
 }

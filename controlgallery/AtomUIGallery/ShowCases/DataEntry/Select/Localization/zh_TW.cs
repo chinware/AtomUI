@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Select;
 
 [LanguageProvider(LanguageCode.zh_TW, SelectShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "基礎用法。";
@@ -128,5 +128,4 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentUser = "用戶";
     public const string P2TextLongLabelPrefix = "長標籤：";
 
-    protected override Type GetResourceKindType() => typeof(SelectShowCaseLangResourceKind);
 }

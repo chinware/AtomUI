@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Notification;
 
 [LanguageProvider(LanguageCode.zh_CN, NotificationShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "Notification 的最简单用法。";
@@ -85,5 +85,4 @@ internal partial class zh_CN : LanguageProvider
     public const string P2NotificationContent = "这是通知内容。这是通知内容。这是通知内容。";
     public const string P2NotificationNeverCloseContent = "我不会自动关闭。这是一段特意写得很长的描述，包含很多字符和词语。";
 
-    protected override Type GetResourceKindType() => typeof(NotificationShowCaseLangResourceKind);
 }

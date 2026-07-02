@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.AutoComplete;
 
 [LanguageProvider(LanguageCode.en_US, AutoCompleteShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicUsageTitle = "Basic Usage";
     public const string BasicUsageDescription = "Basic usage, set data source of autocomplete with options property.";
@@ -81,5 +81,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenScopeComponent = "AutoComplete";
     public const string TokenStatusStable = "Stable";
 
-    protected override Type GetResourceKindType() => typeof(AutoCompleteShowCaseLangResourceKind);
 }

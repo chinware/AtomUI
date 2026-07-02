@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Descriptions;
 
 [LanguageProvider(LanguageCode.zh_CN, DescriptionsShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string PageSubtitle = "以响应式布局展示分组的只读详情。";
     public const string PageDescription = "Descriptions 用于展示相关的标签和值，支持边框、标题、额外操作、响应式列数和垂直布局。";
@@ -104,5 +104,4 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenScopeComponent = "组件";
     public const string TokenStatusStable = "稳定";
 
-    protected override Type GetResourceKindType() => typeof(DescriptionsShowCaseLangResourceKind);
 }

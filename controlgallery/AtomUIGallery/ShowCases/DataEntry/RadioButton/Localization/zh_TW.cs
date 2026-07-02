@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.RadioButton;
 
 [LanguageProvider(LanguageCode.zh_TW, RadioButtonShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ScenarioBasic = "基礎";
     public const string ScenarioGroups = "分組";
@@ -100,5 +100,4 @@ internal partial class zh_TW : LanguageProvider
     public const string TokenScopeOptionButton = "OptionButton";
     public const string TokenStatusStable = "穩定";
 
-    protected override Type GetResourceKindType() => typeof(RadioButtonShowCaseLangResourceKind);
 }

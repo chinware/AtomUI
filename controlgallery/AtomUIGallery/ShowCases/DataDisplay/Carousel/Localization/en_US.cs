@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Carousel;
 
 [LanguageProvider(LanguageCode.en_US, CarouselShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
@@ -59,5 +59,4 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentLeft = "Left";
     public const string P2ContentRight = "Right";
 
-    protected override Type GetResourceKindType() => typeof(CarouselShowCaseLangResourceKind);
 }

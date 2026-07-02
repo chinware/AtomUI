@@ -58,6 +58,7 @@ IsStringMode=true
 - `IsCustomFontSize` 通过模板接入后的 relay binding 传递给内部 `TextBox`，只参与字号覆盖判断，不参与数值状态计算。
 - `StyleVariant` 传递给 `ButtonSpinner` 和 Handle。
 - `Status` 传递给 `ButtonSpinner`，由 AddOnDecoratedBox 体系映射错误和警告状态。
+- `ShowButtonSpinner` 传递给 `ButtonSpinner.IsButtonSpinnerVisible`；默认输入模式由它控制浮动 Handle，spinner 模式由它控制左右 action 段。
 - `Mode` 只驱动模板选择和模式专用 part 接入，不参与数值状态计算。
 - CompactSpace 状态只作为输入壳体集成状态，不形成公开 API。
 
@@ -69,7 +70,7 @@ IsStringMode=true
 
 `SetupTemplatePartBindings` 统一接入清除按钮图标、清除按钮动效、清除按钮可见性、内部右侧内容、内部右侧模板和内部 `TextBox.IsCustomFontSize`。这些绑定在下一次模板接入前必须通过 `CompositeDisposable` 释放。清除按钮和内部 `TextBox` 的事件订阅由成对 part setter 负责，避免在 `OnApplyTemplate` 中散落重复解绑逻辑。
 
-`Mode=Input` 默认模板不能创建 spinner 模式左右按钮。`Mode=Spinner` 的按钮、分隔线和专用布局节点只在启用 spinner 模式时实例化。
+`Mode=Input` 默认模板不能创建 spinner 模式左右按钮。`Mode=Spinner` 的按钮、分隔线和专用布局节点只在启用 spinner 模式时实例化。两个模板分支都必须消费继承的 `ShowButtonSpinner`，不能用写死的模板值覆盖用户设置。
 
 ## 6. 交互与事件处理
 
@@ -107,6 +108,8 @@ spinner 模式的外层 content frame 必须保持零 padding，避免与左右 
 
 左右按钮 enabled 状态由 `AllowSpin`、`IsEnabled`、`IsReadOnly` 和当前值是否达到 min/max 共同决定。
 
+左右 action 段可见性由 `ShowButtonSpinner` 控制；隐藏时不应占用三段式布局宽度，也不改变中间输入段的数值和文本同步语义。
+
 ### 7.4 Form 集成
 
 Form 集成流：
@@ -141,6 +144,7 @@ Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前
 - `IsKeyboardEnabled=false` 只影响步进快捷键。
 - `Mode=Input` 不承担 spinner 模式成本。
 - `Mode=Spinner` 不复制数值增减算法。
+- `ShowButtonSpinner=false` 同时隐藏默认输入模式浮动 Handle 和 spinner 模式左右 action 段。
 - NumericUpDown 本体不直接订阅 spinner 模式左右按钮事件。
 - 清除按钮和 `InnerRightContent` 顺序不变。
 - 禁用态隐藏浮动 Handle，并命中 disabled 文本色。
@@ -161,5 +165,6 @@ Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前
 - CompactSpace 中边框厚度、圆角和位置变化。
 - `Mode=Input` 默认视觉树不创建 spinner 左右按钮。
 - `Mode=Spinner` 下左右按钮、min/max、disabled、read-only 和 `AllowSpin=false` 状态。
+- `ShowButtonSpinner=false` 在 `Mode=Input` 和 `Mode=Spinner` 两种模板中都能隐藏步进入口，并支持运行时切换。
 - 模板切换后新 part 重新接入，旧 part 事件解绑。
 - 文档改动运行 `git diff --check`。

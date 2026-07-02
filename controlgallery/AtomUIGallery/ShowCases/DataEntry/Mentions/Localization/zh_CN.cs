@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Mentions;
 
 [LanguageProvider(LanguageCode.zh_CN, MentionsShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "最简单的用法。";
@@ -80,5 +80,4 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenScopeComponent = "Mentions";
     public const string TokenStatusStable = "稳定";
 
-    protected override Type GetResourceKindType() => typeof(MentionsShowCaseLangResourceKind);
 }

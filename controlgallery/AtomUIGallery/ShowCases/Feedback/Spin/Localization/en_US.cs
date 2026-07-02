@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Spin;
 
 [LanguageProvider(LanguageCode.en_US, SpinShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicUsageTitle = "Basic Usage";
     public const string BasicUsageDescription = "A simple loading status.";
@@ -65,5 +65,4 @@ internal partial class en_US : LanguageProvider
 
     public const string P2MessageAlertMessageTitle = "Alert message title";
 
-    protected override Type GetResourceKindType() => typeof(SpinShowCaseLangResourceKind);
 }

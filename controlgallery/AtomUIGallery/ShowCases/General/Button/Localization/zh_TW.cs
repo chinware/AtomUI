@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Button;
 
 [LanguageProvider(LanguageCode.zh_TW, ButtonShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
@@ -121,5 +121,4 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentGhost = "幽靈";
     public const string P2ContentGhostDisabled = "幽靈（禁用）";
 
-    protected override Type GetResourceKindType() => typeof(ButtonShowCaseLangResourceKind);
 }

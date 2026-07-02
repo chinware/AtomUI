@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Overview;
 
 [LanguageProvider(LanguageCode.zh_TW, OverviewPage.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string InstallTitle = "安裝 AtomUI";
     public const string InstallDescription = "將桌面控件包添加到 Avalonia 應用。";
@@ -20,5 +20,4 @@ internal partial class zh_TW : LanguageProvider
     public const string ApiDocsDescription = "查詢 AtomUI OSS 類型、成員和版本化接口說明。";
     public const string OpenLearningLink = "打開鏈接";
 
-    protected override Type GetResourceKindType() => typeof(OverviewPageLangResourceKind);
 }

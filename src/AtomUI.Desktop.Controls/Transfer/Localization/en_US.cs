@@ -4,13 +4,8 @@ using AtomUI.Theme.Language;
 namespace AtomUI.Desktop.Controls.TransferLang;
 
 [LanguageProvider(LanguageCode.en_US, TransferToken.ID)]
-internal class en_US : LanguageProvider
+internal class en_US
 {
-    public en_US()
-        : base(LanguageCode.en_US, TransferToken.ID)
-    {
-    }
-
     public const string Item = "item";
     public const string Items = "items";
     public const string SelectAll = "select all data";
@@ -20,5 +15,4 @@ internal class en_US : LanguageProvider
     public const string InvertSelectCurrentPage = "invert current page";
     public const string SelectCurrentPage = "select current page";
 
-    protected override Type GetResourceKindType() => typeof(TransferLangResourceKind);
 }

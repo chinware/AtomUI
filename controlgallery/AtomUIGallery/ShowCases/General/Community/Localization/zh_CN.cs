@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Community;
 
 [LanguageProvider(LanguageCode.zh_CN, CommunityPage.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string AboutAtomUI = "关于 AtomUI";
     public const string VisionLabel = "愿景：";
@@ -21,5 +21,4 @@ internal partial class zh_CN : LanguageProvider
     public const string QQGroup = "QQ群";
     public const string QQGroupDescription = "加入 QQ 交流群";
 
-    protected override Type GetResourceKindType() => typeof(CommunityPageLangResourceKind);
 }
