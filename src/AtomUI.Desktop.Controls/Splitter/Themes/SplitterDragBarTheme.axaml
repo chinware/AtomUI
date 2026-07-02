@@ -5,12 +5,14 @@
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type atom:SplitterDragBar}" TargetType="atom:SplitterDragBar">
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="LineThickness" Value="{atom:SplitterTokenResource HandleLineThickness}" />
+        <Setter Property="LineCornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Background="{TemplateBinding Background}">
                     <Border Name="PART_Grip"
                             Background="{TemplateBinding LineBrush}"
-                            CornerRadius="{atom:SharedTokenResource BorderRadiusXS}"
+                            CornerRadius="{TemplateBinding LineCornerRadius}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center" />
                 </Border>
@@ -21,7 +23,7 @@
             <Setter Property="Cursor" Value="SizeWestEast" />
             <Setter Property="Width" Value="{atom:SplitterTokenResource SplitTriggerSize}" />
             <Style Selector="^ /template/ Border#PART_Grip">
-                <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarSize}" />
+                <Setter Property="Width" Value="{Binding LineThickness, RelativeSource={RelativeSource TemplatedParent}}" />
                 <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
             </Style>
         </Style>
@@ -30,7 +32,7 @@
             <Setter Property="Cursor" Value="SizeNorthSouth" />
             <Setter Property="Height" Value="{atom:SplitterTokenResource SplitTriggerSize}" />
             <Style Selector="^ /template/ Border#PART_Grip">
-                <Setter Property="Height" Value="{atom:SplitterTokenResource SplitBarSize}" />
+                <Setter Property="Height" Value="{Binding LineThickness, RelativeSource={RelativeSource TemplatedParent}}" />
                 <Setter Property="Width" Value="{atom:SplitterTokenResource SplitBarDraggableSize}" />
             </Style>
         </Style>

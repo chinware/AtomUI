@@ -25,6 +25,12 @@ internal class SplitterPanel : Panel
     public static readonly StyledProperty<double> HandleSizeProperty =
         Splitter.HandleSizeProperty.AddOwner<SplitterPanel>();
 
+    public static readonly StyledProperty<double> LineThicknessProperty =
+        Splitter.LineThicknessProperty.AddOwner<SplitterPanel>();
+
+    public static readonly StyledProperty<CornerRadius> LineCornerRadiusProperty =
+        Splitter.LineCornerRadiusProperty.AddOwner<SplitterPanel>();
+
     public static readonly StyledProperty<IconTemplate?> CollapsePreviousIconProperty =
         Splitter.CollapsePreviousIconProperty.AddOwner<SplitterPanel>();
 
@@ -49,6 +55,18 @@ internal class SplitterPanel : Panel
         set => SetValue(HandleSizeProperty, value);
     }
 
+    public double LineThickness
+    {
+        get => GetValue(LineThicknessProperty);
+        set => SetValue(LineThicknessProperty, value);
+    }
+
+    public CornerRadius LineCornerRadius
+    {
+        get => GetValue(LineCornerRadiusProperty);
+        set => SetValue(LineCornerRadiusProperty, value);
+    }
+
     public IconTemplate? CollapsePreviousIcon
     {
         get => GetValue(CollapsePreviousIconProperty);
@@ -65,6 +83,8 @@ internal class SplitterPanel : Panel
     static SplitterPanel()
     {
         AffectsMeasure<SplitterPanel>(OrientationProperty, HandleSizeProperty);
+        LineThicknessProperty.Changed.AddClassHandler<SplitterPanel>((x, _) => x.UpdateHandleLineStyles());
+        LineCornerRadiusProperty.Changed.AddClassHandler<SplitterPanel>((x, _) => x.UpdateHandleLineStyles());
     }
     
     public SplitterPanel()
@@ -199,8 +219,10 @@ internal class SplitterPanel : Panel
     {
         var handle = new SplitterHandle
         {
-            Orientation = Orientation,
-            HandleIndex = index
+            Orientation       = Orientation,
+            HandleIndex       = index,
+            LineThickness     = LineThickness,
+            LineCornerRadius = LineCornerRadius
         };
 
         handle.DragStarted               += HandleDragStarted;
@@ -211,6 +233,15 @@ internal class SplitterPanel : Panel
 
         UpdateHandleState(index, handle);
         return handle;
+    }
+
+    private void UpdateHandleLineStyles()
+    {
+        foreach (var handle in _handles)
+        {
+            handle.LineThickness     = LineThickness;
+            handle.LineCornerRadius = LineCornerRadius;
+        }
     }
 
     private void UpdateHandlesForPanel(Control panel)

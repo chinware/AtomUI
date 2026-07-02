@@ -47,6 +47,7 @@ public class SplitterShowCasePageTests
         source.ShouldContain("SplitterShowCaseLangResource ShowCollapsibleIconTitle");
         source.ShouldContain("SplitterShowCaseLangResource MultiPanelsTitle");
         source.ShouldContain("SplitterShowCaseLangResource LazyTitle");
+        source.ShouldContain("SplitterShowCaseLangResource LineStyleTitle");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
@@ -130,10 +131,23 @@ public class SplitterShowCasePageTests
             source.ShouldContain("ApiPropertyOrientation");
             source.ShouldContain("ApiPropertyIsLazy");
             source.ShouldContain("ApiPropertyHandleSize");
+            source.ShouldContain("ApiPropertyLineThickness");
+            source.ShouldContain("ApiPropertyLineCornerRadius");
             source.ShouldContain("ApiPropertyCollapsible");
             source.ShouldContain("TokenNameSplitBarSize");
             source.ShouldContain("TokenNameHandleIconSize");
+            source.ShouldContain("LineStyleTitle");
+            source.ShouldContain("LineStyleDescription");
         }
+    }
+
+    [Fact]
+    public void Splitter_ShowCase_Api_Includes_Line_Style_Properties()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/Splitter/ViewModels/SplitterViewModel.cs");
+
+        source.ShouldContain("new SplitterApiRow(\"LineThickness\", Lang(SplitterShowCaseLangResourceKind.ApiPropertyLineThickness), \"double\", \"cyan\", \"token\")");
+        source.ShouldContain("new SplitterApiRow(\"LineCornerRadius\", Lang(SplitterShowCaseLangResourceKind.ApiPropertyLineCornerRadius), \"CornerRadius\", \"cyan\", \"token\")");
     }
 
     [Fact]

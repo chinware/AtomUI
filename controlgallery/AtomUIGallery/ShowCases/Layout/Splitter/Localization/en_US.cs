@@ -20,6 +20,8 @@ internal partial class en_US
     public const string ApiPropertyOrientation = "Controls whether panels are split left-right or top-bottom.";
     public const string ApiPropertyIsLazy = "Defers size updates until the drag operation completes.";
     public const string ApiPropertyHandleSize = "Overrides the splitter handle hit area size.";
+    public const string ApiPropertyLineThickness = "Controls the visible divider line and grip thickness without changing the handle hit area.";
+    public const string ApiPropertyLineCornerRadius = "Controls the corner radius applied to the visible divider line and grip.";
     public const string ApiPropertyCollapsePreviousIcon = "Icon template used by the previous-panel collapse action.";
     public const string ApiPropertyCollapseNextIcon = "Icon template used by the next-panel collapse action.";
     public const string ApiPropertyChildren = "Panel controls hosted by the splitter.";
@@ -68,6 +70,8 @@ internal partial class en_US
     public const string MultiPanelsDescription = "Multiple panels in vertical layout.";
     public const string LazyTitle = "Lazy";
     public const string LazyDescription = "Lazy rendering mode: sizes update on drag release.";
+    public const string LineStyleTitle = "Line Style";
+    public const string LineStyleDescription = "Customize the root frame, visible divider thickness, and line corner radius.";
     public const string P2TextFirst = "First";
     public const string P2TextSecond = "Second";
     public const string P2TextTop = "Top";

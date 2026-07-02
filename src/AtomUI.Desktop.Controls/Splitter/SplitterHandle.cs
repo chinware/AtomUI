@@ -24,7 +24,10 @@ internal class SplitterHandle : TemplatedControl
         AvaloniaProperty.Register<SplitterHandle, IBrush?>(nameof(LineBrush));
 
     public static readonly StyledProperty<double> LineThicknessProperty =
-        AvaloniaProperty.Register<SplitterHandle, double>(nameof(LineThickness));
+        Splitter.LineThicknessProperty.AddOwner<SplitterHandle>();
+
+    public static readonly StyledProperty<CornerRadius> LineCornerRadiusProperty =
+        Splitter.LineCornerRadiusProperty.AddOwner<SplitterHandle>();
 
     public static readonly StyledProperty<bool> IsDragEnabledProperty =
         AvaloniaProperty.Register<SplitterHandle, bool>(nameof(IsDragEnabled), true);
@@ -45,6 +48,12 @@ internal class SplitterHandle : TemplatedControl
     {
         get => GetValue(LineThicknessProperty);
         set => SetValue(LineThicknessProperty, value);
+    }
+
+    public CornerRadius LineCornerRadius
+    {
+        get => GetValue(LineCornerRadiusProperty);
+        set => SetValue(LineCornerRadiusProperty, value);
     }
 
     public bool IsDragEnabled

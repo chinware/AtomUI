@@ -20,6 +20,8 @@ internal partial class zh_TW
     public const string ApiPropertyOrientation = "控制面板按左右或上下方向分割。";
     public const string ApiPropertyIsLazy = "將尺寸更新延遲到拖拽操作完成後。";
     public const string ApiPropertyHandleSize = "覆蓋分割把手的命中區域尺寸。";
+    public const string ApiPropertyLineThickness = "控制可見分割線和拖拽提示的厚度，不改變把手命中區域。";
+    public const string ApiPropertyLineCornerRadius = "控制可見分割線和拖拽提示的圓角。";
     public const string ApiPropertyCollapsePreviousIcon = "上一個面板折疊操作使用的圖標模板。";
     public const string ApiPropertyCollapseNextIcon = "下一個面板折疊操作使用的圖標模板。";
     public const string ApiPropertyChildren = "Splitter 承載的面板控件集合。";
@@ -68,6 +70,8 @@ internal partial class zh_TW
     public const string MultiPanelsDescription = "垂直佈局中的多個面板。";
     public const string LazyTitle = "延遲模式";
     public const string LazyDescription = "延遲渲染模式：拖拽釋放後更新尺寸。";
+    public const string LineStyleTitle = "分割線樣式";
+    public const string LineStyleDescription = "定制根框架、可見分割線厚度和線條圓角。";
     public const string P2TextFirst = "第一項";
     public const string P2TextSecond = "第二項";
     public const string P2TextTop = "頂部";

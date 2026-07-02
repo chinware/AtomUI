@@ -178,7 +178,7 @@ public class NumericUpDownHandleTests
     }
 
     [Fact]
-    public void Spinner_Mode_Updates_Inline_Action_Visibility_From_ShowButtonSpinner()
+    public void Spinner_Mode_With_Hidden_Handle_Uses_Input_Template()
     {
         var numericUpDown = new AtomUINumericUpDown
         {
@@ -191,25 +191,38 @@ public class NumericUpDownHandleTests
 
         ShowInWindow(numericUpDown, () =>
         {
+            var spinnerHandle = numericUpDown.GetVisualDescendants()
+                                             .OfType<TemplatedControl>()
+                                             .Single(item => item.GetType().Name == "ButtonSpinnerHandle");
+            var textBox = numericUpDown.GetVisualDescendants()
+                                       .OfType<TextBox>()
+                                       .Single(item => item.Name == "PART_TextBox");
+            var spinnerButtons = numericUpDown.GetVisualDescendants()
+                                              .OfType<IconButton>()
+                                              .Where(item => item.Name is "PART_DecreaseButton" or "PART_IncreaseButton")
+                                              .ToList();
+
+            textBox.TextAlignment.ShouldBe(TextAlignment.Start);
+            spinnerButtons.Count.ShouldBe(2);
+            spinnerButtons.All(item => item.GetVisualAncestors().Contains(spinnerHandle)).ShouldBeTrue();
+
+            numericUpDown.ShowButtonSpinner = true;
+            Dispatcher.UIThread.RunJobs();
+
+            numericUpDown.GetVisualDescendants()
+                         .OfType<TemplatedControl>()
+                         .Count(item => item.GetType().Name == "ButtonSpinnerHandle")
+                         .ShouldBe(0);
+
             var decreaseButton = numericUpDown.GetVisualDescendants()
                                               .OfType<IconButton>()
                                               .Single(item => item.Name == "PART_DecreaseButton");
             var increaseButton = numericUpDown.GetVisualDescendants()
                                               .OfType<IconButton>()
                                               .Single(item => item.Name == "PART_IncreaseButton");
-            var decreaseSegment = decreaseButton.GetVisualParent();
-            var increaseSegment = increaseButton.GetVisualParent();
 
-            decreaseSegment.ShouldBeAssignableTo<Border>();
-            increaseSegment.ShouldBeAssignableTo<Border>();
-            ((Border)decreaseSegment!).IsVisible.ShouldBeFalse();
-            ((Border)increaseSegment!).IsVisible.ShouldBeFalse();
-
-            numericUpDown.ShowButtonSpinner = true;
-            Dispatcher.UIThread.RunJobs();
-
-            ((Border)decreaseSegment).IsVisible.ShouldBeTrue();
-            ((Border)increaseSegment).IsVisible.ShouldBeTrue();
+            decreaseButton.GetVisualParent().ShouldBeAssignableTo<Border>();
+            increaseButton.GetVisualParent().ShouldBeAssignableTo<Border>();
         });
     }
 

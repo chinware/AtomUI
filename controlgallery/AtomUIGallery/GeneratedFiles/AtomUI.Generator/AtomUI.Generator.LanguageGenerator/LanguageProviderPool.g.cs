@@ -18739,6 +18739,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyIsCollapsed] = global::AtomUIGallery.ShowCases.Splitter.en_US.ApiPropertyIsCollapsed;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyIsLazy] = global::AtomUIGallery.ShowCases.Splitter.en_US.ApiPropertyIsLazy;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyIsResizable] = global::AtomUIGallery.ShowCases.Splitter.en_US.ApiPropertyIsResizable;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyLineCornerRadius] = global::AtomUIGallery.ShowCases.Splitter.en_US.ApiPropertyLineCornerRadius;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyLineThickness] = global::AtomUIGallery.ShowCases.Splitter.en_US.ApiPropertyLineThickness;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyMaxSize] = global::AtomUIGallery.ShowCases.Splitter.en_US.ApiPropertyMaxSize;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyMinSize] = global::AtomUIGallery.ShowCases.Splitter.en_US.ApiPropertyMinSize;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyOrientation] = global::AtomUIGallery.ShowCases.Splitter.en_US.ApiPropertyOrientation;
@@ -18756,6 +18758,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.HorizontalTitle] = global::AtomUIGallery.ShowCases.Splitter.en_US.HorizontalTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyDescription] = global::AtomUIGallery.ShowCases.Splitter.en_US.LazyDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyTitle] = global::AtomUIGallery.ShowCases.Splitter.en_US.LazyTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LineStyleDescription] = global::AtomUIGallery.ShowCases.Splitter.en_US.LineStyleDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LineStyleTitle] = global::AtomUIGallery.ShowCases.Splitter.en_US.LineStyleTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.MultiPanelsDescription] = global::AtomUIGallery.ShowCases.Splitter.en_US.MultiPanelsDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.MultiPanelsTitle] = global::AtomUIGallery.ShowCases.Splitter.en_US.MultiPanelsTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.P2ContentFalse] = global::AtomUIGallery.ShowCases.Splitter.en_US.P2ContentFalse;
@@ -18843,6 +18847,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyIsCollapsed] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.ApiPropertyIsCollapsed;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyIsLazy] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.ApiPropertyIsLazy;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyIsResizable] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.ApiPropertyIsResizable;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyLineCornerRadius] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.ApiPropertyLineCornerRadius;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyLineThickness] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.ApiPropertyLineThickness;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyMaxSize] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.ApiPropertyMaxSize;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyMinSize] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.ApiPropertyMinSize;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyOrientation] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.ApiPropertyOrientation;
@@ -18860,6 +18866,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.HorizontalTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.HorizontalTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.LazyDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.LazyTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LineStyleDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.LineStyleDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LineStyleTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.LineStyleTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.MultiPanelsDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.MultiPanelsDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.MultiPanelsTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.MultiPanelsTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.P2ContentFalse] = global::AtomUIGallery.ShowCases.Splitter.zh_CN.P2ContentFalse;
@@ -18947,6 +18955,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyIsCollapsed] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.ApiPropertyIsCollapsed;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyIsLazy] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.ApiPropertyIsLazy;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyIsResizable] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.ApiPropertyIsResizable;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyLineCornerRadius] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.ApiPropertyLineCornerRadius;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyLineThickness] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.ApiPropertyLineThickness;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyMaxSize] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.ApiPropertyMaxSize;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyMinSize] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.ApiPropertyMinSize;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.ApiPropertyOrientation] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.ApiPropertyOrientation;
@@ -18964,6 +18974,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.HorizontalTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.HorizontalTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.LazyDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LazyTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.LazyTitle;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LineStyleDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.LineStyleDescription;
+                dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.LineStyleTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.LineStyleTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.MultiPanelsDescription] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.MultiPanelsDescription;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.MultiPanelsTitle] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.MultiPanelsTitle;
                 dictionary[global::AtomUIGallery.Localization.SplitterShowCaseLangResourceKind.P2ContentFalse] = global::AtomUIGallery.ShowCases.Splitter.zh_TW.P2ContentFalse;

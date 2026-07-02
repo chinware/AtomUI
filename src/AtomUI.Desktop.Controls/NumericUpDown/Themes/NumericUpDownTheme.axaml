@@ -63,7 +63,7 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^[Mode=Spinner]">
+        <Style Selector="^[Mode=Spinner][ShowButtonSpinner=True]">
             <Setter Property="Template">
                 <ControlTemplate>
                     <atom:ButtonSpinner

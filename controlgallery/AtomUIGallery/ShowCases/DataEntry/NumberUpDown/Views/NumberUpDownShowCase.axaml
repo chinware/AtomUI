@@ -99,15 +99,21 @@
                 <DataTemplate x:DataType="vm:NumberUpDownViewModel">
             <StackPanel Orientation="Vertical"
                         Spacing="{atom:SharedTokenResource UniformlyMargin}">
-                <atom:NumericUpDown Minimum="1"
-                                    Maximum="10"
-                                    Value="3"
-                                    ShowButtonSpinner="False" />
-                <atom:NumericUpDown Mode="Spinner"
-                                    Minimum="1"
-                                    Maximum="10"
-                                    Value="3"
-                                    ShowButtonSpinner="False" />
+                <Grid ColumnDefinitions="*,*">
+                    <atom:NumericUpDown Grid.Column="0"
+                                        Minimum="1"
+                                        Maximum="10"
+                                        Value="3"
+                                        ShowButtonSpinner="False" />
+                </Grid>
+                <Grid ColumnDefinitions="*,*">
+                    <atom:NumericUpDown Grid.Column="0"
+                                        Mode="Spinner"
+                                        Minimum="1"
+                                        Maximum="10"
+                                        Value="3"
+                                        ShowButtonSpinner="False" />
+                </Grid>
             </StackPanel>
                 </DataTemplate>
             </gallery:ShowCaseItem.DeferredContentTemplate>

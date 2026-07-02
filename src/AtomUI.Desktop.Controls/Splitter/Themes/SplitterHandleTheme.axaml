@@ -11,11 +11,13 @@
                     <Grid>
                         <Border Name="PART_HandleLine"
                                 Background="{TemplateBinding LineBrush}"
+                                CornerRadius="{TemplateBinding LineCornerRadius}"
                                 IsHitTestVisible="False" />
                         <atom:SplitterDragBar Name="PART_DragBar"
                                               Orientation="{TemplateBinding Orientation}"
                                               LineBrush="{atom:SharedTokenResource ColorFill}"
                                               LineThickness="{TemplateBinding LineThickness}"
+                                              LineCornerRadius="{TemplateBinding LineCornerRadius}"
                                               IsDragEnabled="{TemplateBinding IsDragEnabled}" />
                         <Canvas Name="PART_CollapseIconsHost"
                                 Width="0"
@@ -37,7 +39,8 @@
         </Setter>
 
         <Setter Property="LineBrush" Value="{atom:SplitterTokenResource HandleLineColor}" />
-        <Setter Property="LineThickness" Value="{atom:SplitterTokenResource SplitBarSize}" />
+        <Setter Property="LineThickness" Value="{atom:SplitterTokenResource HandleLineThickness}" />
+        <Setter Property="LineCornerRadius" Value="{atom:SharedTokenResource BorderRadiusXS}" />
         <Setter Property="ClipToBounds" Value="False" />
 
         <Style Selector="^:pointerover">
