@@ -163,6 +163,12 @@ public class TextArea : AvaloniaTextBox,
             nameof(IsFormFeedbackVisible),
             o => o.IsFormFeedbackVisible);
 
+    internal static readonly DirectProperty<TextArea, bool> IsPlaceholderTextVisibleProperty =
+        AvaloniaProperty.RegisterDirect<TextArea, bool>(
+            nameof(IsPlaceholderTextVisible),
+            o => o.IsPlaceholderTextVisible,
+            (o, v) => o.IsPlaceholderTextVisible = v);
+
     private bool _isEffectiveShowClearButton;
 
     internal bool IsEffectiveShowClearButton
@@ -192,6 +198,14 @@ public class TextArea : AvaloniaTextBox,
         get => _isFormFeedbackVisible;
         private set => SetAndRaise(IsFormFeedbackVisibleProperty, ref _isFormFeedbackVisible, value);
     }
+
+    private bool _isPlaceholderTextVisible = true;
+
+    internal bool IsPlaceholderTextVisible
+    {
+        get => _isPlaceholderTextVisible;
+        set => SetAndRaise(IsPlaceholderTextVisibleProperty, ref _isPlaceholderTextVisible, value);
+    }
     
     #endregion
 
@@ -200,6 +214,8 @@ public class TextArea : AvaloniaTextBox,
     private ResizeHandle? _resizeHandle;
     private CompositeDisposable? _contentRightAddOnBindings;
     private IDisposable? _feedbackStatusSubscription;
+    private TextPresenter? _textPresenter;
+    private IDisposable? _preeditTextSubscription;
     private double? _originHeight; // 拖动改变高度的初始值
     private double _minResizeHeight; // 拖动改变高度时允许的最小 TextArea.Height
     private double _maxResizeHeight; // 拖动改变高度时允许的最大 TextArea.Height
@@ -238,6 +254,7 @@ public class TextArea : AvaloniaTextBox,
             change.Property == IsAllowClearProperty)
         {
             ConfigureEffectiveShowClearButton();
+            ConfigurePlaceholderTextVisibility();
         }
         else if (change.Property == IsShowCountProperty)
         {
@@ -299,8 +316,29 @@ public class TextArea : AvaloniaTextBox,
 
         UpdatePseudoClasses();
         ConfigureEffectiveShowClearButton();
+        SetupTextPresenterPreeditSubscription(e);
+        ConfigurePlaceholderTextVisibility();
         HandleInputChanged(Text);
         SetupContentRightAddOnBindings(e);
+    }
+
+    private void SetupTextPresenterPreeditSubscription(TemplateAppliedEventArgs e)
+    {
+        _preeditTextSubscription?.Dispose();
+        _preeditTextSubscription = null;
+
+        _textPresenter = e.NameScope.Find<TextPresenter>("PART_TextPresenter");
+        if (_textPresenter is not null)
+        {
+            _preeditTextSubscription = _textPresenter.GetObservable(TextPresenter.PreeditTextProperty)
+                                                     .Subscribe(_ => ConfigurePlaceholderTextVisibility());
+        }
+    }
+
+    private void ConfigurePlaceholderTextVisibility()
+    {
+        SetCurrentValue(IsPlaceholderTextVisibleProperty,
+            string.IsNullOrEmpty(Text) && string.IsNullOrEmpty(_textPresenter?.PreeditText));
     }
 
     private void SetupContentRightAddOnBindings(TemplateAppliedEventArgs e)

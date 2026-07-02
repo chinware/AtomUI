@@ -9,7 +9,8 @@
     <ControlTheme x:Key="{x:Type calendarView:CalendarDayButton}" TargetType="calendarView:CalendarDayButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid ColumnDefinitions="*,*">
+                <Grid ColumnDefinitions="*,*"
+                      Background="Transparent">
                     <Border Name="WeekRangeIndicator"
                             Grid.ColumnSpan="2"
                             HorizontalAlignment="Stretch"
@@ -105,7 +106,7 @@
             <Setter Property="Margin" Value="{atom:CalendarTokenResource CellMargin}" />
         </Style>
 
-        <Style Selector="^:pointerover:not(:week-range-start):not(:week-range-middle):not(:week-range-end):not(:week-hover-start):not(:week-hover-middle):not(:week-hover-end)">
+        <Style Selector="^:pointerover:not(:range-start):not(:range-middle):not(:range-end):not(:range-preview-start):not(:range-preview-middle):not(:range-preview-end):not(:week-range-start):not(:week-range-middle):not(:week-range-end):not(:week-hover-start):not(:week-hover-middle):not(:week-hover-end)">
             <Setter Property="Background" Value="{atom:CalendarTokenResource CellHoverBg}" />
         </Style>
 

@@ -208,7 +208,7 @@ public class CalendarPanelBuilderTests
         var middleCell = panel.Cells.Single(cell => cell.Date == new DateTime(2026, 6, 11));
         var hoverCell = panel.Cells.Single(cell => cell.Date == new DateTime(2026, 6, 13));
 
-        startCell.IsSelected.ShouldBeTrue();
+        startCell.IsSelected.ShouldBeFalse();
         startCell.IsRangeStart.ShouldBeFalse();
         startCell.IsRangePreviewStart.ShouldBeTrue();
         middleCell.IsRangePreviewMiddle.ShouldBeTrue();
@@ -233,7 +233,7 @@ public class CalendarPanelBuilderTests
         var startCell = panel.Cells.Single(cell => cell.Date == new DateTime(2026, 7, 15));
         var hoverCell = panel.Cells.Single(cell => cell.Date == new DateTime(2026, 7, 16));
 
-        startCell.IsSelected.ShouldBeTrue();
+        startCell.IsSelected.ShouldBeFalse();
         hoverCell.IsSelected.ShouldBeFalse();
         hoverCell.IsRangeEnd.ShouldBeFalse();
         hoverCell.IsRangePreviewEnd.ShouldBeTrue();
@@ -258,7 +258,7 @@ public class CalendarPanelBuilderTests
         hoverCell.IsSelected.ShouldBeFalse();
         hoverCell.IsRangeStart.ShouldBeFalse();
         hoverCell.IsRangePreviewStart.ShouldBeTrue();
-        endCell.IsSelected.ShouldBeTrue();
+        endCell.IsSelected.ShouldBeFalse();
         endCell.IsRangeEnd.ShouldBeFalse();
         endCell.IsRangePreviewEnd.ShouldBeTrue();
     }
@@ -297,6 +297,46 @@ public class CalendarPanelBuilderTests
     }
 
     [Fact]
+    public void BuildYearPanel_Month_Mode_Uses_Range_Preview_For_Month_Cells()
+    {
+        var state = CalendarViewState.CreateDefault(new DateTime(2026, 4, 1),
+            CultureInfo.InvariantCulture.DateTimeFormat)
+                                     .WithPickerMode(DatePickerMode.Month)
+                                     .WithRangeSelection(new DateTime(2026, 4, 1),
+                                         null,
+                                         new DateTime(2027, 8, 1),
+                                         CalendarRangeActivePart.End,
+                                         true);
+
+        var firstPanel  = CalendarPanelBuilder.BuildYearPanel(state, new DateTime(2026, 1, 1));
+        var secondPanel = CalendarPanelBuilder.BuildYearPanel(state, new DateTime(2027, 1, 1));
+
+        var start = firstPanel.Months.Single(cell => cell.Date == new DateTime(2026, 4, 1));
+        start.IsSelected.ShouldBeFalse();
+        start.IsRangePreviewStart.ShouldBeTrue();
+        start.IsRangeStart.ShouldBeFalse();
+
+        firstPanel.Months.Single(cell => cell.Date == new DateTime(2026, 3, 1))
+                  .ShouldSatisfyAllConditions(
+                      cell => cell.IsRangePreviewMiddle.ShouldBeFalse(),
+                      cell => cell.IsRangeMiddle.ShouldBeFalse());
+        firstPanel.Months.Single(cell => cell.Date == new DateTime(2026, 5, 1))
+                  .IsRangePreviewMiddle.ShouldBeTrue();
+        secondPanel.Months.Single(cell => cell.Date == new DateTime(2027, 7, 1))
+                   .IsRangePreviewMiddle.ShouldBeTrue();
+
+        var end = secondPanel.Months.Single(cell => cell.Date == new DateTime(2027, 8, 1));
+        end.IsSelected.ShouldBeFalse();
+        end.IsRangePreviewEnd.ShouldBeTrue();
+        end.IsRangeEnd.ShouldBeFalse();
+
+        secondPanel.Months.Single(cell => cell.Date == new DateTime(2027, 9, 1))
+                   .ShouldSatisfyAllConditions(
+                       cell => cell.IsRangePreviewMiddle.ShouldBeFalse(),
+                       cell => cell.IsRangeMiddle.ShouldBeFalse());
+    }
+
+    [Fact]
     public void BuildQuarterPanel_Generates_Four_Quarter_Cells()
     {
         var state = CalendarViewState.CreateDefault(new DateTime(2026, 7, 1),
@@ -309,6 +349,42 @@ public class CalendarPanelBuilderTests
         panel.Quarters.Count.ShouldBe(4);
         panel.Quarters.Select(cell => cell.Text).ShouldBe(new[] { "Q1", "Q2", "Q3", "Q4" });
         panel.Quarters.Single(cell => cell.Date == new DateTime(2026, 7, 1)).IsSelected.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void BuildQuarterPanel_Quarter_Mode_Uses_Range_Preview_For_Quarter_Cells()
+    {
+        var state = CalendarViewState.CreateDefault(new DateTime(2026, 4, 1),
+            CultureInfo.InvariantCulture.DateTimeFormat)
+                                     .WithPickerMode(DatePickerMode.Quarter)
+                                     .WithRangeSelection(new DateTime(2026, 4, 1),
+                                         null,
+                                         new DateTime(2027, 7, 1),
+                                         CalendarRangeActivePart.End,
+                                         true);
+
+        var firstPanel  = CalendarPanelBuilder.BuildQuarterPanel(state, new DateTime(2026, 1, 1));
+        var secondPanel = CalendarPanelBuilder.BuildQuarterPanel(state, new DateTime(2027, 1, 1));
+
+        var start = firstPanel.Quarters.Single(cell => cell.Date == new DateTime(2026, 4, 1));
+        start.IsSelected.ShouldBeFalse();
+        start.IsRangePreviewStart.ShouldBeTrue();
+        start.IsRangeStart.ShouldBeFalse();
+
+        firstPanel.Quarters.Single(cell => cell.Date == new DateTime(2026, 7, 1))
+                  .IsRangePreviewMiddle.ShouldBeTrue();
+        secondPanel.Quarters.Single(cell => cell.Date == new DateTime(2027, 4, 1))
+                   .IsRangePreviewMiddle.ShouldBeTrue();
+
+        var end = secondPanel.Quarters.Single(cell => cell.Date == new DateTime(2027, 7, 1));
+        end.IsSelected.ShouldBeFalse();
+        end.IsRangePreviewEnd.ShouldBeTrue();
+        end.IsRangeEnd.ShouldBeFalse();
+
+        secondPanel.Quarters.Single(cell => cell.Date == new DateTime(2027, 10, 1))
+                   .ShouldSatisfyAllConditions(
+                       cell => cell.IsRangePreviewMiddle.ShouldBeFalse(),
+                       cell => cell.IsRangeMiddle.ShouldBeFalse());
     }
 
     [Fact]
@@ -326,6 +402,46 @@ public class CalendarPanelBuilderTests
         panel.Years.Single(cell => cell.Date == new DateTime(2026, 1, 1)).IsSelected.ShouldBeTrue();
         panel.Years.Single(cell => cell.Date == new DateTime(2028, 1, 1)).IsFocused.ShouldBeTrue();
         panel.Years.Last().IsInactive.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void BuildDecadePanel_Year_Mode_Uses_Range_Preview_For_Year_Cells()
+    {
+        var state = CalendarViewState.CreateDefault(new DateTime(2026, 1, 1),
+            CultureInfo.InvariantCulture.DateTimeFormat)
+                                     .WithPickerMode(DatePickerMode.Year)
+                                     .WithRangeSelection(new DateTime(2026, 1, 1),
+                                         null,
+                                         new DateTime(2032, 1, 1),
+                                         CalendarRangeActivePart.End,
+                                         true);
+
+        var firstPanel  = CalendarPanelBuilder.BuildDecadePanel(state, new DateTime(2026, 1, 1));
+        var secondPanel = CalendarPanelBuilder.BuildDecadePanel(state, new DateTime(2032, 1, 1));
+
+        var start = firstPanel.Years.Single(cell => cell.Date == new DateTime(2026, 1, 1));
+        start.IsSelected.ShouldBeFalse();
+        start.IsRangePreviewStart.ShouldBeTrue();
+        start.IsRangeStart.ShouldBeFalse();
+
+        firstPanel.Years.Single(cell => cell.Date == new DateTime(2025, 1, 1))
+                  .ShouldSatisfyAllConditions(
+                      cell => cell.IsRangePreviewMiddle.ShouldBeFalse(),
+                      cell => cell.IsRangeMiddle.ShouldBeFalse());
+        firstPanel.Years.Single(cell => cell.Date == new DateTime(2027, 1, 1))
+                  .IsRangePreviewMiddle.ShouldBeTrue();
+        secondPanel.Years.Single(cell => cell.Date == new DateTime(2031, 1, 1))
+                   .IsRangePreviewMiddle.ShouldBeTrue();
+
+        var end = secondPanel.Years.Single(cell => cell.Date == new DateTime(2032, 1, 1));
+        end.IsSelected.ShouldBeFalse();
+        end.IsRangePreviewEnd.ShouldBeTrue();
+        end.IsRangeEnd.ShouldBeFalse();
+
+        secondPanel.Years.Single(cell => cell.Date == new DateTime(2033, 1, 1))
+                   .ShouldSatisfyAllConditions(
+                       cell => cell.IsRangePreviewMiddle.ShouldBeFalse(),
+                       cell => cell.IsRangeMiddle.ShouldBeFalse());
     }
 
     private static void AssertSelectedWeekRow(

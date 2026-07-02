@@ -3,11 +3,15 @@ using System.Linq;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
+using AtomUILineEdit = AtomUI.Desktop.Controls.LineEdit;
+using AtomUISearchEdit = AtomUI.Desktop.Controls.SearchEdit;
+using AtomUITextArea = AtomUI.Desktop.Controls.TextArea;
 using AtomUITextBox = AtomUI.Desktop.Controls.TextBox;
 using AtomUIScrollViewer = AtomUI.Desktop.Controls.ScrollViewer;
 using AvaloniaWindow = Avalonia.Controls.Window;
@@ -44,6 +48,59 @@ public class TextBoxVisualStateTests
         });
     }
 
+    [Theory]
+    [MemberData(nameof(TextInputControlsWithPlaceholder))]
+    public void Placeholder_Hides_While_Ime_Preedit_Text_Is_Rendered(Control textInput)
+    {
+        ShowInWindow(textInput, () =>
+        {
+            var placeholder = FindTemplatePart<TextBlock>(textInput, "Placeholder");
+            var presenter   = FindTemplatePart<TextPresenter>(textInput, "PART_TextPresenter");
+
+            placeholder.IsVisible.ShouldBeTrue();
+
+            presenter.SetCurrentValue(TextPresenter.PreeditTextProperty, "测");
+            Dispatcher.UIThread.RunJobs();
+
+            placeholder.IsVisible.ShouldBeFalse(
+                "IME preedit text is rendered by TextPresenter before TextBox.Text is committed, so the placeholder must not remain over it.");
+
+            presenter.SetCurrentValue(TextPresenter.PreeditTextProperty, string.Empty);
+            Dispatcher.UIThread.RunJobs();
+
+            placeholder.IsVisible.ShouldBeTrue(
+                "The placeholder should return when IME preedit text is cleared and the input text is still empty.");
+        });
+    }
+
+    public static TheoryData<Control> TextInputControlsWithPlaceholder()
+    {
+        return new TheoryData<Control>
+        {
+            new AtomUITextBox
+            {
+                Width           = 180,
+                PlaceholderText = "请输入"
+            },
+            new AtomUILineEdit
+            {
+                Width           = 180,
+                PlaceholderText = "请输入"
+            },
+            new AtomUISearchEdit
+            {
+                Width           = 180,
+                PlaceholderText = "搜索"
+            },
+            new AtomUITextArea
+            {
+                Width           = 180,
+                Height          = 80,
+                PlaceholderText = "请输入"
+            }
+        };
+    }
+
     private static T GetThemeResource<T>(object key)
     {
         var application = Application.Current;
@@ -56,6 +113,16 @@ public class TextBoxVisualStateTests
     private static void BrushShouldHaveSameColor(IBrush? actual, IBrush? expected)
     {
         GetSolidBrushColor(actual).ShouldBe(GetSolidBrushColor(expected));
+    }
+
+    private static T FindTemplatePart<T>(Control control, string name)
+        where T : Control
+    {
+        var part = control.GetVisualDescendants()
+                          .OfType<T>()
+                          .SingleOrDefault(item => item.Name == name);
+        part.ShouldNotBeNull();
+        return part!;
     }
 
     private static Color GetSolidBrushColor(IBrush? brush)

@@ -178,6 +178,12 @@ internal static class CalendarItemRenderer
         button.IsEnabled               = !cell.IsDisabled;
         button.IsInactive              = cell.IsInactive;
         button.IsSelected              = cell.IsSelected;
+        button.IsRangeStart            = cell.IsRangeStart;
+        button.IsRangeEnd              = cell.IsRangeEnd;
+        button.IsRangeMiddle           = cell.IsRangeMiddle;
+        button.IsRangePreviewStart     = cell.IsRangePreviewStart;
+        button.IsRangePreviewEnd       = cell.IsRangePreviewEnd;
+        button.IsRangePreviewMiddle    = cell.IsRangePreviewMiddle;
         button.IsVisible               = true;
         ApplyCalendarButtonFocus(owner, button, cell.IsFocused);
     }
@@ -190,6 +196,12 @@ internal static class CalendarItemRenderer
         button.IsEnabled  = false;
         button.IsInactive = false;
         button.IsSelected = false;
+        button.IsRangeStart         = false;
+        button.IsRangeEnd           = false;
+        button.IsRangeMiddle        = false;
+        button.IsRangePreviewStart  = false;
+        button.IsRangePreviewEnd    = false;
+        button.IsRangePreviewMiddle = false;
         button.IsVisible  = false;
         ApplyCalendarButtonFocus(owner, button, false);
     }

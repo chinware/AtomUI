@@ -154,9 +154,11 @@ DatePicker 的交互事件应从输入源收敛到控件级语义事件：
 - `CalendarRangeSelectionState` 同时保存真实端点和 hover 日期，但必须通过 committed range 与 preview range 两条路径输出。
 - `CalendarPanelBuilder` 只用真实 `SelectedDate` / `SecondarySelectedDate` 设置 `IsSelected`，不能因为日期处于区间中或 hover 预览中而设置 selected。
 - `IsRangeStart`、`IsRangeEnd`、`IsRangeMiddle` 只描述两个真实端点形成的区间；`IsRangePreviewStart`、`IsRangePreviewEnd`、`IsRangePreviewMiddle` 只描述 hover 形成的预览区间。
+- `Date`、`Month`、`Quarter`、`Year` 的 range 状态必须在 `CalendarPanelBuilder` 按当前 picker unit 统一归一化后输出到 `CalendarCellState`；renderer 只负责把状态映射到 `CalendarDayButton` 或 `CalendarButton`，不能在按钮事件或主题层重新推断范围。
 - `CalendarDayButtonTheme.axaml` 必须让 committed endpoint 和 preview endpoint 共用半边 range indicator；半边 indicator 的宽度来自实际 cell slot 的 50%，不能固定为 `CellWidth`，否则双月弹层或宽布局下范围背景会断裂。
-- `CalendarDayButtonTheme.axaml` 必须让 `:range-preview-start` / `:range-preview-end` 使用与 selected endpoint 相同的主色背景和白色前景；这是 hover range 的临时视觉端点，不等价于提交 `:selected`。
-- `CalendarDayButton.EffectiveCornerRadius` 必须在 committed endpoint 和 preview endpoint 上压平连接侧圆角，让浅色 range indicator 与主色端点连续。
+- `CalendarDayButtonTheme.axaml` 与 `CalendarButtonTheme.axaml` 必须让 `:range-preview-start` / `:range-preview-end` 使用与 selected endpoint 相同的主色背景和白色前景；这是 hover range 的临时视觉端点，不等价于提交 `:selected`。
+- `CalendarDayButton.EffectiveCornerRadius` 与 `CalendarButton.EffectiveCornerRadius` 必须在 committed endpoint 和 preview endpoint 上压平连接侧圆角，让浅色 range indicator 与主色端点连续。
+- `CalendarDayButton` 与 `CalendarButton` 的 hover 入口都必须通知 `Calendar.NotifyHoverDateChanged`；Month、Quarter、Year 的范围选择依赖这个入口同步输入框临时结束值和面板 preview range，不能只在 day button 上维护 hover。
 - 范围选择的 active part 是面板显示月份的前置状态，`RangeDatePickerPresenter.IsRangeStartActive` 必须先通过模板传给 `RangeCalendar.IsSelectRangeStart`，再同步 `SelectedDate` / `SecondarySelectedDate`。
 - `Calendar.SelectedDate` 在 range 模式中只代表开始端点；只有 Start 端激活时它才允许驱动 `DisplayDate`。End 端激活时，开始端点只能参与范围计算和高亮，不能把双月面板回滚到开始月份。
 
@@ -175,7 +177,7 @@ PickerMode 颗粒度维护规则：
 - Week 模式中 selected 周优先于 hover 周；当 hover 命中已选周时，builder 不输出 week hover 伪类，避免浅色 hover 覆盖主色选中行。
 - Week 范围选择中，已提交范围的端点周继续使用 `:week-selection-*` 主色整行；两个端点之间的中间周使用 `:week-range-start` / `:week-range-middle` / `:week-range-end` 和 `WeekRangeIndicator` 渲染 `CellActiveWithRangeBg` 浅色整行，周号列也必须参与范围背景。
 - Week 范围选择预览中，`CalendarRangeSelectionState.HoverDate` 形成的临时端点周也使用 `:week-selection-*` 主色整行，但 `CalendarCellState.IsSelected` 必须保持 `false`；预览端点之间的中间周复用 `:week-range-*` 浅色整行，且 preview range 优先于 committed range 输出。
-- Week 模式不得输出普通日期范围伪类 `:range-start` / `:range-end` / `:range-middle` / `:range-preview-start` / `:range-preview-end` / `:range-preview-middle`；这些伪类只服务 Date 粒度，否则会与周行 indicator 叠加，导致端点周和中间周背景断裂。
+- Week 模式不得输出普通范围伪类 `:range-start` / `:range-end` / `:range-middle` / `:range-preview-start` / `:range-preview-end` / `:range-preview-middle`；这些伪类服务 Date、Month、Quarter、Year 的 picker unit cell，否则会与周行 indicator 叠加，导致端点周和中间周背景断裂。
 - `CalendarPanelBuilder.BuildQuarterPanel` 输出 Q1-Q4 四个季度 cell，季度选择不能复用 12 个月面板伪装；`CalendarItem` 在 `PickerMode=Quarter` 且 `DisplayMode=Year` 时必须把 `PART_YearView` 配置为 1 行 4 列紧凑面板，并取消通用年/月/十年面板最小高度，避免未使用的 8 个 slot 撑出空白。
 - `RangeDatePicker` 的弹层始终保持双面板语义：`Date` / `Week` 使用左右双月面板，`Month` 使用左右双年面板，`Quarter` 使用左右双年紧凑季度面板，`Year` 使用左右双十年面板；`DualMonthCalendarItem` 的 secondary 面板必须有独立 `PART_SecondaryYearView`，不能在非月视图时退化成单面板。
 - `CalendarItem.SetupHeaderForDisplayModeChanged()` 是 `CalendarMode` 可见布局的唯一源头：运行时切换 `PickerMode` 或 `DisplayMode` 时，必须同步维护 `PART_MonthViewLayout`、`PART_MonthView` 与 `PART_YearView` 的互斥可见性；`DualMonthCalendarItem` 只在此基础上补齐 `PART_SecondaryMonthView`、`PART_YearViewLayout`、`PART_SecondaryYearView` 和左右导航按钮，不能只依赖 `OnApplyTemplate` 初始化分支。

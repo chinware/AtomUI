@@ -29,10 +29,10 @@ internal readonly record struct CalendarRangeSelectionState(
 
         if (ActivePart == CalendarRangeActivePart.Start)
         {
-            return TryNormalizeRange(HoverDate, End, out visualStart, out visualEnd);
+            return TryNormalizePreviewRange(HoverDate, End, out visualStart, out visualEnd);
         }
 
-        return TryNormalizeRange(Start, HoverDate, out visualStart, out visualEnd);
+        return TryNormalizePreviewRange(Start, HoverDate, out visualStart, out visualEnd);
     }
 
     private static bool TryNormalizeRange(DateTime? start, DateTime? end, out DateTime visualStart, out DateTime visualEnd)
@@ -46,6 +46,28 @@ internal readonly record struct CalendarRangeSelectionState(
 
         visualStart = start.Value;
         visualEnd   = end.Value;
+        if (DateTimeHelper.CompareDays(visualStart, visualEnd) > 0)
+        {
+            (visualStart, visualEnd) = (visualEnd, visualStart);
+        }
+
+        return DateTimeHelper.CompareDays(visualStart, visualEnd) != 0;
+    }
+
+    private static bool TryNormalizePreviewRange(DateTime? start, DateTime? end, out DateTime visualStart, out DateTime visualEnd)
+    {
+        if (start is null && end is null)
+        {
+            visualStart = default;
+            visualEnd   = default;
+            return false;
+        }
+
+        start ??= end;
+        end   ??= start;
+
+        visualStart = start!.Value;
+        visualEnd   = end!.Value;
         if (DateTimeHelper.CompareDays(visualStart, visualEnd) > 0)
         {
             (visualStart, visualEnd) = (visualEnd, visualStart);

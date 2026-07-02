@@ -169,6 +169,51 @@ public class CalendarViewStateTests
     }
 
     [Theory]
+    [InlineData(DatePickerMode.Month, CalendarMode.Year, 2026, 5, 1, 2027, 8, 1)]
+    [InlineData(DatePickerMode.Quarter, CalendarMode.Year, 2026, 4, 1, 2027, 7, 1)]
+    [InlineData(DatePickerMode.Year, CalendarMode.Decade, 2026, 1, 1, 2032, 1, 1)]
+    public void RangeCalendarItem_CalendarButton_Hover_Updates_Range_Preview_Date(
+        DatePickerMode pickerMode,
+        CalendarMode displayMode,
+        int startYear,
+        int startMonth,
+        int startDay,
+        int hoverYear,
+        int hoverMonth,
+        int hoverDay)
+    {
+        RunOnUIThread(() =>
+        {
+            var startDate = new DateTime(startYear, startMonth, startDay);
+            var hoverDate = new DateTime(hoverYear, hoverMonth, hoverDay);
+            var calendar = new RangeCalendar
+            {
+                PickerMode         = pickerMode,
+                DisplayMode        = displayMode,
+                SelectedDate       = startDate,
+                IsSelectRangeStart = false
+            };
+            var item = new TestRangeCalendarItem
+            {
+                Owner = calendar
+            };
+            var hoverButton = new PickerCalendarButton
+            {
+                DataContext = hoverDate,
+                IsEnabled   = true
+            };
+
+            item.HandleMonthMouseEnteredForTest(hoverButton);
+
+            calendar.HoverDateTime.ShouldBe(hoverDate);
+            var state = calendar.SyncAndGetCurrentViewState();
+            state.RangeSelection.TryGetPreviewRange(out var previewStart, out var previewEnd).ShouldBeTrue();
+            previewStart.ShouldBe(startDate);
+            previewEnd.ShouldBe(hoverDate);
+        });
+    }
+
+    [Theory]
     [InlineData(DatePickerMode.Date, CalendarMode.Month)]
     [InlineData(DatePickerMode.Week, CalendarMode.Month)]
     [InlineData(DatePickerMode.Month, CalendarMode.Year)]
@@ -435,7 +480,7 @@ public class CalendarViewStateTests
                 IsSelected(hoverButton).ShouldBeFalse();
                 IsRangeStart(hoverButton).ShouldBeFalse();
                 IsRangePreviewStart(hoverButton).ShouldBeTrue();
-                IsSelected(endButton).ShouldBeTrue();
+                IsSelected(endButton).ShouldBeFalse();
                 IsRangeEnd(endButton).ShouldBeFalse();
                 IsRangePreviewEnd(endButton).ShouldBeTrue();
             });
@@ -632,6 +677,186 @@ public class CalendarViewStateTests
     }
 
     [Fact]
+    public void RangeDatePicker_Month_End_Hover_Renders_Preview_Range_From_Selected_Start()
+    {
+        RunOnUIThread(() =>
+        {
+            var picker = new TestRangeDatePicker
+            {
+                PickerMode              = DatePickerMode.Month,
+                RangeStartSelectedDate  = new DateTime(2026, 5, 1),
+                RangeEndSelectedDate    = null
+            };
+            picker.RangeActivatedPart = RangeActivatedPart.End;
+
+            var presenter = picker.CreatePickerPresenterForTest();
+            picker.NotifyPickerOpenedForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<DualMonthRangeCalendar>()
+                                        .Single();
+                calendar.SetCurrentValue(PickerCalendar.DisplayDateProperty, new DateTime(2026, 1, 1));
+                Dispatcher.UIThread.RunJobs();
+
+                var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
+                var hoverButton       = FindCalendarButton(secondaryYearView, new DateTime(2027, 8, 1));
+
+                item.HandleMonthMouseEntered(hoverButton, null!);
+                Dispatcher.UIThread.RunJobs();
+
+                var state = calendar.SyncAndGetCurrentViewState();
+                state.RangeSelection.TryGetPreviewRange(out var previewStart, out var previewEnd).ShouldBeTrue();
+                previewStart.ShouldBe(new DateTime(2026, 5, 1));
+                previewEnd.ShouldBe(new DateTime(2027, 8, 1));
+
+                IsRangePreviewStart(FindCalendarButton(item.YearView.ShouldNotBeNull(), new DateTime(2026, 5, 1))).ShouldBeTrue();
+                var primaryMiddle = FindCalendarButton(item.YearView, new DateTime(2026, 6, 1));
+                var secondaryMiddle = FindCalendarButton(secondaryYearView, new DateTime(2027, 7, 1));
+                IsRangePreviewMiddle(primaryMiddle).ShouldBeTrue();
+                IsRangePreviewMiddle(secondaryMiddle).ShouldBeTrue();
+                FindTemplateBorder(primaryMiddle, "RangeIndicator").IsVisible.ShouldBeTrue();
+                FindTemplateBorder(secondaryMiddle, "RangeIndicator").IsVisible.ShouldBeTrue();
+                IsRangePreviewEnd(hoverButton).ShouldBeTrue();
+            });
+        });
+    }
+
+    [Fact]
+    public void RangeDatePicker_Month_Reopen_Complete_Range_Anchors_Dual_Panel_To_Active_End()
+    {
+        RunOnUIThread(() =>
+        {
+            var startDate = new DateTime(2026, 5, 1);
+            var endDate   = new DateTime(2028, 9, 1);
+            var picker = new TestRangeDatePicker
+            {
+                PickerMode              = DatePickerMode.Month,
+                RangeStartSelectedDate  = startDate,
+                RangeEndSelectedDate    = endDate
+            };
+            picker.RangeActivatedPart = RangeActivatedPart.End;
+
+            var presenter = picker.CreatePickerPresenterForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<DualMonthRangeCalendar>()
+                                        .Single();
+
+                calendar.SetCurrentValue(PickerCalendar.DisplayDateProperty, endDate);
+                calendar.SelectedMonth = endDate;
+                Dispatcher.UIThread.RunJobs();
+
+                picker.NotifyPickerOpenedForTest();
+                Dispatcher.UIThread.RunJobs();
+
+                calendar.DisplayDate.Year.ShouldBe(2027);
+                calendar.SelectedMonth.Year.ShouldBe(2027);
+
+                var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
+
+                FindCalendarButton(item.YearView.ShouldNotBeNull(), new DateTime(2027, 1, 1));
+                FindCalendarButton(secondaryYearView, new DateTime(2028, 1, 1));
+
+                var endButton   = FindCalendarButton(secondaryYearView, endDate);
+
+                IsRangeEnd(endButton).ShouldBeTrue();
+                IsRangePreviewEnd(endButton).ShouldBeFalse();
+            });
+        });
+    }
+
+    [Fact]
+    public void RangeDatePicker_Month_Reopen_Complete_Range_Anchors_Dual_Panel_To_Active_Start()
+    {
+        RunOnUIThread(() =>
+        {
+            var startDate = new DateTime(2026, 5, 1);
+            var endDate   = new DateTime(2028, 9, 1);
+            var picker = new TestRangeDatePicker
+            {
+                PickerMode              = DatePickerMode.Month,
+                RangeStartSelectedDate  = startDate,
+                RangeEndSelectedDate    = endDate
+            };
+            picker.RangeActivatedPart = RangeActivatedPart.Start;
+
+            var presenter = picker.CreatePickerPresenterForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<DualMonthRangeCalendar>()
+                                        .Single();
+
+                calendar.SetCurrentValue(PickerCalendar.DisplayDateProperty, endDate);
+                calendar.SelectedMonth = endDate;
+                Dispatcher.UIThread.RunJobs();
+
+                picker.NotifyPickerOpenedForTest();
+                Dispatcher.UIThread.RunJobs();
+
+                calendar.DisplayDate.Year.ShouldBe(2026);
+                calendar.SelectedMonth.Year.ShouldBe(2026);
+
+                var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                var startButton       = FindCalendarButton(item.YearView.ShouldNotBeNull(), startDate);
+                var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
+
+                FindCalendarButton(secondaryYearView, new DateTime(2027, 1, 1));
+                IsRangeStart(startButton).ShouldBeTrue();
+                IsRangePreviewStart(startButton).ShouldBeFalse();
+            });
+        });
+    }
+
+    [Theory]
+    [InlineData(DatePickerMode.Month, 2027, 6, 1)]
+    [InlineData(DatePickerMode.Quarter, 2027, 4, 1)]
+    [InlineData(DatePickerMode.Year, 2027, 1, 1)]
+    public void DualMonthRangeCalendar_PickerUnit_Hover_Selected_Endpoint_Does_Not_Render_Degenerate_Preview(
+        DatePickerMode pickerMode,
+        int selectedYear,
+        int selectedMonth,
+        int selectedDay)
+    {
+        RunOnUIThread(() =>
+        {
+            var selectedDate = new DateTime(selectedYear, selectedMonth, selectedDay);
+            var calendar = new DualMonthRangeCalendar
+            {
+                PickerMode         = pickerMode,
+                DisplayDate        = selectedDate,
+                SelectedDate       = selectedDate,
+                HoverDateTime      = selectedDate,
+                IsSelectRangeStart = false
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var state = calendar.SyncAndGetCurrentViewState();
+                state.RangeSelection.TryGetPreviewRange(out _, out _).ShouldBeFalse();
+
+                var item   = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                var button = FindCalendarButton(item.YearView.ShouldNotBeNull(), selectedDate);
+
+                IsSelected(button).ShouldBeTrue();
+                IsRangePreviewStart(button).ShouldBeFalse();
+                IsRangePreviewEnd(button).ShouldBeFalse();
+                IsRangePreviewMiddle(button).ShouldBeFalse();
+                FindTemplateBorder(button, "RangeIndicator").IsVisible.ShouldBeFalse();
+                FindTemplateBorder(button, "RangeStartIndicator").IsVisible.ShouldBeFalse();
+                FindTemplateBorder(button, "RangeEndIndicator").IsVisible.ShouldBeFalse();
+            });
+        });
+    }
+
+    [Fact]
     public void TimedRangeDatePicker_Open_End_Part_Does_Not_Let_Start_Date_Rewind_Calendar_DisplayDate()
     {
         RunOnUIThread(() =>
@@ -754,6 +979,43 @@ public class CalendarViewStateTests
     }
 
     [Fact]
+    public void DualMonthRangeCalendar_Month_Hover_End_Renders_Range_Preview_In_Year_Panels()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new DualMonthRangeCalendar
+            {
+                PickerMode         = DatePickerMode.Month,
+                DisplayDate        = new DateTime(2026, 4, 1),
+                SelectedDate       = new DateTime(2026, 7, 1),
+                HoverDateTime      = new DateTime(2027, 8, 1),
+                IsSelectRangeStart = false
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                var primaryYearView   = item.YearView.ShouldNotBeNull();
+                var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
+
+                var start = FindCalendarButton(primaryYearView, new DateTime(2026, 7, 1));
+                var primaryMiddle = FindCalendarButton(primaryYearView, new DateTime(2026, 8, 1));
+                var secondaryMiddle = FindCalendarButton(secondaryYearView, new DateTime(2027, 7, 1));
+                var end = FindCalendarButton(secondaryYearView, new DateTime(2027, 8, 1));
+                var afterEnd = FindCalendarButton(secondaryYearView, new DateTime(2027, 9, 1));
+
+                IsSelected(start).ShouldBeFalse();
+                IsRangePreviewStart(start).ShouldBeTrue();
+                IsRangePreviewMiddle(primaryMiddle).ShouldBeTrue();
+                IsRangePreviewMiddle(secondaryMiddle).ShouldBeTrue();
+                IsSelected(end).ShouldBeFalse();
+                IsRangePreviewEnd(end).ShouldBeTrue();
+                IsRangePreviewMiddle(afterEnd).ShouldBeFalse();
+            });
+        });
+    }
+
+    [Fact]
     public void DualMonthRangeCalendar_Quarter_Picker_Uses_Two_Compact_Quarter_Panels()
     {
         RunOnUIThread(() =>
@@ -785,6 +1047,43 @@ public class CalendarViewStateTests
     }
 
     [Fact]
+    public void DualMonthRangeCalendar_Quarter_Hover_End_Renders_Range_Preview_In_Quarter_Panels()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new DualMonthRangeCalendar
+            {
+                PickerMode         = DatePickerMode.Quarter,
+                DisplayDate        = new DateTime(2026, 4, 1),
+                SelectedDate       = new DateTime(2026, 4, 1),
+                HoverDateTime      = new DateTime(2027, 7, 1),
+                IsSelectRangeStart = false
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                var primaryYearView   = item.YearView.ShouldNotBeNull();
+                var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
+
+                var start = FindCalendarButton(primaryYearView, new DateTime(2026, 4, 1));
+                var primaryMiddle = FindCalendarButton(primaryYearView, new DateTime(2026, 7, 1));
+                var secondaryMiddle = FindCalendarButton(secondaryYearView, new DateTime(2027, 4, 1));
+                var end = FindCalendarButton(secondaryYearView, new DateTime(2027, 7, 1));
+                var afterEnd = FindCalendarButton(secondaryYearView, new DateTime(2027, 10, 1));
+
+                IsSelected(start).ShouldBeFalse();
+                IsRangePreviewStart(start).ShouldBeTrue();
+                IsRangePreviewMiddle(primaryMiddle).ShouldBeTrue();
+                IsRangePreviewMiddle(secondaryMiddle).ShouldBeTrue();
+                IsSelected(end).ShouldBeFalse();
+                IsRangePreviewEnd(end).ShouldBeTrue();
+                IsRangePreviewMiddle(afterEnd).ShouldBeFalse();
+            });
+        });
+    }
+
+    [Fact]
     public void DualMonthRangeCalendar_Year_Picker_Uses_Two_Decade_Panels()
     {
         RunOnUIThread(() =>
@@ -807,6 +1106,43 @@ public class CalendarViewStateTests
                 GetCalendarButtonDates(item.YearView).Any(date => date.Year == 2029).ShouldBeTrue();
                 GetCalendarButtonDates(secondaryYearView).Any(date => date.Year == 2030).ShouldBeTrue();
                 GetCalendarButtonDates(secondaryYearView).Any(date => date.Year == 2039).ShouldBeTrue();
+            });
+        });
+    }
+
+    [Fact]
+    public void DualMonthRangeCalendar_Year_Hover_End_Renders_Range_Preview_In_Decade_Panels()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new DualMonthRangeCalendar
+            {
+                PickerMode         = DatePickerMode.Year,
+                DisplayDate        = new DateTime(2026, 1, 1),
+                SelectedDate       = new DateTime(2026, 1, 1),
+                HoverDateTime      = new DateTime(2032, 1, 1),
+                IsSelectRangeStart = false
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                var primaryYearView   = item.YearView.ShouldNotBeNull();
+                var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
+
+                var start = FindCalendarButton(primaryYearView, new DateTime(2026, 1, 1));
+                var primaryMiddle = FindCalendarButton(primaryYearView, new DateTime(2027, 1, 1));
+                var secondaryMiddle = FindCalendarButton(secondaryYearView, new DateTime(2031, 1, 1));
+                var end = FindCalendarButton(secondaryYearView, new DateTime(2032, 1, 1));
+                var afterEnd = FindCalendarButton(secondaryYearView, new DateTime(2033, 1, 1));
+
+                IsSelected(start).ShouldBeFalse();
+                IsRangePreviewStart(start).ShouldBeTrue();
+                IsRangePreviewMiddle(primaryMiddle).ShouldBeTrue();
+                IsRangePreviewMiddle(secondaryMiddle).ShouldBeTrue();
+                IsSelected(end).ShouldBeFalse();
+                IsRangePreviewEnd(end).ShouldBeTrue();
+                IsRangePreviewMiddle(afterEnd).ShouldBeFalse();
             });
         });
     }
@@ -997,6 +1333,36 @@ public class CalendarViewStateTests
         return button.Classes.Contains(":week-range-end");
     }
 
+    private static bool IsSelected(PickerCalendarButton button)
+    {
+        return button.Classes.Contains(":selected");
+    }
+
+    private static bool IsRangeEnd(PickerCalendarButton button)
+    {
+        return button.Classes.Contains(":range-end");
+    }
+
+    private static bool IsRangeStart(PickerCalendarButton button)
+    {
+        return button.Classes.Contains(":range-start");
+    }
+
+    private static bool IsRangePreviewEnd(PickerCalendarButton button)
+    {
+        return button.Classes.Contains(":range-preview-end");
+    }
+
+    private static bool IsRangePreviewStart(PickerCalendarButton button)
+    {
+        return button.Classes.Contains(":range-preview-start");
+    }
+
+    private static bool IsRangePreviewMiddle(PickerCalendarButton button)
+    {
+        return button.Classes.Contains(":range-preview-middle");
+    }
+
     private static void AssertTemplateParts(Type controlType, IReadOnlyDictionary<string, Type> expectedParts)
     {
         var parts = controlType.GetCustomAttributes(typeof(TemplatePartAttribute), false)
@@ -1078,6 +1444,14 @@ public class CalendarViewStateTests
                    .ToArray();
     }
 
+    private static PickerCalendarButton FindCalendarButton(AvaloniaGrid grid, DateTime date)
+    {
+        return grid.Children
+                   .OfType<PickerCalendarButton>()
+                   .Single(button => button.DataContext is DateTime buttonDate &&
+                                     DateTimeHelper.CompareDays(buttonDate, date) == 0);
+    }
+
     private static void AssertDualMonthPanelVisibility(PickerDualMonthCalendarItem item, bool monthVisible)
     {
         AssertCalendarPanelVisibility(item, monthVisible);
@@ -1155,6 +1529,14 @@ public class CalendarViewStateTests
         public void HandleMonthCalendarButtonMouseUpForTest(PickerCalendarButton button)
         {
             HandleMonthCalendarButtonMouseUp(button, null!);
+        }
+    }
+
+    private sealed class TestRangeCalendarItem : RangeCalendarItem
+    {
+        public void HandleMonthMouseEnteredForTest(PickerCalendarButton button)
+        {
+            HandleMonthMouseEntered(button, null!);
         }
     }
 

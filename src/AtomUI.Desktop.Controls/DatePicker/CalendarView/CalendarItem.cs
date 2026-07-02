@@ -1093,6 +1093,21 @@ internal class CalendarItem : TemplatedControl
         {
             UpdateYearViewSelection(sender as CalendarButton);
         }
+
+        if (Owner != null &&
+            sender is CalendarButton
+            {
+                IsEnabled: true,
+                DataContext: DateTime selectedDate
+            } calendarButton)
+        {
+            NotifyMonthMouseEntered(calendarButton, selectedDate);
+        }
+    }
+
+    protected virtual void NotifyMonthMouseEntered(CalendarButton calendarButton, DateTime selectedDate)
+    {
+        Owner?.NotifyHoverDateChanged(selectedDate);
     }
 
     internal void UpdateDisabled(bool isEnabled)
@@ -1297,7 +1312,7 @@ internal class CalendarItem : TemplatedControl
             return GetMonthViewRect(MonthView!).Contains(position);
         }
 
-        return false;
+        return GetCalendarPanelRect(YearView).Contains(position);
     }
 
     protected Rect GetMonthViewRect(Grid? monthView)
@@ -1323,5 +1338,27 @@ internal class CalendarItem : TemplatedControl
 
         return new Rect(firstDayPos.Value,
             new Size(monthView.Bounds.Width, monthViewPos.Value.Y + monthView.Bounds.Height - firstDayPos.Value.Y));
+    }
+
+    protected Rect GetCalendarPanelRect(Control? panel)
+    {
+        if (panel is null)
+        {
+            return default;
+        }
+
+        var topLevel = TopLevel.GetTopLevel(panel);
+        if (topLevel is null)
+        {
+            return default;
+        }
+
+        var panelPosition = panel.TranslatePoint(new Point(0, 0), topLevel);
+        if (panelPosition is null)
+        {
+            return default;
+        }
+
+        return new Rect(panelPosition.Value, panel.Bounds.Size);
     }
 }
