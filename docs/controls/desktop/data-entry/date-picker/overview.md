@@ -1,6 +1,6 @@
 # DatePicker 桌面版架构设计
 
-本文档定义 `DatePicker` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [DatePicker 桌面版实现原理](implementation.md)，DatePicker Token 的专项设计见 [DatePicker Token 设计](token.md)，设计和契约变化记录见 [DatePicker Changelog](changelog.md)。
+本文档定义 `DatePicker` 桌面版的最新设计定位、公共契约、状态模型、视觉主题关系和兼容边界。通用控件研发约束见 [控件研发标准](../../../../engineering/control-development-guidelines.md)，内部实现原理见 [DatePicker 桌面版实现原理](implementation.md)，CalendarView 的系统性优化设计见 [CalendarView 系统性优化设计](calendar-view-system-optimization.md)，DatePicker Token 的专项设计见 [DatePicker Token 设计](token.md)，设计和契约变化记录见 [DatePicker Changelog](changelog.md)。
 
 ## 1. 控件定位
 
@@ -82,7 +82,7 @@ DatePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 | `PART_SecondaryMonthView` | `?` | 稳定模板协作入口，重命名前必须同步主题和实现。 |
 | 其他 part | 7 项 | 参见源码和主题文件；维护时按同一生命周期规则检查。 |
 
-控件专属或内部伪类包括 `Blackout=:blackout`、`BtnFocusedPC`、`CalendarDayButtonPseudoClass.Blackout`、`CalendarDayButtonPseudoClass.DayFocused`、`CalendarDayButtonPseudoClass.RangeEnd`、`CalendarDayButtonPseudoClass.RangeMiddle`、`CalendarDayButtonPseudoClass.RangeStart`、`CalendarDayButtonPseudoClass.Today`、`CalendarDisabledPC`、`DayFocused=:dayfocused`、`RangeEnd=:range-end`、`RangeMiddle=:range-middle` 等 14 项。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
+控件专属或内部伪类包括 `Blackout=:blackout`、`BtnFocusedPC`、`CalendarDayButtonPseudoClass.Blackout`、`CalendarDayButtonPseudoClass.DayFocused`、`CalendarDayButtonPseudoClass.RangeEnd`、`CalendarDayButtonPseudoClass.RangeMiddle`、`CalendarDayButtonPseudoClass.RangePreviewEnd`、`CalendarDayButtonPseudoClass.RangePreviewMiddle`、`CalendarDayButtonPseudoClass.RangePreviewStart`、`CalendarDayButtonPseudoClass.RangeStart`、`CalendarDayButtonPseudoClass.Today`、`CalendarDisabledPC`、`DayFocused=:dayfocused`、`RangeEnd=:range-end`、`RangeMiddle=:range-middle`、`RangePreviewEnd=:range-preview-end`、`RangePreviewMiddle=:range-preview-middle`、`RangePreviewStart=:range-preview-start` 等。这些伪类属于主题 selector 可观察契约，不能在未同步主题和 Gallery 的情况下重命名或删除。
 
 ## 4. 行为与状态模型
 
@@ -100,6 +100,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- 范围选择的 committed 状态和 hover preview 状态必须分开：`:selected`、`:range-start`、`:range-end`、`:range-middle` 只来自真实端点；hover 只写入 `:range-preview-start`、`:range-preview-end`、`:range-preview-middle`，其中 preview start/end 在视觉上按临时端点显示，但不能污染真实提交状态。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -195,6 +196,7 @@ DatePicker 的视觉选项通过 public API 归一为 theme variables、伪类�
 关联文档：
 
 - [DatePicker 桌面版实现原理](implementation.md)
+- [CalendarView 系统性优化设计](calendar-view-system-optimization.md)
 - [DatePicker Token 设计](token.md)
 - [DatePicker Changelog](changelog.md)
 

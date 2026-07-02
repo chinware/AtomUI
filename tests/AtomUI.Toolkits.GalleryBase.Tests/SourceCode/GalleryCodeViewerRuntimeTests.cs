@@ -973,6 +973,68 @@ public class GalleryCodeViewerRuntimeTests
     }
 
     [Fact]
+    public void GalleryCodeViewer_Retries_Pending_Axaml_Tokenization_After_Grammar_Compilation_Finishes()
+    {
+        var viewer = new GalleryCodeViewer
+        {
+            CodeText = "<atom:DatePicker PlaceholderText=\"{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}\"/>",
+            Language = "axaml"
+        };
+
+        ShowInWindow(viewer, editor =>
+        {
+            editor.TextArea.TextView.EnsureVisualLines();
+            Dispatcher.UIThread.RunJobs();
+
+            var installation = GetTextMateInstallation(viewer);
+            var tmModel = GetTextMateModel(installation);
+            var registryOptions = new RegistryOptions(GetCurrentSyntaxTheme(viewer));
+            var registry = new Registry(registryOptions);
+            var grammar = new ControlledCompilingGrammar(
+                registry.LoadGrammar(registryOptions.GetScopeByExtension(".xml")));
+            tmModel.GetType()
+                   .GetMethod("SetGrammar")!
+                   .Invoke(tmModel, new object[] { grammar });
+            installation.GetType()
+                        .GetField("_grammar", BindingFlags.Instance | BindingFlags.NonPublic)!
+                        .SetValue(installation, grammar);
+            ClearLineTokens(viewer, 0);
+            IsLineInvalid(viewer, 0).ShouldBeTrue();
+
+            installation.GetType()
+                        .GetMethod("RequestVisibleLineTokenization", BindingFlags.Instance | BindingFlags.NonPublic)!
+                        .Invoke(installation, Array.Empty<object>());
+            Dispatcher.UIThread.RunJobs();
+
+            grammar.IsCompiling = false;
+            for (var i = 0; i < 20; i++)
+            {
+                Thread.Sleep(10);
+                Dispatcher.UIThread.RunJobs();
+                Dispatcher.UIThread.RunJobs(DispatcherPriority.SystemIdle);
+                editor.TextArea.TextView.EnsureVisualLines();
+                if (!IsLineInvalid(viewer, 0))
+                {
+                    var scrollViewer = GetEditorScrollViewer(editor);
+                    scrollViewer.Offset = new Vector(120, scrollViewer.Offset.Y);
+                    editor.InvalidateMeasure();
+                    editor.InvalidateArrange();
+                    Dispatcher.UIThread.RunJobs();
+                    editor.TextArea.TextView.EnsureVisualLines();
+
+                    var expectedAttributeColor = Color.Parse(GetAxamlTokenColor(viewer, "Margin").ShouldNotBeNull());
+                    GetVisibleTextForegroundColor(editor, "PlaceholderText")
+                        .ShouldBe(expectedAttributeColor);
+                    return;
+                }
+            }
+
+            IsLineInvalid(viewer, 0).ShouldBeFalse(
+                $"Scopes: {string.Join(" | ", GetLineTokenScopes(viewer, 0))}; {GetTextMateDiagnostics(viewer, 0)}; {GetVisibleTokenizationState(viewer)}");
+        });
+    }
+
+    [Fact]
     public void DrawerContent_Shows_Placeholder_When_No_Snippets_Available()
     {
         var key = new ShowCaseCodeSnippetKey(
@@ -1324,6 +1386,16 @@ public class GalleryCodeViewerRuntimeTests
                      .ToArray();
     }
 
+    private static bool IsLineInvalid(GalleryCodeViewer viewer, int lineIndex)
+    {
+        var installation = GetTextMateInstallation(viewer);
+        var tmModel = GetTextMateModel(installation);
+        return tmModel.GetType()
+                      .GetMethod("IsLineInvalid")!
+                      .Invoke(tmModel, new object[] { lineIndex })
+                      .ShouldBeOfType<bool>();
+    }
+
     private static void ClearLineTokens(GalleryCodeViewer viewer, int lineIndex)
     {
         var installation = GetTextMateInstallation(viewer);
@@ -1406,6 +1478,18 @@ public class GalleryCodeViewerRuntimeTests
             $"IsLineInvalid={isInvalid}");
     }
 
+    private static string GetVisibleTokenizationState(GalleryCodeViewer viewer)
+    {
+        var installation = GetTextMateInstallation(viewer);
+        var type = installation.GetType();
+        return string.Join(
+            "; ",
+            $"PendingStart={type.GetField("_pendingVisibleStartLine", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(installation)}",
+            $"PendingEnd={type.GetField("_pendingVisibleEndLine", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(installation)}",
+            $"Queued={type.GetField("_isVisibleLineTokenizationQueued", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(installation)}",
+            $"Retry={type.GetField("_visibleLineTokenizationRetryCancellation", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(installation) is not null}");
+    }
+
     private sealed class AlwaysCompilingGrammar : IGrammar
     {
         public bool IsCompiling => true;
@@ -1443,6 +1527,53 @@ public class GalleryCodeViewerRuntimeTests
         public ITokenizeLineResult2 TokenizeLine2(LineText lineText, IStateStack prevState, TimeSpan timeLimit)
         {
             throw new InvalidOperationException("The compiling grammar must not be tokenized.");
+        }
+    }
+
+    private sealed class ControlledCompilingGrammar : IGrammar
+    {
+        private readonly IGrammar _innerGrammar;
+
+        public ControlledCompilingGrammar(IGrammar innerGrammar)
+        {
+            _innerGrammar = innerGrammar;
+        }
+
+        public bool IsCompiling { get; set; } = true;
+
+        public string GetName()
+        {
+            return _innerGrammar.GetName();
+        }
+
+        public string GetScopeName()
+        {
+            return _innerGrammar.GetScopeName();
+        }
+
+        public ICollection<string> GetFileTypes()
+        {
+            return _innerGrammar.GetFileTypes();
+        }
+
+        public ITokenizeLineResult TokenizeLine(LineText lineText)
+        {
+            return _innerGrammar.TokenizeLine(lineText);
+        }
+
+        public ITokenizeLineResult TokenizeLine(LineText lineText, IStateStack prevState, TimeSpan timeLimit)
+        {
+            return _innerGrammar.TokenizeLine(lineText, prevState, timeLimit);
+        }
+
+        public ITokenizeLineResult2 TokenizeLine2(LineText lineText)
+        {
+            return _innerGrammar.TokenizeLine2(lineText);
+        }
+
+        public ITokenizeLineResult2 TokenizeLine2(LineText lineText, IStateStack prevState, TimeSpan timeLimit)
+        {
+            return _innerGrammar.TokenizeLine2(lineText, prevState, timeLimit);
         }
     }
 }

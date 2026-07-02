@@ -277,25 +277,29 @@ public class DatePicker : InfoPickerInput
 
     private static bool IsFormattedTextAffectingProperty(AvaloniaProperty property)
     {
-        return property == IsShowTimeProperty ||
-               property == FormatProperty ||
-               property == ClockIdentifierProperty ||
-               property == AmTextProperty ||
-               property == PmTextProperty;
+        return DatePickerFormattingHelper.IsFormattedTextAffectingProperty(
+            property,
+            IsShowTimeProperty,
+            FormatProperty,
+            ClockIdentifierProperty,
+            AmTextProperty,
+            PmTextProperty);
     }
 
     private static bool IsPreferredWidthAffectingProperty(AvaloniaProperty property)
     {
-        return property == FontSizeProperty ||
-               property == FontFamilyProperty ||
-               property == FontStyleProperty ||
-               property == FontWeightProperty ||
-               property == PlaceholderTextProperty ||
-               property == SizeTypeProperty ||
-               property == MinWidthProperty ||
-               property == WidthProperty ||
-               property == MaxWidthProperty ||
-               property == HorizontalAlignmentProperty;
+        return DatePickerFormattingHelper.IsPreferredWidthAffectingProperty(
+            property,
+            FontSizeProperty,
+            FontFamilyProperty,
+            FontStyleProperty,
+            FontWeightProperty,
+            PlaceholderTextProperty,
+            SizeTypeProperty,
+            MinWidthProperty,
+            WidthProperty,
+            MaxWidthProperty,
+            HorizontalAlignmentProperty);
     }
 
     private void CalculatePreferredWidth()
@@ -308,26 +312,16 @@ public class DatePicker : InfoPickerInput
         {
             var format = GetEffectiveFormat();
             var formatInfo = DatePickerFormattingHelper.CreateFormatInfo(ClockIdentifier, AmText, PmText);
-            var preferredInputWidth = DatePickerFormattingHelper.CalculateContentPreferredWidth(
-                Text,
+            PreferredInputWidth = DatePickerFormattingHelper.CalculateBoundedPreferredInputWidth(
                 PlaceholderText,
                 format,
                 FontSize,
                 FontFamily,
                 FontStyle,
                 FontWeight,
+                MinWidth,
+                MaxWidth,
                 formatInfo);
-
-            if (!double.IsNaN(MinWidth))
-            {
-                preferredInputWidth = Math.Max(MinWidth, preferredInputWidth);
-            }
-
-            if (!double.IsNaN(MaxWidth))
-            {
-                preferredInputWidth = Math.Min(MaxWidth, preferredInputWidth);
-            }
-            PreferredInputWidth = preferredInputWidth;
         }
     }
 

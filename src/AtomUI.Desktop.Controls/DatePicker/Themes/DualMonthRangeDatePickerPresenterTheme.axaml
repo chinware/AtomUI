@@ -41,6 +41,7 @@
                     <StackPanel Orientation="Horizontal">
                         <calendarview:DualMonthRangeCalendar
                             Name="PART_CalendarView"
+                            IsSelectRangeStart="{TemplateBinding IsRangeStartActive}"
                             SelectedDate="{TemplateBinding SelectedDateTime}"
                             SecondarySelectedDate="{TemplateBinding SecondarySelectedDateTime}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />

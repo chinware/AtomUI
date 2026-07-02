@@ -549,6 +549,8 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
 
     private sealed class GalleryTextMateInstallation : IDisposable
     {
+        private static readonly TimeSpan s_grammarCompilationRetryInterval = TimeSpan.FromMilliseconds(16);
+
         private readonly object _lock = new();
         private readonly Registry _textMateRegistry;
         private readonly TextEditor _editor;
@@ -562,6 +564,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
         private int _pendingVisibleStartLine = -1;
         private int _pendingVisibleEndLine = -1;
         private bool _isVisibleLineTokenizationQueued;
+        private CancellationTokenSource? _visibleLineTokenizationRetryCancellation;
         private bool _isDisposed;
 
         public GalleryTextMateInstallation(TextEditor editor,
@@ -656,6 +659,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
                 _exceptionHandler = null;
             }
 
+            CancelVisibleLineTokenizationRetry();
             _editor.DocumentChanged -= HandleEditorDocumentChanged;
             _editor.TextArea.TextView.VisualLinesChanged -= HandleTextViewVisualLinesChanged;
             editorModel?.Dispose();
@@ -825,6 +829,7 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             if (grammar.IsCompiling)
             {
                 IncludePendingVisibleLineRange(startLine, endLine);
+                QueueVisibleLineTokenizationRetry();
                 return;
             }
 
@@ -836,6 +841,85 @@ public sealed partial class GalleryCodeViewer : UserControl, IDisposable
             }
 
             RedrawLineRange(startLine, endLine);
+        }
+
+        private void QueueVisibleLineTokenizationRetry()
+        {
+            CancellationTokenSource retryCancellation;
+            lock (_lock)
+            {
+                if (_isDisposed || _visibleLineTokenizationRetryCancellation is not null)
+                {
+                    return;
+                }
+
+                retryCancellation = new CancellationTokenSource();
+                _visibleLineTokenizationRetryCancellation = retryCancellation;
+            }
+
+            _ = RetryVisibleLineTokenizationAfterGrammarCompilationAsync(retryCancellation);
+        }
+
+        private async Task RetryVisibleLineTokenizationAfterGrammarCompilationAsync(CancellationTokenSource retryCancellation)
+        {
+            try
+            {
+                await Task.Delay(s_grammarCompilationRetryInterval, retryCancellation.Token)
+                          .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+
+            if (retryCancellation.IsCancellationRequested)
+            {
+                return;
+            }
+
+            Dispatcher.UIThread.Post(
+                () => ProcessVisibleLineTokenizationRetry(retryCancellation),
+                DispatcherPriority.Background);
+        }
+
+        private void ProcessVisibleLineTokenizationRetry(CancellationTokenSource retryCancellation)
+        {
+            lock (_lock)
+            {
+                if (!ReferenceEquals(_visibleLineTokenizationRetryCancellation, retryCancellation))
+                {
+                    retryCancellation.Dispose();
+                    return;
+                }
+
+                _visibleLineTokenizationRetryCancellation = null;
+            }
+
+            retryCancellation.Dispose();
+            if (_isDisposed)
+            {
+                return;
+            }
+
+            QueueVisibleLineTokenization();
+        }
+
+        private void CancelVisibleLineTokenizationRetry()
+        {
+            CancellationTokenSource? retryCancellation;
+            lock (_lock)
+            {
+                retryCancellation = _visibleLineTokenizationRetryCancellation;
+                _visibleLineTokenizationRetryCancellation = null;
+            }
+
+            if (retryCancellation is null)
+            {
+                return;
+            }
+
+            retryCancellation.Cancel();
+            retryCancellation.Dispose();
         }
 
         private bool TryGetVisibleLineRange(out int startLine, out int endLine)

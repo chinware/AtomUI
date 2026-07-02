@@ -9,21 +9,25 @@
     <ControlTheme x:Key="{x:Type calendarView:CalendarDayButton}" TargetType="calendarView:CalendarDayButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <Panel>
+                <Grid ColumnDefinitions="*,*">
                     <Border Name="RangeIndicator"
+                            Grid.ColumnSpan="2"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             IsVisible="False"/>
                     <Border Name="RangeStartIndicator"
-                            HorizontalAlignment="Right"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             IsVisible="False"/>
                     <Border Name="RangeEndIndicator"
-                            HorizontalAlignment="Left"
+                            Grid.Column="0"
+                            HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             IsVisible="False"/>
                     <ContentPresenter
                         Name="Content"
+                        Grid.ColumnSpan="2"
                         Padding="{TemplateBinding Padding}"
                         Foreground="{TemplateBinding Foreground}"
                         Background="{TemplateBinding Background}"
@@ -37,7 +41,7 @@
                         VerticalAlignment="Center"
                         HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                </Panel>
+                </Grid>
             </ControlTemplate>
         </Setter>
 
@@ -59,12 +63,10 @@
         
         <Style Selector="^ /template/ Border#RangeStartIndicator">
             <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
-            <Setter Property="Width" Value="{atom:CalendarTokenResource CellWidth}" />
         </Style>
         
         <Style Selector="^ /template/ Border#RangeEndIndicator">
             <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
-            <Setter Property="Width" Value="{atom:CalendarTokenResource CellWidth}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#Content">
@@ -85,33 +87,36 @@
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
             <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         </Style>
+
+        <Style Selector="^:range-middle:not(:inactive), ^:range-preview-middle:not(:inactive)">
+            <Style Selector="^ /template/ Border#RangeIndicator">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="Background" Value="{atom:CalendarTokenResource CellActiveWithRangeBg}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:range-start:not(:inactive), ^:range-preview-start:not(:inactive)">
+            <Style Selector="^ /template/ Border#RangeStartIndicator">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="Background" Value="{atom:CalendarTokenResource CellActiveWithRangeBg}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:range-end:not(:inactive), ^:range-preview-end:not(:inactive)">
+            <Style Selector="^ /template/ Border#RangeEndIndicator">
+                <Setter Property="IsVisible" Value="True" />
+                <Setter Property="Background" Value="{atom:CalendarTokenResource CellActiveWithRangeBg}" />
+            </Style>
+        </Style>
         
         <Style Selector="^:selected:not(:inactive)">
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWhite}" />
-            
-            <Style Selector="^:range-middle">
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextLabel}" />
-                <Style Selector="^ /template/ Border#RangeIndicator">
-                    <Setter Property="IsVisible" Value="True" />
-                    <Setter Property="Background" Value="{atom:CalendarTokenResource CellActiveWithRangeBg}" />
-                </Style>
-            </Style>
-            
-            <Style Selector="^:range-start">
-                <Style Selector="^ /template/ Border#RangeStartIndicator">
-                    <Setter Property="IsVisible" Value="True" />
-                    <Setter Property="Background" Value="{atom:CalendarTokenResource CellActiveWithRangeBg}" />
-                </Style>
-            </Style>
-            
-            <Style Selector="^:range-end">
-                <Style Selector="^ /template/ Border#RangeEndIndicator">
-                    <Setter Property="IsVisible" Value="True" />
-                    <Setter Property="Background" Value="{atom:CalendarTokenResource CellActiveWithRangeBg}" />
-                </Style>
-            </Style>
+        </Style>
+
+        <Style Selector="^:range-preview-start:not(:inactive), ^:range-preview-end:not(:inactive)">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorPrimary}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWhite}" />
         </Style>
 
         <Style Selector="^[IsMotionEnabled=True]">

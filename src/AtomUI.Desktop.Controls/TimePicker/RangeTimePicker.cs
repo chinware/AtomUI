@@ -128,7 +128,16 @@ public class RangeTimePicker : RangeInfoPickerInput
     internal double PreferredWidth
     {
         get => _preferredWidth;
-        set => SetAndRaise(PreferredWidthProperty, ref _preferredWidth, value);
+        set
+        {
+            if (_preferredWidth == value)
+            {
+                return;
+            }
+
+            SetAndRaise(PreferredWidthProperty, ref _preferredWidth, value);
+            InvalidateMeasure();
+        }
     }
     
     private string? _amText;
@@ -536,23 +545,12 @@ public class RangeTimePicker : RangeInfoPickerInput
         var size   = base.MeasureOverride(availableSize);
         var width  = size.Width;
         var height = size.Height;
-        if (PickerInnerBox is not null)
+        if (PreferredWidth > 0 &&
+            InfoInputBox is not null &&
+            SecondaryInfoInputBox is not null)
         {
-            var preferredWidth = 0d;
-            if (DecoratedBox?.ContentRightAddOn is Control rightAddOnContent)
-            {
-                preferredWidth += PreferredWidth + rightAddOnContent.DesiredSize.Width +
-                                 PickerInnerBox.Padding.Left +
-                                 PickerInnerBox.Padding.Right;
-            }
-
-            if (RangePickerArrow is not null)
-            {
-                preferredWidth += RangePickerArrow.DesiredSize.Width;
-            }
-
-            preferredWidth += PreferredWidth;
-
+            var currentInputWidth = InfoInputBox.DesiredSize.Width + SecondaryInfoInputBox.DesiredSize.Width;
+            var preferredWidth    = size.Width - currentInputWidth + PreferredWidth * 2;
             width = Math.Max(width, preferredWidth);
         }
 
