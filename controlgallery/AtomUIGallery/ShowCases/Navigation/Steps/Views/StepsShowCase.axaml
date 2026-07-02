@@ -104,7 +104,7 @@
                         IsDeferredContentEnabled="True">
                         <gallery:ShowCaseItem.DeferredContentTemplate>
                             <DataTemplate x:DataType="vm:StepsViewModel">
-                                <StackPanel Orientation="Vertical" Spacing="20">
+                                <StackPanel Orientation="Vertical" Spacing="20" Loaded="HandleInteractiveStepsLoaded">
                                     <atom:Steps Name="CurrentStepContentSteps" CurrentStep="{Binding CurrentStep}">
                                         <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFirst}" Content="{gallery:StepsShowCaseLangResource P2ContentFirstContent}" />
                                         <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderSecond}" Content="{gallery:StepsShowCaseLangResource P2ContentSecondContent}" />
@@ -112,13 +112,12 @@
                                     </atom:Steps>
                                     <atom:DashedBorder BorderThickness="1"
                                                        BorderBrush="{atom:SharedTokenResource ColorBorder}"
-                                                       StrokeDashArray="{Binding #StepsInteractiveShowCaseName.DashedArray}"
+                                                       StrokeDashArray="{Binding DashedArray, RelativeSource={RelativeSource AncestorType=vm:StepsShowCase}}"
                                                        CornerRadius="{atom:SharedTokenResource BorderRadiusLG}"
                                                        Background="{atom:SharedTokenResource ColorFillAlter}"
                                                        TextElement.Foreground="{atom:SharedTokenResource ColorTextTertiary}"
                                                        Height="260">
-                                        <ContentPresenter Content="{Binding #CurrentStepContentSteps.CurrentContent}"
-                                                          ContentTemplate="{Binding #CurrentStepContentSteps.CurrentContentTemplate}"
+                                        <ContentPresenter Name="CurrentStepContentPresenter"
                                                           HorizontalAlignment="Center"
                                                           VerticalAlignment="Center" />
                                     </atom:DashedBorder>

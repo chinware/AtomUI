@@ -24,13 +24,13 @@ public partial class QRCodeShowCase : GalleryReactiveUserControl<QRCodeViewModel
         {
             if (DataContext is QRCodeViewModel viewModel)
             {
-                viewModel.EccLevels = new List<string>
-                {
-                    nameof(QRCodeEccLevel.L),
-                    nameof(QRCodeEccLevel.M),
-                    nameof(QRCodeEccLevel.Q),
-                    nameof(QRCodeEccLevel.H)
-                };
+                viewModel.EccLevels =
+                [
+                    QRCodeEccLevel.L,
+                    QRCodeEccLevel.M,
+                    QRCodeEccLevel.Q,
+                    QRCodeEccLevel.H
+                ];
                 Disposable.Create(() =>
                 {
                     viewModel.EccLevels = null;

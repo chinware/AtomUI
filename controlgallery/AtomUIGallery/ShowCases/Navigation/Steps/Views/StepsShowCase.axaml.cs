@@ -5,8 +5,12 @@ using AtomUI.Data;
 using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Interactivity;
+using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
+using AtomUISteps = AtomUI.Desktop.Controls.Steps;
 
 namespace AtomUIGallery.ShowCases.Steps;
 
@@ -85,6 +89,24 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
         }
     }
 
+    public void HandleInteractiveStepsLoaded(object? sender, RoutedEventArgs args)
+    {
+        if (sender is not Control root)
+        {
+            return;
+        }
+
+        var steps = FindDescendantByName<AtomUISteps>(root, "CurrentStepContentSteps");
+        var presenter = FindDescendantByName<ContentPresenter>(root, "CurrentStepContentPresenter");
+        if (steps is null || presenter is null)
+        {
+            return;
+        }
+
+        presenter[!ContentPresenter.ContentProperty] = steps[!AtomUISteps.CurrentContentProperty];
+        presenter[!ContentPresenter.ContentTemplateProperty] = steps[!AtomUISteps.CurrentContentTemplateProperty];
+    }
+
     private static Control CreateScenarioContent(string scenario)
     {
         return scenario switch
@@ -109,5 +131,17 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
         {
             viewModel.RefreshInteractiveButtonText();
         }
+    }
+
+    private static T? FindDescendantByName<T>(Control root, string name)
+        where T : Control
+    {
+        if (root is T typedRoot && typedRoot.Name == name)
+        {
+            return typedRoot;
+        }
+
+        return root.GetVisualDescendants().OfType<T>().FirstOrDefault(control => control.Name == name)
+               ?? root.GetLogicalDescendants().OfType<T>().FirstOrDefault(control => control.Name == name);
     }
 }

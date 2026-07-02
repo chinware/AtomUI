@@ -53,8 +53,7 @@ public class TourShowCasePageTests
         source.ShouldContain("TourShowCaseLangResource BasicTitle");
         source.ShouldContain("TourShowCaseLangResource CustomHighlightedAreaStyleTitle");
         source.ShouldContain("IsOccupyEntireRow=\"True\"");
-        source.ShouldContain("Target=\"{Binding ElementName=BasicCaseUpload}\"");
-        source.ShouldContain("Target=\"{Binding ElementName=CustomGapControl}\"");
+        source.ShouldNotContain("ElementName=");
         source.ShouldContain("<atom:TextTourIndicator />");
         source.ShouldContain("<views:SkipTourActionButton");
         source.ShouldContain("MaskColor=\"#662800FF\"");
@@ -88,6 +87,8 @@ public class TourShowCasePageTests
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new TourApiDataGrid()");
         codeBehindSource.ShouldContain("new TourDesignTokenDataGrid()");
+        codeBehindSource.ShouldContain("HandleTourExampleLoaded");
+        codeBehindSource.ShouldContain("SetTourStepTarget");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:TourApiRow\"");

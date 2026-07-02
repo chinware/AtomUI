@@ -35,7 +35,9 @@ public class MasonryShowCasePageTests
         basicDemoMarkup.ShouldContain("IsShowTitle=\"True\"");
         basicDemoMarkup.ShouldContain("ParagraphRows=\"3\"");
         basicDemoMarkup.ShouldContain("IsRound=\"True\"");
-        basicDemoMarkup.ShouldContain("IsVisible=\"{Binding #SpecialCoverImage.Source, Converter={x:Static ObjectConverters.IsNull}}\"");
+        basicDemoMarkup.ShouldContain("Name=\"SpecialCoverSkeleton\"");
+        basicDemoMarkup.ShouldContain("Loaded=\"HandleImageSkeletonLoaded\"");
+        basicDemoMarkup.ShouldNotContain("{Binding #");
         basicDemoMarkup.ShouldNotContain("IsVisible=\"{Binding #SpecialCoverImage.(asyncImageLoader:ImageLoader.IsLoading)}\"");
         basicDemoMarkup.ShouldNotContain("<atom:SkeletonLine");
         basicDemoMarkup.ShouldNotContain("<atom:SkeletonImage");
@@ -109,8 +111,10 @@ public class MasonryShowCasePageTests
         imageDemoMarkup.ShouldContain("Stretch=\"Uniform\"");
         imageDemoMarkup.ShouldContain("HorizontalAlignment=\"Stretch\"");
         imageDemoMarkup.ShouldContain("ClipToBounds=\"True\"");
-        imageDemoMarkup.ShouldContain("<Border MinHeight=\"210\"");
-        imageDemoMarkup.ShouldContain("IsVisible=\"{Binding #MasonryImage.Source, Converter={x:Static ObjectConverters.IsNull}}\"");
+        imageDemoMarkup.ShouldContain("MinHeight=\"210\"");
+        imageDemoMarkup.ShouldContain("Name=\"MasonryImageSkeleton\"");
+        imageDemoMarkup.ShouldContain("Loaded=\"HandleImageSkeletonLoaded\"");
+        imageDemoMarkup.ShouldNotContain("{Binding #");
         imageDemoMarkup.ShouldContain("<atom:Skeleton IsLoading=\"True\"");
         imageDemoMarkup.ShouldContain("Padding=\"16,16\"");
         imageDemoMarkup.ShouldContain("IsActive=\"True\"");

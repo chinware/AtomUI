@@ -163,6 +163,30 @@ public class TreeSelectViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _treeSelectSizeType, value);
     }
 
+    private bool _isShowTreeSelectIcon;
+
+    public bool IsShowTreeSelectIcon
+    {
+        get => _isShowTreeSelectIcon;
+        set => this.RaiseAndSetIfChanged(ref _isShowTreeSelectIcon, value);
+    }
+
+    private bool _isShowTreeSelectLeafIcon;
+
+    public bool IsShowTreeSelectLeafIcon
+    {
+        get => _isShowTreeSelectLeafIcon;
+        set => this.RaiseAndSetIfChanged(ref _isShowTreeSelectLeafIcon, value);
+    }
+
+    private bool _isShowTreeSelectLine = true;
+
+    public bool IsShowTreeSelectLine
+    {
+        get => _isShowTreeSelectLine;
+        set => this.RaiseAndSetIfChanged(ref _isShowTreeSelectLine, value);
+    }
+
     public TreeSelectViewModel(IScreen screen)
     {
         HostScreen = screen;

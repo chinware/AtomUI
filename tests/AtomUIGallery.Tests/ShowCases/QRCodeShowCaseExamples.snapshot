@@ -87,9 +87,10 @@ Background="{atom:SharedTokenResource ColorBgLayout}" />
 Description="{gallery:QRCodeShowCaseLangResource ErrorLevelDescription}">
 <StackPanel Orientation="Vertical" Spacing="10">
 <atom:QRCode Value="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-EccLevel="{Binding #EccLevelSegmented.SelectedItem}" />
+EccLevel="{Binding SelectedEccLevel}" />
 <atom:Segmented Name="EccLevelSegmented"
-ItemsSource="{Binding EccLevels}" />
+ItemsSource="{Binding EccLevels}"
+SelectedItem="{Binding SelectedEccLevel}" />
 </StackPanel>
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem Title="{gallery:QRCodeShowCaseLangResource AdvancedUsageTitle}"

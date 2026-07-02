@@ -54,6 +54,7 @@ public class QRCodeShowCasePageTests
     {
         var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml");
         var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeShowCase.axaml.cs");
+        var viewModelSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/ViewModels/QRCodeViewModel.cs");
         var apiSource        = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeApiDataGrid.axaml");
         var apiCodeSource    = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeApiDataGrid.axaml.cs");
         var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/QRCode/Views/QRCodeDesignTokenDataGrid.axaml");
@@ -75,6 +76,10 @@ public class QRCodeShowCasePageTests
         pageSource.ShouldContain("Command=\"{Binding SmallerCommand}\"");
         pageSource.ShouldContain("Command=\"{Binding LargerCommand}\"");
         pageSource.ShouldContain("ItemsSource=\"{Binding EccLevels}\"");
+        pageSource.ShouldContain("EccLevel=\"{Binding SelectedEccLevel}\"");
+        pageSource.ShouldContain("SelectedItem=\"{Binding SelectedEccLevel}\"");
+        pageSource.ShouldNotContain("{Binding #");
+        viewModelSource.ShouldContain("public QRCodeEccLevel SelectedEccLevel");
         codeBehindSource.ShouldNotContain("GalleryBindingUtils.BindCommand(SmallerBtn");
         codeBehindSource.ShouldNotContain("GalleryBindingUtils.BindCommand(LargerBtn");
         codeBehindSource.ShouldNotContain("EccLevelSegmented");

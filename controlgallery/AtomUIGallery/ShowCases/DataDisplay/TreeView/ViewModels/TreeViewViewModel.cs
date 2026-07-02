@@ -107,6 +107,13 @@ public class TreeViewViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _showLeafIconSwitchChecked, value);
     }
 
+    private bool _isContextMenuSelectOnRightClick = true;
+    public bool IsContextMenuSelectOnRightClick
+    {
+        get => _isContextMenuSelectOnRightClick;
+        set => this.RaiseAndSetIfChanged(ref _isContextMenuSelectOnRightClick, value);
+    }
+
     private TreeItemHoverMode _treeViewNodeHoverMode = TreeItemHoverMode.Default;
     public TreeItemHoverMode TreeViewNodeHoverMode
     {

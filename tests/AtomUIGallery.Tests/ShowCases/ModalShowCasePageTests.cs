@@ -46,6 +46,7 @@ public class ModalShowCasePageTests
         source.ShouldContain("ModalShowCaseLangResource BasicTitle");
         source.ShouldContain("ModalShowCaseLangResource MessageBoxStyleTitle");
         source.ShouldContain("ModalShowCaseLangResource StaticDialogApiTitle");
+        source.ShouldNotContain("PlacementTarget=\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
@@ -76,6 +77,8 @@ public class ModalShowCasePageTests
         codeBehindSource.ShouldContain("new ModalApiDataGrid()");
         codeBehindSource.ShouldContain("new ModalDesignTokenDataGrid()");
         codeBehindSource.ShouldContain("HandleDemoButtonClick");
+        codeBehindSource.ShouldContain("HandleDialogExampleLoaded");
+        codeBehindSource.ShouldContain("SetPlacementTarget");
         codeBehindSource.ShouldContain("TryFindTemplateControl");
         codeBehindSource.ShouldNotContain("BasicOpenModalButton.Click +=");
         codeBehindSource.ShouldNotContain("ConfigureButtonPropertiesDialog.ButtonsConfigure = ConfigureButtonProperties");

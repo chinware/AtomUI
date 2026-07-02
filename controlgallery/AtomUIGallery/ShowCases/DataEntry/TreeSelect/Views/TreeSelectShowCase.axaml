@@ -157,19 +157,22 @@
             <gallery:ShowCaseItem.DeferredContentTemplate>
                 <DataTemplate x:DataType="vm:TreeSelectViewModel">
             <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowIcon}" Name="ShowIconSwitch" />
-                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentTreeLine}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentTreeLine}" IsChecked="True"
-                                   Name="ShowTreeLineSwitch" />
-                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowLeafIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowLeafIcon}" Name="ShowLeafIconSwitch" />
+                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowIcon}" Name="ShowIconSwitch"
+                                   IsChecked="{Binding IsShowTreeSelectIcon, Mode=TwoWay}" />
+                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentTreeLine}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentTreeLine}"
+                                   Name="ShowTreeLineSwitch"
+                                   IsChecked="{Binding IsShowTreeSelectLine, Mode=TwoWay}" />
+                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowLeafIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowLeafIcon}" Name="ShowLeafIconSwitch"
+                                   IsChecked="{Binding IsShowTreeSelectLeafIcon, Mode=TwoWay}" />
                 <atom:TreeSelect Name="ShowTreeLineTreeSelect"
                                  HorizontalAlignment="Stretch"
                                  IsAllowClear="True"
                                  PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                                  ItemsSource="{Binding ShowTreeLineTreeNodes}"
-                                 IsShowIcon="{Binding #ShowIconSwitch.IsChecked}"
-                                 IsShowLeafIcon="{Binding #ShowLeafIconSwitch.IsChecked}"
-                                 IsShowLine="{Binding #ShowTreeLineSwitch.IsChecked}"
-                                 IsSwitcherRotation="{Binding #ShowTreeLineSwitch.IsChecked, Converter={x:Static BoolConverters.Not}}" />
+                                 IsShowIcon="{Binding IsShowTreeSelectIcon}"
+                                 IsShowLeafIcon="{Binding IsShowTreeSelectLeafIcon}"
+                                 IsShowLine="{Binding IsShowTreeSelectLine}"
+                                 IsSwitcherRotation="{Binding IsShowTreeSelectLine, Converter={x:Static BoolConverters.Not}}" />
             </StackPanel>
                 </DataTemplate>
             </gallery:ShowCaseItem.DeferredContentTemplate>

@@ -349,12 +349,14 @@
             <StackPanel Orientation="Vertical" Spacing="10">
                 <StackPanel Orientation="Horizontal" Spacing="10">
                     <TextBlock VerticalAlignment="Center" Text="{gallery:TreeViewShowCaseLangResource P2TextIsselectonrightclick}" />
-                    <atom:ToggleSwitch Name="ContextMenuSelectOnRightClickSwitch" IsChecked="True" VerticalAlignment="Center"/>
+                    <atom:ToggleSwitch Name="ContextMenuSelectOnRightClickSwitch"
+                                       IsChecked="{Binding IsContextMenuSelectOnRightClick, Mode=TwoWay}"
+                                       VerticalAlignment="Center"/>
                 </StackPanel>
                 <atom:TreeView Name="ContextMenuTree"
                                NodeHoverMode="Block"
                                IsDefaultExpandAll="True"
-                               IsSelectOnRightClick="{Binding #ContextMenuSelectOnRightClickSwitch.IsChecked}"
+                               IsSelectOnRightClick="{Binding IsContextMenuSelectOnRightClick}"
                                ItemContextMenuRequest="HandleContextMenuTreeItemContextMenuRequest">
                     <atom:TreeView.Resources>
                         <atom:MenuFlyout x:Key="TreeItemContextMenu" Placement="Pointer">

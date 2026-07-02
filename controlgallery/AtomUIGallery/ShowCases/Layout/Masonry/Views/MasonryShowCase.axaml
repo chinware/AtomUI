@@ -72,12 +72,13 @@
                                                            IsVisible="{Binding IsSpecial}">
                                                     <atom:Card.Cover>
                                                         <Panel MinHeight="210"
+                                                               Loaded="HandleImageSkeletonLoaded"
                                                                ClipToBounds="True">
                                                             <Image Name="SpecialCoverImage"
                                                                    asyncImageLoader:ImageLoader.Source="{Binding CoverSource}"
                                                                    Stretch="UniformToFill" />
-                                                            <Border Padding="16,16"
-                                                                    IsVisible="{Binding #SpecialCoverImage.Source, Converter={x:Static ObjectConverters.IsNull}}">
+                                                            <Border Name="SpecialCoverSkeleton"
+                                                                    Padding="16,16">
                                                                 <atom:Skeleton IsLoading="True"
                                                                                IsActive="True"
                                                                                IsShowAvatar="False"
@@ -139,14 +140,15 @@
                                               HorizontalAlignment="Stretch">
                                     <atom:Masonry.ItemTemplate>
                                         <DataTemplate x:DataType="vm:MasonryImageItem">
-                                            <Panel ClipToBounds="True">
+                                            <Panel ClipToBounds="True"
+                                                   Loaded="HandleImageSkeletonLoaded">
                                                 <Image Name="MasonryImage"
                                                        asyncImageLoader:ImageLoader.Source="{Binding ImageSource}"
                                                        Stretch="Uniform"
                                                        HorizontalAlignment="Stretch" />
-                                                <Border MinHeight="210"
-                                                        Padding="16,16"
-                                                        IsVisible="{Binding #MasonryImage.Source, Converter={x:Static ObjectConverters.IsNull}}">
+                                                <Border Name="MasonryImageSkeleton"
+                                                        MinHeight="210"
+                                                        Padding="16,16">
                                                     <atom:Skeleton IsLoading="True"
                                                                    IsActive="True"
                                                                    IsShowAvatar="False"
