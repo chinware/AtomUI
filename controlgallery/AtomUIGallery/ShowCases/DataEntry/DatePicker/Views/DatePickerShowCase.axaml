@@ -65,6 +65,7 @@
         <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource RangePickerTitle}"
             Description="{gallery:DatePickerShowCaseLangResource RangePickerDescription}"
+            BadgeText="v6.0.7"
             IsDeferredContentEnabled="True">
             <gallery:ShowCaseItem.DeferredContentTemplate>
                 <DataTemplate x:DataType="vm:DatePickerViewModel">

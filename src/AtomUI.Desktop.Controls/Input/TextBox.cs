@@ -2,6 +2,7 @@ using AtomUI.Controls;
 using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -119,6 +120,12 @@ public class TextBox : AvaloniaTextBox,
             nameof(IsFormFeedbackVisible),
             o => o.IsFormFeedbackVisible);
 
+    internal static readonly DirectProperty<TextBox, bool> IsPlaceholderTextVisibleProperty =
+        AvaloniaProperty.RegisterDirect<TextBox, bool>(
+            nameof(IsPlaceholderTextVisible),
+            o => o.IsPlaceholderTextVisible,
+            (o, v) => o.IsPlaceholderTextVisible = v);
+
     private bool _isEffectiveShowClearButton;
 
     internal bool IsEffectiveShowClearButton
@@ -174,11 +181,21 @@ public class TextBox : AvaloniaTextBox,
         get => _isFormFeedbackVisible;
         private set => SetAndRaise(IsFormFeedbackVisibleProperty, ref _isFormFeedbackVisible, value);
     }
+
+    private bool _isPlaceholderTextVisible = true;
+
+    internal bool IsPlaceholderTextVisible
+    {
+        get => _isPlaceholderTextVisible;
+        set => SetAndRaise(IsPlaceholderTextVisibleProperty, ref _isPlaceholderTextVisible, value);
+    }
     
     #endregion
 
     private IconButton? _clearButton;
     private IDisposable? _feedbackStatusSubscription;
+    private TextPresenter? _textPresenter;
+    private IDisposable? _preeditTextSubscription;
 
     static TextBox()
     {
@@ -210,6 +227,7 @@ public class TextBox : AvaloniaTextBox,
             change.Property == IsAllowClearProperty)
         {
             ConfigureEffectiveShowClearButton();
+            ConfigurePlaceholderTextVisibility();
         }
         else if (change.Property == IsShowCountProperty)
         {
@@ -284,8 +302,29 @@ public class TextBox : AvaloniaTextBox,
         {
             _clearButton.Click += HandleClearButtonClicked;
         }
+        SetupTextPresenterPreeditSubscription(e);
         ConfigureEffectiveShowClearButton();
+        ConfigurePlaceholderTextVisibility();
         HandleInputChanged(Text);
+    }
+
+    private void SetupTextPresenterPreeditSubscription(TemplateAppliedEventArgs e)
+    {
+        _preeditTextSubscription?.Dispose();
+        _preeditTextSubscription = null;
+
+        _textPresenter = e.NameScope.Find<TextPresenter>("PART_TextPresenter");
+        if (_textPresenter is not null)
+        {
+            _preeditTextSubscription = _textPresenter.GetObservable(TextPresenter.PreeditTextProperty)
+                                                     .Subscribe(_ => ConfigurePlaceholderTextVisibility());
+        }
+    }
+
+    private void ConfigurePlaceholderTextVisibility()
+    {
+        SetCurrentValue(IsPlaceholderTextVisibleProperty,
+            string.IsNullOrEmpty(Text) && string.IsNullOrEmpty(_textPresenter?.PreeditText));
     }
 
     private void HandleClearButtonClicked(object? sender, RoutedEventArgs args)

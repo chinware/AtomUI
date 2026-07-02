@@ -37,6 +37,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     #endregion
     
     RangeDatePickState PickState = RangeDatePickState.None;
+    private DateTime? _pendingRangeOpenDisplayAnchor;
 
     protected void EmitRangePartConfirmed()
     {
@@ -66,6 +67,12 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
         {
             PickState |= RangeDatePickState.PartEnd;
         }
+    }
+
+    internal void ResetRangeOpenPanelState()
+    {
+        _pendingRangeOpenDisplayAnchor = ResolveRangeOpenDisplayAnchor();
+        ApplyPendingRangeOpenPanelState();
     }
 
     internal void NotifyRepairReverseRange(bool isRepair)
@@ -232,6 +239,41 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
         return IsRangeStartActive ? rangeCalendar.SelectedDate : rangeCalendar.SecondarySelectedDate;
     }
 
+    private DateTime? ResolveRangeOpenDisplayAnchor()
+    {
+        var activeDate = GetActiveSelectedDateTime();
+        if (activeDate is null)
+        {
+            return null;
+        }
+
+        var normalizedActiveDate = DatePickerFormattingHelper.NormalizeDateTime(activeDate.Value, PickerMode);
+        return IsRangeStartActive
+            ? normalizedActiveDate
+            : ResolveRangeEndDisplayAnchor(normalizedActiveDate);
+    }
+
+    protected virtual DateTime ResolveRangeEndDisplayAnchor(DateTime activeEnd)
+    {
+        return activeEnd;
+    }
+
+    private void ApplyPendingRangeOpenPanelState()
+    {
+        if (_pendingRangeOpenDisplayAnchor is null || CalendarView is not RangeCalendar rangeCalendar)
+        {
+            return;
+        }
+
+        var anchor = rangeCalendar.NormalizePickerDate(_pendingRangeOpenDisplayAnchor.Value);
+        rangeCalendar.SetCurrentValue(PickerCalendar.DisplayDateProperty, anchor);
+        rangeCalendar.SelectedMonth = anchor;
+        rangeCalendar.SelectedYear  = anchor;
+        rangeCalendar.LastSelectedDate = anchor;
+        rangeCalendar.UpdateHighlightDays();
+        _pendingRangeOpenDisplayAnchor = null;
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -245,6 +287,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        ApplyPendingRangeOpenPanelState();
         SetupConfirmButtonEnableStatus();
     }
 

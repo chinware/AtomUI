@@ -178,7 +178,29 @@ internal class RangeCalendar : Calendar
     {
         base.NotifyHoverDateChanged(hoverDate);
         HoverDateTime = HoverDate;
-        SyncViewStateFromCurrentProperties();
+        UpdateHighlightDays();
+    }
+
+    internal override void SelectPickerDate(DateTime date)
+    {
+        var normalizedDate = NormalizePickerDate(date);
+        if (IsSelectRangeStart)
+        {
+            SetCurrentValue(SelectedDateProperty, normalizedDate);
+        }
+        else
+        {
+            SetCurrentValue(SecondarySelectedDateProperty, normalizedDate);
+        }
+
+        NotifyDateSelected(normalizedDate);
+        if (SelectedDate is not null && SecondarySelectedDate is not null)
+        {
+            NotifyRangeDateSelected();
+        }
+
+        HoverDateTime = null;
+        UpdateHighlightDays();
     }
     
 }

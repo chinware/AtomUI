@@ -266,6 +266,7 @@ public class RangeDatePicker : RangeInfoPickerInput
             _pickerPresenter.SelectedDateTime          = RangeStartSelectedDate;
             _pickerPresenter.SecondarySelectedDateTime = RangeEndSelectedDate;
             _pickerPresenter.ResetRangePickState();
+            _pickerPresenter.ResetRangeOpenPanelState();
         }
     }
 

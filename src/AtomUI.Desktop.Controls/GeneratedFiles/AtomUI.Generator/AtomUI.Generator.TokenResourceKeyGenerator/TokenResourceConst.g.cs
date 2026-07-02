@@ -339,7 +339,8 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         PanelContentPadding,
         RangeCalendarSpacing,
         TextHeight,
-        WithoutTimeCellHeight
+        WithoutTimeCellHeight,
+        YearMonthCellWidth
     }
 
     public enum DescriptionsTokenKind

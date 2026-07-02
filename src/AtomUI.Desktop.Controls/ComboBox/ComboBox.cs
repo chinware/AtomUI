@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
@@ -298,6 +298,10 @@ public class ComboBox : AvaloniaComboBox,
     private ComboBoxHandle? _comboBoxHandle;
     private AddOnDecoratedBox? _addOnDecoratedBox;
     private AvaloniaTextBox? _editableTextBox;
+    private IDisposable? _editableTextBoxTextSubscription;
+    private TextBlock? _editableTextBoxPlaceholder;
+    private TextPresenter? _editableTextBoxPresenter;
+    private IDisposable? _editableTextBoxPreeditTextSubscription;
     private string? _editableTextBeforeUserEditKeyDown;
     private IDisposable? _feedbackStatusSubscription;
     private int _candidateSelectedIndex = -1;
@@ -359,12 +363,26 @@ public class ComboBox : AvaloniaComboBox,
             _popup.OverlayInputPassThroughElement = null;
         }
 
+        if (_editableTextBox != null)
+        {
+            _editableTextBox.TemplateApplied -= HandleEditableTextBoxTemplateApplied;
+        }
+        _editableTextBoxTextSubscription?.Dispose();
+        _editableTextBoxTextSubscription = null;
+        ClearEditableTextBoxPlaceholderParts();
+
         _addOnDecoratedBox = e.NameScope.Find<AddOnDecoratedBox>(AddOnDecoratedBox.AddOnDecoratedBoxPart);
         _editableTextBox = e.NameScope.Find<AvaloniaTextBox>("PART_EditableTextBox");
         _popup = e.NameScope.Find<Popup>("PART_Popup");
         if (_popup != null)
         {
             _popup.Opened += HandlePopupOpened;
+        }
+        if (_editableTextBox != null)
+        {
+            _editableTextBox.TemplateApplied += HandleEditableTextBoxTemplateApplied;
+            _editableTextBoxTextSubscription = _editableTextBox.GetObservable(AvaloniaTextBox.TextProperty)
+                                                               .Subscribe(_ => ConfigureEditableTextBoxPlaceholderVisibility());
         }
         ConfigureOverlayInputPassThroughElement();
         ConfigureBaseEditableTextBoxFocusBehavior();
@@ -520,6 +538,7 @@ public class ComboBox : AvaloniaComboBox,
         else if (change.Property == TextProperty)
         {
             SyncFilterValueFromText();
+            ConfigureEditableTextBoxPlaceholderVisibility();
             ClearCandidateItemSelection();
             RefreshFilteredItemVisibility();
         }
@@ -721,6 +740,43 @@ public class ComboBox : AvaloniaComboBox,
         }
 
         this.SetInputTextBox(IsEffectiveFilterEnabled ? null : _editableTextBox);
+    }
+
+    private void HandleEditableTextBoxTemplateApplied(object? sender, TemplateAppliedEventArgs e)
+    {
+        ClearEditableTextBoxPlaceholderParts();
+
+        _editableTextBoxPlaceholder = e.NameScope.Find<TextBlock>("Placeholder");
+        _editableTextBoxPresenter   = e.NameScope.Find<TextPresenter>("PART_TextPresenter");
+
+        if (_editableTextBoxPresenter is not null)
+        {
+            _editableTextBoxPreeditTextSubscription =
+                _editableTextBoxPresenter.GetObservable(TextPresenter.PreeditTextProperty)
+                                         .Subscribe(_ => ConfigureEditableTextBoxPlaceholderVisibility());
+        }
+
+        ConfigureEditableTextBoxPlaceholderVisibility();
+    }
+
+    private void ClearEditableTextBoxPlaceholderParts()
+    {
+        _editableTextBoxPreeditTextSubscription?.Dispose();
+        _editableTextBoxPreeditTextSubscription = null;
+        _editableTextBoxPlaceholder             = null;
+        _editableTextBoxPresenter               = null;
+    }
+
+    private void ConfigureEditableTextBoxPlaceholderVisibility()
+    {
+        if (_editableTextBoxPlaceholder is null)
+        {
+            return;
+        }
+
+        _editableTextBoxPlaceholder.SetCurrentValue(Visual.IsVisibleProperty,
+            string.IsNullOrEmpty(_editableTextBox?.Text) &&
+            string.IsNullOrEmpty(_editableTextBoxPresenter?.PreeditText));
     }
 
     private void FocusEditableTextBox(NavigationMethod navigationMethod)

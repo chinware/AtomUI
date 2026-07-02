@@ -257,6 +257,41 @@ public class ComboBoxDisplayMemberBindingTests
     }
 
     [Fact]
+    public void Editable_Placeholder_Hides_While_Ime_Preedit_Text_Is_Rendered()
+    {
+        var comboBox = new AtomUIComboBox
+        {
+            Width           = 200,
+            IsEditable      = true,
+            IsFilterEnabled = true,
+            IsMotionEnabled = false,
+            PlaceholderText = "请选择",
+            ItemsSource     = new List<DataItem> { new("Alpha") }
+        };
+
+        ShowInWindow(comboBox, () =>
+        {
+            var textBox     = GetVisualDescendant<AvaloniaTextBox>(comboBox, "PART_EditableTextBox");
+            var placeholder = GetVisualDescendant<TextBlock>(textBox, "Placeholder");
+            var presenter   = GetVisualDescendant<TextPresenter>(textBox, "PART_TextPresenter");
+
+            placeholder.IsVisible.ShouldBeTrue();
+
+            presenter.SetCurrentValue(TextPresenter.PreeditTextProperty, "测");
+            Dispatcher.UIThread.RunJobs();
+
+            placeholder.IsVisible.ShouldBeFalse(
+                "IME preedit text is rendered by the editable TextBox presenter before Text is committed, so the placeholder must not remain over it.");
+
+            presenter.SetCurrentValue(TextPresenter.PreeditTextProperty, string.Empty);
+            Dispatcher.UIThread.RunJobs();
+
+            placeholder.IsVisible.ShouldBeTrue(
+                "The editable ComboBox placeholder should return when IME preedit text is cleared and the text is still empty.");
+        });
+    }
+
+    [Fact]
     public void Editable_Filter_Click_Focuses_TextBox_And_Accepts_Text_Input()
     {
         var comboBox = new AtomUIComboBox

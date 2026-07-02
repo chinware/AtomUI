@@ -63,7 +63,7 @@
                                     LineHeight="{TemplateBinding LineHeight}"
                                     TextAlignment="{TemplateBinding TextAlignment}"
                                     TextWrapping="{TemplateBinding TextWrapping}"
-                                    IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                                    IsVisible="{TemplateBinding IsPlaceholderTextVisible}" />
                                 <atom:InputTextPresenter
                                     Name="PART_TextPresenter"
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"

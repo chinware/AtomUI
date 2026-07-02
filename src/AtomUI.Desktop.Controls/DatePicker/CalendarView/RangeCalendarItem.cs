@@ -9,7 +9,14 @@ internal class RangeCalendarItem : CalendarItem
         if (Owner is RangeCalendar owner)
         {
             owner.NotifyHoverDateChanged(selectedDate);
-            owner.UpdateHighlightDays();
+        }
+    }
+
+    protected override void NotifyMonthMouseEntered(CalendarButton calendarButton, DateTime selectedDate)
+    {
+        if (Owner is RangeCalendar owner)
+        {
+            owner.NotifyHoverDateChanged(selectedDate);
         }
     }
 
@@ -19,36 +26,16 @@ internal class RangeCalendarItem : CalendarItem
         {
             if (dayButton.IsEnabled && !dayButton.IsBlackout && dayButton.DataContext is DateTime selectedDate)
             {
-                // Set the start or end of the selection
-                // range
-                if (owner.IsSelectRangeStart)
-                {
-                    owner.SelectedDate = selectedDate;
-                    owner.NotifyDateSelected(selectedDate);
-                }
-                else
-                {
-                    owner.SecondarySelectedDate = selectedDate;
-                    owner.NotifyDateSelected(selectedDate);
-                }
-
-                if (owner.SelectedDate is not null && owner.SecondarySelectedDate is not null)
-                {
-                    owner.NotifyRangeDateSelected();
-                }
-
-                owner.HoverDateTime = null;
-                owner.UpdateHighlightDays();
+                owner.SelectPickerDate(selectedDate);
             }
         }
     }
 
     protected override void NotifyPointerOutMonthView(bool originInMonthView)
     {
-        if (Owner is RangeCalendar owner)
+        if (originInMonthView && Owner is RangeCalendar owner)
         {
-            owner.HoverDateTime = null;
-            Owner.UpdateHighlightDays();
+            owner.NotifyHoverDateChanged(null);
         }
     }
 }

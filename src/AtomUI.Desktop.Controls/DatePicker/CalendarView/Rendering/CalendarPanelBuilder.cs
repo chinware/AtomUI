@@ -1,5 +1,4 @@
 using System.Globalization;
-using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.CalendarView.Models;
 using AtomUI.Desktop.Controls.CalendarView.State;
 
@@ -30,12 +29,17 @@ internal static class CalendarPanelBuilder
     {
         var yearStart = new DateTime(displayYear.Year, 1, 1);
         var months    = new List<CalendarCellState>(12);
-        var selectedReference = state.SelectedDate ?? state.DisplayDate;
+        var hasSelectedMonth = state.SelectedDate is not null || state.SecondarySelectedDate is not null;
+        var hasPreviewRange   = HasPickerUnitPreviewRange(state, DatePickerMode.Month);
         for (var month = 1; month <= 12; month++)
         {
             var date       = new DateTime(yearStart.Year, month, 1);
             var isDisabled = DateTimeHelper.CompareYearMonth(date, state.DisplayDateStart) < 0 ||
                              DateTimeHelper.CompareYearMonth(date, state.DisplayDateEnd) > 0;
+            var isSelected = !hasPreviewRange &&
+                             (IsSelectedPickerUnit(state, date, DatePickerMode.Month) ||
+                              (!hasSelectedMonth && IsSamePickerUnit(date, state.DisplayDate, DatePickerMode.Month)));
+            var rangeState = GetPickerUnitRangeState(state, date, DatePickerMode.Month);
             months.Add(new CalendarCellState(
                 Date: date,
                 Text: state.Culture.AbbreviatedMonthNames[month - 1],
@@ -43,12 +47,15 @@ internal static class CalendarPanelBuilder
                 IsBlackout: false,
                 IsDisabled: isDisabled,
                 IsInactive: false,
-                IsSelected: IsSamePickerUnit(date, selectedReference, DatePickerMode.Month),
-                IsRangeStart: false,
-                IsRangeEnd: false,
-                IsRangeMiddle: false,
+                IsSelected: isSelected,
+                IsRangeStart: rangeState.IsRangeStart,
+                IsRangeEnd: rangeState.IsRangeEnd,
+                IsRangeMiddle: rangeState.IsRangeMiddle,
                 IsFocused: DateTimeHelper.CompareYearMonth(date, state.SelectedMonth) == 0,
-                IsHidden: isDisabled));
+                IsHidden: isDisabled,
+                IsRangePreviewStart: rangeState.IsRangePreviewStart,
+                IsRangePreviewEnd: rangeState.IsRangePreviewEnd,
+                IsRangePreviewMiddle: rangeState.IsRangePreviewMiddle));
         }
 
         return new CalendarYearPanelModel(yearStart, months);
@@ -57,7 +64,8 @@ internal static class CalendarPanelBuilder
     public static CalendarQuarterPanelModel BuildQuarterPanel(CalendarViewState state, DateTime displayYear)
     {
         var yearStart         = new DateTime(displayYear.Year, 1, 1);
-        var selectedReference = state.SelectedDate ?? state.DisplayDate;
+        var hasSelectedQuarter = state.SelectedDate is not null || state.SecondarySelectedDate is not null;
+        var hasPreviewRange    = HasPickerUnitPreviewRange(state, DatePickerMode.Quarter);
         var quarters          = new List<CalendarCellState>(4);
         for (var quarter = 1; quarter <= 4; quarter++)
         {
@@ -66,6 +74,10 @@ internal static class CalendarPanelBuilder
             var endMonth   = new DateTime(yearStart.Year, startMonth + 2, 1);
             var isDisabled = DateTimeHelper.CompareYearMonth(endMonth, state.DisplayDateStart) < 0 ||
                              DateTimeHelper.CompareYearMonth(date, state.DisplayDateEnd) > 0;
+            var isSelected = !hasPreviewRange &&
+                             (IsSelectedPickerUnit(state, date, DatePickerMode.Quarter) ||
+                              (!hasSelectedQuarter && IsSamePickerUnit(date, state.DisplayDate, DatePickerMode.Quarter)));
+            var rangeState = GetPickerUnitRangeState(state, date, DatePickerMode.Quarter);
             quarters.Add(new CalendarCellState(
                 Date: date,
                 Text: $"Q{quarter}",
@@ -73,12 +85,15 @@ internal static class CalendarPanelBuilder
                 IsBlackout: false,
                 IsDisabled: isDisabled,
                 IsInactive: false,
-                IsSelected: IsSamePickerUnit(date, selectedReference, DatePickerMode.Quarter),
-                IsRangeStart: false,
-                IsRangeEnd: false,
-                IsRangeMiddle: false,
+                IsSelected: isSelected,
+                IsRangeStart: rangeState.IsRangeStart,
+                IsRangeEnd: rangeState.IsRangeEnd,
+                IsRangeMiddle: rangeState.IsRangeMiddle,
                 IsFocused: IsSamePickerUnit(date, state.SelectedMonth, DatePickerMode.Quarter),
-                IsHidden: isDisabled));
+                IsHidden: isDisabled,
+                IsRangePreviewStart: rangeState.IsRangePreviewStart,
+                IsRangePreviewEnd: rangeState.IsRangePreviewEnd,
+                IsRangePreviewMiddle: rangeState.IsRangePreviewMiddle));
         }
 
         return new CalendarQuarterPanelModel(yearStart, quarters);
@@ -86,9 +101,11 @@ internal static class CalendarPanelBuilder
 
     public static CalendarDecadePanelModel BuildDecadePanel(CalendarViewState state, DateTime selectedYear)
     {
-        var decadeStart = DateTimeHelper.DecadeOfDate(selectedYear);
-        var decadeEnd   = DateTimeHelper.EndOfDecade(selectedYear);
-        var years       = new List<CalendarCellState>(12);
+        var decadeStart    = DateTimeHelper.DecadeOfDate(selectedYear);
+        var decadeEnd      = DateTimeHelper.EndOfDecade(selectedYear);
+        var years          = new List<CalendarCellState>(12);
+        var hasSelectedYear = state.SelectedDate is not null || state.SecondarySelectedDate is not null;
+        var hasPreviewRange = HasPickerUnitPreviewRange(state, DatePickerMode.Year);
         for (var offset = -1; offset <= 10; offset++)
         {
             var year    = decadeStart + offset;
@@ -97,6 +114,13 @@ internal static class CalendarPanelBuilder
             var isDisabled = !isValid ||
                              year < state.DisplayDateStart.Year ||
                              year > state.DisplayDateEnd.Year;
+            var isSelected = isValid &&
+                             !hasPreviewRange &&
+                             (IsSelectedPickerUnit(state, date, DatePickerMode.Year) ||
+                              (!hasSelectedYear && state.DisplayDate.Year == year));
+            var rangeState = isValid
+                ? GetPickerUnitRangeState(state, date, DatePickerMode.Year)
+                : default;
             years.Add(new CalendarCellState(
                 Date: date,
                 Text: isValid ? year.ToString(state.Culture) : string.Empty,
@@ -104,12 +128,15 @@ internal static class CalendarPanelBuilder
                 IsBlackout: false,
                 IsDisabled: isDisabled,
                 IsInactive: year < decadeStart || year > decadeEnd,
-                IsSelected: isValid && state.DisplayDate.Year == year,
-                IsRangeStart: false,
-                IsRangeEnd: false,
-                IsRangeMiddle: false,
+                IsSelected: isSelected,
+                IsRangeStart: rangeState.IsRangeStart,
+                IsRangeEnd: rangeState.IsRangeEnd,
+                IsRangeMiddle: rangeState.IsRangeMiddle,
                 IsFocused: isValid && state.SelectedYear.Year == year,
-                IsHidden: isDisabled));
+                IsHidden: isDisabled,
+                IsRangePreviewStart: rangeState.IsRangePreviewStart,
+                IsRangePreviewEnd: rangeState.IsRangePreviewEnd,
+                IsRangePreviewMiddle: rangeState.IsRangePreviewMiddle));
         }
 
         return new CalendarDecadePanelModel(decadeStart, years);
@@ -139,6 +166,7 @@ internal static class CalendarPanelBuilder
         DateTime firstCell)
     {
         var weekCells = new List<CalendarCellState>(Calendar.RowsPerMonth - 1);
+        var hasPreviewRange = state.RangeSelection.TryGetPreviewRange(out _, out _);
         for (var row = 0; row < Calendar.RowsPerMonth - 1; row++)
         {
             var weekStart = firstCell.AddDays(row * Calendar.ColumnsPerMonth);
@@ -149,7 +177,8 @@ internal static class CalendarPanelBuilder
                 DateTimeHelper.CompareDays(date, state.DisplayDateStart) < 0 ||
                 DateTimeHelper.CompareDays(date, state.DisplayDateEnd) > 0);
             var isInactive = weekDays.All(date => DateTimeHelper.CompareYearMonth(date, displayMonth) != 0);
-            var isSelected = IsSelectedPickerUnit(state, weekStart, DatePickerMode.Week);
+            var isSelected = !hasPreviewRange &&
+                             IsSelectedPickerUnit(state, weekStart, DatePickerMode.Week);
             var isWeekSelection = isSelected || IsWeekRangePreviewEndpoint(state, weekStart);
             var isWeekRange = IsWeekInsideVisualRange(state, weekStart);
             var isHovered = !isWeekSelection &&
@@ -196,11 +225,14 @@ internal static class CalendarPanelBuilder
                                 state.RangeSelection.TryGetCommittedRange(out rangeStart, out rangeEnd);
         var hasPreviewRange = shouldRenderDateRange &&
                               state.RangeSelection.TryGetPreviewRange(out previewRangeStart, out previewRangeEnd);
-        var isRangeStart = hasCommittedRange &&
+        var isRangeStart = !hasPreviewRange &&
+                           hasCommittedRange &&
                            DateTimeHelper.CompareDays(rangeStart, date) == 0;
-        var isRangeEnd = hasCommittedRange &&
+        var isRangeEnd = !hasPreviewRange &&
+                         hasCommittedRange &&
                          DateTimeHelper.CompareDays(rangeEnd, date) == 0;
-        var isRangeMiddle = hasCommittedRange &&
+        var isRangeMiddle = !hasPreviewRange &&
+                            hasCommittedRange &&
                             DateTimeHelper.CompareDays(date, rangeStart) > 0 &&
                             DateTimeHelper.CompareDays(date, rangeEnd) < 0;
         var isRangePreviewStart = hasPreviewRange &&
@@ -212,7 +244,8 @@ internal static class CalendarPanelBuilder
                                    DateTimeHelper.CompareDays(date, previewRangeEnd) < 0;
         var isFocused = state.FocusedDate is not null &&
                         IsSamePickerUnit(state.FocusedDate.Value, date, state.PickerMode);
-        var isSelected = IsSelectedPickerUnit(state, date, state.PickerMode);
+        var isSelected = !hasPreviewRange &&
+                         IsSelectedPickerUnit(state, date, state.PickerMode);
         var weekStart = GetWeekStart(date, state.FirstDayOfWeek);
         var isWeekSelection = state.PickerMode == DatePickerMode.Week &&
                               (isSelected || IsWeekRangePreviewEndpoint(state, weekStart));
@@ -264,6 +297,75 @@ internal static class CalendarPanelBuilder
                 IsSamePickerUnit(state.SelectedDate.Value, date, pickerMode)) ||
                (state.SecondarySelectedDate is not null &&
                 IsSamePickerUnit(state.SecondarySelectedDate.Value, date, pickerMode));
+    }
+
+    private static bool HasPickerUnitPreviewRange(CalendarViewState state, DatePickerMode pickerMode)
+    {
+        return state.PickerMode == pickerMode &&
+               state.RangeSelection.TryGetPreviewRange(out _, out _);
+    }
+
+    private static (
+        bool IsRangeStart,
+        bool IsRangeEnd,
+        bool IsRangeMiddle,
+        bool IsRangePreviewStart,
+        bool IsRangePreviewEnd,
+        bool IsRangePreviewMiddle) GetPickerUnitRangeState(
+            CalendarViewState state,
+            DateTime date,
+            DatePickerMode pickerMode)
+    {
+        if (state.PickerMode != pickerMode)
+        {
+            return default;
+        }
+
+        var rangeStart = default(DateTime);
+        var rangeEnd   = default(DateTime);
+        var previewRangeStart = default(DateTime);
+        var previewRangeEnd   = default(DateTime);
+        var hasCommittedRange = state.RangeSelection.TryGetCommittedRange(out rangeStart, out rangeEnd);
+        var hasPreviewRange   = state.RangeSelection.TryGetPreviewRange(out previewRangeStart, out previewRangeEnd);
+
+        if (hasPreviewRange)
+        {
+            return (
+                IsRangeStart: false,
+                IsRangeEnd: false,
+                IsRangeMiddle: false,
+                IsRangePreviewStart: IsSamePickerUnit(previewRangeStart, date, pickerMode),
+                IsRangePreviewEnd: IsSamePickerUnit(previewRangeEnd, date, pickerMode),
+                IsRangePreviewMiddle: IsPickerUnitInsideRange(state, date, previewRangeStart, previewRangeEnd, pickerMode));
+        }
+
+        return (
+            IsRangeStart: hasCommittedRange && IsSamePickerUnit(rangeStart, date, pickerMode),
+            IsRangeEnd: hasCommittedRange && IsSamePickerUnit(rangeEnd, date, pickerMode),
+            IsRangeMiddle: hasCommittedRange && IsPickerUnitInsideRange(state, date, rangeStart, rangeEnd, pickerMode),
+            IsRangePreviewStart: false,
+            IsRangePreviewEnd: false,
+            IsRangePreviewMiddle: false);
+    }
+
+    private static bool IsPickerUnitInsideRange(
+        CalendarViewState state,
+        DateTime date,
+        DateTime rangeStart,
+        DateTime rangeEnd,
+        DatePickerMode pickerMode)
+    {
+        var unitDate  = NormalizePickerUnit(state, date, pickerMode);
+        var unitStart = NormalizePickerUnit(state, rangeStart, pickerMode);
+        var unitEnd   = NormalizePickerUnit(state, rangeEnd, pickerMode);
+
+        return DateTimeHelper.CompareDays(unitDate, unitStart) > 0 &&
+               DateTimeHelper.CompareDays(unitDate, unitEnd) < 0;
+    }
+
+    private static DateTime NormalizePickerUnit(CalendarViewState state, DateTime date, DatePickerMode pickerMode)
+    {
+        return DatePickerFormattingHelper.NormalizeDateTime(date, pickerMode, state.FirstDayOfWeek);
     }
 
     private static bool IsWeekInsideVisualRange(CalendarViewState state, DateTime weekStart)

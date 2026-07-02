@@ -157,16 +157,24 @@ internal class DualMonthCalendarItem : RangeCalendarItem
 
     protected override bool IsPointerInMonthView(Point position)
     {
-        if (Owner is null || Owner.DisplayMode != CalendarMode.Month || SecondaryMonthView is null)
+        if (Owner is null)
         {
             return false;
         }
-        if (base.IsPointerInMonthView(position))
+
+        if (Owner.DisplayMode == CalendarMode.Month)
         {
-            return true;
+            if (SecondaryMonthView is null)
+            {
+                return false;
+            }
+
+            return base.IsPointerInMonthView(position) ||
+                   GetMonthViewRect(SecondaryMonthView).Contains(position);
         }
-        
-        return GetMonthViewRect(SecondaryMonthView!).Contains(position);
+
+        return base.IsPointerInMonthView(position) ||
+               GetCalendarPanelRect(SecondaryYearView).Contains(position);
     }
 
     protected override bool TryGetWeekStartFromPointerPosition(Point position, out DateTime weekStart)

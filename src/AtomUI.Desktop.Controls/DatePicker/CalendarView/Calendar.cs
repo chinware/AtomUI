@@ -1011,7 +1011,7 @@ internal class Calendar : TemplatedControl
         return DatePickerFormattingHelper.NormalizeDateTime(date, PickerMode, DayOfWeek.Monday);
     }
 
-    internal void SelectPickerDate(DateTime date)
+    internal virtual void SelectPickerDate(DateTime date)
     {
         var normalizedDate = NormalizePickerDate(date);
         SetCurrentValue(SelectedDateProperty, normalizedDate);
