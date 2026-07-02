@@ -54,6 +54,7 @@ public class SpaceShowCasePageTests
         source.ShouldContain("SpaceShowCaseLangResource AlignTitle");
         source.ShouldContain("SpaceShowCaseLangResource CompactFormTitle");
         source.ShouldContain("SpaceShowCaseLangResource CompactButtonTitle");
+        source.ShouldNotContain("{Binding #CustomSizeSlider.Value");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");

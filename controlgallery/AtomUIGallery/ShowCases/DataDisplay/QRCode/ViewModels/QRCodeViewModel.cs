@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Subjects;
 using AtomUI.Controls;
@@ -52,12 +51,20 @@ public class QRCodeViewModel : ReactiveObject, IRoutableViewModel
 
     public int IconSize => Size / 4;
 
-    private IList? _eccLevels;
+    private IList<QRCodeEccLevel>? _eccLevels;
 
-    public IList? EccLevels
+    public IList<QRCodeEccLevel>? EccLevels
     {
         get => _eccLevels;
         set => this.RaiseAndSetIfChanged(ref _eccLevels, value);
+    }
+
+    private QRCodeEccLevel _selectedEccLevel = QRCodeEccLevel.M;
+
+    public QRCodeEccLevel SelectedEccLevel
+    {
+        get => _selectedEccLevel;
+        set => this.RaiseAndSetIfChanged(ref _selectedEccLevel, value);
     }
 
     public ReactiveCommand<Unit, Unit> SmallerCommand { get; }

@@ -5,6 +5,8 @@ using AtomUI.Controls.Commons;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
+using Avalonia.VisualTree;
 
 namespace AtomUIGallery.ShowCases.Tour;
 
@@ -105,6 +107,56 @@ public partial class TourShowCase : GalleryReactiveUserControl<TourViewModel>
         {
             vm.CustomActionTourOpened = true;
         }
+    }
+
+    private void HandleTourExampleLoaded(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        if (sender is not Control root)
+        {
+            return;
+        }
+
+        SetTourStepTarget(root, "BasicCaseUploadStep", "BasicCaseUpload");
+        SetTourStepTarget(root, "BasicCaseSaveStep", "BasicCaseSave");
+        SetTourStepTarget(root, "BasicCaseEllipsisStep", "BasicCaseEllipsis");
+        SetTourStepTarget(root, "NonMaskCaseUploadStep", "NonMaskCaseUpload");
+        SetTourStepTarget(root, "NonMaskSaveStep", "NonMaskSave");
+        SetTourStepTarget(root, "NonMaskEllipsisStep", "NonMaskEllipsis");
+        SetTourStepTarget(root, "PlacementRightStep", "PlacementBeginTour");
+        SetTourStepTarget(root, "PlacementTopStep", "PlacementBeginTour");
+        SetTourStepTarget(root, "PlacementLeftStep", "PlacementBeginTour");
+        SetTourStepTarget(root, "CustomIndicatorUploadStep", "CustomIndicatorUpload");
+        SetTourStepTarget(root, "CustomIndicatorSaveStep", "CustomIndicatorSave");
+        SetTourStepTarget(root, "CustomIndicatorEllipsisStep", "CustomIndicatorEllipsis");
+        SetTourStepTarget(root, "CustomMaskUploadStep", "CustomMaskUpload");
+        SetTourStepTarget(root, "CustomMaskSaveStep", "CustomMaskSave");
+        SetTourStepTarget(root, "CustomMaskEllipsisStep", "CustomMaskEllipsis");
+        SetTourStepTarget(root, "CustomActionUploadStep", "CustomActionUpload");
+        SetTourStepTarget(root, "CustomActionSaveStep", "CustomActionSave");
+        SetTourStepTarget(root, "CustomActionEllipsisStep", "CustomActionEllipsis");
+        SetTourStepTarget(root, "CustomGapStep", "CustomGapControl");
+    }
+
+    private static void SetTourStepTarget(Control root, string stepName, string targetName)
+    {
+        var step = FindDescendantByName<TourStep>(root, stepName);
+        var target = FindDescendantByName<Control>(root, targetName);
+        if (step is not null && target is not null)
+        {
+            step.Target = target;
+        }
+    }
+
+    private static T? FindDescendantByName<T>(Control root, string name)
+        where T : Control
+    {
+        if (root is T typedRoot && typedRoot.Name == name)
+        {
+            return typedRoot;
+        }
+
+        return root.GetVisualDescendants().OfType<T>().FirstOrDefault(control => control.Name == name)
+               ?? root.GetLogicalDescendants().OfType<T>().FirstOrDefault(control => control.Name == name);
     }
 }
 

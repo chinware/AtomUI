@@ -53,6 +53,7 @@ public class StepsShowCasePageTests
         source.ShouldContain("StepsShowCaseLangResource SwitchStepTitle");
         source.ShouldContain("StepsShowCaseLangResource NavigationStepsTitle");
         source.ShouldContain("StepsShowCaseLangResource InlineStepsTitle");
+        source.ShouldNotContain("{Binding #");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain("<atom:DataGrid");
@@ -86,6 +87,7 @@ public class StepsShowCasePageTests
         codeBehindSource.ShouldContain("new StepsDesignTokenDataGrid()");
         codeBehindSource.ShouldContain("HandleNextButtonClick");
         codeBehindSource.ShouldContain("HandlePreviousButtonClick");
+        codeBehindSource.ShouldContain("HandleInteractiveStepsLoaded");
         codeBehindSource.ShouldNotContain("new StepsBasicShowCase()");
         codeBehindSource.ShouldNotContain("new StepsInteractiveShowCase()");
         codeBehindSource.ShouldNotContain("new StepsVerticalShowCase()");

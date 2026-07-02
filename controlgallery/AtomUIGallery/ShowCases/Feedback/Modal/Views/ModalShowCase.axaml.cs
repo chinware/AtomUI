@@ -7,7 +7,6 @@ using Avalonia.Layout;
 using Avalonia.LogicalTree;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
-using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 using TextBlock = AtomUI.Desktop.Controls.TextBlock;
 
 namespace AtomUIGallery.ShowCases.Modal;
@@ -126,6 +125,49 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
         if (e.Source is AtomUIToggleSwitch { Name: "StyleCaseHostTypeSwitch" } toggleSwitch)
         {
             HandleStyleCaseHostTypeSwitchChanged(toggleSwitch, e);
+        }
+    }
+
+    private void HandleDialogExampleLoaded(object? sender, RoutedEventArgs e)
+    {
+        if (sender is not Control root)
+        {
+            return;
+        }
+
+        SetPlacementTarget(root, "BasicDialog", "BasicOpenModalButton");
+        SetPlacementTarget(root, "BasicWindowDialog", "BasicWindowOpenModalButton");
+        SetPlacementTarget(root, "AsyncDialog", "AsyncDialogOpenModalButton");
+        SetPlacementTarget(root, "ConfirmMsgBox", "ConfirmMsgBoxBtn");
+        SetPlacementTarget(root, "InformationMsgBox", "InformationMsgBoxBtn");
+        SetPlacementTarget(root, "SuccessMsgBox", "SuccessMsgBoxBtn");
+        SetPlacementTarget(root, "ErrorMsgBox", "ErrorMsgBoxBtn");
+        SetPlacementTarget(root, "WarningMsgBox", "WarningMsgBoxBtn");
+        SetPlacementTarget(root, "LoadingDialog", "LoadingDialogOpenModalButton");
+        SetPlacementTarget(root, "CustomFooterDialog", "CustomFooterDialogOpenButton");
+        SetPlacementTarget(root, "CustomFooterMsgBox", "CustomFooterMsgBoxOpenButton");
+        SetPlacementTarget(root, "DraggableDialog", "DraggableDialogOpenButton");
+        SetPlacementTarget(root, "DelayedCloseMsgBox", "DelayedCloseMsgBoxOpenButton");
+        SetPlacementTarget(root, "ConfigureButtonPropertiesDialog", "ConfigureButtonsDialogOpenButton");
+    }
+
+    private static void SetPlacementTarget(Control root, string dialogName, string targetName)
+    {
+        var target = FindDescendantByName<Control>(root, targetName);
+        if (target is null)
+        {
+            return;
+        }
+
+        if (FindDescendantByName<Dialog>(root, dialogName) is { } dialog)
+        {
+            dialog.PlacementTarget = target;
+            return;
+        }
+
+        if (FindDescendantByName<MessageBox>(root, dialogName) is { } messageBox)
+        {
+            messageBox.PlacementTarget = target;
         }
     }
 

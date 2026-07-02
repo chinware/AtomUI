@@ -58,6 +58,7 @@ public class TreeSelectShowCasePageTests
         source.ShouldContain("TreeSelectShowCaseLangResource VariantsTitle");
         source.ShouldContain("TreeSelectShowCaseLangResource PrefixAndSuffixTitle");
         source.ShouldContain("OptionCheckedChanged=\"HandlePlacementOptionCheckedChanged\"");
+        source.ShouldNotContain("{Binding #");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");
@@ -125,6 +126,10 @@ public class TreeSelectShowCasePageTests
         tokenSource.ShouldContain("Width=\"*\"");
         tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
         tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
+        pageSource.ShouldContain("IsShowIcon=\"{Binding IsShowTreeSelectIcon}\"");
+        pageSource.ShouldContain("IsShowLeafIcon=\"{Binding IsShowTreeSelectLeafIcon}\"");
+        pageSource.ShouldContain("IsShowLine=\"{Binding IsShowTreeSelectLine}\"");
+        pageSource.ShouldNotContain("{Binding #");
     }
 
     [Fact]

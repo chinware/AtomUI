@@ -59,6 +59,7 @@ public class TreeViewShowCasePageTests
         source.ShouldContain("SearchButtonClick=\"HandleFilterItemsSourceTreeClicked\"");
         source.ShouldContain("SearchButtonClick=\"HandleFilterTreeClicked\"");
         source.ShouldContain("ItemContextMenuRequest=\"HandleContextMenuTreeItemContextMenuRequest\"");
+        source.ShouldNotContain("{Binding #");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");
@@ -128,6 +129,8 @@ public class TreeViewShowCasePageTests
         tokenSource.ShouldContain("Width=\"*\"");
         tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
         tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
+        pageSource.ShouldContain("IsSelectOnRightClick=\"{Binding IsContextMenuSelectOnRightClick}\"");
+        pageSource.ShouldNotContain("{Binding #");
     }
 
     [Fact]
