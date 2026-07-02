@@ -34,6 +34,32 @@ public class SplitButtonLayoutTests
         });
     }
 
+    [Fact]
+    public void SplitButton_Secondary_Button_Keeps_Auto_Width_When_Control_Width_Changes()
+    {
+        var splitButton = new SplitButton
+        {
+            Content = "Hover me"
+        };
+
+        ShowInWindow(splitButton, () =>
+        {
+            var primaryButton   = FindButtonPart(splitButton, "PART_PrimaryButton");
+            var secondaryButton = FindButtonPart(splitButton, "PART_SecondaryButton");
+            var secondaryWidth  = secondaryButton.Bounds.Width;
+            var secondaryRightOffset = splitButton.Bounds.Width - secondaryButton.Bounds.Right;
+
+            splitButton.Width = splitButton.Bounds.Width + 120;
+            Dispatcher.UIThread.RunJobs();
+
+            secondaryButton.Bounds.Width.ShouldBe(secondaryWidth, 0.001);
+            (splitButton.Bounds.Width - secondaryButton.Bounds.Right).ShouldBe(secondaryRightOffset, 0.001);
+
+            var sharedBorderOverlap = primaryButton.Bounds.Right - secondaryButton.Bounds.Left;
+            sharedBorderOverlap.ShouldBe(secondaryButton.BorderThickness.Left, 0.001);
+        });
+    }
+
     private static Button FindButtonPart(SplitButton splitButton, string name)
     {
         return splitButton.GetVisualDescendants()
