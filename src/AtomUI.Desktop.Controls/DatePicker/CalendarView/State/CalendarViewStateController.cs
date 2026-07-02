@@ -38,6 +38,8 @@ internal sealed class CalendarViewStateController
                     setRangeSelection.RepairReverseRange),
             CalendarViewAction.SetDisplayModeAction setMode =>
                 State.WithDisplayMode(setMode.Mode),
+            CalendarViewAction.SetPickerModeAction setPickerMode =>
+                State.WithPickerMode(setPickerMode.PickerMode),
             CalendarViewAction.SetFirstDayOfWeekAction setFirstDayOfWeek =>
                 State.WithFirstDayOfWeek(setFirstDayOfWeek.FirstDayOfWeek),
             CalendarViewAction.SetTodayHighlightedAction setTodayHighlighted =>

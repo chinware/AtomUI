@@ -12,7 +12,7 @@
 | Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker` |
 | 控件状态 | Stable |
 
-DatePicker 是 AtomUI 桌面控件体系中的日期选择控件，用于单日期、日期范围和日历面板选择。
+DatePicker 是 AtomUI 桌面控件体系中的日期选择控件，用于单日期、周、月份、季度、年份以及日期范围的日历面板选择。
 
 DatePicker 不负责业务日程系统、时间选择或完整日期时间解析服务。这些职责应由业务层、组合控件或更专用的 AtomUI 控件承担。
 
@@ -40,7 +40,7 @@ DatePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `HeaderBackground` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `DisplayMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SecondarySelectedDate`、`SecondarySelectedDateTime`、`SelectedDate`、`SelectedDateTime`、`TempSelectedTime` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `DisplayMode`、`PickerMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SecondarySelectedDate`、`SecondarySelectedDateTime`、`SelectedDate`、`SelectedDateTime`、`TempSelectedTime` | 维护选择颗粒度、展开面板、范围端点和当前临时选择状态。 |
 | 交互与状态 | `IsFloatingArrowPosition`、`IsHorizontalFlipped`、`IsNeedConfirm`、`IsShowNow`、`IsShowTime`、`IsTodayHighlighted` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `RangePickerIndicatorOffsetEnd`、`RangePickerIndicatorOffsetStart` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `ClockIdentifier`、`DefaultDateTime`、`DisplayDate`、`DisplayDateEnd`、`DisplayDateStart`、`FirstDayOfWeek`、`Format` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
@@ -50,7 +50,7 @@ DatePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 主要公开类型与枚举：
 
 - 类型：`Calendar`、`CalendarItem`、`ChoosingStatusEventArgs`、`DatePicker`、`DatePickerPresenter`、`DateSelectedEventArgs`、`DualMonthArrowDecoratedBox`、`DualMonthCalendarItem`、`DualMonthRangeCalendar`、`DualMonthRangeDatePickerPresenter`、`RangeCalendar`、`RangeCalendarItem`、`RangeDatePicker`、`RangeDatePickerPresenter` 等 19 项。
-- 枚举：无。
+- 枚举：`DatePickerMode`，取值为 `Date`、`Week`、`Month`、`Quarter`、`Year`。
 
 稳定 template part：
 
@@ -100,6 +100,9 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `PickerMode` 决定选择颗粒度和初始面板：`Date`、`Week` 使用月视图，`Month`、`Quarter` 使用年视图，`Year` 使用十年视图。目标颗粒度不能继续降级到更细面板。
+- 非 `Date` 颗粒度仍使用 `DateTime?` 保存提交值：`Week` 保存 ISO 周起始日，`Month` 保存当月 1 日，`Quarter` 保存季度首月 1 日，`Year` 保存当年 1 月 1 日。
+- `IsShowTime` 只在 `PickerMode=Date` 时形成有效时间选择；其他颗粒度忽略时间面板和时间拼接。
 - 范围选择的 committed 状态和 hover preview 状态必须分开：`:selected`、`:range-start`、`:range-end`、`:range-middle` 只来自真实端点；hover 只写入 `:range-preview-start`、`:range-preview-end`、`:range-preview-middle`，其中 preview start/end 在视觉上按临时端点显示，但不能污染真实提交状态。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
@@ -190,6 +193,14 @@ DatePicker 的当前项状态必须由单一 owner 推导。public 选择属性�
 ### 8.2 视觉选项模型
 
 DatePicker 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
+
+### 8.3 PickerMode 颗粒度模型
+
+`DatePicker.PickerMode` 和 `RangeDatePicker.PickerMode` 对齐 Ant Design 的 `picker` 模型，用一个核心控件表达日期、周、月份、季度和年份选择，不为每种颗粒度拆分独立控件。
+
+`Format` 为空时，控件按颗粒度选择默认显示格式：日期 `yyyy-MM-dd`，周 `yyyy-ww周`，月份 `yyyy-MM`，季度 `yyyy-Qn`，年份 `yyyy`。自定义 `Format` 优先级高于默认格式。
+
+CalendarView 必须把目标颗粒度作为状态模型的一部分处理。用户从更粗面板返回时，只能回到目标颗粒度面板；例如月份选择可以从年面板进入十年面板选择年份，但选完年份后回到月份面板，不继续进入日期面板。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 

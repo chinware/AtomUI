@@ -10,6 +10,15 @@ using Avalonia.Layout;
 
 namespace AtomUI.Desktop.Controls;
 
+public enum DatePickerMode
+{
+    Date,
+    Week,
+    Month,
+    Quarter,
+    Year
+}
+
 public class DatePicker : InfoPickerInput
 {
     #region 公共属性定义
@@ -24,6 +33,9 @@ public class DatePicker : InfoPickerInput
 
     public static readonly StyledProperty<string?> FormatProperty =
         AvaloniaProperty.Register<DatePicker, string?>(nameof(Format));
+
+    public static readonly StyledProperty<DatePickerMode> PickerModeProperty =
+        AvaloniaProperty.Register<DatePicker, DatePickerMode>(nameof(PickerMode));
 
     public static readonly StyledProperty<bool> IsShowTimeProperty =
         AvaloniaProperty.Register<DatePicker, bool>(nameof(IsShowTime), false);
@@ -53,6 +65,12 @@ public class DatePicker : InfoPickerInput
     {
         get => GetValue(FormatProperty);
         set => SetValue(FormatProperty, value);
+    }
+
+    public DatePickerMode PickerMode
+    {
+        get => GetValue(PickerModeProperty);
+        set => SetValue(PickerModeProperty, value);
     }
 
     public bool IsShowTime
@@ -140,11 +158,6 @@ public class DatePicker : InfoPickerInput
         SelectedDateTime = DefaultDateTime;
     }
 
-    private string GetEffectiveFormat()
-    {
-        return DatePickerFormattingHelper.GetEffectiveFormat(Format, IsShowTime, ClockIdentifier);
-    }
-
     protected string FormatDateTime(DateTime? dateTime)
     {
         if (dateTime is null)
@@ -152,9 +165,8 @@ public class DatePicker : InfoPickerInput
             return string.Empty;
         }
 
-        var format = GetEffectiveFormat();
         var formatInfo = DatePickerFormattingHelper.CreateFormatInfo(ClockIdentifier, AmText, PmText);
-        return DatePickerFormattingHelper.FormatDateTime(dateTime.Value, format, formatInfo);
+        return DatePickerFormattingHelper.FormatDateTime(dateTime.Value, Format, PickerMode, IsShowTime, ClockIdentifier, formatInfo);
     }
 
     protected override Control CreatePickerPresenter()
@@ -166,6 +178,7 @@ public class DatePicker : InfoPickerInput
         presenter[!DatePickerPresenter.IsShowNowProperty]        = this[!IsShowNowProperty];
         presenter[!DatePickerPresenter.IsShowTimeProperty]       = this[!IsShowTimeProperty];
         presenter[!DatePickerPresenter.ClockIdentifierProperty]  = this[!ClockIdentifierProperty];
+        presenter[!DatePickerPresenter.PickerModeProperty]       = this[!PickerModeProperty];
 
         return presenter;
     }
@@ -281,6 +294,7 @@ public class DatePicker : InfoPickerInput
             property,
             IsShowTimeProperty,
             FormatProperty,
+            PickerModeProperty,
             ClockIdentifierProperty,
             AmTextProperty,
             PmTextProperty);
@@ -310,11 +324,13 @@ public class DatePicker : InfoPickerInput
         }
         else
         {
-            var format = GetEffectiveFormat();
             var formatInfo = DatePickerFormattingHelper.CreateFormatInfo(ClockIdentifier, AmText, PmText);
             PreferredInputWidth = DatePickerFormattingHelper.CalculateBoundedPreferredInputWidth(
                 PlaceholderText,
-                format,
+                Format,
+                PickerMode,
+                IsShowTime,
+                ClockIdentifier,
                 FontSize,
                 FontFamily,
                 FontStyle,

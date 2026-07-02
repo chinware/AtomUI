@@ -44,6 +44,7 @@
                             IsSelectRangeStart="{TemplateBinding IsRangeStartActive}"
                             SelectedDate="{TemplateBinding SelectedDateTime}"
                             SecondarySelectedDate="{TemplateBinding SecondarySelectedDateTime}"
+                            PickerMode="{TemplateBinding PickerMode}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
                     </StackPanel>
                 </DockPanel>

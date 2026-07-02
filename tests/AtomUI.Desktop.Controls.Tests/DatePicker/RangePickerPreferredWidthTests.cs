@@ -185,6 +185,69 @@ public class RangePickerPreferredWidthTests
         });
     }
 
+    [Theory]
+    [InlineData(DatePickerMode.Date, "2026-07-08")]
+    [InlineData(DatePickerMode.Week, "2026-28周")]
+    [InlineData(DatePickerMode.Month, "2026-07")]
+    [InlineData(DatePickerMode.Quarter, "2026-Q3")]
+    [InlineData(DatePickerMode.Year, "2026")]
+    public void DatePicker_Formats_Selected_Value_By_Picker_Mode(DatePickerMode pickerMode, string expectedText)
+    {
+        var picker = new DatePicker
+        {
+            PickerMode       = pickerMode,
+            SelectedDateTime = new DateTime(2026, 7, 8)
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var input = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+
+            input.Text.ShouldBe(expectedText);
+        });
+    }
+
+    [Theory]
+    [InlineData(DatePickerMode.Date, 2026, 7, 8, 2026, 7, 8)]
+    [InlineData(DatePickerMode.Week, 2026, 7, 8, 2026, 7, 6)]
+    [InlineData(DatePickerMode.Month, 2026, 7, 8, 2026, 7, 1)]
+    [InlineData(DatePickerMode.Quarter, 2026, 8, 8, 2026, 7, 1)]
+    [InlineData(DatePickerMode.Year, 2026, 7, 8, 2026, 1, 1)]
+    public void DatePicker_Normalizes_Selected_Date_By_Picker_Mode(
+        DatePickerMode pickerMode,
+        int sourceYear,
+        int sourceMonth,
+        int sourceDay,
+        int expectedYear,
+        int expectedMonth,
+        int expectedDay)
+    {
+        var source   = new DateTime(sourceYear, sourceMonth, sourceDay, 15, 30, 45);
+        var expected = new DateTime(expectedYear, expectedMonth, expectedDay);
+
+        DatePickerFormattingHelper.NormalizeDateTime(source, pickerMode).ShouldBe(expected);
+    }
+
+    [Fact]
+    public void DatePicker_Picker_Mode_Change_Recalculates_Preferred_Input_Width()
+    {
+        var picker = new DatePicker
+        {
+            PickerMode       = DatePickerMode.Date,
+            SelectedDateTime = new DateTime(2026, 7, 8)
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var dateWidth = picker.PreferredInputWidth;
+
+            picker.PickerMode = DatePickerMode.Year;
+            Dispatcher.UIThread.RunJobs();
+
+            picker.PreferredInputWidth.ShouldBeLessThan(dateWidth);
+        });
+    }
+
     [Fact]
     public void RangeDatePicker_Empty_Input_Uses_Format_Reserve_As_Preferred_Width()
     {
@@ -332,6 +395,26 @@ public class RangePickerPreferredWidthTests
 
             picker.PreferredWidth.ShouldBe(emptyWidth, WidthTolerance);
             picker.PreferredInputWidth.ShouldBe(emptyWidth, WidthTolerance);
+        });
+    }
+
+    [Fact]
+    public void RangeDatePicker_Formats_Selected_Values_By_Picker_Mode()
+    {
+        var picker = new RangeDatePicker
+        {
+            PickerMode              = DatePickerMode.Quarter,
+            RangeStartSelectedDate  = new DateTime(2026, 1, 8),
+            RangeEndSelectedDate    = new DateTime(2026, 10, 18)
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var startInput = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var endInput   = FindPart(picker, "PART_SecondaryInfoInputBox").ShouldBeOfType<TextBox>();
+
+            startInput.Text.ShouldBe("2026-Q1");
+            endInput.Text.ShouldBe("2026-Q4");
         });
     }
 

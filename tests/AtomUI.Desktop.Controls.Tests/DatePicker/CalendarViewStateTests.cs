@@ -9,6 +9,7 @@ using AtomUI.Desktop.Controls.Primitives;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -165,6 +166,141 @@ public class CalendarViewStateTests
         });
     }
 
+    [Theory]
+    [InlineData(DatePickerMode.Date, CalendarMode.Month)]
+    [InlineData(DatePickerMode.Week, CalendarMode.Month)]
+    [InlineData(DatePickerMode.Month, CalendarMode.Year)]
+    [InlineData(DatePickerMode.Quarter, CalendarMode.Year)]
+    [InlineData(DatePickerMode.Year, CalendarMode.Decade)]
+    public void Calendar_PickerMode_Change_Uses_Target_DisplayMode(DatePickerMode pickerMode, CalendarMode expectedDisplayMode)
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                PickerMode = pickerMode
+            };
+
+            calendar.DisplayMode.ShouldBe(expectedDisplayMode);
+        });
+    }
+
+    [Theory]
+    [InlineData(DatePickerMode.Month, 7, 2026, 7, 1)]
+    [InlineData(DatePickerMode.Quarter, 8, 2026, 7, 1)]
+    public void CalendarItem_Year_Mode_Target_Picker_Selects_Unit_Without_Drilling_Down(
+        DatePickerMode pickerMode,
+        int sourceMonth,
+        int expectedYear,
+        int expectedMonth,
+        int expectedDay)
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                PickerMode  = pickerMode,
+                DisplayMode = CalendarMode.Year
+            };
+            var item = new TestCalendarItem
+            {
+                Owner = calendar
+            };
+            var button = new PickerCalendarButton
+            {
+                DataContext = new DateTime(2026, sourceMonth, 1)
+            };
+            DateTime? emittedDate = null;
+            calendar.DateSelected += (_, args) => emittedDate = args.Date;
+
+            item.HandleMonthCalendarButtonMouseUpForTest(button);
+
+            var expectedDate = new DateTime(expectedYear, expectedMonth, expectedDay);
+            calendar.SelectedDate.ShouldBe(expectedDate);
+            emittedDate.ShouldBe(expectedDate);
+            calendar.DisplayMode.ShouldBe(CalendarMode.Year);
+        });
+    }
+
+    [Fact]
+    public void CalendarItem_Year_Picker_Selects_Year_From_Decade_Mode()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                PickerMode  = DatePickerMode.Year,
+                DisplayMode = CalendarMode.Decade
+            };
+            var item = new TestCalendarItem
+            {
+                Owner = calendar
+            };
+            var button = new PickerCalendarButton
+            {
+                DataContext = new DateTime(2028, 1, 1)
+            };
+            DateTime? emittedDate = null;
+            calendar.DateSelected += (_, args) => emittedDate = args.Date;
+
+            item.HandleMonthCalendarButtonMouseUpForTest(button);
+
+            var expectedDate = new DateTime(2028, 1, 1);
+            calendar.SelectedDate.ShouldBe(expectedDate);
+            emittedDate.ShouldBe(expectedDate);
+            calendar.DisplayMode.ShouldBe(CalendarMode.Decade);
+        });
+    }
+
+    [Theory]
+    [InlineData(DatePickerMode.Month, CalendarMode.Year, 2026, 8, 1, 2026, 8, 1)]
+    [InlineData(DatePickerMode.Quarter, CalendarMode.Year, 2026, 8, 1, 2026, 7, 1)]
+    [InlineData(DatePickerMode.Year, CalendarMode.Decade, 2028, 1, 1, 2028, 1, 1)]
+    public void Calendar_Enter_Key_Selects_Target_Picker_Unit_Without_Drilling_Down(
+        DatePickerMode pickerMode,
+        CalendarMode displayMode,
+        int sourceYear,
+        int sourceMonth,
+        int sourceDay,
+        int expectedYear,
+        int expectedMonth,
+        int expectedDay)
+    {
+        RunOnUIThread(() =>
+        {
+            var sourceDate = new DateTime(sourceYear, sourceMonth, sourceDay);
+            var calendar = new PickerCalendar
+            {
+                PickerMode  = pickerMode,
+                DisplayMode = displayMode
+            };
+            if (displayMode == CalendarMode.Year)
+            {
+                calendar.SelectedMonth = sourceDate;
+            }
+            else
+            {
+                calendar.SelectedYear = sourceDate;
+            }
+
+            DateTime? emittedDate = null;
+            calendar.DateSelected += (_, args) => emittedDate = args.Date;
+
+            var handled = calendar.ProcessCalendarKey(new KeyEventArgs
+            {
+                Key          = Key.Enter,
+                PhysicalKey  = PhysicalKey.Enter,
+                KeyModifiers = KeyModifiers.None
+            });
+
+            var expectedDate = new DateTime(expectedYear, expectedMonth, expectedDay);
+            handled.ShouldBeTrue();
+            calendar.SelectedDate.ShouldBe(expectedDate);
+            emittedDate.ShouldBe(expectedDate);
+            calendar.DisplayMode.ShouldBe(displayMode);
+        });
+    }
+
     [Fact]
     public void Calendar_SelectedDate_Change_Refreshes_Selected_Day_Button()
     {
@@ -176,9 +312,15 @@ public class CalendarViewStateTests
                 SelectedDate = new DateTime(2026, 6, 10)
             };
 
+            calendar.SelectedDate.ShouldBe(new DateTime(2026, 6, 10));
+
             ShowInWindow(calendar, () =>
             {
-                IsSelected(FindDayButton(calendar, new DateTime(2026, 6, 10))).ShouldBeTrue();
+                var firstButton = FindDayButton(calendar, new DateTime(2026, 6, 10));
+                var state       = calendar.SyncAndGetCurrentViewState();
+                IsSelected(firstButton).ShouldBeTrue(
+                    $"SelectedDate={calendar.SelectedDate:yyyy-MM-dd}; StateSelected={state.SelectedDate:yyyy-MM-dd}; " +
+                    $"StatePickerMode={state.PickerMode}; ButtonIsSelected={firstButton.IsSelected}");
 
                 calendar.SelectedDate = new DateTime(2026, 6, 12);
                 Dispatcher.UIThread.RunJobs();
@@ -722,6 +864,11 @@ public class CalendarViewStateTests
         public void ClearGeneratedMonthViewForTest(AvaloniaGrid monthView)
         {
             ClearGeneratedMonthView(monthView);
+        }
+
+        public void HandleMonthCalendarButtonMouseUpForTest(PickerCalendarButton button)
+        {
+            HandleMonthCalendarButtonMouseUp(button, null!);
         }
     }
 

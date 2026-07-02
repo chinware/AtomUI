@@ -25,6 +25,10 @@ internal partial class zh_CN : LanguageProvider
     public const string PlacementTitle = "弹出位置";
     public const string PlacementDescription = "可以通过 placement 手动指定弹出层位置。";
     public const string P2PlaceholderTextSelectDate = "选择日期";
+    public const string P2PlaceholderTextSelectWeek = "选择周";
+    public const string P2PlaceholderTextSelectMonth = "选择月份";
+    public const string P2PlaceholderTextSelectQuarter = "选择季度";
+    public const string P2PlaceholderTextSelectYear = "选择年份";
     public const string P2SecondaryPlaceholderTextEndDate = "结束日期";
     public const string P2PlaceholderTextSelectTime = "选择时间";
     public const string P2PlaceholderTextStartDate = "开始日期";
@@ -57,6 +61,7 @@ internal partial class zh_CN : LanguageProvider
     public const string ApiPropertyRangeStartSelectedDate = "RangeDatePicker 当前选中的开始日期。";
     public const string ApiPropertyRangeEndSelectedDate = "RangeDatePicker 当前选中的结束日期。";
     public const string ApiPropertyFormat = "自定义日期/时间格式字符串。";
+    public const string ApiPropertyPickerMode = "选择颗粒度：日期、周、月份、季度或年份。";
     public const string ApiPropertyIsShowTime = "启用时间选择面板。";
     public const string ApiPropertyIsNeedConfirm = "要求用户确认选中值后再提交。";
     public const string ApiPropertyClockIdentifier = "启用时间选择时，选择 12 小时制或 24 小时制显示。";

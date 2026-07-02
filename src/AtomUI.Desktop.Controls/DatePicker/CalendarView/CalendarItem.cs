@@ -2,6 +2,7 @@
 using System.Globalization;
 using AtomUI.Collections.Pooled;
 using AtomUI.Controls;
+using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 using AtomUI.Desktop.Controls.CalendarView.Rendering;
 using AtomUI.Desktop.Controls.CalendarView.State;
@@ -616,8 +617,16 @@ internal class CalendarItem : TemplatedControl
     private void SetMonthButtonsForYearMode()
     {
         var state = GetRenderState(_currentMonth);
-        var panel = CalendarPanelBuilder.BuildYearPanel(state, _currentMonth);
-        CalendarItemRenderer.RenderYearPanel(Owner, YearView!, panel);
+        if (Owner?.PickerMode == DatePickerMode.Quarter)
+        {
+            var panel = CalendarPanelBuilder.BuildQuarterPanel(state, _currentMonth);
+            CalendarItemRenderer.RenderQuarterPanel(Owner, YearView!, panel);
+        }
+        else
+        {
+            var panel = CalendarPanelBuilder.BuildYearPanel(state, _currentMonth);
+            CalendarItemRenderer.RenderYearPanel(Owner, YearView!, panel);
+        }
     }
 
     internal void UpdateDecadeMode()
@@ -658,7 +667,7 @@ internal class CalendarItem : TemplatedControl
 
             if (Owner.DisplayMode == CalendarMode.Year)
             {
-                Owner.SelectedMonth = selectedDate;
+                Owner.SelectedMonth = Owner.NormalizePickerDate(selectedDate);
             }
             else
             {
@@ -849,9 +858,7 @@ internal class CalendarItem : TemplatedControl
         {
             if (dayButton.IsEnabled && !dayButton.IsBlackout && dayButton.DataContext is DateTime selectedDate)
             {
-                Owner.SelectedDate = selectedDate;
-                Owner.NotifyDateSelected();
-                Owner.UpdateHighlightDays();
+                Owner.SelectPickerDate(selectedDate);
             }
         }
     }
@@ -902,14 +909,28 @@ internal class CalendarItem : TemplatedControl
         {
             if (Owner.DisplayMode == CalendarMode.Year)
             {
-                Owner.DisplayDate = newMonth;
-                Owner.DisplayMode = CalendarMode.Month;
+                if (Owner.PickerMode is DatePickerMode.Month or DatePickerMode.Quarter)
+                {
+                    Owner.SelectPickerDate(newMonth);
+                }
+                else
+                {
+                    Owner.DisplayDate = newMonth;
+                    Owner.DisplayMode = CalendarMode.Month;
+                }
             }
             else
             {
                 Debug.Assert(Owner.DisplayMode == CalendarMode.Decade, "The owning Calendar should be in decade mode!");
-                Owner.SelectedMonth = newMonth;
-                Owner.DisplayMode = CalendarMode.Year;
+                if (Owner.PickerMode == DatePickerMode.Year)
+                {
+                    Owner.SelectPickerDate(newMonth);
+                }
+                else
+                {
+                    Owner.SelectedMonth = newMonth;
+                    Owner.DisplayMode = CalendarMode.Year;
+                }
             }
 
             SetupHeaderForDisplayModeChanged();

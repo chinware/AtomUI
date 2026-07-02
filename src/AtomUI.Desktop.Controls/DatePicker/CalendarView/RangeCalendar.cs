@@ -73,6 +73,16 @@ internal class RangeCalendar : Calendar
     protected virtual void OnSecondarySelectedDateChanged(AvaloniaPropertyChangedEventArgs change)
     {
         var selectedDate = change.NewValue as DateTime?;
+        if (selectedDate.HasValue)
+        {
+            var normalizedDate = NormalizePickerDate(selectedDate.Value);
+            if (DateTimeHelper.CompareDays(normalizedDate, selectedDate.Value) != 0)
+            {
+                SetCurrentValue(SecondarySelectedDateProperty, normalizedDate);
+                return;
+            }
+        }
+
         if (!IsValidDateSelection(this, selectedDate))
         {
             SetCurrentValue(SecondarySelectedDateProperty, change.OldValue as DateTime?);
