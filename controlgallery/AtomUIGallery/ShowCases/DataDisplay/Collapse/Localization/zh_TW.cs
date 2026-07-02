@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Collapse;
 
 [LanguageProvider(LanguageCode.zh_TW, CollapseShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
@@ -90,5 +90,4 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentStart = "開始";
     public const string P2ContentEnd = "結束";
 
-    protected override Type GetResourceKindType() => typeof(CollapseShowCaseLangResourceKind);
 }

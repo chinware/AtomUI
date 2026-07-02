@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Calendar;
 
 [LanguageProvider(LanguageCode.zh_CN, CalendarShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string PageSubtitle = "在月历面板中选择日期。";
     public const string PageDescription = "Calendar 以月、年、十年视图呈现日期，并支持单选、范围选择和多范围选择。";
@@ -50,5 +50,4 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenScopeComponent = "组件";
     public const string TokenStatusStable = "稳定";
 
-    protected override Type GetResourceKindType() => typeof(CalendarShowCaseLangResourceKind);
 }

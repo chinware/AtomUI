@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.DatePicker;
 
 [LanguageProvider(LanguageCode.zh_TW, DatePickerShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "點擊 DatePicker 後，可以在面板中選擇或輸入日期。";
@@ -92,5 +92,4 @@ internal partial class zh_TW : LanguageProvider
     public const string TokenNameItemPanelMinWidth = "日曆項面板最小寬度。";
     public const string TokenNameRangeCalendarSpacing = "範圍日曆面板之間的間距。";
 
-    protected override Type GetResourceKindType() => typeof(DatePickerShowCaseLangResourceKind);
 }

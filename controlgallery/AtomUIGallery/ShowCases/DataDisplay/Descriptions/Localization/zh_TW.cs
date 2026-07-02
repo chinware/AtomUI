@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Descriptions;
 
 [LanguageProvider(LanguageCode.zh_TW, DescriptionsShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string PageSubtitle = "以響應式佈局展示分組的唯讀詳情。";
     public const string PageDescription = "Descriptions 用於展示相關的標籤和值，支援邊框、標題、額外操作、響應式列數和垂直佈局。";
@@ -104,5 +104,4 @@ internal partial class zh_TW : LanguageProvider
     public const string TokenScopeComponent = "組件";
     public const string TokenStatusStable = "穩定";
 
-    protected override Type GetResourceKindType() => typeof(DescriptionsShowCaseLangResourceKind);
 }

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Skeleton;
 
 [LanguageProvider(LanguageCode.zh_TW, SkeletonShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最簡單的 Skeleton 用法。";
@@ -86,5 +86,4 @@ internal partial class zh_TW : LanguageProvider
     public const string P2TextWeSupplyASeriesOfDesignPrinciplesPractical = "我們提供一系列設計原則、實用模式和高質量設計資源（Sketch 和 Axure），幫助人們高效而優雅地創建產品原型。";
     public const string P2ContentShowSkeleton = "顯示骨架屏";
 
-    protected override Type GetResourceKindType() => typeof(SkeletonShowCaseLangResourceKind);
 }

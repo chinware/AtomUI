@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Rate;
 
 [LanguageProvider(LanguageCode.zh_CN, RateShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
@@ -63,5 +63,4 @@ internal partial class zh_CN : LanguageProvider
     public const string P2TooltipGood = "好";
     public const string P2TooltipWonderful = "很棒";
 
-    protected override Type GetResourceKindType() => typeof(RateShowCaseLangResourceKind);
 }

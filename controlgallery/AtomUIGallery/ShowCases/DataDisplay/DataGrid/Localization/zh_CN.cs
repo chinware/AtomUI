@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.DataGrid;
 
 [LanguageProvider(LanguageCode.zh_CN, DataGridShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string BasicTitle = "基础表格";
     public const string BasicDescription = "带操作列的简单表格。";
@@ -203,5 +203,4 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenScopeComponent = "组件";
     public const string TokenStatusStable = "稳定";
 
-    protected override Type GetResourceKindType() => typeof(DataGridShowCaseLangResourceKind);
 }

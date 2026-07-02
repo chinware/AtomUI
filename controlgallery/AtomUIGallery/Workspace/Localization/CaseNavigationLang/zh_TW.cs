@@ -5,7 +5,7 @@ using AtomUIGallery.Workspace.Views;
 namespace AtomUIGallery.Workspace.Localization.CaseNavigationLang;
 
 [LanguageProvider(LanguageCode.zh_TW, CaseNavigation.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string Overview = "概覽";
     public const string Community = "社區";
@@ -100,5 +100,4 @@ internal partial class zh_TW : LanguageProvider
     public const string Other_BorderBeam = "BorderBeam 流光邊框";
     public const string Other_Splash = "Splash 啟動頁";
 
-    protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }

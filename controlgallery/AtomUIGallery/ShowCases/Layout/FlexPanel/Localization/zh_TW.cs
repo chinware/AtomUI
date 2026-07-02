@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.FlexPanel;
 
 [LanguageProvider(LanguageCode.zh_TW, FlexPanelShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ScenarioBasic = "基礎";
     public const string ScenarioAlignment = "對齊";
@@ -136,5 +136,4 @@ internal partial class zh_TW : LanguageProvider
     public const string P2TextShrink = "Shrink:";
     public const string P2TextOrder = "Order:";
 
-    protected override Type GetResourceKindType() => typeof(FlexPanelShowCaseLangResourceKind);
 }

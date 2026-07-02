@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Drawer;
 
 [LanguageProvider(LanguageCode.zh_CN, DrawerShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string PageSubtitle = "用于上下文任务的滑出式面板。";
     public const string PageDescription = "Drawer 从窗口边缘或局部容器边缘滑出，在不打断当前流程的情况下展示次级操作、表单或详情。";
@@ -89,5 +89,4 @@ internal partial class zh_CN : LanguageProvider
 
     public const string P2ContentOpen = "打开";
 
-    protected override Type GetResourceKindType() => typeof(DrawerShowCaseLangResourceKind);
 }

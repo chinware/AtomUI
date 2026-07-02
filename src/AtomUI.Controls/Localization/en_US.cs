@@ -3,13 +3,8 @@
 namespace AtomUI.Controls.Localization;
 
 [LanguageProvider(LanguageCode.en_US, CommonLangId.Common)]
-internal class en_US : LanguageProvider
+internal class en_US
 {
-    public en_US()
-        : base(LanguageCode.en_US, CommonLangId.Common)
-    {
-    }
-
     public const string Ok = "Ok";
     public const string Submit = "Submit";
     public const string Cancel = "Cancel";
@@ -21,5 +16,4 @@ internal class en_US : LanguageProvider
     public const string Loading = "Loading";
     public const string Optional = "(optional)";
 
-    protected override Type GetResourceKindType() => typeof(CommonLangResourceKind);
 }

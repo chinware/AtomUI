@@ -5,7 +5,7 @@ using AtomUIGallery.Workspace.Views;
 namespace AtomUIGallery.Workspace.Localization.CaseNavigationLang;
 
 [LanguageProvider(LanguageCode.en_US, CaseNavigation.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string Overview = "Overview";
     public const string Community = "Community";
@@ -100,5 +100,4 @@ internal partial class en_US : LanguageProvider
     public const string Other_BorderBeam = "BorderBeam";
     public const string Other_Splash = "Splash";
 
-    protected override Type GetResourceKindType() => typeof(CaseNavigationLangResourceKind);
 }

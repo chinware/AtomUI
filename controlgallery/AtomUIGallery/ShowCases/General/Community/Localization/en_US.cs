@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Community;
 
 [LanguageProvider(LanguageCode.en_US, CommunityPage.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string AboutAtomUI = "About AtomUI";
     public const string VisionLabel = "Vision:";
@@ -21,5 +21,4 @@ internal partial class en_US : LanguageProvider
     public const string QQGroup = "QQ Group";
     public const string QQGroupDescription = "Join the QQ group";
 
-    protected override Type GetResourceKindType() => typeof(CommunityPageLangResourceKind);
 }

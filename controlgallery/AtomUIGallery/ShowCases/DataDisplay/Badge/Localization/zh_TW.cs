@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Badge;
 
 [LanguageProvider(LanguageCode.zh_TW, BadgeShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ScenarioExamples = "範例";
     public const string ScenarioApi = "API";
@@ -96,5 +96,4 @@ internal partial class zh_TW : LanguageProvider
 
     public const string P2ContentLinkSomething = "鏈接內容";
 
-    protected override Type GetResourceKindType() => typeof(BadgeShowCaseLangResourceKind);
 }

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Badge;
 
 [LanguageProvider(LanguageCode.en_US, BadgeShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
@@ -96,5 +96,4 @@ internal partial class en_US : LanguageProvider
 
     public const string P2ContentLinkSomething = "Link something";
 
-    protected override Type GetResourceKindType() => typeof(BadgeShowCaseLangResourceKind);
 }

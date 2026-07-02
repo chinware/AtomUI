@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.TreeView;
 
 [LanguageProvider(LanguageCode.zh_CN, TreeViewShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string ComponentCategory = "数据展示";
     public const string ComponentStatusStable = "稳定";
@@ -126,5 +126,4 @@ internal partial class zh_CN : LanguageProvider
     public const string P2HeaderNewNodeFormat = "{0} / 新建 ({1})";
     public const string P2HeaderRenamedFormat = "{0}（已重命名）";
 
-    protected override Type GetResourceKindType() => typeof(TreeViewShowCaseLangResourceKind);
 }

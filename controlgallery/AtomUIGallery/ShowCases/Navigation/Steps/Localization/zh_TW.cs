@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Steps;
 
 [LanguageProvider(LanguageCode.zh_TW, StepsShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ScenarioBasic = "基礎";
     public const string ScenarioInteractive = "交互";
@@ -131,5 +131,4 @@ internal partial class zh_TW : LanguageProvider
 
     public const string P2ContentDone = "完成";
 
-    protected override Type GetResourceKindType() => typeof(StepsShowCaseLangResourceKind);
 }

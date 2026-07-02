@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Message;
 
 [LanguageProvider(LanguageCode.zh_CN, MessageShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "Message 的最简单用法。";
@@ -60,5 +60,4 @@ internal partial class zh_CN : LanguageProvider
     public const string P2MessageActionInProgress = "操作进行中...";
     public const string P2MessageLoadingFinished = "加载完成";
 
-    protected override Type GetResourceKindType() => typeof(MessageShowCaseLangResourceKind);
 }

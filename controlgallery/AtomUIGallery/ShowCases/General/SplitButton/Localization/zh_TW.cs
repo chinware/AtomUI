@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.SplitButton;
 
 [LanguageProvider(LanguageCode.zh_TW, SplitButtonShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最基礎的 SplitButton。";
@@ -73,5 +73,4 @@ internal partial class zh_TW : LanguageProvider
     public const string TokenScopeComponent = "組件";
     public const string TokenStatusStable = "穩定";
 
-    protected override Type GetResourceKindType() => typeof(SplitButtonShowCaseLangResourceKind);
 }

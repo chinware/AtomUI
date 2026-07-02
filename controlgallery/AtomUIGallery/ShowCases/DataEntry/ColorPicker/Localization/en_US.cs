@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.ColorPicker;
 
 [LanguageProvider(LanguageCode.en_US, ColorPickerShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Basic Usage.";
@@ -69,5 +69,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenNameTriggerTextMargin = "Margin between the color block and trigger text.";
     public const string TokenNameColorBlockDisabledOpacity = "Opacity of the color block while disabled.";
 
-    protected override Type GetResourceKindType() => typeof(ColorPickerShowCaseLangResourceKind);
 }

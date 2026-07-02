@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.TimePicker;
 
 [LanguageProvider(LanguageCode.zh_CN, TimePickerShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "点击 TimePicker 后，可以在面板中选择或输入时间。";
@@ -72,5 +72,4 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenNameRangePickerIndicatorThickness = "范围选择指示器的厚度。";
     public const string TokenNameHeaderMargin = "时间面板头部下方的外边距。";
 
-    protected override Type GetResourceKindType() => typeof(TimePickerShowCaseLangResourceKind);
 }

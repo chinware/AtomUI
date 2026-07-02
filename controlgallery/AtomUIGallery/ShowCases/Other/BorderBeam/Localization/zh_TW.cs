@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.BorderBeam;
 
 [LanguageProvider(LanguageCode.zh_TW, BorderBeamShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ScenarioExamples = "範例";
     public const string ScenarioApi = "API";
@@ -44,5 +44,4 @@ internal partial class zh_TW : LanguageProvider
     public const string TokenScopeComponent = "組件";
     public const string TokenStatusStable = "穩定";
 
-    protected override Type GetResourceKindType() => typeof(BorderBeamShowCaseLangResourceKind);
 }

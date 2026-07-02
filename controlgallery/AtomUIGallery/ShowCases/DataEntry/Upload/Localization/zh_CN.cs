@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Upload;
 
 [LanguageProvider(LanguageCode.zh_CN, UploadShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string UploadByClickingTitle = "点击上传";
     public const string UploadByClickingDescription = "经典模式。点击上传按钮时弹出文件选择对话框。";
@@ -81,5 +81,4 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenNamePictureListItemMargin = "图片列表项外边距。";
     public const string TokenNamePictureListPreviewerSize = "图片列表项预览缩略图尺寸。";
 
-    protected override Type GetResourceKindType() => typeof(UploadShowCaseLangResourceKind);
 }

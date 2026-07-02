@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.TreeView;
 
 [LanguageProvider(LanguageCode.en_US, TreeViewShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ComponentCategory = "Data Display";
     public const string ComponentStatusStable = "Stable";
@@ -126,5 +126,4 @@ internal partial class en_US : LanguageProvider
     public const string P2HeaderNewNodeFormat = "{0} / new ({1})";
     public const string P2HeaderRenamedFormat = "{0} (renamed)";
 
-    protected override Type GetResourceKindType() => typeof(TreeViewShowCaseLangResourceKind);
 }

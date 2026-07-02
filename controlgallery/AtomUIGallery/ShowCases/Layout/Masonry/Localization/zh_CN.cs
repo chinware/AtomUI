@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Masonry;
 
 [LanguageProvider(LanguageCode.zh_CN, MasonryShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
@@ -48,5 +48,4 @@ internal partial class zh_CN : LanguageProvider
     public const string DynamicDescription = "展示瀑布流动态更新的效果，配合 item.column 固化位置。";
     public const string DynamicAddItemLabel = "Add Item";
 
-    protected override Type GetResourceKindType() => typeof(MasonryShowCaseLangResourceKind);
 }

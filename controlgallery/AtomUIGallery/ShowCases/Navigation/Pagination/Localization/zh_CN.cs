@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Pagination;
 
 [LanguageProvider(LanguageCode.zh_CN, PaginationShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
@@ -64,5 +64,4 @@ internal partial class zh_CN : LanguageProvider
     public const string SimpleModeTitle = "简洁模式";
     public const string SimpleModeDescription = "简洁模式。";
 
-    protected override Type GetResourceKindType() => typeof(PaginationShowCaseLangResourceKind);
 }

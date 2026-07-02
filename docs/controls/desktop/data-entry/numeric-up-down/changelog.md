@@ -8,6 +8,14 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-07-02
+
+- Implementation
+  - Relay inherited `ShowButtonSpinner` into both NumericUpDown templates so input mode floating handles and spinner mode inline action segments respect the user setting.
+  - Add regression coverage for `ShowButtonSpinner=false` in input and spinner modes, including runtime visibility changes.
+- Docs
+  - Document `ShowButtonSpinner` as an inherited NumericUpDown contract consumed by both AtomUI display modes.
+
 ## 2026-06-26
 
 - Docs

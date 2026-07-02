@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Separator;
 
 [LanguageProvider(LanguageCode.en_US, SeparatorShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
@@ -68,5 +68,4 @@ internal partial class en_US : LanguageProvider
     public const string P2TextItem2 = "Item2";
     public const string P2TextItem3 = "Item3";
 
-    protected override Type GetResourceKindType() => typeof(SeparatorShowCaseLangResourceKind);
 }

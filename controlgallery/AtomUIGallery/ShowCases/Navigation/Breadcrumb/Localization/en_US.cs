@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Breadcrumb;
 
 [LanguageProvider(LanguageCode.en_US, BreadcrumbShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
@@ -63,5 +63,4 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentParam = "Param";
     public const string P2ContentLocation = "Location";
 
-    protected override Type GetResourceKindType() => typeof(BreadcrumbShowCaseLangResourceKind);
 }

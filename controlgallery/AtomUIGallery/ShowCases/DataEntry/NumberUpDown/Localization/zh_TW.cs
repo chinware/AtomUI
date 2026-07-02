@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.NumberUpDown;
 
 [LanguageProvider(LanguageCode.zh_TW, NumberUpDownShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ScenarioBasic = "基礎";
     public const string ScenarioRange = "範圍";
@@ -15,6 +15,8 @@ internal partial class zh_TW : LanguageProvider
     public const string BasicUsageDescription = "僅支持數字輸入的 NumberUpDown。";
     public const string SpinnerModeTitle = "撥輪";
     public const string SpinnerModeDescription = "數字撥輪。";
+    public const string HideHandleTitle = "隱藏步進按鈕";
+    public const string HideHandleDescription = "通過 ShowButtonSpinner=\"False\" 隱藏步進按鈕。";
     public const string StringModeTitle = "字符串模式（高精度）";
     public const string StringModeDescription = "以字符串形式保留高精度值。";
     public const string KeyboardBehaviorTitle = "鍵盤行為";
@@ -96,5 +98,4 @@ internal partial class zh_TW : LanguageProvider
     public const string TokenScopeComponent = "NumericUpDown";
     public const string TokenStatusStable = "穩定";
 
-    protected override Type GetResourceKindType() => typeof(NumberUpDownShowCaseLangResourceKind);
 }

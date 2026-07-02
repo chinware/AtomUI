@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Splash;
 
 [LanguageProvider(LanguageCode.en_US, SplashShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
@@ -92,5 +92,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenScopeComponent = "Component";
     public const string TokenStatusPreview = "Preview";
 
-    protected override Type GetResourceKindType() => typeof(SplashShowCaseLangResourceKind);
 }

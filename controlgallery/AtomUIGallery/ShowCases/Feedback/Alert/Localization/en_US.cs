@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Alert;
 
 [LanguageProvider(LanguageCode.en_US, AlertShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The simplest usage for short messages.";
@@ -93,5 +93,4 @@ internal partial class en_US : LanguageProvider
 
     public const string P2MessageError = "Error";
 
-    protected override Type GetResourceKindType() => typeof(AlertShowCaseLangResourceKind);
 }

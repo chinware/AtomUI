@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Card;
 
 [LanguageProvider(LanguageCode.en_US, CardShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
@@ -97,5 +97,4 @@ internal partial class en_US : LanguageProvider
 
     public const string P2ContentThisIsTheDescription = "This is the description";
 
-    protected override Type GetResourceKindType() => typeof(CardShowCaseLangResourceKind);
 }

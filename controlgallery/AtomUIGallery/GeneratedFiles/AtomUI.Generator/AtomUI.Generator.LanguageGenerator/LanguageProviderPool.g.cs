@@ -13296,6 +13296,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DecimalStepTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.DecimalStepTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.DisabledTitle;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.HideHandleDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.HideHandleDescription;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.HideHandleTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.HideHandleTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.KeyboardBehaviorDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.KeyboardBehaviorTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.MinMaxDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.en_US.MinMaxDescription;
@@ -13408,6 +13410,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DecimalStepTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.DecimalStepTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.DisabledTitle;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.HideHandleDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.HideHandleDescription;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.HideHandleTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.HideHandleTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.KeyboardBehaviorDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.KeyboardBehaviorTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.MinMaxDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_CN.MinMaxDescription;
@@ -13520,6 +13524,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DecimalStepTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.DecimalStepTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.DisabledDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.DisabledTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.DisabledTitle;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.HideHandleDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.HideHandleDescription;
+                dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.HideHandleTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.HideHandleTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.KeyboardBehaviorDescription;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.KeyboardBehaviorTitle] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.KeyboardBehaviorTitle;
                 dictionary[global::AtomUIGallery.Localization.NumberUpDownShowCaseLangResourceKind.MinMaxDescription] = global::AtomUIGallery.ShowCases.NumberUpDown.zh_TW.MinMaxDescription;

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.List;
 
 [LanguageProvider(LanguageCode.zh_TW, ListShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
@@ -119,5 +119,4 @@ internal partial class zh_TW : LanguageProvider
 
     public const string P2ContentRemoveItem = "移除項";
 
-    protected override Type GetResourceKindType() => typeof(ListShowCaseLangResourceKind);
 }

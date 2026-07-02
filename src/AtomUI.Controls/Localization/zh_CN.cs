@@ -3,13 +3,8 @@
 namespace AtomUI.Controls.Localization;
 
 [LanguageProvider(LanguageCode.zh_CN, CommonLangId.Common)]
-internal class zh_CN : LanguageProvider
+internal class zh_CN
 {
-    public zh_CN()
-        : base(LanguageCode.zh_CN, CommonLangId.Common)
-    {
-    }
-
     public const string Ok = "确定";
     public const string Submit = "提交";
     public const string Cancel = "取消";
@@ -21,5 +16,4 @@ internal class zh_CN : LanguageProvider
     public const string Loading = "正在加载数据";
     public const string Optional = "(可选)";
     
-    protected override Type GetResourceKindType() => typeof(CommonLangResourceKind);
 }

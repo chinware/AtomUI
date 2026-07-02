@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Tour;
 
 [LanguageProvider(LanguageCode.en_US, TourShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string PageSubtitle = "Guide users through important workflows with contextual overlays.";
     public const string PageDescription = "Tour combines step targets, masks, placement, indicators, and custom actions to build lightweight product guidance without leaving the current page.";
@@ -88,5 +88,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenScopeComponent = "Component";
     public const string TokenStatusStable = "Stable";
 
-    protected override Type GetResourceKindType() => typeof(TourShowCaseLangResourceKind);
 }

@@ -51,6 +51,7 @@ NumericUpDown 的公共 API 由继承的数值编辑 API 与 AtomUI 输入扩展
 | `ParsingNumberStyle` | `NumberStyles` | 文本解析规则。 |
 | `TextConverter` | `IValueConverter?` | 自定义 `Text` 与 `Value` 的双向转换器。 |
 | `AllowSpin` | `bool` | 是否允许按钮、键盘和鼠标滚轮触发步进。 |
+| `ShowButtonSpinner` | `bool` | 是否显示步进按钮；`Mode=Input` 控制浮动 Handle，`Mode=Spinner` 控制左右 action 段。 |
 
 String mode API：
 
@@ -127,7 +128,7 @@ IsEffectiveShowClearButton =
   && !string.IsNullOrEmpty(Text)
 ```
 
-`Mode` 只改变展示结构，不改变 `Value`、`Text`、`Minimum`、`Maximum`、`Increment`、`AllowSpin`、键盘、滚轮、Form 或 string mode 的数值语义。
+`Mode` 只改变展示结构，不改变 `Value`、`Text`、`Minimum`、`Maximum`、`Increment`、`AllowSpin`、`ShowButtonSpinner`、键盘、滚轮、Form 或 string mode 的数值语义。
 
 `SizeType=Custom` 进入自定义尺寸路径。用户未显式设置 `Height`、`FontSize`、`Padding` 等尺寸属性时，主题层应以 `Middle` 作为默认视觉基线；用户显式接管 `FontSize` 时，应通过 `IsCustomFontSize=true` 防止内部 `TextBox` 的 `SizeType` 字号样式覆盖用户设置。
 
@@ -137,8 +138,8 @@ NumericUpDown 采用按需模板模型。`Mode=Input` 使用默认输入框模�
 
 视觉层级要求：
 
-- `Mode=Input` 的默认模板不得预埋 spinner 模式左右按钮或无职责 wrapper。
-- `Mode=Spinner` 使用独立 `ControlTemplate`，不通过同一模板内两套视觉树加 `IsVisible` 切换实现。
+- `Mode=Input` 的默认模板不得预埋 spinner 模式左右按钮或无职责 wrapper；`ShowButtonSpinner=false` 时必须隐藏浮动 Handle。
+- `Mode=Spinner` 使用独立 `ControlTemplate`，不通过同一模板内两套视觉树加 `IsVisible` 切换实现；`ShowButtonSpinner=false` 时必须隐藏左右 action 段。
 - `ButtonSpinner` 是默认输入壳体边界，不应被普通 `Border` 或 `Grid` 包装替代。
 - `PART_TextBox` 的 `BorderThickness=0` 是为了避免内层 TextBox 与外层输入壳体重复绘制边框。
 - `PART_ClearButton` 与 `PART_InnerRightContentPresenter` 共用内部右侧 stack，必须保留顺序：清除按钮在用户内部右侧内容之前。
@@ -174,7 +175,7 @@ NumericUpDown 属于 Data Entry 控件，与 LineEdit、TextBox、TextArea、Sel
 维护 NumericUpDown 时必须保持以下不变量：
 
 - 不修改继承自 Avalonia `NumericUpDown` 的数值、格式化、步进和事件契约。
-- 不在未授权情况下改变 AtomUI 桌面主题对 `ShowButtonSpinner` 和 `ButtonSpinnerLocation` 的当前解释。
+- `ShowButtonSpinner` 必须同时作用于 `Mode=Input` 的浮动 Handle 和 `Mode=Spinner` 的左右 action 段。
 - 不擅自新增、删除、重命名或改变 AtomUI public API。
 - `Mode=Input` 默认行为和渲染效果不变；spinner 模式不能让默认用户承担额外视觉树或额外交互订阅成本。
 - `Mode=Spinner` 只改变展示结构，不改变数值解析、格式化、步进、Form、CompactSpace 或 string mode 语义。

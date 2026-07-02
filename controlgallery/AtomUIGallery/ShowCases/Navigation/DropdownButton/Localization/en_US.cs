@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.DropdownButton;
 
 [LanguageProvider(LanguageCode.en_US, DropdownButtonShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ComponentCategory = "Navigation";
     public const string ComponentStatusStable = "Stable";
@@ -87,5 +87,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenScopeComponent = "Component";
     public const string TokenStatusStable = "Stable";
 
-    protected override Type GetResourceKindType() => typeof(DropdownButtonShowCaseLangResourceKind);
 }

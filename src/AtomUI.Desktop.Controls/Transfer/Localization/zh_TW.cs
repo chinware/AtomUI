@@ -4,13 +4,8 @@ using AtomUI.Theme.Language;
 namespace AtomUI.Desktop.Controls.TransferLang;
 
 [LanguageProvider(LanguageCode.zh_TW, TransferToken.ID)]
-internal class zh_TW : LanguageProvider
+internal class zh_TW
 {
-    public zh_TW()
-        : base(LanguageCode.zh_TW, TransferToken.ID)
-    {
-    }
-
     public const string Item = "項";
     public const string Items = "項";
     public const string SelectAll = "全選所有";
@@ -20,5 +15,4 @@ internal class zh_TW : LanguageProvider
     public const string InvertSelectCurrentPage = "反選當頁";
     public const string SelectCurrentPage = "選擇當頁";
     
-    protected override Type GetResourceKindType() => typeof(TransferLangResourceKind);
 }

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Overview;
 
 [LanguageProvider(LanguageCode.en_US, OverviewPage.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string InstallTitle = "Install AtomUI";
     public const string InstallDescription = "Add the desktop controls package to an Avalonia application.";
@@ -20,5 +20,4 @@ internal partial class en_US : LanguageProvider
     public const string ApiDocsDescription = "Look up AtomUI OSS types, members, and versioned API details.";
     public const string OpenLearningLink = "Open";
 
-    protected override Type GetResourceKindType() => typeof(OverviewPageLangResourceKind);
 }

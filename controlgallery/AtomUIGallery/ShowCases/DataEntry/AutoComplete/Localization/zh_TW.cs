@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.AutoComplete;
 
 [LanguageProvider(LanguageCode.zh_TW, AutoCompleteShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string BasicUsageTitle = "基礎用法";
     public const string BasicUsageDescription = "基礎用法，通過 options 屬性設置自動完成的數據源。";
@@ -81,5 +81,4 @@ internal partial class zh_TW : LanguageProvider
     public const string TokenScopeComponent = "AutoComplete";
     public const string TokenStatusStable = "穩定";
 
-    protected override Type GetResourceKindType() => typeof(AutoCompleteShowCaseLangResourceKind);
 }

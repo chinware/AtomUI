@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Expander;
 
 [LanguageProvider(LanguageCode.en_US, ExpanderShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
@@ -94,5 +94,4 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentStart = "Start";
     public const string P2ContentEnd = "End";
 
-    protected override Type GetResourceKindType() => typeof(ExpanderShowCaseLangResourceKind);
 }

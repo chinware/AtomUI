@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Select;
 
 [LanguageProvider(LanguageCode.en_US, SelectShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Basic Usage.";
@@ -128,5 +128,4 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentUser = "User";
     public const string P2TextLongLabelPrefix = "Long label: ";
 
-    protected override Type GetResourceKindType() => typeof(SelectShowCaseLangResourceKind);
 }

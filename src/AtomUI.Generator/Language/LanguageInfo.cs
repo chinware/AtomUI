@@ -12,11 +12,12 @@ internal class LanguageInfo
     public string ClassName { get; internal set; } = string.Empty;
     public string Accessibility { get; internal set; } = "internal";
     public bool IsPartial { get; internal set; }
+    public bool InheritsLanguageProvider { get; internal set; }
     public bool HasParameterlessConstructor { get; internal set; }
 
     public Dictionary<string, string> Items { get; internal set; }
 
-    public bool ShouldGenerateExplicitConstructor => IsPartial && !HasParameterlessConstructor;
+    public bool ShouldGenerateExplicitConstructor => IsPartial && InheritsLanguageProvider && !HasParameterlessConstructor;
 
     public string ProviderTypeFullName =>
         string.IsNullOrEmpty(Namespace) ? ClassName : $"{Namespace}.{ClassName}";

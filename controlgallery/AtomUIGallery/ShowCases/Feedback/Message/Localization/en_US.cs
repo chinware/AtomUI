@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Message;
 
 [LanguageProvider(LanguageCode.en_US, MessageShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The simplest usage for Message.";
@@ -60,5 +60,4 @@ internal partial class en_US : LanguageProvider
     public const string P2MessageActionInProgress = "Action in progress...";
     public const string P2MessageLoadingFinished = "Loading finished";
 
-    protected override Type GetResourceKindType() => typeof(MessageShowCaseLangResourceKind);
 }

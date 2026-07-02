@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Cascader;
 
 [LanguageProvider(LanguageCode.en_US, CascaderShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string ScenarioBasic = "Basic";
     public const string ScenarioMultiple = "Multiple";
@@ -144,5 +144,4 @@ internal partial class en_US : LanguageProvider
     public const string P2ContentBottomleft = "BottomLeft";
     public const string P2ContentBottomright = "BottomRight";
 
-    protected override Type GetResourceKindType() => typeof(CascaderShowCaseLangResourceKind);
 }

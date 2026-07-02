@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Carousel;
 
 [LanguageProvider(LanguageCode.zh_TW, CarouselShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
@@ -59,5 +59,4 @@ internal partial class zh_TW : LanguageProvider
     public const string P2ContentLeft = "左側";
     public const string P2ContentRight = "右側";
 
-    protected override Type GetResourceKindType() => typeof(CarouselShowCaseLangResourceKind);
 }

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.TreeSelect;
 
 [LanguageProvider(LanguageCode.en_US, TreeSelectShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The most basic usage.";
@@ -112,5 +112,4 @@ internal partial class en_US : LanguageProvider
     public const string P2HeaderExpandToLoad = "Expand to load";
     public const string P2HeaderTreeNode = "Tree Node";
 
-    protected override Type GetResourceKindType() => typeof(TreeSelectShowCaseLangResourceKind);
 }

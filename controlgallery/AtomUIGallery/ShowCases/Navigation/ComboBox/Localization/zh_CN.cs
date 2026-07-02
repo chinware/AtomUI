@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.ComboBox;
 
 [LanguageProvider(LanguageCode.zh_CN, ComboBoxShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string ComponentCategory = "导航";
     public const string ComponentStatusStable = "稳定";
@@ -98,5 +98,4 @@ internal partial class zh_CN : LanguageProvider
     public const string TokenScopeComponent = "组件";
     public const string TokenStatusStable = "稳定";
 
-    protected override Type GetResourceKindType() => typeof(ComboBoxShowCaseLangResourceKind);
 }

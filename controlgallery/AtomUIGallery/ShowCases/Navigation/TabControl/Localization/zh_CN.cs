@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.TabControl;
 
 [LanguageProvider(LanguageCode.zh_CN, TabControlShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string TabControlBasicTitle = "基础用法";
     public const string TabControlBasicDescription = "默认激活第一个标签页。";
@@ -131,5 +131,4 @@ internal partial class zh_CN : LanguageProvider
     public const string P2ContentEndExtraAction = "右侧额外操作";
     public const string P2HeaderNewTabFormat = "新增标签 {0}";
 
-    protected override Type GetResourceKindType() => typeof(TabControlShowCaseLangResourceKind);
 }

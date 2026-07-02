@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.DatePicker;
 
 [LanguageProvider(LanguageCode.en_US, DatePickerShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Click DatePicker, and then we could select or input a date in panel.";
@@ -92,5 +92,4 @@ internal partial class en_US : LanguageProvider
     public const string TokenNameItemPanelMinWidth = "Minimum width of a calendar item panel.";
     public const string TokenNameRangeCalendarSpacing = "Spacing between range calendar panels.";
 
-    protected override Type GetResourceKindType() => typeof(DatePickerShowCaseLangResourceKind);
 }

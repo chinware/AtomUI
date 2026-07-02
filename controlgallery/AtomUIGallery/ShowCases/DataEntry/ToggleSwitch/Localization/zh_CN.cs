@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.ToggleSwitch;
 
 [LanguageProvider(LanguageCode.zh_CN, ToggleSwitchShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
@@ -76,5 +76,4 @@ internal partial class zh_CN : LanguageProvider
 
     public const string P2OffContentText = "关";
 
-    protected override Type GetResourceKindType() => typeof(ToggleSwitchShowCaseLangResourceKind);
 }

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Result;
 
 [LanguageProvider(LanguageCode.zh_TW, ResultShowCase.LanguageId)]
-internal partial class zh_TW : LanguageProvider
+internal partial class zh_TW
 {
     public const string SuccessTitle = "成功";
     public const string SuccessDescription = "展示成功結果。";
@@ -83,5 +83,4 @@ internal partial class zh_TW : LanguageProvider
     public const string P2TextApplyUnlock = "申請解鎖 >";
     public const string P2ContentNext = "下一步";
 
-    protected override Type GetResourceKindType() => typeof(ResultShowCaseLangResourceKind);
 }

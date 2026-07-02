@@ -4,13 +4,8 @@ using AtomUI.Theme.Language;
 namespace AtomUI.Desktop.Controls.DataGridLocalization;
 
 [LanguageProvider(LanguageCode.zh_CN, DataGridToken.ID)]
-internal class zh_CN : LanguageProvider
+internal class zh_CN
 {
-    public zh_CN()
-        : base(LanguageCode.zh_CN, DataGridToken.ID)
-    {
-    }
-
     public const string SelectAllFilterItems = "选择所有";
     public const string AscendTooltip = "点击升序";
     public const string DescendTooltip = "点击降序";
@@ -18,5 +13,4 @@ internal class zh_CN : LanguageProvider
     public const string DeleteConfirmText = "确认删除？";
     public const string CancelConfirmText = "确认取消？";
     public const string Operating = "正在操作中，请稍后";
-    protected override Type GetResourceKindType() => typeof(DataGridLangResourceKind);
 }

@@ -4,13 +4,8 @@ using AtomUI.Theme.Language;
 namespace AtomUI.Desktop.Controls.DialogLang;
 
 [LanguageProvider(LanguageCode.zh_CN, DialogToken.ID)]
-internal class zh_CN : LanguageProvider
+internal class zh_CN
 {
-    public zh_CN()
-        : base(LanguageCode.zh_CN, DialogToken.ID)
-    {
-    }
-
     public const string Ok = "确定";
     public const string Open = "打开";
     public const string Save = "保存";
@@ -31,5 +26,4 @@ internal class zh_CN : LanguageProvider
     public const string Retry = "重试";
     public const string Ignore = "忽略";
     
-    protected override Type GetResourceKindType() => typeof(DialogLangResourceKind);
 }

@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Drawer;
 
 [LanguageProvider(LanguageCode.en_US, DrawerShowCase.LanguageId)]
-internal partial class en_US : LanguageProvider
+internal partial class en_US
 {
     public const string PageSubtitle = "A slide-out panel for contextual tasks.";
     public const string PageDescription = "Drawer opens from the edge of the window or a local container, keeping users in the current workflow while exposing secondary actions, forms, or details.";
@@ -89,5 +89,4 @@ internal partial class en_US : LanguageProvider
 
     public const string P2ContentOpen = "Open";
 
-    protected override Type GetResourceKindType() => typeof(DrawerShowCaseLangResourceKind);
 }

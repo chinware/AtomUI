@@ -4,7 +4,7 @@ using AtomUIGallery.Localization;
 namespace AtomUIGallery.ShowCases.Palette;
 
 [LanguageProvider(LanguageCode.zh_CN, PaletteShowCase.LanguageId)]
-internal partial class zh_CN : LanguageProvider
+internal partial class zh_CN
 {
     public const string ComponentCategory = "通用";
     public const string ComponentStatusStable = ".NET 10";
@@ -13,5 +13,4 @@ internal partial class zh_CN : LanguageProvider
     public const string P2HeaderLight = "浅色";
     public const string P2HeaderDark = "深色";
 
-    protected override Type GetResourceKindType() => typeof(PaletteShowCaseLangResourceKind);
 }
