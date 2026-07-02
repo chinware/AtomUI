@@ -65,7 +65,9 @@ public class CalendarViewStateTests
                 ["PART_SecondaryPreviousButton"]      = typeof(IconButton),
                 ["PART_SecondaryPreviousMonthButton"] = typeof(IconButton),
                 ["PART_SecondaryNextButton"]          = typeof(IconButton),
-                ["PART_SecondaryNextMonthButton"]     = typeof(IconButton)
+                ["PART_SecondaryNextMonthButton"]     = typeof(IconButton),
+                ["PART_YearViewLayout"]               = typeof(UniformGrid),
+                ["PART_SecondaryYearView"]            = typeof(AvaloniaGrid)
             };
 
             AssertTemplateParts(typeof(PickerDualMonthCalendarItem), expectedParts);
@@ -298,6 +300,35 @@ public class CalendarViewStateTests
             calendar.SelectedDate.ShouldBe(expectedDate);
             emittedDate.ShouldBe(expectedDate);
             calendar.DisplayMode.ShouldBe(displayMode);
+        });
+    }
+
+    [Theory]
+    [InlineData(Key.Down, 2, 5)]
+    [InlineData(Key.Up, 5, 2)]
+    public void Calendar_Year_Mode_Up_Down_Keys_Follow_Month_Selection_Panel_Columns(
+        Key key,
+        int sourceMonth,
+        int expectedMonth)
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                PickerMode  = DatePickerMode.Month,
+                DisplayMode = CalendarMode.Year
+            };
+            calendar.SelectedMonth = new DateTime(2026, sourceMonth, 1);
+
+            var handled = calendar.ProcessCalendarKey(new KeyEventArgs
+            {
+                Key          = key,
+                PhysicalKey  = key == Key.Down ? PhysicalKey.ArrowDown : PhysicalKey.ArrowUp,
+                KeyModifiers = KeyModifiers.None
+            });
+
+            handled.ShouldBeTrue();
+            calendar.SelectedMonth.ShouldBe(new DateTime(2026, expectedMonth, 1));
         });
     }
 
@@ -691,6 +722,166 @@ public class CalendarViewStateTests
     }
 
     [Fact]
+    public void DualMonthRangeCalendar_Month_Picker_Uses_Two_Year_Panels()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new DualMonthRangeCalendar
+            {
+                PickerMode  = DatePickerMode.Month,
+                DisplayDate = new DateTime(2026, 4, 1)
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
+
+                calendar.DisplayMode.ShouldBe(CalendarMode.Year);
+                item.MonthViewLayout.ShouldNotBeNull().IsVisible.ShouldBeFalse();
+                item.YearViewLayout.ShouldNotBeNull().IsVisible.ShouldBeTrue();
+                item.YearView.ShouldNotBeNull().IsVisible.ShouldBeTrue();
+                secondaryYearView.IsVisible.ShouldBeTrue();
+
+                GetCalendarButtonDates(item.YearView).Where(date => date.Year == 2026).Count().ShouldBe(12);
+                GetCalendarButtonDates(secondaryYearView).Where(date => date.Year == 2027).Count().ShouldBe(12);
+                item.YearView.RowDefinitions.Count.ShouldBe(4);
+                item.YearView.ColumnDefinitions.Count.ShouldBe(3);
+                secondaryYearView.RowDefinitions.Count.ShouldBe(4);
+                secondaryYearView.ColumnDefinitions.Count.ShouldBe(3);
+            });
+        });
+    }
+
+    [Fact]
+    public void DualMonthRangeCalendar_Quarter_Picker_Uses_Two_Compact_Quarter_Panels()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new DualMonthRangeCalendar
+            {
+                PickerMode  = DatePickerMode.Quarter,
+                DisplayDate = new DateTime(2026, 4, 1)
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
+
+                calendar.DisplayMode.ShouldBe(CalendarMode.Year);
+                item.YearView.ShouldNotBeNull().IsVisible.ShouldBeTrue();
+                secondaryYearView.IsVisible.ShouldBeTrue();
+                item.YearView.RowDefinitions.Count.ShouldBe(1);
+                item.YearView.ColumnDefinitions.Count.ShouldBe(4);
+                secondaryYearView.RowDefinitions.Count.ShouldBe(1);
+                secondaryYearView.ColumnDefinitions.Count.ShouldBe(4);
+                GetVisibleCalendarButtonTexts(item.YearView).ShouldBe(new[] { "Q1", "Q2", "Q3", "Q4" });
+                GetVisibleCalendarButtonTexts(secondaryYearView).ShouldBe(new[] { "Q1", "Q2", "Q3", "Q4" });
+                GetCalendarButtonDates(item.YearView).ShouldAllBe(date => date.Year == 2026);
+                GetCalendarButtonDates(secondaryYearView).ShouldAllBe(date => date.Year == 2027);
+            });
+        });
+    }
+
+    [Fact]
+    public void DualMonthRangeCalendar_Year_Picker_Uses_Two_Decade_Panels()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new DualMonthRangeCalendar
+            {
+                PickerMode  = DatePickerMode.Year,
+                DisplayDate = new DateTime(2026, 4, 1)
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var item              = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                var secondaryYearView = FindNamedGrid(item, "PART_SecondaryYearView");
+
+                calendar.DisplayMode.ShouldBe(CalendarMode.Decade);
+                item.YearView.ShouldNotBeNull().IsVisible.ShouldBeTrue();
+                secondaryYearView.IsVisible.ShouldBeTrue();
+                GetCalendarButtonDates(item.YearView).Any(date => date.Year == 2020).ShouldBeTrue();
+                GetCalendarButtonDates(item.YearView).Any(date => date.Year == 2029).ShouldBeTrue();
+                GetCalendarButtonDates(secondaryYearView).Any(date => date.Year == 2030).ShouldBeTrue();
+                GetCalendarButtonDates(secondaryYearView).Any(date => date.Year == 2039).ShouldBeTrue();
+            });
+        });
+    }
+
+    [Theory]
+    [InlineData(DatePickerMode.Month, CalendarMode.Year)]
+    [InlineData(DatePickerMode.Quarter, CalendarMode.Year)]
+    [InlineData(DatePickerMode.Year, CalendarMode.Decade)]
+    public void DualMonthRangeCalendar_PickerMode_Runtime_Change_Uses_Only_Target_Dual_Panel(
+        DatePickerMode pickerMode,
+        CalendarMode expectedDisplayMode)
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new DualMonthRangeCalendar
+            {
+                DisplayDate = new DateTime(2026, 7, 1)
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var item = calendar.CalendarItem.ShouldBeOfType<PickerDualMonthCalendarItem>();
+                AssertDualMonthPanelVisibility(item, monthVisible: true);
+
+                calendar.PickerMode = pickerMode;
+                Dispatcher.UIThread.RunJobs();
+
+                calendar.DisplayMode.ShouldBe(expectedDisplayMode);
+                AssertDualMonthPanelVisibility(item, monthVisible: false);
+
+                calendar.PickerMode = DatePickerMode.Week;
+                Dispatcher.UIThread.RunJobs();
+
+                calendar.DisplayMode.ShouldBe(CalendarMode.Month);
+                AssertDualMonthPanelVisibility(item, monthVisible: true);
+            });
+        });
+    }
+
+    [Theory]
+    [InlineData(DatePickerMode.Month, CalendarMode.Year)]
+    [InlineData(DatePickerMode.Quarter, CalendarMode.Year)]
+    [InlineData(DatePickerMode.Year, CalendarMode.Decade)]
+    public void Calendar_PickerMode_Runtime_Change_Uses_Only_Target_Panel(
+        DatePickerMode pickerMode,
+        CalendarMode expectedDisplayMode)
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new PickerCalendar
+            {
+                DisplayDate = new DateTime(2026, 7, 1)
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var item = calendar.CalendarItem.ShouldBeOfType<PickerCalendarItem>();
+                AssertCalendarPanelVisibility(item, monthVisible: true);
+
+                calendar.PickerMode = pickerMode;
+                Dispatcher.UIThread.RunJobs();
+
+                calendar.DisplayMode.ShouldBe(expectedDisplayMode);
+                AssertCalendarPanelVisibility(item, monthVisible: false);
+
+                calendar.PickerMode = DatePickerMode.Week;
+                Dispatcher.UIThread.RunJobs();
+
+                calendar.DisplayMode.ShouldBe(CalendarMode.Month);
+                AssertCalendarPanelVisibility(item, monthVisible: true);
+            });
+        });
+    }
+
+    [Fact]
     public void DualMonthRangeCalendar_Hover_End_Renders_Continuous_Preview_Range_In_Secondary_Panel()
     {
         RunOnUIThread(() =>
@@ -715,6 +906,38 @@ public class CalendarViewStateTests
 
                 var endIndicator = FindTemplateBorder(endButton, "RangeEndIndicator");
                 endIndicator.Bounds.Width.ShouldBe(endButton.Bounds.Width / 2, 0.5);
+            });
+        });
+    }
+
+    [Fact]
+    public void DualMonthRangeCalendar_Week_Hover_End_Renders_Row_Preview_In_Secondary_Panel()
+    {
+        RunOnUIThread(() =>
+        {
+            var calendar = new DualMonthRangeCalendar
+            {
+                PickerMode         = DatePickerMode.Week,
+                DisplayDate        = new DateTime(2026, 7, 1),
+                SelectedDate       = new DateTime(2026, 7, 13),
+                HoverDateTime      = new DateTime(2026, 8, 10),
+                IsSelectRangeStart = false
+            };
+
+            ShowInWindow(calendar, () =>
+            {
+                var rangeMiddleStart = FindSecondaryDayButton(calendar, new DateTime(2026, 8, 3));
+                var rangeMiddleEnd   = FindSecondaryDayButton(calendar, new DateTime(2026, 8, 9));
+                var previewStart     = FindSecondaryDayButton(calendar, new DateTime(2026, 8, 10));
+                var previewMiddle    = FindSecondaryDayButton(calendar, new DateTime(2026, 8, 13));
+                var previewEnd       = FindSecondaryDayButton(calendar, new DateTime(2026, 8, 16));
+
+                IsWeekRangeMiddle(rangeMiddleStart).ShouldBeTrue();
+                IsWeekRangeEnd(rangeMiddleEnd).ShouldBeTrue();
+                IsSelected(previewStart).ShouldBeFalse();
+                IsWeekSelectionMiddle(previewStart).ShouldBeTrue();
+                IsWeekSelectionMiddle(previewMiddle).ShouldBeTrue();
+                IsWeekSelectionEnd(previewEnd).ShouldBeTrue();
             });
         });
     }
@@ -752,6 +975,26 @@ public class CalendarViewStateTests
     private static bool IsRangePreviewMiddle(PickerCalendarDayButton button)
     {
         return button.Classes.Contains(":range-preview-middle");
+    }
+
+    private static bool IsWeekSelectionMiddle(PickerCalendarDayButton button)
+    {
+        return button.Classes.Contains(":week-selection-middle");
+    }
+
+    private static bool IsWeekSelectionEnd(PickerCalendarDayButton button)
+    {
+        return button.Classes.Contains(":week-selection-end");
+    }
+
+    private static bool IsWeekRangeMiddle(PickerCalendarDayButton button)
+    {
+        return button.Classes.Contains(":week-range-middle");
+    }
+
+    private static bool IsWeekRangeEnd(PickerCalendarDayButton button)
+    {
+        return button.Classes.Contains(":week-range-end");
     }
 
     private static void AssertTemplateParts(Type controlType, IReadOnlyDictionary<string, Type> expectedParts)
@@ -803,8 +1046,51 @@ public class CalendarViewStateTests
                           .OfType<PickerCalendarDayButton>()
                           .ToArray();
         return buttons.Single(button =>
+            !button.IsWeekNumber &&
             button.DataContext is DateTime buttonDate &&
             DateTimeHelper.CompareDays(buttonDate, date) == 0);
+    }
+
+    private static AvaloniaGrid FindNamedGrid(Control control, string name)
+    {
+        return control.GetVisualDescendants()
+                      .OfType<AvaloniaGrid>()
+                      .Single(grid => grid.Name == name);
+    }
+
+    private static DateTime[] GetCalendarButtonDates(AvaloniaGrid grid)
+    {
+        return grid.Children
+                   .OfType<PickerCalendarButton>()
+                   .Where(button => button.IsVisible &&
+                                    button.Opacity > 0 &&
+                                    button.DataContext is DateTime)
+                   .Select(button => (DateTime)button.DataContext!)
+                   .ToArray();
+    }
+
+    private static string[] GetVisibleCalendarButtonTexts(AvaloniaGrid grid)
+    {
+        return grid.Children
+                   .OfType<PickerCalendarButton>()
+                   .Where(button => button.IsVisible && button.Opacity > 0)
+                   .Select(button => button.Content?.ToString() ?? string.Empty)
+                   .ToArray();
+    }
+
+    private static void AssertDualMonthPanelVisibility(PickerDualMonthCalendarItem item, bool monthVisible)
+    {
+        AssertCalendarPanelVisibility(item, monthVisible);
+        item.YearViewLayout.ShouldNotBeNull().IsVisible.ShouldBe(!monthVisible);
+        FindNamedGrid(item, "PART_SecondaryYearView").IsVisible.ShouldBe(!monthVisible);
+        item.SecondaryMonthView.ShouldNotBeNull().IsVisible.ShouldBe(monthVisible);
+    }
+
+    private static void AssertCalendarPanelVisibility(PickerCalendarItem item, bool monthVisible)
+    {
+        item.MonthViewLayout.ShouldNotBeNull().IsVisible.ShouldBe(monthVisible);
+        item.MonthView.ShouldNotBeNull().IsVisible.ShouldBe(monthVisible);
+        item.YearView.ShouldNotBeNull().IsVisible.ShouldBe(!monthVisible);
     }
 
     private static Border FindTemplateBorder(Control control, string name)

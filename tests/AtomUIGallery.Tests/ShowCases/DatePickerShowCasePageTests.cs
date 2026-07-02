@@ -137,6 +137,27 @@ public class DatePickerShowCasePageTests
     }
 
     [Fact]
+    public void DatePicker_ShowCase_RangePicker_Example_Exposes_All_AntDesign_Range_Picker_Modes()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml");
+
+        CountOccurrences(source, "<atom:RangeDatePicker PickerMode=\"Date\"").ShouldBe(2);
+        source.ShouldContain("PickerMode=\"Date\"\n                                      IsShowTime=\"True\"");
+        source.ShouldContain("<atom:RangeDatePicker PickerMode=\"Week\"");
+        source.ShouldContain("P2PlaceholderTextStartWeek");
+        source.ShouldContain("P2SecondaryPlaceholderTextEndWeek");
+        source.ShouldContain("<atom:RangeDatePicker PickerMode=\"Month\"");
+        source.ShouldContain("P2PlaceholderTextStartMonth");
+        source.ShouldContain("P2SecondaryPlaceholderTextEndMonth");
+        source.ShouldContain("<atom:RangeDatePicker PickerMode=\"Quarter\"");
+        source.ShouldContain("P2PlaceholderTextStartQuarter");
+        source.ShouldContain("P2SecondaryPlaceholderTextEndQuarter");
+        source.ShouldContain("<atom:RangeDatePicker PickerMode=\"Year\"");
+        source.ShouldContain("P2PlaceholderTextStartYear");
+        source.ShouldContain("P2SecondaryPlaceholderTextEndYear");
+    }
+
+    [Fact]
     public void DatePicker_ShowCase_Localization_Includes_Page_And_Api_Copy()
     {
         var en   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Localization/en_US.cs");
@@ -159,6 +180,14 @@ public class DatePickerShowCasePageTests
             source.ShouldContain("P2PlaceholderTextSelectMonth");
             source.ShouldContain("P2PlaceholderTextSelectQuarter");
             source.ShouldContain("P2PlaceholderTextSelectYear");
+            source.ShouldContain("P2PlaceholderTextStartWeek");
+            source.ShouldContain("P2SecondaryPlaceholderTextEndWeek");
+            source.ShouldContain("P2PlaceholderTextStartMonth");
+            source.ShouldContain("P2SecondaryPlaceholderTextEndMonth");
+            source.ShouldContain("P2PlaceholderTextStartQuarter");
+            source.ShouldContain("P2SecondaryPlaceholderTextEndQuarter");
+            source.ShouldContain("P2PlaceholderTextStartYear");
+            source.ShouldContain("P2SecondaryPlaceholderTextEndYear");
             source.ShouldContain("TokenNameCellActiveWithRangeBg");
             source.ShouldContain("TokenNameCellHoverBg");
         }

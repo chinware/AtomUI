@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.CalendarView.Infrastructure;
 using AtomUI.Desktop.Controls.CalendarView.State;
 using Avalonia;
@@ -274,8 +273,11 @@ internal class Calendar : TemplatedControl
 
     internal const int RowsPerMonth = 7;
     internal const int ColumnsPerMonth = 7;
+    internal const int ColumnsPerWeekPanel = ColumnsPerMonth + 1;
     internal const int RowsPerYear = 3;
     internal const int ColumnsPerYear = 4;
+    internal const int RowsPerMonthSelectionPanel = 4;
+    internal const int ColumnsPerMonthSelectionPanel = 3;
 
     #endregion
 
@@ -379,6 +381,7 @@ internal class Calendar : TemplatedControl
     internal DateTime DisplayDateRangeStart => DisplayDateStart.GetValueOrDefault(DateTime.MinValue);
     internal DateTime DisplayDateRangeEnd => DisplayDateEnd.GetValueOrDefault(DateTime.MaxValue);
     internal bool HasFocusInternal { get; set; }
+    internal DateTime? HoverDate { get; private set; }
 
     internal static readonly StyledProperty<bool> IsPointerInMonthViewProperty =
         AvaloniaProperty.Register<Calendar, bool>(nameof(IsPointerInMonthView), false);
@@ -445,6 +448,7 @@ internal class Calendar : TemplatedControl
         ApplyViewStateAction(CalendarViewAction.SetSelectedMonth(SelectedMonth));
         ApplyViewStateAction(CalendarViewAction.SetSelectedYear(SelectedYear));
         ApplyViewStateAction(CalendarViewAction.SetFocusedDate(LastSelectedDate));
+        ApplyViewStateAction(CalendarViewAction.SetHoverDate(HoverDate));
         ApplyViewStateAction(CalendarViewAction.SetBlackoutDates(BlackoutDates));
         ApplyViewStateAction(CalendarViewAction.SetFirstDayOfWeek(FirstDayOfWeek));
         ApplyViewStateAction(CalendarViewAction.SetTodayHighlighted(IsTodayHighlighted));
@@ -734,22 +738,19 @@ internal class Calendar : TemplatedControl
 
     internal CalendarDayButton? FindDayButtonFromDay(DateTime day)
     {
-        var count = RowsPerMonth * ColumnsPerMonth;
         if (CalendarItem?.MonthView != null)
         {
-            for (var childIndex = ColumnsPerMonth; childIndex < count; childIndex++)
+            foreach (var b in CalendarItem.MonthView.Children.OfType<CalendarDayButton>())
             {
-                if (CalendarItem.MonthView.Children[childIndex] is CalendarDayButton b)
+                if (b.IsWeekNumber)
                 {
-                    var d = b.DataContext as DateTime?;
+                    continue;
+                }
 
-                    if (d.HasValue)
-                    {
-                        if (DateTimeHelper.CompareDays(d.Value, day) == 0)
-                        {
-                            return b;
-                        }
-                    }
+                var d = b.DataContext as DateTime?;
+                if (d.HasValue && DateTimeHelper.CompareDays(d.Value, day) == 0)
+                {
+                    return b;
                 }
             }
         }
@@ -791,13 +792,10 @@ internal class Calendar : TemplatedControl
 
     internal virtual void ResetStates()
     {
-        var count = RowsPerMonth * ColumnsPerMonth;
-        
         if (CalendarItem?.MonthView != null)
         {
-            for (var childIndex = ColumnsPerMonth; childIndex < count; childIndex++)
+            foreach (var d in CalendarItem.MonthView.Children.OfType<CalendarDayButton>())
             {
-                var d = (CalendarDayButton)CalendarItem.MonthView.Children[childIndex];
                 d.IgnoreMouseOverState();
             }
         }
@@ -1023,8 +1021,8 @@ internal class Calendar : TemplatedControl
     
     internal virtual void NotifyHoverDateChanged(DateTime? hoverDate)
     {
-        HoverDateChanged?.Invoke(this,
-            new DateSelectedEventArgs(hoverDate.HasValue ? NormalizePickerDate(hoverDate.Value) : null));
+        HoverDate = hoverDate.HasValue ? NormalizePickerDate(hoverDate.Value) : null;
+        HoverDateChanged?.Invoke(this, new DateSelectedEventArgs(HoverDate));
     }
 
     private void OnMonthClick()
@@ -1210,7 +1208,7 @@ internal class Calendar : TemplatedControl
                 }
                 else
                 {
-                    var selectedMonth = DateTimeHelper.AddMonths(_selectedMonth, -ColumnsPerYear);
+                    var selectedMonth = DateTimeHelper.AddMonths(_selectedMonth, -GetYearModeColumnCount());
                     OnSelectedMonthChanged(selectedMonth);
                 }
 
@@ -1246,7 +1244,7 @@ internal class Calendar : TemplatedControl
                 }
                 else
                 {
-                    var selectedMonth = DateTimeHelper.AddMonths(_selectedMonth, ColumnsPerYear);
+                    var selectedMonth = DateTimeHelper.AddMonths(_selectedMonth, GetYearModeColumnCount());
                     OnSelectedMonthChanged(selectedMonth);
                 }
 
@@ -1291,6 +1289,13 @@ internal class Calendar : TemplatedControl
                 break;
             }
         }
+    }
+
+    private int GetYearModeColumnCount()
+    {
+        return PickerMode == DatePickerMode.Quarter
+            ? ColumnsPerYear
+            : ColumnsPerMonthSelectionPanel;
     }
 
     internal void ProcessRightKey(bool shift)

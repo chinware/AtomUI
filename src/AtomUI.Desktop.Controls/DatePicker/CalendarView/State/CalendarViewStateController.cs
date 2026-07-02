@@ -27,6 +27,8 @@ internal sealed class CalendarViewStateController
                 State.WithSelectedYear(setSelectedYear.Date),
             CalendarViewAction.SetFocusedDateAction setFocusedDate =>
                 State.WithFocusedDate(setFocusedDate.Date),
+            CalendarViewAction.SetHoverDateAction setHoverDate =>
+                State.WithHoverDate(setHoverDate.Date),
             CalendarViewAction.SetBlackoutDatesAction setBlackoutDates =>
                 State.WithBlackoutDates(setBlackoutDates.Dates),
             CalendarViewAction.SetRangeSelectionAction setRangeSelection =>

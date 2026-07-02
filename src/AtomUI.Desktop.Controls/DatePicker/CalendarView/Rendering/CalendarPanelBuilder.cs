@@ -1,3 +1,4 @@
+using System.Globalization;
 using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.CalendarView.Models;
 using AtomUI.Desktop.Controls.CalendarView.State;
@@ -12,6 +13,9 @@ internal static class CalendarPanelBuilder
         var dayTitles  = BuildDayTitles(state);
         var firstCell  = GetFirstVisibleDate(monthStart, state.FirstDayOfWeek);
         var cells      = new List<CalendarCellState>(42);
+        var weekCells  = state.PickerMode == DatePickerMode.Week
+            ? BuildWeekCells(state, monthStart, firstCell)
+            : Array.Empty<CalendarCellState>();
 
         for (var i = 0; i < 42; i++)
         {
@@ -19,7 +23,7 @@ internal static class CalendarPanelBuilder
             cells.Add(BuildDayCell(state, monthStart, date));
         }
 
-        return new CalendarMonthPanelModel(monthStart, dayTitles, cells);
+        return new CalendarMonthPanelModel(monthStart, dayTitles, cells, weekCells);
     }
 
     public static CalendarYearPanelModel BuildYearPanel(CalendarViewState state, DateTime displayYear)
@@ -129,6 +133,52 @@ internal static class CalendarPanelBuilder
         return monthStart.AddDays(-offset);
     }
 
+    private static IReadOnlyList<CalendarCellState> BuildWeekCells(
+        CalendarViewState state,
+        DateTime displayMonth,
+        DateTime firstCell)
+    {
+        var weekCells = new List<CalendarCellState>(Calendar.RowsPerMonth - 1);
+        for (var row = 0; row < Calendar.RowsPerMonth - 1; row++)
+        {
+            var weekStart = firstCell.AddDays(row * Calendar.ColumnsPerMonth);
+            var weekDays  = Enumerable.Range(0, Calendar.ColumnsPerMonth)
+                                      .Select(offset => weekStart.AddDays(offset))
+                                      .ToArray();
+            var isOutOfRange = weekDays.All(date =>
+                DateTimeHelper.CompareDays(date, state.DisplayDateStart) < 0 ||
+                DateTimeHelper.CompareDays(date, state.DisplayDateEnd) > 0);
+            var isInactive = weekDays.All(date => DateTimeHelper.CompareYearMonth(date, displayMonth) != 0);
+            var isSelected = IsSelectedPickerUnit(state, weekStart, DatePickerMode.Week);
+            var isWeekSelection = isSelected || IsWeekRangePreviewEndpoint(state, weekStart);
+            var isWeekRange = IsWeekInsideVisualRange(state, weekStart);
+            var isHovered = !isWeekSelection &&
+                            state.HoverDate is not null &&
+                            IsSamePickerUnit(state.HoverDate.Value, weekStart, DatePickerMode.Week);
+
+            weekCells.Add(new CalendarCellState(
+                Date: weekStart,
+                Text: ISOWeek.GetWeekOfYear(weekStart).ToString(state.Culture),
+                IsToday: false,
+                IsBlackout: false,
+                IsDisabled: isOutOfRange,
+                IsInactive: isInactive,
+                IsSelected: isSelected,
+                IsRangeStart: false,
+                IsRangeEnd: false,
+                IsRangeMiddle: false,
+                IsFocused: state.FocusedDate is not null &&
+                           IsSamePickerUnit(state.FocusedDate.Value, weekStart, DatePickerMode.Week),
+                IsHidden: isOutOfRange,
+                IsWeekNumber: true,
+                IsWeekSelectionStart: isWeekSelection,
+                IsWeekRangeStart: isWeekRange,
+                IsWeekHoverStart: isHovered));
+        }
+
+        return weekCells;
+    }
+
     private static CalendarCellState BuildDayCell(CalendarViewState state, DateTime displayMonth, DateTime date)
     {
         var isOutOfRange = DateTimeHelper.CompareDays(date, state.DisplayDateStart) < 0 ||
@@ -137,8 +187,15 @@ internal static class CalendarPanelBuilder
                       DateTimeHelper.CompareDays(state.Today, date) == 0;
         var isBlackout = state.BlackoutDates.Any(range => DateTimeHelper.InRange(date, range));
 
-        var hasCommittedRange = state.RangeSelection.TryGetCommittedRange(out var rangeStart, out var rangeEnd);
-        var hasPreviewRange   = state.RangeSelection.TryGetPreviewRange(out var previewRangeStart, out var previewRangeEnd);
+        var shouldRenderDateRange = state.PickerMode != DatePickerMode.Week;
+        var rangeStart            = default(DateTime);
+        var rangeEnd              = default(DateTime);
+        var previewRangeStart     = default(DateTime);
+        var previewRangeEnd       = default(DateTime);
+        var hasCommittedRange = shouldRenderDateRange &&
+                                state.RangeSelection.TryGetCommittedRange(out rangeStart, out rangeEnd);
+        var hasPreviewRange = shouldRenderDateRange &&
+                              state.RangeSelection.TryGetPreviewRange(out previewRangeStart, out previewRangeEnd);
         var isRangeStart = hasCommittedRange &&
                            DateTimeHelper.CompareDays(rangeStart, date) == 0;
         var isRangeEnd = hasCommittedRange &&
@@ -155,10 +212,22 @@ internal static class CalendarPanelBuilder
                                    DateTimeHelper.CompareDays(date, previewRangeEnd) < 0;
         var isFocused = state.FocusedDate is not null &&
                         IsSamePickerUnit(state.FocusedDate.Value, date, state.PickerMode);
-        var isSelected = (state.SelectedDate is not null &&
-                          IsSamePickerUnit(state.SelectedDate.Value, date, state.PickerMode)) ||
-                         (state.SecondarySelectedDate is not null &&
-                          IsSamePickerUnit(state.SecondarySelectedDate.Value, date, state.PickerMode));
+        var isSelected = IsSelectedPickerUnit(state, date, state.PickerMode);
+        var weekStart = GetWeekStart(date, state.FirstDayOfWeek);
+        var isWeekSelection = state.PickerMode == DatePickerMode.Week &&
+                              (isSelected || IsWeekRangePreviewEndpoint(state, weekStart));
+        var isWeekSelectionEnd = isWeekSelection &&
+                                 DateTimeHelper.CompareDays(date, weekStart.AddDays(6)) == 0;
+        var isWeekRange = state.PickerMode == DatePickerMode.Week &&
+                          IsWeekInsideVisualRange(state, weekStart);
+        var isWeekRangeEnd = isWeekRange &&
+                             DateTimeHelper.CompareDays(date, weekStart.AddDays(6)) == 0;
+        var isWeekHover = state.PickerMode == DatePickerMode.Week &&
+                          !isWeekSelection &&
+                          state.HoverDate is not null &&
+                          IsSamePickerUnit(state.HoverDate.Value, date, DatePickerMode.Week);
+        var isWeekHoverEnd = isWeekHover &&
+                             DateTimeHelper.CompareDays(date, weekStart.AddDays(6)) == 0;
 
         return new CalendarCellState(
             Date: date,
@@ -175,11 +244,75 @@ internal static class CalendarPanelBuilder
             IsHidden: isOutOfRange,
             IsRangePreviewStart: isRangePreviewStart,
             IsRangePreviewEnd: isRangePreviewEnd,
-            IsRangePreviewMiddle: isRangePreviewMiddle);
+            IsRangePreviewMiddle: isRangePreviewMiddle,
+            IsWeekSelectionMiddle: isWeekSelection && !isWeekSelectionEnd,
+            IsWeekSelectionEnd: isWeekSelectionEnd,
+            IsWeekRangeMiddle: isWeekRange && !isWeekRangeEnd,
+            IsWeekRangeEnd: isWeekRangeEnd,
+            IsWeekHoverMiddle: isWeekHover && !isWeekHoverEnd,
+            IsWeekHoverEnd: isWeekHoverEnd);
     }
 
     private static bool IsSamePickerUnit(DateTime first, DateTime second, DatePickerMode pickerMode)
     {
         return DatePickerFormattingHelper.IsSamePickerUnit(first, second, pickerMode);
+    }
+
+    private static bool IsSelectedPickerUnit(CalendarViewState state, DateTime date, DatePickerMode pickerMode)
+    {
+        return (state.SelectedDate is not null &&
+                IsSamePickerUnit(state.SelectedDate.Value, date, pickerMode)) ||
+               (state.SecondarySelectedDate is not null &&
+                IsSamePickerUnit(state.SecondarySelectedDate.Value, date, pickerMode));
+    }
+
+    private static bool IsWeekInsideVisualRange(CalendarViewState state, DateTime weekStart)
+    {
+        if (!TryGetWeekVisualRange(state, out var rangeStart, out var rangeEnd))
+        {
+            return false;
+        }
+
+        var normalizedWeekStart  = GetWeekStart(weekStart, state.FirstDayOfWeek);
+        var normalizedRangeStart = GetWeekStart(rangeStart, state.FirstDayOfWeek);
+        var normalizedRangeEnd   = GetWeekStart(rangeEnd, state.FirstDayOfWeek);
+
+        return DateTimeHelper.CompareDays(normalizedWeekStart, normalizedRangeStart) > 0 &&
+               DateTimeHelper.CompareDays(normalizedWeekStart, normalizedRangeEnd) < 0;
+    }
+
+    private static bool IsWeekRangePreviewEndpoint(CalendarViewState state, DateTime weekStart)
+    {
+        if (state.PickerMode != DatePickerMode.Week ||
+            !state.RangeSelection.TryGetPreviewRange(out var rangeStart, out var rangeEnd))
+        {
+            return false;
+        }
+
+        var normalizedWeekStart  = GetWeekStart(weekStart, state.FirstDayOfWeek);
+        var normalizedRangeStart = GetWeekStart(rangeStart, state.FirstDayOfWeek);
+        var normalizedRangeEnd   = GetWeekStart(rangeEnd, state.FirstDayOfWeek);
+
+        return DateTimeHelper.CompareDays(normalizedWeekStart, normalizedRangeStart) == 0 ||
+               DateTimeHelper.CompareDays(normalizedWeekStart, normalizedRangeEnd) == 0;
+    }
+
+    private static bool TryGetWeekVisualRange(CalendarViewState state, out DateTime rangeStart, out DateTime rangeEnd)
+    {
+        if (state.PickerMode != DatePickerMode.Week)
+        {
+            rangeStart = default;
+            rangeEnd   = default;
+            return false;
+        }
+
+        return state.RangeSelection.TryGetPreviewRange(out rangeStart, out rangeEnd) ||
+               state.RangeSelection.TryGetCommittedRange(out rangeStart, out rangeEnd);
+    }
+
+    private static DateTime GetWeekStart(DateTime date, DayOfWeek firstDayOfWeek)
+    {
+        var offset = ((int)date.DayOfWeek - (int)firstDayOfWeek + 7) % 7;
+        return DateTimeHelper.DiscardTime(date).AddDays(-offset);
     }
 }

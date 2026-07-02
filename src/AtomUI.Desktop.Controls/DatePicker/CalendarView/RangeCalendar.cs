@@ -177,7 +177,7 @@ internal class RangeCalendar : Calendar
     internal override void NotifyHoverDateChanged(DateTime? hoverDate)
     {
         base.NotifyHoverDateChanged(hoverDate);
-        HoverDateTime = hoverDate;
+        HoverDateTime = HoverDate;
         SyncViewStateFromCurrentProperties();
     }
     

@@ -2,6 +2,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using AtomUI.Desktop.Controls.CalendarView.Rendering;
 
 namespace AtomUI.Desktop.Controls.CalendarView;
 
@@ -11,6 +12,8 @@ namespace AtomUI.Desktop.Controls.CalendarView;
 [TemplatePart("PART_SecondaryPreviousMonthButton", typeof(IconButton))]
 [TemplatePart("PART_SecondaryNextButton", typeof(IconButton))]
 [TemplatePart("PART_SecondaryNextMonthButton", typeof(IconButton))]
+[TemplatePart("PART_YearViewLayout", typeof(UniformGrid))]
+[TemplatePart("PART_SecondaryYearView", typeof(Grid))]
 internal class DualMonthCalendarItem : RangeCalendarItem
 {
     protected override Type StyleKeyOverride => typeof(DualMonthCalendarItem);
@@ -138,6 +141,10 @@ internal class DualMonthCalendarItem : RangeCalendarItem
     
     internal Grid? SecondaryMonthView { get; set; }
 
+    internal UniformGrid? YearViewLayout { get; set; }
+
+    internal Grid? SecondaryYearView { get; set; }
+
     #endregion
 
     protected DateTime _nextMonth;
@@ -150,7 +157,7 @@ internal class DualMonthCalendarItem : RangeCalendarItem
 
     protected override bool IsPointerInMonthView(Point position)
     {
-        if (Owner is null || Owner.DisplayMode != CalendarMode.Month)
+        if (Owner is null || Owner.DisplayMode != CalendarMode.Month || SecondaryMonthView is null)
         {
             return false;
         }
@@ -162,19 +169,35 @@ internal class DualMonthCalendarItem : RangeCalendarItem
         return GetMonthViewRect(SecondaryMonthView!).Contains(position);
     }
 
+    protected override bool TryGetWeekStartFromPointerPosition(Point position, out DateTime weekStart)
+    {
+        if (base.TryGetWeekStartFromPointerPosition(position, out weekStart))
+        {
+            return true;
+        }
+
+        return TryGetWeekStartFromMonthViewPosition(SecondaryMonthView, position, out weekStart);
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         if (SecondaryMonthView is not null)
         {
             ClearGeneratedMonthView(SecondaryMonthView);
         }
+        if (SecondaryYearView is not null)
+        {
+            ClearGeneratedYearView(SecondaryYearView);
+        }
 
-        SecondaryMonthView    = e.NameScope.Get<Grid>("PART_SecondaryMonthView");
-        SecondaryHeaderButton = e.NameScope.Get<HeadTextButton>("PART_SecondaryHeaderButton");
-        SecondaryPreviousButton = e.NameScope.Get<IconButton>("PART_SecondaryPreviousButton");
+        SecondaryMonthView           = e.NameScope.Get<Grid>("PART_SecondaryMonthView");
+        YearViewLayout               = e.NameScope.Get<UniformGrid>("PART_YearViewLayout");
+        SecondaryYearView            = e.NameScope.Get<Grid>("PART_SecondaryYearView");
+        SecondaryHeaderButton        = e.NameScope.Get<HeadTextButton>("PART_SecondaryHeaderButton");
+        SecondaryPreviousButton      = e.NameScope.Get<IconButton>("PART_SecondaryPreviousButton");
         SecondaryPreviousMonthButton = e.NameScope.Find<IconButton>("PART_SecondaryPreviousMonthButton");
-        SecondaryNextButton      = e.NameScope.Get<IconButton>("PART_SecondaryNextButton");
-        SecondaryNextMonthButton = e.NameScope.Get<IconButton>("PART_SecondaryNextMonthButton");
+        SecondaryNextButton          = e.NameScope.Get<IconButton>("PART_SecondaryNextButton");
+        SecondaryNextMonthButton     = e.NameScope.Get<IconButton>("PART_SecondaryNextMonthButton");
         
         base.OnApplyTemplate(e);
         SetupMonthViewMode();
@@ -183,6 +206,9 @@ internal class DualMonthCalendarItem : RangeCalendarItem
     private void SetupMonthViewMode()
     {
         if (SecondaryMonthView is null ||
+            MonthViewLayout is null ||
+            YearViewLayout is null ||
+            SecondaryYearView is null ||
             _previousButton is null ||
             _previousMonthButton is null ||
             _nextButton is null ||
@@ -204,11 +230,24 @@ internal class DualMonthCalendarItem : RangeCalendarItem
         _secondaryPreviousMonthButton.IsVisible = false;
         _secondaryNextButton.IsVisible          = false;
         _secondaryNextMonthButton.IsVisible     = false;
+        _secondaryHeaderButton.IsVisible        = true;
+        MonthViewLayout.Columns                 = 2;
+        YearViewLayout.Columns                  = 2;
+        MonthViewLayout.IsVisible               = IsMonthViewMode;
+        if (MonthView is not null)
+        {
+            MonthView.IsVisible = IsMonthViewMode;
+        }
+        SecondaryMonthView.IsVisible            = IsMonthViewMode;
+        YearViewLayout.IsVisible                = !IsMonthViewMode;
+        if (YearView is not null)
+        {
+            YearView.IsVisible = !IsMonthViewMode;
+        }
+        SecondaryYearView.IsVisible = !IsMonthViewMode;
         
         if (IsMonthViewMode)
         {
-            SecondaryMonthView.IsVisible        = true;
-            _secondaryHeaderButton.IsVisible    = true;
             _previousButton.IsVisible           = true;
             _previousMonthButton.IsVisible      = true;
             _secondaryNextButton.IsVisible      = true;
@@ -216,12 +255,8 @@ internal class DualMonthCalendarItem : RangeCalendarItem
         }
         else
         {
-            SecondaryMonthView.IsVisible     = false;
-            _secondaryHeaderButton.IsVisible = false;
-            _previousButton.IsVisible        = true;
-            _previousMonthButton.IsVisible   = true;
-            _nextButton.IsVisible            = true;
-            _nextMonthButton.IsVisible       = true;
+            _previousButton.IsVisible      = true;
+            _secondaryNextButton.IsVisible = true;
         }
     }
 
@@ -237,12 +272,30 @@ internal class DualMonthCalendarItem : RangeCalendarItem
         }
     }
 
+    protected override void PopulateYearViewsGrid()
+    {
+        base.PopulateYearViewsGrid();
+        if (SecondaryYearView is not null)
+        {
+            PopulateYearViewGrid(SecondaryYearView);
+        }
+    }
+
     protected override void ClearGeneratedMonthViews()
     {
         base.ClearGeneratedMonthViews();
         if (SecondaryMonthView is not null)
         {
             ClearGeneratedMonthView(SecondaryMonthView);
+        }
+    }
+
+    protected override void ClearGeneratedYearViews()
+    {
+        base.ClearGeneratedYearViews();
+        if (SecondaryYearView is not null)
+        {
+            ClearGeneratedYearView(SecondaryYearView);
         }
     }
 
@@ -261,22 +314,17 @@ internal class DualMonthCalendarItem : RangeCalendarItem
         if (Owner is not null && _headerLayout is not null && MonthViewLayout is not null)
         {
             var headerLayout = _headerLayout as UniformGrid;
-            if (Owner.DisplayMode == CalendarMode.Month)
+            MonthViewLayout.Columns = 2;
+            if (YearViewLayout is not null)
             {
-                MonthViewLayout.Columns     = 2;
-                if (headerLayout is not null)
-                {
-                    headerLayout.Columns = 2;
-                }
+                YearViewLayout.Columns = 2;
             }
-            else if (Owner.DisplayMode == CalendarMode.Year || Owner.DisplayMode == CalendarMode.Decade)
+            if (headerLayout is not null)
             {
-                MonthViewLayout.Columns     = 1;
-                if (headerLayout is not null)
-                {
-                    headerLayout.Columns = 1;
-                }
+                headerLayout.Columns = 2;
             }
+
+            ConfigureYearViewLayout(SecondaryYearView);
         }
     }
 
@@ -296,9 +344,59 @@ internal class DualMonthCalendarItem : RangeCalendarItem
     protected override void SetCalendarDayButtons()
     {
         base.SetCalendarDayButtons();
-        if (SecondaryMonthView is not null)
+        if (SecondaryMonthView is not null && Owner?.DisplayMode == CalendarMode.Month)
         {
             SetCalendarDayButtons(_nextMonth, SecondaryMonthView);
+        }
+    }
+
+    protected override void SetMonthButtonsForYearMode()
+    {
+        base.SetMonthButtonsForYearMode();
+        if (Owner is null || SecondaryYearView is null)
+        {
+            return;
+        }
+
+        var secondaryYear = DateTimeHelper.AddYears(_currentMonth, 1) ?? _currentMonth;
+        ConfigureYearViewLayout(SecondaryYearView);
+        if (Owner.PickerMode == DatePickerMode.Quarter)
+        {
+            var panel = CalendarPanelBuilder.BuildQuarterPanel(GetRenderState(secondaryYear), secondaryYear);
+            CalendarItemRenderer.RenderQuarterPanel(Owner, SecondaryYearView, panel);
+        }
+        else
+        {
+            var panel = CalendarPanelBuilder.BuildYearPanel(GetRenderState(secondaryYear), secondaryYear);
+            CalendarItemRenderer.RenderYearPanel(Owner, SecondaryYearView, panel);
+        }
+
+        SetSecondaryYearModeHeaderButton(secondaryYear);
+        if (SecondaryNextButton is not null)
+        {
+            SecondaryNextButton.IsEnabled = Owner.DisplayDateRangeEnd.Year != secondaryYear.Year;
+        }
+    }
+
+    protected override void SetYearButtons(DateTime selectedYear)
+    {
+        base.SetYearButtons(selectedYear);
+        if (Owner is null || SecondaryYearView is null)
+        {
+            return;
+        }
+
+        var secondaryYear = DateTimeHelper.AddYears(selectedYear, 10) ?? selectedYear;
+        ConfigureYearViewLayout(SecondaryYearView);
+        var panel = CalendarPanelBuilder.BuildDecadePanel(GetRenderState(secondaryYear), secondaryYear);
+        CalendarItemRenderer.RenderDecadePanel(Owner, SecondaryYearView, panel);
+
+        var decade    = DateTimeHelper.DecadeOfDate(secondaryYear);
+        var decadeEnd = DateTimeHelper.EndOfDecade(secondaryYear);
+        SetSecondaryDecadeModeHeaderButton(decade, decadeEnd);
+        if (SecondaryNextButton is not null)
+        {
+            SecondaryNextButton.IsEnabled = decadeEnd < Owner.DisplayDateRangeEnd.Year;
         }
     }
 
@@ -317,6 +415,25 @@ internal class DualMonthCalendarItem : RangeCalendarItem
             {
                 SecondaryHeaderButton.Content = DateTime.Today.ToString("Y", DateTimeHelper.GetCurrentDateFormat());
             }
+        }
+    }
+
+    private void SetSecondaryYearModeHeaderButton(DateTime secondaryYear)
+    {
+        if (SecondaryHeaderButton is not null)
+        {
+            SecondaryHeaderButton.Content = secondaryYear.Year.ToString(DateTimeHelper.GetCurrentDateFormat());
+            SecondaryHeaderButton.IsEnabled = true;
+        }
+    }
+
+    private void SetSecondaryDecadeModeHeaderButton(int decade, int decadeEnd)
+    {
+        if (SecondaryHeaderButton is not null)
+        {
+            var format = DateTimeHelper.GetCurrentDateFormat();
+            SecondaryHeaderButton.Content = decade.ToString(format) + "-" + decadeEnd.ToString(format);
+            SecondaryHeaderButton.IsEnabled = false;
         }
     }
 }
