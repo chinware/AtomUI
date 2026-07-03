@@ -47,7 +47,7 @@ Modal 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | 动效与异步 | `AnimationDuration` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `AddOn`、`DefaultStandardButton`、`EscapeStandardButton`、`Logo`、`Result`、`StandardButtons` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
-当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
+Dialog 当前公开事件包括 `Opened`、`Closing`、`Closed`、`Accepted`、`Rejected`、`Finished` 和 `ButtonClicked`。其中 `Closing` 通过 `CancelEventArgs.Cancel` 支持同步取消关闭请求，`ButtonClicked` 通过 `DialogButtonClickedEventArgs.Handled` 支持接管按钮默认关闭行为。
 
 主要公开类型与枚举：
 
@@ -68,6 +68,84 @@ Modal 的公共契约由 public/protected 类型成员、Avalonia 属性、事�
 | `PART_RootLayout` | `?` | 承载根视觉、边框、背景或尺寸基线。 |
 
 当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
+
+### 3.1 关闭前校验入口（待实现设计）
+
+Modal 应为静态 API 用户提供一等公民的关闭前校验入口，用于表单提交、异步保存、服务端校验等需要在用户触发关闭后、Dialog 实际关闭前决定是否放行的场景。该能力定位为 L1 兼容新增，不改变既有 `Closing`、`ButtonClicked`、`Accepted`、`Rejected`、`Finished` 和 `Closed` 的默认行为。
+
+推荐在 `DialogOptions` 增加异步回调，而不是扩展 `ShowDialogModalAsync` 的方法签名：
+
+```csharp
+public Func<DialogClosingContext, ValueTask<bool>>? BeforeCloseAsync { get; init; }
+```
+
+`BeforeCloseAsync` 默认值为 `null`。未设置时，Dialog 关闭流程必须保持现有语义。设置后，返回 `true` 表示允许继续关闭，返回 `false` 表示取消本次关闭请求并保持 Dialog 打开。
+
+关闭前上下文应使用独立 public 类型承载，不只传递 `DialogCode`：
+
+```csharp
+public sealed class DialogClosingContext
+{
+    public Dialog Dialog { get; }
+    public object? Result { get; }
+    public DialogCode? DialogCode { get; }
+    public DialogCloseReason Reason { get; }
+    public DialogButton? SourceButton { get; }
+    public CancellationToken CancellationToken { get; }
+}
+```
+
+关闭来源使用显式枚举表达：
+
+```csharp
+public enum DialogCloseReason
+{
+    Accepted,
+    Rejected,
+    HostCloseRequest,
+    Programmatic,
+    OwnerClosed,
+    PlacementTargetDetached
+}
+```
+
+设计约束：
+
+- `BeforeCloseAsync` 只表达关闭请求是否允许继续，不负责自动设置 loading、错误提示或表单校验视觉；调用方可通过 `DialogClosingContext.Dialog` 使用 `IsConfirmLoading`、`IsLoading` 或业务内容状态。
+- `DialogCode` 只在结果为 `DialogCode.Accepted` 或 `DialogCode.Rejected` 时有值；标题栏关闭、父窗口关闭、placement target detach、`Done()` 等路径应通过 `Reason` 区分。
+- 标准按钮、自定义按钮、Enter 和 Escape 触发标准按钮时，应在 `SourceButton` 中暴露实际按钮；非按钮来源为 `null`。
+- `ButtonClicked` 已设置 `Handled = true` 时，不进入 `BeforeCloseAsync`，由调用方自行决定后续关闭。
+- `Closing.Cancel = true` 时，不继续调用 `BeforeCloseAsync`。
+- `BeforeCloseAsync` 发生异常时不得关闭 Dialog；实现应重置关闭请求状态，并以可诊断方式暴露异常。
+- 该入口用于简化静态 API 场景；高级 MVVM 场景仍可继续使用 `IDialogAwareDataContext`、`ButtonClicked` 和 `Closing` 直接接管 Dialog。
+
+示例用法：
+
+```csharp
+var options = new DialogOptions
+{
+    StandardButtons = DialogStandardButtons.Parse("Cancel,Ok"),
+    BeforeCloseAsync = async context =>
+    {
+        if (context.DialogCode != DialogCode.Accepted)
+        {
+            return true;
+        }
+
+        context.Dialog.IsConfirmLoading = true;
+        try
+        {
+            return await ValidateAsync();
+        }
+        finally
+        {
+            context.Dialog.IsConfirmLoading = false;
+        }
+    }
+};
+
+await Dialog.ShowDialogModalAsync(content, viewModel, options);
+```
 
 ## 4. 行为与状态模型
 
@@ -174,6 +252,27 @@ Modal 的动效只表达状态变化反馈，不应改变 public API 语义。�
 ### 8.4 视觉选项模型
 
 Modal 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
+
+### 8.5 关闭请求模型（待实现设计）
+
+Modal 的关闭请求应收敛到单一管线，保证按钮、键盘、标题栏关闭、Window host 关闭、父窗口关闭、placement target detach 和 programmatic close 使用一致的校验与事件顺序。新增关闭前校验能力时，应保留既有事件语义：
+
+```text
+用户触发按钮 / 键盘 / 标题栏 / programmatic close
+  -> ButtonClicked（仅按钮来源）
+  -> ButtonClicked.Handled ? 停止默认关闭 : 继续
+  -> Result / DialogCode / DialogCloseReason 归一
+  -> Closing
+  -> Closing.Cancel ? 取消关闭 : 继续
+  -> DialogOptions.BeforeCloseAsync
+  -> 返回 false 或异常 ? 取消关闭 : 继续
+  -> Accepted / Rejected
+  -> Finished
+  -> IDialogAwareDataContext.NotifyClosed
+  -> Closed
+```
+
+关闭请求管线必须单次执行。`BeforeCloseAsync` 未完成时，重复点击确认按钮、重复触发 Escape 或重复收到 host close request 不应产生并发关闭；实现可以复用现有 `_closing` 状态或引入明确的 close-request in-flight 状态，但不能通过延时或吞异常隐藏重入问题。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 
