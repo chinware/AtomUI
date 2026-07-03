@@ -1026,6 +1026,7 @@ public partial class DataGrid : TemplatedControl,
 
         DataConnection       = new DataGridDataConnection(this);
         _showDetailsTable    = new IndexToValueTable<bool>();
+        _rowDetailsHeightEstimateTable = new IndexToValueTable<double>();
         _collapsedSlotsTable = new IndexToValueTable<bool>();
 
         AnchorSlot          = -1;
