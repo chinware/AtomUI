@@ -65,22 +65,6 @@ internal static class WindowExtensions
     }
     
     [SupportedOSPlatform("windows")]
-    public static void InitializeWinWindow(this Window window)
-    {
-        Win32Properties.AddWndProcHookCallback(window, window.WinWndProcHook);
-        window.ApplyWinDwmShadow();
-
-        var hwnd = window.TryGetPlatformHandle()!.Handle;
-        WindowUtilsInterop.SetWindowPos(hwnd, IntPtr.Zero,
-            0, 0, 0, 0,
-            WindowUtilsInterop.SWP_FRAMECHANGED |
-            WindowUtilsInterop.SWP_NOSIZE |
-            WindowUtilsInterop.SWP_NOMOVE |
-            WindowUtilsInterop.SWP_NOZORDER |
-            WindowUtilsInterop.SWP_NOACTIVATE);
-    }
-
-    [SupportedOSPlatform("windows")]
     public static void ApplyWinDwmShadow(this Window window)
     {
         var handle = window.TryGetPlatformHandle();
@@ -89,6 +73,28 @@ internal static class WindowExtensions
             return;
         }
         WindowUtilsWindows.ApplyDwmShadow(handle.Handle);
+    }
+
+    [SupportedOSPlatform("windows")]
+    public static void ForceWinNonClientFrameChanged(this Window window)
+    {
+        var handle = window.TryGetPlatformHandle();
+        if (handle is null || handle.HandleDescriptor != "HWND")
+        {
+            return;
+        }
+
+        WindowUtilsInterop.SetWindowPos(handle.Handle,
+            IntPtr.Zero,
+            0,
+            0,
+            0,
+            0,
+            WindowUtilsInterop.SWP_FRAMECHANGED |
+            WindowUtilsInterop.SWP_NOSIZE |
+            WindowUtilsInterop.SWP_NOMOVE |
+            WindowUtilsInterop.SWP_NOZORDER |
+            WindowUtilsInterop.SWP_NOACTIVATE);
     }
     
     [SupportedOSPlatform("windows")]

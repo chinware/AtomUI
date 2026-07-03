@@ -20,6 +20,11 @@ internal static class WindowChromeManager
 {
     public static IWindowChromeManager? Attach(Window window)
     {
+        if (OperatingSystem.IsWindows())
+        {
+            return WindowsWindowChromeManager.Attach(window);
+        }
+
         if (OperatingSystem.IsLinux())
         {
             return LinuxWindowChromeManager.Attach(window);

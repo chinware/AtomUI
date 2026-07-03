@@ -226,24 +226,45 @@ Win32 原生逻辑集中在 `AtomUI.Native` 项目中：
 |---|------|------|
 | 常量 | `AtomUI.Native/Windows/WindowUtils.Interop.cs` | `WM_NCCALCSIZE`、`WM_NCHITTEST`、`HT*` 系列、DWM 属性 |
 | Native 逻辑 | `AtomUI.Native/Windows/WindowUtils.Windows.cs` | `ApplyDwmShadow()`、`HandleNcCalcSize()`、`HitTestBorder()` |
-| 窗口控件 | `AtomUI.Desktop.Controls/Window/Window.cs` | CSD 状态判断、WndProc hook 注册、WindowState 处理 |
+| Native 扩展 | `AtomUI.Native/WindowExtensions.cs` | `WinWndProcHook()`、`ApplyWinDwmShadow()`、`ForceWinNonClientFrameChanged()` |
+| 窗口控件 | `AtomUI.Desktop.Controls/Window/Window.cs` | CSD 状态判断、跨平台 chrome manager 接入 |
+| Windows chrome | `AtomUI.Desktop.Controls/Window/WindowsWindowChromeManager.cs` | WndProc hook 一次性注册；首次打开、托盘恢复、窗口状态变化后重发 frame changed |
 
 #### 5.1 禁用 CSD
 
 `ConfigureCsdStatus()` 中全 Windows 设 `IsCsdEnabled=false`，`WindowTheme.axaml` 不设 `ExtendClientAreaToDecorationsHint` → Avalonia 不调用 `ExtendClientArea()` → 整条 CSD 链路不触发。
 
-#### 5.2 注册 WndProc Hook
+#### 5.2 WindowsWindowChromeManager
 
-在 `OnOpened()` 中注册（构造函数时 HWND 尚未创建），通过 `Win32Properties.AddWndProcHookCallback()` 在 Avalonia WndProc 之前拦截消息：
+`WindowChromeManager.Attach()` 在 Windows 上创建 `WindowsWindowChromeManager`。Hook 不能在构造函数注册，因为此时 HWND 尚未创建；也不能在每次 `Show()` 里重复注册，因为 `Win32Properties.AddWndProcHookCallback()` 会组合委托。当前实现由 manager 在 HWND 可用后一次性注册，并在需要时重发 frame changed：
 
 ```csharp
-Win32Properties.AddWndProcHookCallback(this, WinWndProcHook);
-ApplyWinDwmShadow();
+private void EnsureWndProcHookRegistered()
+{
+    if (_wndProcHookRegistered || _window.PlatformImpl is null)
+    {
+        return;
+    }
 
-// 强制 Windows 重新发送 WM_NCCALCSIZE，让 hook 生效
-WindowUtilsInterop.SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
-    SWP_FRAMECHANGED | SWP_NOSIZE | SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE);
+    _wndProcHookCallback = _window.WinWndProcHook;
+    Win32Properties.AddWndProcHookCallback(_window, _wndProcHookCallback);
+    _wndProcHookRegistered = true;
+}
+
+private void ApplyFrameRefresh()
+{
+    EnsureWndProcHookRegistered();
+    if (!_window.IsVisible || _window.PlatformImpl is null)
+    {
+        return;
+    }
+
+    _window.ApplyWinDwmShadow();
+    _window.ForceWinNonClientFrameChanged();
+}
 ```
+
+`ForceWinNonClientFrameChanged()` 通过 `SWP_FRAMECHANGED` 强制 Windows 重新发送 `WM_NCCALCSIZE`，让 hook 重新去掉原生非客户区标题栏。这个动作不仅在首次打开时需要，在 `Hide()` 到托盘后再次 `Show()`、恢复激活和最大化路径中也需要。
 
 #### 5.3 WM_NCCALCSIZE — 去掉原生标题栏
 
@@ -291,12 +312,15 @@ if (Environment.OSVersion.Version.Build >= 22000)
 
 因为不走 `ExtendClientAreaToDecorationsHint`，Avalonia 永远不会覆盖这个设置。
 
-#### 5.6 全屏状态处理
+#### 5.6 显示/恢复/全屏状态处理
 
 | 状态 | DWM 处理 |
 |------|----------|
+| 首次打开 | `OnOpened()` 调用 `_platformChromeManager.UpdateFrameGeometry()`，注册 hook 并重发 `SWP_FRAMECHANGED` |
+| `Hide()` 后再次 `Show()` | `IsVisible=True` 时排队执行 `ApplyWinDwmShadow()` + `ForceWinNonClientFrameChanged()`，避免原生标题栏恢复 |
+| 普通 `WindowState` 变化 | 用 `DispatcherPriority.Loaded` 排队刷新，等 Avalonia/Win32 状态变化落地后重新触发 `WM_NCCALCSIZE` |
 | 全屏 | 不做 DWM 操作（避免干扰 OS 全屏动画），仅标记 `_wasFullScreen=true` |
-| 退出全屏 | 用 `Dispatcher.UIThread.Post(ApplyWinDwmShadow, DispatcherPriority.Send)` 延迟恢复。因为 Avalonia 的 `SetFullScreen(false)` 会调用 `UpdateWindowProperties(forceChanges: true)` 重置 margins |
+| 退出全屏 | 用 `DispatcherPriority.Send` 刷新。因为 Avalonia 的 `SetFullScreen(false)` 会调用 `UpdateWindowProperties(forceChanges: true)` 重置 margins |
 | 最大化 | DWM 阴影自动隐藏（OS 行为），WM_NCCALCSIZE 补偿边框 |
 
 ### 陷阱
@@ -304,7 +328,9 @@ if (Environment.OSVersion.Version.Build >= 22000)
 | 陷阱 | 说明 |
 |------|------|
 | Hook 注册太晚 | 窗口 Show() 时第一个 WM_NCCALCSIZE 已处理，原生标题栏闪现。必须在注册后调用 `SetWindowPos(SWP_FRAMECHANGED)` 强制重发 |
-| 退出全屏后阴影消失 | Avalonia `UpdateWindowProperties(forceChanges: true)` 重置 DWM margins。必须用 `Dispatcher.UIThread.Post` 延迟恢复 |
+| Hook 重复注册 | `Win32Properties.AddWndProcHookCallback()` 会组合委托。Windows chrome hook 必须由 `WindowsWindowChromeManager` 一次性注册 |
+| 托盘恢复后出现双标题栏 | `Hide()` 后再次 `Show()`/最大化时 Windows 可能恢复原生非客户区。必须在 `IsVisible=True` 和 `WindowState` 变化后重发 `SWP_FRAMECHANGED` |
+| 退出全屏后阴影消失 | Avalonia `UpdateWindowProperties(forceChanges: true)` 重置 DWM margins。必须延迟恢复 |
 | 最大化时标题栏被裁剪 | Windows 最大化窗口超出屏幕边缘。WM_NCCALCSIZE 中必须检测 `WS_MAXIMIZE` 并 inset 边框厚度 |
 | 试图在 Windows 上走 CSD | 会触发闪烁和推窗口 bug，这是 Avalonia 12 CSD 与 Windows DWM 的根本冲突，Win10 和 Win11 均存在 |
 | 用 `Dispatcher.UIThread.Post(ApplyDwmSystemShadow)` 在 CSD 模式下修复阴影 | 时序竞争，`ExtendClientArea()` 在每次 WM_SIZE 都会重置，Post hack 不可靠 |
