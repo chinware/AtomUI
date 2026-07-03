@@ -41,8 +41,8 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | API | 类型 | 语义 |
 | --- | --- | --- |
 | `Mode` | `SelectMode` | 选择模式，默认 `Single`。 |
-| `OptionsSource` | `IEnumerable<ISelectOption>?` | 外部候选项集合。变化时同步到内部 `Options`。 |
-| `Options` | `ItemCollection` | XAML 内容子项入口，也是候选列表实际 ItemsSource。 |
+| `OptionsSource` | `IEnumerable<ISelectOption>?` | 外部候选项集合。Select 只读取该集合，不把 Tags 运行时动态选项写回该集合。 |
+| `Options` | `ItemCollection` | XAML 内容子项入口。它表达用户声明的静态候选项，不承载 Tags 模式运行时动态选项。 |
 | `OptionTemplate` | `IDataTemplate?` | 候选项显示模板，默认显示 `ISelectOption.Header`。 |
 | `SelectedOption` | `ISelectOption?` | 单选模式当前选项。 |
 | `SelectedOptions` | `IList<ISelectOption>?` | 多选和 Tags 模式当前选项集合。 |
@@ -114,7 +114,7 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | `ListItemData.Content` | 候选项值和默认值匹配的主要输入。 |
 | `ListItemData.ItemKey` | 候选项稳定标识，优先用于选项替换后的选择映射。 |
 | `ListItemData.IsEnabled` | 候选项启用状态。 |
-| `ISelectOption.IsDynamicAdded` | Tags 模式下用户输入生成的临时选项标记。 |
+| `ISelectOption.IsDynamicAdded` | Tags 模式下用户输入生成的运行时动态选项标记。 |
 
 稳定 template part：
 
@@ -139,7 +139,9 @@ Select 的核心状态流：
 ```text
 OptionsSource / Options / OptionsLoader
       ↓
-Options ItemCollection
+用户选项源
+      ↓
+Effective options = 用户选项源 + Tags 运行时动态选项
       ↓
 SelectCandidateList
       ↓
@@ -154,7 +156,7 @@ Form value + SelectionChanged
 
 - `Single` 使用 `SelectedOption` 作为唯一表单值，内部单行过滤输入负责展示当前 `Header`。
 - `Multiple` 使用 `SelectedOptions` 作为表单值，已选项以 `SelectTag` 展示。
-- `Tags` 以 `Multiple` 为基础，始终启用有效过滤，并在过滤结果为空且输入非空时创建 `IsDynamicAdded=true` 的临时选项。
+- `Tags` 以 `Multiple` 为基础，始终启用有效过滤，并在过滤结果为空且输入非空时创建 `IsDynamicAdded=true` 的运行时动态选项。
 
 弹层交互优先级：
 
@@ -215,7 +217,9 @@ Select 属于 Data Entry 选择控件家族，与 LineEdit、NumericUpDown、Dat
 
 - `Mode=Single` 使用 `SelectedOption`，`Mode=Multiple/Tags` 使用 `SelectedOptions`。
 - `SelectionChanged` 必须在选择属性变化时继续触发，并包含模式、旧值和新值。
-- `OptionsSource` 变化必须同步到内部 `Options`，并按 `ItemKey` 优先、`Content` 兜底映射已有选择。
+- `OptionsSource`、`Options` 和异步加载结果表达用户选项源；Tags 模式运行时动态选项不得写入这些用户选项源。
+- 候选列表必须使用用户选项源和 Tags 运行时动态选项合成后的有效选项源。
+- `OptionsSource` 变化必须按 `ItemKey` 优先、`Content` 兜底映射已有选择；已选 Tags 动态选项在没有正式选项可映射时必须保留。
 - `DefaultValues` 只在当前选择为空时应用。
 - `Tags` 模式必须保持有效过滤能力，并只在该模式下创建动态选项。
 - `MaxCount` 达到上限时，未选候选项不可继续选择，已选候选项仍可取消。
@@ -236,11 +240,21 @@ Select 属于 Data Entry 选择控件家族，与 LineEdit、NumericUpDown、Dat
 
 - `Single`：候选列表为单选，提交后关闭弹层，结果显示在 `PART_SingleFilterInput`。
 - `Multiple`：候选列表为多选，结果显示为 `SelectTag` 集合，提交和关闭相互独立。
-- `Tags`：多选基础上允许把过滤输入创建为临时选项，动态选项未被选中时会从 `Options` 中清理。
+- `Tags`：多选基础上允许把过滤输入创建为运行时动态选项。动态选项属于 Select 内部状态，不属于用户 `Options` / `OptionsSource`。
 
 ### 8.2 过滤与 Tags 动态选项模型
 
-`FilterValue` 来自单选过滤输入或多选结果区域内的搜索输入。`Tags` 模式在候选总数为 0 且过滤文本非空时创建 `_addNewOption`，该选项的 `Header` 和 `Content` 都等于输入文本，并标记为 `IsDynamicAdded=true`。
+`FilterValue` 来自单选过滤输入或多选结果区域内的搜索输入。`Tags` 模式在候选总数为 0 且过滤文本非空时创建运行时动态选项，该选项的 `Header` 和 `Content` 都等于输入文本，并标记为 `IsDynamicAdded=true`。
+
+Select 必须保持三层选项模型：
+
+```text
+用户选项源 = Options / OptionsSource / OptionsLoader result
+运行时动态选项 = Tags 模式由输入创建的 IsDynamicAdded 选项
+有效候选选项 = 用户选项源 + 运行时动态选项
+```
+
+候选列表只消费有效候选选项。动态选项的创建、选择、删除和清理只能影响运行时动态选项集合及有效候选选项，不能修改用户传入的 `OptionsSource` 或 XAML 内容子项 `Options`。当新的用户选项源中出现与已选动态选项相同 identity 的正式选项时，Select 可以把选择映射到正式选项，并清理对应动态选项，避免候选项重复。
 
 ### 8.3 异步加载模型
 

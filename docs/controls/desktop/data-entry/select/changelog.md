@@ -3,6 +3,18 @@
 本文档记录 Select 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-07-03
+
+- Docs
+  - Document the root ownership model for Tags dynamic options: user option sources, runtime dynamic options and effective candidate options are separate state layers.
+  - Clarify that Tags runtime options must not be written into user `OptionsSource` or XAML child `Options`, preserving the ItemsSource contract.
+  - Add verification expectations for `Mode=Tags` with `OptionsSource` and custom tag creation.
+- Implementation
+  - Move Tags runtime options into Select-owned internal state and bind the candidate list to effective options built from user options plus runtime options.
+  - Preserve selected runtime tags across `OptionsSource` replacement and remap them to formal user options when an identity match appears.
+- Tests
+  - Add regression coverage for `Mode=Tags` with `OptionsSource`, custom tag creation and source replacement remapping.
+
 ## 2026-06-26
 
 - Docs

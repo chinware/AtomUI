@@ -1,9 +1,11 @@
 using System.Collections;
+using System.Collections.Specialized;
 using AtomUI.Controls.Utils;
 using AtomUI.Reflection;
 using AtomUI.Theme;
 using AtomUI.Utils;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
@@ -248,9 +250,19 @@ public partial class Select : AbstractSelect
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new VirtualizingStackPanel());
 
+    private readonly AvaloniaList<ISelectOption> _runtimeDynamicOptions = new()
+    {
+        ResetBehavior = ResetBehavior.Remove
+    };
+    private readonly AvaloniaList<ISelectOption> _effectiveOptions = new()
+    {
+        ResetBehavior = ResetBehavior.Remove
+    };
     private SelectCandidateList? _candidateList;
     private Border? _popupFrame;
     private SelectFilterTextBox? _singleFilterInput;
+    private SelectResultOptionsBox? _selectedOptionsBox;
+    private IDisposable? _selectedOptionsBoxSearchInputSubscription;
     private bool _ignoreSyncSelection;
     private bool _candidateListActivated;
     private bool _syncingSingleFilterInputText;
@@ -273,6 +285,8 @@ public partial class Select : AbstractSelect
     public Select()
     {
         this.RegisterTokenResourceScope(SelectToken.ScopeProvider);
+        Options.CollectionChanged += HandleOptionsCollectionChanged;
+        RebuildEffectiveOptions();
     }
 
     public void ClearValue()
@@ -309,6 +323,7 @@ public partial class Select : AbstractSelect
         base.OnApplyTemplate(e);
 
         _singleFilterInput = e.NameScope.Get<SelectFilterTextBox>("PART_SingleFilterInput");
+        SetupSelectedOptionsBoxSearchInputSubscription(e);
         if (Popup != null)
         {
             Popup.OverlayInputPassThroughElement =
@@ -324,6 +339,20 @@ public partial class Select : AbstractSelect
         if (IsDropDownOpen)
         {
             EnsurePopupContent();
+        }
+    }
+
+    private void SetupSelectedOptionsBoxSearchInputSubscription(TemplateAppliedEventArgs e)
+    {
+        _selectedOptionsBoxSearchInputSubscription?.Dispose();
+        _selectedOptionsBoxSearchInputSubscription = null;
+
+        _selectedOptionsBox = e.NameScope.Find<SelectResultOptionsBox>("SelectedOptionsBox");
+        if (_selectedOptionsBox is not null)
+        {
+            _selectedOptionsBoxSearchInputSubscription =
+                _selectedOptionsBox.GetObservable(SelectResultOptionsBox.IsSearchInputEmptyProperty)
+                                   .Subscribe(_ => ConfigurePlaceholderVisible());
         }
     }
 
@@ -353,7 +382,7 @@ public partial class Select : AbstractSelect
                 Name                 = "PART_CandidateList",
                 BorderThickness      = new Thickness(0),
                 IsShowEmptyIndicator = true,
-                ItemsSource          = Options
+                ItemsSource          = _effectiveOptions
             };
             _candidateList.SetTemplatedParent(this);
             _candidateList[!ListView.FilterProperty]                    = this[!FilterProperty];
@@ -407,11 +436,15 @@ public partial class Select : AbstractSelect
             ConfigurePlaceholderVisible();
             ConfigureSingleResultVisible();
             SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count ?? 0);
-            CleanDynamicAddedOptions();
+            CleanRuntimeDynamicOptions();
             ConfigureSingleFilterTextBox();
         }
         else if (change.Property == ModeProperty)
         {
+            if (Mode != SelectMode.Tags)
+            {
+                ClearRuntimeDynamicOptions();
+            }
             ConfigureOptionsBoxSelectionMode();
             ConfigureSingleResultVisible();
             ConfigureSingleFilterTextBox();
@@ -713,11 +746,7 @@ public partial class Select : AbstractSelect
 
         if (Mode == SelectMode.Tags && removedItem.IsDynamicAdded)
         {
-            Options.Remove(removedItem);
-            if (ReferenceEquals(_addNewOption, removedItem))
-            {
-                _addNewOption = null;
-            }
+            RemoveRuntimeDynamicOption(removedItem);
         }
 
         e.Handled = true;
@@ -917,7 +946,12 @@ public partial class Select : AbstractSelect
         }
         else
         {
-            SetCurrentValue(IsPlaceholderTextVisibleProperty, (SelectedOptions == null || SelectedOptions?.Count == 0) && string.IsNullOrEmpty(FilterValue?.ToString()));
+            var isSearchInputEmpty = _selectedOptionsBox?.IsSearchInputEmpty ?? true;
+            var hasFilterValue     = !string.IsNullOrEmpty(FilterValue?.ToString());
+            SetCurrentValue(IsPlaceholderTextVisibleProperty,
+                (SelectedOptions == null || SelectedOptions.Count == 0) &&
+                isSearchInputEmpty &&
+                !hasFilterValue);
         }
     }
 
@@ -1031,8 +1065,11 @@ public partial class Select : AbstractSelect
                 var isCurrentInput = filterValue == _addNewOption.Header?.ToString();
                 if (!isSelected && !isCurrentInput)
                 {
-                    Options.Remove(_addNewOption);
-                    _addNewOption = null;
+                    RemoveRuntimeDynamicOption(_addNewOption);
+                }
+                else if (!isSelected && isCurrentInput)
+                {
+                    ActivateCandidateOption(_addNewOption);
                 }
             }
             ConfigurePlaceholderVisible();
@@ -1051,11 +1088,25 @@ public partial class Select : AbstractSelect
                     Content        = filterValue,
                     IsDynamicAdded = true
                 };
-                Options.Add(_addNewOption);
+                AddRuntimeDynamicOption(_addNewOption);
+                ActivateCandidateOption(_addNewOption);
             }
             Dispatcher.Post(SyncSelectionToCandidateList);
         }
         e.Handled = true;
+    }
+
+    private void ActivateCandidateOption(ISelectOption option)
+    {
+        if (_candidateList == null)
+        {
+            return;
+        }
+
+        if (!_candidateList.TrySetCandidateItemSelected(option))
+        {
+            Dispatcher.Post(() => _candidateList?.TrySetCandidateItemSelected(option));
+        }
     }
 
     private void HandleTagCloseRequest(RoutedEventArgs e)
@@ -1086,7 +1137,7 @@ public partial class Select : AbstractSelect
             {
                 if (tag.Item is ISelectOption selectOption && selectOption.IsDynamicAdded)
                 {
-                    Options.Remove(selectOption);
+                    RemoveRuntimeDynamicOption(selectOption);
                 }
             }
         }
@@ -1095,8 +1146,8 @@ public partial class Select : AbstractSelect
 
     private void HandleOptionsSourcePropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
-        var selectedOptionIdentity  = Mode == SelectMode.Single ? BuildOptionIdentity(SelectedOption) : null;
-        var selectedOptionIdentities = Mode != SelectMode.Single ? BuildSelectedOptionIdentities(SelectedOptions) : null;
+        var selectedOptionSnapshot  = Mode == SelectMode.Single ? BuildOptionSnapshot(SelectedOption) : null;
+        var selectedOptionSnapshots = Mode != SelectMode.Single ? BuildSelectedOptionSnapshots(SelectedOptions) : null;
 
         if (!Options.IsReadOnly)
         {
@@ -1106,8 +1157,8 @@ public partial class Select : AbstractSelect
 
         if (Mode == SelectMode.Single)
         {
-            if (selectedOptionIdentity != null &&
-                TryFindOptionByIdentity(selectedOptionIdentity, out var remappedOption))
+            if (selectedOptionSnapshot != null &&
+                TryFindOptionByIdentity(selectedOptionSnapshot.Value.Identity, out var remappedOption))
             {
                 SelectedOption = remappedOption;
             }
@@ -1117,14 +1168,19 @@ public partial class Select : AbstractSelect
                 ConfigureDefaultValues();
             }
         }
-        else if (selectedOptionIdentities != null)
+        else if (selectedOptionSnapshots != null)
         {
-            var remappedOptions = new List<ISelectOption>(selectedOptionIdentities.Count);
-            foreach (var identity in selectedOptionIdentities)
+            var remappedOptions = new List<ISelectOption>(selectedOptionSnapshots.Count);
+            foreach (var snapshot in selectedOptionSnapshots)
             {
-                if (TryFindOptionByIdentity(identity, out var remappedOption))
+                if (TryFindOptionByIdentity(snapshot.Identity, out var remappedOption))
                 {
                     remappedOptions.Add(remappedOption);
+                    RemoveRuntimeDynamicOptionByIdentity(snapshot.Identity);
+                }
+                else if (Mode == SelectMode.Tags && snapshot.Option.IsDynamicAdded)
+                {
+                    remappedOptions.Add(snapshot.Option);
                 }
             }
 
@@ -1135,25 +1191,42 @@ public partial class Select : AbstractSelect
         {
             ConfigureDefaultValues();
         }
+
+        RemoveRuntimeDynamicOptionsShadowedByUserOptions();
+        RebuildEffectiveOptions();
     }
 
-    private static List<string>? BuildSelectedOptionIdentities(ICollection<ISelectOption>? options)
+    private void HandleOptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        RemapSelectedRuntimeOptionsToUserOptions();
+        RemoveRuntimeDynamicOptionsShadowedByUserOptions();
+        RebuildEffectiveOptions();
+        SyncSelectionToCandidateList();
+    }
+
+    private static (string Identity, ISelectOption Option)? BuildOptionSnapshot(ISelectOption? option)
+    {
+        var identity = BuildOptionIdentity(option);
+        return identity == null || option == null ? null : (identity, option);
+    }
+
+    private static List<(string Identity, ISelectOption Option)>? BuildSelectedOptionSnapshots(ICollection<ISelectOption>? options)
     {
         if (options == null)
         {
             return null;
         }
 
-        var identities = new List<string>(options.Count);
+        var snapshots = new List<(string Identity, ISelectOption Option)>(options.Count);
         foreach (var option in options)
         {
             var identity = BuildOptionIdentity(option);
             if (identity != null)
             {
-                identities.Add(identity);
+                snapshots.Add((identity, option));
             }
         }
-        return identities;
+        return snapshots;
     }
 
     private static string? BuildOptionIdentity(ISelectOption? option)
@@ -1249,10 +1322,11 @@ public partial class Select : AbstractSelect
         }
     }
 
-    private void CleanDynamicAddedOptions()
+    private void CleanRuntimeDynamicOptions()
     {
         if (Mode != SelectMode.Tags)
         {
+            ClearRuntimeDynamicOptions();
             return;
         }
 
@@ -1266,30 +1340,163 @@ public partial class Select : AbstractSelect
             }
         }
 
-        List<ISelectOption>? toRemove = null;
-        foreach (var item in Options)
+        var removed = false;
+        for (var i = _runtimeDynamicOptions.Count - 1; i >= 0; i--)
         {
-            if (item is ISelectOption option)
+            var option = _runtimeDynamicOptions[i];
+            if (selected?.Contains(option) != true)
             {
-                if (option.IsDynamicAdded && selected?.Contains(option) != true)
+                _runtimeDynamicOptions.RemoveAt(i);
+                removed = true;
+                if (ReferenceEquals(_addNewOption, option))
                 {
-                    toRemove ??= new List<ISelectOption>(Options.Count);
-                    toRemove.Add(option);
+                    _addNewOption = null;
                 }
             }
         }
 
-        if (toRemove == null)
+        if (removed)
+        {
+            RebuildEffectiveOptions();
+        }
+    }
+
+    private void AddRuntimeDynamicOption(ISelectOption option)
+    {
+        if (_runtimeDynamicOptions.Contains(option))
         {
             return;
         }
 
-        foreach (var option in toRemove)
+        _runtimeDynamicOptions.Add(option);
+        RebuildEffectiveOptions();
+    }
+
+    private void RemoveRuntimeDynamicOption(ISelectOption option)
+    {
+        var index = _runtimeDynamicOptions.IndexOf(option);
+        if (index >= 0)
         {
-            Options.Remove(option);
-            if (ReferenceEquals(_addNewOption, option))
+            _runtimeDynamicOptions.RemoveAt(index);
+            RebuildEffectiveOptions();
+        }
+
+        if (ReferenceEquals(_addNewOption, option))
+        {
+            _addNewOption = null;
+        }
+    }
+
+    private void ClearRuntimeDynamicOptions()
+    {
+        if (_runtimeDynamicOptions.Count == 0)
+        {
+            return;
+        }
+
+        _runtimeDynamicOptions.Clear();
+        _addNewOption = null;
+        RebuildEffectiveOptions();
+    }
+
+    private void RemoveRuntimeDynamicOptionByIdentity(string identity)
+    {
+        for (var i = _runtimeDynamicOptions.Count - 1; i >= 0; i--)
+        {
+            var option = _runtimeDynamicOptions[i];
+            if (identity == BuildOptionIdentity(option))
             {
-                _addNewOption = null;
+                _runtimeDynamicOptions.RemoveAt(i);
+                if (ReferenceEquals(_addNewOption, option))
+                {
+                    _addNewOption = null;
+                }
+            }
+        }
+    }
+
+    private void RemoveRuntimeDynamicOptionsShadowedByUserOptions()
+    {
+        for (var i = _runtimeDynamicOptions.Count - 1; i >= 0; i--)
+        {
+            var option   = _runtimeDynamicOptions[i];
+            var identity = BuildOptionIdentity(option);
+            if (identity != null && TryFindOptionByIdentity(identity, out _))
+            {
+                _runtimeDynamicOptions.RemoveAt(i);
+                if (ReferenceEquals(_addNewOption, option))
+                {
+                    _addNewOption = null;
+                }
+            }
+        }
+    }
+
+    private void RemapSelectedRuntimeOptionsToUserOptions()
+    {
+        if (Mode != SelectMode.Tags || SelectedOptions is not { Count: > 0 })
+        {
+            return;
+        }
+
+        var changed         = false;
+        var remappedOptions = new List<ISelectOption>(SelectedOptions.Count);
+        foreach (var option in SelectedOptions)
+        {
+            var identity = BuildOptionIdentity(option);
+            if (option.IsDynamicAdded &&
+                identity != null &&
+                TryFindOptionByIdentity(identity, out var userOption))
+            {
+                remappedOptions.Add(userOption);
+                changed = true;
+                RemoveRuntimeDynamicOptionByIdentity(identity);
+            }
+            else
+            {
+                remappedOptions.Add(option);
+            }
+        }
+
+        if (changed)
+        {
+            SelectedOptions = remappedOptions;
+        }
+    }
+
+    private void RebuildEffectiveOptions()
+    {
+        var candidateList = _candidateList;
+        if (candidateList != null)
+        {
+            candidateList.SelectionChanged -= HandleCandidateListSelectionChanged;
+        }
+
+        try
+        {
+            _effectiveOptions.Clear();
+            foreach (var item in Options)
+            {
+                if (item is ISelectOption option)
+                {
+                    _effectiveOptions.Add(option);
+                }
+            }
+
+            foreach (var option in _runtimeDynamicOptions)
+            {
+                var identity = BuildOptionIdentity(option);
+                if (identity == null || !TryFindOptionByIdentity(identity, out _))
+                {
+                    _effectiveOptions.Add(option);
+                }
+            }
+        }
+        finally
+        {
+            if (candidateList != null)
+            {
+                candidateList.SelectionChanged += HandleCandidateListSelectionChanged;
             }
         }
     }
