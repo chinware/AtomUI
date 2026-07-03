@@ -459,7 +459,8 @@ public partial class DataGrid
 
     internal bool IsSlotVisible(int slot)
     {
-        return slot >= DisplayData.FirstScrollingSlot
+        return DisplayData.NumDisplayedScrollingElements > 0
+               && slot >= DisplayData.FirstScrollingSlot
                && slot <= DisplayData.LastScrollingSlot
                && slot != -1
                && !_collapsedSlotsTable.Contains(slot);
@@ -809,10 +810,15 @@ public partial class DataGrid
 
     private void ApplyDisplayedRowsState(int startSlot, int endSlot)
     {
+        if (DisplayData.NumDisplayedScrollingElements == 0)
+        {
+            return;
+        }
+
         int firstSlot = Math.Max(DisplayData.FirstScrollingSlot, startSlot);
         int lastSlot  = Math.Min(DisplayData.LastScrollingSlot, endSlot);
 
-        if (firstSlot >= 0)
+        if (firstSlot >= 0 && lastSlot >= firstSlot)
         {
             Debug.Assert(lastSlot >= firstSlot);
             int slot = GetNextVisibleSlot(firstSlot - 1);

@@ -37,6 +37,7 @@ internal class DataGridDisplayData
         _fullyRecycledRows         = new Stack<DataGridRow>();
         _recyclableGroupHeaders    = new Stack<DataGridRowGroupHeader>();
         _fullyRecycledGroupHeaders = new Stack<DataGridRowGroupHeader>();
+        ResetSlotIndexes();
     }
     
     internal void AddRecyclableRow(DataGridRow row)
@@ -149,6 +150,8 @@ internal class DataGridDisplayData
     
     private int GetCircularListIndex(int slot, bool wrap)
     {
+        Debug.Assert(_scrollingElements.Count > 0);
+
         int index = slot - FirstScrollingSlot - _headScrollingElements - _owner.GetCollapsedSlotCount(FirstScrollingSlot, slot);
         return wrap ? index % _scrollingElements.Count : index;
     }
