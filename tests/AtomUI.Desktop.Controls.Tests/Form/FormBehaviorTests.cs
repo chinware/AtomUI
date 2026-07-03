@@ -44,6 +44,25 @@ public class FormBehaviorTests
     }
 
     [Fact]
+    public void FormValidatorProvider_Is_Compatible_With_FormItem_Validators()
+    {
+        var provider = new FormValidatorProvider();
+
+        provider.ShouldBeAssignableTo<IList<IFormValidator>>();
+
+        var validators = (IList<IFormValidator>)provider;
+        validators.Add(new FormStringNotEmptyValidator());
+
+        var formItem = new FormItem
+        {
+            Validators = validators
+        };
+
+        formItem.Validators.ShouldBeSameAs(provider);
+        formItem.Validators.Count.ShouldBe(1);
+    }
+
+    [Fact]
     public void FormItem_Does_Not_Validate_On_Content_Change_When_Default_Trigger_Is_OnSubmit()
     {
         var content = new FeedbackAwareFormControl();
