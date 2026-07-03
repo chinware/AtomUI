@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using AtomUI.Desktop.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia;
@@ -192,6 +193,86 @@ public class GalleryStickyTabsHostTests
         }
     }
 
+    [Fact]
+    public void Window_Message_Layer_Is_Above_Sticky_Mirror_Layer()
+    {
+        var host = CreateStickyHost(new FixedSizeControl(320, 800));
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child              = host
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 180,
+            Content = visualLayerManager
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            PinStickyContent(host);
+            var stickyMirrorLayer = GetStickyMirrorLayer(visualLayerManager);
+
+            using var messageManager = new WindowMessageManager(window);
+            messageManager.Show(new Message("Action in progress...", MessageType.Loading, expiration: TimeSpan.Zero));
+            Dispatcher.UIThread.RunJobs();
+
+            var messageLayer = messageManager.GetVisualParent<Control>();
+            messageLayer.ShouldNotBeNull();
+            messageLayer.ZIndex.ShouldBeGreaterThan(stickyMirrorLayer.ZIndex);
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
+    public void Window_Notification_Layer_Is_Above_Sticky_Mirror_Layer()
+    {
+        var host = CreateStickyHost(new FixedSizeControl(320, 800));
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child              = host
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 180,
+            Content = visualLayerManager
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            PinStickyContent(host);
+            var stickyMirrorLayer = GetStickyMirrorLayer(visualLayerManager);
+
+            using var notificationManager = new WindowNotificationManager(window);
+            notificationManager.Show(new Notification("Notice", "Action in progress...",
+                NotificationType.Information,
+                expiration: TimeSpan.Zero));
+            Dispatcher.UIThread.RunJobs();
+
+            var notificationLayer = notificationManager.GetVisualParent<Control>();
+            notificationLayer.ShouldNotBeNull();
+            notificationLayer.ZIndex.ShouldBeGreaterThan(stickyMirrorLayer.ZIndex);
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
     private static GalleryStickyTabsHost CreateStickyHost(Control content)
     {
         return new GalleryStickyTabsHost
@@ -214,6 +295,14 @@ public class GalleryStickyTabsHostTests
         Dispatcher.UIThread.RunJobs();
 
         panel.IsStickyPinned.ShouldBeTrue();
+    }
+
+    private static ScopeAwareAdornerLayer GetStickyMirrorLayer(VisualLayerManager visualLayerManager)
+    {
+        return visualLayerManager.GetVisualDescendants()
+                                 .OfType<ScopeAwareAdornerLayer>()
+                                 .Single(layer => ReferenceEquals(layer.GetVisualParent(),
+                                     visualLayerManager));
     }
 
     private static GalleryStickyTabsPanel CreatePanel()

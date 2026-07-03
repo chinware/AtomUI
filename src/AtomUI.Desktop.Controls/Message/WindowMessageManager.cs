@@ -62,13 +62,14 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     private IList? _items;
     private TopLevel? _topLevel;
     private bool _isDisposed;
-    private AdornerLayer? _adornerLayer;
+    private Panel? _hostLayer;
+    private bool _hostLayerUsesNativeAdorner;
     private IDisposable? _safeAreaMarginSubscription;
     private readonly Queue<PendingMessage> _pendingMessages = new();
     private readonly Dictionary<MessageCard, IDisposable> _messageCloseTimers = new();
-    private const int MaxAdornerLayerRetryCount = 30;
-    private bool _adornerLayerRetryScheduled;
-    private int _adornerLayerRetryCount;
+    private const int MaxHostLayerRetryCount = 30;
+    private bool _hostLayerRetryScheduled;
+    private int _hostLayerRetryCount;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="WindowNotificationManager" /> class.
@@ -236,44 +237,59 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
     {
         topLevel.TemplateApplied -= TopLevelOnTemplateApplied;
         topLevel.TemplateApplied += TopLevelOnTemplateApplied;
-        TryInstallAdornerLayer(topLevel);
+        TryInstallHostLayer(topLevel);
 
-        // AdornerLayer 覆盖整个 TopLevel（含 CSD 装饰阴影 / 非 CSD 自绘阴影那一圈）不会跟着
+        // 反馈宿主层覆盖整个 TopLevel（含 CSD 装饰阴影 / 非 CSD 自绘阴影那一圈）不会跟着
         // VisualLayerManager.Margin 内缩。给 manager 自己加 Margin 把内容收到可见客户区，
         // 否则 Top/Center 等对齐会贴到装饰外沿、卡片漏到窗外。
         _safeAreaMarginSubscription?.Dispose();
         _safeAreaMarginSubscription = TopLevelMarginBinder.BindHostMargin(topLevel, margin => Margin = margin);
     }
 
-    private void TryInstallAdornerLayer(TopLevel topLevel)
+    private void TryInstallHostLayer(TopLevel topLevel)
     {
-        _adornerLayer = AdornerLayer.GetAdornerLayer(topLevel);
-        if (_adornerLayer is null)
+        _hostLayer                  = WindowFeedbackLayer.GetLayer(topLevel);
+        _hostLayerUsesNativeAdorner = false;
+
+        if (_hostLayer is null)
         {
-            ScheduleAdornerLayerRetry(topLevel);
+            _hostLayer                  = AdornerLayer.GetAdornerLayer(topLevel);
+            _hostLayerUsesNativeAdorner = _hostLayer is not null;
+        }
+
+        if (_hostLayer is null)
+        {
+            ScheduleHostLayerRetry(topLevel);
             return;
         }
 
-        _adornerLayerRetryCount     = 0;
-        _adornerLayerRetryScheduled = false;
-        if (!_adornerLayer.Children.Contains(this))
+        _hostLayerRetryCount     = 0;
+        _hostLayerRetryScheduled = false;
+        if (!_hostLayer.Children.Contains(this))
         {
-            _adornerLayer.Children.Add(this);
+            _hostLayer.Children.Add(this);
         }
-        AdornerLayer.SetAdornedElement(this, _adornerLayer);
+        if (_hostLayerUsesNativeAdorner)
+        {
+            AdornerLayer.SetAdornedElement(this, _hostLayer);
+        }
+        else
+        {
+            AdornerLayer.SetAdornedElement(this, null);
+        }
     }
 
-    private void ScheduleAdornerLayerRetry(TopLevel topLevel)
+    private void ScheduleHostLayerRetry(TopLevel topLevel)
     {
-        if (_adornerLayerRetryScheduled ||
+        if (_hostLayerRetryScheduled ||
             _isDisposed ||
-            _adornerLayerRetryCount >= MaxAdornerLayerRetryCount)
+            _hostLayerRetryCount >= MaxHostLayerRetryCount)
         {
             return;
         }
 
-        _adornerLayerRetryScheduled = true;
-        if (_adornerLayerRetryCount == 0)
+        _hostLayerRetryScheduled = true;
+        if (_hostLayerRetryCount == 0)
         {
             Dispatcher.UIThread.Post(() => RetryInstallFromTopLevel(topLevel), DispatcherPriority.Loaded);
         }
@@ -285,21 +301,21 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
 
     private void RetryInstallFromTopLevel(TopLevel topLevel)
     {
-        if (!_adornerLayerRetryScheduled)
+        if (!_hostLayerRetryScheduled)
         {
             return;
         }
 
-        _adornerLayerRetryScheduled = false;
+        _hostLayerRetryScheduled = false;
         if (_isDisposed ||
-            _adornerLayer is not null ||
+            _hostLayer is not null ||
             !ReferenceEquals(_topLevel, topLevel))
         {
             return;
         }
 
-        _adornerLayerRetryCount++;
-        TryInstallAdornerLayer(topLevel);
+        _hostLayerRetryCount++;
+        TryInstallHostLayer(topLevel);
     }
 
     public void Dispose()
@@ -323,16 +339,20 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
                 closeTimer.Dispose();
             }
             _messageCloseTimers.Clear();
-            _adornerLayerRetryScheduled = false;
-            _adornerLayerRetryCount = 0;
+            _hostLayerRetryScheduled = false;
+            _hostLayerRetryCount = 0;
             _safeAreaMarginSubscription?.Dispose();
             _safeAreaMarginSubscription = null;
-            // 从 AdornerLayer 中移除
-            if (_adornerLayer is not null)
+            // 从宿主层中移除
+            if (_hostLayer is not null)
             {
-                _adornerLayer.Children.Remove(this);
-                AdornerLayer.SetAdornedElement(this, null);
-                _adornerLayer = null;
+                _hostLayer.Children.Remove(this);
+                if (_hostLayerUsesNativeAdorner)
+                {
+                    AdornerLayer.SetAdornedElement(this, null);
+                }
+                _hostLayer                  = null;
+                _hostLayerUsesNativeAdorner = false;
             }
             _topLevel   = null;
             _items      = null;
@@ -344,23 +364,27 @@ public class WindowMessageManager : TemplatedControl, IMessageManager, IMotionAw
         }
     }
 
-    private void RemoveFromAdornerLayer()
+    private void RemoveFromHostLayer()
     {
         _safeAreaMarginSubscription?.Dispose();
         _safeAreaMarginSubscription = null;
-        if (_adornerLayer is not null)
+        if (_hostLayer is not null)
         {
-            _adornerLayer.Children.Remove(this);
-            AdornerLayer.SetAdornedElement(this, null);
-            _adornerLayer = null;
+            _hostLayer.Children.Remove(this);
+            if (_hostLayerUsesNativeAdorner)
+            {
+                AdornerLayer.SetAdornedElement(this, null);
+            }
+            _hostLayer                  = null;
+            _hostLayerUsesNativeAdorner = false;
         }
     }
 
     private void TopLevelOnTemplateApplied(object? sender, TemplateAppliedEventArgs _)
     {
-        RemoveFromAdornerLayer();
-        _adornerLayerRetryScheduled = false;
-        _adornerLayerRetryCount     = 0;
+        RemoveFromHostLayer();
+        _hostLayerRetryScheduled = false;
+        _hostLayerRetryCount     = 0;
         
         // Reinstall notification manager on template reapplied.
         var topLevel = (TopLevel)sender!;
