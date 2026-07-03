@@ -6,12 +6,14 @@
 
 Select 的实现以 `AbstractSelect` 为输入与弹层基类，`Select` 本体负责选择业务状态，候选列表和结果区域由内部控件承载。实现文档聚焦 Select 自身的状态编排、生命周期和维护边界，不重新说明 ListView 的通用虚拟化、AddOnDecoratedBox 的通用输入外观或 PopupHost 的全局资源规则。
 
+Tags 模式的动态选项必须作为 Select 自身运行时状态维护。用户声明的 `Options`、绑定的 `OptionsSource` 和异步加载结果都属于用户选项源，Select 不得为了创建自定义 tag 写入这些源集合。
+
 ## 2. 源码文件结构
 
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/Select/AbstractSelect.cs`：输入壳体、弹层状态、公共输入属性、Form / CompactSpace / Motion 接口和 popup 生命周期。
-- `src/AtomUI.Desktop.Controls/Select/Select.cs`：public Select API、protected 扩展 hook、选项同步、选择同步、过滤输入、Tags 动态选项、键盘和指针处理。
+- `src/AtomUI.Desktop.Controls/Select/Select.cs`：public Select API、protected 扩展 hook、用户选项源同步、有效候选选项同步、选择同步、过滤输入、Tags 动态选项、键盘和指针处理。
 - `src/AtomUI.Desktop.Controls/Select/Select.AsyncOptionsLoad.cs`：异步候选加载和私有加载完成流程。
 - `src/AtomUI.Desktop.Controls/Select/SelectOption.cs`：`ISelectOption` 和默认 `SelectOption`。
 - `src/AtomUI.Desktop.Controls/Select/SelectCandidateList.cs`：候选列表、候选导航、提交取消、最大选择数和隐藏已选项。
@@ -26,7 +28,7 @@ Select 的实现以 `AbstractSelect` 为输入与弹层基类，`Select` 本体�
 
 `AbstractSelect` 是 Select 家族的输入与弹层边界。它维护 `IsDropDownOpen`、popup placement、弹层打开/关闭事件、打开期间可见性订阅、TopLevel 失活订阅、Form 状态映射和 CompactSpace 边框厚度计算。
 
-`Select` 是选项选择协调器。它维护 `Options`、`SelectedOption`、`SelectedOptions`、`Mode`、过滤值、默认值映射、Tags 动态选项和候选列表同步。它不直接绘制候选项或标签，而是把状态传给内部控件。
+`Select` 是选项选择协调器。它维护用户选项源、运行时动态选项、有效候选选项、`SelectedOption`、`SelectedOptions`、`Mode`、过滤值、默认值映射和候选列表同步。它不直接绘制候选项或标签，而是把状态传给内部控件。
 
 `SelectCandidateList` 是候选选择边界。它继承 `ListView`，负责过滤、分组、虚拟化容器、候选项键盘导航、最大选择数禁用和 `Commit/Cancel` 事件。
 
@@ -52,8 +54,9 @@ OnLoaded()
 ```text
 OptionsSource changed
   → remember current selection identity
-  → Options.Clear() / Options.SetItemsSource(new source)
-  → remap selected option by ItemKey or Content
+  → update user option source
+  → rebuild effective options from user option source + runtime tag options
+  → remap selected option by ItemKey or Content, preserving runtime tag options when no user option matches
   → if no remap, ConfigureDefaultValues()
 ```
 
@@ -74,7 +77,8 @@ CandidateList.Commit / SelectionChanged
 SelectFilterTextBox.TextChanged
   → FilterValue = trimmed text or null
   → CandidateList filters by Filter + FilterValue + FilterValueSelector
-  → Tags mode may create dynamic option
+  → Tags mode may create runtime dynamic option
+  → rebuild effective options
   → Dispatcher.Post(SyncSelectionToCandidateList)
 ```
 
@@ -174,11 +178,32 @@ option.ItemKey?.ToString()
   else option.Content?.ToString()
 ```
 
-新选项集合写入 `Options` 后，控件按 identity 查找新 `ISelectOption` 实例，尽量保留用户选择。找不到匹配项时清空选择或回到默认值映射。
+用户选项源更新并重建有效候选选项后，控件按 identity 查找新 `ISelectOption` 实例，尽量保留用户选择。找不到匹配项时，单选回到清空选择或默认值映射；多选和 Tags 模式需要额外保留仍然有效的已选运行时动态选项。
 
-### 7.3 Tags 动态选项
+### 7.3 用户选项源、运行时动态选项和有效候选选项
 
-Tags 模式下，搜索文本非空且当前候选列表没有结果时，控件创建 `IsDynamicAdded=true` 的 `SelectOption` 并加入 `Options`。如果该动态选项未被选中且输入内容不再匹配，或者选中项变化后不再包含它，控件从 `Options` 中移除。
+Select 必须分离三类选项状态：
+
+```text
+用户选项源
+  = XAML 内容子项 Options
+  + OptionsSource
+  + OptionsLoader result
+
+运行时动态选项
+  = Tags 模式根据过滤输入创建的 IsDynamicAdded 选项
+
+有效候选选项
+  = 用户选项源 + 运行时动态选项
+```
+
+`SelectCandidateList.ItemsSource` 应消费有效候选选项，而不是直接消费 `Options`。这样可以保持 `OptionsSource` 的 ItemsSource 契约，避免在外部集合处于只读绑定语义时写入运行时 tag。
+
+Tags 模式下，搜索文本非空且当前候选列表没有结果时，控件创建 `IsDynamicAdded=true` 的 `SelectOption`，并加入运行时动态选项集合。如果该动态选项未被选中且输入内容不再匹配，或者选中项变化后不再包含它，控件只从运行时动态选项集合中移除。
+
+删除 tag 时，如果被删除选项是动态选项，只更新 `SelectedOptions`、运行时动态选项集合和有效候选选项。不得修改用户 `OptionsSource`，也不得向 XAML 内容子项 `Options` 执行 `Add` / `Remove`。
+
+`OptionsSource` 替换或异步加载结果到达后，Select 先按 `ItemKey`，再按 `Content` 建立新旧 option identity 映射。已选动态选项在用户选项源中找到等价正式选项时应映射为正式选项，并清理对应动态选项；找不到时保留已选动态选项，保证用户已经创建的 tag 不因外部数据刷新丢失。
 
 ### 7.4 最大选择数
 
@@ -239,11 +264,13 @@ AOT 边界：
 内部重构必须保持以下不变量：
 
 - `AbstractSelect` 继续持有输入壳体、弹层、Form、CompactSpace 和 Motion 的基础契约。
-- `Select` 继续持有选择、过滤、Tags 动态选项和异步加载状态。
+- `Select` 继续持有选择、过滤、用户选项源、Tags 运行时动态选项、有效候选选项和异步加载状态。
 - `OptionsSource` 写入不能破坏 `Options` 的内容集合语义。
+- Tags 运行时动态选项不能写入用户 `OptionsSource`，也不能写入 XAML 内容子项 `Options`。
+- 候选列表必须绑定到有效候选选项源，不能直接绑定到只读用户选项源。
 - 选择同步中的 `_ignoreSyncSelection` 只用于防止候选列表和 public selection 相互递归，必须通过成对 helper 恢复，不能吞掉外部选择变化。
 - `IgnorePropertyChange` 只用于内部恢复下拉开关状态，必须通过成对 helper 恢复，不能影响下一次外部 `IsDropDownOpen` 变化。
-- `Tags` 动态选项只在 `Tags` 模式创建和清理。
+- `Tags` 动态选项只在 `Tags` 模式创建和清理，生命周期由 Select 内部运行时动态选项集合拥有。
 - 单选过滤输入在弹层关闭时显示已选项文本，弹层打开且可过滤时清空为搜索输入。
 - 多选搜索输入关闭弹层时只读并清空。
 - 弹层取消事件必须能阻止打开或关闭。
@@ -257,6 +284,7 @@ AOT 边界：
 - `SelectShowCasePageTests` 和 snapshot，覆盖 Gallery 示例、API 表和 Token 表。
 - 单选、多选、Tags 三种模式的选择、清除、默认值和过滤行为。
 - `OptionsSource` 替换后的选择保留。
+- `Mode=Tags`、`OptionsSource` 和无匹配过滤输入组合下，运行时动态 tag 创建、提交和删除不能修改用户选项源，也不能触发 ItemsSource 只读异常。
 - `OptionsLoader` 成功、超时、取消和错误通知。
 - `MaxCount`、`IsHideSelectedOptions`、`MaxTagCount`、`IsResponsiveTagMode`。
 - `Large/Middle/Small/Custom` 尺寸下单选输入、多选 tag、handle 和 popup 对齐。

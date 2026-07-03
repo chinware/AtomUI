@@ -123,6 +123,12 @@ internal class SelectResultOptionsBox : TemplatedControl
             o => o.EffectiveTagHeight,
             (o, v) => o.EffectiveTagHeight = v);
 
+    internal static readonly DirectProperty<SelectResultOptionsBox, bool> IsSearchInputEmptyProperty =
+        AvaloniaProperty.RegisterDirect<SelectResultOptionsBox, bool>(
+            nameof(IsSearchInputEmpty),
+            o => o.IsSearchInputEmpty,
+            (o, v) => o.IsSearchInputEmpty = v);
+
     private double _effectiveTagHeight = double.NaN;
 
     internal double EffectiveTagHeight
@@ -131,10 +137,19 @@ internal class SelectResultOptionsBox : TemplatedControl
         set => SetAndRaise(EffectiveTagHeightProperty, ref _effectiveTagHeight, value);
     }
 
+    private bool _isSearchInputEmpty = true;
+
+    internal bool IsSearchInputEmpty
+    {
+        get => _isSearchInputEmpty;
+        private set => SetAndRaise(IsSearchInputEmptyProperty, ref _isSearchInputEmpty, value);
+    }
+
     private WrapPanel? _defaultPanel;
     private SelectMaxTagAwarePanel? _maxCountAwarePanel;
     private SelectFilterTextBox? _searchTextBox;
     private SelectRemainInfoTag? _collapsedInfoTag;
+    private IDisposable? _searchInputEmptySubscription;
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -199,12 +214,19 @@ internal class SelectResultOptionsBox : TemplatedControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
+        _searchInputEmptySubscription?.Dispose();
+        _searchInputEmptySubscription = null;
+
         _defaultPanel = e.NameScope.Find<WrapPanel>("PART_DefaultPanel");
         _maxCountAwarePanel = e.NameScope.Find<SelectMaxTagAwarePanel>("PART_MaxCountAwarePanel");
         _searchTextBox = new SelectFilterTextBox
         {
             HorizontalAlignment = HorizontalAlignment.Stretch
         };
+        _searchInputEmptySubscription =
+            _searchTextBox.GetObservable(TextBox.IsPlaceholderTextVisibleProperty)
+                          .Subscribe(isEmpty => IsSearchInputEmpty = isEmpty);
+
         _collapsedInfoTag = new SelectRemainInfoTag
         {
             IsClosable = false
