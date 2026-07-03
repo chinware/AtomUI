@@ -4,6 +4,43 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.0.7
+
+`2026-07-03`
+
+- DatePicker
+  - Add picker modes for date, week, month, quarter and year scenarios, with improved range panels and preferred input width calculation.
+  - Improve range selection state, hover rendering and CalendarView lifecycle handling.
+- DataGrid
+  - Improve row details height estimation and expanded row virtualization stability.
+  - Fix crashes when header/title interactions happen with empty or null `ItemsSource`.
+  - Improve selection column initial state handling and frame corner radius behavior for bordered tables.
+  - Fix AutoComplete focus preservation inside DataGrid template cells.
+- Select
+  - Fix Tags mode dynamic option creation so runtime tags do not mutate user `OptionsSource`.
+  - Improve Tags keyboard behavior so Enter commits the active dynamic candidate, Escape closes the popup, and Up/Down navigate candidates from the search input.
+  - Fix multi-select and Tags placeholders while IME preedit text is rendered.
+- ImagePreviewer
+  - Add local and remote image source loading through `ImageSourceUri`.
+  - Add preview window title resolution, `PreviewTitleIcon`, loading skeletons and localized error states.
+- Gallery and Documentation
+  - Add reusable Gallery source-code display components, lazy code viewer loading, copyable code selections and generated snippet catalog support.
+  - Add selectable Gallery API and design token table text.
+  - Add LLMS documentation generation and refresh control documentation coverage.
+  - Add organization documentation pages and update README package examples to `6.0.7`.
+- Splash and Window
+  - Add Splash control and service with owner-window handling, version tags in Gallery and improved show behavior.
+  - Add Windows window chrome management with DWM shadow handling and improve resize artifact behavior.
+- Controls
+  - Add Extras and Labs modules for supplemental controls.
+  - Add Splitter line styling APIs and Gallery showcase coverage.
+  - Improve NumberUpDown handle customization and mode behavior.
+  - Improve Button shadow rendering, SplitButton resize layout stability, Drawer right-click behavior, Message and Notification feedback layering, popup shadow handling and separator compact spacing.
+  - Improve Form validator compatibility and add `ExtraExtraExtraLarge` breakpoint layout handling.
+- Localization and Build
+  - Update language provider generation and add Chinese language support for GalleryBase.
+  - Add AppImage launcher validation support and update release workflows for Gallery and NuGet packages.
+
 ## 6.0.6
 
 `2026-06-24`

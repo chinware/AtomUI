@@ -1,6 +1,6 @@
 # AtomUI Changelog 规范
 
-本文档定义 AtomUI Changelog 的维护规则。正式版本变更记录写入仓库根目录 `CHANGELOG.md`；规则、格式约束和发布前检查保留在本文档中，不写入 `CHANGELOG.md`。
+本文档定义 AtomUI Changelog 的维护规则。正式版本变更记录写入仓库根目录 `CHANGELOG.md` 和 `CHANGELOG.zh-CN.md`；规则、格式约束和发布前检查保留在本文档中，不写入正式 Changelog 文件。
 
 Changelog 面向控件使用者、Gallery 使用者、集成方和发布维护者。它记录版本变化，不替代 commit log，也不记录内部开发流水账。
 
@@ -10,12 +10,12 @@ Changelog 面向控件使用者、Gallery 使用者、集成方和发布维护�
 
 - 用户明确要求收集、生成或修改 Changelog。
 - 准备 release、release PR、版本发布说明或版本公告。
-- 正在编辑 `CHANGELOG.md`。
+- 正在编辑 `CHANGELOG.md` 或 `CHANGELOG.zh-CN.md`。
 - 变更包含必须提前暴露的兼容性、迁移、AOT、包结构或发布产物信息。
 
-普通功能、修复、文档、Gallery 示例或内部重构 PR 不默认修改 `CHANGELOG.md`。代码 review 时也不要仅因为缺少 Changelog 改动提出问题。
+普通功能、修复、文档、Gallery 示例或内部重构 PR 不默认修改 `CHANGELOG.md` 或 `CHANGELOG.zh-CN.md`。代码 review 时也不要仅因为缺少 Changelog 改动提出问题。
 
-普通 PR 如果需要填写模板中的 Change Log，只描述本 PR 对用户或开发者的影响；如果没有用户可感知变化，填写 `N/A`、`No changelog required` 或 `无需更新日志`。正式 `CHANGELOG.md` 由 release owner 在发布流程中统一整理。
+普通 PR 如果需要填写模板中的 Change Log，只描述本 PR 对用户或开发者的影响；如果没有用户可感知变化，填写 `N/A`、`No changelog required` 或 `无需更新日志`。正式 `CHANGELOG.md` 和 `CHANGELOG.zh-CN.md` 由 release owner 在发布流程中统一整理。
 
 ## 基本原则
 
@@ -36,9 +36,11 @@ AtomUI 遵循 Semantic Versioning 2.0.0。
 
 版本号以 `build/Version.props` 中的 `AtomUIVersion` 为准。正式版本日期使用 `YYYY-MM-DD`。
 
-## CHANGELOG.md 文件结构
+## Changelog 文件结构
 
-`CHANGELOG.md` 只记录版本变更。文件顶部保留标题和简短说明，之后按版本倒序记录发布内容。每个版本包含版本号、发布日期和本次发布的用户可见变化。
+`CHANGELOG.md` 和 `CHANGELOG.zh-CN.md` 只记录版本变更。文件顶部保留标题和简短说明，之后按版本倒序记录发布内容。每个版本包含版本号、发布日期和本次发布的用户可见变化。
+
+两个文件必须保持同一版本集合、同一发布日期和同一信息量。`CHANGELOG.md` 使用英文，`CHANGELOG.zh-CN.md` 使用简体中文；更新正式 Changelog 时应同时维护两个文件。
 
 版本下优先按控件、模块或发布能力聚合条目；不要把每个版本机械拆成固定的 `Added`、`Changed`、`Fixed` 分类，因为控件库用户更关心哪个控件或模块发生了什么。
 
@@ -158,7 +160,7 @@ NativeAOT、trimming、source generator、动态访问替代等变化必须在 C
 
 ## Release 前检查
 
-发布前维护 `CHANGELOG.md` 时必须检查：
+发布前维护 `CHANGELOG.md` 和 `CHANGELOG.zh-CN.md` 时必须检查：
 
 - 版本号是否与 `build/Version.props` 一致。
 - 是否覆盖 release 范围内用户可见的 `feat`、`fix`、`perf`、`gallery`、`build`、`release` 变化。
@@ -166,3 +168,4 @@ NativeAOT、trimming、source generator、动态访问替代等变化必须在 C
 - Breaking changes 是否包含迁移说明。
 - 是否按控件或模块合并条目，而不是把 commit message 原样堆进去。
 - 是否有可追溯的 PR、issue、commit 或验证来源。
+- 英文和中文版本是否同步，是否存在版本、日期或条目遗漏。
