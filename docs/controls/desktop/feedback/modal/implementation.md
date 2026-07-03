@@ -112,7 +112,7 @@ Modal 的交互事件应从输入源收敛到控件级语义事件：
 - 非集合控件不应通过隐藏集合状态模拟业务数据。
 - 输入类路径必须保持 Form、validation、clear、placeholder 和键盘行为一致。
 
-当前没有抽取到控件专属 public 事件；交互语义主要通过继承事件、命令、属性变化和 Gallery 可观察行为体现。
+Dialog 的交互语义主要通过 `ButtonClicked`、`Closing`、`Accepted`、`Rejected`、`Finished`、`Closed`、命令、属性变化和 Gallery 可观察行为体现。维护关闭流程时必须保持这些事件的相对顺序和取消语义。
 
 ## 7. 内部算法与关键流程
 
@@ -125,6 +125,22 @@ Modal 的交互事件应从输入源收敛到控件级语义事件：
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
+
+### 7.1 关闭前校验管线（待实现设计）
+
+静态 API 的关闭前校验应在 `Dialog` 内部形成统一管线，而不是只挂接某一个按钮事件。管线的维护目标是让 `ShowDialogModalAsync` 用户能够通过 `DialogOptions.BeforeCloseAsync` 拦截关闭，同时保留现有 `ButtonClicked`、`Closing`、`Accepted`、`Rejected`、`Finished` 和 `Closed` 的顺序。
+
+建议实现边界：
+
+- `DialogOptions` 承载 `BeforeCloseAsync`，`CreateDialog(...)` 将该选项复制到 `Dialog` 实例或内部关闭策略中。
+- `Dialog` 新增 close request 归一逻辑，将 `Accept()`、`Reject()`、`Done(...)`、caption close、host close request、parent close 和 placement target detach 映射为统一的 `DialogClosingContext`。
+- `NotifyDialogButtonBoxClicked(...)` 继续先触发 `ButtonClicked`；当 `DialogButtonClickedEventArgs.Handled` 为 `true` 时，不进入默认关闭，也不调用 `BeforeCloseAsync`。
+- 既有 `Closing` 事件仍先于新增回调执行；`CancelEventArgs.Cancel` 为 `true` 时直接取消本次关闭请求。
+- `BeforeCloseAsync` 返回 `false` 或发生异常时，Dialog 保持打开，`Result` 不应被提交为最终关闭结果，关闭请求状态必须复位。
+- `BeforeCloseAsync` 返回 `true` 后，继续执行现有 `Accepted`、`Rejected`、`Finished`、`NotifyClosed`、host close 和 `Closed` 流程。
+- 同一时刻只允许一个关闭请求处于校验或关闭中。异步校验未完成时，重复点击、快捷键和 host close request 应被忽略或合并为当前请求，不能并发调用业务校验。
+
+同步 public 方法 `Accept()`、`Reject()`、`Done(...)` 和 `Done()` 不应改签名。实现异步校验时，它们可以启动内部关闭请求并立即返回；`ShowDialog(...)` 的同步 frame 和 `ShowDialogModalAsync(...)` 的 task 仍以最终关闭完成作为结束条件。
 
 ## 8. 资源、性能与 AOT 边界
 

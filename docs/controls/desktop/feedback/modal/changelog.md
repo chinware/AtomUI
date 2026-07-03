@@ -2,6 +2,12 @@
 
 本文档记录 Modal 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-03
+
+- Docs
+  - Add the approved design for `DialogOptions.BeforeCloseAsync` as a future close-before-validation API for static Modal dialogs.
+  - Document the intended close request pipeline, event order, async validation behavior and compatibility boundaries.
+
 ## 2026-06-26
 
 - Docs
