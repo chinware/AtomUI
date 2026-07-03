@@ -588,7 +588,7 @@ public partial class DataGridRow
             {
                 // It looks like setting Visibility sometimes has side effects so make sure the value is actually
                 // different before setting it
-                bool newVisibility = OwningGrid.AreHorizontalGridLinesVisible;
+                bool newVisibility = OwningGrid.ShouldDisplayRowBottomGridLine(Slot);
 
                 if (newVisibility != _bottomGridLine.IsVisible)
                 {
@@ -596,6 +596,8 @@ public partial class DataGridRow
                 }
                 _bottomGridLine.Height = OwningGrid.BorderThickness.Left;
             }
+
+            _headerElement?.EnsureGridLines();
 
             foreach (DataGridCell cell in Cells)
             {

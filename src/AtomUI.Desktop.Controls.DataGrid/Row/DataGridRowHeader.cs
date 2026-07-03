@@ -3,7 +3,6 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using System.Diagnostics;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Automation;
@@ -128,6 +127,11 @@ public class DataGridRowHeader : ContentControl
         ConfigureOwnerDependentState();
     }
 
+    internal void EnsureGridLines()
+    {
+        ConfigureOwnerDependentState();
+    }
+
     private void ConfigureOwnerDependentState()
     {
         if (_rootElement != null)
@@ -151,7 +155,7 @@ public class DataGridRowHeader : ContentControl
 
     private void ConfigureSeparatorVisible(DataGrid owningGrid)
     {
-        bool newVisibility = owningGrid.AreHorizontalGridLinesVisible;
+        bool newVisibility = owningGrid.ShouldDisplayRowBottomGridLine(Slot);
 
         if (newVisibility != IsSeparatorsVisible)
         {

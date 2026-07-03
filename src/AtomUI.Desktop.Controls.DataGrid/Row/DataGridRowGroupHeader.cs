@@ -3,7 +3,6 @@
 // Please see http://go.microsoft.com/fwlink/?LinkID=131993 for details.
 // All other rights reserved.
 
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reactive.Linq;
 using AtomUI.Desktop.Controls.Utils;
@@ -431,8 +430,14 @@ public class DataGridRowGroupHeader : TemplatedControl
     {
         EnsureExpanderButtonIsChecked();
         EnsureHeaderVisibility();
+        EnsureGridLines();
         UpdatePseudoClasses();
         ApplyHeaderStatus();
+    }
+
+    internal void EnsureGridLines()
+    {
+        _headerElement?.EnsureGridLines();
     }
 
     protected override void OnPointerEntered(PointerEventArgs e)

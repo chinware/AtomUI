@@ -1615,6 +1615,7 @@ public partial class DataGrid : TemplatedControl,
             ConfigureFrameBorderThickness();
         }
 
+        ConfigureFrameCornerRadius();
         ConfigureHeaderCornerRadius();
         ConfigurePaginationVisibility();
         SetValue(EmptyIndicatorProperty, new Empty()
@@ -1757,15 +1758,24 @@ public partial class DataGrid : TemplatedControl,
     {
         base.OnPropertyChanged(change);
 
+        var refreshDisplayedRowsGridLines = false;
         if (change.Property == BorderThicknessProperty ||
             change.Property == GridLinesVisibilityProperty ||
             change.Property == IsFrameBorderVisibleProperty ||
             change.Property == FooterProperty)
         {
             ConfigureFrameBorderThickness();
+            refreshDisplayedRowsGridLines = true;
         }
 
-        if (change.Property == TitleProperty ||
+        if (change.Property == CornerRadiusProperty ||
+            change.Property == IsFrameBorderVisibleProperty)
+        {
+            ConfigureFrameCornerRadius();
+        }
+
+        if (change.Property == CornerRadiusProperty ||
+            change.Property == TitleProperty ||
             change.Property == HeadersVisibilityProperty)
         {
             ConfigureHeaderCornerRadius();
@@ -1775,6 +1785,12 @@ public partial class DataGrid : TemplatedControl,
             change.Property == PaginationVisibilityProperty)
         {
             ConfigurePaginationVisibility();
+            refreshDisplayedRowsGridLines = true;
+        }
+
+        if (refreshDisplayedRowsGridLines)
+        {
+            RefreshDisplayedRowsGridLines();
         }
 
         if (_templatedApplied)

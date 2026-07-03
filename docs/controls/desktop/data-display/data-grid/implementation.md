@@ -147,6 +147,14 @@ DataGrid 的交互事件应从输入源收敛到控件级语义事件：
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
+Frame 与 Header 圆角不变量：
+
+- `FrameCornerRadius` 是根外框 `Frame` 的派生圆角，只表达整张表外壳裁剪。`IsFrameBorderVisible=false` 时只保留顶部圆角，底部圆角必须为 `0`，避免最后一根横向分割线被根裁剪成短线；`IsFrameBorderVisible=true` 时使用完整 `CornerRadius`，由外边框承担整表圆角视觉。
+- `FrameBorderThickness` 是根外框 `Frame` 的派生边框厚度。`IsFrameBorderVisible=false` 时为 `0`；`IsFrameBorderVisible=true` 时必须使用完整 `BorderThickness`，不能因为存在横向行分割线而去掉底边框，否则底部圆角边框会缺失。
+- `FrameContentClip` 是 `Frame` 内部的内容裁剪层，必须和 `FrameCornerRadius` 保持一致，用于阻止行背景、分页、Footer 或加载态内容进入外框圆角区域并遮挡边框。不要把这层裁剪合并到 rows presenter 或单个 row 上，否则空数据、Footer、滚动条和加载态会出现不同的裁剪规则。
+- `PART_BottomGridLine` 和行头横向分割线只表达行间分隔，不表达整表外轮廓。`IsFrameBorderVisible=true` 且 rows 区域直接贴住 Frame 底边时，最后一个 displayed row 必须隐藏底部分割线，由 Frame 底边承担唯一底线；存在 `Footer`、底部分页或水平滚动条时，rows 区域下方还有内容，最后一行分割线必须恢复显示。
+- `HeaderCornerRadius` 只表达表头容器圆角。它根据 `Title`、`HeadersVisibility` 和 `CornerRadius` 派生，不应被根外框复用。
+
 ## 8. 资源、性能与 AOT 边界
 
 资源和 AOT 约束：
