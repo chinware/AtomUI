@@ -146,7 +146,11 @@ public class DataGridSelectionColumn : DataGridColumn
     {
         if (_owningGrid != null)
         {
-            if (change.Property == DataGrid.SelectionModeProperty)
+            if (change.Property == DataGrid.CollectionViewProperty)
+            {
+                SyncHeaderCheckBoxState();
+            }
+            else if (change.Property == DataGrid.SelectionModeProperty)
             {
                 foreach (var row in _owningGrid.GetAllRows())
                 {

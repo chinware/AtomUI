@@ -1009,6 +1009,91 @@ public class DataGridDetailExpanderColumnRecycleTests
     }
 
     [Fact]
+    public void Expanded_Row_Cells_Are_Arranged_To_Primary_Row_Height()
+    {
+        var rows = Enumerable.Range(1, 4)
+                             .Select(index => new GridRow($"Row {index:00}"))
+                             .ToArray();
+        var grid = CreateDetailsTextGrid(rows, height: 360);
+
+        var window = new Window
+        {
+            Width   = 640,
+            Height  = 420,
+            Content = grid
+        };
+
+        try
+        {
+            window.Show();
+            RunLayoutJobs();
+
+            ToggleRowDetails(grid, 0);
+            RunLayoutJobs();
+
+            var row            = GetDisplayedRow(grid, 0);
+            var cellsPresenter = row.GetVisualDescendants()
+                                    .OfType<DataGridCellsPresenter>()
+                                    .Single();
+            var detailsFrame = row.GetVisualDescendants()
+                                  .OfType<Border>()
+                                  .Single(border => border.Name == "DetailsPresenterFrame");
+            var cellsDesiredHeight = ReadCellsPresenterDesiredHeight(row);
+
+            cellsPresenter.Bounds.Height.ShouldBe(cellsDesiredHeight, tolerance: 1);
+            detailsFrame.Bounds.Top.ShouldBe(cellsDesiredHeight, tolerance: 1);
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
+    public void Expanded_Row_Cells_Are_Not_Stretched_By_Row_Details_Height_Estimate()
+    {
+        var rows = Enumerable.Range(1, 4)
+                             .Select(index => new GridRow($"Row {index:00}"))
+                             .ToArray();
+        var grid = CreateDetailsTextGrid(rows, height: 360);
+
+        var window = new Window
+        {
+            Width   = 640,
+            Height  = 420,
+            Content = grid
+        };
+
+        try
+        {
+            window.Show();
+            RunLayoutJobs();
+
+            grid.UpdateRowDetailsHeightEstimateFromMeasuredDetails(180);
+            ToggleRowDetails(grid, 0);
+            RunLayoutJobs();
+
+            var row            = GetDisplayedRow(grid, 0);
+            var cellsPresenter = row.GetVisualDescendants()
+                                    .OfType<DataGridCellsPresenter>()
+                                    .Single();
+            var detailsFrame = row.GetVisualDescendants()
+                                  .OfType<Border>()
+                                  .Single(border => border.Name == "DetailsPresenterFrame");
+            var cellsDesiredHeight = ReadCellsPresenterDesiredHeight(row);
+
+            cellsPresenter.Bounds.Height.ShouldBe(cellsDesiredHeight, tolerance: 1);
+            detailsFrame.Bounds.Top.ShouldBe(cellsDesiredHeight, tolerance: 1);
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
     public void Initial_Row_Height_Estimate_Excludes_Visible_Row_Details()
     {
         var rows = CreateOrders(20);

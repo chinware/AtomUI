@@ -15,6 +15,66 @@ public class DataGridSelectionColumnInitialStateTests
         AvaloniaTestApp.EnsureInitialized();
     }
 
+    [Fact]
+    public void Selection_Column_Header_Can_Be_Created_Before_ItemsSource()
+    {
+        var grid = new global::AtomUI.Desktop.Controls.DataGrid
+        {
+            AutoGenerateColumns = false,
+            SelectionMode       = DataGridSelectionMode.Extended,
+            Width               = 540,
+            Height              = 240
+        };
+
+        Should.NotThrow(() => grid.Columns.Add(new DataGridSelectionColumn()));
+
+        var headerCheckBox = grid.Columns[0].HeaderCell.Content.ShouldBeOfType<SelectionHeaderCheckBox>();
+        headerCheckBox.IsChecked.ShouldBe(false);
+    }
+
+    [Fact]
+    public void Selection_Column_Header_State_Refreshes_When_ItemsSource_Is_Set_After_Header_Creation()
+    {
+        var selectedRow = new GridRow("zzz", "aaa");
+        var grid = new global::AtomUI.Desktop.Controls.DataGrid
+        {
+            AutoGenerateColumns = false,
+            SelectionMode       = DataGridSelectionMode.Extended,
+            Width               = 540,
+            Height              = 240
+        };
+
+        grid.Columns.Add(new DataGridSelectionColumn());
+        var headerCheckBox = grid.Columns[0].HeaderCell.Content.ShouldBeOfType<SelectionHeaderCheckBox>();
+        headerCheckBox.IsChecked.ShouldBe(false);
+
+        grid.ItemsSource = new[] { selectedRow };
+        grid.SelectedItems.Add(selectedRow);
+
+        var window = new Window
+        {
+            Width   = 640,
+            Height  = 320,
+            Content = grid
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            headerCheckBox = grid.GetVisualDescendants()
+                                 .OfType<SelectionHeaderCheckBox>()
+                                 .Single();
+            headerCheckBox.IsChecked.ShouldBe(true);
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
     [Theory]
     [InlineData(DataGridPaginationVisibility.Bottom)]
     [InlineData(DataGridPaginationVisibility.None)]
