@@ -10,16 +10,19 @@
                     Background="{TemplateBinding Background}"
                     BackgroundSizing="{TemplateBinding BackgroundSizing}"
                     BorderThickness="{TemplateBinding FrameBorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius, Converter={x:Static atom:DataGridTheme.HeaderCornerRadiusConverter}}"
+                    CornerRadius="{TemplateBinding FrameCornerRadius}"
                     ClipToBounds="True">
-                <atom:Spin IsSpinning="{TemplateBinding IsOperating}"
-                           IsTipVisible="True"
-                           Tip="{TemplateBinding OperatingMsg}"
-                           CustomIndicator="{TemplateBinding CustomOperatingIndicator}"
-                           CustomIndicatorTemplate="{TemplateBinding CustomOperatingIndicatorTemplate}"
-                           HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                           VerticalAlignment="{TemplateBinding VerticalAlignment}">
-                    <DockPanel LastChildFill="True">
+                <Border Name="FrameContentClip"
+                        CornerRadius="{TemplateBinding FrameCornerRadius}"
+                        ClipToBounds="True">
+                    <atom:Spin IsSpinning="{TemplateBinding IsOperating}"
+                               IsTipVisible="True"
+                               Tip="{TemplateBinding OperatingMsg}"
+                               CustomIndicator="{TemplateBinding CustomOperatingIndicator}"
+                               CustomIndicatorTemplate="{TemplateBinding CustomOperatingIndicatorTemplate}"
+                               HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                        <DockPanel LastChildFill="True">
                         <atom:Pagination DockPanel.Dock="Top"
                                          Name="{x:Static atom:DataGridThemeConstants.TopPaginationPart}"
                                          Align="{TemplateBinding TopPaginationAlign}"
@@ -149,8 +152,9 @@
                                 IsVisible="False" />
                         </Grid>
 
-                    </DockPanel>
-                </atom:Spin>
+                        </DockPanel>
+                    </atom:Spin>
+                </Border>
             </Border>
         </ControlTemplate>
     </Setter>

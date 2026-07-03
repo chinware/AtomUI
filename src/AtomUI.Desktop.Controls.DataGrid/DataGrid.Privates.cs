@@ -45,6 +45,12 @@ public partial class DataGrid
             o => o.FrameBorderThickness,
             (o, v) => o.FrameBorderThickness = v);
 
+    internal static readonly DirectProperty<DataGrid, CornerRadius> FrameCornerRadiusProperty =
+        AvaloniaProperty.RegisterDirect<DataGrid, CornerRadius>(
+            nameof(FrameCornerRadius),
+            o => o.FrameCornerRadius,
+            (o, v) => o.FrameCornerRadius = v);
+
     internal static readonly DirectProperty<DataGrid, CornerRadius> HeaderCornerRadiusProperty =
         AvaloniaProperty.RegisterDirect<DataGrid, CornerRadius>(
             nameof(HeaderCornerRadius),
@@ -79,6 +85,14 @@ public partial class DataGrid
     }
 
     private Thickness _frameBorderThickness;
+
+    internal CornerRadius FrameCornerRadius
+    {
+        get => _frameCornerRadius;
+        set => SetAndRaise(FrameCornerRadiusProperty, ref _frameCornerRadius, value);
+    }
+
+    private CornerRadius _frameCornerRadius;
 
     internal CornerRadius HeaderCornerRadius
     {
@@ -4120,7 +4134,7 @@ public partial class DataGrid
         }
     }
 
-    private void UpdateHorizontalScrollBar(bool needHorizScrollbar, 
+    private void UpdateHorizontalScrollBar(bool needHorizScrollbar,
                                            bool forceHorizScrollbar,
                                            double totalVisibleWidth,
                                            double totalVisibleFrozenWidth,
@@ -4128,6 +4142,7 @@ public partial class DataGrid
     {
         if (_hScrollBar != null)
         {
+            var wasVisible = _hScrollBar.IsVisible;
             if (needHorizScrollbar || forceHorizScrollbar)
             {
                 //          viewportSize
@@ -4193,6 +4208,11 @@ public partial class DataGrid
                     _hScrollBar.IsVisible       = false;
                     _ignoreNextScrollBarsLayout = true;
                 }
+            }
+
+            if (wasVisible != _hScrollBar.IsVisible)
+            {
+                RefreshDisplayedRowsGridLines();
             }
         }
     }
@@ -4793,15 +4813,19 @@ public partial class DataGrid
         }
         else
         {
-            if (Footer == null && AreHorizontalGridLinesVisible)
-            {
-                SetValue(FrameBorderThicknessProperty,
-                    new Thickness(BorderThickness.Left, BorderThickness.Top, BorderThickness.Right, 0));
-            }
-            else
-            {
-                SetValue(FrameBorderThicknessProperty, BorderThickness);
-            }
+            SetValue(FrameBorderThicknessProperty, BorderThickness);
+        }
+    }
+
+    private void ConfigureFrameCornerRadius()
+    {
+        if (IsFrameBorderVisible)
+        {
+            FrameCornerRadius = CornerRadius;
+        }
+        else
+        {
+            FrameCornerRadius = new CornerRadius(CornerRadius.TopLeft, CornerRadius.TopRight, 0, 0);
         }
     }
 

@@ -127,6 +127,24 @@ public partial class DataGrid
     internal bool AreRowBottomGridLinesRequired =>
         AreHorizontalGridLinesVisible;
 
+    internal bool ShouldDisplayRowBottomGridLine(int slot)
+    {
+        if (!AreRowBottomGridLinesRequired)
+        {
+            return false;
+        }
+
+        if (!IsFrameBorderVisible ||
+            Footer is not null ||
+            (_hScrollBar?.IsVisible ?? false) ||
+            (_bottomPagination?.IsVisible ?? false))
+        {
+            return true;
+        }
+
+        return slot != DisplayData.LastScrollingSlot;
+    }
+
     internal int FirstVisibleSlot => (SlotCount > 0) ? GetNextVisibleSlot(-1) : -1;
 
     internal int LeftFrozenColumnCountWithFiller
@@ -806,6 +824,21 @@ public partial class DataGrid
                 }
 
                 slot = GetNextVisibleSlot(slot);
+            }
+        }
+    }
+
+    private void RefreshDisplayedRowsGridLines()
+    {
+        foreach (var element in DisplayData.GetScrollingElements())
+        {
+            if (element is DataGridRow row)
+            {
+                row.EnsureGridLines();
+            }
+            else if (element is DataGridRowGroupHeader groupHeader)
+            {
+                groupHeader.EnsureGridLines();
             }
         }
     }
@@ -2390,6 +2423,7 @@ public partial class DataGrid
             "firstDisplayedScrollingRow larger than number of rows");
         Debug.Assert(DisplayData.FirstScrollingSlot == firstDisplayedScrollingSlot);
         Debug.Assert(DisplayData.LastScrollingSlot == lastDisplayedScrollingSlot);
+        RefreshDisplayedRowsGridLines();
     }
 
     // Similar to UpdateDisplayedRows except that it starts with the LastDisplayedScrollingRow
@@ -2441,6 +2475,7 @@ public partial class DataGrid
             "the number of totally visible scrolling rows can't be negative");
         Debug.Assert(DisplayData.FirstScrollingSlot < SlotCount,
             "firstDisplayedScrollingRow larger than number of rows");
+        RefreshDisplayedRowsGridLines();
     }
 
     private void UpdateTablesForRemoval(int slotDeleted, object? itemDeleted)

@@ -50,6 +50,7 @@
 
             <atom:DataGrid x:Name="BasicCaseGrid"
                            IsHideOnSinglePage="True"
+                           IsFrameBorderVisible="True"
                            x:DataType="vm:DataGridBaseInfo"
                                AttachedToVisualTree="HandleExampleDataGridAttached">
                 <atom:DataGrid.Columns>
