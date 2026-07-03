@@ -13,6 +13,7 @@ public class DataGridSelectionColumn : DataGridColumn
 {
     private DataGrid? _owningGrid;
     private CheckBox? _headerCheckBox;
+    private readonly HashSet<DataGridRow> _trackedRows = new();
 
     public override bool IsReadOnly => true;
     
@@ -26,7 +27,7 @@ public class DataGridSelectionColumn : DataGridColumn
     {
         EnsureOwningGrid();
         Debug.Assert(_owningGrid != null);
-        Control? selector;
+        Control selector;
         if (_owningGrid.SelectionMode == DataGridSelectionMode.Single)
         {
             selector = BuildRadioButton();
@@ -35,6 +36,7 @@ public class DataGridSelectionColumn : DataGridColumn
         {
             selector = BuildCheckBox();
         }
+        SyncSelectorCheckedState(selector, cell.OwningRow?.IsSelected ?? _owningGrid.SelectedItems.Contains(dataItem));
         cell.SetCurrentValue(DataGridCell.IsClipContentProperty, false);
         return selector;
     }
@@ -107,6 +109,7 @@ public class DataGridSelectionColumn : DataGridColumn
                 _owningGrid                           =  OwningGrid;
                 _owningGrid.Columns.CollectionChanged += HandleColumnsCollectionChanged;
                 _owningGrid.LoadingRow                += HandleLoadingRow;
+                _owningGrid.UnloadingRow              += HandleUnLoadingRow;
                 _owningGrid.SelectionChanged          += HandleSelectionChanged;
                 _owningGrid.PropertyChanged           += HandleDataGridPropertyChanged;
             }
@@ -132,8 +135,10 @@ public class DataGridSelectionColumn : DataGridColumn
 
         _owningGrid.Columns.CollectionChanged -= HandleColumnsCollectionChanged;
         _owningGrid.LoadingRow                -= HandleLoadingRow;
+        _owningGrid.UnloadingRow              -= HandleUnLoadingRow;
         _owningGrid.SelectionChanged          -= HandleSelectionChanged;
         _owningGrid.PropertyChanged           -= HandleDataGridPropertyChanged;
+        UntrackRows();
         _owningGrid                           =  null;
     }
 
@@ -146,14 +151,17 @@ public class DataGridSelectionColumn : DataGridColumn
                 foreach (var row in _owningGrid.GetAllRows())
                 {
                     var cell = row.Cells[Index];
+                    Control selector;
                     if (_owningGrid.SelectionMode == DataGridSelectionMode.Single)
                     {
-                        cell.Content = BuildRadioButton();
+                        selector = BuildRadioButton();
                     }
                     else
                     {
-                        cell.Content = BuildCheckBox();
+                        selector = BuildCheckBox();
                     }
+                    SyncSelectorCheckedState(selector, row.IsSelected);
+                    cell.Content = selector;
                 }
 
                 if (_owningGrid.SelectionMode == DataGridSelectionMode.Single)
@@ -169,6 +177,7 @@ public class DataGridSelectionColumn : DataGridColumn
                     if (_headerCheckBox != null)
                     {
                         _headerCheckBox.IsVisible = true;
+                        SyncHeaderCheckBoxState();
                     }
                 }
             }
@@ -182,58 +191,17 @@ public class DataGridSelectionColumn : DataGridColumn
             return;
         }
 
-        if (_owningGrid.SelectionMode == DataGridSelectionMode.Extended)
-        {
-            if (_headerCheckBox != null)
-            {
-                if (_owningGrid.IsAllRowSelected())
-                {
-                    _headerCheckBox.IsChecked = true;
-                } 
-                else if (_owningGrid.SelectedItems.Count > 0)
-                {
-                    _headerCheckBox.IsChecked = null;
-                } 
-                else if (_owningGrid.SelectedItems.Count == 0)
-                {
-                    _headerCheckBox.IsChecked = false;
-                }
-            }
-        }
+        SyncHeaderCheckBoxState();
 
         foreach (var item in e.AddedItems)
         {
             var content = GetCellContent(item);
-            if (content == null)
-            {
-                continue;
-            }
-            
-            if (content is CheckBox checkBox)
-            {
-                checkBox.IsChecked = true;
-            }
-            else if (content is RadioButton radioButton)
-            {
-                radioButton.IsChecked = true;
-            }
+            SyncSelectorCheckedState(content, true);
         }
         foreach (var item in e.RemovedItems)
         {
             var content = GetCellContent(item);
-            if (content == null)
-            {
-                continue;
-            }
-            
-            if (content is CheckBox checkBox)
-            {
-                checkBox.IsChecked = false;
-            }
-            else if (content is RadioButton radioButton)
-            {
-                radioButton.IsChecked = false;
-            }
+            SyncSelectorCheckedState(content, false);
         }
     }
 
@@ -241,15 +209,14 @@ public class DataGridSelectionColumn : DataGridColumn
     {
         if (OwningGrid != null)
         {
-            if (GetCellContent(e.Row) is CheckBox checkBox)
-            {
-                checkBox.IsChecked = e.Row.IsSelected;
-            }
-            else if (GetCellContent(e.Row) is RadioButton radioButton)
-            {
-                radioButton.IsChecked = e.Row.IsSelected;
-            }
+            TrackRow(e.Row);
+            SyncRowSelectorCheckedState(e.Row);
         }
+    }
+
+    private void HandleUnLoadingRow(object? sender, DataGridRowEventArgs e)
+    {
+        UntrackRow(e.Row);
     }
 
     protected internal override void NotifyOwningGridAboutToDetached()
@@ -260,6 +227,7 @@ public class DataGridSelectionColumn : DataGridColumn
     
     internal override DataGridColumnHeader CreateHeader()
     {
+        EnsureOwningGrid();
         DataGridColumnHeader? header = null;
         if (OwningGrid == null || OwningGrid.SelectionMode == DataGridSelectionMode.Single)
         {
@@ -282,8 +250,92 @@ public class DataGridSelectionColumn : DataGridColumn
             
             _headerCheckBox = new SelectionHeaderCheckBox(this);
             header.Content  = _headerCheckBox;
+            SyncHeaderCheckBoxState();
         }
         return header;
+    }
+
+    private void SyncSelectorCheckedState(Control? selector, bool isSelected)
+    {
+        if (selector is CheckBox checkBox)
+        {
+            checkBox.IsChecked = isSelected;
+        }
+        else if (selector is RadioButton radioButton)
+        {
+            radioButton.IsChecked = isSelected;
+        }
+    }
+
+    private void SyncRowSelectorCheckedState(DataGridRow row)
+    {
+        if (_owningGrid == null || row.OwningGrid != _owningGrid)
+        {
+            return;
+        }
+
+        SyncSelectorCheckedState(GetCellContent(row), row.IsSelected);
+        SyncHeaderCheckBoxState();
+    }
+
+    private void SyncHeaderCheckBoxState()
+    {
+        if (_headerCheckBox == null || _owningGrid == null)
+        {
+            return;
+        }
+
+        if (_owningGrid.SelectionMode != DataGridSelectionMode.Extended)
+        {
+            _headerCheckBox.IsChecked = false;
+            return;
+        }
+
+        if (_owningGrid.IsAllRowSelected())
+        {
+            _headerCheckBox.IsChecked = true;
+        }
+        else if (_owningGrid.SelectedItems.Count > 0)
+        {
+            _headerCheckBox.IsChecked = null;
+        }
+        else
+        {
+            _headerCheckBox.IsChecked = false;
+        }
+    }
+
+    private void TrackRow(DataGridRow row)
+    {
+        if (_trackedRows.Add(row))
+        {
+            row.PropertyChanged += HandleRowPropertyChanged;
+        }
+    }
+
+    private void UntrackRow(DataGridRow row)
+    {
+        if (_trackedRows.Remove(row))
+        {
+            row.PropertyChanged -= HandleRowPropertyChanged;
+        }
+    }
+
+    private void UntrackRows()
+    {
+        foreach (var row in _trackedRows)
+        {
+            row.PropertyChanged -= HandleRowPropertyChanged;
+        }
+        _trackedRows.Clear();
+    }
+
+    private void HandleRowPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs change)
+    {
+        if (change.Property == DataGridRow.IsSelectedProperty && sender is DataGridRow row)
+        {
+            SyncRowSelectorCheckedState(row);
+        }
     }
 
     internal void HandleSelectedAllChanged(CheckBox checkBox)
