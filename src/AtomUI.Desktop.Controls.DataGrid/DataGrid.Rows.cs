@@ -1312,10 +1312,11 @@ public partial class DataGrid
         if (slotElement is DataGridRow dataGridRow && GetRowDetailsVisibility(dataGridRow.Index))
         {
             double targetHeight = dataGridRow.TargetHeight;
-            if (!IsInvalidSlotElementHeight(targetHeight) &&
-                MathUtils.GreaterThan(targetHeight, desiredHeight))
+            if (!IsInvalidSlotElementHeight(targetHeight))
             {
-                return targetHeight;
+                return MathUtils.GreaterThan(targetHeight, desiredHeight)
+                    ? targetHeight
+                    : desiredHeight;
             }
 
             if (!IsInvalidSlotElementHeight(estimatedHeight) &&
@@ -3640,9 +3641,7 @@ public partial class DataGrid
     /// <returns></returns>
     internal bool IsAllRowSelected()
     {
-        var collectionView = DataConnection.CollectionView as DataGridCollectionView;
-        Debug.Assert(collectionView != null);
-        int itemCount     = collectionView.Count;
+        int itemCount = DataConnection.Count;
         int selectedCount = SelectedItems.Count;
         return itemCount > 0 && selectedCount == itemCount;
     }
