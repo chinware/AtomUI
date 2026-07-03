@@ -1665,10 +1665,11 @@ public abstract class AbstractAutoComplete : TemplatedControl,
             // is pressed, close the drop-down
             if (e.Source is Control sourceControl)
             {
-                var TextInputBox = sourceControl.FindAncestorOfType<AvaloniaTextBox>();
-                if (TextInputBox != null)
+                var textInputBox = sourceControl.FindAncestorOfType<AvaloniaTextBox>();
+                if (textInputBox != null)
                 {
                     _ignorePopupClose = true;
+                    e.Handled         = true;
                     return;
                 }
             }
@@ -1677,10 +1678,13 @@ public abstract class AbstractAutoComplete : TemplatedControl,
                 SetCurrentValue(IsDropDownOpenProperty, false); 
                 e.Handled = true;
             }
+
+            e.Handled = true;
         }
         else
         {
             PseudoClasses.Set(StdPseudoClass.Pressed, true);
+            e.Handled = true;
         }
     }
     
