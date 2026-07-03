@@ -7,7 +7,7 @@
 [![NuGet Download](https://img.shields.io/nuget/dt/AtomUI.Desktop.Controls?style=flat-square&logo=nuget&label=downloads)](https://www.nuget.org/packages/AtomUI.Desktop.Controls)
 [![][github-license-shield]][github-license-link]
 
-[更新日志](./CHANGELOG.md) · [提交Bug][github-issues-link] · [提交需求][github-issues-link]
+[更新日志](./CHANGELOG.zh-CN.md) · [提交Bug][github-issues-link] · [提交需求][github-issues-link]
 
 </div>
 
