@@ -229,6 +229,69 @@ public partial class DataGridRow
         }
     }
 
+    internal double GetVirtualizedDisplayHeight(double estimatedHeight, double rowDetailsHeightEstimate)
+    {
+        double desiredHeight = DesiredSize.Height;
+        if (IsStaleCollapsedDetailsDesiredHeight(desiredHeight, estimatedHeight, rowDetailsHeightEstimate))
+        {
+            return GetCollapsedDetailsFallbackHeight(estimatedHeight);
+        }
+
+        return desiredHeight;
+    }
+
+    private bool IsStaleCollapsedDetailsDesiredHeight(double desiredHeight,
+                                                      double estimatedHeight,
+                                                      double rowDetailsHeightEstimate)
+    {
+        if (IsDetailsVisible ||
+            _appliedDetailsVisibility == true ||
+            double.IsNaN(desiredHeight) ||
+            double.IsInfinity(desiredHeight) ||
+            desiredHeight < 0 ||
+            rowDetailsHeightEstimate <= 0)
+        {
+            return false;
+        }
+
+        if (_detailsElement is not null &&
+            (_detailsElement.Children.Count > 0 ||
+             MathUtils.GreaterThan(_detailsElement.ContentHeight, 0)))
+        {
+            return false;
+        }
+
+        double fallbackHeight = GetCollapsedDetailsFallbackHeight(estimatedHeight);
+        return MathUtils.GreaterThan(desiredHeight, fallbackHeight + rowDetailsHeightEstimate / 2);
+    }
+
+    private double GetCollapsedDetailsFallbackHeight(double estimatedHeight)
+    {
+        double fallbackHeight = !double.IsNaN(estimatedHeight) &&
+                                !double.IsInfinity(estimatedHeight) &&
+                                estimatedHeight >= 0
+            ? estimatedHeight
+            : MinHeight;
+
+        if (_cellsElement is not null &&
+            !double.IsNaN(_cellsElement.DesiredSize.Height) &&
+            !double.IsInfinity(_cellsElement.DesiredSize.Height) &&
+            MathUtils.GreaterThan(_cellsElement.DesiredSize.Height, fallbackHeight))
+        {
+            fallbackHeight = _cellsElement.DesiredSize.Height;
+        }
+
+        if (_headerElement is not null &&
+            !double.IsNaN(_headerElement.DesiredSize.Height) &&
+            !double.IsInfinity(_headerElement.DesiredSize.Height) &&
+            MathUtils.GreaterThan(_headerElement.DesiredSize.Height, fallbackHeight))
+        {
+            fallbackHeight = _headerElement.DesiredSize.Height;
+        }
+
+        return fallbackHeight;
+    }
+
     private bool ActualDetailsVisibility
     {
         get
@@ -658,21 +721,18 @@ public partial class DataGridRow
                 }
                 _detailsContent.DataContext = null;
                 DetachDetailsContent();
-                if (!recycle)
-                {
-                    _detailsContent                 = null;
-                }
+                _detailsContent = null;
             }
 
-            if (!recycle)
-            {
-                _detailsElement.Children.Clear();
-            }
+            _detailsElement.Children.Clear();
             _detailsElement.ContentHeight = 0;
         }
+
+        _appliedDetailsTemplate = null;
+        _detailsDesiredHeight   = double.NaN;
+        _previousDetailsHeight  = null;
         if (!recycle)
         {
-            _appliedDetailsTemplate = null;
             SetValueNoCallback(DetailsTemplateProperty, null);
         }
 
@@ -689,15 +749,22 @@ public partial class DataGridRow
             && (double.IsNaN(_detailsContent.Height))
             && (IsDetailsVisible)
             && (!double.IsNaN(_detailsDesiredHeight))
-            && !MathUtils.AreClose(_detailsContent.Bounds.Inflate(_detailsContent.Margin).Height, _detailsDesiredHeight)
             && Slot != -1)
         {
-            _detailsDesiredHeight = _detailsContent.Bounds.Inflate(_detailsContent.Margin).Height;
-
-            if (true)
+            double contentHeight = _detailsContent.Bounds.Inflate(_detailsContent.Margin).Height;
+            if (!MathUtils.AreClose(contentHeight, _detailsDesiredHeight))
             {
-                _detailsElement.ContentHeight = _detailsDesiredHeight;
+                _detailsDesiredHeight = contentHeight;
+
+                if (true)
+                {
+                    _detailsElement.ContentHeight = _detailsDesiredHeight;
+                }
             }
+
+            OwningGrid?.UpdateRowDetailsHeightEstimateFromMeasuredDetails(
+                Slot,
+                GetDetailsSectionHeightEstimate(_detailsDesiredHeight));
         }
     }
     
@@ -711,13 +778,70 @@ public partial class DataGridRow
         {
             Debug.Assert(_detailsElement.Children.Contains(_detailsContent));
 
-            _detailsContent.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-            _detailsDesiredHeight = _detailsContent.DesiredSize.Height;
+            _detailsContent.ApplyTemplate();
+            _detailsContent.Measure(new Size(OwningGrid.GetRowDetailsMeasureWidth(), MaximumHeight));
+            UpdateDetailsDesiredHeightFromMeasure(GetDetailsContentDesiredHeight());
         }
         else
         {
             _detailsDesiredHeight = 0;
         }
+    }
+
+    private double GetDetailsContentDesiredHeight()
+    {
+        if (_detailsContent is DataGrid detailsGrid && double.IsNaN(detailsGrid.Height))
+        {
+            return detailsGrid.GetAutoSizeDesiredHeight();
+        }
+
+        return _detailsContent?.DesiredSize.Height ?? 0;
+    }
+
+    private void UpdateDetailsDesiredHeightFromMeasure(double measuredHeight)
+    {
+        if (double.IsNaN(measuredHeight) || double.IsInfinity(measuredHeight) || measuredHeight < 0)
+        {
+            return;
+        }
+
+        if (!double.IsNaN(_detailsDesiredHeight) &&
+            MathUtils.LessThan(measuredHeight, _detailsDesiredHeight))
+        {
+            return;
+        }
+
+        if (MathUtils.AreClose(_detailsDesiredHeight, measuredHeight))
+        {
+            return;
+        }
+
+        _detailsDesiredHeight = measuredHeight;
+        OwningGrid?.UpdateRowDetailsHeightEstimateFromMeasuredDetails(
+            Slot,
+            GetDetailsSectionHeightEstimate(_detailsDesiredHeight));
+    }
+
+    private double GetDetailsSectionHeightEstimate(double fallbackHeight)
+    {
+        if (OwningGrid != null && _appliedDetailsVisibility == true)
+        {
+            double rowHeight = TargetHeight;
+            if (!double.IsNaN(rowHeight) &&
+                !double.IsInfinity(rowHeight) &&
+                rowHeight >= 0)
+            {
+                double detailsSectionHeight = rowHeight - OwningGrid.RowHeightEstimate;
+                if (!double.IsNaN(detailsSectionHeight) &&
+                    !double.IsInfinity(detailsSectionHeight) &&
+                    MathUtils.GreaterThan(detailsSectionHeight, fallbackHeight))
+                {
+                    return detailsSectionHeight;
+                }
+            }
+        }
+
+        return fallbackHeight;
     }
 
     //TODO Cleanup
@@ -737,6 +861,9 @@ public partial class DataGridRow
                     Debug.Assert(_detailsElement != null);
                     // Update the new desired height for RowDetails
                     _detailsDesiredHeight = newValue;
+                    OwningGrid?.UpdateRowDetailsHeightEstimateFromMeasuredDetails(
+                        Slot,
+                        GetDetailsSectionHeightEstimate(newValue));
 
                     _detailsElement.ContentHeight = newValue;
 
@@ -774,10 +901,13 @@ public partial class DataGridRow
     {
         if (_detailsContent != null)
         {
-            var margin = _detailsContent.Margin;
-            var height = _detailsContent.DesiredSize.Height + margin.Top + margin.Bottom;
-
-            NotifyHeightChanged(height);
+            var height = _detailsContent is DataGrid detailsGrid && double.IsNaN(detailsGrid.Height)
+                ? detailsGrid.GetAutoSizeDesiredHeight()
+                : _detailsContent.Bounds.Inflate(_detailsContent.Margin).Height;
+            if (MathUtils.GreaterThan(height, 0))
+            {
+                NotifyHeightChanged(height);
+            }
         }
     }
 

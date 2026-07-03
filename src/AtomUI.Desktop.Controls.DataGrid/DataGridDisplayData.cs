@@ -44,6 +44,7 @@ internal class DataGridDisplayData
     {
         Debug.Assert(!_recyclableRows.Contains(row));
         row.DetachFromDataGrid(true);
+        row.IsVisible = false;
         _recyclableRows.Push(row);
     }
     
@@ -51,13 +52,15 @@ internal class DataGridDisplayData
     {
         if (_recyclableGroupHeaders.Count > 0)
         {
-            return _recyclableGroupHeaders.Pop();
+            DataGridRowGroupHeader groupHeader = _recyclableGroupHeaders.Pop();
+            PrepareRecycledElementForDisplay(groupHeader);
+            return groupHeader;
         }
         if (_fullyRecycledGroupHeaders.Count > 0)
         {
             // For fully recycled rows, we need to set the Visibility back to Visible
             DataGridRowGroupHeader groupHeader = _fullyRecycledGroupHeaders.Pop();
-            groupHeader.IsVisible = true;
+            PrepareRecycledElementForDisplay(groupHeader);
             return groupHeader;
         }
         return null;
@@ -67,6 +70,7 @@ internal class DataGridDisplayData
     {
         Debug.Assert(!_recyclableGroupHeaders.Contains(groupHeader));
         groupHeader.IsRecycled = true;
+        groupHeader.IsVisible  = false;
         _recyclableGroupHeaders.Push(groupHeader);
     }
     
@@ -228,16 +232,25 @@ internal class DataGridDisplayData
     {
         if (_recyclableRows.Count > 0)
         {
-            return _recyclableRows.Pop();
+            DataGridRow row = _recyclableRows.Pop();
+            PrepareRecycledElementForDisplay(row);
+            return row;
         }
         if (_fullyRecycledRows.Count > 0)
         {
             // For fully recycled rows, we need to set the Visibility back to Visible
             DataGridRow row = _fullyRecycledRows.Pop();
-            row.IsVisible = true;
+            PrepareRecycledElementForDisplay(row);
             return row;
         }
         return null;
+    }
+
+    private static void PrepareRecycledElementForDisplay(Control element)
+    {
+        element.IsVisible = true;
+        element.InvalidateMeasure();
+        element.InvalidateArrange();
     }
     
     // Tracks the row at index rowIndex as a scrolling row

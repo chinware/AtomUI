@@ -300,6 +300,7 @@ public partial class DataGrid
     // prevents reentry into the VerticalScroll event handler
     private Queue<Action> _lostFocusActions;
     private IndexToValueTable<bool> _showDetailsTable;
+    private IndexToValueTable<double> _rowDetailsHeightEstimateTable;
     private DataGridSelectedItemsCollection _selectedItems;
     private double _rowHeaderDesiredWidth;
     private int? _mouseOverRowIndex; // -1 is used for the 'new row'
@@ -983,6 +984,12 @@ public partial class DataGrid
 
                     return;
                 }
+            }
+            else if (scrollEventType == ScrollEventType.ThumbTrack)
+            {
+                double displayVerticalOffset = GetDisplayedRowsVerticalOffsetEstimate();
+                _verticalOffset = displayVerticalOffset;
+                DisplayData.PendingVerticalScrollHeight = _vScrollBar.Value - displayVerticalOffset;
             }
             else
             {

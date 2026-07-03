@@ -152,12 +152,11 @@ public sealed class DataGridDetailsPresenter : Panel
         
         desiredWidth -= OwningGrid.ColumnsInternal.RowGroupSpacerColumn.Width.Value;
         
+        double desiredHeight = Math.Max(0, double.IsNaN(ContentHeight) ? 0 : ContentHeight);
         foreach (Control child in Children)
         {
-            child.Measure(new Size(desiredWidth, double.PositiveInfinity));
+            child.Measure(new Size(desiredWidth, desiredHeight));
         }
-        
-        double desiredHeight = Math.Max(0, double.IsNaN(ContentHeight) ? 0 : ContentHeight);
         
         return new Size(desiredWidth, desiredHeight);
     }

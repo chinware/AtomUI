@@ -100,9 +100,14 @@ internal class DataGridRowExpander : ToggleButton
         {
             IndicatorThickness = BorderThickness.Left;
         }
-        else if (change.Property == IsCheckedProperty && _owningRow != null)
+    }
+
+    protected override void Toggle()
+    {
+        base.Toggle();
+        if (_owningRow != null)
         {
-            _owningRow.IsDetailsVisible = change.GetNewValue<bool?>() == true;
+            _owningRow.IsDetailsVisible = IsChecked == true;
         }
     }
 
