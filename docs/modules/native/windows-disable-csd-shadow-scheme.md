@@ -80,7 +80,9 @@ Win32 原生逻辑集中在 `AtomUI.Native` 项目中，`Window.cs` 只负责 Av
 |---|------|------|
 | 常量 | `AtomUI.Native/Windows/WindowUtils.Interop.cs` | Win32 常量（`WM_NCCALCSIZE`、`WM_NCHITTEST`、`HT*` 系列）、P/Invoke 声明 |
 | Native 逻辑 | `AtomUI.Native/Windows/WindowUtils.Windows.cs` | `ApplyDwmShadow()`、`HandleNcCalcSize()`、`HitTestBorder()` |
-| 窗口控件 | `AtomUI.Desktop.Controls/Window/Window.cs` | CSD 状态判断、WndProc hook 注册、WindowState 处理 |
+| Native 扩展 | `AtomUI.Native/WindowExtensions.cs` | `WinWndProcHook()`、`ApplyWinDwmShadow()`、`ForceWinNonClientFrameChanged()` |
+| 窗口控件 | `AtomUI.Desktop.Controls/Window/Window.cs` | CSD 状态判断、跨平台 chrome manager 接入 |
+| Windows chrome | `AtomUI.Desktop.Controls/Window/WindowsWindowChromeManager.cs` | 一次性注册 WndProc hook，显示/恢复/状态变化后重发 `SWP_FRAMECHANGED` |
 
 ### 1. ConfigureCsdStatus — 全 Windows 禁用 CSD
 
@@ -98,31 +100,36 @@ private void ConfigureCsdStatus()
 }
 ```
 
-### 2. OnOpened — 注册 Hook + DWM 阴影
+### 2. WindowsWindowChromeManager — Hook 生命周期 + DWM 阴影
 
 ```csharp
-protected override void OnOpened(EventArgs e)
+internal sealed class WindowsWindowChromeManager : IWindowChromeManager
 {
-    base.OnOpened(e);
-    if (OperatingSystem.IsMacOS())
-        ConfigureMacOsWindow();
+    private bool _wndProcHookRegistered;
 
-    if (OperatingSystem.IsWindows())
+    public void UpdateFrameGeometry()
     {
-        Win32Properties.AddWndProcHookCallback(this, WinWndProcHook);
+        EnsureWndProcHookRegistered();
         ApplyWinDwmShadow();
-
-        // 强制重新发送 WM_NCCALCSIZE，使 hook 生效
-        var hwnd = TryGetPlatformHandle()!.Handle;
-        WindowUtilsInterop.SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
-            WindowUtilsInterop.SWP_FRAMECHANGED |
-            WindowUtilsInterop.SWP_NOSIZE | WindowUtilsInterop.SWP_NOMOVE |
-            WindowUtilsInterop.SWP_NOZORDER | WindowUtilsInterop.SWP_NOACTIVATE);
+        ForceWinNonClientFrameChanged();
     }
 }
 ```
 
-注意：Hook 必须在 `OnOpened` 中注册，因为构造函数执行时 Win32 HWND 尚未创建。
+注意：
+
+- Hook 必须在 HWND 创建后注册，构造函数执行时 Win32 HWND 尚未创建。
+- Hook 只能注册一次；窗口被 `Hide()` 到托盘后再次 `Show()` 时，重复注册同一个 WndProc callback 会让生命周期不可控。
+- 每次显示、恢复或 `WindowState` 变化后，都需要重新应用 DWM 阴影并通过 `SWP_FRAMECHANGED` 强制 Windows 重新发送 `WM_NCCALCSIZE`。否则 Windows 可能恢复原生非客户区标题栏，和 AtomUI 自绘标题栏叠在一起。
+
+`ForceWinNonClientFrameChanged()` 只做 frame changed，不负责注册 hook：
+
+```csharp
+WindowUtilsInterop.SetWindowPos(hwnd, IntPtr.Zero, 0, 0, 0, 0,
+    WindowUtilsInterop.SWP_FRAMECHANGED |
+    WindowUtilsInterop.SWP_NOSIZE | WindowUtilsInterop.SWP_NOMOVE |
+    WindowUtilsInterop.SWP_NOZORDER | WindowUtilsInterop.SWP_NOACTIVATE);
+```
 
 ### 3. WndProc Hook — WM_NCCALCSIZE + WM_NCHITTEST
 
@@ -198,26 +205,45 @@ public static unsafe void ApplyDwmShadow(IntPtr hwnd)
 
 因为不走 `ExtendClientAreaToDecorationsHint`，Avalonia 永远不会覆盖 `DWMNCRP_ENABLED` 设置。
 
-### 5. 全屏处理
+### 5. 显示/恢复/全屏处理
 
 ```csharp
-[SupportedOSPlatform("windows")]
-private void UpdateWinDwmForWindowState()
+internal sealed class WindowsWindowChromeManager : IWindowChromeManager
 {
-    if (WindowState == WindowState.FullScreen)
+    private bool _wasFullScreen;
+
+    public void HandlePropertyChanged(AvaloniaProperty property)
     {
-        _wasFullScreen = true;
-        return;
+        if (property == AvaloniaWindow.WindowStateProperty)
+        {
+            HandleWindowStateChanged();
+        }
+        else if (property == AvaloniaWindow.IsVisibleProperty && _window.IsVisible)
+        {
+            RequestFrameRefresh(DispatcherPriority.Loaded);
+        }
     }
-    if (_wasFullScreen)
+
+    private void HandleWindowStateChanged()
     {
+        if (_window.WindowState == WindowState.FullScreen)
+        {
+            _wasFullScreen = true;
+            return;
+        }
+
+        RequestFrameRefresh(_wasFullScreen ? DispatcherPriority.Send : DispatcherPriority.Loaded);
         _wasFullScreen = false;
-        Dispatcher.UIThread.Post(ApplyWinDwmShadow, DispatcherPriority.Send);
     }
 }
 ```
 
-进入全屏时不做 DWM 操作（避免干扰 OS 全屏动画）。退出全屏时，Avalonia 的 `UpdateWindowProperties(forceChanges: true)` 会重置 DWM margins 为 0，所以需要 Post 重新应用。
+进入全屏时不做 DWM 操作（避免干扰 OS 全屏动画）。退出全屏时，Avalonia 的 `UpdateWindowProperties(forceChanges: true)` 会重置 DWM margins，所以用 `DispatcherPriority.Send` 重新应用 DWM frame。普通 `WindowState` 变化、`Hide()` 后再次 `Show()`、托盘恢复后激活窗口，统一走 `RequestFrameRefresh()`，重新执行：
+
+1. `ApplyWinDwmShadow()`
+2. `ForceWinNonClientFrameChanged()`
+
+其中 `ForceWinNonClientFrameChanged()` 通过 `SWP_FRAMECHANGED` 强制 Windows 重新发送 `WM_NCCALCSIZE`，避免原生非客户区标题栏在恢复/最大化路径中重新出现。
 
 ---
 
@@ -234,7 +260,9 @@ private void UpdateWinDwmForWindowState()
 |------|------|
 | `src/AtomUI.Native/Windows/WindowUtils.Interop.cs` | Win32 常量定义（`WM_NCCALCSIZE`、`WM_NCHITTEST`、`HT*` 系列、DWM 属性、`DWMWCP_ROUND`） |
 | `src/AtomUI.Native/Windows/WindowUtils.Windows.cs` | `ApplyDwmShadow()`、`HandleNcCalcSize()`、`HitTestBorder()` |
-| `src/AtomUI.Desktop.Controls/Window/Window.cs` | `ConfigureCsdStatus()` 全 Windows 设 false；`WinWndProcHook`、`HandleNcHitTest`、`ApplyWinDwmShadow`、`UpdateWinDwmForWindowState` |
+| `src/AtomUI.Native/WindowExtensions.cs` | `WinWndProcHook()`、`HandleNcHitTest()`、`ApplyWinDwmShadow()`、`ForceWinNonClientFrameChanged()` |
+| `src/AtomUI.Desktop.Controls/Window/Window.cs` | `ConfigureCsdStatus()` 全 Windows 设 false；接入跨平台 `IWindowChromeManager` |
+| `src/AtomUI.Desktop.Controls/Window/WindowsWindowChromeManager.cs` | Windows hook 一次性注册；首次打开、托盘恢复、窗口状态变化后重发 frame changed |
 | `src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml` | `ExtendClientAreaToDecorationsHint` 仅在 `[IsCsdEnabled=True]` 条件下设置 |
 
 ## 已知限制

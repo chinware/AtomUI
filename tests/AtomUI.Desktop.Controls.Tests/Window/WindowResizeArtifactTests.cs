@@ -286,6 +286,30 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
+    public void Windows_Window_Chrome_Reapplies_NonClient_Frame_After_Show_And_State_Changes()
+    {
+        var managerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"));
+        var windowSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var nativeSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
+
+        managerSource.ShouldContain("WindowsWindowChromeManager.Attach(window)");
+        windowSource.ShouldNotContain("InitializeWinWindow");
+        nativeSource.ShouldNotContain("InitializeWinWindow");
+
+        var windowsSource =
+            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowsWindowChromeManager.cs"));
+
+        windowsSource.ShouldContain("_wndProcHookRegistered");
+        windowsSource.ShouldContain("Win32Properties.AddWndProcHookCallback");
+        windowsSource.ShouldContain("AvaloniaWindow.IsVisibleProperty");
+        windowsSource.ShouldContain("AvaloniaWindow.WindowStateProperty");
+        windowsSource.ShouldContain("RequestFrameRefresh");
+        windowsSource.ShouldContain("ApplyWinDwmShadow");
+        windowsSource.ShouldContain("ForceWinNonClientFrameChanged");
+        windowsSource.ShouldNotContain("DispatcherTimer");
+    }
+
+    [Fact]
     public void AtomUI_Defaults_Prefer_Windows_Composition_That_Supports_Transparent_Popup_Windows()
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Core/AppBuilderExtensions.cs"));

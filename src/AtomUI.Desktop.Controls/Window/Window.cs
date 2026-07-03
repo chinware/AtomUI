@@ -339,7 +339,6 @@ public partial class Window : AvaloniaWindow,
     private Point? _lastMousePressedPoint;
     private PointerPressedEventArgs? _lastMousePressedEventArgs;
     private bool _isDragging;
-    private bool _wasFullScreen;
     private readonly IWindowChromeManager? _platformChromeManager;
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
@@ -705,11 +704,6 @@ public partial class Window : AvaloniaWindow,
             ConfigureMacOsWindow();
         }
 
-        if (OperatingSystem.IsWindows())
-        {
-            this.InitializeWinWindow();
-        }
-
         if (!_mediaQueryReady)
         {
             LayoutUpdated += HandleFirstLayoutUpdatedForMediaQuery;
@@ -823,10 +817,6 @@ public partial class Window : AvaloniaWindow,
             }
         }
         _platformChromeManager?.HandlePropertyChanged(change.Property);
-        if (OperatingSystem.IsWindows() && change.Property == WindowStateProperty)
-        {
-            UpdateWinDwmForWindowState();
-        }
         if (change.Property == CanResizeProperty || change.Property == WindowStateProperty)
         {
             ConfigureCustomResizerVisible();
@@ -859,22 +849,6 @@ public partial class Window : AvaloniaWindow,
             string text => !string.IsNullOrWhiteSpace(text),
             _ => true
         };
-    }
-
-    [SupportedOSPlatform("windows")]
-    private void UpdateWinDwmForWindowState()
-    {
-        if (WindowState == WindowState.FullScreen)
-        {
-            _wasFullScreen = true;
-            return;
-        }
-
-        if (_wasFullScreen)
-        {
-            _wasFullScreen = false;
-            Dispatcher.Post(this.ApplyWinDwmShadow, Avalonia.Threading.DispatcherPriority.Send);
-        }
     }
 
     private void ConfigureCsdStatus()
