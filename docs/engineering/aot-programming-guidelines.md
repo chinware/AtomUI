@@ -48,7 +48,6 @@
 - `src/AtomUI.Desktop.Controls.DataGrid`
 - `src/AtomUI.Desktop.Controls.ColorPicker`
 - `src/AtomUI.Desktop.Controls.Extras`
-- `src/AtomUI.Desktop.Controls.Labs`
 - `src/AtomUI.Icons.*`
 - `src/AtomUI.Generator`
 - `controlgallery/AtomUIGallery`

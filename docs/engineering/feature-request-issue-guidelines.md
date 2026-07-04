@@ -2,7 +2,7 @@
 
 本文档定义 AtomUI 新特性请求 Issue 的编写规则。新特性 Issue 应用于提出新增控件能力、扩展 public API、补充主题能力、增加 Gallery 可见示例或改善开发体验的需求。
 
-Bug、回归、崩溃、行为错误和文档错误不使用本文档，应按 bug issue 处理。
+Bug、回归、崩溃、行为错误和文档错误不使用本文档，应按 [BUG Issue 规范](bug-issue-guidelines.md) 处理。
 
 ## 适用范围
 

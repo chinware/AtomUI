@@ -1,4 +1,4 @@
-<img src="./resources/images/readme/AtomUIOSS.png"/>
+<img src="./resources/images/readme/atomui-oss-banner.png"/>
 <br/>
 <div align="center">
 

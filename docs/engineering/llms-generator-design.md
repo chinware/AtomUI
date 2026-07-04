@@ -85,8 +85,7 @@ docs/AI/llms.config.json
         "src/AtomUI.Desktop.Controls",
         "src/AtomUI.Desktop.Controls.DataGrid",
         "src/AtomUI.Desktop.Controls.ColorPicker",
-        "src/AtomUI.Desktop.Controls.Extras",
-        "src/AtomUI.Desktop.Controls.Labs"
+        "src/AtomUI.Desktop.Controls.Extras"
       ],
       "categoryOrder": [
         "general",
