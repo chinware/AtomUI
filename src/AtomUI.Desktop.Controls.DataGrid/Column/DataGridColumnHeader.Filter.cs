@@ -4,7 +4,6 @@
 // All other rights reserved.
 
 using System.Diagnostics;
-using AtomUI.Desktop.Controls.Data;
 using Avalonia;
 
 namespace AtomUI.Desktop.Controls;
@@ -53,64 +52,9 @@ internal partial class DataGridColumnHeader
         {
             var ea = new DataGridColumnEventArgs(OwningColumn);
             OwningGrid.NotifyColumnFiltering(ea);
-            if (!ea.Handled && OwningGrid.DataConnection.AllowFilter &&
-                OwningGrid.DataConnection.FilterDescriptions != null)
+            if (!ea.Handled && OwningGrid.DataConnection.AllowFilter)
             {
-                DataGrid                   owningGrid = OwningGrid;
-                DataGridFilterDescription? filter         = OwningColumn.GetFilterDescription();
-                IDataGridCollectionView?   collectionView = owningGrid.DataConnection.CollectionView;
-                Debug.Assert(collectionView != null);
-                using (collectionView.DeferRefresh())
-                {
-                    DataGridFilterDescription? newFilter;
-                    if (owningGrid.DataConnection.FilterDescriptions.Count == 0)
-                    {
-                        owningGrid.DataConnection.FilterDescriptions.Clear();
-                    }
-
-                    if (filter != null)
-                    {
-                        // 比较一下值，如果过滤的值不相等就重新添加
-                        if (filterValues.Count > 0 && !FilterConditionsSetEquals(filter.FilterConditions, filterValues))
-                        {
-                            newFilter = new DataGridFilterDescription()
-                            {
-                                PropertyPath     = filter.PropertyPath,
-                                Filter           = filter.Filter,
-                                FilterConditions = CopyFilterValues(filterValues),
-                            };
-                            int oldIndex = owningGrid.DataConnection.FilterDescriptions.IndexOf(filter);
-                            if (oldIndex >= 0)
-                            {
-                                owningGrid.DataConnection.FilterDescriptions.Remove(filter);
-                                owningGrid.DataConnection.FilterDescriptions.Insert(oldIndex, newFilter);
-                            }
-                            else
-                            {
-                                owningGrid.DataConnection.FilterDescriptions.Add(newFilter);
-                            }
-                        }
-                        else if (filterValues.Count == 0)
-                        {
-                            owningGrid.DataConnection.FilterDescriptions.Remove(filter);
-                        }
-                    }
-                    else if (filterValues.Count > 0)
-                    {
-                        string? propertyName = OwningColumn.GetFilterPropertyName();
-                        if (string.IsNullOrEmpty(propertyName))
-                        {
-                            return;
-                        }
-                        newFilter = new DataGridFilterDescription()
-                        {
-                            PropertyPath = propertyName,
-                            Filter       =  OwningColumn.OnFilter,
-                            FilterConditions = filterValues,
-                        };
-                        owningGrid.DataConnection.FilterDescriptions.Add(newFilter);
-                    }
-                }
+                OwningColumn.SetSelectedFilterValuesFromFilterRequest(filterValues);
             }
         }
     }
@@ -158,41 +102,6 @@ internal partial class DataGridColumnHeader
         return values;
     }
 
-    private static bool FilterConditionsSetEquals(List<object> oldFilterValues, List<object> newFilterValues)
-    {
-        return DistinctValuesAreContained(oldFilterValues, newFilterValues) &&
-               DistinctValuesAreContained(newFilterValues, oldFilterValues);
-    }
-
-    private static bool DistinctValuesAreContained(List<object> source, List<object> target)
-    {
-        for (var i = 0; i < source.Count; i++)
-        {
-            var value = source[i];
-            if (ContainsValue(source, value, i))
-            {
-                continue;
-            }
-            if (!ContainsValue(target, value, target.Count))
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static bool ContainsValue(List<object> values, object? value, int endExclusive)
-    {
-        for (var i = 0; i < endExclusive; i++)
-        {
-            if (Equals(values[i], value))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     internal void InvokeClearFilter()
     {
         Debug.Assert(OwningGrid != null);
@@ -217,21 +126,9 @@ internal partial class DataGridColumnHeader
         {
             var ea = new DataGridColumnEventArgs(OwningColumn);
             OwningGrid.NotifyColumnFiltering(ea);
-            if (!ea.Handled && OwningGrid.DataConnection.AllowFilter &&
-                OwningGrid.DataConnection.FilterDescriptions != null)
+            if (!ea.Handled && OwningGrid.DataConnection.AllowFilter)
             {
-                DataGrid                   owningGrid     = OwningGrid;
-                DataGridFilterDescription? filter         = OwningColumn.GetFilterDescription();
-                IDataGridCollectionView?   collectionView = owningGrid.DataConnection.CollectionView;
-                Debug.Assert(collectionView != null);
-
-                using (collectionView.DeferRefresh())
-                {
-                    if (filter != null)
-                    {
-                        owningGrid.DataConnection.FilterDescriptions.Remove(filter);
-                    }
-                }
+                OwningColumn.SetSelectedFilterValuesFromFilterRequest(EmptyFilterValues);
             }
         }
     }

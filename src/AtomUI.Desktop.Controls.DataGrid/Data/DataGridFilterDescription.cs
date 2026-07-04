@@ -58,21 +58,25 @@ public class DataGridFilterDescription
             return false;
         }
 
-        if (Filter != null)
-        {
-            return Filter(value, filterConditions[0]);
-        }
-
-        // 默认按照字符串来比较
-        var stringValue = value.ToString();
-        if (string.IsNullOrEmpty(stringValue))
-        {
-            return false;
-        }
-
         foreach (var filterValue in filterConditions)
         {
+            if (Filter != null)
+            {
+                if (Filter(value, filterValue))
+                {
+                    return true;
+                }
+                continue;
+            }
+
+            if (Equals(value, filterValue))
+            {
+                return true;
+            }
+
+            var stringValue = value.ToString();
             if (filterValue is string stringFilterValue &&
+                !string.IsNullOrEmpty(stringValue) &&
                 stringValue.Contains(stringFilterValue, ComparisonType))
             {
                 return true;

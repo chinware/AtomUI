@@ -1047,7 +1047,7 @@ internal partial class DataGridColumnHeader : ContentControl
     {
         FilterIndicatorVisible = IsSeparatorsVisible &&
                                  CanUserFilter &&
-                                 OwningColumn?.Filters.Count > 0;
+                                 OwningColumn?.HasFilterItems == true;
     }
 
     private void RegisterFilterItems(DataGridColumn? column)
@@ -1058,7 +1058,7 @@ internal partial class DataGridColumnHeader : ContentControl
         }
 
         UnregisterFilterItems();
-        if (column?.Filters is { } filters)
+        if (column?.Filters is INotifyCollectionChanged filters)
         {
             _subscribedFilterItems = filters;
             _subscribedFilterItems.CollectionChanged += HandleFilterItemsChanged;
@@ -1078,6 +1078,18 @@ internal partial class DataGridColumnHeader : ContentControl
     {
         ConfigureIndicatorLayoutVisible();
         _filterIndicator?.RefreshFilterFlyoutState();
+    }
+
+    internal void NotifyFilterItemsChanged()
+    {
+        RegisterFilterItems(OwningColumn);
+        ConfigureIndicatorLayoutVisible();
+        _filterIndicator?.RefreshFilterFlyoutState();
+    }
+
+    internal void NotifySelectedFilterValuesChanged()
+    {
+        _filterIndicator?.RefreshSelectedFilterValues();
     }
 
     private void ClearFilterIndicator()

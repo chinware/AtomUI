@@ -7,7 +7,7 @@ public class DataGridFilterItem
     private List<DataGridFilterItem>? _children;
 
     public string Text { get; set; } = string.Empty;
-    public string Value { get; set; } = string.Empty;
+    public object? Value { get; set; }
     
     [Content]
     public List<DataGridFilterItem> Children

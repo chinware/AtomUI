@@ -1,3 +1,4 @@
+using System.Collections;
 using System.ComponentModel;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
@@ -82,6 +83,7 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
         if (DataContext is not DataGridViewModel viewModel)
         {
             dataGrid.ItemsSource = null;
+            ConfigureFilterColumns(dataGrid, null);
             return;
         }
 
@@ -158,6 +160,39 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
                 dataGrid.ItemsSource = viewModel.PagingGridDataSource;
                 break;
         }
+
+        ConfigureFilterColumns(dataGrid, viewModel);
+    }
+
+    private static void ConfigureFilterColumns(AtomDataGrid dataGrid, DataGridViewModel? viewModel)
+    {
+        switch (dataGrid.Name)
+        {
+            case "FilterAndSortGrid":
+                ConfigureFilterColumn(dataGrid, 0, viewModel?.NameFilters, viewModel?.FilterAndSorterSelectedNames);
+                ConfigureFilterColumn(dataGrid, 2, viewModel?.AddressFilters, viewModel?.FilterAndSorterSelectedAddresses);
+                break;
+            case "FilterInTreeGrid":
+                ConfigureFilterColumn(dataGrid, 0, viewModel?.NameFilters, viewModel?.TreeFilterSelectedNames);
+                ConfigureFilterColumn(dataGrid, 2, viewModel?.AddressFilters, viewModel?.TreeFilterSelectedAddresses);
+                break;
+            case "ResetFilterAndSortGrid":
+                ConfigureFilterColumn(dataGrid, 0, viewModel?.NameFilters, viewModel?.ResetSelectedNames);
+                ConfigureFilterColumn(dataGrid, 2, viewModel?.AddressFilters, viewModel?.ResetSelectedAddresses);
+                break;
+        }
+    }
+
+    private static void ConfigureFilterColumn(AtomDataGrid dataGrid, int columnIndex, IEnumerable? filters, IList? selectedValues)
+    {
+        if (columnIndex >= dataGrid.Columns.Count)
+        {
+            return;
+        }
+
+        var column = dataGrid.Columns[columnIndex];
+        column.SelectedFilterValues = selectedValues;
+        column.Filters              = filters;
     }
 
     private void HandleSelectionModeCheckedChanged(object? sender, RoutedEventArgs e)

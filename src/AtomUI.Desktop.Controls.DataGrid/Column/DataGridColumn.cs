@@ -20,7 +20,7 @@ using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
-public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IThemeVariantHost
+public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IThemeVariantHost, IDataContextProvider
 {
     #region 公共属性定义
 
@@ -32,6 +32,9 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
     /// </summary>
     public static readonly StyledProperty<bool> IsVisibleProperty =
         Control.IsVisibleProperty.AddOwner<DataGridColumn>();
+
+    public static readonly StyledProperty<object?> DataContextProperty =
+        StyledElement.DataContextProperty.AddOwner<DataGridColumn>();
     
     /// <summary>
     /// Backing field for CellTheme property.
@@ -65,6 +68,34 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
     /// </summary>
     public static readonly StyledProperty<DataGridSortDirections> SupportedSortDirectionsProperty =
         AvaloniaProperty.Register<DataGridColumn, DataGridSortDirections>(nameof(SupportedSortDirections), DataGridSortDirections.All);
+
+    public static readonly StyledProperty<IEnumerable?> FiltersProperty =
+        AvaloniaProperty.Register<DataGridColumn, IEnumerable?>(nameof(Filters));
+
+    public static readonly StyledProperty<IList?> SelectedFilterValuesProperty =
+        AvaloniaProperty.Register<DataGridColumn, IList?>(
+            nameof(SelectedFilterValues),
+            defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly StyledProperty<string?> FilterTextMemberPathProperty =
+        AvaloniaProperty.Register<DataGridColumn, string?>(nameof(FilterTextMemberPath));
+
+    public static readonly StyledProperty<string?> FilterValueMemberPathProperty =
+        AvaloniaProperty.Register<DataGridColumn, string?>(nameof(FilterValueMemberPath));
+
+    public static readonly StyledProperty<string?> FilterChildrenMemberPathProperty =
+        AvaloniaProperty.Register<DataGridColumn, string?>(nameof(FilterChildrenMemberPath));
+
+    public static readonly StyledProperty<DataGridFilterPresenterMode> FilterPresenterModeProperty =
+        AvaloniaProperty.Register<DataGridColumn, DataGridFilterPresenterMode>(nameof(FilterPresenterMode));
+
+    public static readonly StyledProperty<DataGridFilterSelectionMode> FilterSelectionModeProperty =
+        AvaloniaProperty.Register<DataGridColumn, DataGridFilterSelectionMode>(
+            nameof(FilterSelectionMode),
+            DataGridFilterSelectionMode.Multiple);
+
+    public static readonly StyledProperty<DataGridFilterApplyMode> FilterApplyModeProperty =
+        AvaloniaProperty.Register<DataGridColumn, DataGridFilterApplyMode>(nameof(FilterApplyMode));
     
     /// <summary>
     /// Horizontal alignment method for Header content
@@ -86,6 +117,12 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
         get => GetValue(IsVisibleProperty);
         set => SetValue(IsVisibleProperty, value);
     }
+
+    public object? DataContext
+    {
+        get => GetValue(DataContextProperty);
+        set => SetValue(DataContextProperty, value);
+    }
     
     public DataGridLength Width
     {
@@ -93,25 +130,6 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
         set => SetValue(WidthProperty, value);
     }
 
-    protected static bool RemovedItemsContain(NotifyCollectionChangedEventArgs e, object item)
-    {
-        if (e.Action != NotifyCollectionChangedAction.Remove ||
-            e.OldItems is not { Count: > 0 } oldItems)
-        {
-            return false;
-        }
-
-        for (var i = 0; i < oldItems.Count; i++)
-        {
-            if (Equals(oldItems[i], item))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    
     /// <summary>
     /// Gets or sets the <see cref="DataGridColumnHeader"/> cell theme.
     /// </summary>
@@ -467,27 +485,60 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
     /// <summary>
     /// Filter menu config
     /// </summary>
-    public ObservableCollection<DataGridFilterItem> Filters { get; } = new();
+    public IEnumerable? Filters
+    {
+        get => GetValue(FiltersProperty);
+        set => SetValue(FiltersProperty, value);
+    }
+
+    public IList? SelectedFilterValues
+    {
+        get => GetValue(SelectedFilterValuesProperty);
+        set => SetValue(SelectedFilterValuesProperty, value);
+    }
+
+    public string? FilterTextMemberPath
+    {
+        get => GetValue(FilterTextMemberPathProperty);
+        set => SetValue(FilterTextMemberPathProperty, value);
+    }
+
+    public string? FilterValueMemberPath
+    {
+        get => GetValue(FilterValueMemberPathProperty);
+        set => SetValue(FilterValueMemberPathProperty, value);
+    }
+
+    public string? FilterChildrenMemberPath
+    {
+        get => GetValue(FilterChildrenMemberPathProperty);
+        set => SetValue(FilterChildrenMemberPathProperty, value);
+    }
+
+    public DataGridFilterPresenterMode FilterPresenterMode
+    {
+        get => GetValue(FilterPresenterModeProperty);
+        set => SetValue(FilterPresenterModeProperty, value);
+    }
+
+    public DataGridFilterSelectionMode FilterSelectionMode
+    {
+        get => GetValue(FilterSelectionModeProperty);
+        set => SetValue(FilterSelectionModeProperty, value);
+    }
+
+    public DataGridFilterApplyMode FilterApplyMode
+    {
+        get => GetValue(FilterApplyModeProperty);
+        set => SetValue(FilterApplyModeProperty, value);
+    }
     
     /// <summary>
     /// Custom filter, the first parameter is the filter condition, the second parameter is the data record
     /// </summary>
     public Func<object, object, bool>? OnFilter { get; set; }
-    
-    /// <summary>
-    /// Whether multiple filters can be selected
-    /// </summary>
-    public DataGridFilterMode FilterMode { get; set; }
-    
-    /// <summary>
-    /// Whether multiple filters can be selected
-    /// </summary>
-    public bool IsMultipleFilterEnabled { get; set; } = true;
-    
-    /// <summary>
-    /// Whether to trigger filter when the filter menu closes
-    /// </summary>
-    public bool FilterOnClose { get; set; }
+
+    public Func<object?, object?, bool>? FilterEvaluator { get; set; }
     
     public virtual bool IsReadOnly
     {
@@ -664,12 +715,43 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
         InheritsWidth                   = true;
     }
 
+    protected static bool RemovedItemsContain(NotifyCollectionChangedEventArgs e, object item)
+    {
+        if (e.Action != NotifyCollectionChangedAction.Remove ||
+            e.OldItems is not { Count: > 0 } oldItems)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < oldItems.Count; i++)
+        {
+            if (Equals(oldItems[i], item))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     protected virtual void NotifyOwningGridAttached(DataGrid? owningGrid)
     {
+        if (owningGrid != null)
+        {
+            RegisterFilterCollectionSubscriptions();
+        }
+    }
+
+    internal void NotifyOwningGridAttachedAfterColumnCollectionUpdate()
+    {
+        PruneSelectedFilterValuesToFilterItems();
+        ApplySelectedFilterValuesToFilterDescriptions();
     }
     
     protected internal virtual void NotifyOwningGridAboutToDetached()
     {
+        RemoveFilterDescriptionProjection();
+        ReleaseFilterCollectionSubscriptions();
     }
     
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -722,6 +804,18 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
                 }
                 
             }
+        }
+        else if (change.Property == FiltersProperty)
+        {
+            RegisterFilterItemsSource(change.OldValue as IEnumerable, change.NewValue as IEnumerable);
+            PruneSelectedFilterValuesToFilterItems();
+            NotifyFilterItemsChanged();
+        }
+        else if (change.Property == SelectedFilterValuesProperty)
+        {
+            RegisterSelectedFilterValues(change.OldValue as IList, change.NewValue as IList);
+            ApplySelectedFilterValuesToFilterDescriptions();
+            NotifySelectedFilterValuesChanged();
         }
     }
     
@@ -793,12 +887,12 @@ public abstract partial class DataGridColumn : AvaloniaObject, IResourceHost, IT
     /// </summary>
     public void ClearFilter()
     {
-        _headerCell?.InvokeClearFilter();
+        SetSelectedFilterValuesFromFilterRequest(Array.Empty<object>());
     }
 
     public void Filter(List<object> filterValues)
     {
-        _headerCell?.InvokeProcessFilter(filterValues);
+        SetSelectedFilterValuesFromFilterRequest(filterValues);
     }
 
     /// <summary>

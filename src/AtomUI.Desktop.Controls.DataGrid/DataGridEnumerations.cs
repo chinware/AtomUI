@@ -130,11 +130,21 @@ public enum DataGridSelectTriggerType
     SelectIndicator
 }
 
-/// <summary>
-/// Column filter interface type
-/// </summary>
-public enum DataGridFilterMode
+public enum DataGridFilterPresenterMode
 {
     Menu,
     Tree
+}
+
+public enum DataGridFilterSelectionMode
+{
+    Single,
+    Multiple
+}
+
+public enum DataGridFilterApplyMode
+{
+    Confirm,
+    Close,
+    SelectionChanged
 }

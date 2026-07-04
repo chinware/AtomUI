@@ -1,7 +1,9 @@
+using System.Collections;
 using System.Collections.ObjectModel;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Data;
+using AtomUI.Desktop.Controls;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Threading;
@@ -33,6 +35,52 @@ public partial class DataGridViewModel : ReactiveObject, IRoutableViewModel
     public ObservableCollection<DataGridBaseInfo>? EditableRowsDataSource { get; set; }
     public ObservableCollection<DataGridBaseInfo>? PagingGridDataSource { get; set; }
 
+    public ObservableCollection<DataGridFilterItem> NameFilters { get; }
+    public ObservableCollection<DataGridFilterItem> AddressFilters { get; }
+
+    private IList? _filterAndSorterSelectedNames = new ObservableCollection<object>();
+    private IList? _filterAndSorterSelectedAddresses = new ObservableCollection<object>();
+    private IList? _treeFilterSelectedNames = new ObservableCollection<object>();
+    private IList? _treeFilterSelectedAddresses = new ObservableCollection<object>();
+    private IList? _resetSelectedNames = new ObservableCollection<object>();
+    private IList? _resetSelectedAddresses = new ObservableCollection<object>();
+
+    public IList? FilterAndSorterSelectedNames
+    {
+        get => _filterAndSorterSelectedNames;
+        set => this.RaiseAndSetIfChanged(ref _filterAndSorterSelectedNames, value);
+    }
+
+    public IList? FilterAndSorterSelectedAddresses
+    {
+        get => _filterAndSorterSelectedAddresses;
+        set => this.RaiseAndSetIfChanged(ref _filterAndSorterSelectedAddresses, value);
+    }
+
+    public IList? TreeFilterSelectedNames
+    {
+        get => _treeFilterSelectedNames;
+        set => this.RaiseAndSetIfChanged(ref _treeFilterSelectedNames, value);
+    }
+
+    public IList? TreeFilterSelectedAddresses
+    {
+        get => _treeFilterSelectedAddresses;
+        set => this.RaiseAndSetIfChanged(ref _treeFilterSelectedAddresses, value);
+    }
+
+    public IList? ResetSelectedNames
+    {
+        get => _resetSelectedNames;
+        set => this.RaiseAndSetIfChanged(ref _resetSelectedNames, value);
+    }
+
+    public IList? ResetSelectedAddresses
+    {
+        get => _resetSelectedAddresses;
+        set => this.RaiseAndSetIfChanged(ref _resetSelectedAddresses, value);
+    }
+
     private ObservableCollection<DataGridApiRow>? _apiRows;
     private ObservableCollection<DataGridDesignTokenRow>? _designTokenRows;
 
@@ -50,7 +98,37 @@ public partial class DataGridViewModel : ReactiveObject, IRoutableViewModel
 
     public DataGridViewModel(IScreen screen)
     {
-        HostScreen = screen;
+        HostScreen     = screen;
+        NameFilters    = CreateNameFilters();
+        AddressFilters = CreateAddressFilters();
+    }
+
+    private static ObservableCollection<DataGridFilterItem> CreateNameFilters()
+    {
+        return
+        [
+            new DataGridFilterItem { Text = Lang(DataGridShowCaseLangResourceKind.P2TextJoe), Value = "Joe" },
+            new DataGridFilterItem { Text = Lang(DataGridShowCaseLangResourceKind.P2TextJim), Value = "Jim" },
+            new DataGridFilterItem
+            {
+                Text  = Lang(DataGridShowCaseLangResourceKind.P2TextSubmenu),
+                Value = "Submenu",
+                Children =
+                [
+                    new DataGridFilterItem { Text = Lang(DataGridShowCaseLangResourceKind.P2TextGreen), Value = "Green" },
+                    new DataGridFilterItem { Text = Lang(DataGridShowCaseLangResourceKind.P2TextBlack), Value = "Black" }
+                ]
+            }
+        ];
+    }
+
+    private static ObservableCollection<DataGridFilterItem> CreateAddressFilters()
+    {
+        return
+        [
+            new DataGridFilterItem { Text = Lang(DataGridShowCaseLangResourceKind.P2TextLondon), Value = "London" },
+            new DataGridFilterItem { Text = Lang(DataGridShowCaseLangResourceKind.P2TextNewYork), Value = "New York" }
+        ];
     }
 
     public void EnsureApiRows()

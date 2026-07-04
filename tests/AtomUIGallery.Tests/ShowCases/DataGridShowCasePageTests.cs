@@ -60,6 +60,18 @@ public class DataGridShowCasePageTests
         source.ShouldContain("AttachedToVisualTree=\"HandleExampleDataGridAttached\"");
         source.ShouldContain("Click=\"HandleSortAgeBtnClick\"");
         source.ShouldContain("IsCheckedChanged=\"HandleColumnVisibleChanged\"");
+        source.ShouldNotContain("Filters=\"{Binding NameFilters, DataType={x:Type vm:DataGridViewModel}}\"");
+        source.ShouldNotContain("Filters=\"{Binding AddressFilters, DataType={x:Type vm:DataGridViewModel}}\"");
+        source.ShouldNotContain("SelectedFilterValues=\"{Binding FilterAndSorterSelectedNames, DataType={x:Type vm:DataGridViewModel}}\"");
+        source.ShouldNotContain("SelectedFilterValues=\"{Binding FilterAndSorterSelectedAddresses, DataType={x:Type vm:DataGridViewModel}}\"");
+        source.ShouldNotContain("SelectedFilterValues=\"{Binding TreeFilterSelectedNames, DataType={x:Type vm:DataGridViewModel}}\"");
+        source.ShouldNotContain("SelectedFilterValues=\"{Binding TreeFilterSelectedAddresses, DataType={x:Type vm:DataGridViewModel}}\"");
+        source.ShouldNotContain("SelectedFilterValues=\"{Binding ResetSelectedNames, DataType={x:Type vm:DataGridViewModel}}\"");
+        source.ShouldNotContain("SelectedFilterValues=\"{Binding ResetSelectedAddresses, DataType={x:Type vm:DataGridViewModel}}\"");
+        source.ShouldNotContain("<atom:DataGridTextColumn.Filters>");
+        source.ShouldNotContain("<atom:DataGridTemplateColumn.Filters>");
+        source.ShouldNotContain("IsMultipleFilterEnabled");
+        source.ShouldNotContain("FilterMode=\"Tree\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");
@@ -88,6 +100,7 @@ public class DataGridShowCasePageTests
         codeBehindSource.ShouldContain("ExamplesContent");
         codeBehindSource.ShouldContain("new DataGridApiDataGrid()");
         codeBehindSource.ShouldContain("new DataGridDesignTokenDataGrid()");
+        codeBehindSource.ShouldContain("ConfigureFilterColumns(dataGrid, viewModel)");
         codeBehindSource.ShouldNotContain("new DataGridBasicShowCase()");
         codeBehindSource.ShouldNotContain("ScenarioTabs.Items.OfType<AtomUI.Desktop.Controls.TabItem>()");
         codeBehindSource.ShouldNotContain("FilterAndSortGrid.ItemsSource");

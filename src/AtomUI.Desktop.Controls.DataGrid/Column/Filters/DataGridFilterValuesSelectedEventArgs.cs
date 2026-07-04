@@ -1,15 +1,25 @@
 namespace AtomUI.Desktop.Controls;
 
+internal enum DataGridFilterValuesCommitKind
+{
+    Confirmed,
+    PassiveClose,
+    SelectionChanged
+}
+
 internal class DataGridFilterValuesSelectedEventArgs
 {
-    internal static readonly List<string> EmptyValues = new(0);
+    internal static readonly List<object> EmptyValues = new(0);
 
-    public bool IsConfirmed { get; }
-    public List<string> Values { get; }
+    public DataGridFilterValuesCommitKind CommitKind { get; }
+    public bool IsConfirmed => CommitKind == DataGridFilterValuesCommitKind.Confirmed;
+    public bool IsPassiveClose => CommitKind == DataGridFilterValuesCommitKind.PassiveClose;
+    public bool IsSelectionChanged => CommitKind == DataGridFilterValuesCommitKind.SelectionChanged;
+    public List<object> Values { get; }
 
-    public DataGridFilterValuesSelectedEventArgs(bool isConfirmed, List<string> values)
+    public DataGridFilterValuesSelectedEventArgs(DataGridFilterValuesCommitKind commitKind, List<object> values)
     {
-        IsConfirmed = isConfirmed;
-        Values = values;
+        CommitKind = commitKind;
+        Values     = values;
     }
 }
