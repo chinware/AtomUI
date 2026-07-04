@@ -205,7 +205,7 @@ public class FormViewModel : ReactiveObject, IRoutableViewModel
             new FormApiRow("LabelColInfo", Lang(FormShowCaseLangResourceKind.ApiPropertyLabelColInfo), "GridLength", "cyan", "null"),
             new FormApiRow("WrapperColInfo", Lang(FormShowCaseLangResourceKind.ApiPropertyWrapperColInfo), "GridLength", "cyan", "null"),
             new FormApiRow("RequiredMark", Lang(FormShowCaseLangResourceKind.ApiPropertyRequiredMark), "FormRequiredMark", "purple", "Default"),
-            new FormApiRow("ValidateTrigger", Lang(FormShowCaseLangResourceKind.ApiPropertyValidateTrigger), "FormValidateTrigger", "purple", "OnSubmit"),
+            new FormApiRow("ValidateTrigger", Lang(FormShowCaseLangResourceKind.ApiPropertyValidateTrigger), "FormValidateTrigger", "purple", "OnChanged"),
             new FormApiRow("IsValidateFeedbackEnabled", Lang(FormShowCaseLangResourceKind.ApiPropertyIsValidateFeedbackEnabled), "bool", "green", "false"),
             new FormApiRow("InitialValues", Lang(FormShowCaseLangResourceKind.ApiPropertyInitialValues), "IFormValues?", "cyan", "null"),
             new FormApiRow("Values", Lang(FormShowCaseLangResourceKind.ApiPropertyValues), "IFormValues", "cyan", "-"),

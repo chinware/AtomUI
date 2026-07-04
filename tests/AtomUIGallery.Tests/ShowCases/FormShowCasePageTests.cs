@@ -175,6 +175,31 @@ public class FormShowCasePageTests
     }
 
     [Fact]
+    public void Form_ShowCase_Required_Layout_Demo_Items_Have_Validators()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml");
+
+        var layoutDemo = ExtractRequiredLayoutDemo(source);
+        CountOccurrences(layoutDemo, "IsRequired=\"True\"").ShouldBe(6);
+        CountOccurrences(layoutDemo, "<atom:FormValidatorProvider>").ShouldBe(6);
+        CountOccurrences(
+                layoutDemo,
+                "<atom:FormStringNotEmptyValidator Message=\"{gallery:FormShowCaseLangResource P2MessagePleaseInput}\" />")
+            .ShouldBe(6);
+    }
+
+    [Fact]
+    public void Form_ShowCase_Api_Defaults_Match_Form_Validation_Defaults()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/ViewModels/FormViewModel.cs");
+
+        source.ShouldContain(
+            "new FormApiRow(\"ValidateTrigger\", Lang(FormShowCaseLangResourceKind.ApiPropertyValidateTrigger), \"FormValidateTrigger\", \"purple\", \"OnChanged\")");
+        source.ShouldNotContain(
+            "new FormApiRow(\"ValidateTrigger\", Lang(FormShowCaseLangResourceKind.ApiPropertyValidateTrigger), \"FormValidateTrigger\", \"purple\", \"OnSubmit\")");
+    }
+
+    [Fact]
     public void Form_ShowCase_Examples_Match_Approved_Control_Demo_Content()
     {
         var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml");
@@ -197,6 +222,19 @@ public class FormShowCasePageTests
         panelCloseStart.ShouldBeGreaterThan(firstItemStart);
 
         return source[firstItemStart..panelCloseStart];
+    }
+
+    private static string ExtractRequiredLayoutDemo(string source)
+    {
+        const string firstFormMarker = "<atom:Form FormLayout=\"Horizontal\">";
+
+        var firstFormStart = source.IndexOf(firstFormMarker, StringComparison.Ordinal);
+        firstFormStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        var stackPanelCloseStart = source.IndexOf("</StackPanel>", firstFormStart, StringComparison.Ordinal);
+        stackPanelCloseStart.ShouldBeGreaterThan(firstFormStart);
+
+        return source[firstFormStart..stackPanelCloseStart];
     }
 
     private static string NormalizeMarkup(string source)

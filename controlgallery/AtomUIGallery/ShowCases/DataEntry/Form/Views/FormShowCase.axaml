@@ -213,6 +213,11 @@
                                    WrapperColInfo="20*"
                                    IsRequired="True"
                                    Layout="Horizontal">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
                         <atom:LineEdit/>
                     </atom:FormItem>
 
@@ -220,6 +225,11 @@
                                    FieldName="vertical"
                                    IsRequired="True"
                                    Layout="Vertical">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
                         <atom:LineEdit/>
                     </atom:FormItem>
 
@@ -227,6 +237,11 @@
                                    FieldName="vertical2"
                                    IsRequired="True"
                                    Layout="Vertical">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
                         <atom:LineEdit/>
                     </atom:FormItem>
                 </atom:Form>
@@ -239,6 +254,11 @@
                                    FieldName="vertical"
                                    IsRequired="True"
                                    Layout="Vertical">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
                         <atom:LineEdit/>
                     </atom:FormItem>
 
@@ -246,6 +266,11 @@
                                    FieldName="vertical2"
                                    IsRequired="True"
                                    Layout="Vertical">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
                         <atom:LineEdit/>
                     </atom:FormItem>
 
@@ -254,6 +279,11 @@
                                    WrapperColInfo="20*"
                                    IsRequired="True"
                                    Layout="Horizontal">
+                        <atom:FormItem.Validators>
+                            <atom:FormValidatorProvider>
+                                <atom:FormStringNotEmptyValidator Message="{gallery:FormShowCaseLangResource P2MessagePleaseInput}" />
+                            </atom:FormValidatorProvider>
+                        </atom:FormItem.Validators>
                         <atom:LineEdit/>
                     </atom:FormItem>
                 </atom:Form>
