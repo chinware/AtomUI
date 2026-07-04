@@ -46,6 +46,8 @@ Header API：
 - `CornerRadius` 定义边框圆角。
 - `Padding` 定义内容区域内边距，默认由 GroupBox Token 提供。
 
+GroupBox 在未显式设置 `Height` / `MaxHeight` 等外部约束时，会根据模板根节点的测量结果自动确定高度。该高度包含 Header 通道、内容区域 `Padding` 和内容自身 `DesiredSize`。内容容器仍需遵循 Avalonia 布局语义主动汇报期望尺寸，例如使用 `StackPanel`、`Grid` 或显式尺寸；裸 `Panel` / `Canvas` 等不会自然按子元素累加高度的容器不会被 GroupBox 特殊改写。
+
 稳定 template part：
 
 | Template Part | 类型 | 职责 |
@@ -75,7 +77,7 @@ Frame border bounds + Header gap bounds
 Background / BorderBrush / BorderThickness / CornerRadius render state
 ```
 
-`HeaderIcon`、Header 字体、标题位置和 Header 内容变化会影响缺口尺寸或位置。`Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 改变会影响自绘边框和背景。
+`HeaderIcon`、Header 字体、标题位置和 Header 内容变化会影响缺口尺寸或位置。内容尺寸变化会通过模板根 `PART_Frame` 参与 GroupBox 的 measure pass，使自动高度随内容 `DesiredSize` 增长，同时仍尊重父容器可用空间和显式高度约束。`Background`、`BorderBrush`、`BorderThickness`、`CornerRadius` 改变会影响自绘边框和背景。
 
 ## 5. 视觉与主题模型
 
@@ -112,6 +114,7 @@ GroupBox 不实现 `IFormItemAware`、`ICompactSpaceAware` 或 ItemsControl 相�
 - `GroupBoxTitlePosition.Left`、`Right`、`Center` 的名称和含义不变。
 - `PART_Frame`、`PART_HeaderContainer`、`PART_HeaderContent`、`PART_HeaderIconPresenter`、`PART_HeaderPresenter`、`PART_ContentPresenter` 的 template part 名称不变。
 - `Background="Transparent"` 时内容区保持透明，同时 Header 标题下方不应出现边框短线。
+- 未设置显式高度时，GroupBox 的 `DesiredSize.Height` 必须包含 Header 通道、内容内边距和内容自身期望高度，避免内容多时被 Header 或边框区域挤压。
 - Header 图标为 `null` 时图标节点不可见，不保留额外图标占位宽度。
 - Header 内容位置改变只影响 Header 水平对齐，不改变内容区域布局语义。
 - Token 名称和语义不擅自重命名或删除。

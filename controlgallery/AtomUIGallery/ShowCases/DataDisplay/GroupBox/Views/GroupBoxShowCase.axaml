@@ -57,6 +57,24 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        Title="{gallery:GroupBoxShowCaseLangResource AutoHeightTitle}"
+                        Description="{gallery:GroupBoxShowCaseLangResource AutoHeightDescription}"
+                        BadgeText="v6.0.8"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:GroupBoxViewModel">
+                        <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource AutoHeightTitle}">
+                            <StackPanel Spacing="8">
+                                <atom:TextBlock Text="{gallery:GroupBoxShowCaseLangResource AutoHeightContentOverview}" TextWrapping="Wrap" />
+                                <atom:TextBlock Text="{gallery:GroupBoxShowCaseLangResource AutoHeightContentDetail}" TextWrapping="Wrap" />
+                                <atom:TextBlock Text="{gallery:GroupBoxShowCaseLangResource AutoHeightContentFooter}" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </atom:GroupBox>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
                         Title="{gallery:GroupBoxShowCaseLangResource HeaderPositionTitle}"
                         Description="{gallery:GroupBoxShowCaseLangResource HeaderPositionDescription}"
                         IsDeferredContentEnabled="True">

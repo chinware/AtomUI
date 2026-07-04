@@ -117,10 +117,10 @@ public class GroupBox : ContentControl
         _frame                  = e.NameScope.Find<Border>("PART_Frame");
     }
 
-    // protected override Size MeasureOverride(Size availableSize)
-    // {
-    //     return LayoutHelper.MeasureChild(_frame, availableSize, default, BorderThickness);
-    // }
+    protected override Size MeasureOverride(Size availableSize)
+    {
+        return LayoutHelper.MeasureChild(_frame, availableSize, default, BorderThickness);
+    }
 
     protected override Size ArrangeOverride(Size finalSize)
     {

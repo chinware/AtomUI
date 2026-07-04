@@ -9764,6 +9764,11 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ApiPropertyHeaderTitle] = global::AtomUIGallery.ShowCases.GroupBox.en_US.ApiPropertyHeaderTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ApiPropertyHeaderTitleColor] = global::AtomUIGallery.ShowCases.GroupBox.en_US.ApiPropertyHeaderTitleColor;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ApiPropertyHeaderTitlePosition] = global::AtomUIGallery.ShowCases.GroupBox.en_US.ApiPropertyHeaderTitlePosition;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightContentDetail] = global::AtomUIGallery.ShowCases.GroupBox.en_US.AutoHeightContentDetail;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightContentFooter] = global::AtomUIGallery.ShowCases.GroupBox.en_US.AutoHeightContentFooter;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightContentOverview] = global::AtomUIGallery.ShowCases.GroupBox.en_US.AutoHeightContentOverview;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightDescription] = global::AtomUIGallery.ShowCases.GroupBox.en_US.AutoHeightDescription;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightTitle] = global::AtomUIGallery.ShowCases.GroupBox.en_US.AutoHeightTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.GroupBox.en_US.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.GroupBox.en_US.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.GroupBox.en_US.ComponentCategory;
@@ -9831,6 +9836,11 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ApiPropertyHeaderTitle] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.ApiPropertyHeaderTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ApiPropertyHeaderTitleColor] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.ApiPropertyHeaderTitleColor;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ApiPropertyHeaderTitlePosition] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.ApiPropertyHeaderTitlePosition;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightContentDetail] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.AutoHeightContentDetail;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightContentFooter] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.AutoHeightContentFooter;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightContentOverview] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.AutoHeightContentOverview;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightDescription] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.AutoHeightDescription;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightTitle] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.AutoHeightTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.GroupBox.zh_CN.ComponentCategory;
@@ -9898,6 +9908,11 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ApiPropertyHeaderTitle] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.ApiPropertyHeaderTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ApiPropertyHeaderTitleColor] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.ApiPropertyHeaderTitleColor;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ApiPropertyHeaderTitlePosition] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.ApiPropertyHeaderTitlePosition;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightContentDetail] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.AutoHeightContentDetail;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightContentFooter] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.AutoHeightContentFooter;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightContentOverview] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.AutoHeightContentOverview;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightDescription] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.AutoHeightDescription;
+                dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.AutoHeightTitle] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.AutoHeightTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.BasicDescription] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.BasicDescription;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.BasicTitle] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.BasicTitle;
                 dictionary[global::AtomUIGallery.Localization.GroupBoxShowCaseLangResourceKind.ComponentCategory] = global::AtomUIGallery.ShowCases.GroupBox.zh_TW.ComponentCategory;
