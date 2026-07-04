@@ -1340,6 +1340,7 @@ public partial class DataGrid : TemplatedControl,
         base.OnDataContextEndUpdate();
 
         NotifyDataContextPropertyForAllRowCells(GetAllRows(), false);
+        UpdateColumnDataContext();
     }
 
     /// <summary>

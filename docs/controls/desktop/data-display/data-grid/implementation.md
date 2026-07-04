@@ -83,7 +83,7 @@ Public API / ItemsSource / Command / Event
 源码中的状态入口按以下语义维护：
 
 - 内容与数据：`AutoGenerateColumns`、`CanUserFilterColumns`、`CanUserReorderColumns`、`CanUserReorderRows`、`CanUserResizeColumns`、`CanUserSortColumns`、`CellEditingTemplate`、`CellTemplate`、`ColumnHeaderHeight`、`ContentHeight` 等 32 项。
-- 选择与集合：`ClipboardCopyMode`、`CurrentSortDirection`、`FilterMode`、`Index`、`IsFilterActivated`、`IsHideOnSinglePage`、`IsHoverMode`、`IsMultipleFilterEnabled`、`IsSelected`、`IsSorterTooltipVisible` 等 20 项。
+- 选择与集合：`ClipboardCopyMode`、`CurrentSortDirection`、`Filters`、`SelectedFilterValues`、`FilterPresenterMode`、`FilterSelectionMode`、`FilterApplyMode`、`Index`、`IsFilterActivated`、`IsHideOnSinglePage`、`IsHoverMode`、`IsSelected`、`IsSorterTooltipVisible` 等。
 - 交互与状态：`AscendingIndicatorVisible`、`DescendingIndicatorVisible`、`IsDeleteEnabled`、`IsDetailsVisible`、`IsEditEnabled`、`IsFrameBorderVisible`、`IsFrozen`、`IsLeaf`、`IsMotionEnabled`、`IsOperating` 等 19 项。
 - 视觉与布局：`BottomPaginationAlign`、`ColumnWidth`、`HorizontalAlignment`、`HorizontalScrollBarVisibility`、`MaxColumnWidth`、`MinColumnWidth`、`RowHeight`、`SeparatorBrush`、`SizeType`、`SublevelIndent` 等 14 项。
 - 其他稳定入口：`CellTheme`、`CollectionView`、`CustomOperatingIndicator`、`EmptyIndicator`、`Footer`、`FormatString`、`GridLinesVisibility`、`Level`、`Maximum`、`Minimum` 等 15 项。
@@ -94,6 +94,29 @@ Public API / ItemsSource / Command / Event
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
+
+列过滤状态流以列对象为状态 owner：
+
+```text
+DataGridColumn.Filters
+  -> DataGridFilterIndicator materialized items
+  -> DataGridColumn.SelectedFilterValues
+  -> DataConnection.FilterDescriptions
+  -> CollectionView refresh / filter icon active state
+```
+
+`Filters` 是过滤候选项数据源，必须允许替换、绑定和集合变更通知。过滤项可以来自 `DataGridFilterItem`，也可以来自业务 DTO；解析文本、值和 children 时优先使用列上的 member path 配置，避免把 Gallery 示例对象变成业务层必须依赖的模型。DTO member path 解析只允许生成 accessor 路径，不在过滤项解析中启用运行时反射。`SelectedFilterValues` 是当前选中值集合，负责连接 VM、filter flyout checked state 和 collection view 过滤描述。`FilterDescriptions` 只由列过滤管线生成和回收，不直接承担 public 选中状态。
+
+列绑定通过 `DataGridColumn.DataContext` 完成。`DataGridColumn` 实现 `IDataContextProvider`，列插入 `DataGridColumnCollection` 时复制当前 `DataGrid.DataContext`，`DataGrid.OnDataContextEndUpdate` 时向所有列同步新 `DataContext`，列移除或清空时释放为 `null`。这条 acquire/release 配对是 `Filters="{Binding NameFilters}"` 和 `SelectedFilterValues="{Binding SelectedNames}"` 可用的基础，也避免列持有旧 ViewModel。列订阅外部 `Filters` / `SelectedFilterValues` collection 时必须跟随列 attach/detach 注册和释放；过滤投影写入 `FilterDescriptions` 必须避开列集合插入/删除的中间态，等列集合索引、display index 和 current cell 状态稳定后再刷新 collection view。由用户操作、`Filter(...)` 或清除过滤触发的选中值更新，应优先修改现有可变 `SelectedFilterValues` 列表实例；只有当前没有可变列表时才替换属性值。这样双向绑定、代码侧赋值和 Gallery 示例接线都共享同一个列表 owner。
+
+Gallery 或业务 XAML 常见写法会在 `DataGrid` 上用 `x:DataType` 声明行模型类型，以便 `Binding="{Binding Address}"` 这类单元格绑定被编译。此时列级 ViewModel 绑定不能只写裸 `{Binding NameFilters}`，否则 XAML 编译器可能按行模型解析。优先在列级绑定上显式指定 VM 类型；如果 IDE、XAML 编译器或模板嵌套让上下文仍然歧义，则在页面加载或 View 初始化时直接设置 `Filters` 与 `SelectedFilterValues`。这种代码侧接线只能替代 binding 表达式，不能引入第二套 selected/filter 状态，也不能绕过列过滤管线。
+
+过滤状态同步必须避免循环：
+
+- VM 修改 `SelectedFilterValues` 时，列过滤管线比较归一化后的值集合；值未变时不重建 `DataGridFilterDescription`。
+- 用户操作 flyout 时，Presenter 只收集过滤值并提交给列；列先更新 `SelectedFilterValues`，再投影到 `FilterDescriptions`。
+- `FilterDescriptions` 因 collection view 或清除 API 变化时，同步回 `SelectedFilterValues` 前必须判断来源，避免 clear / apply 重入。
+- `Filters` 重置、替换或集合变更后需要重新物化 flyout，并通过同一管线剔除已不在有效叶子过滤项中的选中值。
 
 ## 5. 生命周期与模板接入
 
@@ -155,6 +178,14 @@ Frame 与 Header 圆角不变量：
 - `PART_BottomGridLine` 和行头横向分割线只表达行间分隔，不表达整表外轮廓。`IsFrameBorderVisible=true` 且 rows 区域直接贴住 Frame 底边时，最后一个 displayed row 必须隐藏底部分割线，由 Frame 底边承担唯一底线；存在 `Footer`、底部分页或水平滚动条时，rows 区域下方还有内容，最后一行分割线必须恢复显示。
 - `HeaderCornerRadius` 只表达表头容器圆角。它根据 `Title`、`HeadersVisibility` 和 `CornerRadius` 派生，不应被根外框复用。
 
+列过滤算法不变量：
+
+- `Filters` 替换或集合变更时，Header 过滤入口可见性、FilterIndicator 激活态和 flyout 内容必须来自同一份有效过滤项视图，并同步剪枝 `SelectedFilterValues`。
+- Flyout 物化菜单或树节点时，应按 `SelectedFilterValues` 初始化 checked state；不能只依赖当前 presenter 内部状态。
+- `SelectedFilterValues` 写入 `FilterDescriptions` 时应保留过滤值原始类型，不能提前转成字符串；默认文本匹配只在默认 evaluator 中发生。
+- 单选模式只允许一个有效过滤值进入 `SelectedFilterValues`；多选模式保持集合顺序稳定，但比较时按集合值语义去重。
+- 清除过滤通过清空 `SelectedFilterValues` 进入同一状态管线，最终移除对应 `DataGridFilterDescription` 并刷新图标激活态。
+
 ## 8. 资源、性能与 AOT 边界
 
 资源和 AOT 约束：
@@ -178,6 +209,8 @@ Frame 与 Header 圆角不变量：
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
+- 列过滤只能有一个选中状态 owner；`Filters`、flyout checked state、`SelectedFilterValues` 和 `FilterDescriptions` 之间不得形成互相覆盖的并行状态源。
+- 过滤项解析必须支持业务 DTO 和 `DataGridFilterItem` 两类输入，不得要求 VM 反向依赖内部 flyout、menu item 或 tree item 类型；业务 DTO 必须有生成的 data member accessor，不在 AOT 敏感路径中使用运行时反射兜底。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。
 

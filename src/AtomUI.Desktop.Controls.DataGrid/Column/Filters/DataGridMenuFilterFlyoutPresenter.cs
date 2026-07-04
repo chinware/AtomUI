@@ -22,7 +22,7 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
         _okButton = e.NameScope.Find<Button>(DataGridFilterFlyoutPresenterThemeConstants.OkButtonPart);
     }
 
-    internal List<string> GetFilterValues()
+    internal List<object> GetFilterValues()
     {
         var selectedValueCount = CountSelectedFilterValueLeaves(this);
         if (selectedValueCount == 0)
@@ -30,9 +30,20 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
             return DataGridFilterValuesSelectedEventArgs.EmptyValues;
         }
 
-        var values = new List<string>(selectedValueCount);
+        var values = new List<object>(selectedValueCount);
         CollectFilterValues(values, this);
         return values;
+    }
+
+    internal void NotifyFilterSelectionChanged()
+    {
+        if (MenuFlyout is DataGridMenuFilterFlyout dataGridMenuFlyout)
+        {
+            dataGridMenuFlyout.NotifyFilterValuesSelected(
+                new DataGridFilterValuesSelectedEventArgs(
+                    DataGridFilterValuesCommitKind.SelectionChanged,
+                    GetFilterValues()));
+        }
     }
 
     private void HandleButtonClick(RoutedEventArgs e)
@@ -80,7 +91,7 @@ internal class DataGridMenuFilterFlyoutPresenter : MenuFlyoutPresenter
     }
 
     private void CollectFilterValues(
-        List<string> filterValues,
+        List<object> filterValues,
         SelectingItemsControl itemsControl)
     {
         for (var i = 0; i < itemsControl.ItemCount; i++)

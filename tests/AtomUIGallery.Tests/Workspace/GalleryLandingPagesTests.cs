@@ -74,7 +74,7 @@ public class GalleryLandingPagesTests
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Overview/Views/OverviewPage.axaml");
 
-        source.ShouldContain("AtomUIOSS-release-banner.png");
+        source.ShouldContain("atomui-oss-release-banner.png");
         source.ShouldContain(".NET 8.0");
         source.ShouldContain(".NET 10");
         source.ShouldContain("dotnet add package AtomUI.Desktop.Controls --version");

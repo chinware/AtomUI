@@ -296,9 +296,12 @@ public partial class DataGrid
             {
                 var ea = new DataGridColumnEventArgs(column);
                 NotifyColumnFiltering(ea);
+                if (!ea.Handled)
+                {
+                    column.SetSelectedFilterValuesFromFilterRequest(Array.Empty<object>());
+                }
             }
 
-            // TODO 我们这里没有判断 HandleColumnSorting 的处理结果，需要评审是否合理
             if (DataConnection.AllowFilter && DataConnection.FilterDescriptions != null)
             {
                 IDataGridCollectionView? collectionView = DataConnection.CollectionView;
@@ -306,7 +309,14 @@ public partial class DataGrid
 
                 using (collectionView.DeferRefresh())
                 {
-                    DataConnection.FilterDescriptions.Clear();
+                    for (var i = DataConnection.FilterDescriptions.Count - 1; i >= 0; i--)
+                    {
+                        var filterDescription = DataConnection.FilterDescriptions[i];
+                        if (!filterDescription.HasPropertyPath)
+                        {
+                            DataConnection.FilterDescriptions.RemoveAt(i);
+                        }
+                    }
                 }
             }
         }
@@ -391,6 +401,14 @@ public partial class DataGrid
     internal DataGridColumnCollection CreateColumnsInstance()
     {
         return new DataGridColumnCollection(this);
+    }
+
+    internal void UpdateColumnDataContext()
+    {
+        foreach (var column in ColumnsInternal.ItemsInternal)
+        {
+            column.DataContext = DataContext;
+        }
     }
 
     /// <summary>

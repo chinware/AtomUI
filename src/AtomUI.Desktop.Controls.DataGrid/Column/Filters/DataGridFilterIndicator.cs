@@ -8,7 +8,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -19,14 +18,14 @@ internal class DataGridFilterIndicator : IconButton
     public static readonly StyledProperty<bool> IsFilterActivatedProperty =
         AvaloniaProperty.Register<DataGridFilterIndicator, bool>(nameof(IsFilterActivated));
 
-    public static readonly DirectProperty<DataGridFilterIndicator, DataGridFilterMode> FilterModeProperty =
-        AvaloniaProperty.RegisterDirect<DataGridFilterIndicator, DataGridFilterMode>(
-            nameof(FilterMode),
-            o => o.FilterMode,
-            (o, v) => o.FilterMode = v);
+    public static readonly DirectProperty<DataGridFilterIndicator, DataGridFilterPresenterMode> FilterPresenterModeProperty =
+        AvaloniaProperty.RegisterDirect<DataGridFilterIndicator, DataGridFilterPresenterMode>(
+            nameof(FilterPresenterMode),
+            o => o.FilterPresenterMode,
+            (o, v) => o.FilterPresenterMode = v);
     
-    public static readonly StyledProperty<bool> IsMultipleFilterEnabledProperty =
-        AvaloniaProperty.Register<DataGridFilterIndicator, bool>(nameof(IsMultipleFilterEnabled));
+    public static readonly StyledProperty<bool> IsMultipleSelectionEnabledProperty =
+        AvaloniaProperty.Register<DataGridFilterIndicator, bool>(nameof(IsMultipleSelectionEnabled));
     
     public event EventHandler<DataGridColumnFilterEventArgs>? FilterRequest;
 
@@ -36,18 +35,18 @@ internal class DataGridFilterIndicator : IconButton
         set => SetValue(IsFilterActivatedProperty, value);
     }
 
-    private DataGridFilterMode _filterMode;
+    private DataGridFilterPresenterMode _filterPresenterMode;
 
-    public DataGridFilterMode FilterMode
+    public DataGridFilterPresenterMode FilterPresenterMode
     {
-        get => _filterMode;
-        set => SetAndRaise(FilterModeProperty, ref _filterMode, value);
+        get => _filterPresenterMode;
+        set => SetAndRaise(FilterPresenterModeProperty, ref _filterPresenterMode, value);
     }
     
-    public bool IsMultipleFilterEnabled
+    public bool IsMultipleSelectionEnabled
     {
-        get => GetValue(IsMultipleFilterEnabledProperty);
-        set => SetValue(IsMultipleFilterEnabledProperty, value);
+        get => GetValue(IsMultipleSelectionEnabledProperty);
+        set => SetValue(IsMultipleSelectionEnabledProperty, value);
     }
     #endregion
 
@@ -91,8 +90,8 @@ internal class DataGridFilterIndicator : IconButton
             if (_owningColumn != null)
             {
                 RegisterOwningColumnSubscriptions(_owningColumn);
-                FilterMode              = _owningColumn.FilterMode;
-                IsMultipleFilterEnabled = _owningColumn.IsMultipleFilterEnabled;
+                FilterPresenterMode      = _owningColumn.FilterPresenterMode;
+                IsMultipleSelectionEnabled = _owningColumn.FilterSelectionMode == DataGridFilterSelectionMode.Multiple;
             }
             RefreshFilterFlyoutState();
         }
@@ -123,11 +122,11 @@ internal class DataGridFilterIndicator : IconButton
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs changed)
     {
         base.OnPropertyChanged(changed);
-        if (changed.Property == FilterModeProperty)
+        if (changed.Property == FilterPresenterModeProperty)
         {
             RecreateFlyoutShell();
         }
-        else if (changed.Property == IsMultipleFilterEnabledProperty)
+        else if (changed.Property == IsMultipleSelectionEnabledProperty)
         {
             var rematerialize = _isFlyoutContentMaterialized;
             ConfigureTreeFlyoutToggleType();
@@ -154,7 +153,7 @@ internal class DataGridFilterIndicator : IconButton
     private bool ShouldProvideFlyout()
     {
         return OwningColumn?.OwningGrid is not null &&
-               OwningColumn.Filters.Count > 0;
+               OwningColumn.HasFilterItems;
     }
 
     private void RecreateFlyoutShell()
@@ -178,7 +177,7 @@ internal class DataGridFilterIndicator : IconButton
             return;
         }
 
-        if (FilterMode == DataGridFilterMode.Menu && Flyout is not DataGridMenuFilterFlyout)
+        if (FilterPresenterMode == DataGridFilterPresenterMode.Menu && Flyout is not DataGridMenuFilterFlyout)
         {
             ClearFlyout();
             var menuFlyout = new DataGridMenuFilterFlyout
@@ -194,7 +193,7 @@ internal class DataGridFilterIndicator : IconButton
             _flyoutStateHelper.Flyout       =  menuFlyout;
             menuFlyout.FilterValuesSelected += HandleFilterValuesSelected;
         }
-        else if (FilterMode == DataGridFilterMode.Tree && Flyout is not DataGridTreeFilterFlyout)
+        else if (FilterPresenterMode == DataGridFilterPresenterMode.Tree && Flyout is not DataGridTreeFilterFlyout)
         {
             ClearFlyout();
             var treeFlyout = new DataGridTreeFilterFlyout
@@ -217,7 +216,7 @@ internal class DataGridFilterIndicator : IconButton
 
     private bool ShouldFilterOnPassiveClose()
     {
-        return OwningColumn?.FilterOnClose == true;
+        return OwningColumn?.FilterApplyMode == DataGridFilterApplyMode.Close;
     }
 
     private void ConfigureFlyoutPassiveCloseFilter()
@@ -247,21 +246,21 @@ internal class DataGridFilterIndicator : IconButton
         EnsureFlyoutShell();
         if (Flyout is DataGridMenuFilterFlyout menuFlyout)
         {
-            PopulateMenuItems(menuFlyout.Items, OwningColumn.Filters);
+            PopulateMenuItems(menuFlyout.Items, OwningColumn.GetEffectiveFilterItems());
             _isFlyoutContentMaterialized = true;
         }
         else if (Flyout is DataGridTreeFilterFlyout treeFlyout)
         {
-            if (IsMultipleFilterEnabled)
+            if (IsMultipleSelectionEnabled)
             {
                 var selectAllTreeItem = new DataGridFilterTreeViewItem();
                 selectAllTreeItem[!DataGridFilterTreeViewItem.HeaderProperty] = this[!SelectedAllTextProperty];
-                PopulateTreeItems(selectAllTreeItem.Items, OwningColumn.Filters);
+                PopulateTreeItems(selectAllTreeItem.Items, OwningColumn.GetEffectiveFilterItems());
                 treeFlyout.Items.Add(selectAllTreeItem);
             }
             else
             {
-                PopulateTreeItems(treeFlyout.Items, OwningColumn.Filters);
+                PopulateTreeItems(treeFlyout.Items, OwningColumn.GetEffectiveFilterItems());
             }
             _isFlyoutContentMaterialized = true;
         }
@@ -278,8 +277,9 @@ internal class DataGridFilterIndicator : IconButton
             {
                 Header           = item.Text,
                 FilterValue      = item.Value,
+                IsChecked        = OwningColumn?.IsFilterValueSelected(item.Value) == true,
                 StaysOpenOnClick = true,
-                ToggleType       = IsMultipleFilterEnabled
+                ToggleType       = IsMultipleSelectionEnabled
                     ? MenuItemToggleType.CheckBox
                     : MenuItemToggleType.Radio
             };
@@ -300,6 +300,7 @@ internal class DataGridFilterIndicator : IconButton
                 Header      = item.Text,
                 FilterValue = item.Value,
                 GroupName   = TreeRadioCheckGroupName,
+                IsChecked   = OwningColumn?.IsFilterValueSelected(item.Value) == true
             };
   
             targetItems.Add(treeItem);
@@ -313,10 +314,17 @@ internal class DataGridFilterIndicator : IconButton
     private void HandleFilterValuesSelected(object? sender, DataGridFilterValuesSelectedEventArgs args)
     {
         Debug.Assert(OwningColumn != null);
-        if (OwningColumn.FilterOnClose || args.IsConfirmed)
+        if (ShouldApplyFilterValues(args))
         {
             FilterRequest?.Invoke(this, new DataGridColumnFilterEventArgs(OwningColumn, args.Values));
         }
+    }
+
+    private bool ShouldApplyFilterValues(DataGridFilterValuesSelectedEventArgs args)
+    {
+        return args.IsConfirmed ||
+               (args.IsPassiveClose && OwningColumn?.FilterApplyMode == DataGridFilterApplyMode.Close) ||
+               (args.IsSelectionChanged && OwningColumn?.FilterApplyMode == DataGridFilterApplyMode.SelectionChanged);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -361,8 +369,12 @@ internal class DataGridFilterIndicator : IconButton
             {
                 _subscribedFilters.CollectionChanged -= HandleFiltersChanged;
             }
-            _subscribedFilters = column.Filters;
-            _subscribedFilters.CollectionChanged += HandleFiltersChanged;
+
+            _subscribedFilters = column.Filters as INotifyCollectionChanged;
+            if (_subscribedFilters != null)
+            {
+                _subscribedFilters.CollectionChanged += HandleFiltersChanged;
+            }
         }
 
         if (column.OwningGrid is { } grid && !ReferenceEquals(_subscribedGrid, grid))
@@ -433,6 +445,19 @@ internal class DataGridFilterIndicator : IconButton
         }
     }
 
+    internal void RefreshSelectedFilterValues()
+    {
+        if (!_isFlyoutContentMaterialized)
+        {
+            UpdateFilterActivatedState();
+            return;
+        }
+
+        ClearFlyoutContent();
+        MaterializeFlyoutContent();
+        UpdateFilterActivatedState();
+    }
+
     private void HandleFilterDescriptionsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         UpdateFilterActivatedState();
@@ -463,7 +488,7 @@ internal class DataGridFilterIndicator : IconButton
 
     private void ConfigureTreeFlyoutToggleType(DataGridTreeFilterFlyout treeFlyout)
     {
-        treeFlyout.ToggleType = IsMultipleFilterEnabled
+        treeFlyout.ToggleType = IsMultipleSelectionEnabled
             ? ItemToggleType.CheckBox
             : ItemToggleType.Radio;
     }

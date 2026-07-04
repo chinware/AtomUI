@@ -84,6 +84,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
                     // Detach the column...
                     ItemsInternal[columnIndex].NotifyOwningGridAboutToDetached();
                     ItemsInternal[columnIndex].OwningGrid = null;
+                    ItemsInternal[columnIndex].DataContext = null;
                 }
                 ItemsInternal.Clear();
                 DisplayIndexMap.Clear();
@@ -127,6 +128,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
             // insert the column into our internal list
             ItemsInternal.Insert(columnIndexWithFiller, dataGridColumn);
             dataGridColumn.Index      = columnIndexWithFiller;
+            dataGridColumn.DataContext = _owningGrid.DataContext;
             dataGridColumn.OwningGrid = _owningGrid;
             dataGridColumn.RemoveEditingElement();
             if (dataGridColumn.IsVisible)
@@ -144,6 +146,7 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
             }
             _owningGrid.HandleInsertedColumnPostNotification(newCurrentCellCoordinates, dataGridColumn.DisplayIndex);
             _owningGrid.HandleColumnCollectionChangedPostNotification(true /*columnsGrew*/);
+            dataGridColumn.NotifyOwningGridAttachedAfterColumnCollectionUpdate();
         }
         finally
         {
@@ -492,14 +495,15 @@ internal class DataGridColumnCollection : ObservableCollection<DataGridColumn>
             Debug.Assert(ItemsInternal != null);
             DataGridColumn          dataGridColumn            = ItemsInternal[columnIndexWithFiller];
             DataGridCellCoordinates newCurrentCellCoordinates = _owningGrid.HandleRemovingColumn(dataGridColumn);
+            dataGridColumn.NotifyOwningGridAboutToDetached();
             ItemsInternal.RemoveAt(columnIndexWithFiller);
             if (dataGridColumn.IsVisible)
             {
                 VisibleEdgedColumnsWidth -= dataGridColumn.ActualWidth;
             }
 
-            dataGridColumn.NotifyOwningGridAboutToDetached();
             dataGridColumn.OwningGrid = null;
+            dataGridColumn.DataContext = null;
             dataGridColumn.RemoveEditingElement();
 
             // continue with the base remove

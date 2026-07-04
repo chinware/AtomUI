@@ -73,8 +73,10 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
         var selectedItems = Popup.Child is DataGridTreeFilterFlyoutPresenter presenter
             ? presenter.GetFilterValues()
             : DataGridFilterValuesSelectedEventArgs.EmptyValues;
-        
-        NotifyFilterValuesSelected(new DataGridFilterValuesSelectedEventArgs(IsActiveShutdown, selectedItems));
+        var commitKind = IsActiveShutdown
+            ? DataGridFilterValuesCommitKind.Confirmed
+            : DataGridFilterValuesCommitKind.PassiveClose;
+        NotifyFilterValuesSelected(new DataGridFilterValuesSelectedEventArgs(commitKind, selectedItems));
     }
 
     internal void NotifyFilterValuesSelected(DataGridFilterValuesSelectedEventArgs e)
@@ -85,7 +87,8 @@ internal class DataGridTreeFilterFlyout : TreeViewFlyout
 
 internal class DataGridFilterTreeViewItem : TreeViewItem
 {
-    public string? FilterValue { get; set; }
+    public object? FilterValue { get; set; }
+    public DataGridTreeFilterFlyoutPresenter? OwningPresenter { get; set; }
 
     protected override void OnHeaderDoubleTapped(TappedEventArgs e)
     {
@@ -93,5 +96,21 @@ internal class DataGridFilterTreeViewItem : TreeViewItem
         {
             e.Handled = true;
         }
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property != IsCheckedProperty)
+        {
+            return;
+        }
+
+        if (ToggleType == ItemToggleType.Radio && IsChecked != true)
+        {
+            return;
+        }
+
+        OwningPresenter?.NotifyFilterSelectionChanged();
     }
 }

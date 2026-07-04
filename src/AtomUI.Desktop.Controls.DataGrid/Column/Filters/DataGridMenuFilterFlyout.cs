@@ -63,7 +63,10 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
         var selectedItems = Popup.Child is DataGridMenuFilterFlyoutPresenter presenter
             ? presenter.GetFilterValues()
             : DataGridFilterValuesSelectedEventArgs.EmptyValues;
-        NotifyFilterValuesSelected(new DataGridFilterValuesSelectedEventArgs(IsActiveShutdown, selectedItems));
+        var commitKind = IsActiveShutdown
+            ? DataGridFilterValuesCommitKind.Confirmed
+            : DataGridFilterValuesCommitKind.PassiveClose;
+        NotifyFilterValuesSelected(new DataGridFilterValuesSelectedEventArgs(commitKind, selectedItems));
     }
 
     internal void NotifyFilterValuesSelected(DataGridFilterValuesSelectedEventArgs e)
@@ -74,7 +77,7 @@ internal class DataGridMenuFilterFlyout : MenuFlyout
 
 internal class DataGridFilterMenuItem : MenuItem
 {
-    public string? FilterValue { get; set; }
+    public object? FilterValue { get; set; }
     public DataGridMenuFilterFlyoutPresenter? OwningPresenter { get; set; }
 
     static DataGridFilterMenuItem()
@@ -85,16 +88,27 @@ internal class DataGridFilterMenuItem : MenuItem
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
+        if (change.Property != IsCheckedProperty)
+        {
+            return;
+        }
+
         if (ToggleType == MenuItemToggleType.Radio)
         {
-            if (change.Property == IsCheckedProperty && IsChecked)
+            if (!IsChecked)
             {
-                if (OwningPresenter != null)
-                {
-                    ClearCheckStateRecursive(OwningPresenter);
-                }
+                return;
             }
+
+            if (OwningPresenter != null)
+            {
+                ClearCheckStateRecursive(OwningPresenter);
+                OwningPresenter.NotifyFilterSelectionChanged();
+            }
+            return;
         }
+
+        OwningPresenter?.NotifyFilterSelectionChanged();
     }
     
     private void ClearCheckStateRecursive(SelectingItemsControl itemsControl)

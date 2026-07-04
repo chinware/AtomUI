@@ -38,7 +38,7 @@ internal class DataGridTreeFilterFlyoutPresenter : TreeViewFlyoutPresenter
         ClearCheckStateRecursive(this);
     }
     
-    internal List<string> GetFilterValues()
+    internal List<object> GetFilterValues()
     {
         var selectedValueCount = CountSelectedFilterValueLeaves(this);
         if (selectedValueCount == 0)
@@ -46,12 +46,23 @@ internal class DataGridTreeFilterFlyoutPresenter : TreeViewFlyoutPresenter
             return DataGridFilterValuesSelectedEventArgs.EmptyValues;
         }
 
-        var values = new List<string>(selectedValueCount);
+        var values = new List<object>(selectedValueCount);
         CollectFilterValues(values, this);
         return values;
     }
+
+    internal void NotifyFilterSelectionChanged()
+    {
+        if (TreeViewFlyout is DataGridTreeFilterFlyout treeFilterFlyout)
+        {
+            treeFilterFlyout.NotifyFilterValuesSelected(
+                new DataGridFilterValuesSelectedEventArgs(
+                    DataGridFilterValuesCommitKind.SelectionChanged,
+                    GetFilterValues()));
+        }
+    }
     
-    private void CollectFilterValues(List<string> filterValues, ItemsControl itemsControl)
+    private void CollectFilterValues(List<object> filterValues, ItemsControl itemsControl)
     {
         for (var i = 0; i < itemsControl.ItemCount; i++)
         {
@@ -131,6 +142,15 @@ internal class DataGridTreeFilterFlyoutPresenter : TreeViewFlyoutPresenter
         if (itemsControl is TreeViewItem treeViewItem && itemsControl.ItemCount == 0)
         {
             treeViewItem.IsChecked = false;
+        }
+    }
+
+    protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
+    {
+        base.PrepareContainerForItemOverride(container, item, index);
+        if (container is DataGridFilterTreeViewItem treeItem)
+        {
+            treeItem.OwningPresenter = this;
         }
     }
 }
