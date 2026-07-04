@@ -14,7 +14,7 @@
                     Margin="32"
                     Spacing="24"
                     HorizontalAlignment="Center">
-            <Image Source="/Assets/AtomUIOSS-release-banner.png"
+            <Image Source="/Assets/atomui-oss-release-banner.png"
                    Stretch="Uniform"
                    HorizontalAlignment="Center"
                    MaxWidth="820" />

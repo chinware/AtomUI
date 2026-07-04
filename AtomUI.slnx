@@ -8,7 +8,6 @@
   <Project Path="src/AtomUI.Desktop.Controls.ColorPicker/AtomUI.Desktop.Controls.ColorPicker.csproj" />
   <Project Path="src/AtomUI.Desktop.Controls.DataGrid/AtomUI.Desktop.Controls.DataGrid.csproj" />
   <Project Path="src/AtomUI.Desktop.Controls.Extras/AtomUI.Desktop.Controls.Extras.csproj" />
-  <Project Path="src/AtomUI.Desktop.Controls.Labs/AtomUI.Desktop.Controls.Labs.csproj" />
   <Project Path="src/AtomUI.Desktop.Controls/AtomUI.Desktop.Controls.csproj" />
   <Project Path="src/AtomUI.Fonts.AlibabaPuHuiTi/AtomUI.Fonts.AlibabaPuHuiTi.csproj" />
   <Project Path="src/AtomUI.Fonts.AlibabaSans/AtomUI.Fonts.AlibabaSans.csproj" />
