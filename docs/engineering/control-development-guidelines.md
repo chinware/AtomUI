@@ -92,3 +92,15 @@ API 和主题契约包括但不限于：
 - 不要合并承担不同职责的容器，例如裁剪层、动画层、命中测试层、边框背景层、popup shell 或 template contract 边界。
 - 简化布局时优先替换无必要的 wrapper 和过度复杂的布局面板；删除或合并前必须确认圆角、裁剪、背景、命中测试、动画、焦点和 selector 命中行为不变。
 - AXAML 层级优化后应通过对应控件测试或 Gallery 走查验证外观、交互和主题切换不变。如果声明性能收益，需要提供前后 VisualTree 节点数、层级深度或测量数据。
+
+## 输入控件验证集成
+
+输入类控件不得在 Avalonia `DataValidationErrors` 之外另建一套独立 error 机制。AtomUI 的 Form、`InputControlStatus`、feedback 图标和 AddOn 视觉只能作为 native validation 的扩展投影：
+
+- Error 状态以 `DataValidationErrors.HasErrors` / `DataValidationErrors.Errors` 为最高优先级；Form validator 产生的 error 也应写入对应内容控件的 `DataValidationErrors`。
+- Form reset、验证成功或重新验证时只能清理由 Form 写入的 error，不能清掉 ViewModel、binding 或业务层写入的 native validation error。
+- `InputControlStatus.Warning`、`FormValidateStatus.Warning`、`Validating` 和 `Success` 是 AtomUI 扩展状态；Avalonia 没有等价 warning 语义时，不应把 warning 写成 `DataValidationErrors`。
+- AddOn 型输入壳体应根据 native validation error 计算有效视觉状态；显式 `Status=Error/Warning` 只能作为无 native error 时的手动视觉请求。
+- 控件不应用手动 `Status=Error` 直接覆盖 Avalonia 原生 `:error` 伪类；`DataValidationErrors` 负责 error 伪类，AtomUI 手动状态应通过 `Status`、内部 effective status 或专用 selector 投射。
+- 搜索按钮、range indicator、addon icon 等模板附属视觉不能直接读取原始 `Status` 判定 error；应读取壳体或宿主计算后的 effective status，使 native error 始终压过 warning/manual 状态。
+- 组合输入控件若把 validation errors 转发到内部文本框，也必须确保外层输入壳体同步响应同一份 `DataValidationErrors`，避免“内部红、外框不红”或 Form 状态与 native error 分裂。

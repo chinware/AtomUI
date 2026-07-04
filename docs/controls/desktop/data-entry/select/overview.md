@@ -89,7 +89,7 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | --- | --- | --- |
 | `SizeType` | `CustomizableSizeType` | 输入尺寸密度，支持 `Large/Middle/Small/Custom`。 |
 | `StyleVariant` | `InputControlStyleVariant` | 输入表面样式。 |
-| `Status` | `InputControlStatus` | 输入反馈状态。 |
+| `Status` | `InputControlStatus` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
 | `PlaceholderText` / `PlaceholderForeground` | `string?` / `IBrush?` | 空选择时的占位文本和颜色。 |
 | `IsAllowClear` / `ClearIcon` | `bool` / `PathIcon?` | 清除入口和图标。 |
 | `SuffixIcon` / `SuffixLoadingIcon` | `PathIcon?` | 普通展开指示和 loading 指示。 |
@@ -208,7 +208,7 @@ Select 属于 Data Entry 选择控件家族，与 LineEdit、NumericUpDown、Dat
 - `SelectResultOptionsBox`：多选和 Tags 已选结果展示。
 - `SelectHandle`：右侧操作入口，负责展开指示、loading、清除和 Form feedback。
 - `ISelectOptionsAsyncLoader`：异步候选加载边界。
-- `IFormItemAware` / `IFormItemFeedbackAware`：将选择值、校验状态和 feedback 接入 Form。
+- `IFormItemAware` / `IFormItemFeedbackAware`：将选择值、Form 扩展状态和 feedback 接入 Form；error 由 `DataValidationErrors` 投射到输入壳体。
 - `ICustomizableSizeTypeAware`：接入支持 `Custom` 的输入尺寸模型。
 
 ## 7. 兼容性不变量

@@ -93,8 +93,10 @@ Form.GetValue()
   → Multiple/Tags: SelectedOptions
 Form.ClearValue()
   → clear current selection
+DataValidationErrors
+  → native error visual + AddOn effective error state
 ValidateStatus
-  → Status
+  → Warning/Success/Validating extension state
 FeedbackControl
   → FormFeedback → SelectHandle
 ```
@@ -288,5 +290,5 @@ AOT 边界：
 - `OptionsLoader` 成功、超时、取消和错误通知。
 - `MaxCount`、`IsHideSelectedOptions`、`MaxTagCount`、`IsResponsiveTagMode`。
 - `Large/Middle/Small/Custom` 尺寸下单选输入、多选 tag、handle 和 popup 对齐。
-- Form 校验状态、feedback 图标、CompactSpace 边框折叠和 popup open/close 事件取消。
+- native validation error、Form 扩展状态、feedback 图标、CompactSpace 边框折叠和 popup open/close 事件取消。
 - 文档改动至少运行 `git diff --check` 并检查相对链接存在。

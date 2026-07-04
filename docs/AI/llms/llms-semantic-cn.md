@@ -4385,7 +4385,7 @@ FormToken 不承载以下状态：
 
 维护 Form 时必须保持以下不变量：
 
-- 默认 `ValidateTrigger` 必须为 `OnSubmit`，除非获得明确 API/行为变更授权。
+- 默认 `ValidateTrigger` 必须为 `OnChanged`，保持与 Ant Design 默认 `onChange` 验证触发语义一致。
 - `FormItem.Content` 默认必须实现 `IFormItemAware`，否则应保持当前异常语义。
 - `FormItem` 重新设置 Content 时必须释放旧内容的值变化订阅和 feedback 引用。
 - 新验证运行必须取消旧验证和 debounce，旧异步结果不能覆盖新结果或 reset 后状态。

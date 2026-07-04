@@ -84,7 +84,8 @@ Form.SetValue(object?) → Value
 Value changed          → IFormItemAware.ValueChanged
 Form.GetValue()        → Value
 Form.ClearValue()      → Value = null
-ValidateStatus         → Status
+DataValidationErrors   → native error visual + AddOn effective error state
+ValidateStatus         → Warning/Success/Validating extension state
 FeedbackControl        → FormFeedback
 ```
 

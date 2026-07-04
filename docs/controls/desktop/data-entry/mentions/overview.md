@@ -79,7 +79,7 @@ Mentions 的公共 API 由文本值、触发符、候选数据、过滤、弹层
 | --- | --- | --- |
 | `SizeType` | `CustomizableSizeType` | 输入尺寸密度。 |
 | `StyleVariant` | `InputControlStyleVariant` | 输入表面样式。 |
-| `Status` | `InputControlStatus` | 输入反馈状态。 |
+| `Status` | `InputControlStatus` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
 | `ContentLeftAddOn` / `ContentRightAddOn` | `object?` | 内部左右附加内容，传递给内部 `MentionTextArea`。 |
 | `ContentLeftAddOnTemplate` / `ContentRightAddOnTemplate` | `IDataTemplate?` | 内部左右附加内容模板。 |
 | `IsMotionEnabled` | `bool` | 内部输入壳体、候选列表和 popup 动效开关。 |
@@ -174,7 +174,7 @@ Disabled / invisible / window deactivated
 - `F4` 切换弹层打开状态。
 - 弹层关闭时，`Down` 可打开弹层，除非该按键被 XY focus 导航占用。
 
-Form 集成以 `Value` 作为表单值。`NotifyValidateStatus` 将 Form 校验状态映射为 `Status=Error/Warning/Default`，Form feedback 控件传递给内部 `MentionTextArea`。
+Form 集成以 `Value` 作为表单值。错误校验状态通过 `DataValidationErrors` 投射到外层 AddOn 和内部 `MentionTextArea`；`NotifyValidateStatus` 只同步 warning、success、validating 等 Form 扩展状态。Form feedback 控件传递给内部 `MentionTextArea`。
 
 ## 5. 视觉与主题模型
 
@@ -200,7 +200,7 @@ Mentions 属于 Data Entry 文本输入控件家族，与 LineEdit/TextArea 共�
 - `Popup` 提供候选弹层宿主，可通过 `ShouldUseOverlayPopup` 选择 overlay 宿主。
 - `CandidateList` 提供候选项展示、键盘导航、提交和取消。
 - `AsyncSearchLoadCoordinator` 协调异步加载、跳过过期结果、取消和超时。
-- `IFormItemAware` / `IFormItemFeedbackAware` 将 `Value`、校验状态和 feedback 接入 Form。
+- `IFormItemAware` / `IFormItemFeedbackAware` 将 `Value`、Form 扩展状态和 feedback 接入 Form；error 由 `DataValidationErrors` 投射到外层 AddOn 和内部输入框。
 - `MentionsToken` 定义候选弹层尺寸相关主题值。
 
 ## 7. 兼容性不变量

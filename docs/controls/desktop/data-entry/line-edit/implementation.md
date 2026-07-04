@@ -11,7 +11,7 @@ LineEdit 家族的实现以 Avalonia `TextBox` 为文本编辑内核，AtomUI �
 主要源码：
 
 - `src/AtomUI.Desktop.Controls/Input/TextBox.cs`：AtomUI 基础 TextBox，提供 `SizeType`、清除按钮、密码 reveal、字数统计、Form 和 CompactSpace。
-- `src/AtomUI.Desktop.Controls/Input/LineEdit.cs`：标准单行输入框，提供 `StyleVariant`、`Status`、外部 AddOn、内部右侧内容绑定和 Form 校验状态映射。
+- `src/AtomUI.Desktop.Controls/Input/LineEdit.cs`：标准单行输入框，提供 `StyleVariant`、`Status`、外部 AddOn、内部右侧内容绑定和 Form 扩展状态映射。
 - `src/AtomUI.Desktop.Controls/Input/SearchEdit.cs`：搜索输入框，提供搜索按钮样式、搜索按钮文本、加载态和搜索点击事件。
 - `src/AtomUI.Desktop.Controls/Input/TextArea.cs`：多行输入框，提供固定行数、自动高度、resize、清除、字数统计、Form 和 feedback。
 - `src/AtomUI.Desktop.Controls/Input/InputTextPresenter.cs`：输入文本 presenter，处理 Avalonia 12 selection foreground 缓存刷新。
@@ -26,7 +26,7 @@ LineEdit 家族的实现以 Avalonia `TextBox` 为文本编辑内核，AtomUI �
 
 `TextBox` 是 AtomUI 文本输入基础类。它不处理输入表面 variant/status；它只处理尺寸、清除按钮、reveal、字数统计、Form、feedback 可见性和 CompactSpace 基础圆角。
 
-`LineEdit` 在 `TextBox` 基础上加入输入表面和校验状态。它把 `Status` 和 `StyleVariant` 映射为伪类，并把外部 AddOn、内部右侧内容、clear/reveal/form/count presenter 的运行时绑定装配到模板。
+`LineEdit` 在 `TextBox` 基础上加入输入表面和验证视觉。错误状态以 `DataValidationErrors` 为真源，`Status` 仅表达手动 error/warning 视觉请求或 Form warning 等扩展状态；它把外部 AddOn、内部右侧内容、clear/reveal/form/count presenter 的运行时绑定装配到模板。
 
 `SearchEdit` 在 `LineEdit` 基础上把搜索按钮加入输入壳体。搜索按钮点击由 `SearchEditDecoratedBox` 通知 `SearchEdit`，再由控件抛出 `SearchButtonClick` 路由事件。
 
@@ -65,14 +65,16 @@ Form.SetValue(object?) → Text
 TextChanged            → IFormItemAware.ValueChanged
 Form.GetValue()        → Text
 Form.ClearValue()      → Text = null
-ValidateStatus         → LineEdit/TextArea.Status
+DataValidationErrors   → native error visual + AddOn effective error state
+ValidateStatus         → Warning/Success/Validating extension state
 Form feedback control  → FormFeedback + IsFormFeedbackVisible
 ```
 
 状态伪类：
 
-- `Status=Error` 设置 `:error`。
-- `Status=Warning` 设置 `:warning`。
+- native validation error 设置 Avalonia `:error`。
+- 显式 `Status=Error` 只能作为无 native error 时的手动错误视觉请求，不能覆盖或清除 Avalonia `:error`。
+- `Status=Warning` 只在无 native validation error 时设置 `:warning`，native error 出现后 warning 视觉必须退让。
 - `StyleVariant=Outlined/Filled/Borderless` 设置输入壳体相关伪类。
 - `Underlined` 作为 style variant 属性参与 selector，不需要额外专属伪类。
 
@@ -163,7 +165,7 @@ AOT 边界：
 - `TextChanged` 继续驱动字数统计和 Form value changed。
 - 清除按钮可见性不在 AXAML 与 C# 中形成相互冲突的状态源。
 - `IsCustomFontSize=true` 不能被 SizeType 字体样式覆盖。
-- `LineEdit` 的 `Status` 必须同时影响伪类和 Form 校验状态映射。
+- `LineEdit` 的 error 视觉必须优先响应 `DataValidationErrors`；`Status` 只作为无 native error 时的手动视觉请求，并继续支持 warning 扩展视觉。
 - `SearchEdit.IsOperating=true` 必须阻止重复搜索事件。
 - `TextArea` 的 fixed lines、auto-size 和 resize 不互相覆盖高度状态。
 - 重新套用模板不能泄漏旧按钮 click、旧 binding 或旧 Form feedback 订阅。
