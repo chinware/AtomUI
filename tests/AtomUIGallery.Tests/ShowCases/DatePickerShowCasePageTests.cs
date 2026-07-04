@@ -41,6 +41,9 @@ public class DatePickerShowCasePageTests
         source.ShouldContain("Description=\"{gallery:DatePickerShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("DatePickerShowCaseLangResource BasicTitle");
+        source.ShouldContain("DatePickerShowCaseLangResource PickerDisplayDateTitle");
+        source.ShouldContain("PickerDisplayDate=\"2026-10-20\"");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("DatePickerShowCaseLangResource PlacementTitle");
         source.ShouldContain("Name=\"PickerSizeTypeOptionGroup\"");
         source.ShouldContain("DatePickerShowCaseLangResource P2ContentCustom");
@@ -86,6 +89,8 @@ public class DatePickerShowCasePageTests
         codeBehindSource.ShouldNotContain("PickerPlacementOptionGroup.OptionCheckedChanged");
         ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/ViewModels/DatePickerViewModel.cs")
             .ShouldContain("new DatePickerApiRow(\"PickerMode\"");
+        ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/ViewModels/DatePickerViewModel.cs")
+            .ShouldContain("new DatePickerApiRow(\"PickerDisplayDate\"");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:DatePickerApiRow\"");
@@ -172,7 +177,9 @@ public class DatePickerShowCasePageTests
             source.ShouldContain("P2ContentCustom");
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
+            source.ShouldContain("PickerDisplayDateTitle");
             source.ShouldContain("ApiPropertySelectedDateTime");
+            source.ShouldContain("ApiPropertyPickerDisplayDate");
             source.ShouldContain("ApiPropertyPickerMode");
             source.ShouldContain("ApiPropertyPickerPlacement");
             source.ShouldContain("ApiPropertyIsNeedConfirm");

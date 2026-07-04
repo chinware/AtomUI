@@ -198,6 +198,8 @@ internal class TimeView : TemplatedControl
     private DateTimePickerPanel? _periodSelector;
     private IDisposable? _spacerWidthDisposable;
     private IDisposable? _pointerPositionDisposable;
+    private TimeSpan? _pendingDisplayTime;
+    private bool _isSyncingPanelValue;
 
     private void DetectPointerPosition(RawInputEventArgs args)
     {
@@ -257,6 +259,7 @@ internal class TimeView : TemplatedControl
         Debug.Assert(inputManager != null);
         _pointerPositionDisposable = inputManager.Process.Subscribe(DetectPointerPosition);
         SyncTimeValueToPanel(SelectedTime ?? TimeSpan.Zero);
+        ApplyPendingDisplayTime();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -314,6 +317,7 @@ internal class TimeView : TemplatedControl
             _periodSelector[!DateTimePickerPanel.AmTextProperty] = this[!AmTextProperty];
             _periodSelector[!DateTimePickerPanel.PmTextProperty] = this[!PmTextProperty];
         }
+        ApplyPendingDisplayTime();
     }
 
     private void HandleSelectorCellDbClicked(object? sender, CellDbClickedEventArgs args)
@@ -376,6 +380,11 @@ internal class TimeView : TemplatedControl
 
     private void HandleSelectionChanged(object? sender, EventArgs args)
     {
+        if (_isSyncingPanelValue)
+        {
+            return;
+        }
+
         var selectedValue = CollectValue();
         if (IsShowHeader)
         {
@@ -451,31 +460,47 @@ internal class TimeView : TemplatedControl
             ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
     }
 
+    internal void SyncDisplayTimeToPanel(TimeSpan time)
+    {
+        _pendingDisplayTime = time;
+        ApplyPendingDisplayTime();
+    }
+
     private void SyncTimeValueToPanel(TimeSpan time)
     {
-        var clock12 = ClockIdentifier == ClockIdentifierType.HourClock12;
-        var hour    = time.Hours;
-        if (_hourSelector is not null)
+        _isSyncingPanelValue = true;
+        try
         {
-            _hourSelector.SelectedValue = !clock12 ? hour :
-                hour > 12 ? hour - 12 :
-                hour == 0 ? 12 : hour;
+            var clock12 = ClockIdentifier == ClockIdentifierType.HourClock12;
+            var hour    = time.Hours;
+            if (_hourSelector is not null)
+            {
+                _hourSelector.SelectedValue = !clock12 ? hour :
+                    hour > 12 ? hour - 12 :
+                    hour == 0 ? 12 : hour;
+            }
+
+            if (_minuteSelector is not null)
+            {
+                _minuteSelector.SelectedValue = time.Minutes;
+            }
+
+            if (_secondSelector is not null)
+            {
+                _secondSelector.SelectedValue = time.Seconds;
+            }
+
+            if (_periodSelector is not null)
+            {
+                _periodSelector.SelectedValue = hour >= 12 ? 1 : 0;
+            }
+        }
+        finally
+        {
+            _isSyncingPanelValue = false;
         }
 
-        if (_minuteSelector is not null)
-        {
-            _minuteSelector.SelectedValue = time.Minutes;
-        }
-
-        if (_secondSelector is not null)
-        {
-            _secondSelector.SelectedValue = time.Seconds;
-        }
-
-        if (_periodSelector is not null)
-        {
-            _periodSelector.SelectedValue = hour >= 12 ? 1 : 0;
-        }
+        RefreshHeaderText();
     }
 
     private void InitPicker()
@@ -509,6 +534,23 @@ internal class TimeView : TemplatedControl
 
         _spacer3!.IsVisible    = !use24HourClock;
         _periodHost!.IsVisible = !use24HourClock;
+    }
+
+    private void ApplyPendingDisplayTime()
+    {
+        if (_pendingDisplayTime is null ||
+            !this.IsAttachedToVisualTree() ||
+            _hourSelector is null ||
+            _minuteSelector is null ||
+            _secondSelector is null ||
+            _periodSelector is null)
+        {
+            return;
+        }
+
+        var displayTime = _pendingDisplayTime.Value;
+        _pendingDisplayTime = null;
+        SyncTimeValueToPanel(displayTime);
     }
 
     private void SetupPickerSelectorContainerHeight()

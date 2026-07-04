@@ -1,5 +1,4 @@
 using AtomUI.Theme.Language;
-using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.DatePicker;
 
@@ -8,6 +7,8 @@ internal partial class zh_TW
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "點擊 DatePicker 後，可以在面板中選擇或輸入日期。";
+    public const string PickerDisplayDateTitle = "彈出面板顯示日期";
+    public const string PickerDisplayDateDescription = "打開彈出面板時定位到指定日期，但不提交選中值。";
     public const string RangePickerTitle = "範圍選擇器";
     public const string RangePickerDescription = "通過 picker 屬性設置範圍選擇器類型。";
     public const string NeedConfirmTitle = "需要確認";
@@ -66,6 +67,7 @@ internal partial class zh_TW
     public const string ApiColumnDefault = "默認值";
     public const string ApiPropertySelectedDateTime = "DatePicker 當前選中的日期和可選時間。";
     public const string ApiPropertyDefaultDateTime = "DatePicker 重置行為使用的初始日期和可選時間。";
+    public const string ApiPropertyPickerDisplayDate = "彈出面板打開時使用的顯示錨點，不提交選中值。";
     public const string ApiPropertyRangeStartSelectedDate = "RangeDatePicker 當前選中的開始日期。";
     public const string ApiPropertyRangeEndSelectedDate = "RangeDatePicker 當前選中的結束日期。";
     public const string ApiPropertyFormat = "自定義日期/時間格式字符串。";

@@ -97,6 +97,7 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
         [
             new DatePickerApiRow("SelectedDateTime", Lang(DatePickerShowCaseLangResourceKind.ApiPropertySelectedDateTime), "DateTime?", "cyan", "null"),
             new DatePickerApiRow("DefaultDateTime", Lang(DatePickerShowCaseLangResourceKind.ApiPropertyDefaultDateTime), "DateTime?", "cyan", "null"),
+            new DatePickerApiRow("PickerDisplayDate", Lang(DatePickerShowCaseLangResourceKind.ApiPropertyPickerDisplayDate), "DateTime?", "cyan", "null"),
             new DatePickerApiRow("RangeDatePicker.RangeStartSelectedDate", Lang(DatePickerShowCaseLangResourceKind.ApiPropertyRangeStartSelectedDate), "DateTime?", "cyan", "null"),
             new DatePickerApiRow("RangeDatePicker.RangeEndSelectedDate", Lang(DatePickerShowCaseLangResourceKind.ApiPropertyRangeEndSelectedDate), "DateTime?", "cyan", "null"),
             new DatePickerApiRow("Format", Lang(DatePickerShowCaseLangResourceKind.ApiPropertyFormat), "string?", "cyan", "null"),
@@ -147,6 +148,7 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
         {
             DatePickerShowCaseLangResourceKind.ApiPropertySelectedDateTime            => en_US.ApiPropertySelectedDateTime,
             DatePickerShowCaseLangResourceKind.ApiPropertyDefaultDateTime             => en_US.ApiPropertyDefaultDateTime,
+            DatePickerShowCaseLangResourceKind.ApiPropertyPickerDisplayDate           => en_US.ApiPropertyPickerDisplayDate,
             DatePickerShowCaseLangResourceKind.ApiPropertyRangeStartSelectedDate      => en_US.ApiPropertyRangeStartSelectedDate,
             DatePickerShowCaseLangResourceKind.ApiPropertyRangeEndSelectedDate        => en_US.ApiPropertyRangeEndSelectedDate,
             DatePickerShowCaseLangResourceKind.ApiPropertyFormat                      => en_US.ApiPropertyFormat,

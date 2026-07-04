@@ -52,6 +52,20 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:TimePickerShowCaseLangResource PickerDisplayTimeTitle}"
+            BadgeText="v6.0.8"
+            IsDeferredContentEnabled="True"
+            Description="{gallery:TimePickerShowCaseLangResource PickerDisplayTimeDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TimePickerViewModel">
+            <atom:TimePicker PlaceholderText="{gallery:TimePickerShowCaseLangResource P2PlaceholderTextSelectTime}"
+                             PickerDisplayTime="14:25:30"
+                             ClockIdentifier="HourClock24" />
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:TimePickerShowCaseLangResource HourFormatsTitle}"
             IsDeferredContentEnabled="True"
             Description="{gallery:TimePickerShowCaseLangResource HourFormatsDescription}">

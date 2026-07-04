@@ -15,8 +15,16 @@ PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelect
 </StackPanel>
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
+Title="{gallery:DatePickerShowCaseLangResource PickerDisplayDateTitle}"
+Description="{gallery:DatePickerShowCaseLangResource PickerDisplayDateDescription}"
+BadgeText="v6.0.8">
+<atom:DatePicker PickerDisplayDate="2026-10-20"
+PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" />
+</gallery:ShowCaseItem>
+<gallery:ShowCaseItem
 Title="{gallery:DatePickerShowCaseLangResource RangePickerTitle}"
-Description="{gallery:DatePickerShowCaseLangResource RangePickerDescription}">
+Description="{gallery:DatePickerShowCaseLangResource RangePickerDescription}"
+BadgeText="v6.0.7">
 <StackPanel Orientation="Vertical" Spacing="10">
 <atom:RangeDatePicker PickerMode="Date"
 IsShowTime="False"

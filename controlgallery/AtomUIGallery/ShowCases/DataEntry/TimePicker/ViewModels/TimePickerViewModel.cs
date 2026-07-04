@@ -67,6 +67,7 @@ public class TimePickerViewModel : ReactiveObject, IRoutableViewModel
         [
             new TimePickerApiRow("TimePicker.SelectedTime", Lang(TimePickerShowCaseLangResourceKind.ApiPropertySelectedTime), "TimeSpan?", "cyan", "null"),
             new TimePickerApiRow("TimePicker.DefaultTime", Lang(TimePickerShowCaseLangResourceKind.ApiPropertyDefaultTime), "TimeSpan?", "cyan", "null"),
+            new TimePickerApiRow("TimePicker.PickerDisplayTime", Lang(TimePickerShowCaseLangResourceKind.ApiPropertyPickerDisplayTime), "TimeSpan?", "cyan", "null"),
             new TimePickerApiRow("TimePicker.IsNeedConfirm", Lang(TimePickerShowCaseLangResourceKind.ApiPropertyIsNeedConfirm), "bool", "green", "false"),
             new TimePickerApiRow("TimePicker.IsShowNow", Lang(TimePickerShowCaseLangResourceKind.ApiPropertyIsShowNow), "bool", "green", "true"),
             new TimePickerApiRow("TimePicker.MinuteIncrement", Lang(TimePickerShowCaseLangResourceKind.ApiPropertyMinuteIncrement), "int", "cyan", "1"),
@@ -115,6 +116,7 @@ public class TimePickerViewModel : ReactiveObject, IRoutableViewModel
         {
             TimePickerShowCaseLangResourceKind.ApiPropertySelectedTime                  => en_US.ApiPropertySelectedTime,
             TimePickerShowCaseLangResourceKind.ApiPropertyDefaultTime                   => en_US.ApiPropertyDefaultTime,
+            TimePickerShowCaseLangResourceKind.ApiPropertyPickerDisplayTime             => en_US.ApiPropertyPickerDisplayTime,
             TimePickerShowCaseLangResourceKind.ApiPropertyIsNeedConfirm                 => en_US.ApiPropertyIsNeedConfirm,
             TimePickerShowCaseLangResourceKind.ApiPropertyIsShowNow                     => en_US.ApiPropertyIsShowNow,
             TimePickerShowCaseLangResourceKind.ApiPropertyMinuteIncrement               => en_US.ApiPropertyMinuteIncrement,

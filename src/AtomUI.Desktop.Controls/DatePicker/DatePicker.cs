@@ -31,6 +31,9 @@ public class DatePicker : InfoPickerInput
         AvaloniaProperty.Register<DatePicker, DateTime?>(nameof(DefaultDateTime),
             enableDataValidation: true);
 
+    public static readonly StyledProperty<DateTime?> PickerDisplayDateProperty =
+        AvaloniaProperty.Register<DatePicker, DateTime?>(nameof(PickerDisplayDate));
+
     public static readonly StyledProperty<string?> FormatProperty =
         AvaloniaProperty.Register<DatePicker, string?>(nameof(Format));
 
@@ -59,6 +62,12 @@ public class DatePicker : InfoPickerInput
     {
         get => GetValue(DefaultDateTimeProperty);
         set => SetValue(DefaultDateTimeProperty, value);
+    }
+
+    public DateTime? PickerDisplayDate
+    {
+        get => GetValue(PickerDisplayDateProperty);
+        set => SetValue(PickerDisplayDateProperty, value);
     }
 
     public string? Format
@@ -174,6 +183,7 @@ public class DatePicker : InfoPickerInput
         var presenter = new DatePickerPresenter();
         presenter[!DatePickerPresenter.IsMotionEnabledProperty]  = this[!IsMotionEnabledProperty];
         presenter[!DatePickerPresenter.SelectedDateTimeProperty] = this[!SelectedDateTimeProperty];
+        presenter[!DatePickerPresenter.PickerDisplayDateProperty] = this[!PickerDisplayDateProperty];
         presenter[!DatePickerPresenter.IsNeedConfirmProperty]    = this[!IsNeedConfirmProperty];
         presenter[!DatePickerPresenter.IsShowNowProperty]        = this[!IsShowNowProperty];
         presenter[!DatePickerPresenter.IsShowTimeProperty]       = this[!IsShowTimeProperty];
@@ -203,6 +213,7 @@ public class DatePicker : InfoPickerInput
             _pickerPresenter.ChoosingStatusChanged += HandleChoosingStatusChanged;
             _pickerPresenter.HoverDateTimeChanged  += HandleHoverDateTimeChanged;
             _pickerPresenter.Confirmed             += HandleConfirmed;
+            _pickerPresenter.ResetOpenPanelState();
         }
     }
 

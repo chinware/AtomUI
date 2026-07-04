@@ -41,6 +41,9 @@ internal class DatePickerPresenter : PickerPresenterBase
     public static readonly StyledProperty<DateTime?> SelectedDateTimeProperty =
         DatePicker.SelectedDateTimeProperty.AddOwner<DatePickerPresenter>();
 
+    public static readonly StyledProperty<DateTime?> PickerDisplayDateProperty =
+        DatePicker.PickerDisplayDateProperty.AddOwner<DatePickerPresenter>();
+
     public static readonly StyledProperty<ClockIdentifierType> ClockIdentifierProperty =
         TimePicker.ClockIdentifierProperty.AddOwner<DatePickerPresenter>();
 
@@ -72,6 +75,12 @@ internal class DatePickerPresenter : PickerPresenterBase
     {
         get => GetValue(SelectedDateTimeProperty);
         set => SetValue(SelectedDateTimeProperty, value);
+    }
+
+    public DateTime? PickerDisplayDate
+    {
+        get => GetValue(PickerDisplayDateProperty);
+        set => SetValue(PickerDisplayDateProperty, value);
     }
 
     public ClockIdentifierType ClockIdentifier
@@ -149,6 +158,13 @@ internal class DatePickerPresenter : PickerPresenterBase
     protected PickerCalendar? CalendarView;
     protected TimeView? TimeView;
     private CompositeDisposable? _pointerDisposables;
+    private DateTime? _pendingOpenDisplayAnchor;
+
+    internal void ResetOpenPanelState()
+    {
+        _pendingOpenDisplayAnchor = ResolveOpenDisplayAnchor();
+        ApplyPendingOpenPanelState();
+    }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
@@ -216,6 +232,7 @@ internal class DatePickerPresenter : PickerPresenterBase
         AttachTemplateEventHandlers();
         SetupConfirmButtonEnableStatus();
         RefreshPointerSubscriptionsIfAttached();
+        ApplyPendingOpenPanelState();
     }
 
     private void ResolveTemplateParts(TemplateAppliedEventArgs e)
@@ -352,6 +369,40 @@ internal class DatePickerPresenter : PickerPresenterBase
     protected virtual void NotifyPointerExitNowButton()
     {
         EmitChoosingStatusChanged(false);
+    }
+
+    protected virtual DateTime? ResolveOpenDisplayAnchor()
+    {
+        if (PickerDisplayDate is null)
+        {
+            return null;
+        }
+
+        var anchor = SelectedDateTime ?? PickerDisplayDate;
+        return anchor.HasValue
+            ? DatePickerFormattingHelper.NormalizeDateTime(anchor.Value, PickerMode)
+            : null;
+    }
+
+    protected void ApplyCalendarDisplayAnchor(PickerCalendar calendar, DateTime anchor)
+    {
+        calendar.SetCurrentValue(PickerCalendar.DisplayDateProperty, anchor);
+        calendar.SelectedMonth    = anchor;
+        calendar.SelectedYear     = anchor;
+        calendar.LastSelectedDate = anchor;
+        calendar.UpdateHighlightDays();
+    }
+
+    private void ApplyPendingOpenPanelState()
+    {
+        if (_pendingOpenDisplayAnchor is null || CalendarView is null)
+        {
+            return;
+        }
+
+        var anchor = CalendarView.NormalizePickerDate(_pendingOpenDisplayAnchor.Value);
+        ApplyCalendarDisplayAnchor(CalendarView, anchor);
+        _pendingOpenDisplayAnchor = null;
     }
 
     private void HandleTodayButtonClicked(object? sender, RoutedEventArgs args)

@@ -242,15 +242,17 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
     private DateTime? ResolveRangeOpenDisplayAnchor()
     {
         var activeDate = GetActiveSelectedDateTime();
-        if (activeDate is null)
+        if (activeDate is not null)
         {
-            return null;
+            var normalizedActiveDate = DatePickerFormattingHelper.NormalizeDateTime(activeDate.Value, PickerMode);
+            return IsRangeStartActive
+                ? normalizedActiveDate
+                : ResolveRangeEndDisplayAnchor(normalizedActiveDate);
         }
 
-        var normalizedActiveDate = DatePickerFormattingHelper.NormalizeDateTime(activeDate.Value, PickerMode);
-        return IsRangeStartActive
-            ? normalizedActiveDate
-            : ResolveRangeEndDisplayAnchor(normalizedActiveDate);
+        return PickerDisplayDate.HasValue
+            ? DatePickerFormattingHelper.NormalizeDateTime(PickerDisplayDate.Value, PickerMode)
+            : null;
     }
 
     protected virtual DateTime ResolveRangeEndDisplayAnchor(DateTime activeEnd)
@@ -266,11 +268,7 @@ internal class RangeDatePickerPresenter : DatePickerPresenter
         }
 
         var anchor = rangeCalendar.NormalizePickerDate(_pendingRangeOpenDisplayAnchor.Value);
-        rangeCalendar.SetCurrentValue(PickerCalendar.DisplayDateProperty, anchor);
-        rangeCalendar.SelectedMonth = anchor;
-        rangeCalendar.SelectedYear  = anchor;
-        rangeCalendar.LastSelectedDate = anchor;
-        rangeCalendar.UpdateHighlightDays();
+        ApplyCalendarDisplayAnchor(rangeCalendar, anchor);
         _pendingRangeOpenDisplayAnchor = null;
     }
 

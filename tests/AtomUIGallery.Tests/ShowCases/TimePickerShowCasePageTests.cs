@@ -45,10 +45,13 @@ public class TimePickerShowCasePageTests
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:TimePickerShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(9);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(9);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TimePickerViewModel\"").ShouldBe(9);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(10);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(10);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TimePickerViewModel\"").ShouldBe(10);
         source.ShouldContain("TimePickerShowCaseLangResource BasicTitle");
+        source.ShouldContain("TimePickerShowCaseLangResource PickerDisplayTimeTitle");
+        source.ShouldContain("PickerDisplayTime=\"14:25:30\"");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("TimePickerShowCaseLangResource HourFormatsTitle");
         source.ShouldContain("Name=\"PickerSizeTypeOptionGroup\"");
         source.ShouldContain("OptionCheckedChanged=\"HandlePickerSizeTypeOptionCheckedChanged\"");
@@ -130,6 +133,8 @@ public class TimePickerShowCasePageTests
         tokenSource.ShouldContain("Width=\"*\"");
         tokenCodeSource.ShouldContain("viewModel.EnsureDesignTokenRows()");
         tokenCodeSource.ShouldContain("DesignTokenDataGrid.ItemsSource = viewModel.DesignTokenRows");
+        ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/TimePicker/ViewModels/TimePickerViewModel.cs")
+            .ShouldContain("new TimePickerApiRow(\"TimePicker.PickerDisplayTime\"");
     }
 
     [Fact]
@@ -149,6 +154,7 @@ public class TimePickerShowCasePageTests
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertySelectedTime");
+            source.ShouldContain("ApiPropertyPickerDisplayTime");
             source.ShouldContain("ApiPropertyClockIdentifier");
             source.ShouldContain("ApiPropertyMinuteIncrement");
             source.ShouldContain("ApiPropertyRangeStartSelectedTime");
