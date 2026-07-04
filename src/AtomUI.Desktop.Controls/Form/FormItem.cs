@@ -661,6 +661,10 @@ public partial class FormItem : TemplatedControl, IFormItem
 
     protected virtual void NotifyContentAdded(AvaloniaPropertyChangedEventArgs change)
     {
+        if (change.OldValue is Control oldControl)
+        {
+            FormDataValidationErrors.ClearFormErrors(oldControl);
+        }
         if (change.OldValue is IFormItemAware oldFormItemAware)
         {
             oldFormItemAware.ValueChanged -= HandleContentValueChanged;

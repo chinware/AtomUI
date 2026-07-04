@@ -33,7 +33,7 @@
                         Content="{TemplateBinding SearchButtonText}"
                         Height="{Binding Bounds.Height, RelativeSource={RelativeSource TemplatedParent}}"
                         SizeType="{TemplateBinding SizeType}"
-                        Status="{TemplateBinding Status}"
+                        Status="{TemplateBinding EffectiveStatus}"
                         StyleVariant="{TemplateBinding StyleVariant}"
                         BorderThickness="{Binding RightAddOnBorderThickness, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"
                         CornerRadius="{Binding RightAddOnCornerRadius, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"/>

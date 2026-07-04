@@ -491,7 +491,9 @@ public class ComboBox : AvaloniaComboBox,
     {
         base.OnPropertyChanged(change);
 
-        if (change.Property == StatusProperty)
+        if (change.Property == StatusProperty ||
+            change.Property == DataValidationErrors.HasErrorsProperty ||
+            change.Property == DataValidationErrors.ErrorsProperty)
         {
             UpdatePseudoClasses();
         }
@@ -714,8 +716,8 @@ public class ComboBox : AvaloniaComboBox,
 
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(StdPseudoClass.Error, Status == InputControlStatus.Error);
-        PseudoClasses.Set(StdPseudoClass.Warning, Status == InputControlStatus.Warning);
+        PseudoClasses.Set(StdPseudoClass.Warning,
+            Status == InputControlStatus.Warning && !DataValidationErrors.GetHasErrors(this));
     }
 
     private void ConfigureMaxDropdownHeight()

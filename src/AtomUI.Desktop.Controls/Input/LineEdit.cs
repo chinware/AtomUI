@@ -105,8 +105,8 @@ public class LineEdit : TextBox,
     
     private void UpdatePseudoClasses()
     {
-        PseudoClasses.Set(StdPseudoClass.Error, Status == InputControlStatus.Error);
-        PseudoClasses.Set(StdPseudoClass.Warning, Status == InputControlStatus.Warning);
+        PseudoClasses.Set(StdPseudoClass.Warning,
+            Status == InputControlStatus.Warning && !DataValidationErrors.GetHasErrors(this));
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == InputControlStyleVariant.Outlined);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == InputControlStyleVariant.Filled);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == InputControlStyleVariant.Borderless);
@@ -116,7 +116,9 @@ public class LineEdit : TextBox,
     {
         base.OnPropertyChanged(change);
         if (change.Property == StatusProperty ||
-            change.Property == LeftAddOnProperty)
+            change.Property == LeftAddOnProperty ||
+            change.Property == DataValidationErrors.HasErrorsProperty ||
+            change.Property == DataValidationErrors.ErrorsProperty)
         {
             UpdatePseudoClasses();
         }

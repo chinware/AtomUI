@@ -642,7 +642,13 @@ public abstract class AbstractSelect : TemplatedControl,
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == PlacementProperty)
+        if (change.Property == StatusProperty ||
+            change.Property == DataValidationErrors.HasErrorsProperty ||
+            change.Property == DataValidationErrors.ErrorsProperty)
+        {
+            UpdatePseudoClasses();
+        }
+        else if (change.Property == PlacementProperty)
         {
             ConfigurePopupPlacement();
         }
@@ -673,8 +679,8 @@ public abstract class AbstractSelect : TemplatedControl,
     protected void UpdatePseudoClasses()
     {
         PseudoClasses.Set(SelectPseudoClass.DropdownOpen, IsDropDownOpen);
-        PseudoClasses.Set(StdPseudoClass.Error, Status == InputControlStatus.Error);
-        PseudoClasses.Set(StdPseudoClass.Warning, Status == InputControlStatus.Warning);
+        PseudoClasses.Set(StdPseudoClass.Warning,
+            Status == InputControlStatus.Warning && !DataValidationErrors.GetHasErrors(this));
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Outline, StyleVariant == InputControlStyleVariant.Outlined);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Filled, StyleVariant == InputControlStyleVariant.Filled);
         PseudoClasses.Set(AddOnDecoratedBoxPseudoClass.Borderless, StyleVariant == InputControlStyleVariant.Borderless);

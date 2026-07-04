@@ -13,6 +13,7 @@
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
+                    DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                     IsEnabled="{TemplateBinding IsEnabled}"
                     LeftAddOn="{TemplateBinding LeftAddOn}"
                     LeftAddOnTemplate="{TemplateBinding LeftAddOn}"

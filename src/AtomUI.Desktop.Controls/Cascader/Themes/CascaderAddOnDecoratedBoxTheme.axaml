@@ -87,7 +87,7 @@
                             Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
                 </Style>
 
-                <Style Selector="^[Status=Error]">
+                <Style Selector="^[EffectiveStatus=Error]">
                     <Setter Property="BorderBrush"
                             Value="{atom:SharedTokenResource ColorError}" />
 
@@ -112,7 +112,7 @@
                     </Style>
                 </Style>
 
-                <Style Selector="^[Status=Warning]">
+                <Style Selector="^[EffectiveStatus=Warning]">
                     <Setter Property="BorderBrush"
                             Value="{atom:SharedTokenResource ColorWarning}" />
 
@@ -163,7 +163,7 @@
                             Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
                 </Style>
 
-                <Style Selector="^[Status=Error]">
+                <Style Selector="^[EffectiveStatus=Error]">
                     <Setter Property="BorderBrush"
                             Value="Transparent" />
                     <Setter Property="Background"
@@ -192,7 +192,7 @@
                     </Style>
                 </Style>
 
-                <Style Selector="^[Status=Warning]">
+                <Style Selector="^[EffectiveStatus=Warning]">
                     <Setter Property="BorderBrush" Value="Transparent" />
                     <Setter Property="Background"
                             Value="{atom:SharedTokenResource ColorWarningBg}" />

@@ -95,7 +95,7 @@ public class Form : ItemsControl,
         AvaloniaProperty.Register<Form, bool>(nameof(IsScrollToFirstErrorEnabled));
     
     public static readonly StyledProperty<FormValidateTrigger> ValidateTriggerProperty =
-        AvaloniaProperty.Register<Form, FormValidateTrigger>(nameof(ValidateTrigger), FormValidateTrigger.OnSubmit);
+        AvaloniaProperty.Register<Form, FormValidateTrigger>(nameof(ValidateTrigger), FormValidateTrigger.OnChanged);
     
     public static readonly StyledProperty<MediaBreakGridLength?> LabelColInfoProperty =
         AvaloniaProperty.Register<Form, MediaBreakGridLength?>(nameof(LabelColInfo));

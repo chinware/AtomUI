@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AtomUI.Controls;
+using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Threading;
 
@@ -59,8 +60,18 @@ public partial class FormItem
             return;
         }
 
-        if (Content == null || Validators == null || Validators.Count == 0)
+        if (Content == null)
         {
+            return;
+        }
+
+        if (Validators == null || Validators.Count == 0)
+        {
+            ApplyValidationOutcome(FormValidateStatus.Success,
+                errorMessages: null,
+                warningMessages: null,
+                Content as IFormItemAware,
+                raiseValidateChanged: true);
             return;
         }
 
@@ -237,17 +248,37 @@ public partial class FormItem
         IFormItemAware? formItemAware,
         bool raiseValidateChanged)
     {
-        ValidateErrorMessages   = errorMessages;
+        var validationTarget = Content;
+        if (validationTarget != null)
+        {
+            if (status == FormValidateStatus.Error)
+            {
+                FormDataValidationErrors.SetFormErrors(validationTarget, errorMessages);
+            }
+            else
+            {
+                FormDataValidationErrors.ClearFormErrors(validationTarget);
+            }
+        }
+
+        var nativeErrorMessages = validationTarget != null
+            ? FormDataValidationErrors.GetErrorMessages(validationTarget)
+            : [];
+        var effectiveStatus = nativeErrorMessages.Count > 0
+            ? FormValidateStatus.Error
+            : status;
+
+        ValidateErrorMessages   = nativeErrorMessages.Count > 0 ? nativeErrorMessages : null;
         ValidateWarningMessages = warningMessages;
-        ValidateStatus          = status;
-        ValidateResult          = status switch
+        ValidateStatus          = effectiveStatus;
+        ValidateResult          = effectiveStatus switch
         {
             FormValidateStatus.Error   => FormValidateResult.Error,
             FormValidateStatus.Warning => FormValidateResult.Warning,
             _                          => FormValidateResult.Success
         };
 
-        formItemAware?.NotifyValidateStatus(status);
+        formItemAware?.NotifyValidateStatus(effectiveStatus);
         HasErrorOrWarningMsg = ValidateErrorMessages?.Count > 0 ||
                                ValidateWarningMessages?.Count > 0 ||
                                !string.IsNullOrWhiteSpace(Help);
@@ -255,7 +286,7 @@ public partial class FormItem
 
         if (raiseValidateChanged)
         {
-            RaiseEvent(new FormItemValidateChangedEventArgs(status)
+            RaiseEvent(new FormItemValidateChangedEventArgs(effectiveStatus)
             {
                 RoutedEvent = ValidateChangedEvent,
                 Source      = this,

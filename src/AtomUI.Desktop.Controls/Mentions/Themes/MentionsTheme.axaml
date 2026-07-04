@@ -13,6 +13,7 @@
                                           IsAllowClear="{TemplateBinding IsAllowClear}"
                                           StyleVariant="{TemplateBinding StyleVariant}"
                                           Status="{TemplateBinding Status}"
+                                          DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                                           InnerLeftContent="{TemplateBinding ContentLeftAddOn}"
                                           InnerLeftContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"
                                           InnerRightContent="{TemplateBinding ContentRightAddOn}"

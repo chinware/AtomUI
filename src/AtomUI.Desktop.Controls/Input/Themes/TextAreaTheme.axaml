@@ -23,6 +23,7 @@
                             StyleVariant="{TemplateBinding StyleVariant}"
                             SizeType="{TemplateBinding SizeType}"
                             Status="{TemplateBinding Status}"
+                            DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                             Focusable="True"
                             HorizontalAlignment="Stretch"
@@ -113,6 +114,12 @@
         </Style>
 
         <Style Selector="^[StyleVariant=Borderless]">
+            <Style Selector="^[Status=Error]">
+                <Style Selector="^ /template/ Panel#ContentLayout">
+                    <Setter Property="TemplatedControl.Foreground"
+                            Value="{atom:SharedTokenResource ColorErrorText}" />
+                </Style>
+            </Style>
             <Style Selector="^:error">
                 <Style Selector="^ /template/ Panel#ContentLayout">
                     <Setter Property="TemplatedControl.Foreground"
@@ -127,6 +134,12 @@
             </Style>
         </Style>
         <Style Selector="^[StyleVariant=Filled]">
+            <Style Selector="^[Status=Error]">
+                <Style Selector="^ /template/ Panel#ContentLayout">
+                    <Setter Property="TemplatedControl.Foreground"
+                            Value="{atom:SharedTokenResource ColorErrorText}" />
+                </Style>
+            </Style>
             <Style Selector="^:error">
                 <Style Selector="^ /template/ Panel#ContentLayout">
                     <Setter Property="TemplatedControl.Foreground"
@@ -193,14 +206,14 @@
             <Setter Property="BoxShadow"
                     Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
         </Style>
-        <Style Selector="^:focus[StyleVariant=Outlined][Status=Error] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox,
-                         ^:focus[StyleVariant=Underlined][Status=Error] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox">
+        <Style Selector="^:focus[StyleVariant=Outlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error],
+                         ^:focus[StyleVariant=Underlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
             <Setter Property="BoxShadow"
                     Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
         </Style>
-        <Style Selector="^:focus[StyleVariant=Filled][Status=Error] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox">
+        <Style Selector="^:focus[StyleVariant=Filled] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Error]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
             <Setter Property="Background"
@@ -208,14 +221,14 @@
             <Setter Property="BoxShadow"
                     Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
         </Style>
-        <Style Selector="^:focus[StyleVariant=Outlined][Status=Warning] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox,
-                         ^:focus[StyleVariant=Underlined][Status=Warning] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox">
+        <Style Selector="^:focus[StyleVariant=Outlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning],
+                         ^:focus[StyleVariant=Underlined] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
             <Setter Property="BoxShadow"
                     Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
         </Style>
-        <Style Selector="^:focus[StyleVariant=Filled][Status=Warning] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox">
+        <Style Selector="^:focus[StyleVariant=Filled] /template/ atom|TextAreaDecoratedBox#PART_AddOnDecoratedBox[EffectiveStatus=Warning]">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
             <Setter Property="Background"
