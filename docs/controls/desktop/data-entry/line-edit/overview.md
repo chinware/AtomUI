@@ -12,14 +12,14 @@
 | Gallery 页面 | `controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit` |
 | 控件状态 | Stable |
 
-LineEdit 是 AtomUI 桌面数据录入体系中的文本输入控件家族，用于承载单行文本、密码输入、搜索输入和多行文本输入。它以 Avalonia `TextBox` 文本编辑能力为基础，接入 AtomUI 的尺寸、输入表面、校验状态、清除按钮、密码 reveal、字数统计、Addon、CompactSpace、Form 和 Token 体系。
+LineEdit 是 AtomUI 桌面数据录入体系中的文本输入控件家族，用于承载单行文本、密码输入、搜索输入和多行文本输入。它以 Avalonia `TextBox` 文本编辑能力为基础，接入 AtomUI 的尺寸、输入表面、native validation error 投射、清除按钮、密码 reveal、字数统计、Addon、CompactSpace、Form 和 Token 体系。
 
 LineEdit 家族包含以下稳定入口：
 
 | 类型 | 定位 |
 | --- | --- |
 | `TextBox` | AtomUI 基础文本框，提供尺寸、清除、密码 reveal、字数统计、Form 和 CompactSpace 能力。 |
-| `LineEdit` | 标准单行输入框，在 `TextBox` 基础上加入输入表面、校验状态和外部 AddOn。 |
+| `LineEdit` | 标准单行输入框，在 `TextBox` 基础上加入输入表面、验证视觉投射和外部 AddOn。 |
 | `SearchEdit` | 搜索输入框，在 `LineEdit` 基础上加入搜索按钮、搜索按钮样式、加载态和搜索事件；独立契约见 [SearchEdit 桌面版架构设计](../search-edit/overview.md)。 |
 | `TextArea` | 多行输入框，独立继承 Avalonia `TextBox`，复用输入状态、尺寸、清除、字数统计、Form 和 TextArea 专属 resize 模型。 |
 
@@ -67,7 +67,7 @@ AtomUI 输入扩展 API：
 | `IsShowCount` | `TextBox`、`LineEdit`、`SearchEdit`、`TextArea` | 是否展示字数统计。 |
 | `IsMotionEnabled` | 全家族 | 是否启用内部按钮动效。 |
 | `StyleVariant` | `LineEdit`、`SearchEdit`、`TextArea` | 输入表面样式。 |
-| `Status` | `LineEdit`、`SearchEdit`、`TextArea` | 输入校验状态。 |
+| `Status` | `LineEdit`、`SearchEdit`、`TextArea` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
 | `LeftAddOn` / `LeftAddOnTemplate` | `LineEdit`、`SearchEdit` | 外部左侧附加内容和模板。 |
 | `RightAddOn` / `RightAddOnTemplate` | `LineEdit` | 外部右侧附加内容和模板；SearchEdit 的右侧外部 add-on 位置由搜索按钮占用。 |
 | `InnerLeftContentTemplate` / `InnerRightContentTemplate` | `LineEdit`、`TextArea` | 内部前后缀模板。 |
@@ -137,7 +137,7 @@ IsEffectiveShowClearButton =
   && !string.IsNullOrEmpty(Text)
 ```
 
-Form 集成以 `Text` 作为表单值。Form 校验状态通过 `IFormItemAware.NotifyValidateStatus` 映射到 `Status=Error/Warning/Default`，feedback 内容通过 `IFormItemFeedbackAware` 进入模板中的 feedback presenter。
+Form 集成以 `Text` 作为表单值。错误校验状态以 Avalonia `DataValidationErrors` 为真源，Form validator 产生的 error 应写入同一 native validation 通道；`IFormItemAware.NotifyValidateStatus` 只负责同步 `Warning`、`Success`、`Validating` 等 Form 扩展状态和 feedback 可见性。feedback 内容通过 `IFormItemFeedbackAware` 进入模板中的 feedback presenter。
 
 CompactSpace 只影响相邻输入框之间的有效圆角和边框折叠，不改变文本编辑语义。
 
@@ -148,7 +148,7 @@ LineEdit 家族使用输入壳体和文本 presenter 分层：
 | 主题 | 职责 |
 | --- | --- |
 | `TextBoxTheme.axaml` | 基础文本框模板、清除按钮、reveal、字数统计、基础 SizeType 字号和 TextPresenter margin。 |
-| `LineEditTheme.axaml` | 单行输入壳体、外部 AddOn、variant/status/focus 视觉。 |
+| `LineEditTheme.axaml` | 单行输入壳体、外部 AddOn、variant/status/focus 视觉，并把 native validation error 投射到外层输入壳体。 |
 | `SearchEditTheme.axaml` | 搜索输入壳体、搜索按钮状态传递和搜索按钮布局。 |
 | `SearchEditDecoratedBoxTheme.axaml` | 搜索按钮与输入壳体的一体化边框和布局。 |
 | `TextAreaTheme.axaml` | 多行输入壳体、字数统计、resize handle、固定行数和状态视觉。 |
@@ -167,7 +167,7 @@ LineEdit 是 Data Entry 文本输入家族的根入口，与 NumericUpDown、Dat
 - `AddOnDecoratedBox`：提供输入壳体、外部 AddOn、内部前后缀、variant/status/focus/CompactSpace 视觉。
 - `SearchEditDecoratedBox`：在 AddOnDecoratedBox 基础上加入搜索按钮布局和点击回调。
 - `TextAreaDecoratedBox`：在 AddOnDecoratedBox 基础上加入多行输入 padding、scroll viewer 接入和 resize 约束。
-- `IFormItemAware` / `IFormItemFeedbackAware`：提供表单值、校验状态和 feedback 内容接入。
+- `IFormItemAware` / `IFormItemFeedbackAware`：提供表单值、Form 扩展状态和 feedback 内容接入；error 由 `DataValidationErrors` 投射。
 - `ICompactSpaceAware`：提供 CompactSpace 中圆角和边框折叠协同。
 
 ## 7. 兼容性不变量
@@ -193,7 +193,7 @@ LineEdit 是 Data Entry 文本输入家族的根入口，与 NumericUpDown、Dat
 
 ### 8.2 SearchEdit 模型
 
-SearchEdit 将搜索按钮视为输入框的一部分。搜索按钮继承输入壳体的 `StyleVariant`、`Status`、`SizeType` 和 `IsEnabled` 状态，`SearchButtonStyle` 只控制按钮风格，不改变文本编辑行为。
+SearchEdit 将搜索按钮视为输入框的一部分。搜索按钮继承输入壳体的 `StyleVariant`、effective status、`SizeType` 和 `IsEnabled` 状态；native validation error 优先投射到按钮状态色，之后才回退到手动 `Status`。`SearchButtonStyle` 只控制按钮风格，不改变文本编辑行为。
 
 ### 8.3 TextArea 高度模型
 

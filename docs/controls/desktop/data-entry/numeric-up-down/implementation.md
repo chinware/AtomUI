@@ -118,7 +118,8 @@ Form 集成流：
 Form.SetValue(decimal?) → NumericUpDown.Value
 NumericUpDown.ValueChanged → Form value changed
 Form.ClearValue() → NumericUpDown.Value = null
-Form.ValidateStatus → NumericUpDown.Status
+DataValidationErrors → native error visual + ButtonSpinner/AddOn effective error state
+Form.ValidateStatus → Warning/Success/Validating extension state
 ```
 
 Form 不直接使用 `StringValue`。需要提交原始字符串时，由业务层绑定 `StringValue`。
@@ -161,7 +162,7 @@ Token 通过动态资源进入主题。NumericUpDown 不把实例状态、当前
 - `StringValue`、`Text`、`Value` 的双向同步和高精度 raw text 保留。
 - `IsKeyboardEnabled=false` 对方向键和 PageUp / PageDown 的拦截。
 - 清除按钮可见性和清除行为。
-- Form 设置、读取、清空和校验状态映射。
+- Form 设置、读取、清空、native validation error 投射和扩展状态映射。
 - CompactSpace 中边框厚度、圆角和位置变化。
 - `Mode=Input` 默认视觉树不创建 spinner 左右按钮。
 - `Mode=Spinner` 下左右按钮、min/max、disabled、read-only 和 `AllowSpin=false` 状态。

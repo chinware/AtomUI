@@ -145,7 +145,7 @@ TreeSelect 属于 Data Entry 选择控件家族，与 Select、Cascader、DatePi
 - `TreeSelectTreeView`：TreeSelect 专用 TreeView，负责最大选择数状态下的节点容器协作。
 - `TreeViewSelectTreeViewItem`：候选树容器，接收最大选择数状态。
 - `SelectHandle`：右侧操作入口，负责展开指示、loading、清除和 Form feedback。
-- `IFormItemAware` / `IFormItemFeedbackAware`：将选择值、校验状态和 feedback 接入 Form。
+- `IFormItemAware` / `IFormItemFeedbackAware`：将选择值、Form 扩展状态和 feedback 接入 Form；error 由 `DataValidationErrors` 投射到输入壳体。
 - `ICustomizableSizeTypeAware`：接入支持 `Custom` 的输入尺寸模型。
 
 ## 7. 兼容性不变量

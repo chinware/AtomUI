@@ -68,7 +68,7 @@ AtomUI 输入扩展 API：
 | `SizeType` | `CustomizableSizeType` | 输入框尺寸密度；`Custom` 未显式覆盖时以 `Middle` 为视觉基线。 |
 | `IsCustomFontSize` | `bool` | 为 `true` 时内部 `TextBox` 不由 `SizeType` 字号样式覆盖 `FontSize`。 |
 | `StyleVariant` | `InputControlStyleVariant` | 输入表面样式。 |
-| `Status` | `InputControlStatus` | 输入反馈状态。 |
+| `Status` | `InputControlStatus` | 手动输入反馈状态；native validation error 以 `DataValidationErrors` 为最高优先级。 |
 | `IsAllowClear` | `bool` | 是否展示清除按钮。 |
 | `ClearIcon` | `PathIcon?` | 清除按钮图标。 |
 | `IsKeyboardEnabled` | `bool` | 是否允许方向键和 PageUp / PageDown 触发步进。 |
@@ -165,7 +165,7 @@ NumericUpDown 属于 Data Entry 控件，与 LineEdit、TextBox、TextArea、Sel
 - Avalonia `NumericUpDown`：继承数值编辑、格式化、步进、事件和基础文本同步语义。
 - `ButtonSpinner`：提供输入壳体、步进 Handle、Addon、CompactSpace 和输入状态视觉。
 - AtomUI `TextBox`：提供文本输入、占位符、禁用文本色和清除按钮相关基础能力。
-- `IFormItemAware`：允许 Form 读取、设置、清空 `Value`，并把校验状态映射到 `Status`。
+- `IFormItemAware`：允许 Form 读取、设置、清空 `Value`；error 通过 `DataValidationErrors` 投射到输入壳体，warning 等扩展状态通过 `Status`/feedback 表达。
 - `ICompactSpaceAware`：允许 CompactSpace 统一边框折叠和圆角。
 - `IMotionAwareControl`：统一动效开关。
 - `ICustomizableSizeTypeAware`：接入支持 `Custom` 的输入尺寸模型。

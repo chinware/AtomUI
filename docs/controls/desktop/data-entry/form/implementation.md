@@ -34,7 +34,7 @@ Form 的实现以 `ItemsControl` 为容器基础，`FormItem` 作为字段级容
 
 `FormItem.Validation.cs` 是 FormItem 的验证域。它集中持有验证取消源、debounce disposable、验证策略执行、结果聚合和消息 inlines 构建，避免验证生命周期散落在布局或模板逻辑中。
 
-`FormItemDecorator` 是组合控件适配器。它自身作为一个 `IFormItemAware` 暴露给 FormItem，并把表单值、清空、验证状态和 feedback 转发给内部 `Child`。
+`FormItemDecorator` 是组合控件适配器。它自身作为一个 `IFormItemAware` 暴露给 FormItem，并把表单值、清空、Form 扩展状态和 feedback 转发给内部 `Child`；error 仍以子控件 `DataValidationErrors` 为目标。
 
 `SubmitButton` 和 `ResetButton` 不直接调用父 Form 方法，而是通过冒泡路由事件交给 Form 类处理。`SubmitButton` 在 watch 模式下额外订阅 owner Form 的 `IsFormValid`。
 
@@ -81,7 +81,8 @@ ValidateValueAsync / ValidateValueDefer
   → ExecuteValidatorsAsync()
   → BuildValidationOutcome()
   → ApplyValidationOutcome()
-  → NotifyValidateStatus()
+  → write/merge Form-owned DataValidationErrors for error
+  → NotifyValidateStatus() for extended visual state
   → FormItem.ValidateChangedEvent
   → Form.IsFormValid aggregation
 ```
@@ -203,7 +204,7 @@ CancelPendingValidation()
 create new CancellationTokenSource
 ```
 
-异步验证完成后再次检查 cancellation token。被取消的旧结果不能写回 `ValidateStatus`、消息集合或内容控件状态。
+异步验证完成后再次检查 cancellation token。被取消的旧结果不能写回 `DataValidationErrors`、`ValidateStatus`、消息集合或内容控件状态。
 
 ### 7.3 验证策略执行
 
@@ -213,7 +214,7 @@ create new CancellationTokenSource
 - 顺序策略逐个 await，`StopWhenFirstFailed` 在 error 后停止。
 - warning 和 error 分别收集消息；存在 error 时最终状态是 `Error`，否则存在 warning 时是 `Warning`，否则是 `Success`。
 
-### 7.4 结果应用和消息构建
+### 7.4 结果应用、DataValidationErrors 和消息构建
 
 `ApplyValidationOutcome()` 是验证结果唯一写入点。它同时更新：
 
@@ -221,12 +222,15 @@ create new CancellationTokenSource
 - `ValidateWarningMessages`
 - `ValidateStatus`
 - `ValidateResult`
-- 内容控件 `NotifyValidateStatus(status)`
+- 内容控件 `DataValidationErrors` 中由 Form 拥有的 error
+- 内容控件 `NotifyValidateStatus(status)` 扩展状态
 - `HasErrorOrWarningMsg`
 - `ErrorMessageInlines`
 - `ValidateChangedEvent`
 
-错误和警告消息被构造成 `InlineCollection`，并分别使用 `ErrorMessageForeground` 与 `WarningMessageForeground`。
+Form validator 产生的 error 必须写入内容控件的 `DataValidationErrors`，使 native binding validation、`DataValidationErrors.HasErrors`、`:error` 和 AddOn error 视觉使用同一条通道。Form 清理时只能移除 Form-owned error，不能调用无差别清理导致 ViewModel 或 binding 写入的 native error 丢失。
+
+错误和警告消息被构造成 `InlineCollection`，并分别使用 `ErrorMessageForeground` 与 `WarningMessageForeground`。警告没有 Avalonia native validation 等价语义，因此只保留在 Form 消息、`ValidateStatus=Warning` 和控件扩展视觉状态中，不写入 `DataValidationErrors`。
 
 ### 7.5 Form 有效性聚合
 
@@ -284,7 +288,7 @@ AOT 边界：
 - FormItem 的验证逻辑保持集中在验证职责域，不能重新散落到模板、布局或事件 handler 中。
 - 新验证、reset、detach 和新 submit 必须取消旧验证运行。
 - `IsResetting` 必须阻止 reset 期间的值变化触发验证，并在 dispatcher 队列中恢复。
-- `ApplyValidationOutcome()` 必须继续作为验证状态、消息、feedback 和事件的统一写入点。
+- `ApplyValidationOutcome()` 必须继续作为 Form-owned `DataValidationErrors`、扩展验证状态、消息、feedback 和事件的统一写入点。
 - `Warning` 和 `Error` 的聚合语义不能混淆。
 - FormItem 内容替换必须释放旧内容订阅和旧 feedback。
 - FormItemDecorator 的 `Child` 必须实现 `IFormItemAware`，并继续转发 feedback 和 validation status。
@@ -296,7 +300,7 @@ AOT 边界：
 
 现有验证入口：
 
-- `tests/AtomUI.Desktop.Controls.Tests/Form/FormBehaviorTests.cs`：覆盖默认 `OnSubmit`、feedback 转发释放、验证取消、reset 取消、并行验证、stop when first failed 和 SubmitButton watch 行为。
+- `tests/AtomUI.Desktop.Controls.Tests/Form/FormBehaviorTests.cs`：覆盖默认 `OnChanged`、feedback 转发释放、验证取消、reset 取消、并行验证、stop when first failed 和 SubmitButton watch 行为。
 - `tests/AtomUI.Desktop.Controls.Tests/Form/FormCustomizableSizeTypeTests.cs`：覆盖 `CustomizableSizeType` 到新旧尺寸接口的转发。
 - `tests/AtomUIGallery.Tests/ShowCases/FormShowCasePageTests.cs`：覆盖 Gallery Form 页面结构、API 表、Token 表、示例 snapshot 和本地化资源。
 

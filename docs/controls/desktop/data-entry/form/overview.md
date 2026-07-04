@@ -47,7 +47,7 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 | `SizeType` | 表单统一尺寸密度，支持 `Large/Middle/Small/Custom`。 |
 | `StyleVariant` | 传递给支持输入外观变体的子控件。 |
 | `IsMotionEnabled` | 传递给支持动效开关的子控件。 |
-| `ValidateTrigger` | 表单默认验证触发时机，默认 `OnSubmit`。 |
+| `ValidateTrigger` | 表单默认验证触发时机，默认 `OnChanged`，与 Ant Design 的 `onChange` 默认验证语义对齐。 |
 | `IsValidateFeedbackEnabled` | 是否创建并传递验证反馈控件。 |
 | `InitialValues` | 表单加载时按 `FieldName` 写入初始值。 |
 | `IsFormValid` | 基于表单项验证状态聚合的只读有效性状态。 |
@@ -75,7 +75,8 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 
 - `FieldName` 是表单值读写和验证消息聚合的字段键。
 - `Content` 必须实现 `IFormItemAware`，除非该表单项显式关闭内容类型验证。
-- `Validators` 按 `ValidateStrategy` 执行，结果写入 `ValidateStatus`、`ValidateResult`、错误消息和警告消息。
+- `Validators` 按 `ValidateStrategy` 执行；error 结果写入内容控件的 `DataValidationErrors`，并同步投射到 `ValidateStatus`、`ValidateResult`、错误消息和 feedback。
+- `Warning`、`Validating` 和 `Success` 是 Form 扩展状态，不写成 `DataValidationErrors` error。
 - `ValidateTrigger` 可以继承 Form 默认值，也可以在 FormItem 上覆盖。
 - `ValidateDebounce` 只影响延迟触发的表单项验证，不改变手动验证和提交验证的契约。
 - `Help` 与验证消息共同决定表单项辅助信息区域是否保留空间。
@@ -94,14 +95,14 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 
 | 接口 | 职责 |
 | --- | --- |
-| `IFormItemAware` | 提供值读写、清空、值变化通知和验证状态通知。 |
+| `IFormItemAware` | 提供值读写、清空、值变化通知和扩展验证状态通知；error 真源仍是内容控件的 `DataValidationErrors`。 |
 | `IFormItemFeedbackAware` | 接收 `FormValidateFeedback` 控件，用于在输入框内部展示反馈图标。 |
 | `ICustomizableSizeTypeAware` | 接收 `CustomizableSizeType`，包含 `Custom` 尺寸。 |
 | `ISizeTypeAware` | 旧尺寸接口；Form 将 `Custom` 映射为 `Middle` 后传递。 |
 | `IInputControlStyleVariantAware` | 接收 Form 的 `StyleVariant`。 |
 | `IMotionAwareControl` | 接收 Form 的 `IsMotionEnabled`。 |
 
-`FormItemDecorator` 用于把一个或多个输入控件组合成单个表单项内容。它自身实现 Form 接入接口，并把 value、validate status、feedback、size、motion 和 style variant 转发给子控件。
+`FormItemDecorator` 用于把一个或多个输入控件组合成单个表单项内容。它自身实现 Form 接入接口，并把 value、validate status、feedback、size、motion 和 style variant 转发给子控件；涉及 error 时必须保持 `DataValidationErrors` 与子控件验证目标一致。
 
 ### 3.4 按钮契约
 
@@ -117,15 +118,16 @@ Form config
   → FormItem content via IFormItemAware
   → value changed / blur / submit validation trigger
   → FormItem validators
-  → ValidateStatus / ValidateResult / feedback / messages
+  → DataValidationErrors for error
+  → ValidateStatus / ValidateResult / feedback / messages as projection
   → Form IsFormValid aggregation
   → SubmitButton watch state and submit result
 ```
 
 验证触发模型：
 
-- `OnSubmit` 是 Form 的默认触发时机，避免表单初始化或普通输入变化时提前显示错误。
-- `OnChanged` 在内容控件触发 `IFormItemAware.ValueChanged` 后按 `ValidateDebounce` 延迟验证。
+- `OnChanged` 是 Form 的默认触发时机；内容控件触发 `IFormItemAware.ValueChanged` 后按 `ValidateDebounce` 延迟验证，使提交后或编辑中的错误能够随输入及时更新。
+- `OnSubmit` 仅在手动验证或提交时验证，适合显式要求只在提交入口展示错误的表单。
 - `OnBlur` 在 FormItem 失去焦点时按 `ValidateDebounce` 延迟验证。
 - 手动 `Validate()`、`ValidateAsync()` 和 `Submit()` 直接进入验证流程，不依赖输入变化触发。
 
@@ -140,9 +142,10 @@ Form config
 验证结果模型：
 
 - `Error` 会使 Form 聚合为无效状态，并阻止 `Submit()` 继续提交。
+- error 状态以内容控件的 `DataValidationErrors.HasErrors` 为最高优先级；Form validators 产生的 error 也写入同一 native validation 通道。
 - `Warning` 会展示警告状态和警告消息，但 Form 聚合只把 error 作为提交阻断条件。
 - `Validating` 和 `Default` 在 `IsFormValid` 聚合中不视为有效完成状态。
-- 重置会取消未完成验证、清空当前消息并把表单项状态恢复为 `Default`。
+- 重置会取消未完成验证、清空 Form-owned 消息并把表单项扩展状态恢复为 `Default`；它只能清理由 Form 写入的 validation error，不能清掉 binding 或 ViewModel 写入的 native error。
 
 提交与重置模型：
 
@@ -206,14 +209,15 @@ Form 属于 Data Entry 容器控件，和 LineEdit、SearchEdit、Select、TreeS
 
 维护 Form 时必须保持以下不变量：
 
-- 默认 `ValidateTrigger` 必须为 `OnSubmit`，除非获得明确 API/行为变更授权。
+- 默认 `ValidateTrigger` 必须为 `OnChanged`，保持与 Ant Design 默认 `onChange` 验证触发语义一致。
 - `FormItem.Content` 默认必须实现 `IFormItemAware`，否则应保持当前异常语义。
 - `FormItem` 重新设置 Content 时必须释放旧内容的值变化订阅和 feedback 引用。
 - 新验证运行必须取消旧验证和 debounce，旧异步结果不能覆盖新结果或 reset 后状态。
 - `Reset()` 必须取消未完成验证，并避免 reset 引起的值变化触发新验证。
+- `Reset()`、验证成功和重新验证只能清理 Form-owned `DataValidationErrors`，不得删除外部 native validation error。
 - `Submit()` 只有在没有 error 时才收集值并触发提交事件。
 - `Warning` 状态不得按 error 处理，除非获得明确行为变更授权。
-- `FormItemDecorator` 必须继续向子控件转发 value、validation status、feedback、size、motion 和 style variant。
+- `FormItemDecorator` 必须继续向子控件转发 value、validation status、feedback、size、motion 和 style variant，并保持 native validation error 的目标控件稳定。
 - `SubmitButton.IsWatchValidateResult=false` 时不得因为未找到 Form 或 Form 无效而强制禁用。
 - Template part、token 名称、ControlTheme key 和验证枚举值不得在未授权情况下重命名或删除。
 
@@ -242,7 +246,7 @@ Form 属于 Data Entry 容器控件，和 LineEdit、SearchEdit、Select、TreeS
 
 ### 8.3 验证反馈模型
 
-启用 `IsValidateFeedbackEnabled` 后，FormItem 通过 `FeedbackTemplate` 创建 `FormValidateFeedback`，把自己的 `ValidateStatus` relay 到 feedback，并传给实现 `IFormItemFeedbackAware` 的内容控件。默认 Form feedback 模板使用成功、错误、警告和 loading 图标表达状态。
+启用 `IsValidateFeedbackEnabled` 后，FormItem 通过 `FeedbackTemplate` 创建 `FormValidateFeedback`，把自己的 `ValidateStatus` relay 到 feedback，并传给实现 `IFormItemFeedbackAware` 的内容控件。默认 Form feedback 模板使用成功、错误、警告和 loading 图标表达状态；其中错误图标来自 `DataValidationErrors` 驱动的 error 投影，警告、成功和验证中仍由 Form 扩展状态驱动。
 
 ### 8.4 Custom SizeType 模型
 

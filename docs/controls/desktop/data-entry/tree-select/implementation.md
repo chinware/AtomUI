@@ -82,8 +82,10 @@ Form.GetValue()
   → Multiple / checkable: SelectedItems
 Form.ClearValue()
   → clear current selection
+DataValidationErrors
+  → native error visual + AddOn effective error state
 ValidateStatus
-  → Status
+  → Warning/Success/Validating extension state
 FeedbackControl
   → FormFeedback → SelectHandle
 ```

@@ -87,7 +87,7 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 | --- | --- |
 | `SizeType` | 输入尺寸密度，支持 `Large / Middle / Small / Custom`。 |
 | `StyleVariant` | 输入表面样式。 |
-| `Status` | 校验状态映射，驱动 `:error` / `:warning`。 |
+| `Status` | 手动输入反馈状态；warning 仅在无 native validation error 时驱动 `:warning`，error 视觉优先由 `DataValidationErrors` 驱动。 |
 | `PlaceholderText` / `PlaceholderForeground` | 空选择时的占位文本和颜色。 |
 | `IsFilterEnabled` | 是否显示过滤输入并将输入同步为 `FilterValue`。 |
 | `IsAllowClear` / `SuffixIcon` / `SuffixLoadingIcon` | 清除、展开指示和 loading 指示入口。 |
@@ -126,7 +126,7 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 
 稳定伪类来自 `AbstractSelect` 和 `CascaderViewItem`：
 
-- `:dropdownopen`、`:error`、`:warning`、`:pressed`。
+- `:dropdownopen`、native validation `:error`、AtomUI warning `:warning`、`:pressed`。
 - AddOnDecoratedBox variant 伪类：`:outlined`、`:filled`、`:borderless`。
 - `CascaderViewItem` 使用 `:expanded`、`:checked`、`:selected` 和 checkbox toggle type 伪类。
 
@@ -221,7 +221,7 @@ Cascader 属于 Data Entry 选择控件家族，与 Select、TreeSelect、DatePi
 - `SelectTagAwareTextBox` / `SelectTag`：多选结果 tag 展示和 tag close 行为。
 - `SelectHandle`：右侧操作入口，负责展开指示、loading、清除和 Form feedback。
 - `ICascaderItemDataLoader`：异步加载边界。
-- `IFormItemAware` / `IFormItemFeedbackAware`：由 `AbstractSelect` 接入 Form 值和校验状态。
+- `IFormItemAware` / `IFormItemFeedbackAware`：由 `AbstractSelect` 接入 Form 值、扩展状态和 feedback；error 由 `DataValidationErrors` 投射到输入壳体。
 
 ## 7. 兼容性不变量
 

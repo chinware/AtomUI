@@ -49,7 +49,7 @@ Form 的公共契约由 Form、FormItem、FormItemDecorator、FormValidateFeedba
 | `SizeType` | 表单统一尺寸密度，支持 `Large/Middle/Small/Custom`。 |
 | `StyleVariant` | 传递给支持输入外观变体的子控件。 |
 | `IsMotionEnabled` | 传递给支持动效开关的子控件。 |
-| `ValidateTrigger` | 表单默认验证触发时机，默认 `OnSubmit`。 |
+| `ValidateTrigger` | 表单默认验证触发时机，默认 `OnChanged`，与 Ant Design 的 `onChange` 默认验证语义对齐。 |
 | `IsValidateFeedbackEnabled` | 是否创建并传递验证反馈控件。 |
 | `InitialValues` | 表单加载时按 `FieldName` 写入初始值。 |
 | `IsFormValid` | 基于表单项验证状态聚合的只读有效性状态。 |
