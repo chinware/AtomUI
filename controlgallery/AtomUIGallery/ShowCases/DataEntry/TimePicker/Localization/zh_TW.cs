@@ -1,5 +1,4 @@
 using AtomUI.Theme.Language;
-using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.TimePicker;
 
@@ -8,6 +7,8 @@ internal partial class zh_TW
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "點擊 TimePicker 後，可以在面板中選擇或輸入時間。";
+    public const string PickerDisplayTimeTitle = "彈出面板顯示時間";
+    public const string PickerDisplayTimeDescription = "打開彈出面板時定位到指定時間，但不提交選中值。";
     public const string HourFormatsTitle = "12 小時和 24 小時格式";
     public const string HourFormatsDescription = "TimePicker 支持 12 小時和 24 小時兩種時間格式。";
     public const string ThreeSizesTitle = "三種尺寸";
@@ -48,6 +49,7 @@ internal partial class zh_TW
     public const string ApiColumnDefault = "默認值";
     public const string ApiPropertySelectedTime = "TimePicker 當前選中的時間值。";
     public const string ApiPropertyDefaultTime = "TimePicker 重置行為使用的初始時間。";
+    public const string ApiPropertyPickerDisplayTime = "彈出面板打開時使用的顯示錨點，不提交選中值。";
     public const string ApiPropertyIsNeedConfirm = "要求使用者確認所選時間後再提交。";
     public const string ApiPropertyIsShowNow = "是否在彈出面板中顯示「此刻」快捷操作。";
     public const string ApiPropertyMinuteIncrement = "生成分鐘選項時使用的步進值。";

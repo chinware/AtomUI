@@ -1,5 +1,4 @@
 using AtomUI.Theme.Language;
-using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.TimePicker;
 
@@ -8,6 +7,8 @@ internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Click TimePicker, and then we could select or input a time in panel.";
+    public const string PickerDisplayTimeTitle = "Popup display time";
+    public const string PickerDisplayTimeDescription = "Open the popup panel at a specific display time without committing a selected value.";
     public const string HourFormatsTitle = "12-hour and 24-hour formats";
     public const string HourFormatsDescription = "TimePicker supports two time types, 12-hour and 24-hour.";
     public const string ThreeSizesTitle = "Three Sizes";
@@ -48,6 +49,7 @@ internal partial class en_US
     public const string ApiColumnDefault = "Default";
     public const string ApiPropertySelectedTime = "Selected time value for TimePicker.";
     public const string ApiPropertyDefaultTime = "Initial time used by TimePicker reset behavior.";
+    public const string ApiPropertyPickerDisplayTime = "Popup panel display anchor; does not commit a selected value.";
     public const string ApiPropertyIsNeedConfirm = "Requires the user to confirm the selected time before committing.";
     public const string ApiPropertyIsShowNow = "Shows the Now shortcut in the popup panel.";
     public const string ApiPropertyMinuteIncrement = "Minute step used when generating minute options.";

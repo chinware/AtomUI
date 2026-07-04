@@ -2,6 +2,12 @@
 
 本文档记录 DatePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-04
+
+- Docs
+  - Document the `PickerDisplayDate` panel display anchor contract for keeping committed values, default selected values and popup display position separate.
+  - Clarify that internal CalendarView `DisplayDate` state is not the outer DatePicker selected value contract.
+
 ## 2026-07-02
 
 - API

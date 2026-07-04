@@ -31,6 +31,9 @@ internal class TimePickerPresenter : PickerPresenterBase
     public static readonly StyledProperty<TimeSpan?> SelectedTimeProperty =
         TimePicker.SelectedTimeProperty.AddOwner<TimePickerPresenter>();
 
+    public static readonly StyledProperty<TimeSpan?> PickerDisplayTimeProperty =
+        TimePicker.PickerDisplayTimeProperty.AddOwner<TimePickerPresenter>();
+
     public bool IsNeedConfirm
     {
         get => GetValue(IsNeedConfirmProperty);
@@ -65,6 +68,12 @@ internal class TimePickerPresenter : PickerPresenterBase
     {
         get => GetValue(SelectedTimeProperty);
         set => SetValue(SelectedTimeProperty, value);
+    }
+
+    public TimeSpan? PickerDisplayTime
+    {
+        get => GetValue(PickerDisplayTimeProperty);
+        set => SetValue(PickerDisplayTimeProperty, value);
     }
 
     #endregion
@@ -135,6 +144,13 @@ internal class TimePickerPresenter : PickerPresenterBase
     private Button? _nowButton;
     private Button? _confirmButton;
     private TimeView? _timeView;
+    private TimeSpan? _pendingOpenDisplayTime;
+
+    internal void ResetOpenPanelState()
+    {
+        _pendingOpenDisplayTime = ResolveOpenDisplayTime();
+        ApplyPendingOpenPanelState();
+    }
 
     protected override void OnKeyDown(KeyEventArgs e)
     {
@@ -202,6 +218,7 @@ internal class TimePickerPresenter : PickerPresenterBase
         {
             RefreshChoosingStateSubscription();
         }
+        ApplyPendingOpenPanelState();
     }
 
     private void DetachTemplateEventHandlers()
@@ -264,6 +281,28 @@ internal class TimePickerPresenter : PickerPresenterBase
         }
     }
 
+    private TimeSpan? ResolveOpenDisplayTime()
+    {
+        if (PickerDisplayTime is null)
+        {
+            return null;
+        }
+
+        return SelectedTime ?? PickerDisplayTime;
+    }
+
+    private void ApplyPendingOpenPanelState()
+    {
+        if (_pendingOpenDisplayTime is null ||
+            _timeView is null)
+        {
+            return;
+        }
+
+        _timeView.SyncDisplayTimeToPanel(_pendingOpenDisplayTime.Value);
+        _pendingOpenDisplayTime = null;
+    }
+
     private void HandleConfirmButtonClicked(object? sender, RoutedEventArgs args)
     {
         if (TempSelectedTime is not null)
@@ -319,6 +358,7 @@ internal class TimePickerPresenter : PickerPresenterBase
     {
         base.OnAttachedToVisualTree(e);
         RefreshChoosingStateSubscription();
+        ApplyPendingOpenPanelState();
     }
 
     private void RefreshChoosingStateSubscription()

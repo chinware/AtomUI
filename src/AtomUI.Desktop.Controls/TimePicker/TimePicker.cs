@@ -45,6 +45,9 @@ public class TimePicker : InfoPickerInput
         AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(DefaultTime),
             enableDataValidation: true);
 
+    public static readonly StyledProperty<TimeSpan?> PickerDisplayTimeProperty =
+        AvaloniaProperty.Register<TimePicker, TimeSpan?>(nameof(PickerDisplayTime));
+
     public bool IsNeedConfirm
     {
         get => GetValue(IsNeedConfirmProperty);
@@ -85,6 +88,12 @@ public class TimePicker : InfoPickerInput
     {
         get => GetValue(DefaultTimeProperty);
         set => SetValue(DefaultTimeProperty, value);
+    }
+
+    public TimeSpan? PickerDisplayTime
+    {
+        get => GetValue(PickerDisplayTimeProperty);
+        set => SetValue(PickerDisplayTimeProperty, value);
     }
 
     #endregion
@@ -139,6 +148,7 @@ public class TimePicker : InfoPickerInput
         timePickerPresenter[!TimePickerPresenter.SecondIncrementProperty]  = this[!SecondIncrementProperty];
         timePickerPresenter[!TimePickerPresenter.ClockIdentifierProperty]  = this[!ClockIdentifierProperty];
         timePickerPresenter[!TimePickerPresenter.SelectedTimeProperty]     = this[!SelectedTimeProperty];
+        timePickerPresenter[!TimePickerPresenter.PickerDisplayTimeProperty] = this[!PickerDisplayTimeProperty];
         timePickerPresenter[!TimePickerPresenter.IsNeedConfirmProperty]    = this[!IsNeedConfirmProperty];
         timePickerPresenter[!TimePickerPresenter.IsShowNowProperty]        = this[!IsShowNowProperty];
 
@@ -165,6 +175,7 @@ public class TimePicker : InfoPickerInput
             _pickerPresenter.ChoosingStatusChanged += HandleChoosingStatusChanged;
             _pickerPresenter.HoverTimeChanged      += HandleHoverTimeChanged;
             _pickerPresenter.Confirmed             += HandleConfirmed;
+            _pickerPresenter.ResetOpenPanelState();
         }
     }
 

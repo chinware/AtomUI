@@ -5790,6 +5790,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyFormat] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyFormat;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsNeedConfirm] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyIsNeedConfirm;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsShowTime] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyIsShowTime;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerDisplayDate] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyPickerDisplayDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerMode] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyPickerMode;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerPlacement] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyPickerPlacement;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyRangeEndSelectedDate] = global::AtomUIGallery.ShowCases.DatePicker.en_US.ApiPropertyRangeEndSelectedDate;
@@ -5837,6 +5838,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2TextPlacement] = global::AtomUIGallery.ShowCases.DatePicker.en_US.P2TextPlacement;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.DatePicker.en_US.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.DatePicker.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PickerDisplayDateDescription] = global::AtomUIGallery.ShowCases.DatePicker.en_US.PickerDisplayDateDescription;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PickerDisplayDateTitle] = global::AtomUIGallery.ShowCases.DatePicker.en_US.PickerDisplayDateTitle;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PlacementDescription] = global::AtomUIGallery.ShowCases.DatePicker.en_US.PlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PlacementTitle] = global::AtomUIGallery.ShowCases.DatePicker.en_US.PlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.RangePickerDescription] = global::AtomUIGallery.ShowCases.DatePicker.en_US.RangePickerDescription;
@@ -5901,6 +5904,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyFormat] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyFormat;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsNeedConfirm] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyIsNeedConfirm;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsShowTime] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyIsShowTime;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerDisplayDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyPickerDisplayDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerMode] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyPickerMode;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerPlacement] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyPickerPlacement;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyRangeEndSelectedDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.ApiPropertyRangeEndSelectedDate;
@@ -5948,6 +5952,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2TextPlacement] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.P2TextPlacement;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PickerDisplayDateDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.PickerDisplayDateDescription;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PickerDisplayDateTitle] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.PickerDisplayDateTitle;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PlacementDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.PlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PlacementTitle] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.PlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.RangePickerDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_CN.RangePickerDescription;
@@ -6012,6 +6018,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyFormat] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyFormat;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsNeedConfirm] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyIsNeedConfirm;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyIsShowTime] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyIsShowTime;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerDisplayDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyPickerDisplayDate;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerMode] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyPickerMode;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyPickerPlacement] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyPickerPlacement;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.ApiPropertyRangeEndSelectedDate] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.ApiPropertyRangeEndSelectedDate;
@@ -6059,6 +6066,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.P2TextPlacement] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.P2TextPlacement;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PickerDisplayDateDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.PickerDisplayDateDescription;
+                dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PickerDisplayDateTitle] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.PickerDisplayDateTitle;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PlacementDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.PlacementDescription;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.PlacementTitle] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.PlacementTitle;
                 dictionary[global::AtomUIGallery.Localization.DatePickerShowCaseLangResourceKind.RangePickerDescription] = global::AtomUIGallery.ShowCases.DatePicker.zh_TW.RangePickerDescription;
@@ -21141,6 +21150,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyIsNeedConfirm] = global::AtomUIGallery.ShowCases.TimePicker.en_US.ApiPropertyIsNeedConfirm;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyIsShowNow] = global::AtomUIGallery.ShowCases.TimePicker.en_US.ApiPropertyIsShowNow;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyMinuteIncrement] = global::AtomUIGallery.ShowCases.TimePicker.en_US.ApiPropertyMinuteIncrement;
+                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyPickerDisplayTime] = global::AtomUIGallery.ShowCases.TimePicker.en_US.ApiPropertyPickerDisplayTime;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyRangeEndDefaultTime] = global::AtomUIGallery.ShowCases.TimePicker.en_US.ApiPropertyRangeEndDefaultTime;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyRangeEndSelectedTime] = global::AtomUIGallery.ShowCases.TimePicker.en_US.ApiPropertyRangeEndSelectedTime;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyRangeStartDefaultTime] = global::AtomUIGallery.ShowCases.TimePicker.en_US.ApiPropertyRangeStartDefaultTime;
@@ -21170,6 +21180,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.P2TextExpandDirection] = global::AtomUIGallery.ShowCases.TimePicker.en_US.P2TextExpandDirection;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.TimePicker.en_US.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.TimePicker.en_US.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PickerDisplayTimeDescription] = global::AtomUIGallery.ShowCases.TimePicker.en_US.PickerDisplayTimeDescription;
+                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PickerDisplayTimeTitle] = global::AtomUIGallery.ShowCases.TimePicker.en_US.PickerDisplayTimeTitle;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.TimePicker.en_US.ScenarioApi;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.TimePicker.en_US.ScenarioDesignToken;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.TimePicker.en_US.ScenarioExamples;
@@ -21232,6 +21244,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyIsNeedConfirm] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.ApiPropertyIsNeedConfirm;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyIsShowNow] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.ApiPropertyIsShowNow;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyMinuteIncrement] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.ApiPropertyMinuteIncrement;
+                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyPickerDisplayTime] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.ApiPropertyPickerDisplayTime;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyRangeEndDefaultTime] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.ApiPropertyRangeEndDefaultTime;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyRangeEndSelectedTime] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.ApiPropertyRangeEndSelectedTime;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyRangeStartDefaultTime] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.ApiPropertyRangeStartDefaultTime;
@@ -21261,6 +21274,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.P2TextExpandDirection] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.P2TextExpandDirection;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PickerDisplayTimeDescription] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.PickerDisplayTimeDescription;
+                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PickerDisplayTimeTitle] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.PickerDisplayTimeTitle;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.ScenarioApi;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.ScenarioDesignToken;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.TimePicker.zh_CN.ScenarioExamples;
@@ -21323,6 +21338,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyIsNeedConfirm] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.ApiPropertyIsNeedConfirm;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyIsShowNow] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.ApiPropertyIsShowNow;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyMinuteIncrement] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.ApiPropertyMinuteIncrement;
+                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyPickerDisplayTime] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.ApiPropertyPickerDisplayTime;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyRangeEndDefaultTime] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.ApiPropertyRangeEndDefaultTime;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyRangeEndSelectedTime] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.ApiPropertyRangeEndSelectedTime;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ApiPropertyRangeStartDefaultTime] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.ApiPropertyRangeStartDefaultTime;
@@ -21352,6 +21368,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.P2TextExpandDirection] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.P2TextExpandDirection;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.PageSubtitle;
+                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PickerDisplayTimeDescription] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.PickerDisplayTimeDescription;
+                dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.PickerDisplayTimeTitle] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.PickerDisplayTimeTitle;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ScenarioApi] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.ScenarioApi;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ScenarioDesignToken] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.ScenarioDesignToken;
                 dictionary[global::AtomUIGallery.Localization.TimePickerShowCaseLangResourceKind.ScenarioExamples] = global::AtomUIGallery.ShowCases.TimePicker.zh_TW.ScenarioExamples;

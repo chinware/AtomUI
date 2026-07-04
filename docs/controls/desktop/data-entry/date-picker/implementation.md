@@ -70,10 +70,11 @@ Public API / ItemsSource / Command / Event
 源码中的状态入口按以下语义维护：
 
 - 内容与数据：`HeaderBackground`。
-- 选择与集合：`DisplayMode`、`PickerMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SecondarySelectedDate`、`SecondarySelectedDateTime`、`SelectedDate`、`SelectedDateTime`、`TempSelectedTime`。
+- 选择与集合：`PickerMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SelectedDateTime`。
+- 弹层显示游标：`PickerDisplayDate`，以及 presenter 内部转发到 CalendarView 的 `DisplayDate`、`SelectedMonth`、`SelectedYear`、`LastSelectedDate`。
 - 交互与状态：`IsFloatingArrowPosition`、`IsHorizontalFlipped`、`IsNeedConfirm`、`IsShowNow`、`IsShowTime`、`IsTodayHighlighted`。
 - 视觉与布局：`RangePickerIndicatorOffsetEnd`、`RangePickerIndicatorOffsetStart`。
-- 其他稳定入口：`ClockIdentifier`、`DefaultDateTime`、`DisplayDate`、`DisplayDateEnd`、`DisplayDateStart`、`FirstDayOfWeek`、`Format`。
+- 其他稳定入口：`ClockIdentifier`、`DefaultDateTime`、`Format`。
 
 维护要求：
 
@@ -148,6 +149,15 @@ DatePicker 的交互事件应从输入源收敛到控件级语义事件：
 - `IsShowTime`、`Format`、`ClockIdentifier`、AM/PM 文本和字体变化会重新计算格式预留宽度；选中值、hover 值和范围端点切换不得改变预留宽度。
 - 范围选择的两端输入使用同一个格式预留宽度，`RangePickerIndicator` 和 popup placement 只跟随稳定输入框 bounds，不反向驱动输入框测量。
 - 范围输入模板的内部 `AddOnDecoratedBox` 和 content presenter 必须在控件内部 stretch；范围整体测量以 `base.MeasureOverride` 的完整宽度为基础，只替换两端输入框宽度为 `PreferredWidth`，不得重新手算 padding、spacing、icon 或 add-on 宽度。
+
+弹层显示锚点维护规则：
+
+- `SelectedDateTime`、`DefaultDateTime` 和 `PickerDisplayDate` 是三个不同状态：已提交值、默认选中/reset 值、弹层显示锚点。实现中不得复用 `DefaultDateTime` 表达弹层显示锚点。
+- `PickerDisplayDate` 只在打开弹层时参与面板定位，不是受控面板游标；面板导航过程中不应反向写回 `PickerDisplayDate`。
+- 单值 `DatePicker` 仅在设置 `PickerDisplayDate` 后介入打开定位；面板锚点优先级为 `SelectedDateTime ?? PickerDisplayDate`，结果为空时保持现有 CalendarView 默认行为。
+- 范围选择打开弹层时，面板锚点优先级为当前 active endpoint 的选中值、`PickerDisplayDate`、现有默认行为；inactive endpoint 不得把面板拉回自身日期。
+- 应用锚点前必须按当前 `PickerMode` 通过 `DatePickerFormattingHelper.NormalizeDateTime` 归一化。周为 ISO 周起始日，月份为当月 1 日，季度为季度首月 1 日，年份为当年 1 月 1 日。
+- 应用锚点时只同步内部 CalendarView 的 `DisplayDate`、`SelectedMonth`、`SelectedYear`、`LastSelectedDate` 和高亮刷新；不得设置 `SelectedDate`，不得修改 `SelectedDateTime`、输入框文本、Form value 或清除按钮状态。
 
 范围日历视觉状态维护规则：
 

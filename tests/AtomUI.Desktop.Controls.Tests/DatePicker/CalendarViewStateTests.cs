@@ -677,6 +677,163 @@ public class CalendarViewStateTests
     }
 
     [Fact]
+    public void DatePicker_Open_With_PickerDisplayDate_Anchors_Calendar_Without_Selecting_Date()
+    {
+        RunOnUIThread(() =>
+        {
+            var displayDate = new DateTime(2026, 10, 20);
+            var picker = new TestDatePicker
+            {
+                PickerDisplayDate = displayDate
+            };
+
+            var presenter = picker.CreatePickerPresenterForTest();
+            picker.NotifyPickerOpenedForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<PickerCalendar>()
+                                        .Single();
+                var expectedSelectedMonth = new DateTime(2026, 10, 1);
+
+                calendar.DisplayDate.ShouldBe(displayDate);
+                calendar.SelectedMonth.ShouldBe(expectedSelectedMonth);
+                calendar.SelectedYear.ShouldBe(expectedSelectedMonth);
+                calendar.LastSelectedDate.ShouldBe(displayDate);
+                calendar.SelectedDate.ShouldBeNull();
+                presenter.SelectedDateTime.ShouldBeNull();
+                picker.SelectedDateTime.ShouldBeNull();
+            });
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Open_Uses_SelectedDateTime_Before_PickerDisplayDate()
+    {
+        RunOnUIThread(() =>
+        {
+            var selectedDate = new DateTime(2026, 2, 11);
+            var picker = new TestDatePicker
+            {
+                PickerDisplayDate = new DateTime(2027, 10, 20),
+                SelectedDateTime  = selectedDate
+            };
+
+            var presenter = picker.CreatePickerPresenterForTest();
+            picker.NotifyPickerOpenedForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<PickerCalendar>()
+                                        .Single();
+
+                calendar.DisplayDate.ShouldBe(selectedDate);
+                calendar.SelectedDate.ShouldBe(selectedDate);
+                presenter.SelectedDateTime.ShouldBe(selectedDate);
+                picker.SelectedDateTime.ShouldBe(selectedDate);
+            });
+        });
+    }
+
+    [Fact]
+    public void DatePicker_Open_Normalizes_PickerDisplayDate_By_PickerMode()
+    {
+        RunOnUIThread(() =>
+        {
+            var picker = new TestDatePicker
+            {
+                PickerMode        = DatePickerMode.Quarter,
+                PickerDisplayDate = new DateTime(2026, 11, 20, 8, 30, 0)
+            };
+
+            var presenter = picker.CreatePickerPresenterForTest();
+            picker.NotifyPickerOpenedForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<PickerCalendar>()
+                                        .Single();
+                var expectedDisplayDate = new DateTime(2026, 10, 1);
+
+                calendar.DisplayDate.ShouldBe(expectedDisplayDate);
+                calendar.SelectedMonth.ShouldBe(expectedDisplayDate);
+                calendar.SelectedYear.ShouldBe(expectedDisplayDate);
+                calendar.LastSelectedDate.ShouldBe(expectedDisplayDate);
+                calendar.SelectedDate.ShouldBeNull();
+                picker.SelectedDateTime.ShouldBeNull();
+            });
+        });
+    }
+
+    [Fact]
+    public void RangeDatePicker_Open_Start_Part_With_PickerDisplayDate_Anchors_Empty_Active_Part()
+    {
+        RunOnUIThread(() =>
+        {
+            var displayDate = new DateTime(2026, 9, 23);
+            var picker = new TestRangeDatePicker
+            {
+                PickerDisplayDate = displayDate
+            };
+            picker.RangeActivatedPart = RangeActivatedPart.Start;
+
+            var presenter = picker.CreatePickerPresenterForTest();
+            picker.NotifyPickerOpenedForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<DualMonthRangeCalendar>()
+                                        .Single();
+                var expectedSelectedMonth = new DateTime(2026, 9, 1);
+
+                calendar.DisplayDate.ShouldBe(displayDate);
+                calendar.SelectedMonth.ShouldBe(expectedSelectedMonth);
+                calendar.SelectedYear.ShouldBe(expectedSelectedMonth);
+                calendar.LastSelectedDate.ShouldBe(displayDate);
+                calendar.SelectedDate.ShouldBeNull();
+                calendar.SecondarySelectedDate.ShouldBeNull();
+                picker.RangeStartSelectedDate.ShouldBeNull();
+                picker.RangeEndSelectedDate.ShouldBeNull();
+            });
+        });
+    }
+
+    [Fact]
+    public void RangeDatePicker_Open_End_Part_Uses_Selected_End_Before_PickerDisplayDate()
+    {
+        RunOnUIThread(() =>
+        {
+            var selectedEnd = new DateTime(2026, 2, 11);
+            var picker = new TestRangeDatePicker
+            {
+                PickerDisplayDate      = new DateTime(2027, 9, 23),
+                RangeStartSelectedDate = new DateTime(2026, 1, 12),
+                RangeEndSelectedDate   = selectedEnd
+            };
+            picker.RangeActivatedPart = RangeActivatedPart.End;
+
+            var presenter = picker.CreatePickerPresenterForTest();
+            picker.NotifyPickerOpenedForTest();
+
+            ShowInWindow(presenter, () =>
+            {
+                var calendar = presenter.GetVisualDescendants()
+                                        .OfType<DualMonthRangeCalendar>()
+                                        .Single();
+
+                calendar.IsSelectRangeStart.ShouldBeFalse();
+                calendar.DisplayDate.ShouldBe(new DateTime(2026, 1, 11));
+                calendar.SecondarySelectedDate.ShouldBe(selectedEnd);
+                picker.RangeEndSelectedDate.ShouldBe(selectedEnd);
+            });
+        });
+    }
+
+    [Fact]
     public void RangeDatePicker_Month_End_Hover_Renders_Preview_Range_From_Selected_Start()
     {
         RunOnUIThread(() =>
@@ -1537,6 +1694,21 @@ public class CalendarViewStateTests
         public void HandleMonthMouseEnteredForTest(PickerCalendarButton button)
         {
             HandleMonthMouseEntered(button, null!);
+        }
+    }
+
+    private sealed class TestDatePicker : DatePicker
+    {
+        public DatePickerPresenter CreatePickerPresenterForTest()
+        {
+            var presenter = CreatePickerPresenter().ShouldBeAssignableTo<DatePickerPresenter>();
+            NotifyPickerPresenterCreated(presenter);
+            return presenter;
+        }
+
+        public void NotifyPickerOpenedForTest()
+        {
+            NotifyPickerOpened();
         }
     }
 

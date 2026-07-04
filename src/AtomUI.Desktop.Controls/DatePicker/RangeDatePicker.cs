@@ -43,6 +43,9 @@ public class RangeDatePicker : RangeInfoPickerInput
 
     public static readonly StyledProperty<DatePickerMode> PickerModeProperty =
         DatePicker.PickerModeProperty.AddOwner<RangeDatePicker>();
+
+    public static readonly StyledProperty<DateTime?> PickerDisplayDateProperty =
+        DatePicker.PickerDisplayDateProperty.AddOwner<RangeDatePicker>();
     
     public DateTime? RangeStartSelectedDate
     {
@@ -94,6 +97,12 @@ public class RangeDatePicker : RangeInfoPickerInput
     {
         get => GetValue(PickerModeProperty);
         set => SetValue(PickerModeProperty, value);
+    }
+
+    public DateTime? PickerDisplayDate
+    {
+        get => GetValue(PickerDisplayDateProperty);
+        set => SetValue(PickerDisplayDateProperty, value);
     }
     
     #endregion
@@ -213,6 +222,7 @@ public class RangeDatePicker : RangeInfoPickerInput
         presenter[!RangeDatePickerPresenter.IsShowNowProperty]                 = this[!IsShowNowProperty];
         presenter[!RangeDatePickerPresenter.IsShowTimeProperty]                = this[!IsShowTimeProperty];
         presenter[!RangeDatePickerPresenter.PickerModeProperty]                = this[!PickerModeProperty];
+        presenter[!RangeDatePickerPresenter.PickerDisplayDateProperty]         = this[!PickerDisplayDateProperty];
 
         return presenter;
     }

@@ -243,7 +243,8 @@ internal class DateTimePickerPanel : Panel,
                 throw new ArgumentOutOfRangeException(nameof(value));
             }
 
-            var sel = CoerceSelected(value);
+            var sel              = CoerceSelected(value);
+            var selectionChanged = sel != _selectedValue;
             _selectedValue = sel;
             _selectedIndex = (value - MinimumValue) / Increment;
 
@@ -262,7 +263,10 @@ internal class DateTimePickerPanel : Panel,
             InvalidateArrange();
             RaiseScrollInvalidated(EventArgs.Empty);
 
-            SelectionChanged?.Invoke(this, EventArgs.Empty);
+            if (selectionChanged)
+            {
+                SelectionChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
     }
 

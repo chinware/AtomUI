@@ -1,5 +1,4 @@
 using AtomUI.Theme.Language;
-using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.DatePicker;
 
@@ -8,6 +7,8 @@ internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Click DatePicker, and then we could select or input a date in panel.";
+    public const string PickerDisplayDateTitle = "Popup display date";
+    public const string PickerDisplayDateDescription = "Open the popup panel at a specific display date without committing a selected value.";
     public const string RangePickerTitle = "Range Picker";
     public const string RangePickerDescription = "Set range picker type by picker prop.";
     public const string NeedConfirmTitle = "Need Confirm";
@@ -66,6 +67,7 @@ internal partial class en_US
     public const string ApiColumnDefault = "Default";
     public const string ApiPropertySelectedDateTime = "Selected date and optional time for DatePicker.";
     public const string ApiPropertyDefaultDateTime = "Initial date and optional time used by DatePicker reset behavior.";
+    public const string ApiPropertyPickerDisplayDate = "Popup panel display anchor; does not commit a selected value.";
     public const string ApiPropertyRangeStartSelectedDate = "Selected start date for RangeDatePicker.";
     public const string ApiPropertyRangeEndSelectedDate = "Selected end date for RangeDatePicker.";
     public const string ApiPropertyFormat = "Custom date/time formatting string.";
