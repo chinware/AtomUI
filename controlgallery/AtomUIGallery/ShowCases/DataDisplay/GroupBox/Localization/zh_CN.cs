@@ -8,6 +8,8 @@ internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "GroupBox 控件的基础用法。";
+    public const string AutoHeightTitle = "自动高度";
+    public const string AutoHeightDescription = "GroupBox 未设置高度时会根据 Header、Padding 和内容期望尺寸自动撑开。";
     public const string HeaderPositionTitle = "标题位置";
     public const string HeaderPositionDescription = "GroupBox 标题支持左、中、右三种位置。";
     public const string HeaderStyleTitle = "标题样式";
@@ -16,6 +18,9 @@ internal partial class zh_CN
     public const string HeaderIconDescription = "GroupBox 标题支持指定图标。";
     public const string P2HeaderTitleTitleInfo = "标题信息";
     public const string P2TextContentOfGroupBox = "分组框内容";
+    public const string AutoHeightContentOverview = "下面的 GroupBox 没有设置 Height，内容区域会随着文本行数自动增长。";
+    public const string AutoHeightContentDetail = "当内容来自 StackPanel、Grid 或显式尺寸控件时，GroupBox 会使用内容的 DesiredSize 计算整体高度。";
+    public const string AutoHeightContentFooter = "如果父容器设置了固定高度或 MaxHeight，则仍然会按 Avalonia 布局约束进行裁剪或滚动。";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计 Token";

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -62,6 +63,45 @@ public class GroupBoxRenderTests
 
             HasTransparentHeaderMaskDrawing(drawingGroup, headerBounds).ShouldBeFalse(
                 "the header gap must be excluded from the border geometry instead of covered with GroupBox.Background");
+        });
+    }
+
+    [Fact]
+    public void Auto_Height_Includes_Header_And_Content_Padding()
+    {
+        var content = new Border
+        {
+            Height = 160
+        };
+        var groupBox = new AtomUI.Desktop.Controls.GroupBox
+        {
+            HeaderTitle = "Title",
+            Content     = content
+        };
+        var root = new StackPanel
+        {
+            Width    = 240,
+            Children =
+            {
+                groupBox
+            }
+        };
+
+        ShowInWindow(root, window =>
+        {
+            var headerContent = groupBox.GetVisualDescendants()
+                                        .OfType<Decorator>()
+                                        .Single(item => item.Name == "PART_HeaderContent");
+            var contentPresenter = groupBox.GetVisualDescendants()
+                                           .OfType<ContentPresenter>()
+                                           .Single(item => item.Name == "PART_ContentPresenter");
+
+            groupBox.Bounds.Height.ShouldBeGreaterThan(
+                content.Bounds.Height + headerContent.Bounds.Height / 2,
+                "auto height must include the fieldset header lane in addition to content height");
+            contentPresenter.Bounds.Height.ShouldBeGreaterThanOrEqualTo(
+                content.Bounds.Height,
+                "the content presenter must allocate enough height for the measured content");
         });
     }
 

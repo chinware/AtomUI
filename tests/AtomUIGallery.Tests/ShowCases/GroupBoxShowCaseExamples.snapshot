@@ -9,6 +9,19 @@
 </gallery:ShowCaseItem>
 
 <gallery:ShowCaseItem
+    Title="{gallery:GroupBoxShowCaseLangResource AutoHeightTitle}"
+    Description="{gallery:GroupBoxShowCaseLangResource AutoHeightDescription}"
+    BadgeText="v6.0.8">
+    <atom:GroupBox HeaderTitle="{gallery:GroupBoxShowCaseLangResource AutoHeightTitle}">
+        <StackPanel Spacing="8">
+            <atom:TextBlock Text="{gallery:GroupBoxShowCaseLangResource AutoHeightContentOverview}" TextWrapping="Wrap" />
+            <atom:TextBlock Text="{gallery:GroupBoxShowCaseLangResource AutoHeightContentDetail}" TextWrapping="Wrap" />
+            <atom:TextBlock Text="{gallery:GroupBoxShowCaseLangResource AutoHeightContentFooter}" TextWrapping="Wrap" />
+        </StackPanel>
+    </atom:GroupBox>
+</gallery:ShowCaseItem>
+
+<gallery:ShowCaseItem
     Title="{gallery:GroupBoxShowCaseLangResource HeaderPositionTitle}"
     Description="{gallery:GroupBoxShowCaseLangResource HeaderPositionDescription}">
     <StackPanel Orientation="Vertical" Spacing="10">

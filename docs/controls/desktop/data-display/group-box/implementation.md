@@ -60,6 +60,8 @@ Header 内容变化、字体变化、icon 可见性变化和标题位置变化�
 
 更换模板时必须清理旧 part 引用，避免旧视觉节点 bounds 被继续用于缺口计算。
 
+`MeasureOverride` 必须测量 `PART_Frame`，而不是只依赖 `ContentControl` 默认内容测量。`PART_Frame` 包含 Header 容器、`PART_ContentPresenter` 和由 Token 注入的内容内边距，因此它的 `DesiredSize` 才能完整表达 GroupBox 自动高度。该设计保证未设置显式高度时，内容增多会推动 GroupBox 高度增长，而不会被 Header 通道、边框或内容内边距挤压。
+
 ## 6. 交互与事件处理
 
 GroupBox 不订阅 pointer、keyboard、focus、drag/drop 或 command 事件。Header 不是按钮，也不是折叠触发器。
@@ -84,6 +86,13 @@ Header 缺口渲染流程：
 - 普通重绘复用缓存。
 - DPI 半像素对齐应在几何构建阶段处理，避免边框断裂或重叠。
 
+自动高度测量流程：
+
+1. `MeasureOverride` 测量 `PART_Frame`。
+2. `PART_Frame` 内部的 DockPanel 同时测量 Header 容器和内容 Presenter。
+3. `PART_ContentPresenter` 将 `Padding` 作为 Margin 应用于内容区域。
+4. GroupBox 将模板根节点 `DesiredSize` 返回给父布局，使父容器按完整 fieldset 高度分配空间。
+
 ## 8. 资源、性能与 AOT 边界
 
 GroupBox 渲染应使用 Avalonia 绘制 API 和稳定 template part，不使用反射读取模板内部状态。
@@ -98,6 +107,7 @@ Token 通过动态资源进入 Theme，不应在 `Render` 中主动查找全局�
 
 - Header 缺口计算基于 `PART_HeaderContent` 的实际 bounds。
 - `PART_Frame` 保持边框绘制的布局参考。
+- `PART_Frame` 必须参与 GroupBox 测量，自动高度不能退化为只测量裸 Content。
 - 不用 Header 背景遮挡边框线来模拟缺口。
 - 透明背景、半透明背景和普通背景走同一渲染模型。
 - Header 图标隐藏时不保留额外图标占位。
@@ -112,6 +122,7 @@ Token 通过动态资源进入 Theme，不应在 `Render` 中主动查找全局�
 - 普通背景、半透明背景和复杂父背景下缺口稳定。
 - Header `Left`、`Center`、`Right` 三种位置缺口正确。
 - 带图标和无图标时 Header 宽度、缺口宽度和内容布局正确。
+- 未设置显式高度时，GroupBox 高度包含 Header、内容内边距和内容自身期望高度。
 - 不同边框厚度、圆角和 DPI 下边框不断裂。
 - Token 表、API 表和 Gallery 示例与控件实现一致。
 - 文档改动运行 `git diff --check`。

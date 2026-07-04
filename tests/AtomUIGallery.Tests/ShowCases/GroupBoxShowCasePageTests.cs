@@ -44,6 +44,8 @@ public class GroupBoxShowCasePageTests
         source.ShouldContain("GroupBoxShowCaseLangResource HeaderPositionTitle");
         source.ShouldContain("GroupBoxShowCaseLangResource HeaderStyleTitle");
         source.ShouldContain("GroupBoxShowCaseLangResource HeaderIconTitle");
+        source.ShouldContain("GroupBoxShowCaseLangResource AutoHeightTitle");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
@@ -123,6 +125,9 @@ public class GroupBoxShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
+            source.ShouldContain("AutoHeightTitle");
+            source.ShouldContain("AutoHeightDescription");
+            source.ShouldContain("AutoHeightContentOverview");
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyHeaderTitle");
             source.ShouldContain("ApiPropertyHeaderTitlePosition");
