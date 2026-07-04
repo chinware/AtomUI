@@ -248,6 +248,12 @@ public abstract class InfoPickerInput : TemplatedControl,
         AvaloniaProperty.RegisterDirect<InfoPickerInput, bool>(nameof(IsArrowVisibleEffective),
             o => o.IsArrowVisibleEffective,
             (o, v) => o.IsArrowVisibleEffective = v);
+
+    internal static readonly DirectProperty<InfoPickerInput, InputControlStatus> EffectiveStatusProperty =
+        AvaloniaProperty.RegisterDirect<InfoPickerInput, InputControlStatus>(
+            nameof(EffectiveStatus),
+            o => o.EffectiveStatus,
+            (o, v) => o.EffectiveStatus = v);
     
     internal static readonly DirectProperty<InfoPickerInput, bool> IsPopupHorizontalFlippedProperty =
         AvaloniaProperty.RegisterDirect<InfoPickerInput, bool>(nameof(IsPopupHorizontalFlipped),
@@ -326,6 +332,14 @@ public abstract class InfoPickerInput : TemplatedControl,
     {
         get => _isArrowVisibleEffective;
         private set => SetAndRaise(IsArrowVisibleEffectiveProperty, ref _isArrowVisibleEffective, value);
+    }
+
+    private InputControlStatus _effectiveStatus;
+
+    internal InputControlStatus EffectiveStatus
+    {
+        get => _effectiveStatus;
+        private set => SetAndRaise(EffectiveStatusProperty, ref _effectiveStatus, value);
     }
 
     private bool _isPopupHorizontalFlipped;
@@ -815,11 +829,29 @@ public abstract class InfoPickerInput : TemplatedControl,
             ConfigureShowArrowEffective();
         }
 
+        if (change.Property == StatusProperty ||
+            change.Property == DataValidationErrors.HasErrorsProperty ||
+            change.Property == DataValidationErrors.ErrorsProperty)
+        {
+            UpdateEffectiveStatus();
+        }
+
         if (change.Property == PickerPlacementProperty ||
             change.Property == IsPopupHorizontalFlippedProperty ||
             change.Property == IsPopupVerticalFlippedProperty)
         {
             ConfigureArrowPosition();
+        }
+    }
+
+    private void UpdateEffectiveStatus()
+    {
+        var effectiveStatus = DataValidationErrors.GetHasErrors(this)
+            ? InputControlStatus.Error
+            : Status;
+        if (EffectiveStatus != effectiveStatus)
+        {
+            EffectiveStatus = effectiveStatus;
         }
     }
     

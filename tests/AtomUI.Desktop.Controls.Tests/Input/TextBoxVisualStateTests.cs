@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using AtomUI.Controls;
 using AtomUI.Theme.Styling;
 using Avalonia;
 using Avalonia.Controls;
@@ -70,6 +71,75 @@ public class TextBoxVisualStateTests
 
             placeholder.IsVisible.ShouldBeTrue(
                 "The placeholder should return when IME preedit text is cleared and the input text is still empty.");
+        });
+    }
+
+    [Fact]
+    public void LineEdit_Forwards_DataValidationErrors_To_AddOnDecoratedBox()
+    {
+        var lineEdit = new AtomUILineEdit
+        {
+            Width = 180
+        };
+        var validationError = new InvalidOperationException("native");
+
+        ShowInWindow(lineEdit, () =>
+        {
+            var addOnDecoratedBox = lineEdit.GetVisualDescendants()
+                                            .OfType<global::AtomUI.Desktop.Controls.AddOnDecoratedBox>()
+                                            .Single(item => item.Name == global::AtomUI.Desktop.Controls.AddOnDecoratedBox.AddOnDecoratedBoxPart);
+
+            DataValidationErrors.SetError(lineEdit, validationError);
+            Dispatcher.UIThread.RunJobs();
+
+            DataValidationErrors.GetHasErrors(addOnDecoratedBox).ShouldBeTrue();
+            DataValidationErrors.GetErrors(addOnDecoratedBox).ShouldBe([validationError]);
+        });
+    }
+
+    [Fact]
+    public void LineEdit_DataValidationError_Overrides_Manual_Warning_For_AddOn_EffectiveStatus()
+    {
+        var lineEdit = new AtomUILineEdit
+        {
+            Width  = 180,
+            Status = InputControlStatus.Warning
+        };
+        var validationError = new InvalidOperationException("native");
+
+        ShowInWindow(lineEdit, () =>
+        {
+            var addOnDecoratedBox = lineEdit.GetVisualDescendants()
+                                            .OfType<global::AtomUI.Desktop.Controls.AddOnDecoratedBox>()
+                                            .Single(item => item.Name == global::AtomUI.Desktop.Controls.AddOnDecoratedBox.AddOnDecoratedBoxPart);
+
+            addOnDecoratedBox.EffectiveStatus.ShouldBe(InputControlStatus.Warning);
+
+            DataValidationErrors.SetError(lineEdit, validationError);
+            Dispatcher.UIThread.RunJobs();
+
+            addOnDecoratedBox.EffectiveStatus.ShouldBe(InputControlStatus.Error);
+
+            DataValidationErrors.ClearErrors(lineEdit);
+            Dispatcher.UIThread.RunJobs();
+
+            addOnDecoratedBox.EffectiveStatus.ShouldBe(InputControlStatus.Warning);
+        });
+    }
+
+    [Fact]
+    public void LineEdit_Manual_Error_Status_Does_Not_Set_Native_Error_PseudoClass()
+    {
+        var lineEdit = new AtomUILineEdit
+        {
+            Width  = 180,
+            Status = InputControlStatus.Error
+        };
+
+        ShowInWindow(lineEdit, () =>
+        {
+            lineEdit.Classes.Contains(":error").ShouldBeFalse();
+            DataValidationErrors.GetHasErrors(lineEdit).ShouldBeFalse();
         });
     }
 

@@ -16,6 +16,7 @@
                                                     IsAllowClear="{TemplateBinding IsAllowClear}"
                                                     StyleVariant="{TemplateBinding StyleVariant}"
                                                     Status="{TemplateBinding Status}"
+                                                    DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                                                     CaretIndex="{TemplateBinding CaretIndex, Mode=TwoWay}"
                                                     InnerLeftContent="{TemplateBinding ContentLeftAddOn}"
                                                     InnerLeftContentTemplate="{TemplateBinding ContentLeftAddOnTemplate}"

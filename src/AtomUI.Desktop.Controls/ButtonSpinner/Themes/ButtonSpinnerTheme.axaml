@@ -17,6 +17,7 @@
                     StyleVariant="{TemplateBinding StyleVariant}"
                     SizeType="{TemplateBinding SizeType}"
                     Status="{TemplateBinding Status}"
+                    DataValidationErrors.Errors="{TemplateBinding DataValidationErrors.Errors}"
                     IsShowHandle="{TemplateBinding IsButtonSpinnerVisible}"
                     IsHandleFloatable="{TemplateBinding IsButtonSpinnerFloatable}"
                     ButtonSpinnerLocation="{TemplateBinding ButtonSpinnerLocation}"

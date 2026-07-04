@@ -36,11 +36,25 @@ public class FormBehaviorTests
     }
 
     [Fact]
-    public void Form_Default_ValidateTrigger_Is_OnSubmit()
+    public void Form_Default_ValidateTrigger_Is_OnChanged()
     {
         var form = new global::AtomUI.Desktop.Controls.Form();
 
-        form.ValidateTrigger.ShouldBe(FormValidateTrigger.OnSubmit);
+        form.ValidateTrigger.ShouldBe(FormValidateTrigger.OnChanged);
+    }
+
+    [Fact]
+    public async Task FormActionsItem_Without_Validators_Does_Not_Require_FormItemAware_Content()
+    {
+        var formItem = new FormActionsItem
+        {
+            Content = new Avalonia.Controls.Button()
+        };
+
+        await formItem.ValidateValueAsync(CancellationToken.None);
+
+        formItem.ValidateStatus.ShouldBe(FormValidateStatus.Success);
+        formItem.ValidateResult.ShouldBe(FormValidateResult.Success);
     }
 
     [Fact]
@@ -63,7 +77,7 @@ public class FormBehaviorTests
     }
 
     [Fact]
-    public void FormItem_Does_Not_Validate_On_Content_Change_When_Default_Trigger_Is_OnSubmit()
+    public void FormItem_Validates_On_Content_Change_When_Default_Trigger_Is_OnChanged()
     {
         var content = new FeedbackAwareFormControl();
         var formItem = new FormItem
@@ -78,7 +92,55 @@ public class FormBehaviorTests
         content.RaiseValueChanged();
         Dispatcher.UIThread.RunJobs();
 
+        formItem.ValidateStatus.ShouldBe(FormValidateStatus.Error);
+        formItem.ValidateResult.ShouldBe(FormValidateResult.Error);
+    }
+
+    [Fact]
+    public async Task FormItem_Default_OnChanged_Revalidates_After_Submit_Error()
+    {
+        var content = new FeedbackAwareFormControl();
+        var formItem = new FormItem
+        {
+            OwnerForm  = new global::AtomUI.Desktop.Controls.Form(),
+            LabelText  = "Name",
+            FieldName  = "name",
+            Content    = content,
+            Validators = [new FormStringNotEmptyValidator { Message = "required" }]
+        };
+
+        await formItem.ValidateValueAsync(CancellationToken.None);
+        formItem.ValidateStatus.ShouldBe(FormValidateStatus.Error);
+        DataValidationErrors.GetHasErrors(content).ShouldBeTrue();
+
+        content.Value = "AtomUI";
+        content.RaiseValueChanged();
+        RunLayoutJobs();
+
+        formItem.ValidateStatus.ShouldBe(FormValidateStatus.Success);
+        formItem.ValidateResult.ShouldBe(FormValidateResult.Success);
+        DataValidationErrors.GetHasErrors(content).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void FormItem_Explicit_OnSubmit_Does_Not_Validate_On_Content_Change()
+    {
+        var content = new FeedbackAwareFormControl();
+        var formItem = new FormItem
+        {
+            OwnerForm       = new global::AtomUI.Desktop.Controls.Form(),
+            LabelText       = "Name",
+            FieldName       = "name",
+            Content         = content,
+            ValidateTrigger = FormValidateTrigger.OnSubmit,
+            Validators      = [new StaticValidator(FormValidateResult.Error)]
+        };
+
+        content.RaiseValueChanged();
+        RunLayoutJobs();
+
         formItem.ValidateStatus.ShouldBe(FormValidateStatus.Default);
+        formItem.ValidateResult.ShouldBe(FormValidateResult.Success);
     }
 
     [Fact]
@@ -227,6 +289,75 @@ public class FormBehaviorTests
     }
 
     [Fact]
+    public async Task FormItem_Validator_Error_Is_Written_To_DataValidationErrors()
+    {
+        var content = new FeedbackAwareFormControl();
+        var formItem = new FormItem
+        {
+            FieldName  = "name",
+            LabelText  = "Name",
+            Content    = content,
+            Validators = [new StaticValidator(FormValidateResult.Error, "required")]
+        };
+
+        await formItem.ValidateValueAsync(CancellationToken.None);
+
+        DataValidationErrors.GetHasErrors(content).ShouldBeTrue();
+        var errors = DataValidationErrors.GetErrors(content)!.Select(error => error.ToString()).ToList();
+        errors.Any(error => error is not null && error.Contains("required")).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task FormItem_Reset_Clears_Form_Owned_Errors_But_Preserves_External_DataValidationErrors()
+    {
+        var content       = new FeedbackAwareFormControl();
+        var externalError = new InvalidOperationException("external");
+        var formItem = new FormItem
+        {
+            FieldName  = "name",
+            LabelText  = "Name",
+            Content    = content,
+            Validators = [new StaticValidator(FormValidateResult.Error, "required")]
+        };
+        DataValidationErrors.SetError(content, externalError);
+
+        await formItem.ValidateValueAsync(CancellationToken.None);
+        DataValidationErrors.GetErrors(content)!.Count().ShouldBe(2);
+
+        formItem.ResetItemValue();
+
+        var remainingErrors = DataValidationErrors.GetErrors(content)!.ToList();
+        remainingErrors.ShouldBe([externalError]);
+        DataValidationErrors.GetHasErrors(content).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task FormItem_External_DataValidationError_Takes_Priority_Over_Form_Warning()
+    {
+        var content       = new FeedbackAwareFormControl();
+        var externalError = new InvalidOperationException("external");
+        var formItem = new FormItem
+        {
+            FieldName  = "name",
+            LabelText  = "Name",
+            Content    = content,
+            Validators = [new StaticValidator(FormValidateResult.Warning, "warning")]
+        };
+        FormValidateStatus? changedStatus = null;
+        formItem.ValidateChanged += (_, args) => changedStatus = args.Status;
+        DataValidationErrors.SetError(content, externalError);
+
+        await formItem.ValidateValueAsync(CancellationToken.None);
+
+        formItem.ValidateStatus.ShouldBe(FormValidateStatus.Error);
+        formItem.ValidateResult.ShouldBe(FormValidateResult.Error);
+        changedStatus.ShouldBe(FormValidateStatus.Error);
+        formItem.ValidateWarningMessages.ShouldBe(["warning"]);
+        formItem.ValidateErrorMessages.ShouldNotBeNull();
+        formItem.ValidateErrorMessages!.ShouldContain(message => message.Contains("external"));
+    }
+
+    [Fact]
     public async Task SubmitButton_WatchValidateResult_Disables_Until_Form_Is_Valid()
     {
         var form = new global::AtomUI.Desktop.Controls.Form();
@@ -357,6 +488,7 @@ public class FormBehaviorTests
         public FormValidateFeedback? Feedback { get; private set; }
         public FormValidateFeedback? LastReleasedFeedback { get; private set; }
         public FormValidateStatus? LastValidateStatus { get; private set; }
+        public object? Value { get; set; }
         private EventHandler? _valueChanged;
 
         public event EventHandler? ValueChanged
@@ -367,12 +499,14 @@ public class FormBehaviorTests
 
         public void SetFormValue(object? value)
         {
+            Value = value;
         }
 
-        public object? GetFormValue() => null;
+        public object? GetFormValue() => Value;
 
         public void ClearFormValue()
         {
+            Value = null;
         }
 
         public void NotifyValidateStatus(FormValidateStatus status)
@@ -462,4 +596,5 @@ public class FormBehaviorTests
             return _result;
         }
     }
+
 }

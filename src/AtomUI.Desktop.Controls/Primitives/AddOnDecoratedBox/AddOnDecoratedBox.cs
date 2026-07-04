@@ -155,6 +155,12 @@ internal class AddOnDecoratedBox : ContentControl,
     internal static readonly StyledProperty<IBrush?> AddOnStatusIconBrushProperty =
         AvaloniaProperty.Register<AddOnDecoratedBox, IBrush?>(nameof(AddOnStatusIconBrush));
 
+    internal static readonly DirectProperty<AddOnDecoratedBox, InputControlStatus> EffectiveStatusProperty =
+        AvaloniaProperty.RegisterDirect<AddOnDecoratedBox, InputControlStatus>(
+            nameof(EffectiveStatus),
+            o => o.EffectiveStatus,
+            (o, v) => o.EffectiveStatus = v);
+
     internal IBrush? AddOnStatusForeground
     {
         get => GetValue(AddOnStatusForegroundProperty);
@@ -165,6 +171,14 @@ internal class AddOnDecoratedBox : ContentControl,
     {
         get => GetValue(AddOnStatusIconBrushProperty);
         set => SetValue(AddOnStatusIconBrushProperty, value);
+    }
+
+    private InputControlStatus _effectiveStatus;
+
+    internal InputControlStatus EffectiveStatus
+    {
+        get => _effectiveStatus;
+        private set => SetAndRaise(EffectiveStatusProperty, ref _effectiveStatus, value);
     }
 
     internal static readonly DirectProperty<AddOnDecoratedBox, Thickness> InnerBoxBorderThicknessProperty =
@@ -396,6 +410,13 @@ internal class AddOnDecoratedBox : ContentControl,
             UpdatePseudoClasses();
         }
 
+        if (change.Property == StatusProperty ||
+            change.Property == DataValidationErrors.HasErrorsProperty ||
+            change.Property == DataValidationErrors.ErrorsProperty)
+        {
+            UpdateEffectiveStatus();
+        }
+
         if (change.Property == StyleVariantProperty ||
             change.Property == BorderThicknessProperty)
         {
@@ -442,6 +463,17 @@ internal class AddOnDecoratedBox : ContentControl,
         }
 
         ScheduleLayoutUpdate();
+    }
+
+    private void UpdateEffectiveStatus()
+    {
+        var effectiveStatus = DataValidationErrors.GetHasErrors(this)
+            ? InputControlStatus.Error
+            : Status;
+        if (EffectiveStatus != effectiveStatus)
+        {
+            EffectiveStatus = effectiveStatus;
+        }
     }
 
     private void ConfigureEffectiveContentFramePadding()
