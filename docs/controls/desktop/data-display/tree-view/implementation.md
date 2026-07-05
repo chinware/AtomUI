@@ -78,7 +78,7 @@ ItemsSource 变化恢复流：
 ```text
 capture SelectedItem / SelectedItems / CheckedItems identity paths
 clear current selection and checked collection
-restore runtime selected path if possible
+SelectionMode.Multiple ? restore runtime SelectedItems paths : restore runtime SelectedItem path
 fallback to DefaultSelectedPaths
 restore runtime checked paths if possible
 fallback to DefaultCheckedPaths
@@ -199,7 +199,7 @@ TreeView pointer 流程：
 
 默认状态回放按 selected、checked、filter、expanded 的顺序执行。这样选中和勾选可以在过滤和展开之前完成基础状态同步，最后由 `IsDefaultExpandAll` 或 `DefaultExpandedPaths` 决定可见展开结构。
 
-ItemsSource 变化时，TreeView 先捕获运行期状态的节点身份路径，再清空当前 selection / checked 集合，随后按新数据源尝试恢复运行期状态，最后回退默认路径。
+ItemsSource 变化时，TreeView 先捕获运行期状态的节点身份路径，再清空当前 selection / checked 集合，随后按新数据源尝试恢复运行期状态，最后回退默认路径。多选模式下 `SelectedItems` 是选择恢复的权威来源，即使 Avalonia 同时维护了 `SelectedItem`，也必须先恢复 `SelectedItems` 路径，避免多选状态在首次容器回放或数据源替换时折叠成单选。
 
 ### 7.3 勾选级联
 
@@ -272,6 +272,7 @@ Filter highlight runs 是 header 状态，不应写入 Token 或节点数据模�
 - `TraverseTreeViewPath` 是路径回放和路径操作的统一入口。
 - 默认状态回放顺序保持 selected、checked、filter、expanded。
 - ItemsSource 变化先尝试恢复运行期状态，再回退默认状态。
+- 多选模式的 ItemsSource 变化恢复必须以 `SelectedItems` 为权威；不能因为 `SelectedItem` 非空而丢弃其它已选节点。
 - `CheckedItemsSyncScope` 必须包裹内部批量 checked 集合更新。
 - filter 进入时备份上下文，退出时恢复。
 - `TreeViewItemHeader` 替换 `PART_HeaderContentFrame` 时必须解除旧 pointer 事件。
@@ -286,7 +287,7 @@ Filter highlight runs 是 header 状态，不应写入 Token 或节点数据模�
 
 验证范围：
 
-- `TreeViewStateReplayTests`：默认 selected / checked / expanded 回放顺序、`IsDefaultExpandAll` 优先级、ItemsSource 变化状态恢复、strict / cascading checked。
+- `TreeViewStateReplayTests`：默认 selected / checked / expanded 回放顺序、`IsDefaultExpandAll` 优先级、ItemsSource 变化状态恢复、多选恢复优先级、strict / cascading checked。
 - `TreeViewItemHeaderLifecycleTests`：template 替换时旧 `PART_HeaderContentFrame` pointer 事件释放。
 - 选择：单选、多选、`IsSelectable=false`、右键选择开关和 Form value 读写。
 - 勾选：checkbox 级联、strict、半选父级、radio group、`CheckedItemsChanged` added / removed。

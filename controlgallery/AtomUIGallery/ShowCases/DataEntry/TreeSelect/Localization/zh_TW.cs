@@ -23,7 +23,8 @@ internal partial class zh_TW
     public const string ApiColumnType = "類型";
     public const string ApiColumnDefault = "默認值";
     public const string ApiPropertyItemsSource = "選擇器展示的層級選項。";
-    public const string ApiPropertySelectedItems = "當前選中的樹節點。";
+    public const string ApiPropertySelectedItem = "單選模式當前選中的樹節點。默認雙向綁定，並支持數據驗證。";
+    public const string ApiPropertySelectedItems = "多選或可勾選模式當前選中的樹節點集合。默認雙向綁定，支持數據驗證，並會響應集合原地變更。";
     public const string ApiPropertyIsMultiple = "允許選擇多個樹節點。";
     public const string ApiPropertyIsTreeCheckable = "在樹形彈出層中顯示複選框。";
     public const string ApiPropertyIsDefaultExpandAll = "彈出層打開時默認展開樹節點。";
@@ -44,6 +45,14 @@ internal partial class zh_TW
     public const string TokenScopeComponent = "組件";
     public const string TokenStatusStable = "穩定";
     public const string TokenNameMinPopupWidth = "TreeSelect 使用的最小彈出層寬度。";
+    public const string BindingTitle = "綁定";
+    public const string BindingDescription = "SelectedItem 和 SelectedItems 默認支持雙向綁定，也支持集合原地變更同步。";
+    public const string BindingSingleLabel = "單選綁定";
+    public const string BindingMultipleLabel = "多選綁定";
+    public const string BindingSetSingleButton = "選擇你的葉子";
+    public const string BindingSetMultipleButton = "選擇兩個節點";
+    public const string BindingClearButton = "清空";
+    public const string BindingViewModelValueLabel = "ViewModel 值：";
     public const string MultipleSelectionTitle = "多選";
     public const string MultipleSelectionDescription = "多選用法。";
     public const string GenerateFromTreeDataTitle = "由樹數據生成";

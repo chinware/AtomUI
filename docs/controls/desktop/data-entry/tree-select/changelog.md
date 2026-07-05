@@ -6,6 +6,15 @@
 ## 2026-07-05
 
 - API
+  - Make `SelectedItem` and `SelectedItems` default to `BindingMode.TwoWay` and enable Avalonia data validation.
+- Implementation
+  - Subscribe to `SelectedItems` `INotifyCollectionChanged` sources while attached and refresh tags, count, Form value notifications, max-count state, and popup TreeView selection / checked items on collection mutation.
+- Gallery
+  - Add a `v6.0.8` binding example that demonstrates single and multiple TreeSelect selection binding.
+- Tests
+  - Add TreeSelect selection binding regression coverage for default binding mode, data validation metadata, collection mutation, and checkable mode.
+
+- API
   - Add inherited `IsShowOverflowTip`, `OverflowTipDelay` and `OverflowTipPlacement` support for selected result overflow tooltips.
 - Theme
   - Wire single selected text and multiple selected tags to the shared `OverflowTip` attached behavior, including tooltip placement.

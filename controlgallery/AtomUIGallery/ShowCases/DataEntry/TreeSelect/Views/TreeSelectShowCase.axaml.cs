@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI;
@@ -46,6 +47,10 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
                 {
                     viewModel.AsyncLoadTreeNodeLoader = null;
                     viewModel.BasicTreeNodes          = null;
+                    viewModel.BindingSingleTreeNodes   = null;
+                    viewModel.BindingMultipleTreeNodes = null;
+                    viewModel.BoundSelectedItem        = null;
+                    viewModel.BoundSelectedItems       = null;
                     viewModel.MultiSelectionTreeNodes = null;
                     viewModel.ItemsSourceTreeNodes    = null;
                     viewModel.CheckableTreeNodes      = null;
@@ -121,6 +126,7 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
     private void RefreshLocalizedTreeNodes(TreeSelectViewModel viewModel)
     {
         InitBasicTreeNodes(viewModel);
+        InitBindingTreeNodes(viewModel);
         InitMultiTreeNodes(viewModel);
         InitItemsSourceTreeNodes(viewModel);
         InitCheckableTreeNodes(viewModel);
@@ -147,6 +153,14 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
     private void InitMultiTreeNodes(TreeSelectViewModel viewModel)
     {
         viewModel.MultiSelectionTreeNodes = CreatePersonalLeafTreeNodes();
+    }
+
+    private void InitBindingTreeNodes(TreeSelectViewModel viewModel)
+    {
+        viewModel.BindingSingleTreeNodes   = CreatePersonalLeafTreeNodes();
+        viewModel.BindingMultipleTreeNodes = CreatePersonalLeafTreeNodes();
+        viewModel.BoundSelectedItem        = null;
+        viewModel.BoundSelectedItems       = new ObservableCollection<ITreeItemNode>();
     }
 
     private void InitLeftAddOnTreeNodes(TreeSelectViewModel viewModel)

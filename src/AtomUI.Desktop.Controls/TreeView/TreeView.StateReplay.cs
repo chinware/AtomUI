@@ -31,6 +31,7 @@ public partial class TreeView
             return;
         }
 
+        var isMultiple        = (SelectionMode & SelectionMode.Multiple) == SelectionMode.Multiple;
         var selectedItemPath  = BuildNodeIdentityPath(SelectedItem as ITreeItemNode);
         var selectedItemPaths = BuildNodeIdentityPaths(SelectedItems);
         var checkedItemPaths  = BuildNodeIdentityPaths(CheckedItems);
@@ -40,7 +41,14 @@ public partial class TreeView
         CheckedItems.Clear();
 
         var selectionRestored = false;
-        if (selectedItemPath != null)
+        if (isMultiple && selectedItemPaths is { Count: > 0 })
+        {
+            foreach (var path in selectedItemPaths)
+            {
+                selectionRestored |= TrySelectNodePath(path);
+            }
+        }
+        if (!selectionRestored && selectedItemPath != null)
         {
             selectionRestored = TrySelectNodePath(selectedItemPath);
         }

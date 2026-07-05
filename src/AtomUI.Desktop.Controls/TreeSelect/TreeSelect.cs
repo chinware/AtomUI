@@ -11,6 +11,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -101,13 +102,17 @@ public class TreeSelect : AbstractSelect
         AvaloniaProperty.RegisterDirect<TreeSelect, ITreeItemNode?>(
             nameof(SelectedItem),
             o => o.SelectedItem,
-            (o, v) => o.SelectedItem = v);
+            (o, v) => o.SelectedItem = v,
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
 
     public static readonly DirectProperty<TreeSelect, IList<ITreeItemNode>?> SelectedItemsProperty =
         AvaloniaProperty.RegisterDirect<TreeSelect, IList<ITreeItemNode>?>(
             nameof(SelectedItems),
             o => o.SelectedItems,
-            (o, v) => o.SelectedItems = v);
+            (o, v) => o.SelectedItems = v,
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
 
     public TreeSelectCheckedStrategy ShowCheckedStrategy
     {
@@ -325,6 +330,7 @@ public class TreeSelect : AbstractSelect
     private Border? _popupFrame;
     private TreeView? _treeView;
     private CompositeDisposable? _selectHandleInputStateBindings;
+    private INotifyCollectionChanged? _selectedItemsCollectionChangedSource;
     private bool _needSkipSyncSelection;
     private bool _needSkipCollectionChangedEvent;
     private bool _syncingSingleFilterInputText;
@@ -345,9 +351,9 @@ public class TreeSelect : AbstractSelect
         SelectTag.ClosedEvent.AddClassHandler<TreeSelect>((view, e) => view.HandleTagCloseRequest(e));
         ItemsSourceProperty.Changed.AddClassHandler<TreeSelect>((view, args) => view.HandleItemsSourceChanged(args));
         SelectedItemProperty.Changed.AddClassHandler<TreeSelect>((view, args) =>
-            view.NotifyFormValueChanged(args.NewValue));
+            view.HandleSelectedItemChanged(args));
         SelectedItemsProperty.Changed.AddClassHandler<TreeSelect>((view, args) =>
-            view.NotifyFormValueChanged(args.NewValue));
+            view.HandleSelectedItemsChanged(args));
     }
 
     public TreeSelect()
@@ -372,6 +378,13 @@ public class TreeSelect : AbstractSelect
         ConfigureMaxSelectReached();
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ConfigureSelectedItemsCollectionChangedSource(SelectedItems);
+        ConfigureSelectedItemsValueState();
+    }
+
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
@@ -380,6 +393,7 @@ public class TreeSelect : AbstractSelect
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
+        ReleaseSelectedItemsCollectionChangedSource();
         ClearPopupContent();
         base.OnDetachedFromVisualTree(e);
     }
@@ -729,6 +743,78 @@ public class TreeSelect : AbstractSelect
         {
             _treeView.ItemsSource = BuildItemsSourceList(Items);
         }
+    }
+
+    private void HandleSelectedItemChanged(AvaloniaPropertyChangedEventArgs args)
+    {
+        NotifyFormValueChanged(args.NewValue);
+    }
+
+    private void HandleSelectedItemsChanged(AvaloniaPropertyChangedEventArgs args)
+    {
+        ConfigureSelectedItemsCollectionChangedSource(args.GetNewValue<IList<ITreeItemNode>?>());
+        NotifyFormValueChanged(args.NewValue);
+    }
+
+    private void ConfigureSelectedItemsCollectionChangedSource(IList<ITreeItemNode>? selectedItems)
+    {
+        if (!this.IsAttachedToVisualTree())
+        {
+            ReleaseSelectedItemsCollectionChangedSource();
+            return;
+        }
+
+        if (ReferenceEquals(_selectedItemsCollectionChangedSource, selectedItems))
+        {
+            return;
+        }
+
+        ReleaseSelectedItemsCollectionChangedSource();
+
+        _selectedItemsCollectionChangedSource = selectedItems as INotifyCollectionChanged;
+        if (_selectedItemsCollectionChangedSource != null)
+        {
+            _selectedItemsCollectionChangedSource.CollectionChanged += HandleSelectedItemsCollectionChanged;
+        }
+    }
+
+    private void ReleaseSelectedItemsCollectionChangedSource()
+    {
+        if (_selectedItemsCollectionChangedSource != null)
+        {
+            _selectedItemsCollectionChangedSource.CollectionChanged -= HandleSelectedItemsCollectionChanged;
+            _selectedItemsCollectionChangedSource = null;
+        }
+    }
+
+    private void HandleSelectedItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (!ReferenceEquals(sender, _selectedItemsCollectionChangedSource))
+        {
+            return;
+        }
+
+        NotifyFormValueChanged(SelectedItems);
+        ConfigureSelectedItemsValueState();
+    }
+
+    private void ConfigureSelectedItemsValueState()
+    {
+        ConfigurePlaceholderVisible();
+        ConfigureSingleResultVisible();
+        ConfigureSelectionIsEmpty();
+        if (IsMultiple)
+        {
+            SetCurrentValue(SelectedCountProperty, SelectedItems?.Count ?? 0);
+        }
+        else
+        {
+            SetCurrentValue(SelectedCountProperty, SelectedItem != null ? 1 : 0);
+        }
+        ConfigureSingleFilterTextBox();
+        SyncSelectedItemsToTreeView();
+        BuildEffectiveSelectedItems();
+        ConfigureMaxSelectReached();
     }
 
     private void HandleClearRequest()
@@ -1187,7 +1273,7 @@ public class TreeSelect : AbstractSelect
         {
             if (SelectedItems.Count == 0 || ShowCheckedStrategy == TreeSelectCheckedStrategy.All)
             {
-                EffectiveSelectedItems = SelectedItems;
+                EffectiveSelectedItems = BuildTreeNodeList(SelectedItems);
             }
             else
             {

@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Reactive;
 using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
@@ -58,6 +60,70 @@ public class TreeSelectViewModel : ReactiveObject, IRoutableViewModel
         get => _multiSelectionTreeNodes;
         set => this.RaiseAndSetIfChanged(ref _multiSelectionTreeNodes, value);
     }
+
+    private List<ITreeItemNode>? _bindingSingleTreeNodes = [];
+
+    public List<ITreeItemNode>? BindingSingleTreeNodes
+    {
+        get => _bindingSingleTreeNodes;
+        set => this.RaiseAndSetIfChanged(ref _bindingSingleTreeNodes, value);
+    }
+
+    private List<ITreeItemNode>? _bindingMultipleTreeNodes = [];
+
+    public List<ITreeItemNode>? BindingMultipleTreeNodes
+    {
+        get => _bindingMultipleTreeNodes;
+        set => this.RaiseAndSetIfChanged(ref _bindingMultipleTreeNodes, value);
+    }
+
+    private ITreeItemNode? _boundSelectedItem;
+
+    public ITreeItemNode? BoundSelectedItem
+    {
+        get => _boundSelectedItem;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _boundSelectedItem, value);
+            this.RaisePropertyChanged(nameof(BoundSelectedItemText));
+        }
+    }
+
+    private IList<ITreeItemNode>? _boundSelectedItems;
+    private INotifyCollectionChanged? _boundSelectedItemsCollectionChangedSource;
+
+    public IList<ITreeItemNode>? BoundSelectedItems
+    {
+        get => _boundSelectedItems;
+        set
+        {
+            if (ReferenceEquals(_boundSelectedItems, value))
+            {
+                this.RaisePropertyChanged(nameof(BoundSelectedItemsText));
+                return;
+            }
+
+            if (_boundSelectedItemsCollectionChangedSource != null)
+            {
+                _boundSelectedItemsCollectionChangedSource.CollectionChanged -= HandleBoundSelectedItemsCollectionChanged;
+            }
+
+            this.RaiseAndSetIfChanged(ref _boundSelectedItems, value);
+
+            _boundSelectedItemsCollectionChangedSource = value as INotifyCollectionChanged;
+            if (_boundSelectedItemsCollectionChangedSource != null)
+            {
+                _boundSelectedItemsCollectionChangedSource.CollectionChanged += HandleBoundSelectedItemsCollectionChanged;
+            }
+            this.RaisePropertyChanged(nameof(BoundSelectedItemsText));
+        }
+    }
+
+    public string BoundSelectedItemText => BoundSelectedItem?.Header?.ToString() ?? "-";
+
+    public string BoundSelectedItemsText => BoundSelectedItems is { Count: > 0 }
+        ? string.Join(", ", BoundSelectedItems.Select(item => item.Header?.ToString()))
+        : "-";
 
     private List<ITreeItemNode>? _itemsSourceTreeNodes = [];
 
@@ -190,6 +256,67 @@ public class TreeSelectViewModel : ReactiveObject, IRoutableViewModel
     public TreeSelectViewModel(IScreen screen)
     {
         HostScreen = screen;
+        SetBoundSelectedItemCommand   = ReactiveCommand.Create(SetBoundSelectedItem);
+        ClearBoundSelectedItemCommand = ReactiveCommand.Create(ClearBoundSelectedItem);
+        SetBoundSelectedItemsCommand  = ReactiveCommand.Create(SetBoundSelectedItems);
+        ClearBoundSelectedItemsCommand = ReactiveCommand.Create(ClearBoundSelectedItems);
+    }
+
+    public ReactiveCommand<Unit, Unit> SetBoundSelectedItemCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> ClearBoundSelectedItemCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> SetBoundSelectedItemsCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> ClearBoundSelectedItemsCommand { get; }
+
+    private void SetBoundSelectedItem()
+    {
+        BoundSelectedItem = FindTreeItem(BindingSingleTreeNodes, "leaf2");
+    }
+
+    private void ClearBoundSelectedItem()
+    {
+        BoundSelectedItem = null;
+    }
+
+    private void SetBoundSelectedItems()
+    {
+        var firstItem  = FindTreeItem(BindingMultipleTreeNodes, "leaf1");
+        var secondItem = FindTreeItem(BindingMultipleTreeNodes, "sss");
+        var selectedItems = new[] { firstItem, secondItem }
+            .OfType<ITreeItemNode>()
+            .ToList();
+
+        if (BoundSelectedItems is ObservableCollection<ITreeItemNode> collection)
+        {
+            collection.Clear();
+            foreach (var item in selectedItems)
+            {
+                collection.Add(item);
+            }
+        }
+        else
+        {
+            BoundSelectedItems = new ObservableCollection<ITreeItemNode>(selectedItems);
+        }
+    }
+
+    private void ClearBoundSelectedItems()
+    {
+        if (BoundSelectedItems is ObservableCollection<ITreeItemNode> collection)
+        {
+            collection.Clear();
+        }
+        else
+        {
+            BoundSelectedItems = new ObservableCollection<ITreeItemNode>();
+        }
+    }
+
+    private void HandleBoundSelectedItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        this.RaisePropertyChanged(nameof(BoundSelectedItemsText));
     }
 
     public void EnsureApiRows()
@@ -202,6 +329,7 @@ public class TreeSelectViewModel : ReactiveObject, IRoutableViewModel
         ApiRows =
         [
             new TreeSelectApiRow("ItemsSource", Lang(TreeSelectShowCaseLangResourceKind.ApiPropertyItemsSource), "IEnumerable<ITreeItemNode>?", "cyan", "null"),
+            new TreeSelectApiRow("SelectedItem", Lang(TreeSelectShowCaseLangResourceKind.ApiPropertySelectedItem), "ITreeItemNode?", "cyan", "null"),
             new TreeSelectApiRow("SelectedItems", Lang(TreeSelectShowCaseLangResourceKind.ApiPropertySelectedItems), "IList<ITreeItemNode>?", "cyan", "null"),
             new TreeSelectApiRow("IsMultiple", Lang(TreeSelectShowCaseLangResourceKind.ApiPropertyIsMultiple), "bool", "green", "false"),
             new TreeSelectApiRow("IsTreeCheckable", Lang(TreeSelectShowCaseLangResourceKind.ApiPropertyIsTreeCheckable), "bool", "green", "false"),
@@ -247,6 +375,7 @@ public class TreeSelectViewModel : ReactiveObject, IRoutableViewModel
         return kind switch
         {
             TreeSelectShowCaseLangResourceKind.ApiPropertyItemsSource          => en_US.ApiPropertyItemsSource,
+            TreeSelectShowCaseLangResourceKind.ApiPropertySelectedItem         => en_US.ApiPropertySelectedItem,
             TreeSelectShowCaseLangResourceKind.ApiPropertySelectedItems        => en_US.ApiPropertySelectedItems,
             TreeSelectShowCaseLangResourceKind.ApiPropertyIsMultiple           => en_US.ApiPropertyIsMultiple,
             TreeSelectShowCaseLangResourceKind.ApiPropertyIsTreeCheckable      => en_US.ApiPropertyIsTreeCheckable,
@@ -264,8 +393,39 @@ public class TreeSelectViewModel : ReactiveObject, IRoutableViewModel
             TreeSelectShowCaseLangResourceKind.TokenNameMinPopupWidth          => en_US.TokenNameMinPopupWidth,
             TreeSelectShowCaseLangResourceKind.TokenScopeComponent             => en_US.TokenScopeComponent,
             TreeSelectShowCaseLangResourceKind.TokenStatusStable               => en_US.TokenStatusStable,
+            TreeSelectShowCaseLangResourceKind.BindingTitle                    => en_US.BindingTitle,
+            TreeSelectShowCaseLangResourceKind.BindingDescription              => en_US.BindingDescription,
+            TreeSelectShowCaseLangResourceKind.BindingSingleLabel              => en_US.BindingSingleLabel,
+            TreeSelectShowCaseLangResourceKind.BindingMultipleLabel            => en_US.BindingMultipleLabel,
+            TreeSelectShowCaseLangResourceKind.BindingSetSingleButton          => en_US.BindingSetSingleButton,
+            TreeSelectShowCaseLangResourceKind.BindingSetMultipleButton        => en_US.BindingSetMultipleButton,
+            TreeSelectShowCaseLangResourceKind.BindingClearButton              => en_US.BindingClearButton,
+            TreeSelectShowCaseLangResourceKind.BindingViewModelValueLabel      => en_US.BindingViewModelValueLabel,
             _                                                                  => kind.ToString()
         };
+    }
+
+    private static ITreeItemNode? FindTreeItem(IEnumerable<ITreeItemNode>? items, string value)
+    {
+        if (items == null)
+        {
+            return null;
+        }
+
+        foreach (var item in items)
+        {
+            if (item.Value?.ToString() == value || item.ItemKey?.ToString() == value)
+            {
+                return item;
+            }
+
+            var child = FindTreeItem(item.Children, value);
+            if (child != null)
+            {
+                return child;
+            }
+        }
+        return null;
     }
 }
 
