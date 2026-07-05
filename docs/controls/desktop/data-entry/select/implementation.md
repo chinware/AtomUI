@@ -153,6 +153,8 @@ SelectCandidateList.Commit
   → IsDropDownOpen = false
 ```
 
+`SelectedOption` 和 `SelectedOptions` 都是默认 `TwoWay` 的绑定入口。`SelectedOptions` 采用属性替换作为用户交互回写方式；如果外部绑定源提供 `INotifyCollectionChanged` 集合，集合原地 `Add` / `Remove` / `Reset` 也会进入同一条选择刷新路径，更新 Form 值通知、`SelectionChanged`、已选标签、候选列表选择和 `SelectedCount`。
+
 候选取消：
 
 ```text

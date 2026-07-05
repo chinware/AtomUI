@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Reflection;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
@@ -8,6 +10,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -72,6 +75,146 @@ public class SelectBehaviorTests
         };
 
         ShowInWindow(select, () => select.SelectedOption.ShouldBeSameAs(lucy));
+    }
+
+    [Fact]
+    public void SelectedOption_DefaultBinding_Updates_ViewModel_When_Control_Value_Changes()
+    {
+        var jack = new SelectOption
+        {
+            Header  = "Jack",
+            Content = "jack"
+        };
+        var lucy = new SelectOption
+        {
+            Header  = "Lucy",
+            Content = "lucy"
+        };
+        var viewModel = new SelectBindingViewModel
+        {
+            SelectedOption = jack
+        };
+        var select = new Desktop.Controls.Select
+        {
+            OptionsSource = [jack, lucy]
+        };
+        select.Bind(
+            Desktop.Controls.Select.SelectedOptionProperty,
+            new Binding(nameof(SelectBindingViewModel.SelectedOption))
+            {
+                Source = viewModel
+            });
+
+        ShowInWindow(select, () =>
+        {
+            select.SelectedOption.ShouldBeSameAs(jack);
+
+            select.SelectedOption = lucy;
+            Dispatcher.UIThread.RunJobs();
+
+            viewModel.SelectedOption.ShouldBeSameAs(lucy);
+        });
+    }
+
+    [Fact]
+    public void SelectedOptions_DefaultBinding_Updates_ViewModel_When_Control_Value_Changes()
+    {
+        var jack = new SelectOption
+        {
+            Header  = "Jack",
+            Content = "jack"
+        };
+        var lucy = new SelectOption
+        {
+            Header  = "Lucy",
+            Content = "lucy"
+        };
+        var viewModel = new SelectBindingViewModel();
+        var select = new Desktop.Controls.Select
+        {
+            Mode          = SelectMode.Multiple,
+            OptionsSource = [jack, lucy]
+        };
+        select.Bind(
+            Desktop.Controls.Select.SelectedOptionsProperty,
+            new Binding(nameof(SelectBindingViewModel.SelectedOptions))
+            {
+                Source = viewModel
+            });
+
+        ShowInWindow(select, () =>
+        {
+            select.SelectedOptions = [jack, lucy];
+            Dispatcher.UIThread.RunJobs();
+
+            viewModel.SelectedOptions.ShouldNotBeNull();
+            viewModel.SelectedOptions.ShouldBe([jack, lucy]);
+        });
+    }
+
+    [Fact]
+    public void SelectedOptions_ObservableCollection_Mutation_Refreshes_Result_And_Candidate_Selection()
+    {
+        var jack = new SelectOption
+        {
+            Header  = "Jack",
+            Content = "jack"
+        };
+        var lucy = new SelectOption
+        {
+            Header  = "Lucy",
+            Content = "lucy"
+        };
+        var viewModel = new SelectBindingViewModel
+        {
+            SelectedOptions = new ObservableCollection<ISelectOption>
+            {
+                jack
+            }
+        };
+        var select = new Desktop.Controls.Select
+        {
+            Width           = 240,
+            Mode            = SelectMode.Multiple,
+            IsFilterEnabled = false,
+            OptionsSource   = [jack, lucy]
+        };
+        select.Bind(
+            Desktop.Controls.Select.SelectedOptionsProperty,
+            new Binding(nameof(SelectBindingViewModel.SelectedOptions))
+            {
+                Source = viewModel
+            });
+
+        ShowInWindow(select, () =>
+        {
+            select.GetVisualDescendants()
+                  .OfType<SelectTag>()
+                  .Single(tag => tag.Text == "Jack");
+
+            select.IsDropDownOpen = true;
+            Dispatcher.UIThread.RunJobs();
+
+            var candidateList = GetCandidateList(select);
+            candidateList.SelectedItems.ShouldNotBeNull();
+            candidateList.SelectedItems.Cast<ISelectOption>().ShouldContain(jack);
+
+            viewModel.SelectedOptions!.Add(lucy);
+            Dispatcher.UIThread.RunJobs();
+
+            select.GetVisualDescendants()
+                  .OfType<SelectTag>()
+                  .Single(tag => tag.Text == "Lucy");
+            candidateList.SelectedItems.Cast<ISelectOption>().ShouldContain(lucy);
+
+            viewModel.SelectedOptions.Remove(jack);
+            Dispatcher.UIThread.RunJobs();
+
+            select.GetVisualDescendants()
+                  .OfType<SelectTag>()
+                  .ShouldNotContain(tag => tag.Text == "Jack");
+            candidateList.SelectedItems.Cast<ISelectOption>().ShouldNotContain(jack);
+        });
     }
 
     [Fact]
@@ -809,6 +952,42 @@ public class SelectBehaviorTests
             {
                 Data = []
             });
+        }
+    }
+
+    private sealed class SelectBindingViewModel : INotifyPropertyChanged
+    {
+        private ISelectOption? _selectedOption;
+        private IList<ISelectOption>? _selectedOptions;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public ISelectOption? SelectedOption
+        {
+            get => _selectedOption;
+            set
+            {
+                if (ReferenceEquals(_selectedOption, value))
+                {
+                    return;
+                }
+                _selectedOption = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedOption)));
+            }
+        }
+
+        public IList<ISelectOption>? SelectedOptions
+        {
+            get => _selectedOptions;
+            set
+            {
+                if (ReferenceEquals(_selectedOptions, value))
+                {
+                    return;
+                }
+                _selectedOptions = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedOptions)));
+            }
         }
     }
 }

@@ -44,8 +44,8 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | `OptionsSource` | `IEnumerable<ISelectOption>?` | 外部候选项集合。Select 只读取该集合，不把 Tags 运行时动态选项写回该集合。 |
 | `Options` | `ItemCollection` | XAML 内容子项入口。它表达用户声明的静态候选项，不承载 Tags 模式运行时动态选项。 |
 | `OptionTemplate` | `IDataTemplate?` | 候选项显示模板，默认显示 `ISelectOption.Header`。 |
-| `SelectedOption` | `ISelectOption?` | 单选模式当前选项。 |
-| `SelectedOptions` | `IList<ISelectOption>?` | 多选和 Tags 模式当前选项集合。 |
+| `SelectedOption` | `ISelectOption?` | 单选模式当前选项，默认 `TwoWay` 绑定并启用 Avalonia data validation。 |
+| `SelectedOptions` | `IList<ISelectOption>?` | 多选和 Tags 模式当前选项集合，默认 `TwoWay` 绑定并启用 Avalonia data validation。 |
 | `DefaultValues` | `IList<object>?` | 加载后按值匹配默认选中项。 |
 | `DefaultValueCompareFn` | `Func<object, ISelectOption, bool>?` | 默认值匹配自定义比较函数。 |
 | `SelectionChanged` | event | `SelectedOption` 或 `SelectedOptions` 改变时触发。 |
@@ -65,6 +65,12 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | `AutoScrollToSelectedOptions` | `bool` | 候选列表打开或选择同步时滚动到已选项。 |
 | `DisplayPageSize` | `int` | 候选弹层可视行数，用于计算最大高度，默认 `10`。 |
 | `MaxCount` | `int` | 多选最大可选数量，默认 `int.MaxValue`。 |
+
+选择绑定语义：
+
+- `SelectedOption` 是 `Mode=Single` 的唯一选择状态入口；用户选择、清除、Form 写值和 ViewModel 写值都通过该属性同步。
+- `SelectedOptions` 是 `Mode=Multiple/Tags` 的唯一选择状态入口；用户选择变化会回写绑定源，绑定源替换集合或对 `INotifyCollectionChanged` 集合执行 `Add` / `Remove` / `Reset` 时，Select 会同步标签、候选列表和计数状态。
+- `OptionsSource` 始终只是候选项来源。即使 `SelectedOptions` 绑定到可变集合，Tags 模式运行时动态选项也只进入选择集合和内部有效候选集合，不写回 `OptionsSource`。
 
 弹层与异步 API：
 
@@ -216,6 +222,7 @@ Select 属于 Data Entry 选择控件家族，与 LineEdit、NumericUpDown、Dat
 维护 Select 时必须保持以下不变量：
 
 - `Mode=Single` 使用 `SelectedOption`，`Mode=Multiple/Tags` 使用 `SelectedOptions`。
+- `SelectedOption` 与 `SelectedOptions` 必须保持默认 `TwoWay` 绑定；`SelectedOptions` 绑定到 `INotifyCollectionChanged` 集合时，集合原地变化也必须刷新内部选择投影。
 - `SelectionChanged` 必须在选择属性变化时继续触发，并包含模式、旧值和新值。
 - `OptionsSource`、`Options` 和异步加载结果表达用户选项源；Tags 模式运行时动态选项不得写入这些用户选项源。
 - 候选列表必须使用用户选项源和 Tags 运行时动态选项合成后的有效选项源。

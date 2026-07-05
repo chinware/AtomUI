@@ -8,6 +8,14 @@ internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "基础用法。";
+    public const string BindingTitle = "双向绑定";
+    public const string BindingDescription = "SelectedOption 和 SelectedOptions 默认与 ViewModel 双向同步，无需显式设置 Binding Mode=TwoWay。";
+    public const string BindingSingleLabel = "SelectedOption";
+    public const string BindingMultipleLabel = "SelectedOptions";
+    public const string BindingViewModelValueLabel = "ViewModel 值";
+    public const string BindingSetSingleButton = "设为 Lucy";
+    public const string BindingSetMultipleButton = "设为 Jack + Yiminghe";
+    public const string BindingClearButton = "清空";
     public const string ScenarioBasic = "基础";
     public const string ScenarioOptions = "选项";
     public const string ScenarioAppearance = "外观";
@@ -24,7 +32,8 @@ internal partial class zh_CN
     public const string ApiColumnDefault = "默认值";
     public const string ApiPropertyMode = "选择模式，包括单选、多选和标签模式。";
     public const string ApiPropertyOptionsSource = "下拉列表中展示的选项数据。";
-    public const string ApiPropertySelectedOptions = "当前选中的选项。";
+    public const string ApiPropertySelectedOption = "单选模式当前选项，默认支持双向绑定。";
+    public const string ApiPropertySelectedOptions = "多选和标签模式当前选项集合，默认支持双向绑定。";
     public const string ApiPropertyDefaultValues = "初始选中的选项值。";
     public const string ApiPropertyPlaceholderText = "未选择值时显示的占位文本。";
     public const string ApiPropertyIsAllowClear = "选中值后显示清除入口。";

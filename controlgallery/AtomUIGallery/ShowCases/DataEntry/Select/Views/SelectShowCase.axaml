@@ -75,8 +75,65 @@
                              IsAllowClear="True"
                              Width="120"
                              OptionsSource="{Binding BasicSelectedOptions}"
-                             SelectedOptions="{Binding DefaultSelectedOptions}" />
+                             SelectedOption="{Binding DefaultSelectedOption}" />
 
+            </WrapPanel>
+
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+            Title="{gallery:SelectShowCaseLangResource BindingTitle}"
+            Description="{gallery:SelectShowCaseLangResource BindingDescription}"
+            BadgeText="v6.0.8"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:SelectViewModel">
+            <WrapPanel ItemSpacing="24" LineSpacing="16">
+                <StackPanel Spacing="8" MinWidth="260">
+                    <TextBlock Text="{gallery:SelectShowCaseLangResource BindingSingleLabel}"
+                               FontWeight="SemiBold" />
+                    <atom:Select Mode="Single"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                 IsAllowClear="True"
+                                 Width="220"
+                                 OptionsSource="{Binding BasicSelectedOptions}"
+                                 SelectedOption="{Binding BoundSelectedOption}" />
+                    <WrapPanel ItemSpacing="8">
+                        <atom:Button SizeType="Small"
+                                     Command="{Binding SetBoundSelectedOptionCommand}"
+                                     Content="{gallery:SelectShowCaseLangResource BindingSetSingleButton}" />
+                        <atom:Button SizeType="Small"
+                                     Command="{Binding ClearBoundSelectedOptionCommand}"
+                                     Content="{gallery:SelectShowCaseLangResource BindingClearButton}" />
+                    </WrapPanel>
+                    <TextBlock Text="{gallery:SelectShowCaseLangResource BindingViewModelValueLabel}" />
+                    <TextBlock Text="{Binding BoundSelectedOptionText}" />
+                </StackPanel>
+
+                <StackPanel Spacing="8" MinWidth="320">
+                    <TextBlock Text="{gallery:SelectShowCaseLangResource BindingMultipleLabel}"
+                               FontWeight="SemiBold" />
+                    <atom:Select Mode="Multiple"
+                                 PlaceholderText="{gallery:SelectShowCaseLangResource P2PlaceholderTextSelectAPerson}"
+                                 IsAllowClear="True"
+                                 IsFilterEnabled="True"
+                                 Width="300"
+                                 OptionsSource="{Binding BasicSelectedOptions}"
+                                 SelectedOptions="{Binding BoundSelectedOptions}" />
+                    <WrapPanel ItemSpacing="8">
+                        <atom:Button SizeType="Small"
+                                     Command="{Binding SetBoundSelectedOptionsCommand}"
+                                     Content="{gallery:SelectShowCaseLangResource BindingSetMultipleButton}" />
+                        <atom:Button SizeType="Small"
+                                     Command="{Binding ClearBoundSelectedOptionsCommand}"
+                                     Content="{gallery:SelectShowCaseLangResource BindingClearButton}" />
+                    </WrapPanel>
+                    <TextBlock Text="{gallery:SelectShowCaseLangResource BindingViewModelValueLabel}" />
+                    <TextBlock Text="{Binding BoundSelectedOptionsText}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
             </WrapPanel>
 
                 </DataTemplate>
