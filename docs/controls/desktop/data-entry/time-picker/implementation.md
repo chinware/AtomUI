@@ -75,6 +75,7 @@ Public API / ItemsSource / Command / Event
 
 维护要求：
 
+- `SelectedTime` 必须保持默认 `TwoWay` 绑定和 Avalonia data validation 能力，与 `RangeTimePicker` 的范围选择属性保持一致。
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。

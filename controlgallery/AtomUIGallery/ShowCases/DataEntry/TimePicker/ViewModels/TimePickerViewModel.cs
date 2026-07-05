@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
@@ -39,6 +40,20 @@ public class TimePickerViewModel : ReactiveObject, IRoutableViewModel
         get => _pickerSizeType;
         set => this.RaiseAndSetIfChanged(ref _pickerSizeType, value);
     }
+
+    private TimeSpan? _boundSelectedTime = new(10, 9, 20);
+
+    public TimeSpan? BoundSelectedTime
+    {
+        get => _boundSelectedTime;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _boundSelectedTime, value);
+            this.RaisePropertyChanged(nameof(BoundSelectedTimeText));
+        }
+    }
+
+    public string BoundSelectedTimeText => BoundSelectedTime?.ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture) ?? "-";
 
     public TimePickerViewModel(IScreen screen)
     {
@@ -136,6 +151,11 @@ public class TimePickerViewModel : ReactiveObject, IRoutableViewModel
             TimePickerShowCaseLangResourceKind.TokenNameHeaderMargin                    => en_US.TokenNameHeaderMargin,
             TimePickerShowCaseLangResourceKind.TokenScopeComponent                      => en_US.TokenScopeComponent,
             TimePickerShowCaseLangResourceKind.TokenStatusStable                        => en_US.TokenStatusStable,
+            TimePickerShowCaseLangResourceKind.BindingTitle                             => en_US.BindingTitle,
+            TimePickerShowCaseLangResourceKind.BindingDescription                       => en_US.BindingDescription,
+            TimePickerShowCaseLangResourceKind.P2TextSelectedTime                       => en_US.P2TextSelectedTime,
+            TimePickerShowCaseLangResourceKind.P2ContentSetNoon                         => en_US.P2ContentSetNoon,
+            TimePickerShowCaseLangResourceKind.P2ContentClear                           => en_US.P2ContentClear,
             _                                                                           => kind.ToString()
         };
     }

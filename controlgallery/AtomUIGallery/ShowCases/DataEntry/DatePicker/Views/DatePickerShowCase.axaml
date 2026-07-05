@@ -63,6 +63,36 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:DatePickerShowCaseLangResource BindingTitle}"
+            Description="{gallery:DatePickerShowCaseLangResource BindingDescription}"
+            BadgeText="v6.0.8"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:DatePickerViewModel">
+            <StackPanel Orientation="Vertical" Spacing="12">
+                <atom:DatePicker Width="240"
+                                 SelectedDateTime="{Binding BoundSelectedDateTime}"
+                                 PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <atom:TextBlock VerticalAlignment="Center"
+                                    Text="{gallery:DatePickerShowCaseLangResource P2TextSelectedDateTime}" />
+                    <atom:TextBlock VerticalAlignment="Center"
+                                    Text="{Binding BoundSelectedDateTimeText}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <atom:Button SizeType="Small"
+                                 Click="SetBoundSelectedDateTimeTomorrow"
+                                 Content="{gallery:DatePickerShowCaseLangResource P2ContentSetTomorrow}" />
+                    <atom:Button SizeType="Small"
+                                 Click="ClearBoundSelectedDateTime"
+                                 Content="{gallery:DatePickerShowCaseLangResource P2ContentClear}" />
+                </StackPanel>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:DatePickerShowCaseLangResource PickerDisplayDateTitle}"
             Description="{gallery:DatePickerShowCaseLangResource PickerDisplayDateDescription}"
             BadgeText="v6.0.8"

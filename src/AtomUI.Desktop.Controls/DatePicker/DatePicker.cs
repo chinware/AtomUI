@@ -25,6 +25,7 @@ public class DatePicker : InfoPickerInput
 
     public static readonly StyledProperty<DateTime?> SelectedDateTimeProperty =
         AvaloniaProperty.Register<DatePicker, DateTime?>(nameof(SelectedDateTime),
+            defaultBindingMode: BindingMode.TwoWay,
             enableDataValidation: true);
 
     public static readonly StyledProperty<DateTime?> DefaultDateTimeProperty =

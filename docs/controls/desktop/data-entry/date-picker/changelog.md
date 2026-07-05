@@ -2,6 +2,15 @@
 
 本文档记录 DatePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-05
+
+- API
+  - Make `DatePicker.SelectedDateTime` default to `BindingMode.TwoWay` while preserving Avalonia data validation support.
+- Gallery
+  - Add a `v6.0.8` `SelectedDateTime` binding example showing ViewModel synchronization without explicit `Mode=TwoWay`.
+- Docs
+  - Document `SelectedDateTime` as the single-value controlled Form value contract.
+
 ## 2026-07-04
 
 - Docs

@@ -7,6 +7,8 @@ internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Click DatePicker, and then we could select or input a date in panel.";
+    public const string BindingTitle = "SelectedDateTime binding";
+    public const string BindingDescription = "SelectedDateTime synchronizes with the ViewModel without explicitly setting Binding Mode=TwoWay.";
     public const string PickerDisplayDateTitle = "Popup display date";
     public const string PickerDisplayDateDescription = "Open the popup panel at a specific display date without committing a selected value.";
     public const string RangePickerTitle = "Range Picker";
@@ -50,6 +52,9 @@ internal partial class en_US
     public const string P2ContentSmall = "Small";
     public const string P2ContentCustom = "Custom";
     public const string P2TextPlacement = "Placement:";
+    public const string P2TextSelectedDateTime = "Selected value:";
+    public const string P2ContentSetTomorrow = "Set tomorrow";
+    public const string P2ContentClear = "Clear";
     public const string P2ContentTopleft = "TopLeft";
     public const string P2ContentTopright = "TopRight";
     public const string P2ContentBottomleft = "BottomLeft";
@@ -65,7 +70,7 @@ internal partial class en_US
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";
     public const string ApiColumnDefault = "Default";
-    public const string ApiPropertySelectedDateTime = "Selected date and optional time for DatePicker.";
+    public const string ApiPropertySelectedDateTime = "Selected date and optional time for DatePicker. The property binds TwoWay by default and supports Avalonia data validation.";
     public const string ApiPropertyDefaultDateTime = "Initial date and optional time used by DatePicker reset behavior.";
     public const string ApiPropertyPickerDisplayDate = "Popup panel display anchor; does not commit a selected value.";
     public const string ApiPropertyRangeStartSelectedDate = "Selected start date for RangeDatePicker.";

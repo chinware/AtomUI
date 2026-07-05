@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
@@ -49,6 +50,20 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
         get => _pickerPlacement;
         set => this.RaiseAndSetIfChanged(ref _pickerPlacement, value);
     }
+
+    private DateTime? _boundSelectedDateTime = new DateTime(2026, 7, 5);
+
+    public DateTime? BoundSelectedDateTime
+    {
+        get => _boundSelectedDateTime;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _boundSelectedDateTime, value);
+            this.RaisePropertyChanged(nameof(BoundSelectedDateTimeText));
+        }
+    }
+
+    public string BoundSelectedDateTimeText => BoundSelectedDateTime?.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture) ?? "-";
 
     public DatePickerViewModel(IScreen screen)
     {
@@ -158,6 +173,8 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
             DatePickerShowCaseLangResourceKind.ApiPropertyClockIdentifier             => en_US.ApiPropertyClockIdentifier,
             DatePickerShowCaseLangResourceKind.ApiPropertyPickerPlacement             => en_US.ApiPropertyPickerPlacement,
             DatePickerShowCaseLangResourceKind.ApiPropertySecondaryPlaceholderText     => en_US.ApiPropertySecondaryPlaceholderText,
+            DatePickerShowCaseLangResourceKind.BindingDescription                     => en_US.BindingDescription,
+            DatePickerShowCaseLangResourceKind.BindingTitle                           => en_US.BindingTitle,
             DatePickerShowCaseLangResourceKind.TokenNameCellHoverBg                   => en_US.TokenNameCellHoverBg,
             DatePickerShowCaseLangResourceKind.TokenNameCellActiveWithRangeBg         => en_US.TokenNameCellActiveWithRangeBg,
             DatePickerShowCaseLangResourceKind.TokenNameCellHoverWithRangeBg          => en_US.TokenNameCellHoverWithRangeBg,
@@ -170,6 +187,9 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
             DatePickerShowCaseLangResourceKind.TokenNameRangeCalendarSpacing          => en_US.TokenNameRangeCalendarSpacing,
             DatePickerShowCaseLangResourceKind.TokenScopeComponent                    => en_US.TokenScopeComponent,
             DatePickerShowCaseLangResourceKind.TokenStatusStable                      => en_US.TokenStatusStable,
+            DatePickerShowCaseLangResourceKind.P2ContentClear                         => en_US.P2ContentClear,
+            DatePickerShowCaseLangResourceKind.P2ContentSetTomorrow                   => en_US.P2ContentSetTomorrow,
+            DatePickerShowCaseLangResourceKind.P2TextSelectedDateTime                 => en_US.P2TextSelectedDateTime,
             _                                                                         => kind.ToString()
         };
     }

@@ -7,6 +7,8 @@ internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Click TimePicker, and then we could select or input a time in panel.";
+    public const string BindingTitle = "SelectedTime binding";
+    public const string BindingDescription = "SelectedTime synchronizes with the ViewModel without explicitly setting Binding Mode=TwoWay.";
     public const string PickerDisplayTimeTitle = "Popup display time";
     public const string PickerDisplayTimeDescription = "Open the popup panel at a specific display time without committing a selected value.";
     public const string HourFormatsTitle = "12-hour and 24-hour formats";
@@ -36,6 +38,9 @@ internal partial class en_US
     public const string P2ContentDefault = "Default";
     public const string P2ContentSmall = "Small";
     public const string P2ContentCustom = "Custom";
+    public const string P2TextSelectedTime = "Selected value:";
+    public const string P2ContentSetNoon = "Set noon";
+    public const string P2ContentClear = "Clear";
     public const string PageSubtitle = "Select a time or a time range from a popup time panel.";
     public const string PageDescription = "TimePicker supports 12-hour and 24-hour clocks, size variants, disabled states, stepped minute and second options, visual variants, validation status, and range selection.";
     public const string ComponentCategory = "Data Entry";
@@ -47,7 +52,7 @@ internal partial class en_US
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";
     public const string ApiColumnDefault = "Default";
-    public const string ApiPropertySelectedTime = "Selected time value for TimePicker.";
+    public const string ApiPropertySelectedTime = "Selected time value for TimePicker. The property binds TwoWay by default and supports Avalonia data validation.";
     public const string ApiPropertyDefaultTime = "Initial time used by TimePicker reset behavior.";
     public const string ApiPropertyPickerDisplayTime = "Popup panel display anchor; does not commit a selected value.";
     public const string ApiPropertyIsNeedConfirm = "Requires the user to confirm the selected time before committing.";

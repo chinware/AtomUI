@@ -41,6 +41,8 @@ public class DatePickerShowCasePageTests
         source.ShouldContain("Description=\"{gallery:DatePickerShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("DatePickerShowCaseLangResource BasicTitle");
+        source.ShouldContain("DatePickerShowCaseLangResource BindingTitle");
+        source.ShouldContain("SelectedDateTime=\"{Binding BoundSelectedDateTime}\"");
         source.ShouldContain("DatePickerShowCaseLangResource PickerDisplayDateTitle");
         source.ShouldContain("PickerDisplayDate=\"2026-10-20\"");
         source.ShouldContain("BadgeText=\"v6.0.8\"");
@@ -178,6 +180,8 @@ public class DatePickerShowCasePageTests
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("PickerDisplayDateTitle");
+            source.ShouldContain("BindingTitle");
+            source.ShouldContain("BindingDescription");
             source.ShouldContain("ApiPropertySelectedDateTime");
             source.ShouldContain("ApiPropertyPickerDisplayDate");
             source.ShouldContain("ApiPropertyPickerMode");

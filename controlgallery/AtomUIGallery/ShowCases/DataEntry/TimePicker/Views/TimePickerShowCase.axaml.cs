@@ -57,4 +57,20 @@ public partial class TimePickerShowCase : GalleryReactiveUserControl<TimePickerV
             viewModel.HandlePickerSizeTypeOptionCheckedChanged(sender, args);
         }
     }
+
+    private void SetBoundSelectedTimeToNoon(object? sender, Avalonia.Interactivity.RoutedEventArgs args)
+    {
+        if (DataContext is TimePickerViewModel viewModel)
+        {
+            viewModel.BoundSelectedTime = new TimeSpan(12, 0, 0);
+        }
+    }
+
+    private void ClearBoundSelectedTime(object? sender, Avalonia.Interactivity.RoutedEventArgs args)
+    {
+        if (DataContext is TimePickerViewModel viewModel)
+        {
+            viewModel.BoundSelectedTime = null;
+        }
+    }
 }

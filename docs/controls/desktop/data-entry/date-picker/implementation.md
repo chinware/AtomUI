@@ -70,7 +70,7 @@ Public API / ItemsSource / Command / Event
 源码中的状态入口按以下语义维护：
 
 - 内容与数据：`HeaderBackground`。
-- 选择与集合：`PickerMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SelectedDateTime`。
+- 选择与集合：`PickerMode`、`RangeEndSelectedDate`、`RangeStartSelectedDate`、`SelectedDateTime`。其中 `SelectedDateTime` 是单值 DatePicker 的受控提交值，默认 `TwoWay` 绑定并启用 Avalonia data validation。
 - 弹层显示游标：`PickerDisplayDate`，以及 presenter 内部转发到 CalendarView 的 `DisplayDate`、`SelectedMonth`、`SelectedYear`、`LastSelectedDate`。
 - 交互与状态：`IsFloatingArrowPosition`、`IsHorizontalFlipped`、`IsNeedConfirm`、`IsShowNow`、`IsShowTime`、`IsTodayHighlighted`。
 - 视觉与布局：`RangePickerIndicatorOffsetEnd`、`RangePickerIndicatorOffsetStart`。
