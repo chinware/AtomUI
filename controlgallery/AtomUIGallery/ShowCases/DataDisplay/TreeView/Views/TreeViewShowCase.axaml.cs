@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System.Collections.ObjectModel;
+using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI;
 using AtomUI.Controls;
@@ -102,6 +103,62 @@ public partial class TreeViewShowCase : GalleryReactiveUserControl<TreeViewViewM
             DataContext is TreeViewViewModel viewModel)
         {
             viewModel.TreeViewNodeHoverMode = hoverMode;
+        }
+    }
+
+    private void HandleSelectFirstBindingTreeNodeClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is TreeViewViewModel viewModel)
+        {
+            viewModel.SelectFirstBindingTreeNode();
+        }
+    }
+
+    private void HandleSelectSecondBindingTreeNodeClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is TreeViewViewModel viewModel)
+        {
+            viewModel.SelectSecondBindingTreeNode();
+        }
+    }
+
+    private void HandleSelectBothBindingTreeNodesClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is TreeViewViewModel viewModel)
+        {
+            viewModel.SelectBothBindingTreeNodes();
+        }
+    }
+
+    private void HandleClearBindingTreeNodeSelectionClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is TreeViewViewModel viewModel)
+        {
+            viewModel.ClearBindingTreeNodeSelection();
+        }
+    }
+
+    private void HandleSelectFirstBindingTreeNodesClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is TreeViewViewModel viewModel)
+        {
+            viewModel.SelectFirstBindingTreeNodes();
+        }
+    }
+
+    private void HandleSelectSecondBindingTreeNodesClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is TreeViewViewModel viewModel)
+        {
+            viewModel.SelectSecondBindingTreeNodes();
+        }
+    }
+
+    private void HandleClearBindingTreeNodesSelectionClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is TreeViewViewModel viewModel)
+        {
+            viewModel.ClearBindingTreeNodesSelection();
         }
     }
 
@@ -321,7 +378,7 @@ public partial class TreeViewShowCase : GalleryReactiveUserControl<TreeViewViewM
         var secondChild = root.Children[1];
 
         viewModel.BoundSelectedTreeNode  = secondChild;
-        viewModel.BoundSelectedTreeNodes = new List<ITreeItemNode> { firstChild, secondChild };
+        viewModel.BoundSelectedTreeNodes = new ObservableCollection<ITreeItemNode> { firstChild, secondChild };
     }
 
     private void InitCustomizeCollapseExpandTreeDefaultExpandedPaths(TreeViewViewModel viewModel)

@@ -1,8 +1,12 @@
+using System.Collections;
+using System.ComponentModel;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AtomTreeViewItem = AtomUI.Desktop.Controls.TreeViewItem;
@@ -92,6 +96,242 @@ public class TreeViewStateReplayTests
             treeView.CheckedItems.Contains(secondNodes[0].Children.ElementAt(1).Children.ElementAt(0)).ShouldBeTrue();
             treeView.SelectedItems.Contains(secondNodes[0].Children.ElementAt(0)).ShouldBeFalse();
             treeView.CheckedItems.Contains(secondNodes[0].Children.ElementAt(0)).ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void Loaded_Replays_Bound_SelectedItems_In_Multiple_Mode()
+    {
+        var nodes       = CreateDefaultPathDataNodes();
+        var root        = nodes[0];
+        var firstChild  = root.Children.ElementAt(0);
+        var secondChild = root.Children.ElementAt(1);
+        IList selectedItems = new List<ITreeItemNode> { firstChild, secondChild };
+        var treeView = new AtomUI.Desktop.Controls.TreeView
+        {
+            IsMotionEnabled      = false,
+            ItemsSource          = nodes,
+            SelectionMode        = SelectionMode.Multiple,
+            SelectedItems        = selectedItems,
+            DefaultExpandedPaths = [new TreeNodePath("0-0/0-0-0"), new TreeNodePath("0-0/0-0-1")]
+        };
+
+        ShowInWindow(treeView, () =>
+        {
+            RunDispatcherJobsUntil(() =>
+                FindContainerForNode(treeView, firstChild) is not null &&
+                FindContainerForNode(treeView, secondChild) is not null);
+
+            FindContainerForNode(treeView, firstChild)!.IsSelected.ShouldBeTrue();
+            FindContainerForNode(treeView, secondChild)!.IsSelected.ShouldBeTrue();
+            treeView.SelectedItems.ShouldBeSameAs(selectedItems);
+        });
+    }
+
+    [Fact]
+    public void SelectedItems_Change_After_Load_Selects_Data_Node_Containers()
+    {
+        var nodes       = CreateDefaultPathDataNodes();
+        var root        = nodes[0];
+        var firstChild  = root.Children.ElementAt(0);
+        var secondChild = root.Children.ElementAt(1);
+        var treeView = new AtomUI.Desktop.Controls.TreeView
+        {
+            IsMotionEnabled      = false,
+            ItemsSource          = nodes,
+            SelectionMode        = SelectionMode.Multiple,
+            DefaultExpandedPaths = [new TreeNodePath("0-0/0-0-0"), new TreeNodePath("0-0/0-0-1")]
+        };
+
+        ShowInWindow(treeView, () =>
+        {
+            RunDispatcherJobsUntil(() =>
+                FindContainerForNode(treeView, firstChild) is not null &&
+                FindContainerForNode(treeView, secondChild) is not null);
+
+            IList selectedItems = new List<ITreeItemNode> { firstChild, secondChild };
+            treeView.SelectedItems = selectedItems;
+            Dispatcher.UIThread.RunJobs();
+
+            FindContainerForNode(treeView, firstChild)!.IsSelected.ShouldBeTrue();
+            FindContainerForNode(treeView, secondChild)!.IsSelected.ShouldBeTrue();
+            treeView.SelectedItems.ShouldBeSameAs(selectedItems);
+        });
+    }
+
+    [Fact]
+    public void SelectedItems_Change_After_Load_Selects_All_Data_Node_Containers_When_ItemsSource_Is_Shared()
+    {
+        var nodes       = CreateDefaultPathDataNodes();
+        var root        = nodes[0];
+        var firstChild  = root.Children.ElementAt(0);
+        var secondChild = root.Children.ElementAt(1);
+        var singleTreeView = new AtomUI.Desktop.Controls.TreeView
+        {
+            IsMotionEnabled      = false,
+            ItemsSource          = nodes,
+            SelectedItem         = secondChild,
+            DefaultExpandedPaths = [new TreeNodePath("0-0/0-0-0"), new TreeNodePath("0-0/0-0-1")]
+        };
+        var multipleTreeView = new AtomUI.Desktop.Controls.TreeView
+        {
+            IsMotionEnabled      = false,
+            ItemsSource          = nodes,
+            SelectionMode        = SelectionMode.Multiple,
+            DefaultExpandedPaths = [new TreeNodePath("0-0/0-0-0"), new TreeNodePath("0-0/0-0-1")]
+        };
+
+        var panel = new StackPanel();
+        panel.Children.Add(singleTreeView);
+        panel.Children.Add(multipleTreeView);
+
+        ShowInWindow(panel, () =>
+        {
+            RunDispatcherJobsUntil(() =>
+                FindContainerForNode(multipleTreeView, firstChild) is not null &&
+                FindContainerForNode(multipleTreeView, secondChild) is not null);
+
+            IList selectedItems = new List<ITreeItemNode> { firstChild, secondChild };
+            multipleTreeView.SelectedItems = selectedItems;
+            Dispatcher.UIThread.RunJobs();
+
+            FindContainerForNode(multipleTreeView, firstChild)!.IsSelected.ShouldBeTrue();
+            FindContainerForNode(multipleTreeView, secondChild)!.IsSelected.ShouldBeTrue();
+            multipleTreeView.SelectedItems.Count.ShouldBe(2);
+            multipleTreeView.SelectedItems.Contains(firstChild).ShouldBeTrue();
+            multipleTreeView.SelectedItems.Contains(secondChild).ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void SelectedItems_TwoWayBinding_Replaces_Previous_Multiple_Selection_With_All_ViewModel_Items()
+    {
+        var nodes       = CreateDefaultPathDataNodes();
+        var root        = nodes[0];
+        var firstChild  = root.Children.ElementAt(0);
+        var secondChild = root.Children.ElementAt(1);
+        var viewModel = new TreeViewSelectionBindingViewModel
+        {
+            SelectedItems = new List<ITreeItemNode> { secondChild }
+        };
+        var treeView = new AtomUI.Desktop.Controls.TreeView
+        {
+            IsMotionEnabled      = false,
+            ItemsSource          = nodes,
+            SelectionMode        = SelectionMode.Multiple,
+            DefaultExpandedPaths = [new TreeNodePath("0-0/0-0-0"), new TreeNodePath("0-0/0-0-1")]
+        };
+        treeView.Bind(
+            AtomUI.Desktop.Controls.TreeView.SelectedItemsProperty,
+            new Binding(nameof(TreeViewSelectionBindingViewModel.SelectedItems))
+            {
+                Source = viewModel,
+                Mode   = BindingMode.TwoWay
+            });
+
+        ShowInWindow(treeView, () =>
+        {
+            RunDispatcherJobsUntil(() =>
+                FindContainerForNode(treeView, firstChild) is not null &&
+                FindContainerForNode(treeView, secondChild) is not null);
+
+            FindContainerForNode(treeView, secondChild)!.IsSelected.ShouldBeTrue();
+
+            viewModel.SelectedItems = new List<ITreeItemNode> { firstChild, secondChild };
+            Dispatcher.UIThread.RunJobs();
+
+            viewModel.SelectedItems.Count.ShouldBe(2);
+            viewModel.SelectedItems.Contains(firstChild).ShouldBeTrue();
+            viewModel.SelectedItems.Contains(secondChild).ShouldBeTrue();
+            treeView.SelectedItems.Count.ShouldBe(2);
+            treeView.SelectedItems.Contains(firstChild).ShouldBeTrue();
+            treeView.SelectedItems.Contains(secondChild).ShouldBeTrue();
+            FindContainerForNode(treeView, firstChild)!.IsSelected.ShouldBeTrue();
+            FindContainerForNode(treeView, secondChild)!.IsSelected.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void SelectedItems_TwoWayBinding_Preserves_Common_Selected_Container_When_ViewModel_Collection_Replaced()
+    {
+        var nodes       = CreateDefaultPathDataNodes();
+        var root        = nodes[0];
+        var firstChild  = root.Children.ElementAt(0);
+        var secondChild = root.Children.ElementAt(1);
+        var viewModel = new TreeViewSelectionBindingViewModel
+        {
+            SelectedItems = new List<ITreeItemNode> { firstChild }
+        };
+        var treeView = new AtomUI.Desktop.Controls.TreeView
+        {
+            IsMotionEnabled      = false,
+            ItemsSource          = nodes,
+            SelectionMode        = SelectionMode.Multiple,
+            DefaultExpandedPaths = [new TreeNodePath("0-0/0-0-0"), new TreeNodePath("0-0/0-0-1")]
+        };
+        treeView.Bind(
+            AtomUI.Desktop.Controls.TreeView.SelectedItemsProperty,
+            new Binding(nameof(TreeViewSelectionBindingViewModel.SelectedItems))
+            {
+                Source = viewModel,
+                Mode   = BindingMode.TwoWay
+            });
+
+        ShowInWindow(treeView, () =>
+        {
+            RunDispatcherJobsUntil(() =>
+                FindContainerForNode(treeView, firstChild) is not null &&
+                FindContainerForNode(treeView, secondChild) is not null);
+
+            var firstContainer = FindContainerForNode(treeView, firstChild)!;
+            firstContainer.IsSelected.ShouldBeTrue();
+            var becameUnselected = false;
+            firstContainer.PropertyChanged += (_, args) =>
+            {
+                if (args.Property == AtomTreeViewItem.IsSelectedProperty &&
+                    args.NewValue is false)
+                {
+                    becameUnselected = true;
+                }
+            };
+
+            viewModel.SelectedItems = new List<ITreeItemNode> { firstChild, secondChild };
+            Dispatcher.UIThread.RunJobs();
+
+            becameUnselected.ShouldBeFalse();
+            firstContainer.IsSelected.ShouldBeTrue();
+            FindContainerForNode(treeView, secondChild)!.IsSelected.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void SelectedItems_Change_After_Load_Clears_Data_Node_Containers()
+    {
+        var nodes       = CreateDefaultPathDataNodes();
+        var root        = nodes[0];
+        var firstChild  = root.Children.ElementAt(0);
+        var secondChild = root.Children.ElementAt(1);
+        IList selectedItems = new List<ITreeItemNode> { firstChild, secondChild };
+        var treeView = new AtomUI.Desktop.Controls.TreeView
+        {
+            IsMotionEnabled      = false,
+            ItemsSource          = nodes,
+            SelectionMode        = SelectionMode.Multiple,
+            SelectedItems        = selectedItems,
+            DefaultExpandedPaths = [new TreeNodePath("0-0/0-0-0"), new TreeNodePath("0-0/0-0-1")]
+        };
+
+        ShowInWindow(treeView, () =>
+        {
+            RunDispatcherJobsUntil(() =>
+                FindContainerForNode(treeView, firstChild) is not null &&
+                FindContainerForNode(treeView, secondChild) is not null);
+
+            treeView.SelectedItems = new List<ITreeItemNode>();
+            Dispatcher.UIThread.RunJobs();
+
+            FindContainerForNode(treeView, firstChild)!.IsSelected.ShouldBeFalse();
+            FindContainerForNode(treeView, secondChild)!.IsSelected.ShouldBeFalse();
         });
     }
 
@@ -209,6 +449,13 @@ public class TreeViewStateReplayTests
         ];
     }
 
+    private static AtomTreeViewItem? FindContainerForNode(Control root, ITreeItemNode node)
+    {
+        return root.GetVisualDescendants()
+                   .OfType<AtomTreeViewItem>()
+                   .FirstOrDefault(item => ReferenceEquals(item.Header, node));
+    }
+
     private static void ShowInWindow(Control content, Action assertion)
     {
         var window = new Avalonia.Controls.Window
@@ -238,6 +485,27 @@ public class TreeViewStateReplayTests
             if (condition())
             {
                 return;
+            }
+        }
+    }
+
+    private sealed class TreeViewSelectionBindingViewModel : INotifyPropertyChanged
+    {
+        private IList? _selectedItems;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public IList? SelectedItems
+        {
+            get => _selectedItems;
+            set
+            {
+                if (ReferenceEquals(_selectedItems, value))
+                {
+                    return;
+                }
+                _selectedItems = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedItems)));
             }
         }
     }

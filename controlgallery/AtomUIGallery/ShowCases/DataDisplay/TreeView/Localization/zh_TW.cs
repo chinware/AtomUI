@@ -54,8 +54,15 @@ internal partial class zh_TW
     public const string BasicDescription = "最基礎的用法，展示如何使用 checkable、selectable、disabled、defaultExpandKeys 等屬性。";
     public const string GenerateByTemplateTitle = "使用模板生成";
     public const string GenerateByTemplateDescription = "可以使用 Template 機制生成樹節點。";
-    public const string SelectionBindingTitle = "選中項綁定";
-    public const string SelectionBindingDescription = "將 SelectedItem 和 SelectedItems 綁定到節點物件實例，Form 取值時保持選中節點身份。";
+    public const string SelectionBindingTitle = "SelectedItem 綁定";
+    public const string SelectionBindingDescription = "將 SelectedItem 綁定到節點物件實例，點擊節點或操作按鈕即可觀察綁定值同步更新。";
+    public const string SelectionItemsBindingTitle = "SelectedItems 綁定";
+    public const string SelectionItemsBindingDescription = "將 SelectedItems 綁定到節點物件實例集合，點擊節點或操作按鈕即可觀察選中集合更新。";
+    public const string SelectionBindingValueTitle = "綁定值";
+    public const string SelectionBindingSelectFirst = "選擇 parent 1-0";
+    public const string SelectionBindingSelectSecond = "選擇 parent 1-1";
+    public const string SelectionBindingSelectBoth = "選擇兩個節點";
+    public const string SelectionBindingClear = "清除";
     public const string BlockNodeTitle = "塊級節點";
     public const string BlockNodeDescription = "塊級節點。";
     public const string TreeWithLineTitle = "帶連接線的樹";

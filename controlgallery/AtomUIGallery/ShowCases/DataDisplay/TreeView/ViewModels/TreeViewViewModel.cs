@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls;
@@ -48,15 +49,45 @@ public class TreeViewViewModel : ReactiveObject, IRoutableViewModel
     public ITreeItemNode? BoundSelectedTreeNode
     {
         get => _boundSelectedTreeNode;
-        set => this.RaiseAndSetIfChanged(ref _boundSelectedTreeNode, value);
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _boundSelectedTreeNode, value);
+            this.RaisePropertyChanged(nameof(BoundSelectedTreeNodeText));
+        }
     }
 
     private IList? _boundSelectedTreeNodes;
+    private INotifyCollectionChanged? _boundSelectedTreeNodesCollectionChangedSource;
     public IList? BoundSelectedTreeNodes
     {
         get => _boundSelectedTreeNodes;
-        set => this.RaiseAndSetIfChanged(ref _boundSelectedTreeNodes, value);
+        set
+        {
+            if (ReferenceEquals(_boundSelectedTreeNodes, value))
+            {
+                this.RaisePropertyChanged(nameof(BoundSelectedTreeNodesText));
+                return;
+            }
+
+            if (_boundSelectedTreeNodesCollectionChangedSource != null)
+            {
+                _boundSelectedTreeNodesCollectionChangedSource.CollectionChanged -= HandleBoundSelectedTreeNodesCollectionChanged;
+            }
+
+            this.RaiseAndSetIfChanged(ref _boundSelectedTreeNodes, value);
+
+            _boundSelectedTreeNodesCollectionChangedSource = value as INotifyCollectionChanged;
+            if (_boundSelectedTreeNodesCollectionChangedSource != null)
+            {
+                _boundSelectedTreeNodesCollectionChangedSource.CollectionChanged += HandleBoundSelectedTreeNodesCollectionChanged;
+            }
+            this.RaisePropertyChanged(nameof(BoundSelectedTreeNodesText));
+        }
     }
+
+    public string BoundSelectedTreeNodeText => FormatSelectedNode(BoundSelectedTreeNode);
+
+    public string BoundSelectedTreeNodesText => FormatSelectedNodes(BoundSelectedTreeNodes);
 
     private IList<TreeNodePath>? _customizeCollapseExpandTreeDefaultExpandedPaths;
     public IList<TreeNodePath>? CustomizeCollapseExpandTreeDefaultExpandedPaths
@@ -139,6 +170,66 @@ public class TreeViewViewModel : ReactiveObject, IRoutableViewModel
     public TreeViewViewModel(IScreen screen)
     {
         HostScreen = screen;
+    }
+
+    public void SelectFirstBindingTreeNode()
+    {
+        if (!TryGetSelectionBindingNodes(out var firstChild, out _))
+        {
+            return;
+        }
+
+        BoundSelectedTreeNode = firstChild;
+    }
+
+    public void SelectSecondBindingTreeNode()
+    {
+        if (!TryGetSelectionBindingNodes(out _, out var secondChild))
+        {
+            return;
+        }
+
+        BoundSelectedTreeNode = secondChild;
+    }
+
+    public void ClearBindingTreeNodeSelection()
+    {
+        BoundSelectedTreeNode = null;
+    }
+
+    public void SelectFirstBindingTreeNodes()
+    {
+        if (!TryGetSelectionBindingNodes(out var firstChild, out _))
+        {
+            return;
+        }
+
+        BoundSelectedTreeNodes = new ObservableCollection<ITreeItemNode> { firstChild };
+    }
+
+    public void SelectSecondBindingTreeNodes()
+    {
+        if (!TryGetSelectionBindingNodes(out _, out var secondChild))
+        {
+            return;
+        }
+
+        BoundSelectedTreeNodes = new ObservableCollection<ITreeItemNode> { secondChild };
+    }
+
+    public void SelectBothBindingTreeNodes()
+    {
+        if (!TryGetSelectionBindingNodes(out var firstChild, out var secondChild))
+        {
+            return;
+        }
+
+        BoundSelectedTreeNodes = new ObservableCollection<ITreeItemNode> { firstChild, secondChild };
+    }
+
+    public void ClearBindingTreeNodesSelection()
+    {
+        BoundSelectedTreeNodes = new ObservableCollection<ITreeItemNode>();
     }
 
     public void EnsureApiRows()
@@ -232,6 +323,52 @@ public class TreeViewViewModel : ReactiveObject, IRoutableViewModel
             TreeViewShowCaseLangResourceKind.TokenStatusStable                   => en_US.TokenStatusStable,
             _                                                                    => kind.ToString()
         };
+    }
+
+    private bool TryGetSelectionBindingNodes(out ITreeItemNode firstChild, out ITreeItemNode secondChild)
+    {
+        firstChild  = null!;
+        secondChild = null!;
+        if (BasicTreeNodes is not { Count: > 0 } nodes ||
+            nodes[0] is not TreeItemNode root ||
+            root.Children.Count < 2)
+        {
+            return false;
+        }
+
+        firstChild  = root.Children[0];
+        secondChild = root.Children[1];
+        return true;
+    }
+
+    private static string FormatSelectedNodes(IList? nodes)
+    {
+        if (nodes is not { Count: > 0 })
+        {
+            return "-";
+        }
+
+        var labels = new List<string>(nodes.Count);
+        foreach (var node in nodes)
+        {
+            labels.Add(FormatSelectedNode(node));
+        }
+        return string.Join(", ", labels);
+    }
+
+    private static string FormatSelectedNode(object? node)
+    {
+        return node switch
+        {
+            ITreeItemNode treeItemNode => treeItemNode.Header?.ToString() ?? "-",
+            null                       => "-",
+            _                          => node.ToString() ?? "-"
+        };
+    }
+
+    private void HandleBoundSelectedTreeNodesCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        this.RaisePropertyChanged(nameof(BoundSelectedTreeNodesText));
     }
 }
 

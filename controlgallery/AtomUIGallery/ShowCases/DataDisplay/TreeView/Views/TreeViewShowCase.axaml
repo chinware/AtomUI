@@ -96,11 +96,12 @@
                         Title="{gallery:TreeViewShowCaseLangResource SelectionBindingTitle}"
                         Description="{gallery:TreeViewShowCaseLangResource SelectionBindingDescription}"
                         BadgeText="v6.0.8"
+                        Span="Full"
                         IsDeferredContentEnabled="True">
                         <gallery:ShowCaseItem.DeferredContentTemplate>
                             <DataTemplate x:DataType="vm:TreeViewViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="24">
-                <StackPanel Spacing="8" Width="260">
+            <Grid ColumnDefinitions="300,*" ColumnSpacing="24">
+                <StackPanel Grid.Column="0" Spacing="8">
                     <TextBlock FontWeight="SemiBold"
                                Text="{gallery:TreeViewShowCaseLangResource P2TextSelectedItemBinding}" />
                     <atom:TreeView ItemsSource="{Binding BasicTreeNodes}"
@@ -114,7 +115,43 @@
                     </atom:TreeView>
                 </StackPanel>
 
-                <StackPanel Spacing="8" Width="260">
+                <StackPanel Grid.Column="1" MinWidth="260" Spacing="10">
+                    <TextBlock FontWeight="SemiBold"
+                               Text="{gallery:TreeViewShowCaseLangResource SelectionBindingValueTitle}" />
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{gallery:TreeViewShowCaseLangResource P2TextSelectedItemBinding}" />
+                        <atom:TextBlock Text="{Binding BoundSelectedTreeNodeText}" />
+                    </StackPanel>
+                    <WrapPanel>
+                        <atom:Button Margin="0,0,8,8"
+                                     SizeType="Small"
+                                     Click="HandleSelectFirstBindingTreeNodeClick"
+                                     Content="{gallery:TreeViewShowCaseLangResource SelectionBindingSelectFirst}" />
+                        <atom:Button Margin="0,0,8,8"
+                                     SizeType="Small"
+                                     Click="HandleSelectSecondBindingTreeNodeClick"
+                                     Content="{gallery:TreeViewShowCaseLangResource SelectionBindingSelectSecond}" />
+                        <atom:Button Margin="0,0,8,8"
+                                     SizeType="Small"
+                                     Click="HandleClearBindingTreeNodeSelectionClick"
+                                     Content="{gallery:TreeViewShowCaseLangResource SelectionBindingClear}" />
+                    </WrapPanel>
+                </StackPanel>
+            </Grid>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:TreeViewShowCaseLangResource SelectionItemsBindingTitle}"
+                        Description="{gallery:TreeViewShowCaseLangResource SelectionItemsBindingDescription}"
+                        BadgeText="v6.0.8"
+                        Span="Full"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:TreeViewViewModel">
+            <Grid ColumnDefinitions="300,*" ColumnSpacing="24">
+                <StackPanel Grid.Column="0" Spacing="8">
                     <TextBlock FontWeight="SemiBold"
                                Text="{gallery:TreeViewShowCaseLangResource P2TextSelectedItemsBinding}" />
                     <atom:TreeView ItemsSource="{Binding BasicTreeNodes}"
@@ -128,7 +165,34 @@
                         </atom:TreeView.ItemTemplate>
                     </atom:TreeView>
                 </StackPanel>
-            </StackPanel>
+
+                <StackPanel Grid.Column="1" MinWidth="260" Spacing="10">
+                    <TextBlock FontWeight="SemiBold"
+                               Text="{gallery:TreeViewShowCaseLangResource SelectionBindingValueTitle}" />
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="{gallery:TreeViewShowCaseLangResource P2TextSelectedItemsBinding}" />
+                        <atom:TextBlock Text="{Binding BoundSelectedTreeNodesText}" TextWrapping="Wrap" />
+                    </StackPanel>
+                    <WrapPanel>
+                        <atom:Button Margin="0,0,8,8"
+                                     SizeType="Small"
+                                     Click="HandleSelectFirstBindingTreeNodesClick"
+                                     Content="{gallery:TreeViewShowCaseLangResource SelectionBindingSelectFirst}" />
+                        <atom:Button Margin="0,0,8,8"
+                                     SizeType="Small"
+                                     Click="HandleSelectSecondBindingTreeNodesClick"
+                                     Content="{gallery:TreeViewShowCaseLangResource SelectionBindingSelectSecond}" />
+                        <atom:Button Margin="0,0,8,8"
+                                     SizeType="Small"
+                                     Click="HandleSelectBothBindingTreeNodesClick"
+                                     Content="{gallery:TreeViewShowCaseLangResource SelectionBindingSelectBoth}" />
+                        <atom:Button Margin="0,0,8,8"
+                                     SizeType="Small"
+                                     Click="HandleClearBindingTreeNodesSelectionClick"
+                                     Content="{gallery:TreeViewShowCaseLangResource SelectionBindingClear}" />
+                    </WrapPanel>
+                </StackPanel>
+            </Grid>
                             </DataTemplate>
                         </gallery:ShowCaseItem.DeferredContentTemplate>
                     </gallery:ShowCaseItem>
