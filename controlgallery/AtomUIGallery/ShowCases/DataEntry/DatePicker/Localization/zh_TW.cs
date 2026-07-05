@@ -7,6 +7,8 @@ internal partial class zh_TW
 {
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "點擊 DatePicker 後，可以在面板中選擇或輸入日期。";
+    public const string BindingTitle = "SelectedDateTime 綁定";
+    public const string BindingDescription = "SelectedDateTime 默認與 ViewModel 雙向同步，無需顯式設置 Binding Mode=TwoWay。";
     public const string PickerDisplayDateTitle = "彈出面板顯示日期";
     public const string PickerDisplayDateDescription = "打開彈出面板時定位到指定日期，但不提交選中值。";
     public const string RangePickerTitle = "範圍選擇器";
@@ -50,6 +52,9 @@ internal partial class zh_TW
     public const string P2ContentSmall = "小號";
     public const string P2ContentCustom = "自定義";
     public const string P2TextPlacement = "彈出位置：";
+    public const string P2TextSelectedDateTime = "選中值：";
+    public const string P2ContentSetTomorrow = "設置為明天";
+    public const string P2ContentClear = "清空";
     public const string P2ContentTopleft = "左上";
     public const string P2ContentTopright = "右上";
     public const string P2ContentBottomleft = "左下";
@@ -65,7 +70,7 @@ internal partial class zh_TW
     public const string ApiColumnDescription = "說明";
     public const string ApiColumnType = "類型";
     public const string ApiColumnDefault = "默認值";
-    public const string ApiPropertySelectedDateTime = "DatePicker 當前選中的日期和可選時間。";
+    public const string ApiPropertySelectedDateTime = "DatePicker 當前選中的日期和可選時間；默認 TwoWay 綁定，並支持 Avalonia data validation。";
     public const string ApiPropertyDefaultDateTime = "DatePicker 重置行為使用的初始日期和可選時間。";
     public const string ApiPropertyPickerDisplayDate = "彈出面板打開時使用的顯示錨點，不提交選中值。";
     public const string ApiPropertyRangeStartSelectedDate = "RangeDatePicker 當前選中的開始日期。";

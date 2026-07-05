@@ -46,6 +46,8 @@ TimePicker 的公共契约由 public/protected 类型成员、Avalonia 属性、
 
 当前没有抽取到控件专属 public 事件；交互通知主要来自继承事件、命令或 Gallery 可观察状态。
 
+`SelectedTime` 是 `TimePicker` 的受控 Form 值属性，默认绑定模式为 `TwoWay`，并启用 Avalonia data validation。Form、绑定验证和输入壳体错误视觉必须基于 `DataValidationErrors` 投射，不允许另建与 native validation 并行的错误状态。
+
 主要公开类型与枚举：
 
 - 类型：`CellDbClickedEventArgs`、`CellHoverEventArgs`、`DateTimePickerPanel`、`RangeTimePicker`、`TimePicker`、`TimePickerPresenter`、`TimeSelectedEventArgs`、`TimeView`、`TimeViewCell`、`en_US`、`zh_CN`、`zh_TW`。
@@ -96,6 +98,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `SelectedTime` 是单时间选择的唯一用户值 owner；外部绑定、Form set/get、清除和弹层提交都必须收敛到该属性。
 - `PickerDisplayTime` 只定义弹出面板打开时的显示锚点；它不得写入 `SelectedTime`，也不得改变 `DefaultTime` 的 reset 语义。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。

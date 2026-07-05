@@ -2,6 +2,15 @@
 
 本文档记录 TimePicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-05
+
+- API
+  - Make `TimePicker.SelectedTime` bind `TwoWay` by default while keeping Avalonia data validation enabled.
+- Gallery
+  - Add a `v6.0.8` `SelectedTime` binding example that shows ViewModel synchronization without explicit `Mode=TwoWay`.
+- Docs
+  - Document `SelectedTime` as the controlled Form value and native validation projection point.
+
 ## 2026-07-04
 
 - API

@@ -72,4 +72,20 @@ public partial class DatePickerShowCase : GalleryReactiveUserControl<DatePickerV
             viewModel.HandlePickerPlacementCheckedChanged(sender, args);
         }
     }
+
+    private void SetBoundSelectedDateTimeTomorrow(object? sender, Avalonia.Interactivity.RoutedEventArgs args)
+    {
+        if (DataContext is DatePickerViewModel viewModel)
+        {
+            viewModel.BoundSelectedDateTime = DateTime.Today.AddDays(1);
+        }
+    }
+
+    private void ClearBoundSelectedDateTime(object? sender, Avalonia.Interactivity.RoutedEventArgs args)
+    {
+        if (DataContext is DatePickerViewModel viewModel)
+        {
+            viewModel.BoundSelectedDateTime = null;
+        }
+    }
 }
