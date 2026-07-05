@@ -70,6 +70,24 @@ CheckedItems="{Binding DefaultCheckBoxOptions}" />
 </StackPanel>
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
+Title="{gallery:CheckBoxShowCaseLangResource CheckedItemsBindingTitle}"
+Description="{gallery:CheckBoxShowCaseLangResource CheckedItemsBindingDescription}"
+BadgeText="v6.0.8">
+<StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+<atom:CheckBoxGroup ItemsSource="{Binding TwoWayCheckBoxOptions}"
+CheckedItems="{Binding TwoWayCheckedOptions}" />
+<atom:TextBlock Text="{Binding TwoWayCheckedSummary}" />
+<StackPanel Orientation="Horizontal" Spacing="10">
+<atom:Button SizeType="Small"
+Command="{Binding AddPearToTwoWayCheckedItemsCommand}"
+Content="{gallery:CheckBoxShowCaseLangResource P2ContentAddPear}" />
+<atom:Button SizeType="Small"
+Command="{Binding ClearTwoWayCheckedItemsCommand}"
+Content="{gallery:CheckBoxShowCaseLangResource P2ContentClear}" />
+</StackPanel>
+</StackPanel>
+</gallery:ShowCaseItem>
+<gallery:ShowCaseItem
 Title="{gallery:CheckBoxShowCaseLangResource CheckAllTitle}"
 Description="{gallery:CheckBoxShowCaseLangResource CheckAllDescription}">
 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Spacing="10">

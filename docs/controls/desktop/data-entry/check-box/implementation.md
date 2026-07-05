@@ -80,6 +80,8 @@ Public API / ItemsSource / Command / Event
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
 
+`AbstractCheckBoxGroup.CheckedItems` 是 CheckBoxGroup 的 Form value 和集合选择 source of truth。属性注册默认 `BindingMode.TwoWay` 并启用 Avalonia data validation。内部 `AbstractCheckBoxItemsControl.CheckedItems` 只接收从 public 集合复制出的快照，不能直接持有用户集合引用，避免容器选择回写时向绑定集合重复添加同一项。
+
 ## 5. 生命周期与模板接入
 
 生命周期规则：
@@ -87,6 +89,7 @@ Public API / ItemsSource / Command / Event
 - 构造阶段只注册必要状态，不依赖 template part。
 - 模板应用时获取 part、建立事件订阅和绑定，并先释放旧 part 订阅。
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
+- `CheckedItems` 绑定到 `INotifyCollectionChanged` 集合时，订阅由 `AbstractCheckBoxGroup` 拥有；visual tree attach 时建立，detach 或集合替换时释放。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
 
@@ -115,6 +118,7 @@ CheckBox 的交互事件应从输入源收敛到控件级语义事件：
 - Template part 重新应用时的状态回放。
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - ItemsSource、selection、checked、expanded、filter、paging 或 upload task 的集合同步。
+- `CheckedItems` 集合替换或原地变更后，先更新内部选择快照，再回放已实现容器的 `IsChecked`，最后通知 Form value 和 `CheckedChanged`。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reactive;
@@ -124,6 +125,42 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _defaultCheckBoxOptions, value);
     }
 
+    private IList<CheckBoxOption>? _twoWayCheckBoxOptions;
+
+    public IList<CheckBoxOption>? TwoWayCheckBoxOptions
+    {
+        get => _twoWayCheckBoxOptions;
+        set => this.RaiseAndSetIfChanged(ref _twoWayCheckBoxOptions, value);
+    }
+
+    private IList? _twoWayCheckedOptions;
+
+    public IList? TwoWayCheckedOptions
+    {
+        get => _twoWayCheckedOptions;
+        set
+        {
+            if (ReferenceEquals(_twoWayCheckedOptions, value))
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _twoWayCheckedOptions, value);
+            ConfigureTwoWayCheckedOptionsCollectionChangedSource(value);
+        }
+    }
+
+    private string? _twoWayCheckedSummary;
+
+    public string? TwoWayCheckedSummary
+    {
+        get => _twoWayCheckedSummary;
+        set => this.RaiseAndSetIfChanged(ref _twoWayCheckedSummary, value);
+    }
+
+    private CheckBoxOption? _twoWayPearOption;
+    private INotifyCollectionChanged? _twoWayCheckedOptionsCollectionChangedSource;
+
     public ReactiveCommand<Unit, Unit> CheckStatusCommand { get; }
     public ReactiveCommand<Unit, Unit> EnableStatusCommand { get; }
     public ReactiveCommand<Unit, Unit> CheckBoxCommand { get; }
@@ -131,6 +168,8 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
     public ReactiveCommand<Unit, Unit> CheckedItemStatusCommand1 { get; }
     public ReactiveCommand<Unit, Unit> CheckedItemStatusCommand2 { get; }
     public ReactiveCommand<Unit, Unit> CheckedItemStatusCommand3 { get; }
+    public ReactiveCommand<Unit, Unit> AddPearToTwoWayCheckedItemsCommand { get; }
+    public ReactiveCommand<Unit, Unit> ClearTwoWayCheckedItemsCommand { get; }
 
     public CheckBoxViewModel(IScreen screen)
     {
@@ -153,6 +192,8 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
         CheckedItemStatusCommand1 = ReactiveCommand.Create(HandleCheckedItemStatus);
         CheckedItemStatusCommand2 = ReactiveCommand.Create(HandleCheckedItemStatus);
         CheckedItemStatusCommand3 = ReactiveCommand.Create(HandleCheckedItemStatus);
+        AddPearToTwoWayCheckedItemsCommand = ReactiveCommand.Create(HandleAddPearToTwoWayCheckedItems);
+        ClearTwoWayCheckedItemsCommand     = ReactiveCommand.Create(HandleClearTwoWayCheckedItems);
     }
 
     private void HandleCheckStatus()
@@ -180,6 +221,22 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
         SetupCheckBtnText();
         SetupEnabledBtnText();
         SetupControlledCheckBoxText();
+        UpdateTwoWayCheckedSummary();
+    }
+
+    public void ConfigureTwoWayCheckBoxOptions(CheckBoxOption apple, CheckBoxOption pear, CheckBoxOption orange)
+    {
+        _twoWayPearOption = pear;
+        TwoWayCheckBoxOptions =
+        [
+            apple,
+            pear,
+            orange
+        ];
+        TwoWayCheckedOptions = new ObservableCollection<CheckBoxOption>
+        {
+            apple
+        };
     }
 
     private void SetupCheckBtnText()
@@ -255,6 +312,80 @@ public class CheckBoxViewModel : ReactiveObject, IRoutableViewModel
         {
             CheckedAllStatus = null;
         }
+    }
+
+    private void HandleAddPearToTwoWayCheckedItems()
+    {
+        if (_twoWayPearOption == null)
+        {
+            return;
+        }
+
+        if (TwoWayCheckedOptions == null)
+        {
+            TwoWayCheckedOptions = new ObservableCollection<CheckBoxOption>
+            {
+                _twoWayPearOption
+            };
+            return;
+        }
+
+        if (!TwoWayCheckedOptions.Contains(_twoWayPearOption))
+        {
+            TwoWayCheckedOptions.Add(_twoWayPearOption);
+        }
+    }
+
+    private void HandleClearTwoWayCheckedItems()
+    {
+        TwoWayCheckedOptions?.Clear();
+    }
+
+    private void ConfigureTwoWayCheckedOptionsCollectionChangedSource(IList? checkedOptions)
+    {
+        if (_twoWayCheckedOptionsCollectionChangedSource != null)
+        {
+            _twoWayCheckedOptionsCollectionChangedSource.CollectionChanged -= HandleTwoWayCheckedOptionsCollectionChanged;
+            _twoWayCheckedOptionsCollectionChangedSource = null;
+        }
+
+        _twoWayCheckedOptionsCollectionChangedSource = checkedOptions as INotifyCollectionChanged;
+        if (_twoWayCheckedOptionsCollectionChangedSource != null)
+        {
+            _twoWayCheckedOptionsCollectionChangedSource.CollectionChanged += HandleTwoWayCheckedOptionsCollectionChanged;
+        }
+
+        UpdateTwoWayCheckedSummary();
+    }
+
+    private void HandleTwoWayCheckedOptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        if (ReferenceEquals(sender, _twoWayCheckedOptionsCollectionChangedSource))
+        {
+            UpdateTwoWayCheckedSummary();
+        }
+    }
+
+    private void UpdateTwoWayCheckedSummary()
+    {
+        var selectedTexts = new List<string>();
+        if (TwoWayCheckedOptions != null)
+        {
+            foreach (var option in TwoWayCheckedOptions)
+            {
+                if (option is CheckBoxOption checkBoxOption && checkBoxOption.Content is not null)
+                {
+                    selectedTexts.Add(checkBoxOption.Content.ToString() ?? string.Empty);
+                }
+            }
+        }
+
+        var selectedText = selectedTexts.Count > 0
+            ? string.Join(", ", selectedTexts)
+            : CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentNone, "None");
+        TwoWayCheckedSummary = string.Format(CultureInfo.CurrentCulture,
+            CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2TwoWayCheckedSummaryFormat, "Selected: {0}"),
+            selectedText);
     }
 
     public void EnsureApiRows()

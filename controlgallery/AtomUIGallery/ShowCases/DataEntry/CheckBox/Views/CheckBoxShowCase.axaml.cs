@@ -42,8 +42,10 @@ public partial class CheckBoxShowCase : GalleryReactiveUserControl<CheckBoxViewM
                 
                 Disposable.Create(() =>
                 {
-                    viewModel.CheckBoxOptions        = null;
+                    viewModel.CheckBoxOptions       = null;
                     viewModel.DefaultCheckBoxOptions = null;
+                    viewModel.TwoWayCheckBoxOptions = null;
+                    viewModel.TwoWayCheckedOptions  = null;
                 }).DisposeWith(disposables);
             }
         });
@@ -107,6 +109,20 @@ public partial class CheckBoxShowCase : GalleryReactiveUserControl<CheckBoxViewM
         {
             pear,
         };
+
+        var twoWayApple = new CheckBoxOption()
+        {
+            Content = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentApple, "Apple")
+        };
+        var twoWayPear = new CheckBoxOption()
+        {
+            Content = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentPear, "Pear")
+        };
+        var twoWayOrange = new CheckBoxOption()
+        {
+            Content = CheckBoxShowCaseLanguage.Get(CheckBoxShowCaseLangResourceKind.P2ContentOrange, "Orange")
+        };
+        viewModel.ConfigureTwoWayCheckBoxOptions(twoWayApple, twoWayPear, twoWayOrange);
     }
 }
 
