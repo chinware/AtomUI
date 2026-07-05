@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.ObjectModel;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
@@ -41,6 +42,20 @@ public class TreeViewViewModel : ReactiveObject, IRoutableViewModel
     {
         get => _basicTreeNodes;
         set => this.RaiseAndSetIfChanged(ref _basicTreeNodes, value);
+    }
+
+    private ITreeItemNode? _boundSelectedTreeNode;
+    public ITreeItemNode? BoundSelectedTreeNode
+    {
+        get => _boundSelectedTreeNode;
+        set => this.RaiseAndSetIfChanged(ref _boundSelectedTreeNode, value);
+    }
+
+    private IList? _boundSelectedTreeNodes;
+    public IList? BoundSelectedTreeNodes
+    {
+        get => _boundSelectedTreeNodes;
+        set => this.RaiseAndSetIfChanged(ref _boundSelectedTreeNodes, value);
     }
 
     private IList<TreeNodePath>? _customizeCollapseExpandTreeDefaultExpandedPaths;

@@ -133,7 +133,7 @@ TreeView 的状态模型由节点状态、选择状态、勾选状态、展开�
 - `IsSelectable=false` 时不允许节点被选中，并清空 TreeView 当前选择。
 - `IsSelectOnRightClick=false` 时，右键不更新选择。
 - `SelectionMode` 继承 Avalonia `TreeView` 语义，单选使用 `SelectedItem`，多选使用 `SelectedItems`。
-- Form 集成以单选 / 多选模式分别读取 `SelectedItem` 或 `SelectedItems`。
+- Form 集成以单选 / 多选模式分别读取和写入 `SelectedItem` 或 `SelectedItems`，并保持原始节点对象 / 列表实例，不把节点值转换为字符串。
 
 勾选行为：
 
@@ -231,7 +231,7 @@ TreeView 属于 Data Display 分类，与 List、DataGrid、Card、Descriptions�
 - `BindableTreeItemNode`：绑定型节点模型，为 XAML binding target、`DynamicResource` 和动态资源场景提供 Avalonia 属性承载。
 - `NodeSwitcherButton`：节点展开、收起、加载和叶子图标入口。
 - `FloatableTreeView`：TreeView 的浮层变体，用于 TreeViewFlyout 场景。
-- Form：通过 `IFormItemAware` 读取和写入选择值。
+- Form：通过 `IFormItemAware` 读取和写入选择值；单选值是 `SelectedItem`，多选值是 `SelectedItems`。
 - Motion：展开收起和背景状态过渡遵守 `IsMotionEnabled`。
 - AsyncLoad：通过 `ITreeItemNodeLoader` 加载子节点。
 

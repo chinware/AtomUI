@@ -957,7 +957,7 @@ public partial class TreeView : AvaloniaTreeView,
         remove => _formValueChanged -= value;
     }
 
-    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value?.ToString());
+    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value);
 
     object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
     void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
