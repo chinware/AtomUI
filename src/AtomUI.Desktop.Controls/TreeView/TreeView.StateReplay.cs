@@ -149,6 +149,7 @@ public partial class TreeView
                 var item = TreeItemFromContainer(treeViewItem);
                 if (item != null)
                 {
+                    treeViewItem.SetCurrentValue(TreeViewItem.IsSelectedProperty, true);
                     if (!SelectedItems.Contains(item))
                     {
                         SelectedItems.Add(item);
@@ -237,10 +238,27 @@ public partial class TreeView
                 }
             }
         }
+        else if ((SelectionMode & SelectionMode.Multiple) == SelectionMode.Multiple &&
+                 SelectedItems.Count > 0)
+        {
+            ConfigureSelectedItems();
+        }
         else if (SelectedItem != null)
         {
             var paths = GetTreePathFromItem(SelectedItem);
             SelectTreeItemByPath(paths);
+        }
+    }
+
+    private void ConfigureSelectedItems()
+    {
+        var selectedPaths = BuildNodeIdentityPaths(SelectedItems);
+        if (selectedPaths != null)
+        {
+            foreach (var selectedPath in selectedPaths)
+            {
+                TrySelectNodePath(selectedPath);
+            }
         }
     }
 
@@ -340,6 +358,7 @@ public partial class TreeView
                 {
                     SelectedItems.Add(item);
                 }
+                treeViewItem.SetCurrentValue(TreeViewItem.IsSelectedProperty, true);
             }
         }
         finally

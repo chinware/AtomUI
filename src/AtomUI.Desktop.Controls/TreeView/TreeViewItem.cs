@@ -423,6 +423,10 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
             BorderThicknessProperty,
             NodeHoverModeProperty,
             BackgroundProperty);
+        IsSelectedProperty.OverrideMetadata<TreeViewItem>(
+            new StyledPropertyMetadata<bool>(coerce: CoerceIsSelected));
+        SelectingItemsControl.IsSelectedChangedEvent.AddClassHandler<TreeViewItem>(
+            (treeViewItem, args) => treeViewItem.HandleIsSelectedChanged(args));
     }
 
     public TreeViewItem()
@@ -537,6 +541,25 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
                 SetCurrentValue(IsSelectedProperty, false);
             }
         }
+    }
+
+    private void HandleIsSelectedChanged(RoutedEventArgs args)
+    {
+        if (OwnerTreeView?.SyncingSelectedItems == true)
+        {
+            args.Handled = true;
+        }
+    }
+
+    private static bool CoerceIsSelected(AvaloniaObject sender, bool value)
+    {
+        if (!value &&
+            sender is TreeViewItem treeViewItem &&
+            treeViewItem.OwnerTreeView?.ShouldPreserveSelectedContainerDuringSelectedItemsSync(treeViewItem) == true)
+        {
+            return true;
+        }
+        return value;
     }
 
     private void HandleExpandedChanged(bool forceDisabledMotion = false)

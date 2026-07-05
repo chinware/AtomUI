@@ -47,6 +47,11 @@ public partial class TreeView : AvaloniaTreeView,
                                 IFormItemAware
 {
     #region 公共属性定义
+    public static readonly new DirectProperty<TreeView, IList> SelectedItemsProperty =
+        AvaloniaTreeView.SelectedItemsProperty.AddOwner<TreeView>(
+            o => o.SelectedItems,
+            (o, v) => o.SelectedItems = v);
+
     public static readonly StyledProperty<bool> IsAutoExpandParentProperty =
         AvaloniaProperty.Register<TreeView, bool>(nameof(IsAutoExpandParent), true);
     
@@ -160,6 +165,28 @@ public partial class TreeView : AvaloniaTreeView,
     public static readonly StyledProperty<Thickness> EmptyIndicatorPaddingProperty =
         AvaloniaProperty.Register<TreeView, Thickness>(nameof(EmptyIndicatorPadding));
     
+    [AllowNull]
+    public new IList SelectedItems
+    {
+        get => base.SelectedItems;
+        set
+        {
+            var oldValue = base.SelectedItems;
+            SyncingSelectedItems = true;
+            _syncingSelectedItemsTarget = value;
+            try
+            {
+                base.SelectedItems = value;
+            }
+            finally
+            {
+                _syncingSelectedItemsTarget = null;
+                SyncingSelectedItems = false;
+            }
+            RaisePropertyChanged(SelectedItemsProperty, oldValue, base.SelectedItems);
+        }
+    }
+
     public bool IsAutoExpandParent
     {
         get => GetValue(IsAutoExpandParentProperty);
@@ -452,6 +479,8 @@ public partial class TreeView : AvaloniaTreeView,
     
     private static readonly IList Empty = Array.Empty<object>();
     private IList? _checkedItems;
+    private IList? _syncingSelectedItemsTarget;
+    internal bool SyncingSelectedItems;
     internal bool SyncingCheckedItems;
     
     internal bool IsExpandAllProcess { get; set; }
@@ -480,6 +509,18 @@ public partial class TreeView : AvaloniaTreeView,
         InteractionHandler = interactionHandler ?? throw new ArgumentNullException(nameof(interactionHandler));
         this.RegisterTokenResourceScope(TreeViewToken.ScopeProvider);
         Items.CollectionChanged           += HandleCollectionChanged;
+    }
+
+    internal bool ShouldPreserveSelectedContainerDuringSelectedItemsSync(TreeViewItem treeViewItem)
+    {
+        if (!SyncingSelectedItems ||
+            _syncingSelectedItemsTarget is null)
+        {
+            return false;
+        }
+
+        var item = TreeItemFromContainer(treeViewItem);
+        return item != null && _syncingSelectedItemsTarget.Contains(item);
     }
 
     protected override void OnInitialized()
