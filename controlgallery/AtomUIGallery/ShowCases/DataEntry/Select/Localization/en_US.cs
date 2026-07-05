@@ -8,6 +8,14 @@ internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Basic Usage.";
+    public const string BindingTitle = "Two-way binding";
+    public const string BindingDescription = "SelectedOption and SelectedOptions synchronize with the ViewModel without explicitly setting Binding Mode=TwoWay.";
+    public const string BindingSingleLabel = "SelectedOption";
+    public const string BindingMultipleLabel = "SelectedOptions";
+    public const string BindingViewModelValueLabel = "ViewModel value";
+    public const string BindingSetSingleButton = "Set Lucy";
+    public const string BindingSetMultipleButton = "Set Jack + Yiminghe";
+    public const string BindingClearButton = "Clear";
     public const string ScenarioBasic = "Basic";
     public const string ScenarioOptions = "Options";
     public const string ScenarioAppearance = "Appearance";
@@ -24,7 +32,8 @@ internal partial class en_US
     public const string ApiColumnDefault = "Default";
     public const string ApiPropertyMode = "Selection mode, including single, multiple, and tags.";
     public const string ApiPropertyOptionsSource = "Option data displayed in the dropdown.";
-    public const string ApiPropertySelectedOptions = "Currently selected options.";
+    public const string ApiPropertySelectedOption = "Current option in single mode. Two-way binding is enabled by default.";
+    public const string ApiPropertySelectedOptions = "Current options in multiple and tags modes. Two-way binding is enabled by default.";
     public const string ApiPropertyDefaultValues = "Initial selected option values.";
     public const string ApiPropertyPlaceholderText = "Placeholder text shown before a value is selected.";
     public const string ApiPropertyIsAllowClear = "Shows the clear affordance when a value is selected.";

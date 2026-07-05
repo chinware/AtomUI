@@ -55,7 +55,10 @@ public partial class SelectShowCase : GalleryReactiveUserControl<SelectViewModel
                     viewModel.PrefixSuffixOptions      = null;
                     viewModel.RandomOptions            = null;
                     viewModel.MaxTagCountOptions       = null;
+                    viewModel.DefaultSelectedOption    = null;
                     viewModel.DefaultSelectedOptions   = null;
+                    viewModel.BoundSelectedOption      = null;
+                    viewModel.BoundSelectedOptions     = null;
                 }).DisposeWith(disposables);
             }
         });
@@ -133,7 +136,15 @@ public partial class SelectShowCase : GalleryReactiveUserControl<SelectViewModel
             Option(SelectShowCaseLangResourceKind.P2HeaderDisabled, "Disabled", "disabled", isEnabled: false)
         ];
         viewModel.SingleLucyOptions = [Option(SelectShowCaseLangResourceKind.P2HeaderLucy, "Lucy", "lucy")];
+        viewModel.DefaultSelectedOption  = viewModel.BasicSelectedOptions[2];
         viewModel.DefaultSelectedOptions = [viewModel.BasicSelectedOptions[2]];
+        viewModel.BoundSelectedOption    = viewModel.BasicSelectedOptions[1];
+        viewModel.BoundSelectedOptions =
+            new System.Collections.ObjectModel.ObservableCollection<ISelectOption>
+            {
+                viewModel.BasicSelectedOptions[0],
+                viewModel.BasicSelectedOptions[2]
+            };
     }
 
     private static void InitializeSearchOptions(SelectViewModel viewModel)

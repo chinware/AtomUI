@@ -211,6 +211,16 @@ internal class SelectResultOptionsBox : TemplatedControl
         e.Handled = false;
     }
 
+    internal void RefreshSelectedOptions()
+    {
+        HandleSelectedOptionsChanged();
+        ConfigureMaxTagCountInfoVisible();
+        if (Mode != SelectMode.Single)
+        {
+            _searchTextBox?.Focus();
+        }
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);

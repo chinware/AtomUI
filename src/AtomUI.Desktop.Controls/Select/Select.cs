@@ -10,6 +10,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
@@ -56,13 +57,17 @@ public partial class Select : AbstractSelect
         AvaloniaProperty.RegisterDirect<Select, IList<ISelectOption>?>(
             nameof(SelectedOptions),
             o => o.SelectedOptions,
-            (o, v) => o.SelectedOptions = v);
+            (o, v) => o.SelectedOptions = v,
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
 
     public static readonly DirectProperty<Select, ISelectOption?> SelectedOptionProperty =
         AvaloniaProperty.RegisterDirect<Select, ISelectOption?>(
             nameof(SelectedOption),
             o => o.SelectedOption,
-            (o, v) => o.SelectedOption = v);
+            (o, v) => o.SelectedOption = v,
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
 
     public static readonly StyledProperty<double> OptionFontSizeProperty =
         AvaloniaProperty.Register<Select, double>(nameof(OptionFontSize));
@@ -263,6 +268,8 @@ public partial class Select : AbstractSelect
     private SelectFilterTextBox? _singleFilterInput;
     private SelectResultOptionsBox? _selectedOptionsBox;
     private IDisposable? _selectedOptionsBoxSearchInputSubscription;
+    private INotifyCollectionChanged? _selectedOptionsCollectionChangedSource;
+    private List<ISelectOption>? _selectedOptionsSnapshot;
     private bool _ignoreSyncSelection;
     private bool _candidateListActivated;
     private bool _syncingSingleFilterInputText;
@@ -310,10 +317,18 @@ public partial class Select : AbstractSelect
         ConfigureDefaultValues();
     }
 
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ConfigureSelectedOptionsCollectionChangedSource(SelectedOptions);
+        ConfigureSelectionValueState();
+    }
+
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         CancelPendingOptionsLoad();
         ClearPopupContent();
+        ReleaseSelectedOptionsCollectionChangedSource();
         base.OnDetachedFromVisualTree(e);
     }
 
@@ -432,12 +447,7 @@ public partial class Select : AbstractSelect
         if (change.Property == SelectedOptionsProperty ||
             change.Property == SelectedOptionProperty)
         {
-            ConfigureSelectionIsEmpty();
-            ConfigurePlaceholderVisible();
-            ConfigureSingleResultVisible();
-            SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count ?? 0);
-            CleanRuntimeDynamicOptions();
-            ConfigureSingleFilterTextBox();
+            ConfigureSelectionValueState();
         }
         else if (change.Property == ModeProperty)
         {
@@ -677,6 +687,7 @@ public partial class Select : AbstractSelect
 
     private void HandleSelectedOptionsChanged(AvaloniaPropertyChangedEventArgs args)
     {
+        ConfigureSelectedOptionsCollectionChangedSource(args.GetNewValue<IList<ISelectOption>?>());
         NotifyFormValueChanged(args.NewValue);
         SelectionChanged?.Invoke(this, new SelectSelectionChangedEventArgs(Mode, args.OldValue, args.NewValue));
         if (_ignoreSyncSelection)
@@ -684,6 +695,62 @@ public partial class Select : AbstractSelect
             _ignoreSyncSelection = false;
             return;
         }
+        if (_candidateList != null)
+        {
+            _candidateList.SelectedItems = CopySelectedOptions(SelectedOptions);
+        }
+    }
+
+    private void ConfigureSelectedOptionsCollectionChangedSource(IList<ISelectOption>? selectedOptions)
+    {
+        if (!this.IsAttachedToVisualTree())
+        {
+            ReleaseSelectedOptionsCollectionChangedSource();
+            _selectedOptionsSnapshot = BuildSelectedOptionsList(selectedOptions);
+            return;
+        }
+
+        if (ReferenceEquals(_selectedOptionsCollectionChangedSource, selectedOptions))
+        {
+            _selectedOptionsSnapshot = BuildSelectedOptionsList(selectedOptions);
+            return;
+        }
+
+        ReleaseSelectedOptionsCollectionChangedSource();
+
+        _selectedOptionsCollectionChangedSource = selectedOptions as INotifyCollectionChanged;
+        if (_selectedOptionsCollectionChangedSource != null)
+        {
+            _selectedOptionsCollectionChangedSource.CollectionChanged += HandleSelectedOptionsCollectionChanged;
+        }
+
+        _selectedOptionsSnapshot = BuildSelectedOptionsList(selectedOptions);
+    }
+
+    private void ReleaseSelectedOptionsCollectionChangedSource()
+    {
+        if (_selectedOptionsCollectionChangedSource != null)
+        {
+            _selectedOptionsCollectionChangedSource.CollectionChanged -= HandleSelectedOptionsCollectionChanged;
+            _selectedOptionsCollectionChangedSource = null;
+        }
+    }
+
+    private void HandleSelectedOptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (!ReferenceEquals(sender, _selectedOptionsCollectionChangedSource))
+        {
+            return;
+        }
+
+        var oldSnapshot = _selectedOptionsSnapshot;
+        var newSnapshot = BuildSelectedOptionsList(SelectedOptions);
+        _selectedOptionsSnapshot = newSnapshot;
+
+        NotifyFormValueChanged(SelectedOptions);
+        SelectionChanged?.Invoke(this, new SelectSelectionChangedEventArgs(Mode, oldSnapshot, newSnapshot));
+
+        ConfigureSelectionValueState();
         if (_candidateList != null)
         {
             _candidateList.SelectedItems = CopySelectedOptions(SelectedOptions);
@@ -958,6 +1025,17 @@ public partial class Select : AbstractSelect
     private void ConfigureSingleResultVisible()
     {
         SetCurrentValue(IsSingleResultVisibleProperty, false);
+    }
+
+    private void ConfigureSelectionValueState()
+    {
+        ConfigureSelectionIsEmpty();
+        ConfigurePlaceholderVisible();
+        ConfigureSingleResultVisible();
+        SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count ?? 0);
+        CleanRuntimeDynamicOptions();
+        ConfigureSingleFilterTextBox();
+        _selectedOptionsBox?.RefreshSelectedOptions();
     }
 
     private void ConfigureSelectionIsEmpty()
