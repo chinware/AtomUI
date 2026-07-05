@@ -29,6 +29,9 @@ internal partial class zh_TW
     public const string ApiPropertyIsDefaultExpandAll = "彈出層打開時默認展開樹節點。";
     public const string ApiPropertyIsAllowClear = "選中值後顯示清除入口。";
     public const string ApiPropertyIsFilterEnabled = "允許從輸入框篩選樹節點。";
+    public const string ApiPropertyIsShowOverflowTip = "選中節點文本或標籤溢出時顯示完整內容提示。";
+    public const string ApiPropertyOverflowTipDelay = "溢出提示打開前的延遲時間，單位毫秒。";
+    public const string ApiPropertyOverflowTipPlacement = "溢出提示相對被截斷選中節點文本或標籤的位置。";
     public const string ApiPropertyDataLoader = "樹節點展開時異步加載子節點。";
     public const string ApiPropertyPlacement = "控制彈出層相對於輸入框的位置。";
     public const string ApiPropertyMaxCount = "選中值的最大數量，超過限制後更多選項會被禁用。";

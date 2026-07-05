@@ -41,7 +41,7 @@ ComboBox 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 | --- | --- | --- |
 | 内容与数据 | `ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`FilterValue`、`FilterValueSelector`、`LeftAddOnTemplate`、`OptionFontSize`、`RightAddOnTemplate` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `SelectedItem`、`SelectedIndex`、`DropDownDisplayPageSize`、`Filter`、`IsFilterEnabled` | 维护选择、展开、过滤、分页、分组或集合状态。 |
-| 交互与状态 | `IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status`、`IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` | 表达用户可观察状态、可用性、清除、加载、反馈和非编辑态选中内容溢出提示语义。 |
 | 视觉与布局 | `SizeType`、`StyleVariant` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `LeftAddOn`、`RightAddOn` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
@@ -98,6 +98,8 @@ ComboBox 的视觉模型由控件模板、ControlTheme、SharedToken 和必要�
 | `ComboBoxItemTheme.axaml` | 定义集合项、容器项或局部单元的状态视觉。 |
 | `ComboBoxTheme.axaml` | 定义布局、内容承载或框架节点视觉。 |
 | `ComboBoxThemes.axaml` | 聚合控件家族主题资源，保证包级引入顺序稳定。 |
+
+非编辑态选中内容的完整文本提示复用共享 `OverflowTip` attached behavior。模板只在 `SelectedContentPresenter` 上接入 `IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` 和 `SelectionBoxItem`；`IsEditable=true` 时编辑输入框不默认启用该提示。
 
 ComboBox 使用 `ComboBoxToken` 作为组件 Token scope。Token 只表达组件视觉语义，不承载 open/close、collection/filter、input/value、motion、visual option 运行时状态。
 

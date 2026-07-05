@@ -38,6 +38,9 @@ internal partial class zh_CN
     public const string ApiPropertyPlaceholderText = "未选择值时显示的占位文本。";
     public const string ApiPropertyIsAllowClear = "选中值后显示清除入口。";
     public const string ApiPropertyIsFilterEnabled = "允许根据输入文本筛选选项。";
+    public const string ApiPropertyIsShowOverflowTip = "选中结果文本或标签溢出时显示完整内容提示。";
+    public const string ApiPropertyOverflowTipDelay = "溢出提示打开前的延迟时间，单位毫秒。";
+    public const string ApiPropertyOverflowTipPlacement = "溢出提示相对被截断选中内容的位置。";
     public const string ApiPropertyFilter = "启用搜索时使用的自定义选项筛选器。";
     public const string ApiPropertyIsGroupEnabled = "根据选项分组值对下拉选项分组。";
     public const string ApiPropertyIsHideSelectedOptions = "隐藏已经选中的选项。";

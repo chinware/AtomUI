@@ -57,8 +57,8 @@ Cascader 通过 `OptionsSource` 和 `Options` 接收 `ICascaderOption` 数据。
 | `OptionsSource` | `IEnumerable<ICascaderOption>?` | 外部选项集合。变化时同步到内部 `Options`。 |
 | `Options` | `ItemCollection` | XAML 内容子项入口，也是 CascaderView 实际数据入口。 |
 | `OptionTemplate` | `IDataTemplate?` | 选项显示模板，默认显示 `ICascaderOption.Header` 并继续以 option 为 DataContext。 |
-| `SelectedOption` | `ICascaderOption?` | 单选当前选项。 |
-| `SelectedOptions` | `IList<ICascaderOption>?` | 多选当前选项集合。 |
+| `SelectedOption` | `ICascaderOption?` | 单选当前选项，默认 `TwoWay` binding，并启用 Avalonia data validation。 |
+| `SelectedOptions` | `IList<ICascaderOption>?` | 多选当前选项集合，默认 `TwoWay` binding，并启用 Avalonia data validation。 |
 | `DefaultSelectOptionPath` | `TreeNodePath?` | 单选默认路径。路径段按 `ItemKey` 优先、`Value` 兜底匹配。 |
 | `SelectedOptionPath` | internal `string?` | 单选显示路径文本，由已选节点 header 路径组成。 |
 | `Clear()` | method | 清空单选、多选和显示路径。 |
@@ -90,6 +90,9 @@ Cascader 继承 `AbstractSelect` 的输入表面契约：
 | `Status` | 手动输入反馈状态；warning 仅在无 native validation error 时驱动 `:warning`，error 视觉优先由 `DataValidationErrors` 驱动。 |
 | `PlaceholderText` / `PlaceholderForeground` | 空选择时的占位文本和颜色。 |
 | `IsFilterEnabled` | 是否显示过滤输入并将输入同步为 `FilterValue`。 |
+| `IsShowOverflowTip` | 单选路径或多选 tag 视觉溢出时是否显示完整内容 tooltip，默认 `true`。 |
+| `OverflowTipDelay` | 溢出 tooltip 打开前的延迟时间，单位毫秒，默认 `1200`。 |
+| `OverflowTipPlacement` | 溢出 tooltip 相对单选路径或多选 tag 的位置，默认 `TopEdgeAlignedLeft`。 |
 | `IsAllowClear` / `SuffixIcon` / `SuffixLoadingIcon` | 清除、展开指示和 loading 指示入口。 |
 | `LeftAddOn` / `RightAddOn` / `ContentLeftAddOn` / `ContentRightAddOn` | 外部和内部 AddOn 内容。 |
 | `IsDropDownOpen` / `PopupPlacement` / `ShouldUseOverlayPopup` / `IsPopupMatchSelectWidth` | popup 打开、定位、宿主和宽度匹配契约。 |
@@ -162,6 +165,7 @@ input display + Form value
 
 - `IsMultiple=true` 时使用 `SelectedOptions` 作为真实值，并让内部 `CascaderView` 进入 checkable 模式。
 - `SelectedOptions` 保留真实勾选集合，`ShowCheckedStrategy` 只计算 `EffectiveSelectedOptions`，用于 tag 展示。
+- `SelectedOptions` 支持外部集合替换，也支持 `INotifyCollectionChanged` 集合的原地 `Add`、`Remove`、`Replace`、`Move` 和 `Reset`；这些变化会同步刷新 tag、计数、空状态、Form value 和内部 `CascaderView` 勾选状态。
 - `MaxCount` 达到上限时，未选项通过 `IsMaxSelectReached` 进入受限状态；已选项仍可取消。
 - 关闭单个 tag 时，目标节点及其子孙会从 `SelectedOptions` 中移除。
 
@@ -182,6 +186,7 @@ Form：
 
 - 单选 Form value 为 `SelectedOption`。
 - 多选 Form value 为 `SelectedOptions`。
+- Form 校验错误写入同一份 Avalonia `DataValidationErrors`；`SelectedOption` 和 `SelectedOptions` 不维护独立错误状态。
 - Form clear 会按当前 `IsMultiple` 清空对应选择状态。
 
 ## 5. 视觉与主题模型
@@ -197,6 +202,8 @@ Cascader 的默认视觉由 Cascader 根主题、输入壳体、PopupHost、Casc
 | `CascaderToken` | Cascader 输入宽度、列宽、弹层高度、选项高度、padding、状态色和过滤高亮。 |
 | `PopupHostToken` | popup margin、阴影和圆角。 |
 | SharedToken | 字体、输入高度、图标尺寸、placeholder、disabled、motion 和全局 spacing。 |
+
+单选路径和多选 tag 的完整内容提示复用共享 `OverflowTip` attached behavior。主题只把 `IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` 和当前展示文本传给显示节点；tooltip 仅在视觉溢出时写入，且不覆盖用户手动声明的 `ToolTip.Tip`。
 
 主题不可破坏的视觉边界：
 

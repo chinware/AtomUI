@@ -88,6 +88,112 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        Title="{gallery:CascaderShowCaseLangResource SelectionBindingTitle}"
+                        Description="{gallery:CascaderShowCaseLangResource SelectionBindingDescription}"
+                        BadgeText="v6.0.8"
+                        Span="Full"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:CascaderViewModel">
+                                <Grid RowDefinitions="Auto,Auto" RowSpacing="24">
+                                    <Grid Grid.Row="0" ColumnDefinitions="320,*" ColumnSpacing="24">
+                                        <StackPanel Grid.Column="0" Spacing="8">
+                                            <TextBlock FontWeight="SemiBold"
+                                                       Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionBinding}" />
+                                            <atom:Cascader
+                                                Name="SelectedOptionBindingCascader"
+                                                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                                OptionsSource="{Binding BasicCascaderViewNodes}"
+                                                SelectedOption="{Binding BoundSelectedCascaderOption}"
+                                                IsAllowClear="True">
+                                                <atom:Cascader.OptionTemplate>
+                                                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                                                      x:DataType="atom:ICascaderOption">
+                                                        <atom:TextBlock Text="{Binding Header}" />
+                                                    </TreeDataTemplate>
+                                                </atom:Cascader.OptionTemplate>
+                                            </atom:Cascader>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" MinWidth="280" Spacing="10">
+                                            <TextBlock FontWeight="SemiBold"
+                                                       Text="{gallery:CascaderShowCaseLangResource SelectionBindingValueTitle}" />
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionBinding}" />
+                                                <atom:TextBlock Text="{Binding BoundSelectedCascaderOptionText}" />
+                                            </StackPanel>
+                                            <WrapPanel>
+                                                <atom:Button Margin="0,0,8,8"
+                                                             SizeType="Small"
+                                                             Click="HandleSelectFirstBoundCascaderOptionClick"
+                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectFirst}" />
+                                                <atom:Button Margin="0,0,8,8"
+                                                             SizeType="Small"
+                                                             Click="HandleSelectSecondBoundCascaderOptionClick"
+                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectSecond}" />
+                                                <atom:Button Margin="0,0,8,8"
+                                                             SizeType="Small"
+                                                             Click="HandleClearBoundCascaderOptionSelectionClick"
+                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingClear}" />
+                                            </WrapPanel>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Grid Grid.Row="1" ColumnDefinitions="320,*" ColumnSpacing="24">
+                                        <StackPanel Grid.Column="0" Spacing="8">
+                                            <TextBlock FontWeight="SemiBold"
+                                                       Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionsBinding}" />
+                                            <atom:Cascader
+                                                Name="SelectedOptionsBindingCascader"
+                                                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                                OptionsSource="{Binding BasicCascaderViewNodes}"
+                                                SelectedOptions="{Binding BoundSelectedCascaderOptions}"
+                                                HorizontalAlignment="Stretch"
+                                                ShowCheckedStrategy="All"
+                                                IsAllowClear="True"
+                                                IsMultiple="True">
+                                                <atom:Cascader.OptionTemplate>
+                                                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                                                      x:DataType="atom:ICascaderOption">
+                                                        <atom:TextBlock Text="{Binding Header}" />
+                                                    </TreeDataTemplate>
+                                                </atom:Cascader.OptionTemplate>
+                                            </atom:Cascader>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" MinWidth="280" Spacing="10">
+                                            <TextBlock FontWeight="SemiBold"
+                                                       Text="{gallery:CascaderShowCaseLangResource SelectionBindingValueTitle}" />
+                                            <StackPanel Spacing="4">
+                                                <TextBlock Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionsBinding}" />
+                                                <atom:TextBlock Text="{Binding BoundSelectedCascaderOptionsText}" TextWrapping="Wrap" />
+                                            </StackPanel>
+                                            <WrapPanel>
+                                                <atom:Button Margin="0,0,8,8"
+                                                             SizeType="Small"
+                                                             Click="HandleSelectFirstBoundCascaderOptionsClick"
+                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectFirst}" />
+                                                <atom:Button Margin="0,0,8,8"
+                                                             SizeType="Small"
+                                                             Click="HandleSelectSecondBoundCascaderOptionsClick"
+                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectSecond}" />
+                                                <atom:Button Margin="0,0,8,8"
+                                                             SizeType="Small"
+                                                             Click="HandleSelectBothBoundCascaderOptionsClick"
+                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectBoth}" />
+                                                <atom:Button Margin="0,0,8,8"
+                                                             SizeType="Small"
+                                                             Click="HandleClearBoundCascaderOptionsSelectionClick"
+                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingClear}" />
+                                            </WrapPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
                         Title="{gallery:CascaderShowCaseLangResource HoverTitle}"
                         Description="{gallery:CascaderShowCaseLangResource HoverDescription}"
                         IsDeferredContentEnabled="True">

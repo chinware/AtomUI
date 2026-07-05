@@ -60,6 +60,9 @@ internal partial class en_US
     public const string ApiPropertyIsEditable = "Allows text input in the ComboBox selection area.";
     public const string ApiPropertyText = "Editable input text. When filtering is enabled, it drives FilterValue.";
     public const string ApiPropertyIsFilterEnabled = "Enables filtering for editable ComboBox candidates.";
+    public const string ApiPropertyIsShowOverflowTip = "Shows a tooltip with the full selected content when the non-editable selection text overflows.";
+    public const string ApiPropertyOverflowTipDelay = "Delay in milliseconds before the overflow tooltip opens.";
+    public const string ApiPropertyOverflowTipPlacement = "Placement of the overflow tooltip relative to the clipped selected content.";
     public const string ApiPropertyFilter = "Predicate used to match candidate values against FilterValue.";
     public const string ApiPropertyFilterValue = "Current filtering value, normally synchronized from Text in editable filtering mode.";
     public const string ApiPropertyFilterValueSelector = "Selects the comparable value from each candidate item before filtering.";

@@ -20,6 +20,7 @@ Tags 模式的动态选项必须作为 Select 自身运行时状态维护。用�
 - `src/AtomUI.Desktop.Controls/Select/SelectCandidateListItem.cs`：候选项容器状态。
 - `src/AtomUI.Desktop.Controls/Select/SelectResultOptionsBox.cs`：多选结果标签和过滤输入承载。
 - `src/AtomUI.Desktop.Controls/Select/SelectHandle.cs`：右侧展开、loading、清除和 Form feedback 图标。
+- `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。
 - `src/AtomUI.Desktop.Controls/Select/DataLoad/*`：异步候选加载接口、结果和事件参数。
 - `src/AtomUI.Desktop.Controls/Select/SelectToken.cs`：Select 组件 Token。
 - `src/AtomUI.Desktop.Controls/Select/Themes/*.axaml`：Select 根模板、候选列表、结果标签、handle、输入壳体和 token 样式。
@@ -33,6 +34,8 @@ Tags 模式的动态选项必须作为 Select 自身运行时状态维护。用�
 `SelectCandidateList` 是候选选择边界。它继承 `ListView`，负责过滤、分组、虚拟化容器、候选项键盘导航、最大选择数禁用和 `Commit/Cancel` 事件。
 
 `SelectResultOptionsBox` 是多选结果边界。它根据 `SelectedOptions` 创建 `SelectTag`，并在过滤启用时插入 `SelectFilterTextBox`。
+
+`OverflowTip` 是跨选择类控件复用的显示增强边界。Select 模板把 `IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement` 和当前展示文本传给该 attached behavior；单选显示节点以外层 `SelectAddOnDecoratedBox` 作为 `PlacementTarget`，避免 tooltip 左边按内部文本 padding 对齐；`SelectResultOptionsBox` 动态创建 tag 时把同一组设置绑定到每个 `SelectTag`。它只在视觉溢出时托管自己写入的 `ToolTip.Tip`，用户显式设置的 tooltip 不会被覆盖或清理。
 
 `SelectHandle` 是右侧操作边界。它根据 loading、过滤、展开状态选择当前图标，并把清除按钮点击转换为 `ClearRequestedEvent`。
 
@@ -111,6 +114,8 @@ FeedbackControl
 - 订阅新 popup 的 opened / closed。
 
 `Select.OnApplyTemplate()` 在基类接入前调用 `ClearPopupContent()`，确保旧候选列表、popup frame 和事件订阅被释放。基类接入后，Select 获取 `PART_SingleFilterInput`，设置 `Popup.OverlayInputPassThroughElement`，并重新配置 placeholder、选择空状态、单选结果、伪类、过滤输入、有效搜索状态和 `SelectHandle` 输入状态 binding。
+
+单选结果和多选 tag 的溢出提示不创建独立 popup 或 timer。模板和动态 tag 只声明 `OverflowTip` attached properties，实际展示延迟与位置继续由 `ToolTip.ShowDelay` 和 `ToolTip.Placement` 处理；禁用 `IsShowOverflowTip` 或文本不再溢出时只清理由 `OverflowTip` 自己写入的 tooltip。
 
 候选弹层内容是懒创建：
 

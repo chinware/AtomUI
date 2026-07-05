@@ -69,6 +69,9 @@ TreeSelect 继承 `AbstractSelect` 的输入壳体、弹层、清除、状态、
 | `FilterStrategy` | `TreeFilterStrategy` | 过滤后的高亮、加粗、展开路径和隐藏不匹配策略。 |
 | `FilterHighlightForeground` | `IBrush?` | 过滤命中高亮前景色。 |
 | `AutoScrollToSelectedItem` | `bool` | 候选树打开或同步时滚动到选中节点。 |
+| `IsShowOverflowTip` | `bool` | 单选结果文本或多选 tag 视觉溢出时是否显示完整内容 tooltip，默认 `true`。 |
+| `OverflowTipDelay` | `int` | 溢出 tooltip 打开前的延迟时间，单位毫秒，默认 `1200`。 |
+| `OverflowTipPlacement` | `PlacementMode` | 溢出 tooltip 相对单选结果文本或多选 tag 的位置，默认 `TopEdgeAlignedLeft`。 |
 | `IsShowIcon` / `IsShowLeafIcon` | `bool` | 是否显示节点图标和叶子节点图标。 |
 | `IsShowLine` / `IsShowTreeLine` | `bool` | 是否显示层级连线。 |
 | `IsSwitcherRotation` | `bool` | 展开图标是否旋转。 |
@@ -131,6 +134,8 @@ TreeSelect 的默认视觉由 TreeSelect 专属主题、Select 家族输入壳�
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
 | `TreeSelectToken` | TreeSelect 候选弹层最小宽度。 |
 | `SelectToken` | TreeSelect 复用的 popup padding、多选 tag 和输入内容 padding。 |
+
+单选结果文本和多选 tag 的完整内容提示复用共享 `OverflowTip` attached behavior。主题通过 `IsShowOverflowTip`、`OverflowTipDelay` 和 `OverflowTipPlacement` 控制提示开关、延迟和位置，实际 tooltip 仅在文本视觉溢出时托管到 `ToolTip`。
 
 右侧 count、content add-on 和 handle 的稳定 template part 状态由 AXAML compiled ancestor binding 表达。C# 中只保留 AddOnDecoratedBox hover / pressed 到 SelectHandle 的 sibling 状态转发，因为该关系不是 templated parent 绑定，不能用 `TemplateBinding` 表达。
 

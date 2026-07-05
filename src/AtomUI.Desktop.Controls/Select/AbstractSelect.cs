@@ -6,6 +6,7 @@ using AtomUI.Icons.AntDesign;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
 using Avalonia.Media;
@@ -49,6 +50,15 @@ public abstract class AbstractSelect : TemplatedControl,
 
     public static readonly StyledProperty<bool> IsFilterEnabledProperty =
         AvaloniaProperty.Register<AbstractSelect, bool>(nameof(IsFilterEnabled));
+
+    public static readonly StyledProperty<bool> IsShowOverflowTipProperty =
+        AvaloniaProperty.Register<AbstractSelect, bool>(nameof(IsShowOverflowTip), true);
+
+    public static readonly StyledProperty<int> OverflowTipDelayProperty =
+        AvaloniaProperty.Register<AbstractSelect, int>(nameof(OverflowTipDelay), 1200);
+
+    public static readonly StyledProperty<PlacementMode> OverflowTipPlacementProperty =
+        AvaloniaProperty.Register<AbstractSelect, PlacementMode>(nameof(OverflowTipPlacement), PlacementMode.TopEdgeAlignedLeft);
 
     public static readonly StyledProperty<int> DisplayPageSizeProperty =
         AvaloniaProperty.Register<AbstractSelect, int>(nameof (DisplayPageSize), 10);
@@ -188,6 +198,24 @@ public abstract class AbstractSelect : TemplatedControl,
     {
         get => GetValue(IsFilterEnabledProperty);
         set => SetValue(IsFilterEnabledProperty, value);
+    }
+
+    public bool IsShowOverflowTip
+    {
+        get => GetValue(IsShowOverflowTipProperty);
+        set => SetValue(IsShowOverflowTipProperty, value);
+    }
+
+    public int OverflowTipDelay
+    {
+        get => GetValue(OverflowTipDelayProperty);
+        set => SetValue(OverflowTipDelayProperty, value);
+    }
+
+    public PlacementMode OverflowTipPlacement
+    {
+        get => GetValue(OverflowTipPlacementProperty);
+        set => SetValue(OverflowTipPlacementProperty, value);
     }
 
     public int DisplayPageSize

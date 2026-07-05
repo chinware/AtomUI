@@ -29,6 +29,9 @@ internal partial class en_US
     public const string ApiPropertyIsDefaultExpandAll = "Expands tree nodes by default when the popup opens.";
     public const string ApiPropertyIsAllowClear = "Displays a clear action when a value is selected.";
     public const string ApiPropertyIsFilterEnabled = "Allows filtering tree nodes from the input.";
+    public const string ApiPropertyIsShowOverflowTip = "Shows a tooltip with the full selected node text when selected text or tags overflow.";
+    public const string ApiPropertyOverflowTipDelay = "Delay in milliseconds before the overflow tooltip opens.";
+    public const string ApiPropertyOverflowTipPlacement = "Placement of the overflow tooltip relative to the clipped selected node text or tag.";
     public const string ApiPropertyDataLoader = "Asynchronously loads child nodes when a tree item expands.";
     public const string ApiPropertyPlacement = "Controls where the popup is placed relative to the input.";
     public const string ApiPropertyMaxCount = "Maximum number of selected values before more options become disabled.";

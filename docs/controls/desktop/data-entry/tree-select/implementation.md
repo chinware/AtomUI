@@ -17,6 +17,7 @@ TreeSelect 的实现以 `AbstractSelect` 为输入与弹层基类，`TreeSelect`
 - `src/AtomUI.Desktop.Controls/TreeSelect/Converters/*`：树节点显示转换辅助。
 - `src/AtomUI.Desktop.Controls/TreeSelect/TreeSelectToken.cs`：TreeSelect 组件 Token。
 - `src/AtomUI.Desktop.Controls/TreeSelect/Themes/TreeSelectTheme.axaml`：根模板、输入壳体、右侧内容、结果区域、popup 和 selector。
+- `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选结果和多选 tag 复用。
 
 ## 3. 核心类职责
 
@@ -27,6 +28,8 @@ TreeSelect 的实现以 `AbstractSelect` 为输入与弹层基类，`TreeSelect`
 `TreeSelectTreeView` 是候选树边界。它继承 AtomUI `TreeView`，复用 TreeView 的视觉和交互能力，并把 `IsMaxSelectReached` 转发到 `TreeViewSelectTreeViewItem`。
 
 `TreeViewSelectTreeViewItem` 是候选节点容器。它继承 TreeViewItem，并把最大选择数状态继续传给子节点容器，保证层级节点状态一致。
+
+`OverflowTip` 不参与 TreeSelect 选择同步。TreeSelect 模板把单选 `SelectFilterTextBox.Text`、多选 `SelectTagAwareTextBox` 创建的 tag 文本以及 `OverflowTipDelay` / `OverflowTipPlacement` 接入该 behavior；单选显示节点以外层 `TreeSelectAddOnDecoratedBox` 作为 `PlacementTarget`，避免 tooltip 左边按内部文本 padding 对齐；它只在展示文本溢出时写入自己托管的 `ToolTip.Tip`，用户显式 tooltip 保持最高优先级。
 
 ## 4. 状态与数据流
 

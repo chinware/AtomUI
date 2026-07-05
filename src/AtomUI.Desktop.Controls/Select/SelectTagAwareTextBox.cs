@@ -3,6 +3,7 @@ using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Input;
 using Avalonia.Layout;
 
@@ -20,6 +21,15 @@ internal class SelectTagAwareTextBox : TemplatedControl
 
     public static readonly StyledProperty<bool> IsFilterEnabledProperty =
         Select.IsFilterEnabledProperty.AddOwner<SelectTagAwareTextBox>();
+
+    public static readonly StyledProperty<bool> IsShowOverflowTipProperty =
+        AbstractSelect.IsShowOverflowTipProperty.AddOwner<SelectTagAwareTextBox>();
+
+    public static readonly StyledProperty<int> OverflowTipDelayProperty =
+        AbstractSelect.OverflowTipDelayProperty.AddOwner<SelectTagAwareTextBox>();
+
+    public static readonly StyledProperty<PlacementMode> OverflowTipPlacementProperty =
+        AbstractSelect.OverflowTipPlacementProperty.AddOwner<SelectTagAwareTextBox>();
 
     public static readonly StyledProperty<bool> IsDropDownOpenProperty =
         AvaloniaProperty.Register<SelectTagAwareTextBox, bool>(nameof(IsDropDownOpen));
@@ -57,6 +67,24 @@ internal class SelectTagAwareTextBox : TemplatedControl
     {
         get => GetValue(IsFilterEnabledProperty);
         set => SetValue(IsFilterEnabledProperty, value);
+    }
+
+    public bool IsShowOverflowTip
+    {
+        get => GetValue(IsShowOverflowTipProperty);
+        set => SetValue(IsShowOverflowTipProperty, value);
+    }
+
+    public int OverflowTipDelay
+    {
+        get => GetValue(OverflowTipDelayProperty);
+        set => SetValue(OverflowTipDelayProperty, value);
+    }
+
+    public PlacementMode OverflowTipPlacement
+    {
+        get => GetValue(OverflowTipPlacementProperty);
+        set => SetValue(OverflowTipPlacementProperty, value);
     }
 
     public bool IsDropDownOpen
@@ -303,6 +331,10 @@ internal class SelectTagAwareTextBox : TemplatedControl
     {
         tag[!SizeTypeProperty]                  = this[!SizeTypeProperty];
         tag[!SelectTag.CustomTagHeightProperty] = this[!EffectiveTagHeightProperty];
+        tag[!OverflowTip.IsEnabledProperty]     = this[!IsShowOverflowTipProperty];
+        tag[!OverflowTip.TextProperty]          = tag[!SelectTag.TextProperty];
+        tag[!OverflowTip.ShowDelayProperty]     = this[!OverflowTipDelayProperty];
+        tag[!OverflowTip.PlacementProperty]     = this[!OverflowTipPlacementProperty];
     }
 
     private void ConfigureSearchTextControl()

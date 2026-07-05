@@ -3,6 +3,16 @@
 本文档记录 TreeSelect 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-07-05
+
+- API
+  - Add inherited `IsShowOverflowTip`, `OverflowTipDelay` and `OverflowTipPlacement` support for selected result overflow tooltips.
+- Theme
+  - Wire single selected text and multiple selected tags to the shared `OverflowTip` attached behavior, including tooltip placement.
+  - Align single selected text overflow tooltip against the outer `TreeSelectAddOnDecoratedBox` instead of the padded inner text node.
+- Docs
+  - Document the overflow tooltip API and template ownership boundary.
+
 ## 2026-06-26
 
 - Docs

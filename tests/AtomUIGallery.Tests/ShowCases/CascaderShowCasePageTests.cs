@@ -45,10 +45,10 @@ public class CascaderShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:CascaderShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(20);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(20);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(20);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:CascaderViewModel\"").ShouldBe(20);
+        CountShowCaseItemElements(source).ShouldBe(21);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(21);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(21);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:CascaderViewModel\"").ShouldBe(21);
         source.ShouldContain("CascaderShowCaseLangResource BasicTitle");
         source.ShouldContain("CascaderShowCaseLangResource MultipleTitle");
         source.ShouldContain("CascaderShowCaseLangResource PrefixAndSuffixTitle");

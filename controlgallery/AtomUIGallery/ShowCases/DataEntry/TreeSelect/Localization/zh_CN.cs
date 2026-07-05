@@ -29,6 +29,9 @@ internal partial class zh_CN
     public const string ApiPropertyIsDefaultExpandAll = "弹出层打开时默认展开树节点。";
     public const string ApiPropertyIsAllowClear = "选中值后显示清除入口。";
     public const string ApiPropertyIsFilterEnabled = "允许从输入框筛选树节点。";
+    public const string ApiPropertyIsShowOverflowTip = "选中节点文本或标签溢出时显示完整内容提示。";
+    public const string ApiPropertyOverflowTipDelay = "溢出提示打开前的延迟时间，单位毫秒。";
+    public const string ApiPropertyOverflowTipPlacement = "溢出提示相对被截断选中节点文本或标签的位置。";
     public const string ApiPropertyDataLoader = "树节点展开时异步加载子节点。";
     public const string ApiPropertyPlacement = "控制弹出层相对于输入框的位置。";
     public const string ApiPropertyMaxCount = "选中值的最大数量，超过限制后更多选项会被禁用。";

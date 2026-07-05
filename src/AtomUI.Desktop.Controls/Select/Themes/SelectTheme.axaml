@@ -71,7 +71,12 @@
                                                       IsVisible="False"
                                                       VerticalAlignment="Stretch"
                                                       SizeType="{TemplateBinding SizeType}"
-                                                      PlaceholderForeground="{TemplateBinding PlaceholderForeground}" />
+                                                      PlaceholderForeground="{TemplateBinding PlaceholderForeground}"
+                                                      atom:OverflowTip.IsEnabled="{TemplateBinding IsShowOverflowTip}"
+                                                      atom:OverflowTip.Text="{Binding Text, RelativeSource={RelativeSource Self}}"
+                                                      atom:OverflowTip.ShowDelay="{TemplateBinding OverflowTipDelay}"
+                                                      atom:OverflowTip.Placement="{TemplateBinding OverflowTipPlacement}"
+                                                      atom:OverflowTip.PlacementTarget="{Binding $parent[atom:SelectAddOnDecoratedBox]}" />
                             <atom:SelectResultOptionsBox
                                 Name="SelectedOptionsBox"
                                 HorizontalAlignment="Stretch"
@@ -80,6 +85,9 @@
                                 SizeType="{TemplateBinding SizeType}"
                                 SelectedOptions="{TemplateBinding SelectedOptions}"
                                 IsFilterEnabled="{TemplateBinding IsEffectiveFilterEnabled}"
+                                IsShowOverflowTip="{TemplateBinding IsShowOverflowTip}"
+                                OverflowTipDelay="{TemplateBinding OverflowTipDelay}"
+                                OverflowTipPlacement="{TemplateBinding OverflowTipPlacement}"
                                 IsDropDownOpen="{TemplateBinding IsDropDownOpen}"
                                 MaxTagCount="{TemplateBinding MaxTagCount}"
                                 IsResponsiveTagMode="{TemplateBinding IsResponsiveTagMode}"

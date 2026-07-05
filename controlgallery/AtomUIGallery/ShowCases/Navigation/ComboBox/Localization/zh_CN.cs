@@ -60,6 +60,9 @@ internal partial class zh_CN
     public const string ApiPropertyIsEditable = "允许在 ComboBox 选择区域输入文本。";
     public const string ApiPropertyText = "可编辑输入文本；启用过滤时会驱动 FilterValue。";
     public const string ApiPropertyIsFilterEnabled = "为可编辑 ComboBox 候选项启用过滤。";
+    public const string ApiPropertyIsShowOverflowTip = "非编辑态选中内容文本溢出时显示完整内容提示。";
+    public const string ApiPropertyOverflowTipDelay = "溢出提示打开前的延迟时间，单位毫秒。";
+    public const string ApiPropertyOverflowTipPlacement = "溢出提示相对被截断选中内容的位置。";
     public const string ApiPropertyFilter = "用于将候选值与 FilterValue 匹配的过滤谓词。";
     public const string ApiPropertyFilterValue = "当前过滤值，通常在可编辑过滤模式下由 Text 同步。";
     public const string ApiPropertyFilterValueSelector = "过滤前从每个候选项中提取可比较值。";

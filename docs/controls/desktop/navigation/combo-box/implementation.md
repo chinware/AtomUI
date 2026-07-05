@@ -15,6 +15,7 @@
 - `src/AtomUI.Desktop.Controls/ComboBox/ComboBoxItem.cs`
 - `src/AtomUI.Desktop.Controls/ComboBox/ComboBoxReflectionExtensions.cs`
 - `src/AtomUI.Desktop.Controls/ComboBox/ComboBoxToken.cs`
+- `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxHandleTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxItemTheme.axaml`
 - `src/AtomUI.Desktop.Controls/ComboBox/Themes/ComboBoxTheme.axaml`
@@ -57,7 +58,7 @@ Public API / ItemsSource / Command / Event
 
 - 内容与数据：`ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`FilterValue`、`FilterValueSelector`、`LeftAddOnTemplate`、`OptionFontSize`、`RightAddOnTemplate`。
 - 选择与集合：`SelectedItem`、`SelectedIndex`、`DropDownDisplayPageSize`、`Filter`、`IsFilterEnabled`。
-- 交互与状态：`IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status`。
+- 交互与状态：`IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status`、`IsShowOverflowTip`、`OverflowTipDelay`、`OverflowTipPlacement`。
 - 视觉与布局：`SizeType`、`StyleVariant`。
 - 其他稳定入口：`LeftAddOn`、`RightAddOn`。
 
@@ -66,6 +67,7 @@ Public API / ItemsSource / Command / Event
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - `IFormItemAware` 的值读写直接映射到 `SelectedItem`：`SetFormValue(value)` 保留对象实例并设置选择，`GetFormValue()` 返回选择对象，`ClearFormValue()` 清空选择。
+- 非编辑态选中内容溢出提示由 `OverflowTip` 托管，只在 `SelectedContentPresenter` 视觉溢出时写入 `ToolTip.Tip`，延迟和位置分别映射到 `ToolTip.ShowDelay` 与 `ToolTip.Placement`；非编辑态显示节点以外层 `AddOnDecoratedBox` 作为 `PlacementTarget`，避免 tooltip 左边按内部文本 padding 对齐；编辑态输入文本仍由 `PART_EditableTextBox` 自己承载，不自动开启该提示。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
 

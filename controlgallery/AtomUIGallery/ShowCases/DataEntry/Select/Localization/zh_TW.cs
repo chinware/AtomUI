@@ -38,6 +38,9 @@ internal partial class zh_TW
     public const string ApiPropertyPlaceholderText = "未選擇值時顯示的佔位文本。";
     public const string ApiPropertyIsAllowClear = "選中值後顯示清除入口。";
     public const string ApiPropertyIsFilterEnabled = "允許根據輸入文本篩選選項。";
+    public const string ApiPropertyIsShowOverflowTip = "選中結果文本或標籤溢出時顯示完整內容提示。";
+    public const string ApiPropertyOverflowTipDelay = "溢出提示打開前的延遲時間，單位毫秒。";
+    public const string ApiPropertyOverflowTipPlacement = "溢出提示相對被截斷選中內容的位置。";
     public const string ApiPropertyFilter = "啟用搜索時使用的自定義選項篩選器。";
     public const string ApiPropertyIsGroupEnabled = "根據選項分組值對下拉選項分組。";
     public const string ApiPropertyIsHideSelectedOptions = "隱藏已經選中的選項。";

@@ -3,6 +3,19 @@
 本文档记录 Cascader 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-07-05
+
+- API
+  - `SelectedOption` 和 `SelectedOptions` 默认 binding mode 调整为 `TwoWay`，并启用 Avalonia data validation。
+  - 继承 `IsShowOverflowTip`、`OverflowTipDelay` 和 `OverflowTipPlacement`，用于单选路径和多选 tag 溢出提示。
+- Implementation
+  - `SelectedOptions` 支持 `INotifyCollectionChanged` 原地集合变化，同步刷新 tag 展示、选中计数、空状态、Form value 和内部 CascaderView 勾选状态。
+  - 内部 CascaderView 选择同步改为差量勾选 / 取消，避免外部集合变化时先清空再重选。
+  - 单选路径文本、过滤态路径显示和多选 tag 接入共享 `OverflowTip` behavior，只在视觉溢出时使用 `ToolTip`，并支持配置提示位置。
+  - 单选路径和过滤输入的溢出 tooltip 以外层 `CascaderAddOnDecoratedBox` 为定位基准，避免按内部文本 padding 对齐。
+- Gallery
+  - 新增 `SelectedOption / SelectedOptions` 双向绑定示例，标记 `v6.0.8`。
+
 ## 2026-06-26
 
 - Docs

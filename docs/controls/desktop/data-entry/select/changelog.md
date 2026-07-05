@@ -3,6 +3,16 @@
 本文档记录 Select 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-07-05
+
+- API
+  - Add `IsShowOverflowTip`, `OverflowTipDelay` and `OverflowTipPlacement` to the Select family input surface for selected result overflow tooltips.
+- Theme
+  - Wire overflow tooltip behavior and placement to single selected text and multiple selected tags through the shared `OverflowTip` attached behavior.
+  - Align single selected text overflow tooltip against the outer `SelectAddOnDecoratedBox` instead of the padded inner text node.
+- Docs
+  - Document the overflow tooltip API, template boundary and lifecycle ownership.
+
 ## 2026-07-03
 
 - Docs
