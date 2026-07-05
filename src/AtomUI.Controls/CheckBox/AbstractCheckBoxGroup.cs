@@ -1,14 +1,16 @@
 using System.Collections;
-using System.Diagnostics;
+using System.Collections.Specialized;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Metadata;
+using Avalonia.VisualTree;
 
 using ItemCollection = AtomUI.Collections.ItemCollection;
 
@@ -43,7 +45,9 @@ public abstract class AbstractCheckBoxGroup: TemplatedControl,
         AvaloniaProperty.RegisterDirect<AbstractCheckBoxGroup, IList?>(
             nameof(CheckedItems),
             o => o.CheckedItems,
-            (o, v) => o.CheckedItems = v);
+            (o, v) => o.CheckedItems = v,
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
     
     public double ItemSpacing
     {
@@ -110,7 +114,8 @@ public abstract class AbstractCheckBoxGroup: TemplatedControl,
     
     private readonly ItemCollection _items = new();
     private AbstractCheckBoxItemsControl? _itemsControl;
-    private bool _ignoreSyncToItemsControl;
+    private INotifyCollectionChanged? _checkedItemsCollectionChangedSource;
+    private IList? _checkedItemsSnapshot;
     
     static AbstractCheckBoxGroup()
     {
@@ -135,8 +140,20 @@ public abstract class AbstractCheckBoxGroup: TemplatedControl,
         {
             _itemsControl.ItemsSource      =  _items;
             _itemsControl.SelectionChanged += HandleItemsSelectedChanged;
-            _itemsControl.CheckedItems     =  CheckedItems;
+            SyncCheckedItemsToItemsControl();
         }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ConfigureCheckedItemsCollectionChangedSource(CheckedItems);
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ReleaseCheckedItemsCollectionChangedSource();
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -150,49 +167,144 @@ public abstract class AbstractCheckBoxGroup: TemplatedControl,
 
     private void HandleItemsSelectedChanged(object? sender, SelectionChangedEventArgs change)
     {
-        if (CheckedItems != null)
+        var checkedItems = CopyCheckedItems(CheckedItems) ?? new AvaloniaList<object?>();
+        foreach (var item in change.RemovedItems)
         {
-            foreach (var item in change.RemovedItems)
-            {
-                CheckedItems.Remove(item);
-            }
+            checkedItems.Remove(item);
+        }
 
-            foreach (var item in change.AddedItems)
+        foreach (var item in change.AddedItems)
+        {
+            if (!checkedItems.Contains(item))
             {
-                CheckedItems.Add(item);
+                checkedItems.Add(item);
             }
         }
-        else
-        {
-            IList? checkedItems = null;
-            Debug.Assert(_itemsControl != null);
-            if (_itemsControl.CheckedItems != null)
-            {
-                checkedItems = new AvaloniaList<object>();
-                foreach (var item in _itemsControl.CheckedItems)
-                {
-                    checkedItems.Add(item);
-                }
-            }
 
-            _ignoreSyncToItemsControl = true;
-            CheckedItems              = checkedItems;
-        }
-        RaiseEvent(new CheckBoxGroupCheckedChangedEventArgs(CheckedChangedEvent, change.RemovedItems, change.AddedItems));
-        _formValueChanged?.Invoke(this, EventArgs.Empty);
+        CheckedItems = checkedItems;
     }
 
     private void HandleCheckedItemsChanged(IList? oldValue, IList? newValue)
     {
-        if (_ignoreSyncToItemsControl)
+        ConfigureCheckedItemsCollectionChangedSource(newValue);
+        SyncCheckedItemsToItemsControl();
+        _checkedItemsSnapshot = CopyCheckedItems(newValue);
+        NotifyCheckedItemsChanged(oldValue, newValue);
+        _formValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void ConfigureCheckedItemsCollectionChangedSource(IList? checkedItems)
+    {
+        if (!this.IsAttachedToVisualTree())
         {
-            _ignoreSyncToItemsControl = false;
+            ReleaseCheckedItemsCollectionChangedSource();
+            _checkedItemsSnapshot = CopyCheckedItems(checkedItems);
             return;
         }
-        if (_itemsControl != null)
+
+        if (ReferenceEquals(_checkedItemsCollectionChangedSource, checkedItems))
         {
-            _itemsControl.CheckedItems = newValue;
+            _checkedItemsSnapshot = CopyCheckedItems(checkedItems);
+            return;
         }
+
+        ReleaseCheckedItemsCollectionChangedSource();
+
+        _checkedItemsCollectionChangedSource = checkedItems as INotifyCollectionChanged;
+        if (_checkedItemsCollectionChangedSource != null)
+        {
+            _checkedItemsCollectionChangedSource.CollectionChanged += HandleCheckedItemsCollectionChanged;
+        }
+
+        _checkedItemsSnapshot = CopyCheckedItems(checkedItems);
+    }
+
+    private void ReleaseCheckedItemsCollectionChangedSource()
+    {
+        if (_checkedItemsCollectionChangedSource != null)
+        {
+            _checkedItemsCollectionChangedSource.CollectionChanged -= HandleCheckedItemsCollectionChanged;
+            _checkedItemsCollectionChangedSource = null;
+        }
+    }
+
+    private void HandleCheckedItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (!ReferenceEquals(sender, _checkedItemsCollectionChangedSource))
+        {
+            return;
+        }
+
+        var oldSnapshot = _checkedItemsSnapshot;
+        var newSnapshot = CopyCheckedItems(CheckedItems);
+        _checkedItemsSnapshot = newSnapshot;
+
+        SyncCheckedItemsToItemsControl();
+        NotifyCheckedItemsChanged(oldSnapshot, newSnapshot);
+        _formValueChanged?.Invoke(this, EventArgs.Empty);
+    }
+
+    private void SyncCheckedItemsToItemsControl()
+    {
+        if (_itemsControl == null)
+        {
+            return;
+        }
+
+        _itemsControl.SelectionChanged -= HandleItemsSelectedChanged;
+        try
+        {
+            _itemsControl.CheckedItems = CopyCheckedItems(CheckedItems);
+        }
+        finally
+        {
+            _itemsControl.SelectionChanged += HandleItemsSelectedChanged;
+        }
+    }
+
+    private void NotifyCheckedItemsChanged(IList? oldValue, IList? newValue)
+    {
+        var removedItems = BuildRemovedItems(oldValue, newValue);
+        var addedItems   = BuildRemovedItems(newValue, oldValue);
+        if (removedItems.Count == 0 && addedItems.Count == 0)
+        {
+            return;
+        }
+
+        RaiseEvent(new CheckBoxGroupCheckedChangedEventArgs(CheckedChangedEvent, removedItems, addedItems));
+    }
+
+    private static IList BuildRemovedItems(IList? source, IList? target)
+    {
+        var items = new AvaloniaList<object?>();
+        if (source == null)
+        {
+            return items;
+        }
+
+        foreach (var item in source)
+        {
+            if (target == null || !target.Contains(item))
+            {
+                items.Add(item);
+            }
+        }
+        return items;
+    }
+
+    private static AvaloniaList<object?>? CopyCheckedItems(IEnumerable? source)
+    {
+        if (source == null)
+        {
+            return null;
+        }
+
+        var checkedItems = new AvaloniaList<object?>();
+        foreach (var item in source)
+        {
+            checkedItems.Add(item);
+        }
+        return checkedItems;
     }
     
     #region 实现 FormItem 接口

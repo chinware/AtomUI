@@ -78,6 +78,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、collection/filter、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `CheckBoxGroup.CheckedItems` 是集合选择的外部值 owner，默认 `BindingMode.TwoWay` 并启用 Avalonia data validation；绑定集合的 `Add`、`Remove`、`Clear` 或 `Reset` 必须回放到内部勾选状态和 Form value。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -143,9 +144,13 @@ CheckBox 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 
 CheckBox 的当前项状态必须由单一 owner 推导。public 选择属性、集合项容器和伪类之间只能做单向同步，集合替换、清空和模板重套用时必须回放当前状态。
 
+`CheckBoxGroup.CheckedItems` 作为受控集合值暴露给用户和 Form。控件内部 `PART_CheckBoxItems` 只持有快照投影，不直接复用用户传入的集合实例，避免内部选择器和外部 ViewModel 同时修改同一集合导致重复项、闪烁或状态回写循环。
+
 ### 8.2 集合与数据同步模型
 
 CheckBox 的集合状态必须能处理 source replace、reset、clear 和 container recycle。业务数据对象不应反向持有视觉对象，虚拟化或懒创建路径必须在容器回收时清理旧状态。
+
+当 `CheckedItems` 绑定到 `INotifyCollectionChanged` 集合时，控件在附加到 visual tree 后订阅集合变更，并在 detach 或集合替换时释放订阅。集合原地变更会刷新已实现容器的 `IsChecked`、触发 Form value changed，并保持 `CheckedChanged` 事件的 added/removed 语义。
 
 ### 8.3 动效模型
 

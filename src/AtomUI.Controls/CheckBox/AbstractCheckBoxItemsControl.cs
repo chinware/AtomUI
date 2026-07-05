@@ -45,6 +45,8 @@ internal abstract class AbstractCheckBoxItemsControl : SelectingItemsControl
         set => SetValue(IsMotionEnabledProperty, value);
     }
 
+    private bool _hasCheckedItemsSource;
+
     static AbstractCheckBoxItemsControl()
     {
         SelectionModeProperty.OverrideDefaultValue<AbstractCheckBoxItemsControl>(SelectionMode.Multiple | SelectionMode.Toggle);
@@ -81,10 +83,13 @@ internal abstract class AbstractCheckBoxItemsControl : SelectingItemsControl
                     if (item is ICheckBoxOption checkBoxOption)
                     {
                         checkbox.SetCurrentValue(AbstractCheckBox.IsEnabledProperty, checkBoxOption.IsEnabled);
-                        checkbox.SetCurrentValue(AbstractCheckBox.IsCheckedProperty, checkBoxOption.IsChecked);
-                        if (checkBoxOption.IsChecked)
+                        var isChecked = IsItemSelected(item) ||
+                                        (!_hasCheckedItemsSource && checkBoxOption.IsChecked);
+                        checkbox.SetCurrentValue(AbstractCheckBox.IsCheckedProperty, isChecked);
+                        if (!_hasCheckedItemsSource && checkBoxOption.IsChecked && SelectedItems != null &&
+                            !SelectedItems.Contains(checkBoxOption))
                         {
-                            SelectedItems?.Add(checkBoxOption);
+                            SelectedItems.Add(checkBoxOption);
                         }
                     }
                 }
@@ -138,37 +143,27 @@ internal abstract class AbstractCheckBoxItemsControl : SelectingItemsControl
 
     private void UpdateCheckBoxCheckedStates()
     {
-        if (SelectedItems == null)
+        foreach (var item in Items)
         {
-            foreach (var item in Items)
+            if (item != null && ContainerFromItem(item) is AbstractCheckBox checkBox)
             {
-                if (item != null)
-                {
-                    if (ContainerFromItem(item) is AbstractCheckBox checkBox)
-                    {
-                        checkBox.SetCurrentValue(AbstractCheckBox.IsCheckedProperty, false);
-                    }
-                }
+                checkBox.SetCurrentValue(AbstractCheckBox.IsCheckedProperty, IsItemSelected(item));
             }
         }
-        else
-        {
-            foreach (var item in SelectedItems)
-            {
-                if (item != null)
-                {
-                    if (ContainerFromItem(item) is AbstractCheckBox checkBox)
-                    {
-                        checkBox.SetCurrentValue(AbstractCheckBox.IsCheckedProperty, true);
-                    }
-                }
-            }
-        }
+    }
+
+    private bool IsItemSelected(object item)
+    {
+        return SelectedItems?.Contains(item) == true;
     }
     
     internal IList? CheckedItems
     {
         get => SelectedItems;
-        set => SelectedItems = value;
+        set
+        {
+            _hasCheckedItemsSource = value != null;
+            SelectedItems          = value;
+        }
     }
 }

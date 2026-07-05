@@ -14,6 +14,8 @@ internal partial class zh_CN
     public const string ControlledCheckboxDescription = "与其他组件联动。";
     public const string CheckboxGroupTitle = "复选框组";
     public const string CheckboxGroupDescription = "通过数组生成一组复选框。";
+    public const string CheckedItemsBindingTitle = "CheckedItems 绑定";
+    public const string CheckedItemsBindingDescription = "CheckedItems 默认使用 TwoWay 绑定，并会在绑定集合变更时保持控件状态同步。";
     public const string CheckAllTitle = "全选";
     public const string CheckAllDescription = "indeterminate 属性可以帮助实现全选效果。";
     public const string UseWithGridTitle = "结合 Grid 使用";
@@ -36,7 +38,7 @@ internal partial class zh_CN
     public const string ApiPropertyIsMotionEnabled = "启用复选框状态切换动效。";
     public const string ApiPropertyIsWaveSpiritEnabled = "启用点击水波反馈效果。";
     public const string ApiPropertyItemsSource = "CheckBoxGroup 用于生成复选框项的数据源。";
-    public const string ApiPropertyCheckedItems = "CheckBoxGroup 维护的已选项集合。";
+    public const string ApiPropertyCheckedItems = "CheckBoxGroup 维护的已选项集合，默认 TwoWay 绑定，支持 Avalonia 数据验证，并监听绑定集合的原地变更。";
     public const string ApiPropertyItemSpacing = "CheckBoxGroup 项之间的水平间距。";
     public const string ApiPropertyLineSpacing = "CheckBoxGroup 换行后的垂直间距。";
     public const string TokenColumnToken = "Token";
@@ -63,6 +65,10 @@ internal partial class zh_CN
     public const string P2ContentApple = "苹果";
     public const string P2ContentPear = "梨";
     public const string P2ContentOrange = "橙子";
+    public const string P2ContentAddPear = "添加梨";
+    public const string P2ContentClear = "清空";
+    public const string P2ContentNone = "无";
+    public const string P2TwoWayCheckedSummaryFormat = "已选择：{0}";
     public const string P2ContentCheckAll = "全选";
     public const string P2ContentA = "A";
     public const string P2ContentB = "B";

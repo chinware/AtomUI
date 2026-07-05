@@ -14,6 +14,8 @@ internal partial class en_US
     public const string ControlledCheckboxDescription = "Communicated with other components.";
     public const string CheckboxGroupTitle = "Checkbox Group";
     public const string CheckboxGroupDescription = "Generate a group of checkboxes from an array.";
+    public const string CheckedItemsBindingTitle = "CheckedItems binding";
+    public const string CheckedItemsBindingDescription = "CheckedItems uses TwoWay binding by default and stays in sync when the bound collection changes.";
     public const string CheckAllTitle = "Check all";
     public const string CheckAllDescription = "The indeterminate property can help you to achieve a 'check all' effect.";
     public const string UseWithGridTitle = "Use with Grid";
@@ -36,7 +38,7 @@ internal partial class en_US
     public const string ApiPropertyIsMotionEnabled = "Enables motion for checkbox state transitions.";
     public const string ApiPropertyIsWaveSpiritEnabled = "Enables the click wave feedback effect.";
     public const string ApiPropertyItemsSource = "Data source used by CheckBoxGroup to generate checkbox items.";
-    public const string ApiPropertyCheckedItems = "Selected item collection maintained by CheckBoxGroup.";
+    public const string ApiPropertyCheckedItems = "Selected item collection maintained by CheckBoxGroup. It uses TwoWay binding by default, supports Avalonia data validation, and observes bound collection mutations.";
     public const string ApiPropertyItemSpacing = "Horizontal spacing between CheckBoxGroup items.";
     public const string ApiPropertyLineSpacing = "Vertical spacing between wrapped CheckBoxGroup lines.";
     public const string TokenColumnToken = "Token";
@@ -63,6 +65,10 @@ internal partial class en_US
     public const string P2ContentApple = "Apple";
     public const string P2ContentPear = "Pear";
     public const string P2ContentOrange = "Orange";
+    public const string P2ContentAddPear = "Add pear";
+    public const string P2ContentClear = "Clear";
+    public const string P2ContentNone = "None";
+    public const string P2TwoWayCheckedSummaryFormat = "Selected: {0}";
     public const string P2ContentCheckAll = "Check all";
     public const string P2ContentA = "A";
     public const string P2ContentB = "B";

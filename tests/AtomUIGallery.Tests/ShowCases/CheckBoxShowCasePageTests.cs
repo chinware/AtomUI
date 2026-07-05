@@ -42,6 +42,8 @@ public class CheckBoxShowCasePageTests
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("CheckBoxShowCaseLangResource BasicTitle");
         source.ShouldContain("CheckBoxShowCaseLangResource CheckboxGroupTitle");
+        source.ShouldContain("CheckBoxShowCaseLangResource CheckedItemsBindingTitle");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("CheckBoxShowCaseLangResource CheckAllTitle");
         source.ShouldContain("CheckBoxShowCaseLangResource UseWithGridTitle");
         source.ShouldNotContain("<atom:TabControl");
@@ -74,6 +76,10 @@ public class CheckBoxShowCasePageTests
         codeBehindSource.ShouldContain("new CheckBoxDesignTokenDataGrid()");
         pageSource.ShouldContain("ItemsSource=\"{Binding CheckBoxOptions}\"");
         pageSource.ShouldContain("CheckedItems=\"{Binding DefaultCheckBoxOptions}\"");
+        pageSource.ShouldContain("ItemsSource=\"{Binding TwoWayCheckBoxOptions}\"");
+        pageSource.ShouldContain("CheckedItems=\"{Binding TwoWayCheckedOptions}\"");
+        pageSource.ShouldContain("Command=\"{Binding AddPearToTwoWayCheckedItemsCommand}\"");
+        pageSource.ShouldContain("Command=\"{Binding ClearTwoWayCheckedItemsCommand}\"");
         pageSource.ShouldContain("Command=\"{Binding CheckBoxCommand}\"");
         pageSource.ShouldContain("Command=\"{Binding CheckStatusCommand}\"");
         pageSource.ShouldContain("Command=\"{Binding EnableStatusCommand}\"");
@@ -130,11 +136,14 @@ public class CheckBoxShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
+            source.ShouldContain("CheckedItemsBindingTitle");
+            source.ShouldContain("CheckedItemsBindingDescription");
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyIsChecked");
             source.ShouldContain("ApiPropertyIsThreeState");
             source.ShouldContain("ApiPropertyIsWaveSpiritEnabled");
             source.ShouldContain("ApiPropertyCheckedItems");
+            source.ShouldContain("P2TwoWayCheckedSummaryFormat");
             source.ShouldContain("TokenNameCheckIndicatorSize");
             source.ShouldContain("TokenNameCheckedMarkSize");
         }

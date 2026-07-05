@@ -2,6 +2,15 @@
 
 本文档记录 CheckBox 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-06
+
+- Behavior
+  - Make `CheckBoxGroup.CheckedItems` default to TwoWay binding and enable Avalonia data validation.
+  - Project bound `CheckedItems` collections into the internal items control through snapshots, preventing duplicate selection writes.
+  - Support `INotifyCollectionChanged` mutations on bound `CheckedItems` collections and refresh checked visuals, Form value notifications and `CheckedChanged` event data.
+- Gallery
+  - Add a `v6.0.8` CheckBoxGroup binding example showing user selection and bound collection mutation staying synchronized.
+
 ## 2026-06-26
 
 - Docs
