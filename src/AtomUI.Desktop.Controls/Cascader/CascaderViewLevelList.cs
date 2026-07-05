@@ -225,7 +225,7 @@ internal class CascaderViewLevelList : SelectingItemsControl, IListVirtualizingC
         {
             var context = new Dictionary<object, object?>(5);
             list.SaveVirtualizingContext(element, context);
-            _virtualRestoreContext.Add(listItem.VirtualIndex, context);
+            _virtualRestoreContext[listItem.VirtualIndex] = context;
             list.ClearContainerValues(element);
         }
         

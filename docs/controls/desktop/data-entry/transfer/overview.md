@@ -40,10 +40,12 @@ Transfer 的公共契约由 public/protected 类型成员、Avalonia 属性、�
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
 | 内容与数据 | `Content`、`ContentTemplate`、`FilterPlaceholderText`、`FilterValueSelector`、`FooterTemplate`、`ItemTemplate`、`SelectionsIcon`、`SelectionsIconTemplate`、`SourceTitle`、`SourceTitleTemplate` 等 22 项 | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `Filter`、`IsAllSelected`、`IsFilterEnabled`、`PageSize` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `TargetKeys`、`SelectedKeys`、`Filter`、`IsAllSelected`、`IsFilterEnabled`、`PageSize` | 维护目标集合、当前面板选择、过滤、分页和集合状态。 |
 | 交互与状态 | `IsMasked`、`IsMotionEnabled`、`IsOneWay`、`IsPaginationEnabled`、`IsShowSearch`、`IsShowSelectAll`、`IsShowSelectAllCheckbox`、`IsShowSelectDropdownMenu`、`IsStretchView`、`Status` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `ListHeight`、`ListWidth`、`SizeType` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `Footer`、`TargetView`、`TargetViewFooter`、`ViewType` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
+
+`TargetKeys` 表示已经移动到目标面板的条目 key，是 Transfer 的提交值；`SelectedKeys` 表示当前源面板和目标面板内被选中的条目 key。两者默认 `BindingMode.TwoWay`，并支持 `INotifyCollectionChanged` 集合的原地 `Add`、`Remove`、`Replace`、`Move` 和 `Reset`。当绑定集合可写时，Transfer 交互优先原地更新已有集合，避免替换绑定源造成外部状态不同步。
 
 稳定事件包括 `SelectActionRequest`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 
@@ -76,6 +78,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `TargetKeys` 是目标集合的 public owner，源/目标面板数据由 `ItemsSource` 与 `TargetKeys` 推导；`SelectedKeys` 是当前选择的 public owner，内部源面板选择和目标面板选择按 key 是否存在于 `TargetKeys` 自动拆分。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -151,11 +154,11 @@ Transfer 与同分类控件共享尺寸、状态、Token、Gallery 展示和验�
 
 ### 8.1 选择与当前项模型
 
-Transfer 的当前项状态必须由单一 owner 推导。public 选择属性、集合项容器和伪类之间只能做单向同步，集合替换、清空和模板重套用时必须回放当前状态。
+Transfer 的当前项状态必须由单一 owner 推导。`SelectedKeys` 保存跨源面板和目标面板的当前选中 key 集合，内部 `TransferListView.SelectedKeys` / `TransferTreeView.SelectedKeys` 只承载面板级投影，不另建业务选择状态。集合替换、清空、原地变更和模板重套用时必须从 public key 集合回放到列表选中项、树勾选项和计数状态。
 
 ### 8.2 集合与数据同步模型
 
-Transfer 的集合状态必须能处理 source replace、reset、clear 和 container recycle。业务数据对象不应反向持有视觉对象，虚拟化或懒创建路径必须在容器回收时清理旧状态。
+Transfer 的集合状态必须能处理 source replace、reset、clear 和 container recycle。`TargetKeys` 是目标面板数据的稳定来源，Transfer 按 `ItemsSource` membership 生成源面板和目标面板集合；对可写绑定集合执行移动、移除和清空时优先原地变更，只有 `null`、只读或 fixed-size 集合才回退为属性替换。业务数据对象不应反向持有视觉对象，虚拟化或懒创建路径必须在容器回收时清理旧状态。
 
 ### 8.3 动效模型
 
@@ -199,8 +202,8 @@ LLMS 导出来源：
 | 改动类型 | 验证要求 |
 | --- | --- |
 | 文档改动 | 运行 `git diff --check`，检查相对链接存在。 |
-| Public API | 覆盖属性默认值、事件触发、命令和继承语义。 |
-| 状态模型 | 覆盖 selection/checked/active、collection/filter、input/value、motion、visual option、disabled、hover、pressed、focus 以及控件特有状态。 |
+| Public API | 覆盖属性默认值、默认绑定模式、事件触发、命令和继承语义。 |
+| 状态模型 | 覆盖 `TargetKeys` / `SelectedKeys` 替换和集合原地变更、selection/checked/active、collection/filter、input/value、motion、visual option、disabled、hover、pressed、focus 以及控件特有状态。 |
 | AXAML/Theme | 检查 template part、伪类、资源 key、Light/Dark 主题和 Browser 主题。 |
 | Token | 检查 TokenKind、AXAML token resource、Gallery Token 表和文档同步。 |
 | Gallery | 走查对应 ShowCase 示例、API 表和 Token 表入口。 |

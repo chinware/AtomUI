@@ -45,11 +45,13 @@ public class TransferShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:TransferShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(7);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(7);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(7);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TransferViewModel\"").ShouldBe(7);
+        CountShowCaseItemElements(source).ShouldBe(8);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(8);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(8);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TransferViewModel\"").ShouldBe(8);
         source.ShouldContain("TransferShowCaseLangResource BasicTitle");
+        source.ShouldContain("TransferShowCaseLangResource ControlledKeysTitle");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("TransferShowCaseLangResource AdvancedTitle");
         source.ShouldContain("TransferShowCaseLangResource TreeTransferTitle");
         source.ShouldContain("TransferShowCaseLangResource StatusTitle");
@@ -140,6 +142,7 @@ public class TransferShowCasePageTests
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyItemsSource");
             source.ShouldContain("ApiPropertyTargetKeys");
+            source.ShouldContain("ApiPropertySelectedKeys");
             source.ShouldContain("ApiPropertyIsOneWay");
             source.ShouldContain("ApiPropertyIsFilterEnabled");
             source.ShouldContain("ApiPropertyStatus");

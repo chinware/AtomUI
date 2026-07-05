@@ -1,9 +1,12 @@
 using System.Collections;
+using System.Collections.Specialized;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -13,7 +16,8 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
     public static readonly DirectProperty<TransferTreeView, IList<EntityKey>?> SelectedKeysProperty =
         AvaloniaProperty.RegisterDirect<TransferTreeView, IList<EntityKey>?>(nameof(SelectedKeys), 
             o => o.SelectedKeys,
-            (o, v) => o.SelectedKeys = v);
+            (o, v) => o.SelectedKeys = v,
+            defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly DirectProperty<TransferTreeView, ISet<EntityKey>?> MaskKeysProperty =
         AvaloniaProperty.RegisterDirect<TransferTreeView, ISet<EntityKey>?>(nameof(MaskKeys), 
@@ -60,7 +64,10 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
 
     #endregion
     
-    private bool _ignoreSyncSelection;
+    private bool _isApplyingCheckedItemsToSelectedKeys;
+    private bool _isApplyingSelectedKeysToCheckedItems;
+    private INotifyCollectionChanged? _selectedKeysCollectionChangedSource;
+    private bool _isVisualTreeAttached;
     
     static TransferTreeView()
     {
@@ -87,6 +94,30 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
         {
             ConfigureSelectedKeys();
         }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        var wasApplyingSelectedKeysToCheckedItems = _isApplyingSelectedKeysToCheckedItems;
+        _isApplyingSelectedKeysToCheckedItems = true;
+        try
+        {
+            base.OnAttachedToVisualTree(e);
+        }
+        finally
+        {
+            _isApplyingSelectedKeysToCheckedItems = wasApplyingSelectedKeysToCheckedItems;
+        }
+        _isVisualTreeAttached = true;
+        ConfigureSelectedKeysCollectionChangedSource(SelectedKeys);
+        HandleSelectedKeysChanged();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _isVisualTreeAttached = false;
+        ReleaseSelectedKeysCollectionChangedSource();
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -225,53 +256,120 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
 
     private void HandleSelectedKeysChanged()
     {
+        ConfigureSelectedKeysCollectionChangedSource(SelectedKeys);
         SelectedKeyChanged?.Invoke(this, EventArgs.Empty);
-        if (_ignoreSyncSelection)
+        if (_isApplyingCheckedItemsToSelectedKeys)
         {
-            _ignoreSyncSelection = false;
             return;
         }
         var checkedItems = BuildCheckedItemsList(ItemsSource, SelectedKeys);
-        CheckedItems.Clear();
-        if (checkedItems != null)
+        _isApplyingSelectedKeysToCheckedItems = true;
+        try
         {
-            foreach (var item in checkedItems)
+            CheckedItems.Clear();
+            if (checkedItems != null)
             {
-                CheckedItems.Add(item);
+                foreach (var item in checkedItems)
+                {
+                    CheckedItems.Add(item);
+                }
             }
         }
+        finally
+        {
+            _isApplyingSelectedKeysToCheckedItems = false;
+        }
+        SelectionCountChanged?.Invoke(this, new SelectionCountChangedEventArgs(SelectedKeys?.Count ?? 0));
     }
     
     private void HandleCheckedItemsChanged(object? sender, EventArgs e)
     {
+        if (_isApplyingSelectedKeysToCheckedItems)
+        {
+            return;
+        }
+
         ConfigureSelectedKeys();
     }
 
     private void ConfigureSelectedKeys()
     {
-        _ignoreSyncSelection = true;
-    
-        if (CheckedItems.Count == 0)
+        _isApplyingCheckedItemsToSelectedKeys = true;
+        try
         {
-            SetCurrentValue(SelectedKeysProperty, null);
-        }
-        else
-        {
-            var selectedKeys = new List<EntityKey>(CheckedItems.Count);
-            foreach (var item in CheckedItems)
+            if (CheckedItems.Count == 0)
             {
-                if (item is ITreeItemNode treeItemNode && treeItemNode.IsEnabled)
+                if (!AreKeyCollectionsEquivalent(SelectedKeys, null))
                 {
-                    var itemKey = treeItemNode.ItemKey ?? default;
-                    if (MaskKeys == null || MaskKeys?.Contains(itemKey) == false)
-                    {
-                        selectedKeys.Add(treeItemNode.ItemKey ?? default); 
-                    }
+                    SetCurrentValue(SelectedKeysProperty, null);
                 }
             }
-            SetCurrentValue(SelectedKeysProperty, selectedKeys);
+            else
+            {
+                var selectedKeys = new List<EntityKey>(CheckedItems.Count);
+                foreach (var item in CheckedItems)
+                {
+                    if (item is ITreeItemNode treeItemNode && treeItemNode.IsEnabled)
+                    {
+                        var itemKey = treeItemNode.ItemKey ?? default;
+                        if (MaskKeys == null || MaskKeys?.Contains(itemKey) == false)
+                        {
+                            selectedKeys.Add(treeItemNode.ItemKey ?? default);
+                        }
+                    }
+                }
+                if (!AreKeyCollectionsEquivalent(SelectedKeys, selectedKeys))
+                {
+                    SetCurrentValue(SelectedKeysProperty, selectedKeys);
+                }
+            }
+        }
+        finally
+        {
+            _isApplyingCheckedItemsToSelectedKeys = false;
         }
         SelectionCountChanged?.Invoke(this, new SelectionCountChangedEventArgs(SelectedKeys?.Count ?? 0));
+    }
+
+    private void ConfigureSelectedKeysCollectionChangedSource(IList<EntityKey>? selectedKeys)
+    {
+        if (!_isVisualTreeAttached)
+        {
+            ReleaseSelectedKeysCollectionChangedSource();
+            return;
+        }
+
+        if (ReferenceEquals(_selectedKeysCollectionChangedSource, selectedKeys))
+        {
+            return;
+        }
+
+        ReleaseSelectedKeysCollectionChangedSource();
+
+        _selectedKeysCollectionChangedSource = selectedKeys as INotifyCollectionChanged;
+        if (_selectedKeysCollectionChangedSource != null)
+        {
+            _selectedKeysCollectionChangedSource.CollectionChanged += HandleSelectedKeysCollectionChanged;
+        }
+    }
+
+    private void ReleaseSelectedKeysCollectionChangedSource()
+    {
+        if (_selectedKeysCollectionChangedSource != null)
+        {
+            _selectedKeysCollectionChangedSource.CollectionChanged -= HandleSelectedKeysCollectionChanged;
+            _selectedKeysCollectionChangedSource = null;
+        }
+    }
+
+    private void HandleSelectedKeysCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (!ReferenceEquals(sender, _selectedKeysCollectionChangedSource))
+        {
+            return;
+        }
+
+        HandleSelectedKeysChanged();
     }
 
     private int CalculateAllNodesCount(ITreeItemNode treeNode)
@@ -400,5 +498,34 @@ public class TransferTreeView : TreeView, ITransferTreeView, ITransferDecoratorP
             keySet.Add(key);
         }
         return keySet;
+    }
+
+    private static bool AreKeyCollectionsEquivalent(ICollection<EntityKey>? currentKeys, ICollection<EntityKey>? nextKeys)
+    {
+        if (currentKeys == null || currentKeys.Count == 0)
+        {
+            return nextKeys == null || nextKeys.Count == 0;
+        }
+
+        if (nextKeys == null || currentKeys.Count != nextKeys.Count)
+        {
+            return false;
+        }
+
+        var currentKeySet = new HashSet<EntityKey>(currentKeys.Count);
+        foreach (var key in currentKeys)
+        {
+            currentKeySet.Add(key);
+        }
+
+        foreach (var key in nextKeys)
+        {
+            if (!currentKeySet.Contains(key))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

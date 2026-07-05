@@ -55,6 +55,9 @@ public partial class TransferShowCase : GalleryReactiveUserControl<TransferViewM
                     viewModel.BasicTransferItems                  = null;
                     viewModel.OneWayTransferItems                 = null;
                     viewModel.SearchTransferItems                 = null;
+                    viewModel.ControlledTransferItems             = null;
+                    viewModel.ControlledTransferTargetKeys        = null;
+                    viewModel.ControlledTransferSelectedKeys      = null;
                     viewModel.PaginationTransferItems             = null;
                     viewModel.PaginationTransferDefaultTargetKeys = null;
                     viewModel.GridDataTransformItems              = null;
@@ -112,6 +115,7 @@ public partial class TransferShowCase : GalleryReactiveUserControl<TransferViewM
         InitBasicTransferItems(viewModel);
         InitOneWayTransferItems(viewModel);
         InitSearchTransferItems(viewModel);
+        InitControlledTransferItems(viewModel);
         InitPaginationTransferItems(viewModel);
         InitDataGridTransferItems(viewModel);
         InitAdvanceTransferItems(viewModel);
@@ -175,6 +179,26 @@ public partial class TransferShowCase : GalleryReactiveUserControl<TransferViewM
         }
 
         vm.SearchTransferItems = items;
+    }
+
+    private void InitControlledTransferItems(TransferViewModel vm)
+    {
+        var items = new List<IListItemData>();
+        for (var i = 0; i < 8; i++)
+        {
+            items.Add(new ListItemData()
+            {
+                ItemKey = $"{i}",
+                Content = TransferShowCaseLanguage.Format(
+                    TransferShowCaseLangResourceKind.P2ItemContentFormat,
+                    "content{0}",
+                    i + 1)
+            });
+        }
+
+        vm.ControlledTransferItems        = items;
+        vm.ControlledTransferTargetKeys   = ["1"];
+        vm.ControlledTransferSelectedKeys = ["2"];
     }
 
     private void InitAdvanceTransferItems(TransferViewModel vm)
@@ -302,6 +326,34 @@ public partial class TransferShowCase : GalleryReactiveUserControl<TransferViewM
                 Header = "0-4"
             }
         ];
+    }
+
+    private void AddControlledTransferTargetKey(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is TransferViewModel viewModel &&
+            viewModel.ControlledTransferTargetKeys != null &&
+            !viewModel.ControlledTransferTargetKeys.Contains("3"))
+        {
+            viewModel.ControlledTransferTargetKeys.Add("3");
+        }
+    }
+
+    private void ClearControlledTransferTargetKeys(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is TransferViewModel viewModel)
+        {
+            viewModel.ControlledTransferTargetKeys?.Clear();
+        }
+    }
+
+    private void SelectControlledTransferSourceKey(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is TransferViewModel viewModel &&
+            viewModel.ControlledTransferSelectedKeys != null &&
+            !viewModel.ControlledTransferSelectedKeys.Contains("4"))
+        {
+            viewModel.ControlledTransferSelectedKeys.Add("4");
+        }
     }
 
 }

@@ -1,11 +1,14 @@
 using System.Collections;
+using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 using VirtualizingStackPanel = Avalonia.Controls.VirtualizingStackPanel;
 
 namespace AtomUI.Desktop.Controls;
@@ -16,7 +19,8 @@ public class TransferListView : ListView, ITransferView
     public static readonly DirectProperty<TransferListView, IList<EntityKey>?> SelectedKeysProperty =
         AvaloniaProperty.RegisterDirect<TransferListView, IList<EntityKey>?>(nameof(SelectedKeys), 
             o => o.SelectedKeys,
-            (o, v) => o.SelectedKeys = v);
+            (o, v) => o.SelectedKeys = v,
+            defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly DirectProperty<TransferListView, TransferViewType> ViewTypeProperty =
         AvaloniaProperty.RegisterDirect<TransferListView, TransferViewType>(nameof(ViewType), 
@@ -58,9 +62,12 @@ public class TransferListView : ListView, ITransferView
 
     #endregion
     
-    private bool _ignoreSyncSelection;
+    private bool _isApplyingSelectionToSelectedKeys;
+    private bool _isApplyingSelectedKeysToSelection;
     private IList<EntityKey>? _selectedKeysBackup;
     private int _currentPageSizeBackup;
+    private INotifyCollectionChanged? _selectedKeysCollectionChangedSource;
+    private bool _isVisualTreeAttached;
     
     private static readonly FuncTemplate<Panel?> DefaultPanel =
         new(() => new VirtualizingStackPanel());
@@ -83,6 +90,30 @@ public class TransferListView : ListView, ITransferView
         {
             HandleItemsSourceChange();
         }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        var wasApplyingSelectedKeysToSelection = _isApplyingSelectedKeysToSelection;
+        _isApplyingSelectedKeysToSelection = true;
+        try
+        {
+            base.OnAttachedToVisualTree(e);
+        }
+        finally
+        {
+            _isApplyingSelectedKeysToSelection = wasApplyingSelectedKeysToSelection;
+        }
+        _isVisualTreeAttached = true;
+        ConfigureSelectedKeysCollectionChangedSource(SelectedKeys);
+        HandleSelectedKeysChanged();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _isVisualTreeAttached = false;
+        ReleaseSelectedKeysCollectionChangedSource();
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -244,42 +275,112 @@ public class TransferListView : ListView, ITransferView
                     }
                 }
             }
-            SetCurrentValue(SelectedKeysProperty, newSelectedKeys);
+            if (!AreKeyCollectionsEquivalent(SelectedKeys, newSelectedKeys))
+            {
+                SetCurrentValue(SelectedKeysProperty, newSelectedKeys);
+            }
         }
     }
 
     private void HandleSelectionChanged(SelectionChangedEventArgs e)
     {
-        _ignoreSyncSelection = true;
-        if (SelectedItems == null || SelectedItems.Count == 0)
+        if (_isApplyingSelectedKeysToSelection)
         {
-            SetCurrentValue(SelectedKeysProperty, null);
+            return;
         }
-        else
+
+        _isApplyingSelectionToSelectedKeys = true;
+        try
         {
-            var selectedKeys = new List<EntityKey>(SelectedItems.Count);
-            foreach (var item in SelectedItems)
+            if (SelectedItems == null || SelectedItems.Count == 0)
             {
-                if (item is IListItemData listItemData && listItemData.IsEnabled)
+                if (!AreKeyCollectionsEquivalent(SelectedKeys, null))
                 {
-                    selectedKeys.Add(listItemData.ItemKey ?? default);
+                    SetCurrentValue(SelectedKeysProperty, null);
                 }
             }
-            SetCurrentValue(SelectedKeysProperty, selectedKeys);
+            else
+            {
+                var selectedKeys = new List<EntityKey>(SelectedItems.Count);
+                foreach (var item in SelectedItems)
+                {
+                    if (item is IListItemData listItemData && listItemData.IsEnabled)
+                    {
+                        selectedKeys.Add(listItemData.ItemKey ?? default);
+                    }
+                }
+                if (!AreKeyCollectionsEquivalent(SelectedKeys, selectedKeys))
+                {
+                    SetCurrentValue(SelectedKeysProperty, selectedKeys);
+                }
+            }
+        }
+        finally
+        {
+            _isApplyingSelectionToSelectedKeys = false;
         }
     }
 
     private void HandleSelectedKeysChanged()
     {
+        ConfigureSelectedKeysCollectionChangedSource(SelectedKeys);
         SelectedKeyChanged?.Invoke(this, EventArgs.Empty);
         SelectionCountChanged?.Invoke(this, new SelectionCountChangedEventArgs(SelectedKeys?.Count ?? 0));
-        if (_ignoreSyncSelection)
+        if (_isApplyingSelectionToSelectedKeys)
         {
-            _ignoreSyncSelection = false;
             return;
         }
         var selectedItems = BuildSelectedItemsList(ItemsSource, SelectedKeys);
-        SetCurrentValue(SelectedItemsProperty, selectedItems);
+        _isApplyingSelectedKeysToSelection = true;
+        try
+        {
+            SetCurrentValue(SelectedItemsProperty, selectedItems);
+        }
+        finally
+        {
+            _isApplyingSelectedKeysToSelection = false;
+        }
+    }
+
+    private void ConfigureSelectedKeysCollectionChangedSource(IList<EntityKey>? selectedKeys)
+    {
+        if (!_isVisualTreeAttached)
+        {
+            ReleaseSelectedKeysCollectionChangedSource();
+            return;
+        }
+
+        if (ReferenceEquals(_selectedKeysCollectionChangedSource, selectedKeys))
+        {
+            return;
+        }
+
+        ReleaseSelectedKeysCollectionChangedSource();
+
+        _selectedKeysCollectionChangedSource = selectedKeys as INotifyCollectionChanged;
+        if (_selectedKeysCollectionChangedSource != null)
+        {
+            _selectedKeysCollectionChangedSource.CollectionChanged += HandleSelectedKeysCollectionChanged;
+        }
+    }
+
+    private void ReleaseSelectedKeysCollectionChangedSource()
+    {
+        if (_selectedKeysCollectionChangedSource != null)
+        {
+            _selectedKeysCollectionChangedSource.CollectionChanged -= HandleSelectedKeysCollectionChanged;
+            _selectedKeysCollectionChangedSource = null;
+        }
+    }
+
+    private void HandleSelectedKeysCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (!ReferenceEquals(sender, _selectedKeysCollectionChangedSource))
+        {
+            return;
+        }
+
+        HandleSelectedKeysChanged();
     }
 
     private void HandleRemoveButtonClicked(RoutedEventArgs e)
@@ -365,6 +466,35 @@ public class TransferListView : ListView, ITransferView
             keySet.Add(key);
         }
         return keySet;
+    }
+
+    private static bool AreKeyCollectionsEquivalent(ICollection<EntityKey>? currentKeys, ICollection<EntityKey>? nextKeys)
+    {
+        if (currentKeys == null || currentKeys.Count == 0)
+        {
+            return nextKeys == null || nextKeys.Count == 0;
+        }
+
+        if (nextKeys == null || currentKeys.Count != nextKeys.Count)
+        {
+            return false;
+        }
+
+        var currentKeySet = new HashSet<EntityKey>(currentKeys.Count);
+        foreach (var key in currentKeys)
+        {
+            currentKeySet.Add(key);
+        }
+
+        foreach (var key in nextKeys)
+        {
+            if (!currentKeySet.Contains(key))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static List<IItemKey> BuildItemsList(IEnumerable source)

@@ -23,7 +23,8 @@ internal partial class en_US
     public const string ApiColumnType = "Type";
     public const string ApiColumnDefault = "Default";
     public const string ApiPropertyItemsSource = "Data collection displayed by the transfer lists.";
-    public const string ApiPropertyTargetKeys = "Keys of items currently placed in the target list.";
+    public const string ApiPropertyTargetKeys = "Keys of items currently placed in the target list. The property binds TwoWay by default and tracks collection mutations.";
+    public const string ApiPropertySelectedKeys = "Keys currently selected in the source and target panels. The property binds TwoWay by default and tracks collection mutations.";
     public const string ApiPropertySourceTitle = "Title displayed above the source list.";
     public const string ApiPropertyTargetTitle = "Title displayed above the target list.";
     public const string ApiPropertyIsOneWay = "Allows moving items only from source to target.";
@@ -53,6 +54,8 @@ internal partial class en_US
     public const string OneWayDescription = "Use oneWay to make Transfer the one way style.";
     public const string SearchTitle = "Search";
     public const string SearchDescription = "Transfer with a search box.";
+    public const string ControlledKeysTitle = "Controlled keys";
+    public const string ControlledKeysDescription = "Bind TargetKeys and SelectedKeys to ObservableCollection values. External collection mutations and Transfer interactions stay synchronized.";
     public const string AdvancedTitle = "Advanced";
     public const string AdvancedDescription = "Advanced Usage of Transfer. You can customize the labels of the transfer buttons, the width and height of the columns, and what should be displayed in the footer.";
     public const string PaginationTitle = "Pagination";
@@ -69,6 +72,11 @@ internal partial class en_US
     public const string P2HeaderDescription = "Description";
     public const string P2ContentLeftButtonReload = "Left button reload";
     public const string P2ContentRightButtonReload = "Right button reload";
+    public const string P2ContentAddTargetKey = "Add key 3 to target";
+    public const string P2ContentClearTargetKeys = "Clear target keys";
+    public const string P2ContentSelectSourceKey = "Select key 4";
+    public const string P2TargetKeysCountLabel = "Target keys:";
+    public const string P2SelectedKeysCountLabel = "Selected keys:";
 
     public const string P2OnContentDisable = "Disable";
 

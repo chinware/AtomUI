@@ -77,6 +77,30 @@ public class TransferViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _transferFilterValueSelector, value);
     }
 
+    private List<IListItemData>? _controlledTransferItems;
+
+    public List<IListItemData>? ControlledTransferItems
+    {
+        get => _controlledTransferItems;
+        set => this.RaiseAndSetIfChanged(ref _controlledTransferItems, value);
+    }
+
+    private ObservableCollection<EntityKey>? _controlledTransferTargetKeys;
+
+    public ObservableCollection<EntityKey>? ControlledTransferTargetKeys
+    {
+        get => _controlledTransferTargetKeys;
+        set => this.RaiseAndSetIfChanged(ref _controlledTransferTargetKeys, value);
+    }
+
+    private ObservableCollection<EntityKey>? _controlledTransferSelectedKeys;
+
+    public ObservableCollection<EntityKey>? ControlledTransferSelectedKeys
+    {
+        get => _controlledTransferSelectedKeys;
+        set => this.RaiseAndSetIfChanged(ref _controlledTransferSelectedKeys, value);
+    }
+
     private List<IListItemData>? _advanceTransferItems;
 
     public List<IListItemData>? AdvanceTransferItems
@@ -157,6 +181,7 @@ public class TransferViewModel : ReactiveObject, IRoutableViewModel
         [
             new TransferApiRow("ItemsSource", Lang(TransferShowCaseLangResourceKind.ApiPropertyItemsSource), "IEnumerable<IListItemData>?", "cyan", "null"),
             new TransferApiRow("TargetKeys", Lang(TransferShowCaseLangResourceKind.ApiPropertyTargetKeys), "IList<EntityKey>?", "cyan", "null"),
+            new TransferApiRow("SelectedKeys", Lang(TransferShowCaseLangResourceKind.ApiPropertySelectedKeys), "IList<EntityKey>?", "cyan", "null"),
             new TransferApiRow("SourceTitle", Lang(TransferShowCaseLangResourceKind.ApiPropertySourceTitle), "string?", "cyan", "null"),
             new TransferApiRow("TargetTitle", Lang(TransferShowCaseLangResourceKind.ApiPropertyTargetTitle), "string?", "cyan", "null"),
             new TransferApiRow("IsOneWay", Lang(TransferShowCaseLangResourceKind.ApiPropertyIsOneWay), "bool", "green", "false"),
@@ -207,6 +232,7 @@ public class TransferViewModel : ReactiveObject, IRoutableViewModel
         {
             TransferShowCaseLangResourceKind.ApiPropertyItemsSource                   => en_US.ApiPropertyItemsSource,
             TransferShowCaseLangResourceKind.ApiPropertyTargetKeys                    => en_US.ApiPropertyTargetKeys,
+            TransferShowCaseLangResourceKind.ApiPropertySelectedKeys                  => en_US.ApiPropertySelectedKeys,
             TransferShowCaseLangResourceKind.ApiPropertySourceTitle                   => en_US.ApiPropertySourceTitle,
             TransferShowCaseLangResourceKind.ApiPropertyTargetTitle                   => en_US.ApiPropertyTargetTitle,
             TransferShowCaseLangResourceKind.ApiPropertyIsOneWay                      => en_US.ApiPropertyIsOneWay,

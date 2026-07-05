@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reflection;
 using AtomUI.Controls.Data;
 using AtomUI.Controls.Utils;
 using AtomUI.Desktop.Controls;
@@ -125,8 +126,48 @@ public class ListViewStateTests
             "LostSelection from a replaced model should not drive the active selection model.");
     }
 
+    [Fact]
+    public void Virtualizing_Context_Tolerates_Duplicate_Recycled_Index()
+    {
+        var listView = new AtomListView();
+        var firstContainer = new AtomUI.Desktop.Controls.ListViewItem();
+        var secondContainer = new AtomUI.Desktop.Controls.ListViewItem();
+        var itemData = new ListItemData { Content = "item" };
+
+        PrepareContainerForItem(listView, firstContainer, itemData, 5);
+        PrepareContainerForItem(listView, secondContainer, itemData, 5);
+
+        ClearContainerForItem(listView, firstContainer);
+        Should.NotThrow(() => ClearContainerForItem(listView, secondContainer),
+            "virtualized collection mutations can recycle more than one stale container for the same index before one is restored.");
+    }
+
     private static ListItemData[] CreateItems(params string[] values)
     {
         return values.Select(value => new ListItemData { Content = value }).ToArray();
+    }
+
+    private static void PrepareContainerForItem(
+        AtomListView listView,
+        AtomUI.Desktop.Controls.ListViewItem container,
+        object item,
+        int index)
+    {
+        var method = typeof(AtomListView).GetMethod(
+            "PrepareContainerForItemOverride",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        method.ShouldNotBeNull();
+        method.Invoke(listView, [container, item, index]);
+    }
+
+    private static void ClearContainerForItem(
+        AtomListView listView,
+        AtomUI.Desktop.Controls.ListViewItem container)
+    {
+        var method = typeof(AtomListView).GetMethod(
+            "ClearContainerForItemOverride",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        method.ShouldNotBeNull();
+        method.Invoke(listView, [container]);
     }
 }
