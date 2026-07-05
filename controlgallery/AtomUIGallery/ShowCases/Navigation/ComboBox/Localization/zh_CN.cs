@@ -18,6 +18,12 @@ internal partial class zh_CN
     public const string BasicDescription = "基础的组合框用法。";
     public const string ItemsSourceTitle = "通过 ItemsSource 生成 ComboBoxItem";
     public const string ItemsSourceDescription = "基于 ItemsSource 和模板生成结构。";
+    public const string BindingTitle = "SelectedItem 绑定";
+    public const string BindingDescription = "SelectedItem 会与 ViewModel 同步，也是 Form 读取和写入 ComboBox 的表单值。";
+    public const string BindingSelectedItemLabel = "SelectedItem";
+    public const string BindingViewModelValueLabel = "ViewModel 值";
+    public const string BindingSetButton = "设为第三句";
+    public const string BindingClearButton = "清空";
     public const string EditableFilterTitle = "可编辑过滤";
     public const string EditableFilterDescription = "在 ComboBox 输入区输入文本，过滤弹出候选项，同时不替换原始 ItemsSource。";
     public const string DisabledTitle = "禁用状态";
@@ -48,7 +54,7 @@ internal partial class zh_CN
     public const string ApiColumnType = "类型";
     public const string ApiColumnDefault = "默认值";
     public const string ApiPropertyItemsSource = "用于生成弹出项的集合。";
-    public const string ApiPropertySelectedItem = "当前选中项。";
+    public const string ApiPropertySelectedItem = "当前选中项，也是 ComboBox 默认表单值。";
     public const string ApiPropertySelectedIndex = "当前选中项索引。";
     public const string ApiPropertyPlaceholderText = "未选择内容时显示的占位文本。";
     public const string ApiPropertyIsEditable = "允许在 ComboBox 选择区域输入文本。";

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUIGallery.Localization;
@@ -17,6 +18,7 @@ public class ComboBoxViewModel : ReactiveObject, IRoutableViewModel
     public string? UrlPathSegment => ID.ToString();
 
     private List<ComboBoxItemData>? _comboBoxItems;
+    private ComboBoxItemData? _boundSelectedItem;
     private ObservableCollection<ComboBoxApiRow>? _apiRows;
     private ObservableCollection<ComboBoxDesignTokenRow>? _designTokenRows;
 
@@ -25,6 +27,18 @@ public class ComboBoxViewModel : ReactiveObject, IRoutableViewModel
         get => _comboBoxItems;
         set => this.RaiseAndSetIfChanged(ref _comboBoxItems, value);
     }
+
+    public ComboBoxItemData? BoundSelectedItem
+    {
+        get => _boundSelectedItem;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _boundSelectedItem, value);
+            this.RaisePropertyChanged(nameof(BoundSelectedItemText));
+        }
+    }
+
+    public string BoundSelectedItemText => BoundSelectedItem?.Text ?? "-";
 
     public ObservableCollection<ComboBoxApiRow>? ApiRows
     {
@@ -40,8 +54,28 @@ public class ComboBoxViewModel : ReactiveObject, IRoutableViewModel
 
     public ComboBoxViewModel(IScreen screen)
     {
-        HostScreen    = screen;
-        ComboBoxItems = CreateComboBoxItems();
+        HostScreen                    = screen;
+        ComboBoxItems                 = CreateComboBoxItems();
+        BoundSelectedItem             = ComboBoxItems[1];
+        SetBoundSelectedItemCommand   = ReactiveCommand.Create(SetBoundSelectedItem);
+        ClearBoundSelectedItemCommand = ReactiveCommand.Create(ClearBoundSelectedItem);
+    }
+
+    public ReactiveCommand<Unit, Unit> SetBoundSelectedItemCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> ClearBoundSelectedItemCommand { get; }
+
+    private void SetBoundSelectedItem()
+    {
+        if (ComboBoxItems is { Count: > 2 })
+        {
+            BoundSelectedItem = ComboBoxItems[2];
+        }
+    }
+
+    private void ClearBoundSelectedItem()
+    {
+        BoundSelectedItem = null;
     }
 
     public void EnsureApiRows()
@@ -139,6 +173,12 @@ public class ComboBoxViewModel : ReactiveObject, IRoutableViewModel
             ComboBoxShowCaseLangResourceKind.ApiPropertyItemsSource              => en_US.ApiPropertyItemsSource,
             ComboBoxShowCaseLangResourceKind.ApiPropertySelectedItem             => en_US.ApiPropertySelectedItem,
             ComboBoxShowCaseLangResourceKind.ApiPropertySelectedIndex            => en_US.ApiPropertySelectedIndex,
+            ComboBoxShowCaseLangResourceKind.BindingTitle                        => en_US.BindingTitle,
+            ComboBoxShowCaseLangResourceKind.BindingDescription                  => en_US.BindingDescription,
+            ComboBoxShowCaseLangResourceKind.BindingSelectedItemLabel            => en_US.BindingSelectedItemLabel,
+            ComboBoxShowCaseLangResourceKind.BindingViewModelValueLabel          => en_US.BindingViewModelValueLabel,
+            ComboBoxShowCaseLangResourceKind.BindingSetButton                    => en_US.BindingSetButton,
+            ComboBoxShowCaseLangResourceKind.BindingClearButton                  => en_US.BindingClearButton,
             ComboBoxShowCaseLangResourceKind.ApiPropertyPlaceholderText          => en_US.ApiPropertyPlaceholderText,
             ComboBoxShowCaseLangResourceKind.ApiPropertyIsEditable               => en_US.ApiPropertyIsEditable,
             ComboBoxShowCaseLangResourceKind.ApiPropertyText                     => en_US.ApiPropertyText,

@@ -56,7 +56,7 @@ Public API / ItemsSource / Command / Event
 源码中的状态入口按以下语义维护：
 
 - 内容与数据：`ContentLeftAddOn`、`ContentLeftAddOnTemplate`、`ContentRightAddOn`、`ContentRightAddOnTemplate`、`FilterValue`、`FilterValueSelector`、`LeftAddOnTemplate`、`OptionFontSize`、`RightAddOnTemplate`。
-- 选择与集合：`DropDownDisplayPageSize`、`Filter`、`IsFilterEnabled`。
+- 选择与集合：`SelectedItem`、`SelectedIndex`、`DropDownDisplayPageSize`、`Filter`、`IsFilterEnabled`。
 - 交互与状态：`IsAllowClear`、`IsMotionEnabled`、`ShouldUseOverlayPopup`、`Status`。
 - 视觉与布局：`SizeType`、`StyleVariant`。
 - 其他稳定入口：`LeftAddOn`、`RightAddOn`。
@@ -65,6 +65,7 @@ Public API / ItemsSource / Command / Event
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
+- `IFormItemAware` 的值读写直接映射到 `SelectedItem`：`SetFormValue(value)` 保留对象实例并设置选择，`GetFormValue()` 返回选择对象，`ClearFormValue()` 清空选择。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
 
@@ -98,6 +99,7 @@ ComboBox 的交互事件应从输入源收敛到控件级语义事件：
 - 弹层、窗口或 overlay 类路径必须稳定处理打开、关闭、取消、重复打开和宿主失活。
 - 集合类路径必须稳定处理 container prepare、clear、过滤、分组和虚拟化回收。
 - 输入类路径必须保持 Form、validation、clear、placeholder 和键盘行为一致。
+- Form 值变化通知可以由展示值变化触发，但真实表单值 owner 始终是 `SelectedItem`，不能使用 `SelectionBoxItem` 或 `ToString()` 作为替代状态。
 
 当前没有抽取到控件专属 public 事件；交互语义主要通过继承事件、命令、属性变化和 Gallery 可观察行为体现。
 
