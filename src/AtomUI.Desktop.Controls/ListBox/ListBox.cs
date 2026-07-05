@@ -657,7 +657,7 @@ public class ListBox : AvaloniaListBox,
             {
                 var context = new Dictionary<object, object?>(1);
                 list.SaveVirtualizingContext(element, context);
-                _virtualRestoreContext.Add(listItem.VirtualIndex, context);
+                _virtualRestoreContext[listItem.VirtualIndex] = context;
                 list.ClearContainerValues(element);
             }
 

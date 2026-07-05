@@ -95,6 +95,42 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:TransferShowCaseLangResource ControlledKeysTitle}"
+            IsOccupyEntireRow="True"
+            BadgeText="v6.0.8"
+            Description="{gallery:TransferShowCaseLangResource ControlledKeysDescription}" IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TransferViewModel">
+                    <StackPanel Spacing="20">
+                        <atom:ListTransfer Name="ControlledTransferList"
+                                           SourceTitle="{gallery:TransferShowCaseLangResource P2SourceTitle}"
+                                           TargetTitle="{gallery:TransferShowCaseLangResource P2TargetTitle}"
+                                           ItemsSource="{Binding ControlledTransferItems}"
+                                           TargetKeys="{Binding ControlledTransferTargetKeys}"
+                                           SelectedKeys="{Binding ControlledTransferSelectedKeys}" />
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <atom:Button SizeType="Small"
+                                         Click="AddControlledTransferTargetKey"
+                                         Content="{gallery:TransferShowCaseLangResource P2ContentAddTargetKey}" />
+                            <atom:Button SizeType="Small"
+                                         Click="ClearControlledTransferTargetKeys"
+                                         Content="{gallery:TransferShowCaseLangResource P2ContentClearTargetKeys}" />
+                            <atom:Button SizeType="Small"
+                                         Click="SelectControlledTransferSourceKey"
+                                         Content="{gallery:TransferShowCaseLangResource P2ContentSelectSourceKey}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <atom:TextBlock Text="{gallery:TransferShowCaseLangResource P2TargetKeysCountLabel}" />
+                            <atom:TextBlock Text="{Binding ControlledTransferTargetKeys.Count}" />
+                            <atom:TextBlock Text="{gallery:TransferShowCaseLangResource P2SelectedKeysCountLabel}" />
+                            <atom:TextBlock Text="{Binding ControlledTransferSelectedKeys.Count}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:TransferShowCaseLangResource AdvancedTitle}"
             IsOccupyEntireRow="True"
             Description="{gallery:TransferShowCaseLangResource AdvancedDescription}" IsDeferredContentEnabled="True">

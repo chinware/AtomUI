@@ -2,6 +2,15 @@
 
 本文档记录 Transfer 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-05
+
+- API
+  - Document `TargetKeys` and `SelectedKeys` as default `TwoWay` key-state contracts with collection mutation support.
+- Implementation
+  - Record the single-owner Transfer key flow, attached-only collection subscriptions and in-place writable collection updates.
+- Docs
+  - Add the controlled key binding model to the architecture and implementation documents.
+
 ## 2026-06-26
 
 - Docs

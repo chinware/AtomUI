@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
 using AtomUI.Icons.AntDesign;
@@ -6,6 +8,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
 
@@ -87,10 +90,14 @@ public abstract class AbstractTransfer: TemplatedControl,
         AvaloniaProperty.Register<AbstractTransfer, bool>(nameof(IsOneWay));
     
     public static readonly StyledProperty<IList<EntityKey>?> SelectedKeysProperty =
-        AvaloniaProperty.Register<AbstractTransfer, IList<EntityKey>?>(nameof(SelectedKeys));
+        AvaloniaProperty.Register<AbstractTransfer, IList<EntityKey>?>(
+            nameof(SelectedKeys),
+            defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly StyledProperty<IList<EntityKey>?> TargetKeysProperty =
-        AvaloniaProperty.Register<AbstractTransfer, IList<EntityKey>?>(nameof(TargetKeys));
+        AvaloniaProperty.Register<AbstractTransfer, IList<EntityKey>?>(
+            nameof(TargetKeys),
+            defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly StyledProperty<bool> IsFilterEnabledProperty =
         AvaloniaProperty.Register<AbstractTransfer, bool>(nameof(IsFilterEnabled), false);
@@ -393,6 +400,9 @@ public abstract class AbstractTransfer: TemplatedControl,
     private ITransferView? _sourceView;
     private ITransferView? _targetView;
     private Grid? _rootLayout;
+    private INotifyCollectionChanged? _selectedKeysCollectionChangedSource;
+    private INotifyCollectionChanged? _targetKeysCollectionChangedSource;
+    private bool _isVisualTreeAttached;
     
     static AbstractTransfer()
     {
@@ -440,11 +450,14 @@ public abstract class AbstractTransfer: TemplatedControl,
         if (_targetView != null)
         {
             _targetView.ItemsRemoved -= HandleItemRemoved;
+            _targetView.SelectedKeyChanged -= HandleTransferViewSelectedKeysChanged;
         }
         if (_sourceView != null)
         {
-            _sourceView.ItemsRemoved -= HandleItemRemoved;
+            _sourceView.SelectedKeyChanged -= HandleTransferViewSelectedKeysChanged;
         }
+        _sourceView = null;
+        _targetView = null;
         _sourceViewDecorator = e.NameScope.Find<TransferItemDecorator>("SourceDecoratorView");
         _targetViewDecorator = e.NameScope.Find<TransferItemDecorator>("TargetDecoratorView");
         _rootLayout          = e.NameScope.Find<Grid>("RootLayout");
@@ -457,6 +470,24 @@ public abstract class AbstractTransfer: TemplatedControl,
         {
             _targetViewDecorator.TransferViewCreated += HandleTransferViewCreated;
         }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        _isVisualTreeAttached = true;
+        ConfigureSelectedKeysCollectionChangedSource(SelectedKeys);
+        ConfigureTargetKeysCollectionChangedSource(TargetKeys);
+        ConfigurePanelItemsSourceForFilter(FilterChangeType.Both);
+        ApplySelectedKeysToTransferViews();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        _isVisualTreeAttached = false;
+        ReleaseSelectedKeysCollectionChangedSource();
+        ReleaseTargetKeysCollectionChangedSource();
+        base.OnDetachedFromVisualTree(e);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -474,10 +505,20 @@ public abstract class AbstractTransfer: TemplatedControl,
         else if (change.Property == FilterValueSelectorProperty ||
                  change.Property == FilterProperty ||
                  change.Property == IsFilterEnabledProperty ||
-                 change.Property == ItemsSourceProperty ||
-                 change.Property == TargetKeysProperty)
+                 change.Property == ItemsSourceProperty)
         {
             ConfigurePanelItemsSourceForFilter(FilterChangeType.Both);
+            ApplySelectedKeysToTransferViews();
+        }
+        else if (change.Property == SelectedKeysProperty)
+        {
+            ConfigureSelectedKeysCollectionChangedSource(change.GetNewValue<IList<EntityKey>?>());
+            ApplySelectedKeysToTransferViews();
+        }
+        else if (change.Property == TargetKeysProperty)
+        {
+            ConfigureTargetKeysCollectionChangedSource(change.GetNewValue<IList<EntityKey>?>());
+            HandleTargetKeysChanged();
         }
         else if (change.Property == IsStretchViewProperty)
         {
@@ -497,16 +538,14 @@ public abstract class AbstractTransfer: TemplatedControl,
         if (sourceChanged)
         {
             var sourcePanelSource = BuildSourcePanelSource(targetKeySet);
-            sourcePanelSourceChanged = SourceViewSource != sourcePanelSource;
-            SourceViewSource        = sourcePanelSource;
+            sourcePanelSourceChanged = SetPanelItemsSource(SourceViewSourceProperty, SourceViewSource, sourcePanelSource);
             sourceItemKeys           = BuildItemKeyList(sourcePanelSource);
         }
 
         if (targetChanged)
         {
             var targetPanelSource = BuildTargetPanelSource(targetKeySet);
-            targetPanelSourceChanged = TargetViewSource != targetPanelSource;
-            TargetViewSource         = targetPanelSource;
+            targetPanelSourceChanged = SetPanelItemsSource(TargetViewSourceProperty, TargetViewSource, targetPanelSource);
             targetItemKeys           = BuildItemKeyList(targetPanelSource);
         }
 
@@ -576,39 +615,17 @@ public abstract class AbstractTransfer: TemplatedControl,
 
     protected virtual void TransferItems(TransferDirection transferDirection)
     {
-        var currentSet = new HashSet<EntityKey>(TargetKeys?.Count ?? 0);
-        if (TargetKeys != null)
-        {
-            foreach (var targetKey in TargetKeys)
-            {
-                currentSet.Add(targetKey);
-            }
-        }
         _sourceViewDecorator?.NotifyAboutToTransfer(transferDirection);
         _targetViewDecorator?.NotifyAboutToTransfer(transferDirection);
         if (transferDirection == TransferDirection.ToTarget)
         {
             var keys = _sourceViewDecorator?.SelectedKeys;
-            if (keys != null)
-            {
-                foreach (var key in keys)
-                {
-                    currentSet.Add(key);
-                }
-                SetCurrentValue(TargetKeysProperty, BuildEntityKeyList(currentSet));
-            }
+            AddTargetKeys(keys);
         }
         else
         {
             var keys = _targetViewDecorator?.SelectedKeys;
-            if (keys != null)
-            {
-                foreach (var key in keys)
-                {
-                    currentSet.Remove(key);
-                }
-                SetCurrentValue(TargetKeysProperty, BuildEntityKeyList(currentSet));
-            }
+            RemoveTargetKeys(keys);
         }
         _sourceViewDecorator?.NotifyTransferCompleted(transferDirection);
         _targetViewDecorator?.NotifyTransferCompleted(transferDirection);
@@ -671,34 +688,35 @@ public abstract class AbstractTransfer: TemplatedControl,
     {
         if (args.TransferView.ViewType == TransferViewType.Source)
         {
+            if (_sourceView != null)
+            {
+                _sourceView.SelectedKeyChanged -= HandleTransferViewSelectedKeysChanged;
+            }
             _sourceView = args.TransferView;
+            _sourceView.SelectedKeyChanged += HandleTransferViewSelectedKeysChanged;
         }
         else
         {
+            if (_targetView != null)
+            {
+                _targetView.ItemsRemoved -= HandleItemRemoved;
+                _targetView.SelectedKeyChanged -= HandleTransferViewSelectedKeysChanged;
+            }
             _targetView              =  args.TransferView;
             _targetView.ItemsRemoved += HandleItemRemoved;
+            _targetView.SelectedKeyChanged += HandleTransferViewSelectedKeysChanged;
         }
+
+        ApplySelectedKeysToTransferViews();
     }
 
     private void HandleItemRemoved(object? sender, TransferItemsRemovedEventArgs args)
     {
-        var currentSet = new HashSet<EntityKey>(TargetKeys?.Count ?? 0);
-        if (TargetKeys != null)
-        {
-            foreach (var targetKey in TargetKeys)
-            {
-                currentSet.Add(targetKey);
-            }
-        }
         _sourceViewDecorator?.NotifyAboutToTransfer(TransferDirection.ToSource);
         if (args.Items != null)
         {
-            foreach (var item in args.Items)
-            {
-                currentSet.Remove(item.ItemKey ?? default);
-            }
+            RemoveTargetKeys(BuildItemKeyList(args.Items));
         }
-        SetCurrentValue(TargetKeysProperty, BuildEntityKeyList(currentSet));
         _sourceViewDecorator?.NotifyTransferCompleted(TransferDirection.ToSource);
     }
 
@@ -716,7 +734,7 @@ public abstract class AbstractTransfer: TemplatedControl,
         if (args.Action == TransferSelectAction.RemoveAll)
         {
             _sourceViewDecorator?.NotifyAboutToTransfer(TransferDirection.ToSource);
-            SetCurrentValue(TargetKeysProperty, null);
+            ClearTargetKeys();
             _sourceViewDecorator?.NotifyTransferCompleted(TransferDirection.ToSource);
         }
     }
@@ -757,6 +775,450 @@ public abstract class AbstractTransfer: TemplatedControl,
                 _rootLayout.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
                 _rootLayout.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
                 _rootLayout.ColumnDefinitions.Add(new ColumnDefinition(GridLength.Auto));
+            }
+        }
+    }
+
+    private void ConfigureSelectedKeysCollectionChangedSource(IList<EntityKey>? selectedKeys)
+    {
+        if (!_isVisualTreeAttached)
+        {
+            ReleaseSelectedKeysCollectionChangedSource();
+            return;
+        }
+
+        if (ReferenceEquals(_selectedKeysCollectionChangedSource, selectedKeys))
+        {
+            return;
+        }
+
+        ReleaseSelectedKeysCollectionChangedSource();
+
+        _selectedKeysCollectionChangedSource = selectedKeys as INotifyCollectionChanged;
+        if (_selectedKeysCollectionChangedSource != null)
+        {
+            _selectedKeysCollectionChangedSource.CollectionChanged += HandleSelectedKeysCollectionChanged;
+        }
+    }
+
+    private void ReleaseSelectedKeysCollectionChangedSource()
+    {
+        if (_selectedKeysCollectionChangedSource != null)
+        {
+            _selectedKeysCollectionChangedSource.CollectionChanged -= HandleSelectedKeysCollectionChanged;
+            _selectedKeysCollectionChangedSource = null;
+        }
+    }
+
+    private void HandleSelectedKeysCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (!ReferenceEquals(sender, _selectedKeysCollectionChangedSource))
+        {
+            return;
+        }
+
+        ApplySelectedKeysToTransferViews();
+    }
+
+    private void ConfigureTargetKeysCollectionChangedSource(IList<EntityKey>? targetKeys)
+    {
+        if (!_isVisualTreeAttached)
+        {
+            ReleaseTargetKeysCollectionChangedSource();
+            return;
+        }
+
+        if (ReferenceEquals(_targetKeysCollectionChangedSource, targetKeys))
+        {
+            return;
+        }
+
+        ReleaseTargetKeysCollectionChangedSource();
+
+        _targetKeysCollectionChangedSource = targetKeys as INotifyCollectionChanged;
+        if (_targetKeysCollectionChangedSource != null)
+        {
+            _targetKeysCollectionChangedSource.CollectionChanged += HandleTargetKeysCollectionChanged;
+        }
+    }
+
+    private void ReleaseTargetKeysCollectionChangedSource()
+    {
+        if (_targetKeysCollectionChangedSource != null)
+        {
+            _targetKeysCollectionChangedSource.CollectionChanged -= HandleTargetKeysCollectionChanged;
+            _targetKeysCollectionChangedSource = null;
+        }
+    }
+
+    private void HandleTargetKeysCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (!ReferenceEquals(sender, _targetKeysCollectionChangedSource))
+        {
+            return;
+        }
+
+        HandleTargetKeysChanged();
+    }
+
+    private void HandleTargetKeysChanged()
+    {
+        ConfigurePanelItemsSourceForFilter(FilterChangeType.Both);
+        ApplySelectedKeysToTransferViews();
+    }
+
+    private void HandleTransferViewSelectedKeysChanged(object? sender, EventArgs args)
+    {
+        UpdateSelectedKeysFromTransferViews();
+    }
+
+    private void ApplySelectedKeysToTransferViews()
+    {
+        var sourceSelectedKeys = new List<EntityKey>();
+        var targetSelectedKeys = new List<EntityKey>();
+        var targetKeySet       = BuildTargetKeySet(TargetKeys);
+        if (SelectedKeys != null)
+        {
+            foreach (var key in SelectedKeys)
+            {
+                if (targetKeySet?.Contains(key) == true)
+                {
+                    targetSelectedKeys.Add(key);
+                }
+                else
+                {
+                    sourceSelectedKeys.Add(key);
+                }
+            }
+        }
+
+        SetTransferViewSelectedKeys(_sourceView, sourceSelectedKeys);
+        SetTransferViewSelectedKeys(_targetView, targetSelectedKeys);
+    }
+
+    private static void SetTransferViewSelectedKeys(ITransferView? transferView, IList<EntityKey> selectedKeys)
+    {
+        if (transferView == null)
+        {
+            return;
+        }
+
+        if (AreKeyCollectionsEquivalent(transferView.SelectedKeys, selectedKeys))
+        {
+            return;
+        }
+
+        transferView.SelectedKeys = selectedKeys.Count == 0 ? null : BuildEntityKeyList(selectedKeys);
+    }
+
+    private void UpdateSelectedKeysFromTransferViews()
+    {
+        var selectedKeys = new List<EntityKey>();
+        AddDistinctKeys(selectedKeys, _sourceView?.SelectedKeys);
+        AddDistinctKeys(selectedKeys, _targetView?.SelectedKeys);
+        SetOrUpdateSelectedKeys(selectedKeys);
+    }
+
+    private void SetOrUpdateSelectedKeys(IList<EntityKey> selectedKeys)
+    {
+        if (AreKeyCollectionsEquivalent(SelectedKeys, selectedKeys))
+        {
+            return;
+        }
+
+        if (TryUpdateExistingKeyList(SelectedKeys, selectedKeys, out var changed))
+        {
+            if (changed && SelectedKeys is not INotifyCollectionChanged)
+            {
+                ApplySelectedKeysToTransferViews();
+            }
+            return;
+        }
+
+        SetCurrentValue(SelectedKeysProperty, selectedKeys.Count == 0 ? null : BuildEntityKeyList(selectedKeys));
+    }
+
+    private void AddTargetKeys(ICollection<EntityKey>? keys)
+    {
+        if (keys == null || keys.Count == 0)
+        {
+            return;
+        }
+
+        if (CanUpdateExistingKeyList(TargetKeys))
+        {
+            var changed = false;
+            foreach (var key in keys)
+            {
+                if (!TargetKeys!.Contains(key))
+                {
+                    TargetKeys.Add(key);
+                    changed = true;
+                }
+            }
+
+            if (changed && TargetKeys is not INotifyCollectionChanged)
+            {
+                HandleTargetKeysChanged();
+            }
+            return;
+        }
+
+        var currentSet = BuildMutableTargetKeySet();
+        foreach (var key in keys)
+        {
+            currentSet.Add(key);
+        }
+        SetCurrentValue(TargetKeysProperty, BuildEntityKeyList(currentSet));
+    }
+
+    private void RemoveTargetKeys(ICollection<EntityKey>? keys)
+    {
+        if (keys == null || keys.Count == 0)
+        {
+            return;
+        }
+
+        if (CanUpdateExistingKeyList(TargetKeys))
+        {
+            var changed = false;
+            foreach (var key in keys)
+            {
+                changed |= TargetKeys!.Remove(key);
+            }
+
+            if (changed && TargetKeys is not INotifyCollectionChanged)
+            {
+                HandleTargetKeysChanged();
+            }
+            return;
+        }
+
+        var currentSet = BuildMutableTargetKeySet();
+        foreach (var key in keys)
+        {
+            currentSet.Remove(key);
+        }
+        SetCurrentValue(TargetKeysProperty, BuildEntityKeyList(currentSet));
+    }
+
+    private void ClearTargetKeys()
+    {
+        if (TargetKeys == null || TargetKeys.Count == 0)
+        {
+            return;
+        }
+
+        if (CanUpdateExistingKeyList(TargetKeys))
+        {
+            TargetKeys.Clear();
+            if (TargetKeys is not INotifyCollectionChanged)
+            {
+                HandleTargetKeysChanged();
+            }
+            return;
+        }
+
+        SetCurrentValue(TargetKeysProperty, null);
+    }
+
+    private HashSet<EntityKey> BuildMutableTargetKeySet()
+    {
+        var currentSet = new HashSet<EntityKey>(TargetKeys?.Count ?? 0);
+        if (TargetKeys != null)
+        {
+            foreach (var targetKey in TargetKeys)
+            {
+                currentSet.Add(targetKey);
+            }
+        }
+
+        return currentSet;
+    }
+
+    private static bool TryUpdateExistingKeyList(
+        IList<EntityKey>? currentKeys,
+        ICollection<EntityKey> nextKeys,
+        out bool changed)
+    {
+        changed = false;
+        if (currentKeys == null || !CanUpdateExistingKeyList(currentKeys))
+        {
+            return false;
+        }
+
+        var nextKeySet = new HashSet<EntityKey>(nextKeys);
+        for (var i = currentKeys.Count - 1; i >= 0; i--)
+        {
+            if (!nextKeySet.Contains(currentKeys[i]))
+            {
+                currentKeys.RemoveAt(i);
+                changed = true;
+            }
+        }
+
+        var currentKeySet = new HashSet<EntityKey>(currentKeys);
+        foreach (var key in nextKeys)
+        {
+            if (currentKeySet.Add(key))
+            {
+                currentKeys.Add(key);
+                changed = true;
+            }
+        }
+        return true;
+    }
+
+    private static bool CanUpdateExistingKeyList(IList<EntityKey>? keys)
+    {
+        return keys != null &&
+               !keys.IsReadOnly &&
+               keys is not System.Collections.IList { IsFixedSize: true };
+    }
+
+    private static bool AreKeyCollectionsEquivalent(ICollection<EntityKey>? currentKeys, ICollection<EntityKey>? nextKeys)
+    {
+        if (currentKeys == null || currentKeys.Count == 0)
+        {
+            return nextKeys == null || nextKeys.Count == 0;
+        }
+
+        if (nextKeys == null || currentKeys.Count != nextKeys.Count)
+        {
+            return false;
+        }
+
+        var currentKeySet = new HashSet<EntityKey>(currentKeys.Count);
+        foreach (var key in currentKeys)
+        {
+            currentKeySet.Add(key);
+        }
+
+        foreach (var key in nextKeys)
+        {
+            if (!currentKeySet.Contains(key))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private bool SetPanelItemsSource(
+        StyledProperty<IEnumerable<IItemKey>?> property,
+        IEnumerable<IItemKey>? currentSource,
+        IEnumerable<IItemKey>? nextSource)
+    {
+        if (AreItemSequencesEquivalent(currentSource, nextSource))
+        {
+            return false;
+        }
+
+        if (nextSource == null)
+        {
+            SetValue(property, null);
+            return true;
+        }
+
+        if (currentSource is ObservableCollection<IItemKey> currentItems)
+        {
+            SynchronizePanelItems(currentItems, nextSource);
+            return true;
+        }
+
+        SetValue(property, new ObservableCollection<IItemKey>(nextSource));
+        return true;
+    }
+
+    private static void SynchronizePanelItems(
+        ObservableCollection<IItemKey> currentItems,
+        IEnumerable<IItemKey> nextItems)
+    {
+        var targetIndex = 0;
+        foreach (var nextItem in nextItems)
+        {
+            var currentIndex = IndexOfPanelItem(currentItems, nextItem, targetIndex);
+            if (currentIndex == targetIndex)
+            {
+                targetIndex++;
+                continue;
+            }
+
+            if (currentIndex > targetIndex)
+            {
+                currentItems.Move(currentIndex, targetIndex);
+            }
+            else
+            {
+                currentItems.Insert(targetIndex, nextItem);
+            }
+
+            targetIndex++;
+        }
+
+        while (currentItems.Count > targetIndex)
+        {
+            currentItems.RemoveAt(currentItems.Count - 1);
+        }
+    }
+
+    private static int IndexOfPanelItem(IList<IItemKey> items, IItemKey item, int startIndex)
+    {
+        for (var i = startIndex; i < items.Count; i++)
+        {
+            if (EqualityComparer<IItemKey>.Default.Equals(items[i], item))
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private static bool AreItemSequencesEquivalent(IEnumerable<IItemKey>? currentItems, IEnumerable<IItemKey>? nextItems)
+    {
+        if (ReferenceEquals(currentItems, nextItems))
+        {
+            return true;
+        }
+
+        if (currentItems == null || nextItems == null)
+        {
+            return currentItems == null && nextItems == null;
+        }
+
+        using var currentEnumerator = currentItems.GetEnumerator();
+        using var nextEnumerator    = nextItems.GetEnumerator();
+        while (true)
+        {
+            var currentHasValue = currentEnumerator.MoveNext();
+            var nextHasValue    = nextEnumerator.MoveNext();
+            if (!currentHasValue || !nextHasValue)
+            {
+                return currentHasValue == nextHasValue;
+            }
+
+            if (!EqualityComparer<IItemKey>.Default.Equals(currentEnumerator.Current, nextEnumerator.Current))
+            {
+                return false;
+            }
+        }
+    }
+
+    private static void AddDistinctKeys(ICollection<EntityKey> target, ICollection<EntityKey>? keys)
+    {
+        if (keys == null || keys.Count == 0)
+        {
+            return;
+        }
+
+        var targetKeySet = new HashSet<EntityKey>(target);
+        foreach (var key in keys)
+        {
+            if (targetKeySet.Add(key))
+            {
+                target.Add(key);
             }
         }
     }

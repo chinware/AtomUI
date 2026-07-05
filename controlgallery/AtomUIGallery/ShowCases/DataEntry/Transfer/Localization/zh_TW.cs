@@ -23,7 +23,8 @@ internal partial class zh_TW
     public const string ApiColumnType = "類型";
     public const string ApiColumnDefault = "默認值";
     public const string ApiPropertyItemsSource = "穿梭列表展示的數據集合。";
-    public const string ApiPropertyTargetKeys = "當前位於目標列表中的條目 key。";
+    public const string ApiPropertyTargetKeys = "當前位於目標列表中的條目 key。預設雙向綁定，並響應集合原地變更。";
+    public const string ApiPropertySelectedKeys = "當前在源列表和目標列表中被選中的條目 key。預設雙向綁定，並響應集合原地變更。";
     public const string ApiPropertySourceTitle = "源列表上方顯示的標題。";
     public const string ApiPropertyTargetTitle = "目標列表上方顯示的標題。";
     public const string ApiPropertyIsOneWay = "僅允許條目從源列表移動到目標列表。";
@@ -53,6 +54,8 @@ internal partial class zh_TW
     public const string OneWayDescription = "使用 oneWay 讓 Transfer 呈現單向樣式。";
     public const string SearchTitle = "搜索";
     public const string SearchDescription = "帶搜索框的 Transfer。";
+    public const string ControlledKeysTitle = "受控 key";
+    public const string ControlledKeysDescription = "將 TargetKeys 和 SelectedKeys 綁定到 ObservableCollection。外部集合變更和 Transfer 交互會保持同步。";
     public const string AdvancedTitle = "高級用法";
     public const string AdvancedDescription = "Transfer 的高級用法。可以自定義穿梭按鈕標籤、列寬和列高，以及頁腳中展示的內容。";
     public const string PaginationTitle = "分頁";
@@ -69,6 +72,11 @@ internal partial class zh_TW
     public const string P2HeaderDescription = "描述";
     public const string P2ContentLeftButtonReload = "重新加載左側";
     public const string P2ContentRightButtonReload = "重新加載右側";
+    public const string P2ContentAddTargetKey = "添加 key 3 到目標";
+    public const string P2ContentClearTargetKeys = "清空目標 key";
+    public const string P2ContentSelectSourceKey = "選中 key 4";
+    public const string P2TargetKeysCountLabel = "目標 key：";
+    public const string P2SelectedKeysCountLabel = "選中 key：";
 
     public const string P2OnContentDisable = "禁用";
 
