@@ -41,11 +41,17 @@ public partial class CascaderView
             return;
         }
 
+        var oldSelectedOptionSet = BuildSelectedOptionSet(oldSelectedOptions);
+        var newSelectedOptionSet = BuildSelectedOptionSet(newSelectedOptions);
+
         if (oldSelectedOptions != null)
         {
             foreach (var oldItem in oldSelectedOptions)
             {
-                UnCheckedSubTree(oldItem);
+                if (!newSelectedOptionSet.Contains(oldItem))
+                {
+                    DoUnCheckedSubTree(oldItem);
+                }
             }
         }
 
@@ -53,7 +59,10 @@ public partial class CascaderView
         {
             foreach (var newItem in newSelectedOptions)
             {
-                CheckedSubTree(newItem);
+                if (!oldSelectedOptionSet.Contains(newItem))
+                {
+                    DoCheckedSubTree(newItem);
+                }
             }
         }
     }
@@ -370,6 +379,21 @@ public partial class CascaderView
         foreach (var option in options)
         {
             selectedOptions.Add(option);
+        }
+        return selectedOptions;
+    }
+
+    private static HashSet<ICascaderOption> BuildSelectedOptionSet(ICollection<ICascaderOption>? options)
+    {
+        var selectedOptions = options == null
+            ? new HashSet<ICascaderOption>()
+            : new HashSet<ICascaderOption>(options.Count);
+        if (options != null)
+        {
+            foreach (var option in options)
+            {
+                selectedOptions.Add(option);
+            }
         }
         return selectedOptions;
     }

@@ -6,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Primitives.PopupPositioning;
 using Avalonia.Controls.Templates;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -76,6 +77,15 @@ public class ComboBox : AvaloniaComboBox,
 
     public static readonly StyledProperty<bool> IsFilterEnabledProperty =
         AvaloniaProperty.Register<ComboBox, bool>(nameof(IsFilterEnabled));
+
+    public static readonly StyledProperty<bool> IsShowOverflowTipProperty =
+        AvaloniaProperty.Register<ComboBox, bool>(nameof(IsShowOverflowTip), true);
+
+    public static readonly StyledProperty<int> OverflowTipDelayProperty =
+        AvaloniaProperty.Register<ComboBox, int>(nameof(OverflowTipDelay), 1200);
+
+    public static readonly StyledProperty<PlacementMode> OverflowTipPlacementProperty =
+        AvaloniaProperty.Register<ComboBox, PlacementMode>(nameof(OverflowTipPlacement), PlacementMode.TopEdgeAlignedLeft);
 
     public static readonly StyledProperty<IValueFilter?> FilterProperty =
         AvaloniaProperty.Register<ComboBox, IValueFilter?>(nameof(Filter));
@@ -187,6 +197,24 @@ public class ComboBox : AvaloniaComboBox,
     {
         get => GetValue(IsFilterEnabledProperty);
         set => SetValue(IsFilterEnabledProperty, value);
+    }
+
+    public bool IsShowOverflowTip
+    {
+        get => GetValue(IsShowOverflowTipProperty);
+        set => SetValue(IsShowOverflowTipProperty, value);
+    }
+
+    public int OverflowTipDelay
+    {
+        get => GetValue(OverflowTipDelayProperty);
+        set => SetValue(OverflowTipDelayProperty, value);
+    }
+
+    public PlacementMode OverflowTipPlacement
+    {
+        get => GetValue(OverflowTipPlacementProperty);
+        set => SetValue(OverflowTipPlacementProperty, value);
     }
 
     public IValueFilter? Filter

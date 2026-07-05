@@ -172,6 +172,7 @@ input display + Form value
 
 - `IsMultiple=true` 时使用 `SelectedOptions` 作为真实值，并让内部 `CascaderView` 进入 checkable 模式。
 - `SelectedOptions` 保留真实勾选集合，`ShowCheckedStrategy` 只计算 `EffectiveSelectedOptions`，用于 tag 展示。
+- `SelectedOptions` 默认 `TwoWay` binding，支持外部集合替换和 `INotifyCollectionChanged` 原地变化；集合变化会同步刷新 tag、计数、空状态、Form value 和内部 `CascaderView` 勾选状态。
 - `MaxCount` 达到上限时，未选项通过 `IsMaxSelectReached` 进入受限状态；已选项仍可取消。
 - 关闭单个 tag 时，目标节点及其子孙会从 `SelectedOptions` 中移除。
 
@@ -192,6 +193,7 @@ Form：
 
 - 单选 Form value 为 `SelectedOption`。
 - 多选 Form value 为 `SelectedOptions`。
+- Form 校验错误写入同一份 Avalonia `DataValidationErrors`，不维护独立错误状态。
 - Form clear 会按当前 `IsMultiple` 清空对应选择状态。
 
 ## Theme and Token Boundaries

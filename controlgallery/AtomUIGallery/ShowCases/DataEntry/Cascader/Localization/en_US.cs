@@ -33,6 +33,9 @@ internal partial class en_US
     public const string ApiPropertyIsAllowSelectParent = "Allows selecting parent options before reaching a leaf.";
     public const string ApiPropertyDataLoader = "Loads child options on demand for lazy option trees.";
     public const string ApiPropertyFilter = "Filters options when search is enabled.";
+    public const string ApiPropertyIsShowOverflowTip = "Shows a tooltip with the full path or tag text when the selected result overflows.";
+    public const string ApiPropertyOverflowTipDelay = "Delay in milliseconds before the overflow tooltip opens.";
+    public const string ApiPropertyOverflowTipPlacement = "Placement of the overflow tooltip relative to the clipped selected path or tag.";
     public const string ApiPropertyStyleVariant = "Visual input variant.";
     public const string ApiPropertyStatus = "Validation status style.";
     public const string ApiPropertyPlacement = "Popup placement relative to the selector.";
@@ -69,6 +72,13 @@ internal partial class en_US
     public const string ChangeOnSelectDescription = "Allows the selection of only parent options.";
     public const string MultipleTitle = "Multiple";
     public const string MultipleDescription = "Select multiple options. Disable the checkbox by adding the disableCheckbox property and selecting a specific item. The style of the disable can be modified by the className.";
+    public const string SelectionBindingTitle = "SelectedOption / SelectedOptions binding";
+    public const string SelectionBindingDescription = "Bind SelectedOption and SelectedOptions to view-model values, then click options or action buttons to watch both sides stay synchronized.";
+    public const string SelectionBindingValueTitle = "Bound value";
+    public const string SelectionBindingSelectFirst = "Select West Lake";
+    public const string SelectionBindingSelectSecond = "Select Lingyin shi";
+    public const string SelectionBindingSelectBoth = "Select both";
+    public const string SelectionBindingClear = "Clear";
     public const string ShowCheckedStrategyTitle = "ShowCheckedStrategy";
     public const string ShowCheckedStrategyDescription = "Shows a selected item in a box using showCheckedStrategy.";
     public const string SearchTitle = "Search";
@@ -102,6 +112,8 @@ internal partial class en_US
     public const string P2PlaceholderSizeTypeCustom = "SizeType: Custom";
     public const string P2TitleShowcheckedstrategyAll = "ShowCheckedStrategy=All";
     public const string P2TitleShowcheckedstrategyShowparent = "ShowCheckedStrategy=ShowParent";
+    public const string P2TextSelectedOptionBinding = "SelectedOption";
+    public const string P2TextSelectedOptionsBinding = "SelectedOptions";
     public const string P2HeaderZhejiang = "Zhejiang";
     public const string P2HeaderHangzhou = "Hangzhou";
     public const string P2HeaderWestLake = "West Lake";

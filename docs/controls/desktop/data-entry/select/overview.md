@@ -102,6 +102,9 @@ Select 的公共 API 分布在 `AbstractSelect` 和 `Select` 两层。`AbstractS
 | `LeftAddOn` / `RightAddOn` | `object?` | 外部左右 AddOn。 |
 | `ContentLeftAddOn` / `ContentRightAddOn` | `object?` | 内部左右内容。 |
 | `IsMotionEnabled` | `bool` | 输入壳体、handle、候选列表和 popup 动效开关。 |
+| `IsShowOverflowTip` | `bool` | 选中结果文本或多选 tag 视觉溢出时是否显示完整内容 tooltip，默认 `true`。 |
+| `OverflowTipDelay` | `int` | 溢出 tooltip 打开前的延迟时间，单位毫秒，默认 `1200`。 |
+| `OverflowTipPlacement` | `PlacementMode` | 溢出 tooltip 相对选中结果文本或多选 tag 的位置，默认 `TopEdgeAlignedLeft`。 |
 
 多选标签 API：
 
@@ -200,6 +203,8 @@ Select 的默认视觉由 Select 专属主题、AddOnDecoratedBox、ListView 和
 | `SelectHandleTheme.axaml` | 展开、loading、清除、过滤指示和 Form feedback 图标。 |
 | `PopupHostToken` | popup 阴影、圆角和 anchor margin。 |
 | `SelectToken` | 多选标签、候选项、popup padding 和输入 padding。 |
+
+选中结果的完整内容提示复用 `OverflowTip` attached behavior。模板只在单选文本和多选 tag 上声明 `IsShowOverflowTip` / `OverflowTipDelay` / `OverflowTipPlacement`，实际 tooltip 只在文本视觉宽度不足时写入 `ToolTip.Tip`，且不会覆盖用户手动设置的 tooltip。
 
 候选弹层内容采用懒创建模型。`PART_Popup` 属于模板稳定 part；`PopupFrame` 和 `PART_CandidateList` 在打开前由 C# 创建并设置 `TemplatedParent`，关闭或重新套用模板时释放引用和事件订阅。
 

@@ -57,7 +57,12 @@
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
                                 Content="{TemplateBinding SelectionBoxItem}"
-                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" />
+                                ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                atom:OverflowTip.IsEnabled="{TemplateBinding IsShowOverflowTip}"
+                                atom:OverflowTip.Text="{TemplateBinding SelectionBoxItem}"
+                                atom:OverflowTip.ShowDelay="{TemplateBinding OverflowTipDelay}"
+                                atom:OverflowTip.Placement="{TemplateBinding OverflowTipPlacement}"
+                                atom:OverflowTip.PlacementTarget="{Binding $parent[atom:AddOnDecoratedBox]}" />
                             <TextBox
                                 Name="PART_EditableTextBox"
                                 HorizontalAlignment="Stretch"

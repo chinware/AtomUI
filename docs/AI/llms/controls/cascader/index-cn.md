@@ -59,8 +59,8 @@ Cascader 通过 `OptionsSource` 和 `Options` 接收 `ICascaderOption` 数据。
 | `OptionsSource` | `IEnumerable<ICascaderOption>?` | 外部选项集合。变化时同步到内部 `Options`。 |
 | `Options` | `ItemCollection` | XAML 内容子项入口，也是 CascaderView 实际数据入口。 |
 | `OptionTemplate` | `IDataTemplate?` | 选项显示模板，默认显示 `ICascaderOption.Header` 并继续以 option 为 DataContext。 |
-| `SelectedOption` | `ICascaderOption?` | 单选当前选项。 |
-| `SelectedOptions` | `IList<ICascaderOption>?` | 多选当前选项集合。 |
+| `SelectedOption` | `ICascaderOption?` | 单选当前选项，默认 `TwoWay` binding，并启用 Avalonia data validation。 |
+| `SelectedOptions` | `IList<ICascaderOption>?` | 多选当前选项集合，默认 `TwoWay` binding，并启用 Avalonia data validation。 |
 | `DefaultSelectOptionPath` | `TreeNodePath?` | 单选默认路径。路径段按 `ItemKey` 优先、`Value` 兜底匹配。 |
 | `SelectedOptionPath` | internal `string?` | 单选显示路径文本，由已选节点 header 路径组成。 |
 | `Clear()` | method | 清空单选、多选和显示路径。 |
@@ -263,6 +263,7 @@ input display + Form value
 
 - `IsMultiple=true` 时使用 `SelectedOptions` 作为真实值，并让内部 `CascaderView` 进入 checkable 模式。
 - `SelectedOptions` 保留真实勾选集合，`ShowCheckedStrategy` 只计算 `EffectiveSelectedOptions`，用于 tag 展示。
+- `SelectedOptions` 支持外部集合替换，也支持 `INotifyCollectionChanged` 集合原地变化，并同步刷新 tag、计数、空状态、Form value 和内部 `CascaderView` 勾选状态。
 - `MaxCount` 达到上限时，未选项通过 `IsMaxSelectReached` 进入受限状态；已选项仍可取消。
 - 关闭单个 tag 时，目标节点及其子孙会从 `SelectedOptions` 中移除。
 
@@ -283,6 +284,7 @@ Form：
 
 - 单选 Form value 为 `SelectedOption`。
 - 多选 Form value 为 `SelectedOptions`。
+- Form 校验错误写入同一份 Avalonia `DataValidationErrors`，不维护独立错误状态。
 - Form clear 会按当前 `IsMultiple` 清空对应选择状态。
 
 ## 主题与 Design Token

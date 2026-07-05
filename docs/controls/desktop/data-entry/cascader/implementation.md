@@ -23,6 +23,7 @@ Cascader 的实现由外层 `Cascader` 和内部 `CascaderView` 组成。`Cascad
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderAddOnDecoratedBox.cs`：Cascader 输入壳体扩展。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderViewPanel.cs`：弹层 frame 布局与边框测量。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderViewFilterList.cs`、`CascaderViewFilterListItemData.cs`：过滤结果列表和路径数据。
+- `src/AtomUI.Desktop.Controls/Tooltip/OverflowTip.cs`：共享溢出 tooltip attached behavior，供单选路径和多选 tag 复用。
 - `src/AtomUI.Desktop.Controls/Cascader/Themes/*.axaml`：Cascader、CascaderView、CascaderViewItem、level list 和 filter list 主题。
 - `src/AtomUI.Desktop.Controls/Cascader/CascaderToken.cs`：Cascader 专属 Token。
 
@@ -39,6 +40,8 @@ Cascader 的实现由外层 `Cascader` 和内部 `CascaderView` 组成。`Cascad
 `CascaderOption` 是默认轻量数据模型。它维护 children 与 parent 的基本关系，不承载 Avalonia 属性系统和动态资源。
 
 `BindableCascaderOption` 是绑定型数据模型。它继承 `AvaloniaObject`，通过 DirectProperty 承载选项属性，并使用 `[GenerateScopedResourceHost]` 生成 scoped resource host 能力。
+
+`OverflowTip` 是显示增强边界，不拥有 Cascader 选择状态。`CascaderTheme.axaml` 将单选 `SelectedOptionPath`、过滤输入 placeholder 路径、多选 `SelectTagAwareTextBox` 的 tag 文本以及 `OverflowTipDelay` / `OverflowTipPlacement` 接入该 behavior；单选路径和过滤输入以外层 `CascaderAddOnDecoratedBox` 作为 `PlacementTarget`，避免 tooltip 左边按内部文本 padding 对齐；它只托管自己写入的 `ToolTip.Tip`，避免与业务自定义 tooltip 形成双 owner。
 
 ## 4. 状态与数据流
 
@@ -59,6 +62,10 @@ PART_RootLevelList.ItemsSource
 ```
 
 `OptionsSource` 变化时，外层 Cascader 会先捕获当前选择的路径 identity，再替换内部 `_options`。单选模式下按旧路径尝试重映射 `SelectedOption`，失败时应用 `DefaultSelectOptionPath`。多选模式下按每个已选项路径重映射 `SelectedOptions`。
+
+`SelectedOption` 和 `SelectedOptions` 是用户受控值，属性注册默认 `TwoWay` binding，并启用 Avalonia data validation。外层 `Cascader` 是 Form value owner；内部 `CascaderView` 只承载 popup 里的展开、选中和勾选视觉状态，不反向拥有外层值。
+
+`SelectedOptions` 为集合值时，外层会在控件进入视觉树后订阅 `INotifyCollectionChanged`，离开视觉树或集合替换时释放订阅。集合原地 `Add`、`Remove`、`Replace`、`Move`、`Reset` 会刷新 `EffectiveSelectedOptions` 展示快照、`SelectedCount`、`IsSelectionEmpty`、Form value 通知和内部 `CascaderView.SelectedOptions`。
 
 ### 4.2 展开流
 
@@ -175,6 +182,7 @@ Pointer 路径：
 
 - `IsMultiple=true` 时，`CascaderViewItem.CheckedEvent` 触发 subtree check / uncheck。
 - `SelectedOptionsChanged` 从内部 view 同步到外层 Cascader。
+- 外部 `SelectedOptions` 替换或原地集合变化同步到内部 view 时按差量更新，只勾选新增项、取消移除项，避免先清空再重选造成状态闪烁。
 - tag close 通过 `SelectTag.ClosedEvent` 移除目标 option 及其子孙。
 
 过滤路径：
@@ -218,11 +226,11 @@ Pointer 路径：
 
 `BuildEffectiveSelectedOptions()` 根据 `ShowCheckedStrategy` 从真实 `SelectedOptions` 计算展示集合：
 
-- `All` 直接使用真实集合。
+- `All` 使用真实集合的展示快照。
 - `ShowParent` 保留完整覆盖子节点的父级，隐藏其子孙。
 - `ShowChild` 只保留没有 children 的节点。
 
-该计算只影响 tag 展示，不改写真实选中集合。
+该计算只影响 tag 展示，不改写真实选中集合。展示快照会在真实集合替换或原地变化时重建，保证 tag 区域不会因为集合实例未变化而保留旧内容。
 
 ### 7.7 过滤路径缓存
 

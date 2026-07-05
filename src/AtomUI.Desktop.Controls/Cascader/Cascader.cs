@@ -10,6 +10,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
@@ -41,13 +42,17 @@ public class Cascader : AbstractSelect
         AvaloniaProperty.RegisterDirect<Cascader, ICascaderOption?>(
             nameof(SelectedOption),
             o => o.SelectedOption,
-            (o, v) => o.SelectedOption = v);
+            (o, v) => o.SelectedOption = v,
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
     
     public static readonly DirectProperty<Cascader, IList<ICascaderOption>?> SelectedOptionsProperty =
         AvaloniaProperty.RegisterDirect<Cascader, IList<ICascaderOption>?>(
             nameof(SelectedOptions),
             o => o.SelectedOptions,
-            (o, v) => o.SelectedOptions = v);
+            (o, v) => o.SelectedOptions = v,
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
     
     public static readonly StyledProperty<IconTemplate?> ExpandIconProperty =
         CascaderView.ExpandIconProperty.AddOwner<Cascader>();
@@ -238,6 +243,7 @@ public class Cascader : AbstractSelect
     private readonly ItemCollection _options = new();
     private SelectFilterTextBox? _singleFilterInput;
     private CascaderView? _cascaderView;
+    private INotifyCollectionChanged? _selectedOptionsCollectionChangedSource;
     private bool _needSkipSyncSelectedOptions;
     private bool _isDefaultSelectOptionPathApplied;
 
@@ -250,9 +256,9 @@ public class Cascader : AbstractSelect
         IsMultipleProperty.Changed.AddClassHandler<Cascader>((cascader, e) => cascader.HandleIsCheckableChanged());
         OptionsSourceProperty.Changed.AddClassHandler<Cascader>((cascader, args) => cascader.HandleCascaderSourceChanged(args));
         SelectedOptionProperty.Changed.AddClassHandler<Cascader>((cascader, args) =>
-            cascader.NotifyFormValueChanged(args.NewValue));
+            cascader.HandleSelectedOptionChanged(args));
         SelectedOptionsProperty.Changed.AddClassHandler<Cascader>((cascader, args) =>
-            cascader.NotifyFormValueChanged(args.NewValue));
+            cascader.HandleSelectedOptionsChanged(args));
     }
     
     public Cascader()
@@ -316,6 +322,19 @@ public class Cascader : AbstractSelect
         {
             SetCurrentValue(FilterProperty, ValueFilterFactory.BuildFilter(ValueFilterMode.Contains));
         }
+    }
+
+    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        base.OnAttachedToVisualTree(e);
+        ConfigureSelectedOptionsCollectionChangedSource(SelectedOptions);
+        ConfigureSelectedOptionsValueState();
+    }
+
+    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
+    {
+        ReleaseSelectedOptionsCollectionChangedSource();
+        base.OnDetachedFromVisualTree(e);
     }
     
     private void HandleClearRequest()
@@ -493,6 +512,7 @@ public class Cascader : AbstractSelect
             _cascaderView.ItemClicked            += HandleCascaderViewItemClicked;
             _cascaderView.OptionSelected         += HandleCascaderViewItemSelected;
             _cascaderView.OptionsSource          =  BuildOptionsList(Options);
+            SyncSelectedOptionsToCascaderView();
         }
 
         ConfigurePlaceholderVisible();
@@ -562,6 +582,76 @@ public class Cascader : AbstractSelect
                 _needSkipSyncSelectedOptions = false;
             }
         }
+    }
+
+    private void HandleSelectedOptionChanged(AvaloniaPropertyChangedEventArgs args)
+    {
+        NotifyFormValueChanged(args.NewValue);
+    }
+
+    private void HandleSelectedOptionsChanged(AvaloniaPropertyChangedEventArgs args)
+    {
+        ConfigureSelectedOptionsCollectionChangedSource(args.GetNewValue<IList<ICascaderOption>?>());
+        NotifyFormValueChanged(args.NewValue);
+    }
+
+    private void ConfigureSelectedOptionsCollectionChangedSource(IList<ICascaderOption>? selectedOptions)
+    {
+        if (!this.IsAttachedToVisualTree())
+        {
+            ReleaseSelectedOptionsCollectionChangedSource();
+            return;
+        }
+
+        if (ReferenceEquals(_selectedOptionsCollectionChangedSource, selectedOptions))
+        {
+            return;
+        }
+
+        ReleaseSelectedOptionsCollectionChangedSource();
+
+        _selectedOptionsCollectionChangedSource = selectedOptions as INotifyCollectionChanged;
+        if (_selectedOptionsCollectionChangedSource != null)
+        {
+            _selectedOptionsCollectionChangedSource.CollectionChanged += HandleSelectedOptionsCollectionChanged;
+        }
+    }
+
+    private void ReleaseSelectedOptionsCollectionChangedSource()
+    {
+        if (_selectedOptionsCollectionChangedSource != null)
+        {
+            _selectedOptionsCollectionChangedSource.CollectionChanged -= HandleSelectedOptionsCollectionChanged;
+            _selectedOptionsCollectionChangedSource = null;
+        }
+    }
+
+    private void HandleSelectedOptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs args)
+    {
+        if (!ReferenceEquals(sender, _selectedOptionsCollectionChangedSource))
+        {
+            return;
+        }
+
+        NotifyFormValueChanged(SelectedOptions);
+        ConfigureSelectedOptionsValueState();
+    }
+
+    private void ConfigureSelectedOptionsValueState()
+    {
+        ConfigurePlaceholderVisible();
+        ConfigureSelectionIsEmpty();
+        if (IsMultiple)
+        {
+            SetCurrentValue(SelectedCountProperty, SelectedOptions?.Count ?? 0);
+        }
+        else
+        {
+            SetCurrentValue(SelectedCountProperty, SelectedOption != null ? 1 : 0);
+        }
+        SyncSelectedOptionsToCascaderView();
+        BuildEffectiveSelectedOptions();
+        ConfigureMaxSelectReached();
     }
 
     private void ConfigureSelectionIsEmpty()
@@ -841,7 +931,7 @@ public class Cascader : AbstractSelect
         {
             if (SelectedOptions.Count == 0 || ShowCheckedStrategy == TreeSelectCheckedStrategy.All)
             {
-                EffectiveSelectedOptions = SelectedOptions;
+                EffectiveSelectedOptions = BuildOptionList(SelectedOptions);
             }
             else
             {

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
@@ -51,6 +52,52 @@ public class CascaderViewModel : ReactiveObject, IRoutableViewModel
         get => _defaultSelectOptionPath;
         set => this.RaiseAndSetIfChanged(ref _defaultSelectOptionPath, value);
     }
+
+    private ICascaderOption? _boundSelectedCascaderOption;
+
+    public ICascaderOption? BoundSelectedCascaderOption
+    {
+        get => _boundSelectedCascaderOption;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _boundSelectedCascaderOption, value);
+            this.RaisePropertyChanged(nameof(BoundSelectedCascaderOptionText));
+        }
+    }
+
+    private IList<ICascaderOption>? _boundSelectedCascaderOptions;
+    private INotifyCollectionChanged? _boundSelectedCascaderOptionsCollectionChangedSource;
+
+    public IList<ICascaderOption>? BoundSelectedCascaderOptions
+    {
+        get => _boundSelectedCascaderOptions;
+        set
+        {
+            if (ReferenceEquals(_boundSelectedCascaderOptions, value))
+            {
+                this.RaisePropertyChanged(nameof(BoundSelectedCascaderOptionsText));
+                return;
+            }
+
+            if (_boundSelectedCascaderOptionsCollectionChangedSource != null)
+            {
+                _boundSelectedCascaderOptionsCollectionChangedSource.CollectionChanged -= HandleBoundSelectedCascaderOptionsCollectionChanged;
+            }
+
+            this.RaiseAndSetIfChanged(ref _boundSelectedCascaderOptions, value);
+
+            _boundSelectedCascaderOptionsCollectionChangedSource = value as INotifyCollectionChanged;
+            if (_boundSelectedCascaderOptionsCollectionChangedSource != null)
+            {
+                _boundSelectedCascaderOptionsCollectionChangedSource.CollectionChanged += HandleBoundSelectedCascaderOptionsCollectionChanged;
+            }
+            this.RaisePropertyChanged(nameof(BoundSelectedCascaderOptionsText));
+        }
+    }
+
+    public string BoundSelectedCascaderOptionText => FormatCascaderOption(BoundSelectedCascaderOption);
+
+    public string BoundSelectedCascaderOptionsText => FormatCascaderOptions(BoundSelectedCascaderOptions);
 
     private List<ICascaderOption>? _basicCheckableCascaderViewNodes = [];
 
@@ -193,6 +240,79 @@ public class CascaderViewModel : ReactiveObject, IRoutableViewModel
         HostScreen = screen;
     }
 
+    public void ResetBoundCascaderSelection()
+    {
+        if (!TryGetSelectionBindingOptions(out var firstOption, out var secondOption))
+        {
+            BoundSelectedCascaderOption  = null;
+            BoundSelectedCascaderOptions = null;
+            return;
+        }
+
+        BoundSelectedCascaderOption  = secondOption;
+        BoundSelectedCascaderOptions = new ObservableCollection<ICascaderOption> { firstOption, secondOption };
+    }
+
+    public void SelectFirstBoundCascaderOption()
+    {
+        if (!TryGetSelectionBindingOptions(out var firstOption, out _))
+        {
+            return;
+        }
+
+        BoundSelectedCascaderOption = firstOption;
+    }
+
+    public void SelectSecondBoundCascaderOption()
+    {
+        if (!TryGetSelectionBindingOptions(out _, out var secondOption))
+        {
+            return;
+        }
+
+        BoundSelectedCascaderOption = secondOption;
+    }
+
+    public void ClearBoundCascaderOptionSelection()
+    {
+        BoundSelectedCascaderOption = null;
+    }
+
+    public void SelectFirstBoundCascaderOptions()
+    {
+        if (!TryGetSelectionBindingOptions(out var firstOption, out _))
+        {
+            return;
+        }
+
+        SetBoundSelectedCascaderOptions(firstOption);
+    }
+
+    public void SelectSecondBoundCascaderOptions()
+    {
+        if (!TryGetSelectionBindingOptions(out _, out var secondOption))
+        {
+            return;
+        }
+
+        SetBoundSelectedCascaderOptions(secondOption);
+    }
+
+    public void SelectBothBoundCascaderOptions()
+    {
+        if (!TryGetSelectionBindingOptions(out var firstOption, out var secondOption))
+        {
+            return;
+        }
+
+        SetBoundSelectedCascaderOptions(firstOption, secondOption);
+    }
+
+    public void ClearBoundCascaderOptionsSelection()
+    {
+        SetBoundSelectedCascaderOptions();
+    }
+
     public void EnsureApiRows()
     {
         if (ApiRows is not null)
@@ -214,6 +334,9 @@ public class CascaderViewModel : ReactiveObject, IRoutableViewModel
             new CascaderApiRow("IsAllowSelectParent", Lang(CascaderShowCaseLangResourceKind.ApiPropertyIsAllowSelectParent), "bool", "green", "false"),
             new CascaderApiRow("DataLoader", Lang(CascaderShowCaseLangResourceKind.ApiPropertyDataLoader), "ICascaderItemDataLoader?", "cyan", "null"),
             new CascaderApiRow("Filter", Lang(CascaderShowCaseLangResourceKind.ApiPropertyFilter), "IValueFilter?", "cyan", "Contains"),
+            new CascaderApiRow("IsShowOverflowTip", Lang(CascaderShowCaseLangResourceKind.ApiPropertyIsShowOverflowTip), "bool", "green", "true"),
+            new CascaderApiRow("OverflowTipDelay", Lang(CascaderShowCaseLangResourceKind.ApiPropertyOverflowTipDelay), "int", "green", "1200"),
+            new CascaderApiRow("OverflowTipPlacement", Lang(CascaderShowCaseLangResourceKind.ApiPropertyOverflowTipPlacement), "PlacementMode", "purple", "TopEdgeAlignedLeft"),
             new CascaderApiRow("StyleVariant", Lang(CascaderShowCaseLangResourceKind.ApiPropertyStyleVariant), "InputControlStyleVariant", "purple", "Outlined"),
             new CascaderApiRow("Status", Lang(CascaderShowCaseLangResourceKind.ApiPropertyStatus), "InputControlStatus", "purple", "Default"),
             new CascaderApiRow("Placement", Lang(CascaderShowCaseLangResourceKind.ApiPropertyPlacement), "SelectPopupPlacement", "purple", "BottomEdgeAlignedLeft"),
@@ -273,6 +396,9 @@ public class CascaderViewModel : ReactiveObject, IRoutableViewModel
             CascaderShowCaseLangResourceKind.ApiPropertyIsAllowSelectParent              => en_US.ApiPropertyIsAllowSelectParent,
             CascaderShowCaseLangResourceKind.ApiPropertyDataLoader                       => en_US.ApiPropertyDataLoader,
             CascaderShowCaseLangResourceKind.ApiPropertyFilter                           => en_US.ApiPropertyFilter,
+            CascaderShowCaseLangResourceKind.ApiPropertyIsShowOverflowTip                => en_US.ApiPropertyIsShowOverflowTip,
+            CascaderShowCaseLangResourceKind.ApiPropertyOverflowTipDelay                 => en_US.ApiPropertyOverflowTipDelay,
+            CascaderShowCaseLangResourceKind.ApiPropertyOverflowTipPlacement             => en_US.ApiPropertyOverflowTipPlacement,
             CascaderShowCaseLangResourceKind.ApiPropertyStyleVariant                     => en_US.ApiPropertyStyleVariant,
             CascaderShowCaseLangResourceKind.ApiPropertyStatus                           => en_US.ApiPropertyStatus,
             CascaderShowCaseLangResourceKind.ApiPropertyPlacement                        => en_US.ApiPropertyPlacement,
@@ -293,8 +419,91 @@ public class CascaderViewModel : ReactiveObject, IRoutableViewModel
             CascaderShowCaseLangResourceKind.TokenNameItemHeaderSpacing                  => en_US.TokenNameItemHeaderSpacing,
             CascaderShowCaseLangResourceKind.TokenScopeComponent                         => en_US.TokenScopeComponent,
             CascaderShowCaseLangResourceKind.TokenStatusStable                           => en_US.TokenStatusStable,
+            CascaderShowCaseLangResourceKind.SelectionBindingTitle                       => en_US.SelectionBindingTitle,
+            CascaderShowCaseLangResourceKind.SelectionBindingDescription                 => en_US.SelectionBindingDescription,
+            CascaderShowCaseLangResourceKind.SelectionBindingValueTitle                  => en_US.SelectionBindingValueTitle,
+            CascaderShowCaseLangResourceKind.SelectionBindingSelectFirst                 => en_US.SelectionBindingSelectFirst,
+            CascaderShowCaseLangResourceKind.SelectionBindingSelectSecond                => en_US.SelectionBindingSelectSecond,
+            CascaderShowCaseLangResourceKind.SelectionBindingSelectBoth                  => en_US.SelectionBindingSelectBoth,
+            CascaderShowCaseLangResourceKind.SelectionBindingClear                       => en_US.SelectionBindingClear,
+            CascaderShowCaseLangResourceKind.P2TextSelectedOptionBinding                 => en_US.P2TextSelectedOptionBinding,
+            CascaderShowCaseLangResourceKind.P2TextSelectedOptionsBinding                => en_US.P2TextSelectedOptionsBinding,
             _                                                                            => kind.ToString()
         };
+    }
+
+    private void HandleBoundSelectedCascaderOptionsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        this.RaisePropertyChanged(nameof(BoundSelectedCascaderOptionsText));
+    }
+
+    private void SetBoundSelectedCascaderOptions(params ICascaderOption[] options)
+    {
+        if (BoundSelectedCascaderOptions is ObservableCollection<ICascaderOption> selectedOptions)
+        {
+            selectedOptions.Clear();
+            foreach (var option in options)
+            {
+                selectedOptions.Add(option);
+            }
+            return;
+        }
+
+        BoundSelectedCascaderOptions = new ObservableCollection<ICascaderOption>(options);
+    }
+
+    private bool TryGetSelectionBindingOptions(out ICascaderOption firstOption, out ICascaderOption secondOption)
+    {
+        firstOption  = null!;
+        secondOption = null!;
+
+        if (BasicCascaderViewNodes is not { Count: > 0 } nodes ||
+            !TryGetChildOption(nodes[0], 0, out var firstLevelOption) ||
+            !TryGetChildOption(firstLevelOption, 0, out firstOption) ||
+            !TryGetChildOption(firstLevelOption, 1, out secondOption))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private static bool TryGetChildOption(ICascaderOption parentOption, int index, out ICascaderOption option)
+    {
+        var currentIndex = 0;
+        foreach (var childOption in parentOption.Children)
+        {
+            if (currentIndex == index)
+            {
+                option = childOption;
+                return true;
+            }
+
+            currentIndex++;
+        }
+
+        option = null!;
+        return false;
+    }
+
+    private static string FormatCascaderOption(ICascaderOption? option)
+    {
+        return option?.Header?.ToString() ?? "-";
+    }
+
+    private static string FormatCascaderOptions(IEnumerable<ICascaderOption>? options)
+    {
+        if (options == null)
+        {
+            return "-";
+        }
+
+        var headers = new List<string>();
+        foreach (var option in options)
+        {
+            headers.Add(FormatCascaderOption(option));
+        }
+        return headers.Count == 0 ? "-" : string.Join(", ", headers);
     }
 }
 

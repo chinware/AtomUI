@@ -45,6 +45,8 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
                 {
                     viewModel.BasicCascaderViewNodes             = null;
                     viewModel.DefaultSelectOptionPath            = null;
+                    viewModel.BoundSelectedCascaderOption        = null;
+                    viewModel.BoundSelectedCascaderOptions       = null;
                     viewModel.BasicCheckableCascaderViewNodes    = null;
                     viewModel.HoverCascaderNodes                 = null;
                     viewModel.DisabledCascaderNodes              = null;
@@ -112,6 +114,62 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
         };
     }
 
+    private void HandleSelectFirstBoundCascaderOptionClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is CascaderViewModel viewModel)
+        {
+            viewModel.SelectFirstBoundCascaderOption();
+        }
+    }
+
+    private void HandleSelectSecondBoundCascaderOptionClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is CascaderViewModel viewModel)
+        {
+            viewModel.SelectSecondBoundCascaderOption();
+        }
+    }
+
+    private void HandleClearBoundCascaderOptionSelectionClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is CascaderViewModel viewModel)
+        {
+            viewModel.ClearBoundCascaderOptionSelection();
+        }
+    }
+
+    private void HandleSelectFirstBoundCascaderOptionsClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is CascaderViewModel viewModel)
+        {
+            viewModel.SelectFirstBoundCascaderOptions();
+        }
+    }
+
+    private void HandleSelectSecondBoundCascaderOptionsClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is CascaderViewModel viewModel)
+        {
+            viewModel.SelectSecondBoundCascaderOptions();
+        }
+    }
+
+    private void HandleSelectBothBoundCascaderOptionsClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is CascaderViewModel viewModel)
+        {
+            viewModel.SelectBothBoundCascaderOptions();
+        }
+    }
+
+    private void HandleClearBoundCascaderOptionsSelectionClick(object? sender, RoutedEventArgs e)
+    {
+        if (DataContext is CascaderViewModel viewModel)
+        {
+            viewModel.ClearBoundCascaderOptionsSelection();
+        }
+    }
+
     private void HandleFilterCascaderViewClicked(object? sender, RoutedEventArgs args)
     {
         if (sender is SearchEdit searchEdit &&
@@ -162,6 +220,7 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
     {
         InitBasicCascaderData(viewModel);
         InitDefaultValueCascaderData(viewModel);
+        InitSelectionBindingData(viewModel);
         InitHoverCascaderData(viewModel);
         InitDisabledCascaderData(viewModel);
         InitSelectParentCascaderData(viewModel);
@@ -234,6 +293,11 @@ public partial class CascaderShowCase : GalleryReactiveUserControl<CascaderViewM
     private void InitDefaultValueCascaderData(CascaderViewModel viewModel)
     {
         viewModel.DefaultSelectOptionPath = new TreeNodePath(["zhejiang", "hangzhou", "xihu"]);
+    }
+
+    private static void InitSelectionBindingData(CascaderViewModel viewModel)
+    {
+        viewModel.ResetBoundCascaderSelection();
     }
 
     private void InitHoverCascaderData(CascaderViewModel viewModel)

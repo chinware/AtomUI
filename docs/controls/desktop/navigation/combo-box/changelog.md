@@ -6,10 +6,13 @@
 
 - Behavior
   - Use `SelectedItem` as the ComboBox Form value for `SetFormValue`, `GetFormValue`, and `ClearFormValue`.
+  - Add non-editable selected content overflow tooltip support through `IsShowOverflowTip`, `OverflowTipDelay` and `OverflowTipPlacement`.
+  - Align non-editable selected content overflow tooltip against the outer `AddOnDecoratedBox` instead of the padded inner presenter.
 - Gallery
   - Add a `v6.0.8` `SelectedItem` binding example showing the ViewModel/Form value contract.
 - Docs
   - Document the `SelectedItem` Form value owner in ComboBox overview and implementation notes.
+  - Document the non-editable selected content overflow tooltip boundary.
 
 ## 2026-06-26
 

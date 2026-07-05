@@ -38,6 +38,9 @@ internal partial class en_US
     public const string ApiPropertyPlaceholderText = "Placeholder text shown before a value is selected.";
     public const string ApiPropertyIsAllowClear = "Shows the clear affordance when a value is selected.";
     public const string ApiPropertyIsFilterEnabled = "Enables filtering options by the input text.";
+    public const string ApiPropertyIsShowOverflowTip = "Shows a tooltip with the full value when selected text or tags overflow.";
+    public const string ApiPropertyOverflowTipDelay = "Delay in milliseconds before the overflow tooltip opens.";
+    public const string ApiPropertyOverflowTipPlacement = "Placement of the overflow tooltip relative to the clipped selected content.";
     public const string ApiPropertyFilter = "Custom option filter used when search is enabled.";
     public const string ApiPropertyIsGroupEnabled = "Groups dropdown options by the option group value.";
     public const string ApiPropertyIsHideSelectedOptions = "Hides options that are already selected.";

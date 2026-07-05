@@ -33,6 +33,9 @@ internal partial class zh_CN
     public const string ApiPropertyIsAllowSelectParent = "允许在到达叶子前选择父级选项。";
     public const string ApiPropertyDataLoader = "为懒加载选项树按需加载子级。";
     public const string ApiPropertyFilter = "启用搜索时用于过滤选项。";
+    public const string ApiPropertyIsShowOverflowTip = "选中路径或标签文本溢出时显示完整内容提示。";
+    public const string ApiPropertyOverflowTipDelay = "溢出提示打开前的延迟时间，单位毫秒。";
+    public const string ApiPropertyOverflowTipPlacement = "溢出提示相对被截断选中路径或标签的位置。";
     public const string ApiPropertyStyleVariant = "输入框视觉变体。";
     public const string ApiPropertyStatus = "校验状态样式。";
     public const string ApiPropertyPlacement = "弹出层相对选择器的位置。";
@@ -69,6 +72,13 @@ internal partial class zh_CN
     public const string ChangeOnSelectDescription = "允许只选择父级选项。";
     public const string MultipleTitle = "多选";
     public const string MultipleDescription = "选择多个选项。可以通过添加 disableCheckbox 属性禁用复选框并选择特定项，禁用样式可通过 className 修改。";
+    public const string SelectionBindingTitle = "SelectedOption / SelectedOptions 绑定";
+    public const string SelectionBindingDescription = "将 SelectedOption 和 SelectedOptions 绑定到 ViewModel，点击选项或操作按钮即可观察两侧状态同步。";
+    public const string SelectionBindingValueTitle = "绑定值";
+    public const string SelectionBindingSelectFirst = "选择西湖";
+    public const string SelectionBindingSelectSecond = "选择灵隐寺";
+    public const string SelectionBindingSelectBoth = "选择两项";
+    public const string SelectionBindingClear = "清空";
     public const string ShowCheckedStrategyTitle = "显示选中策略";
     public const string ShowCheckedStrategyDescription = "使用 showCheckedStrategy 在选择框中展示选中项。";
     public const string SearchTitle = "搜索";
@@ -102,6 +112,8 @@ internal partial class zh_CN
     public const string P2PlaceholderSizeTypeCustom = "SizeType：Custom";
     public const string P2TitleShowcheckedstrategyAll = "ShowCheckedStrategy=All";
     public const string P2TitleShowcheckedstrategyShowparent = "ShowCheckedStrategy=ShowParent";
+    public const string P2TextSelectedOptionBinding = "SelectedOption";
+    public const string P2TextSelectedOptionsBinding = "SelectedOptions";
     public const string P2HeaderZhejiang = "浙江";
     public const string P2HeaderHangzhou = "杭州";
     public const string P2HeaderWestLake = "西湖";
