@@ -61,12 +61,15 @@ public class ComboBoxShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:ComboBoxShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(9);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(9);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(9);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:ComboBoxViewModel\"").ShouldBe(9);
+        CountShowCaseItemElements(source).ShouldBe(10);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(10);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(10);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:ComboBoxViewModel\"").ShouldBe(10);
         source.ShouldContain("ComboBoxShowCaseLangResource BasicTitle");
         source.ShouldContain("ComboBoxShowCaseLangResource ItemsSourceTitle");
+        source.ShouldContain("ComboBoxShowCaseLangResource BindingTitle");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
+        source.ShouldContain("SelectedItem=\"{Binding BoundSelectedItem}\"");
         source.ShouldContain("ComboBoxShowCaseLangResource EditableFilterTitle");
         source.ShouldContain("IsEditable=\"True\"");
         source.ShouldContain("IsFilterEnabled=\"True\"");
@@ -163,6 +166,8 @@ public class ComboBoxShowCasePageTests
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("EditableFilterTitle");
+            source.ShouldContain("BindingTitle");
+            source.ShouldContain("BindingDescription");
             source.ShouldContain("P2PlaceholderTextTypeToFilter");
             source.ShouldContain("ApiPropertyIsFilterEnabled");
             source.ShouldContain("ApiPropertyFilterValueSelector");

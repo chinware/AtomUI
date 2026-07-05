@@ -18,6 +18,12 @@ internal partial class en_US
     public const string BasicDescription = "Basic button spinner.";
     public const string ItemsSourceTitle = "Generate ComboBoxItem by ItemsSource";
     public const string ItemsSourceDescription = "Generate structure based on ItemsSource and template.";
+    public const string BindingTitle = "SelectedItem binding";
+    public const string BindingDescription = "SelectedItem synchronizes with the ViewModel and is also the value read and written by Form.";
+    public const string BindingSelectedItemLabel = "SelectedItem";
+    public const string BindingViewModelValueLabel = "ViewModel value";
+    public const string BindingSetButton = "Set third line";
+    public const string BindingClearButton = "Clear";
     public const string EditableFilterTitle = "Editable filtering";
     public const string EditableFilterDescription = "Type in the ComboBox input to filter popup candidates without replacing the source items.";
     public const string DisabledTitle = "Disabled";
@@ -48,7 +54,7 @@ internal partial class en_US
     public const string ApiColumnType = "Type";
     public const string ApiColumnDefault = "Default";
     public const string ApiPropertyItemsSource = "Collection used to generate popup items.";
-    public const string ApiPropertySelectedItem = "Currently selected item.";
+    public const string ApiPropertySelectedItem = "Currently selected item. This is the default Form value for ComboBox.";
     public const string ApiPropertySelectedIndex = "Index of the selected item.";
     public const string ApiPropertyPlaceholderText = "Placeholder shown when no item is selected.";
     public const string ApiPropertyIsEditable = "Allows text input in the ComboBox selection area.";

@@ -637,7 +637,7 @@ public class ComboBox : AvaloniaComboBox,
         remove => _formValueChanged -= value;
     }
 
-    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value?.ToString());
+    void IFormItemAware.SetFormValue(object? value) => NotifySetFormValue(value);
 
     object? IFormItemAware.GetFormValue() => NotifyGetFormValue();
     void IFormItemAware.ClearFormValue() => NotifyClearFormValue();
@@ -651,15 +651,17 @@ public class ComboBox : AvaloniaComboBox,
 
     protected virtual void NotifySetFormValue(object? value)
     {
+        SelectedItem = value;
     }
 
     protected virtual object? NotifyGetFormValue()
     {
-        return null;
+        return SelectedItem;
     }
 
     protected virtual void NotifyClearFormValue()
     {
+        SelectedItem = null;
     }
 
     protected virtual void NotifyValidateStatus(FormValidateStatus status)

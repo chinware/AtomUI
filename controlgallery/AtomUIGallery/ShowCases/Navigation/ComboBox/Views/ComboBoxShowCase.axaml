@@ -114,6 +114,42 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:ComboBoxShowCaseLangResource BindingTitle}"
+            Description="{gallery:ComboBoxShowCaseLangResource BindingDescription}"
+            BadgeText="v6.0.8"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:ComboBoxViewModel">
+            <StackPanel Spacing="8" MinWidth="320">
+                <TextBlock Text="{gallery:ComboBoxShowCaseLangResource BindingSelectedItemLabel}"
+                           FontWeight="SemiBold" />
+                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                               Width="300"
+                               IsAllowClear="True"
+                               ItemsSource="{Binding ComboBoxItems}"
+                               SelectedItem="{Binding BoundSelectedItem}">
+                    <atom:ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <atom:TextBlock Text="{Binding Text}" VerticalAlignment="Center" />
+                        </DataTemplate>
+                    </atom:ComboBox.ItemTemplate>
+                </atom:ComboBox>
+                <WrapPanel ItemSpacing="8">
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding SetBoundSelectedItemCommand}"
+                                 Content="{gallery:ComboBoxShowCaseLangResource BindingSetButton}" />
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding ClearBoundSelectedItemCommand}"
+                                 Content="{gallery:ComboBoxShowCaseLangResource BindingClearButton}" />
+                </WrapPanel>
+                <TextBlock Text="{gallery:ComboBoxShowCaseLangResource BindingViewModelValueLabel}" />
+                <TextBlock Text="{Binding BoundSelectedItemText}" />
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:ComboBoxShowCaseLangResource EditableFilterTitle}"
             Description="{gallery:ComboBoxShowCaseLangResource EditableFilterDescription}"
             IsDeferredContentEnabled="True">

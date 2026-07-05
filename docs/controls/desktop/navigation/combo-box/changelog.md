@@ -2,6 +2,15 @@
 
 本文档记录 ComboBox 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-05
+
+- Behavior
+  - Use `SelectedItem` as the ComboBox Form value for `SetFormValue`, `GetFormValue`, and `ClearFormValue`.
+- Gallery
+  - Add a `v6.0.8` `SelectedItem` binding example showing the ViewModel/Form value contract.
+- Docs
+  - Document the `SelectedItem` Form value owner in ComboBox overview and implementation notes.
+
 ## 2026-06-26
 
 - Docs
