@@ -93,6 +93,47 @@
                     </gallery:ShowCaseItem>
 
                     <gallery:ShowCaseItem
+                        Title="{gallery:TreeViewShowCaseLangResource SelectionBindingTitle}"
+                        Description="{gallery:TreeViewShowCaseLangResource SelectionBindingDescription}"
+                        BadgeText="v6.0.8"
+                        IsDeferredContentEnabled="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:TreeViewViewModel">
+            <StackPanel Orientation="Horizontal" Spacing="24">
+                <StackPanel Spacing="8" Width="260">
+                    <TextBlock FontWeight="SemiBold"
+                               Text="{gallery:TreeViewShowCaseLangResource P2TextSelectedItemBinding}" />
+                    <atom:TreeView ItemsSource="{Binding BasicTreeNodes}"
+                                   DefaultExpandedPaths="{Binding BasicTreeViewDefaultExpandedPaths}"
+                                   SelectedItem="{Binding BoundSelectedTreeNode, Mode=TwoWay}">
+                        <atom:TreeView.ItemTemplate>
+                            <TreeDataTemplate ItemsSource="{Binding Children}" DataType="atom:ITreeItemNode">
+                                <atom:TextBlock Text="{Binding Header}" />
+                            </TreeDataTemplate>
+                        </atom:TreeView.ItemTemplate>
+                    </atom:TreeView>
+                </StackPanel>
+
+                <StackPanel Spacing="8" Width="260">
+                    <TextBlock FontWeight="SemiBold"
+                               Text="{gallery:TreeViewShowCaseLangResource P2TextSelectedItemsBinding}" />
+                    <atom:TreeView ItemsSource="{Binding BasicTreeNodes}"
+                                   DefaultExpandedPaths="{Binding BasicTreeViewDefaultExpandedPaths}"
+                                   SelectionMode="Multiple"
+                                   SelectedItems="{Binding BoundSelectedTreeNodes, Mode=TwoWay}">
+                        <atom:TreeView.ItemTemplate>
+                            <TreeDataTemplate ItemsSource="{Binding Children}" DataType="atom:ITreeItemNode">
+                                <atom:TextBlock Text="{Binding Header}" />
+                            </TreeDataTemplate>
+                        </atom:TreeView.ItemTemplate>
+                    </atom:TreeView>
+                </StackPanel>
+            </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
                         Title="{gallery:TreeViewShowCaseLangResource BlockNodeTitle}"
                         Description="{gallery:TreeViewShowCaseLangResource BlockNodeDescription}"
                         IsDeferredContentEnabled="True">

@@ -53,6 +53,8 @@ public partial class TreeViewShowCase : GalleryReactiveUserControl<TreeViewViewM
                     viewModel.BasicTreeViewDefaultSelectedPaths = null;
                     viewModel.BasicTreeViewDefaultCheckedPaths  = null;
                     viewModel.BasicTreeNodes                    = null;
+                    viewModel.BoundSelectedTreeNode             = null;
+                    viewModel.BoundSelectedTreeNodes            = null;
                     viewModel.AsyncLoadTreeNodes                = null;
                     viewModel.AsyncLoadTreeNodeLoader           = null;
                     viewModel.FilterTreeNodes                   = null;
@@ -215,6 +217,7 @@ public partial class TreeViewShowCase : GalleryReactiveUserControl<TreeViewViewM
     private void RefreshLocalizedTreeNodes(TreeViewViewModel viewModel)
     {
         InitBasicTreeNodes(viewModel);
+        InitSelectionBindingData(viewModel);
         InitAsyncLoadTreeNodes(viewModel);
     }
 
@@ -301,6 +304,24 @@ public partial class TreeViewShowCase : GalleryReactiveUserControl<TreeViewViewM
                 ]
             }
         ];
+    }
+
+    private static void InitSelectionBindingData(TreeViewViewModel viewModel)
+    {
+        if (viewModel.BasicTreeNodes is not { Count: > 0 } nodes ||
+            nodes[0] is not TreeItemNode root ||
+            root.Children.Count < 2)
+        {
+            viewModel.BoundSelectedTreeNode  = null;
+            viewModel.BoundSelectedTreeNodes = null;
+            return;
+        }
+
+        var firstChild  = root.Children[0];
+        var secondChild = root.Children[1];
+
+        viewModel.BoundSelectedTreeNode  = secondChild;
+        viewModel.BoundSelectedTreeNodes = new List<ITreeItemNode> { firstChild, secondChild };
     }
 
     private void InitCustomizeCollapseExpandTreeDefaultExpandedPaths(TreeViewViewModel viewModel)

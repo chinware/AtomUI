@@ -3,6 +3,15 @@
 本文档记录 TreeView 控件级设计、API、主题契约、Token 和实现结构的变化。
 它不替代仓库根目录 CHANGELOG.md，也不作为正式版本发布说明。
 
+## 2026-07-05
+
+- Implementation
+  - 修复 `IFormItemAware.SetFormValue` 写入 TreeView 选择值时把节点对象转换为字符串的问题；单选保持 `SelectedItem` 节点实例，多选保持 `SelectedItems` 列表实例。
+- Gallery
+  - 新增 `SelectedItem` / `SelectedItems` 绑定示例，并标记 `v6.0.8`。
+- Tests
+  - 新增 TreeView Form 值读写回归测试，覆盖单选、多选、读取和清空语义。
+
 ## 2026-06-26
 
 - Docs

@@ -54,6 +54,8 @@ internal partial class en_US
     public const string BasicDescription = "The most basic usage, tell you how to use checkable, selectable, disabled, defaultExpandKeys, and etc.";
     public const string GenerateByTemplateTitle = "Generate by template";
     public const string GenerateByTemplateDescription = "You can use the Template mechanism to generate tree nodes";
+    public const string SelectionBindingTitle = "Selected item binding";
+    public const string SelectionBindingDescription = "Bind SelectedItem and SelectedItems to object instances so Form values keep the selected node identity.";
     public const string BlockNodeTitle = "Block Node";
     public const string BlockNodeDescription = "Block Node.";
     public const string TreeWithLineTitle = "Tree with line";
@@ -115,6 +117,8 @@ internal partial class en_US
     public const string P2TextShowicon = "showIcon:";
     public const string P2TextShowleaficon = "ShowLeafIcon:";
     public const string P2TextNodeHoverMode = "Node hover mode:";
+    public const string P2TextSelectedItemBinding = "SelectedItem";
+    public const string P2TextSelectedItemsBinding = "SelectedItems";
     public const string P2ContentDefault = "Default";
     public const string P2ContentBlock = "Block";
     public const string P2ContentWholeline = "WholeLine";

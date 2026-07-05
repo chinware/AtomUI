@@ -85,6 +85,20 @@ fallback to DefaultCheckedPaths
 restore expanded state or expand all
 ```
 
+Form 值流：
+
+```text
+IFormItemAware.SetFormValue(value)
+      ↓
+SelectionMode.Multiple ? SelectedItems = value as IList : SelectedItem = value
+      ↓
+SelectedItem / SelectedItems class handler
+      ↓
+IFormItemAware.ValueChanged
+```
+
+TreeView 的 Form 适配层只投射 Avalonia 原生选择状态，不建立第二套选择值。单选模式写入和读取 `SelectedItem`，多选模式写入和读取 `SelectedItems`；写入时必须保留调用方传入的节点对象或 `IList` 实例，不能先转换为字符串。
+
 勾选流：
 
 ```text
