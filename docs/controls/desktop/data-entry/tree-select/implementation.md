@@ -62,6 +62,12 @@ TreeSelectTreeView.SelectionChanged / CheckedItemsChanged
   → NotifyFormValueChanged
   → SelectedCount / placeholder / max count / effective items
   → sync back to TreeView when public selection changes
+
+SelectedItems ObservableCollection.CollectionChanged
+  → NotifyFormValueChanged
+  → refresh placeholder / SelectedCount / EffectiveSelectedItems
+  → sync TreeView.SelectedItems or TreeView.CheckedItems
+  → refresh max count state
 ```
 
 过滤流：
@@ -190,6 +196,7 @@ TreeSelect 不依赖运行时反射发现模板结构。模板协作通过固定
 - `_treeView` 的事件订阅和 `ItemsSource` 必须在 `ClearPopupContent()` 中释放。
 - 懒创建的 `PopupFrame` 和 `TreeSelectTreeView` 必须设置 `TemplatedParent`，并在清理时置空。
 - `Items.CollectionChanged` 是控件实例持有自身集合的订阅，生命周期与控件实例一致。
+- `_selectedItemsCollectionChangedSource` 只订阅当前 `SelectedItems` 中实现 `INotifyCollectionChanged` 的集合；`SelectedItems` 替换、控件 detach 时必须释放旧订阅。
 - TreeView 异步加载由 TreeView 家族处理，TreeSelect 不直接持有异步任务状态。
 
 AOT 边界：
@@ -207,6 +214,7 @@ AOT 边界：
 - 可用 AXAML 表达的模板绑定不能回退为 `BindUtils.RelayBind`。
 - C# relay binding 必须有与获取路径匹配的释放路径。
 - `SelectedItem` / `SelectedItems` 与 TreeView selection / checked items 的同步不能形成递归事件。
+- `SelectedItems` 集合引用替换和原地变更必须刷新同一组 value-state，避免 tag、`SelectedCount`、Form 值和 popup TreeView 状态不同步。
 - `ShowCheckedStrategy` 只能派生展示集合，不能改写真实选择集合。
 - `ItemsSource` 替换时的选择保留必须继续使用节点路径 identity。
 - popup 内容清理必须断开事件、ItemsSource、TemplatedParent 和 popup child 引用。
@@ -216,6 +224,7 @@ AOT 边界：
 对应验证：
 
 - `tests/AtomUI.Desktop.Controls.Tests/TreeSelect/TreeSelectBehaviorTests.cs`：模板右侧 AXAML binding 和剩余 sibling relay binding。
+- `tests/AtomUI.Desktop.Controls.Tests/TreeSelect/TreeSelectSelectionBindingTests.cs`：`SelectedItem` / `SelectedItems` 默认双向绑定、data validation metadata、`SelectedItems` 原地变更和 checkable TreeView 同步。
 - `tests/AtomUI.Desktop.Controls.Tests/SizeType/CustomizableSizeTypeContractTests.cs`：TreeSelect 的 `ICustomizableSizeTypeAware` 契约。
 - `tests/AtomUIGallery.Tests/ShowCases/TreeSelectShowCasePageTests.cs`：Gallery TreeSelect 页面结构、示例和 API / Token 表约束。
 

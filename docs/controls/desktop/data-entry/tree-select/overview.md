@@ -51,8 +51,8 @@ TreeSelect 继承 `AbstractSelect` 的输入壳体、弹层、清除、状态、
 
 | API | 类型 | 语义 |
 | --- | --- | --- |
-| `SelectedItem` | `ITreeItemNode?` | 单选模式当前节点。 |
-| `SelectedItems` | `IList<ITreeItemNode>?` | 多选或勾选模式当前节点集合。 |
+| `SelectedItem` | `ITreeItemNode?` | 单选模式当前节点；默认 `BindingMode.TwoWay`，启用 Avalonia `DataValidationErrors`。 |
+| `SelectedItems` | `IList<ITreeItemNode>?` | 多选或勾选模式当前节点集合；默认 `BindingMode.TwoWay`，启用 Avalonia `DataValidationErrors`，支持 `INotifyCollectionChanged` 原地变更刷新。 |
 | `IsMultiple` | `bool` | 是否使用多选结果模型。 |
 | `IsTreeCheckable` | `bool` | 是否使用 checkbox 勾选。启用后 TreeSelect 使用多选结果模型。 |
 | `IsTreeCheckStrictly` | `bool` | 勾选时父子节点是否严格独立。 |
@@ -112,6 +112,7 @@ Form value + MaxCount state
 - 多选模式使用 `SelectedItems` 作为表单值，候选树使用多选 selection，并通过 tag 展示结果。
 - `IsTreeCheckable=true` 使用 checkbox 作为节点切换入口，TreeView selection 不再作为主要选择入口。
 - `ShowCheckedStrategy` 只影响多选 tag 展示集合，不改变 `SelectedItems` 的真实值。
+- `SelectedItems` 是用户拥有的受控集合。集合引用替换和 `ObservableCollection` 等 `INotifyCollectionChanged` 原地 `Add`、`Remove`、`Reset` 都必须刷新 tag、`SelectedCount`、Form value changed、候选树 selection / checked items 和最大选择数状态。
 
 过滤行为：
 
@@ -158,6 +159,8 @@ TreeSelect 属于 Data Entry 选择控件家族，与 Select、Cascader、DatePi
 维护 TreeSelect 时必须保持以下不变量：
 
 - 单选模式使用 `SelectedItem`，多选和勾选模式使用 `SelectedItems`。
+- `SelectedItem` 和 `SelectedItems` 必须保持默认双向绑定，并通过 Avalonia `DataValidationErrors` 承接 binding / Form error。
+- `SelectedItems` 原地变更必须与集合替换走同一套展示、Form 和候选树同步路径，不能依赖用户重新赋值。
 - `IsTreeCheckable=true` 必须继续把 TreeSelect 归入多选结果模型。
 - `ShowCheckedStrategy` 只能影响 `EffectiveSelectedItems`，不能改写真实 `SelectedItems`。
 - `ItemsSource` 变化必须尽量按节点路径 identity 保留已有选择。
@@ -195,7 +198,7 @@ TreeSelect 使用节点的 `ItemKey` 或 `Value` 组成 `TreeNodePath`，用于 
 | 改动类型 | 验证要求 |
 | --- | --- |
 | Public API 或 Form 映射 | 验证单选、多选、勾选和 `Clear()` 行为。 |
-| 选择同步 | 验证 TreeView selection / checked items 与 `SelectedItem` / `SelectedItems` 双向同步。 |
+| 选择同步 | 验证 TreeView selection / checked items 与 `SelectedItem` / `SelectedItems` 双向同步，并覆盖 `SelectedItems` 集合替换和原地变更。 |
 | 过滤行为 | 验证单选搜索输入、过滤策略、弹层关闭恢复和 placeholder 状态。 |
 | AXAML 或 template part | 验证右侧 AddOn/count/handle binding、hover/pressed relay、popup 内容和 Gallery 示例。 |
 | Token 或尺寸 | 验证 Large / Middle / Small / Custom、tag 高度、popup padding 和最小宽度。 |

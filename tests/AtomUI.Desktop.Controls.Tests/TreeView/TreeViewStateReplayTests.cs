@@ -100,6 +100,37 @@ public class TreeViewStateReplayTests
     }
 
     [Fact]
+    public void ItemsSource_Change_In_Multiple_Mode_Restores_SelectedItems_Before_SelectedItem()
+    {
+        var firstNodes  = CreateDefaultPathDataNodes();
+        var secondNodes = CreateDefaultPathDataNodes();
+        var root        = firstNodes[0];
+        var firstChild  = root.Children.ElementAt(0);
+        var secondChild = root.Children.ElementAt(1);
+        var treeView = new AtomUI.Desktop.Controls.TreeView
+        {
+            IsMotionEnabled      = false,
+            ItemsSource          = firstNodes,
+            SelectionMode        = SelectionMode.Multiple,
+            DefaultExpandedPaths = [new TreeNodePath("0-0/0-0-0"), new TreeNodePath("0-0/0-0-1")]
+        };
+
+        ShowInWindow(treeView, () =>
+        {
+            treeView.SelectedItem  = firstChild;
+            treeView.SelectedItems = new List<ITreeItemNode> { firstChild, secondChild };
+            Dispatcher.UIThread.RunJobs();
+
+            treeView.ItemsSource = secondNodes;
+            RunDispatcherJobsUntil(() => treeView.SelectedItems.Count == 2);
+
+            treeView.SelectedItems.Count.ShouldBe(2);
+            treeView.SelectedItems.Contains(secondNodes[0].Children.ElementAt(0)).ShouldBeTrue();
+            treeView.SelectedItems.Contains(secondNodes[0].Children.ElementAt(1)).ShouldBeTrue();
+        });
+    }
+
+    [Fact]
     public void Loaded_Replays_Bound_SelectedItems_In_Multiple_Mode()
     {
         var nodes       = CreateDefaultPathDataNodes();

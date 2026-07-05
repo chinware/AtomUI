@@ -23,7 +23,8 @@ internal partial class en_US
     public const string ApiColumnType = "Type";
     public const string ApiColumnDefault = "Default";
     public const string ApiPropertyItemsSource = "Hierarchical options displayed by the selector.";
-    public const string ApiPropertySelectedItems = "Currently selected tree items.";
+    public const string ApiPropertySelectedItem = "Currently selected tree item in single mode. Defaults to two-way binding and supports data validation.";
+    public const string ApiPropertySelectedItems = "Currently selected tree items in multiple or checkable mode. Defaults to two-way binding, supports data validation, and refreshes on in-place collection changes.";
     public const string ApiPropertyIsMultiple = "Allows selecting multiple tree nodes.";
     public const string ApiPropertyIsTreeCheckable = "Shows checkboxes in the tree popup.";
     public const string ApiPropertyIsDefaultExpandAll = "Expands tree nodes by default when the popup opens.";
@@ -44,6 +45,14 @@ internal partial class en_US
     public const string TokenScopeComponent = "Component";
     public const string TokenStatusStable = "Stable";
     public const string TokenNameMinPopupWidth = "Minimum popup width used by TreeSelect.";
+    public const string BindingTitle = "Binding";
+    public const string BindingDescription = "SelectedItem and SelectedItems are two-way bindable by default, including in-place collection changes.";
+    public const string BindingSingleLabel = "Single selected item";
+    public const string BindingMultipleLabel = "Multiple selected items";
+    public const string BindingSetSingleButton = "Select your leaf";
+    public const string BindingSetMultipleButton = "Select two nodes";
+    public const string BindingClearButton = "Clear";
+    public const string BindingViewModelValueLabel = "ViewModel value:";
     public const string MultipleSelectionTitle = "Multiple Selection";
     public const string MultipleSelectionDescription = "Multiple selection usage.";
     public const string GenerateFromTreeDataTitle = "Generate from tree data";

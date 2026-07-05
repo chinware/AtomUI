@@ -6,10 +6,12 @@
 ## 2026-07-05
 
 - Implementation
+  - 修复多选 TreeView 在 ItemsSource 变化或首次容器状态回放时优先恢复 `SelectedItem`，导致 `SelectedItems` 被折叠成单选的问题；多选模式现在以 `SelectedItems` 路径作为运行期选择恢复的权威来源。
   - 修复 `IFormItemAware.SetFormValue` 写入 TreeView 选择值时把节点对象转换为字符串的问题；单选保持 `SelectedItem` 节点实例，多选保持 `SelectedItems` 列表实例。
 - Gallery
   - 新增 `SelectedItem` / `SelectedItems` 绑定示例，并标记 `v6.0.8`。
 - Tests
+  - 新增 TreeView 多选 ItemsSource 回放优先级测试，覆盖 `SelectedItem` 与 `SelectedItems` 同时存在时的恢复顺序。
   - 新增 TreeView Form 值读写回归测试，覆盖单选、多选、读取和清空语义。
 
 ## 2026-06-26

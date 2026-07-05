@@ -58,6 +58,66 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:TreeSelectShowCaseLangResource BindingTitle}"
+            Description="{gallery:TreeSelectShowCaseLangResource BindingDescription}"
+            BadgeText="v6.0.8"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:TreeSelectViewModel">
+            <StackPanel Orientation="Vertical" Spacing="16">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingSingleLabel}"
+                               FontWeight="SemiBold" />
+                    <atom:TreeSelect Name="BindingSingleTreeSelect"
+                                     HorizontalAlignment="Stretch"
+                                     IsDefaultExpandAll="True"
+                                     IsAllowClear="True"
+                                     IsFilterEnabled="True"
+                                     ItemsSource="{Binding BindingSingleTreeNodes}"
+                                     SelectedItem="{Binding BoundSelectedItem}"
+                                     PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+                    <WrapPanel ItemSpacing="8">
+                        <atom:Button SizeType="Small"
+                                     Command="{Binding SetBoundSelectedItemCommand}"
+                                     Content="{gallery:TreeSelectShowCaseLangResource BindingSetSingleButton}" />
+                        <atom:Button SizeType="Small"
+                                     Command="{Binding ClearBoundSelectedItemCommand}"
+                                     Content="{gallery:TreeSelectShowCaseLangResource BindingClearButton}" />
+                    </WrapPanel>
+                    <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingViewModelValueLabel}" />
+                    <TextBlock Text="{Binding BoundSelectedItemText}" />
+                </StackPanel>
+
+                <StackPanel Spacing="8">
+                    <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingMultipleLabel}"
+                               FontWeight="SemiBold" />
+                    <atom:TreeSelect Name="BindingMultipleTreeSelect"
+                                     HorizontalAlignment="Stretch"
+                                     IsDefaultExpandAll="True"
+                                     IsAllowClear="True"
+                                     IsFilterEnabled="True"
+                                     IsMultiple="True"
+                                     ItemsSource="{Binding BindingMultipleTreeNodes}"
+                                     SelectedItems="{Binding BoundSelectedItems}"
+                                     PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+                    <WrapPanel ItemSpacing="8">
+                        <atom:Button SizeType="Small"
+                                     Command="{Binding SetBoundSelectedItemsCommand}"
+                                     Content="{gallery:TreeSelectShowCaseLangResource BindingSetMultipleButton}" />
+                        <atom:Button SizeType="Small"
+                                     Command="{Binding ClearBoundSelectedItemsCommand}"
+                                     Content="{gallery:TreeSelectShowCaseLangResource BindingClearButton}" />
+                    </WrapPanel>
+                    <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingViewModelValueLabel}" />
+                    <TextBlock Text="{Binding BoundSelectedItemsText}"
+                               TextWrapping="Wrap" />
+                </StackPanel>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:TreeSelectShowCaseLangResource MultipleSelectionTitle}"
             Description="{gallery:TreeSelectShowCaseLangResource MultipleSelectionDescription}" IsDeferredContentEnabled="True">
             <gallery:ShowCaseItem.DeferredContentTemplate>
