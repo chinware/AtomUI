@@ -21,7 +21,7 @@ internal partial class en_US
     public const string MenuModeTitle = "Menu mode";
     public const string MenuModeDescription = "Open menu mode with trigger, which could be hover or click.";
     public const string ControlledModeTitle = "Controlled mode";
-    public const string ControlledModeDescription = "Set the component to controlled mode through open, which needs to be used together with trigger.";
+    public const string ControlledModeDescription = "Set the component to controlled mode through open. IsOpen binds two-way by default and works together with trigger.";
     public const string PlacementTitle = "Placement";
     public const string PlacementDescription = "Customize animation placement. Four preset placements are provided: top, right, bottom, and left. The default placement is top.";
     public const string BadgeTitle = "Badge";
@@ -61,7 +61,7 @@ internal partial class en_US
     public const string ApiPropertyBadgeOverflowCount = "Maximum count before the badge shows overflow text.";
     public const string ApiPropertyTrigger = "Interaction that opens a FloatButton group menu.";
     public const string ApiPropertyMenuPlacement = "Direction where group menu items are placed.";
-    public const string ApiPropertyIsOpen = "Controlled open state for a FloatButton group.";
+    public const string ApiPropertyIsOpen = "Controlled open state for a FloatButton group. Two-way binding is enabled by default.";
     public const string ApiPropertyToTopDuration = "Duration of the back-to-top scroll animation.";
     public const string ApiPropertyTarget = "ScrollViewer controlled by BackTopFloatButton.";
     public const string ApiPropertyVisibilityHeight = "Scroll offset required before BackTopFloatButton becomes visible.";

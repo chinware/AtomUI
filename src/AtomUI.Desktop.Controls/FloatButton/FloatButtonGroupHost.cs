@@ -218,12 +218,12 @@ public class FloatButtonGroupHost : TemplatedControl, IMotionAwareControl
     
     private void OnFloatButtonGroupOpenRequest(object? sender, EventArgs args)
     {
-        SetValue(IsOpenProperty, true, BindingPriority.Style);
+        SetCurrentValue(IsOpenProperty, true);
     }
 
     private void OnFloatButtonGroupCloseRequest(object? sender, EventArgs args)
     {
-        SetValue(IsOpenProperty, false, BindingPriority.Style);
+        SetCurrentValue(IsOpenProperty, false);
     }
 
     protected virtual void NotifyChildrenChanged(object? sender, NotifyCollectionChangedEventArgs e)
