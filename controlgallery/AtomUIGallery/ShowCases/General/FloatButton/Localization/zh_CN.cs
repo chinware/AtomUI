@@ -21,7 +21,7 @@ internal partial class zh_CN
     public const string MenuModeTitle = "菜单模式";
     public const string MenuModeDescription = "通过 trigger 打开菜单模式，可选择 hover 或 click。";
     public const string ControlledModeTitle = "受控模式";
-    public const string ControlledModeDescription = "通过 open 将组件设置为受控模式，需要与 trigger 一起使用。";
+    public const string ControlledModeDescription = "通过 open 将组件设置为受控模式，IsOpen 默认双向绑定，并与 trigger 一起工作。";
     public const string PlacementTitle = "弹出位置";
     public const string PlacementDescription = "自定义动画弹出位置，提供上、右、下、左四种预设位置，默认在上方。";
     public const string BadgeTitle = "徽标";
@@ -61,7 +61,7 @@ internal partial class zh_CN
     public const string ApiPropertyBadgeOverflowCount = "徽标显示溢出文本前的最大计数。";
     public const string ApiPropertyTrigger = "打开 FloatButton 组合菜单的交互方式。";
     public const string ApiPropertyMenuPlacement = "组合菜单项展开的方向。";
-    public const string ApiPropertyIsOpen = "FloatButton 组合的受控打开状态。";
+    public const string ApiPropertyIsOpen = "FloatButton 组合的受控打开状态，默认支持双向绑定。";
     public const string ApiPropertyToTopDuration = "回到顶部滚动动画时长。";
     public const string ApiPropertyTarget = "BackTopFloatButton 控制的 ScrollViewer。";
     public const string ApiPropertyVisibilityHeight = "BackTopFloatButton 变为可见所需的滚动偏移。";

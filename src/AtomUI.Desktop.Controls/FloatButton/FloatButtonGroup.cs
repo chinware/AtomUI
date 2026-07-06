@@ -77,7 +77,9 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         AvaloniaProperty.Register<FloatButtonGroup, FloatButtonGroupTrigger>(nameof(Trigger), FloatButtonGroupTrigger.Default);
     
     public static readonly StyledProperty<bool> IsOpenProperty =
-        AvaloniaProperty.Register<FloatButtonGroup, bool>(nameof(IsOpen));
+        AvaloniaProperty.Register<FloatButtonGroup, bool>(
+            nameof(IsOpen),
+            defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly StyledProperty<TimeSpan> MenuMotionDurationProperty =
         AvaloniaProperty.Register<FloatButtonGroup, TimeSpan>(nameof(MenuMotionDuration));
@@ -204,6 +206,7 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
     
     private FloatButtonItemsControl? _itemsControl;
     private bool _initPressed;
+    private bool _wasOpenOnPointerPressed;
     private IDisposable? _clickTriggerDisposable;
     private FloatButton? _triggerButton;
     ScopeAwareOverlayLayer? _overlayLayer;
@@ -375,7 +378,7 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
     {
         if (Trigger == FloatButtonGroupTrigger.Hover)
         {
-            SetValue(IsOpenProperty, true, BindingPriority.Style);
+            SetCurrentValue(IsOpenProperty, true);
             if (_overlayLayer != null)
             {
                 OpenRequest?.Invoke(this, EventArgs.Empty);
@@ -388,7 +391,7 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         base.OnPointerExited(e);
         if (Trigger == FloatButtonGroupTrigger.Hover)
         {
-            SetValue(IsOpenProperty, false, BindingPriority.Style);
+            SetCurrentValue(IsOpenProperty, false);
             if (_overlayLayer != null)
             {
                 CloseRequest?.Invoke(this, EventArgs.Empty);
@@ -447,10 +450,8 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
         {
             if (pointerEventArgs.Type == RawPointerEventType.LeftButtonDown)
             {
-                if (pointerEventArgs.IsPointLogicalIn(this))
-                {
-                    _initPressed = true;
-                }
+                _wasOpenOnPointerPressed = IsOpen;
+                _initPressed             = pointerEventArgs.IsPointLogicalIn(this);
             }
             else if (pointerEventArgs.Type == RawPointerEventType.LeftButtonUp)
             {
@@ -458,10 +459,11 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                 {
                     if (_initPressed && pointerEventArgs.IsPointLogicalIn(_triggerButton))
                     {
-                        SetValue(IsOpenProperty, !IsOpen, BindingPriority.Style);
+                        var nextIsOpen = !IsOpen;
+                        SetCurrentValue(IsOpenProperty, nextIsOpen);
                         if (_overlayLayer != null)
                         {
-                            if (!IsOpen)
+                            if (nextIsOpen)
                             {
                                 OpenRequest?.Invoke(this, EventArgs.Empty);
                             }
@@ -474,13 +476,17 @@ public class FloatButtonGroup : TemplatedControl, IMotionAwareControl
                 }
                 else
                 {
-                    SetValue(IsOpenProperty, false, BindingPriority.Style);
-                    if (_overlayLayer != null)
+                    if (_wasOpenOnPointerPressed)
                     {
-                        CloseRequest?.Invoke(this, EventArgs.Empty);
+                        SetCurrentValue(IsOpenProperty, false);
+                        if (_overlayLayer != null)
+                        {
+                            CloseRequest?.Invoke(this, EventArgs.Empty);
+                        }
                     }
                 }
                 _initPressed = false;
+                _wasOpenOnPointerPressed = false;
             }
         }
     }

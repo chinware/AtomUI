@@ -219,6 +219,7 @@
         <gallery:ShowCaseItem
             Title="{gallery:FloatButtonShowCaseLangResource ControlledModeTitle}"
             Description="{gallery:FloatButtonShowCaseLangResource ControlledModeDescription}"
+            BadgeText="v6.0.8"
             IsDeferredContentEnabled="True">
             <gallery:ShowCaseItem.DeferredContentTemplate>
                 <DataTemplate x:DataType="vm:FloatButtonViewModel">

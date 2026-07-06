@@ -2,6 +2,15 @@
 
 本文档记录 FloatButton 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-06
+
+- API
+  - Make `FloatButtonGroup.IsOpen` and inherited `FloatButtonGroupHost.IsOpen` default to `BindingMode.TwoWay`.
+- Implementation
+  - Use current value updates for group and host open/close interactions so controlled bindings are not replaced by style-priority values.
+- Docs
+  - Document the controlled open state contract for group and host usage.
+
 ## 2026-06-26
 
 - Docs

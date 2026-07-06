@@ -82,7 +82,7 @@ Public API / ItemsSource / Command / Event
 
 - 内容与数据：`CloseIcon`、`Description`、`DescriptionTemplate`、`Icon`。
 - 选择与集合：`BadgeCount`、`BadgeOverflowCount`、`IsTriggerMode`。
-- 交互与状态：`IsBadgeEnabled`、`IsDotBadge`、`IsMotionEnabled`、`IsOpen`。
+- 交互与状态：`IsBadgeEnabled`、`IsDotBadge`、`IsMotionEnabled`、`IsOpen`。`FloatButtonGroup.IsOpen` 与 `FloatButtonGroupHost.IsOpen` 默认双向绑定。
 - 视觉与布局：`BadgeColor`、`BadgeOffset`、`BoxShadow`、`FloatOffsetX`、`FloatOffsetY`、`MenuPlacement`、`Orientation`、`Placement`、`SeparatorBrush`、`Shape` 等 12 项。
 - 动效与异步：`MenuMotionDuration`、`MotionDuration`、`ToTopDuration`。
 - 其他稳定入口：`ButtonType`、`Href`、`Target`、`Tooltip`、`Trigger`。
@@ -91,6 +91,7 @@ Public API / ItemsSource / Command / Event
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
+- `IsOpen` 由 group 与 host 共享为受控打开状态；hover/click、open request 和 close request 应使用 current value 语义回写，不得以 style priority 覆盖绑定或本地值。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
 
