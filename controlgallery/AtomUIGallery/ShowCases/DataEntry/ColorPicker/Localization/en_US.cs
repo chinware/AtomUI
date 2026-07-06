@@ -8,6 +8,8 @@ internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Basic Usage.";
+    public const string ValueBindingTitle = "Value binding";
+    public const string ValueBindingDescription = "Value now defaults to TwoWay binding for both solid and gradient pickers, so edits update the ViewModel without an explicit binding mode.";
     public const string TriggerSizeTitle = "Trigger size";
     public const string TriggerSizeDescription = "Ant Design supports three trigger sizes: small, default and large.If a large or small trigger is desired, set the size property to either large or small.respectively. Omit the size property for a trigger with the default size.";
     public const string P2LabelSizeTypeSmall = "Small";
@@ -44,7 +46,7 @@ internal partial class en_US
     public const string ApiColumnType = "Type";
     public const string ApiColumnDefault = "Default";
     public const string ApiPropertyDefaultValue = "Initial color or gradient applied when the picker is loaded.";
-    public const string ApiPropertyValue = "Current selected color or gradient value.";
+    public const string ApiPropertyValue = "Current selected color or gradient value. Defaults to TwoWay binding and participates in Avalonia data validation.";
     public const string ApiPropertyFormat = "Display and input format for color text.";
     public const string ApiPropertyIsAlphaEnabled = "Controls whether alpha editing is available.";
     public const string ApiPropertyIsTextVisible = "Shows formatted color text in the trigger.";
@@ -68,5 +70,11 @@ internal partial class en_US
     public const string TokenNameTriggerPadding = "Padding inside the color picker trigger.";
     public const string TokenNameTriggerTextMargin = "Margin between the color block and trigger text.";
     public const string TokenNameColorBlockDisabledOpacity = "Opacity of the color block while disabled.";
+    public const string P2TextColorValue = "Bound color:";
+    public const string P2TextGradientValue = "Bound gradient:";
+    public const string P2ContentSetColor = "Set color";
+    public const string P2ContentSetGradient = "Set gradient";
+    public const string P2ContentClearColor = "Clear color";
+    public const string P2ContentClearGradient = "Clear gradient";
 
 }

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
@@ -57,9 +58,44 @@ public class MentionsViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _mentionTriggers, value);
     }
 
+    private string? _boundValue = "@afc163";
+
+    public string? BoundValue
+    {
+        get => _boundValue;
+        set
+        {
+            if (_boundValue == value)
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _boundValue, value);
+            this.RaisePropertyChanged(nameof(BoundValueText));
+        }
+    }
+
+    public string BoundValueText => string.IsNullOrEmpty(BoundValue) ? "-" : BoundValue;
+
+    public ReactiveCommand<Unit, Unit> SetBoundValueCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> ClearBoundValueCommand { get; }
+
     public MentionsViewModel(IScreen screen)
     {
-        HostScreen = screen;
+        HostScreen              = screen;
+        SetBoundValueCommand    = ReactiveCommand.Create(SetBoundValue);
+        ClearBoundValueCommand  = ReactiveCommand.Create(ClearBoundValue);
+    }
+
+    private void SetBoundValue()
+    {
+        BoundValue = "@zombieJ";
+    }
+
+    private void ClearBoundValue()
+    {
+        BoundValue = null;
     }
 
     public void EnsureApiRows()
@@ -145,6 +181,11 @@ public class MentionsViewModel : ReactiveObject, IRoutableViewModel
             MentionsShowCaseLangResourceKind.ApiPropertyAsyncLoadDebounce     => en_US.ApiPropertyAsyncLoadDebounce,
             MentionsShowCaseLangResourceKind.ApiPropertyAsyncLoadTimeout      => en_US.ApiPropertyAsyncLoadTimeout,
             MentionsShowCaseLangResourceKind.ApiPropertyShouldUseOverlayPopup => en_US.ApiPropertyShouldUseOverlayPopup,
+            MentionsShowCaseLangResourceKind.ValueBindingTitle                => en_US.ValueBindingTitle,
+            MentionsShowCaseLangResourceKind.ValueBindingDescription          => en_US.ValueBindingDescription,
+            MentionsShowCaseLangResourceKind.P2TextBoundValue                 => en_US.P2TextBoundValue,
+            MentionsShowCaseLangResourceKind.P2ContentSetMention              => en_US.P2ContentSetMention,
+            MentionsShowCaseLangResourceKind.P2ContentClear                   => en_US.P2ContentClear,
             MentionsShowCaseLangResourceKind.TokenNamePopupContentPadding     => en_US.TokenNamePopupContentPadding,
             MentionsShowCaseLangResourceKind.TokenNameOptionHeight            => en_US.TokenNameOptionHeight,
             MentionsShowCaseLangResourceKind.TokenNameMinPopupWidth           => en_US.TokenNameMinPopupWidth,

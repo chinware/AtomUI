@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 
@@ -13,7 +14,10 @@ public class ColorPicker : AbstractColorPicker
         AvaloniaProperty.Register<ColorPicker, Color?>(nameof(DefaultValue));
 
     public static readonly StyledProperty<Color?> ValueProperty =
-        AvaloniaProperty.Register<ColorPicker, Color?>(nameof(Value));
+        AvaloniaProperty.Register<ColorPicker, Color?>(
+            nameof(Value),
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
 
     public static readonly AttachedProperty<Func<Color, ColorFormat, string>?> ColorTextFormatterProperty =
         AvaloniaProperty.RegisterAttached<ColorPicker, Control, Func<Color, ColorFormat, string>?>("ColorTextFormatter");
@@ -30,7 +34,7 @@ public class ColorPicker : AbstractColorPicker
     public Color? Value
     {
         get => GetValue(ValueProperty);
-        private set => SetValue(ValueProperty, value);
+        set => SetValue(ValueProperty, value);
     }
 
     public static Func<Color, ColorFormat, string>? GetColorTextFormatter(ColorPicker colorPicker)
@@ -241,6 +245,9 @@ public class ColorPicker : AbstractColorPicker
 
     private void ClearColor()
     {
+        SetCurrentValue(ValueProperty, null);
+        _latestSyncValue = null;
+
         if (_colorIndicator != null)
         {
             _colorIndicator.SetCurrentValue(ColorBlock.IsEmptyColorModeProperty, true);
@@ -251,7 +258,7 @@ public class ColorPicker : AbstractColorPicker
     #region 实现 FormItem 接口
     protected override void NotifySetFormValue(object? value)
     {
-        Value = value as Color?;
+        SetCurrentValue(ValueProperty, value as Color?);
     }
 
     protected override object? NotifyGetFormValue()

@@ -197,6 +197,7 @@ AOT 边界：
 - 模板重新应用时旧 pointer handler 必须释放。
 - `SliderTrack` detach 时释放全局 input subscription。
 - `RangeValue` 必须保持非 NaN、非 Infinity，并裁剪到 `[Minimum, Maximum]`。
+- `RangeValue` 作为范围模式 Form 值必须默认 `TwoWay`，并在绑定验证失败时写入控件自身的 Avalonia `DataValidationErrors`。
 - `SliderRangeValue.Parse` 必须拒绝起始值大于结束值的表达式。
 - `Marks` 改变后必须重新测量 mark 标签。
 - `IsIncluded=false` 只影响 active track / active mark 绘制，不影响值计算和 mark 命中。

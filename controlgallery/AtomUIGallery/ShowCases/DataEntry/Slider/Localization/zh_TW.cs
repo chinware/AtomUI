@@ -26,7 +26,7 @@ internal partial class zh_TW
     public const string ApiPropertyIsDirectionReversed = "反轉數值增長的視覺方向。";
     public const string ApiPropertyIsSnapToTickEnabled = "將滑塊移動吸附到刻度值。";
     public const string ApiPropertyTickFrequency = "刻度值之間的間距。";
-    public const string ApiPropertyRangeValue = "範圍模式下選中的開始值和結束值。";
+    public const string ApiPropertyRangeValue = "範圍模式下選中的開始值和結束值，默認雙向綁定，並接入 Avalonia 數據驗證。";
     public const string ApiPropertyIsRangeMode = "啟用雙滑塊範圍選擇。";
     public const string ApiPropertyMarks = "沿軌道顯示的刻度標記文本。";
     public const string ApiPropertyValueFormatTemplate = "用於提示值的格式化字符串。";
@@ -66,6 +66,8 @@ internal partial class zh_TW
     public const string TokenStatusStable = "穩定";
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "基礎滑塊。range 為 true 時顯示為雙滑塊模式；disable 為 true 時滑塊不可交互。";
+    public const string RangeValueBindingTitle = "RangeValue 綁定";
+    public const string RangeValueBindingDescription = "RangeValue 現在默認雙向綁定，拖動範圍會直接更新 ViewModel，無需顯式設置綁定模式。";
     public const string CustomizeTooltipTitle = "自定義提示";
     public const string CustomizeTooltipDescription = "使用 tooltip.formatter 格式化 Tooltip 內容；當 tooltip.formatter 為 null 時隱藏提示。";
     public const string VerticalTitle = "垂直方向";
@@ -75,5 +77,8 @@ internal partial class zh_TW
     public const string P2TextEnabled = "Enabled:";
     public const string P2TextIncludedTrue = "included=true";
     public const string P2TextIncludedFalse = "included=false";
+    public const string P2TextBoundRangeValue = "綁定範圍：";
+    public const string P2ContentSetRange = "設為 35-85";
+    public const string P2ContentClear = "清空";
 
 }

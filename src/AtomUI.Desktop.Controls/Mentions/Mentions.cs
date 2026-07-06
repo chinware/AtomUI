@@ -19,6 +19,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
@@ -41,7 +42,10 @@ public class Mentions : TemplatedControl,
         AvaloniaProperty.Register<Mentions, PathIcon?>(nameof(ClearIcon));
     
     public static readonly StyledProperty<string?> ValueProperty =
-        AvaloniaProperty.Register<Mentions, string?>(nameof(Value));
+        AvaloniaProperty.Register<Mentions, string?>(
+            nameof(Value),
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
     
     public static readonly StyledProperty<bool> IsAllowClearProperty =
         AvaloniaProperty.Register<Mentions, bool>(nameof(IsAllowClear));

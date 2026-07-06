@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -21,11 +22,17 @@ public abstract class AbstractPagination : TemplatedControl, ICustomizableSizeTy
         CustomizableSizeTypeControlProperty.SizeTypeProperty.AddOwner<AbstractPagination>();
     
     public static readonly StyledProperty<int> CurrentPageProperty =
-        AvaloniaProperty.Register<AbstractPagination, int>(nameof(CurrentPage), DefaultCurrentPage,
+        AvaloniaProperty.Register<AbstractPagination, int>(
+            nameof(CurrentPage),
+            DefaultCurrentPage,
+            defaultBindingMode: BindingMode.TwoWay,
             validate:v => v > 0);
     
     public static readonly StyledProperty<int> PageSizeProperty =
-        AvaloniaProperty.Register<AbstractPagination, int>(nameof(PageSize), DefaultPageSize,
+        AvaloniaProperty.Register<AbstractPagination, int>(
+            nameof(PageSize),
+            DefaultPageSize,
+            defaultBindingMode: BindingMode.TwoWay,
             validate:PageSizeValidator);
     
     public static readonly StyledProperty<int> TotalProperty =
@@ -158,7 +165,7 @@ public abstract class AbstractPagination : TemplatedControl, ICustomizableSizeTy
         var pageSize    = PageSize <= 0 ? DefaultPageSize : PageSize;
         var pageCount   = (int)Math.Ceiling(total / (double)pageSize);
         var currentPage = Math.Max(1, Math.Min(CurrentPage, pageCount));
-        CurrentPage = currentPage;
+        SetCurrentValue(CurrentPageProperty, currentPage);
         PageCount = pageCount;
         NotifyPageConditionChanged(currentPage, pageCount, pageSize, total);
     }

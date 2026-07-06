@@ -76,7 +76,7 @@ Public API / ItemsSource / Command / Event
 源码中的状态入口按以下语义维护：
 
 - 内容与数据：`Icon`、`JumpToText`、`PageText`、`PaginationItemType`、`TotalInfoTemplate`。
-- 选择与集合：`CurrentPage`、`IsHideOnSinglePage`、`IsSelected`、`PageCount`、`PageSize`。
+- 选择与集合：`CurrentPage`、`IsHideOnSinglePage`、`IsSelected`、`PageCount`、`PageSize`；`CurrentPage` 和 `PageSize` 注册为默认 `TwoWay` 受控状态。
 - 交互与状态：`IsMotionEnabled`、`IsPressed`、`IsReadOnly`、`IsShowQuickJumper`、`IsShowSizeChanger`、`IsShowTotalInfo`。
 - 视觉与布局：`Align`、`SizeType`。
 - 其他稳定入口：`Maximum`、`Minimum`、`Total`。
@@ -84,6 +84,7 @@ Public API / ItemsSource / Command / Event
 维护要求：
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
+- 内部导航、quick jumper、size changer 和页码修正必须用 `SetCurrentValue` 写入 `CurrentPage` / `PageSize`，保留外部 binding owner 并触发默认 `TwoWay` 写回。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
@@ -159,6 +160,7 @@ Pagination 的交互事件应从输入源收敛到控件级语义事件：
 维护 Pagination 时不得破坏：
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
+- `CurrentPage` / `PageSize` 的默认 `TwoWay` binding metadata，以及内部写入不破坏外部 binding 的 `SetCurrentValue` 路径。
 - Template part 名称、ControlTheme key、伪类和资源 key。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。

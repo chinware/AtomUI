@@ -259,7 +259,7 @@ public class Pagination : AbstractPagination
     {
         if (args.PageNumber != CurrentPage)
         {
-            CurrentPage = args.PageNumber;
+            SetCurrentValue(CurrentPageProperty, args.PageNumber);
         }
     }
 
@@ -563,14 +563,14 @@ public class Pagination : AbstractPagination
         var total     = Math.Max(0, Total);
         var pageSize  = PageSize <= 0 ? DefaultPageSize : PageSize;
         var pageCount = (int)Math.Ceiling(total / (double)pageSize);
-        CurrentPage = Math.Max(1, Math.Min(pageCount, args.PageNumber));
+        SetCurrentValue(CurrentPageProperty, Math.Max(1, Math.Min(pageCount, args.PageNumber)));
     }
 
     private void HandlePageSizeChanged(object? sender, SelectionChangedEventArgs? args)
     {
         if (args?.AddedItems.Count >= 1 && args.AddedItems[0] is PageSizeComboBoxItem comboBoxItem)
         {
-            PageSize = Math.Max(comboBoxItem.PageSize, 1);
+            SetCurrentValue(PageSizeProperty, Math.Max(comboBoxItem.PageSize, 1));
         }
     }
 

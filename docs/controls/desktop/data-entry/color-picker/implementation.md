@@ -89,6 +89,7 @@ Public API / ItemsSource / Command / Event
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
+- `ColorPicker.Value` / `GradientColorPicker.Value` 是 Form 和绑定的单一 current value owner，默认 `TwoWay` 并启用 Avalonia 数据验证；clear 路径必须先把 `Value` 置为 `null`，再由属性变化刷新色块、文本和 Form 状态。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
 
 ## 5. 生命周期与模板接入

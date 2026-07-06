@@ -26,7 +26,7 @@ internal partial class en_US
     public const string ApiPropertyIsDirectionReversed = "Reverses the visual direction of value growth.";
     public const string ApiPropertyIsSnapToTickEnabled = "Snaps thumb movement to tick values.";
     public const string ApiPropertyTickFrequency = "Distance between tick values.";
-    public const string ApiPropertyRangeValue = "Selected start and end values in range mode.";
+    public const string ApiPropertyRangeValue = "Selected start and end values in range mode. Defaults to TwoWay binding and participates in Avalonia data validation.";
     public const string ApiPropertyIsRangeMode = "Enables dual-thumb range selection.";
     public const string ApiPropertyMarks = "Graduated mark labels displayed along the track.";
     public const string ApiPropertyValueFormatTemplate = "Format string used for tooltip values.";
@@ -66,6 +66,8 @@ internal partial class en_US
     public const string TokenStatusStable = "Stable";
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Basic slider. When range is true, display as dual thumb mode. When disable is true, the slider will not be interactable.";
+    public const string RangeValueBindingTitle = "RangeValue binding";
+    public const string RangeValueBindingDescription = "RangeValue now defaults to TwoWay binding, so range changes update the ViewModel without an explicit binding mode.";
     public const string CustomizeTooltipTitle = "Customize tooltip";
     public const string CustomizeTooltipDescription = "Use tooltip.formatter to format content of Tooltip. If tooltip.formatter is null, hide it.";
     public const string VerticalTitle = "Vertical";
@@ -75,5 +77,8 @@ internal partial class en_US
     public const string P2TextEnabled = "Enabled:";
     public const string P2TextIncludedTrue = "included=true";
     public const string P2TextIncludedFalse = "included=false";
+    public const string P2TextBoundRangeValue = "Bound range:";
+    public const string P2ContentSetRange = "Set 35-85";
+    public const string P2ContentClear = "Clear";
 
 }

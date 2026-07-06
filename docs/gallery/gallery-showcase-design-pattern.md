@@ -224,6 +224,7 @@ Examples 内容组织规则：
 - 如果某个示例需要占满整行，使用 `ShowCaseItem` 的整行能力，而不是在页面层硬编码特殊布局。
 - 不把多个不相关能力合并进一个大卡片。
 - 不把 Examples 改成固定的四大区块，除非控件本身确实只有四个线性主题。
+- `ShowCaseItem.BadgeText` 版本标记由 `ShowCaseItem` 模板使用 `BadgePreviewMargin` 自动为右上角 Ribbon 预留预览区顶部空间；页面或单个示例不应再为版本标记手写额外顶部占位。
 
 硬边界：
 

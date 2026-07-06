@@ -322,7 +322,7 @@ public class TimePicker : InfoPickerInput
         }
         else
         {
-            var preferredInputWidth = CalculateContentPreferredWidth(Text, PlaceholderText);
+            var preferredInputWidth = CalculateContentPreferredWidth(PlaceholderText);
 
             if (!double.IsNaN(MinWidth))
             {
@@ -337,22 +337,20 @@ public class TimePicker : InfoPickerInput
         }
     }
 
-    private double CalculateContentPreferredWidth(string? text, string? placeholderText)
+    private double CalculateContentPreferredWidth(string? placeholderText)
     {
-        if (!string.IsNullOrEmpty(text))
-        {
-            return TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
-        }
-
-        if (!string.IsNullOrEmpty(placeholderText))
-        {
-            return TextUtils.CalculateTextSize(placeholderText, FontSize, FontFamily, FontStyle, FontWeight).Width;
-        }
-
-        return DateTimeUtils.CalculateWidestFormattedTimeSpanSize(
+        var preferredWidth = DateTimeUtils.CalculateWidestFormattedTimeSpanSize(
             ClockIdentifier == ClockIdentifierType.HourClock12,
             AmText, PmText,
             FontSize, FontFamily, FontStyle, FontWeight).Width;
+
+        if (!string.IsNullOrEmpty(placeholderText))
+        {
+            var placeholderWidth = TextUtils.CalculateTextSize(placeholderText, FontSize, FontFamily, FontStyle, FontWeight).Width;
+            preferredWidth = Math.Max(preferredWidth, placeholderWidth);
+        }
+
+        return preferredWidth;
     }
 
     protected override void OnAttachedToLogicalTree(LogicalTreeAttachmentEventArgs e)

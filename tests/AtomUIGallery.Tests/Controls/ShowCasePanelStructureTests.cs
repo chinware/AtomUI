@@ -50,6 +50,7 @@ public class ShowCasePanelStructureTests
         panelTheme.ShouldContain("VerticalScrollBarVisibility=\"Auto\"");
         panelTheme.ShouldContain("Selector=\"^[IsScrollEnabled=False]\"");
         itemTheme.ShouldContain("ShowCaseItemTokenResource");
+        itemTheme.ShouldContain("ShowCaseItemTokenResource BadgePreviewMargin");
         var panelSource = ReadRepoFile("src/AtomUI.Toolkits.GalleryBase/Controls/ShowCasePanel.axaml.cs");
         panelSource.ShouldContain("ContentMarginProperty");
         panelSource.ShouldContain("IsScrollEnabledProperty");
@@ -58,6 +59,7 @@ public class ShowCasePanelStructureTests
         itemTheme.ShouldNotContain("Padding=\"20\"");
         itemTheme.ShouldNotContain("CornerRadius=\"8\"");
         itemTheme.ShouldNotContain("Margin=\"0, 0, 0, 40\"");
+        itemToken.ShouldContain("BadgePreviewMargin");
     }
 
     [Fact]
@@ -243,6 +245,45 @@ public class ShowCasePanelStructureTests
             targetRight.ShouldNotBeNull();
             labelRight.Value.X.ShouldBeGreaterThan(targetRight.Value.X,
                 "ShowCaseItem version RibbonBadge should overhang the card's final right edge instead of stopping inside it.");
+        });
+    }
+
+    [Fact]
+    public void ShowCaseItem_Badge_Template_Reserves_Top_Space_For_Ribbon_Label()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var previewContent = new Border
+        {
+            Width  = 520,
+            Height = 40
+        };
+        var item = new ShowCaseItem
+        {
+            Title       = "Feature",
+            Description = "Feature item",
+            BadgeText   = "v6.0.8",
+            Content     = previewContent
+        };
+        var visualLayerManager = new VisualLayerManager
+        {
+            EnableAdornerLayer = true,
+            Child              = item
+        };
+
+        ShowInWindow(visualLayerManager, () =>
+        {
+            var label = visualLayerManager.GetVisualDescendants()
+                                          .OfType<TextBlock>()
+                                          .Single(textBlock => textBlock.Text == "v6.0.8");
+
+            var labelBottom = label.TranslatePoint(new Point(0, label.Bounds.Height), visualLayerManager);
+            var contentTop  = previewContent.TranslatePoint(new Point(0, 0), visualLayerManager);
+
+            labelBottom.ShouldNotBeNull();
+            contentTop.ShouldNotBeNull();
+            contentTop.Value.Y.ShouldBeGreaterThanOrEqualTo(labelBottom.Value.Y,
+                "ShowCaseItem version badge must not overlap the top preview content.");
         });
     }
 

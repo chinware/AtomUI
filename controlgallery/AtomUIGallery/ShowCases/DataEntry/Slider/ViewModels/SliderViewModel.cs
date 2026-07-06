@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
@@ -20,6 +22,11 @@ public class SliderViewModel : ReactiveObject, IRoutableViewModel
     private ObservableCollection<SliderApiRow>? _apiRows;
     private ObservableCollection<SliderDesignTokenRow>? _designTokenRows;
     private List<SliderMark>? _sliderMarks;
+    private SliderRangeValue _boundRangeValue = new()
+    {
+        StartValue = 20,
+        EndValue   = 60
+    };
 
     public ObservableCollection<SliderApiRow>? ApiRows
     {
@@ -47,9 +54,50 @@ public class SliderViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _normalEnabled, value);
     }
 
+    public SliderRangeValue BoundRangeValue
+    {
+        get => _boundRangeValue;
+        set
+        {
+            if (_boundRangeValue == value)
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _boundRangeValue, value);
+            this.RaisePropertyChanged(nameof(BoundRangeValueText));
+        }
+    }
+
+    public string BoundRangeValueText => string.Format(
+        CultureInfo.CurrentCulture,
+        "{0:0.#} - {1:0.#}",
+        BoundRangeValue.StartValue,
+        BoundRangeValue.EndValue);
+
+    public ReactiveCommand<Unit, Unit> SetBoundRangeValueCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> ClearBoundRangeValueCommand { get; }
+
     public SliderViewModel(IScreen screen)
     {
-        HostScreen = screen;
+        HostScreen                   = screen;
+        SetBoundRangeValueCommand    = ReactiveCommand.Create(SetBoundRangeValue);
+        ClearBoundRangeValueCommand  = ReactiveCommand.Create(ClearBoundRangeValue);
+    }
+
+    private void SetBoundRangeValue()
+    {
+        BoundRangeValue = new SliderRangeValue
+        {
+            StartValue = 35,
+            EndValue   = 85
+        };
+    }
+
+    private void ClearBoundRangeValue()
+    {
+        BoundRangeValue = default;
     }
 
     public void EnsureApiRows()
@@ -147,6 +195,11 @@ public class SliderViewModel : ReactiveObject, IRoutableViewModel
             SliderShowCaseLangResourceKind.ApiPropertyIsIncluded                      => en_US.ApiPropertyIsIncluded,
             SliderShowCaseLangResourceKind.ApiPropertyIsMotionEnabled                 => en_US.ApiPropertyIsMotionEnabled,
             SliderShowCaseLangResourceKind.ApiPropertyIsWaveSpiritEnabled             => en_US.ApiPropertyIsWaveSpiritEnabled,
+            SliderShowCaseLangResourceKind.RangeValueBindingTitle                     => en_US.RangeValueBindingTitle,
+            SliderShowCaseLangResourceKind.RangeValueBindingDescription               => en_US.RangeValueBindingDescription,
+            SliderShowCaseLangResourceKind.P2TextBoundRangeValue                      => en_US.P2TextBoundRangeValue,
+            SliderShowCaseLangResourceKind.P2ContentSetRange                          => en_US.P2ContentSetRange,
+            SliderShowCaseLangResourceKind.P2ContentClear                             => en_US.P2ContentClear,
             SliderShowCaseLangResourceKind.TokenNameSliderTrackSize                   => en_US.TokenNameSliderTrackSize,
             SliderShowCaseLangResourceKind.TokenNameRailSize                          => en_US.TokenNameRailSize,
             SliderShowCaseLangResourceKind.TokenNameMarkSize                          => en_US.TokenNameMarkSize,

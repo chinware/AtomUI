@@ -55,6 +55,40 @@ public class TimePickerViewModel : ReactiveObject, IRoutableViewModel
 
     public string BoundSelectedTimeText => BoundSelectedTime?.ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture) ?? "-";
 
+    private TimeSpan? _boundRangeStartSelectedTime = new(9, 0, 0);
+
+    public TimeSpan? BoundRangeStartSelectedTime
+    {
+        get => _boundRangeStartSelectedTime;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _boundRangeStartSelectedTime, value);
+            this.RaisePropertyChanged(nameof(BoundRangeSelectedTimeText));
+        }
+    }
+
+    private TimeSpan? _boundRangeEndSelectedTime = new(18, 0, 0);
+
+    public TimeSpan? BoundRangeEndSelectedTime
+    {
+        get => _boundRangeEndSelectedTime;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _boundRangeEndSelectedTime, value);
+            this.RaisePropertyChanged(nameof(BoundRangeSelectedTimeText));
+        }
+    }
+
+    public string BoundRangeSelectedTimeText
+    {
+        get
+        {
+            var startText = BoundRangeStartSelectedTime?.ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture) ?? "-";
+            var endText   = BoundRangeEndSelectedTime?.ToString(@"hh\:mm\:ss", CultureInfo.CurrentCulture) ?? "-";
+            return $"{startText} → {endText}";
+        }
+    }
+
     public TimePickerViewModel(IScreen screen)
     {
         HostScreen = screen;
@@ -154,7 +188,9 @@ public class TimePickerViewModel : ReactiveObject, IRoutableViewModel
             TimePickerShowCaseLangResourceKind.BindingTitle                             => en_US.BindingTitle,
             TimePickerShowCaseLangResourceKind.BindingDescription                       => en_US.BindingDescription,
             TimePickerShowCaseLangResourceKind.P2TextSelectedTime                       => en_US.P2TextSelectedTime,
+            TimePickerShowCaseLangResourceKind.P2TextSelectedTimeRange                  => en_US.P2TextSelectedTimeRange,
             TimePickerShowCaseLangResourceKind.P2ContentSetNoon                         => en_US.P2ContentSetNoon,
+            TimePickerShowCaseLangResourceKind.P2ContentSetWorkHours                    => en_US.P2ContentSetWorkHours,
             TimePickerShowCaseLangResourceKind.P2ContentClear                           => en_US.P2ContentClear,
             _                                                                           => kind.ToString()
         };

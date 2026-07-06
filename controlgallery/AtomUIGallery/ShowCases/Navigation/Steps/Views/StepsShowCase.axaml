@@ -99,17 +99,26 @@
                     <gallery:ShowCaseItem
                         Title="{gallery:StepsShowCaseLangResource SwitchStepTitle}"
                         Description="{gallery:StepsShowCaseLangResource SwitchStepDescription}"
+                        BadgeText="v6.0.8"
                         IsOccupyEntireRow="True"
                         MinHeight="200"
                         IsDeferredContentEnabled="True">
                         <gallery:ShowCaseItem.DeferredContentTemplate>
                             <DataTemplate x:DataType="vm:StepsViewModel">
                                 <StackPanel Orientation="Vertical" Spacing="20" Loaded="HandleInteractiveStepsLoaded">
-                                    <atom:Steps Name="CurrentStepContentSteps" CurrentStep="{Binding CurrentStep}">
+                                    <atom:Steps Name="CurrentStepContentSteps"
+                                                CurrentStep="{Binding CurrentStep}"
+                                                IsItemClickable="True">
                                         <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderFirst}" Content="{gallery:StepsShowCaseLangResource P2ContentFirstContent}" />
                                         <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderSecond}" Content="{gallery:StepsShowCaseLangResource P2ContentSecondContent}" />
                                         <atom:StepsItem Header="{gallery:StepsShowCaseLangResource P2HeaderThird}" Content="{gallery:StepsShowCaseLangResource P2ContentLastContent}" />
                                     </atom:Steps>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                                        <atom:TextBlock VerticalAlignment="Center"
+                                                        Text="{gallery:StepsShowCaseLangResource P2TextCurrentStep}" />
+                                        <atom:TextBlock VerticalAlignment="Center"
+                                                        Text="{Binding CurrentStepText}" />
+                                    </StackPanel>
                                     <atom:DashedBorder BorderThickness="1"
                                                        BorderBrush="{atom:SharedTokenResource ColorBorder}"
                                                        StrokeDashArray="{Binding DashedArray, RelativeSource={RelativeSource AncestorType=vm:StepsShowCase}}"

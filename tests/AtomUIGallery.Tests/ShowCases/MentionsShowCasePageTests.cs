@@ -45,10 +45,12 @@ public class MentionsShowCasePageTests
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:MentionsShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(10);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(10);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:MentionsViewModel\"").ShouldBe(10);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(11);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(11);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:MentionsViewModel\"").ShouldBe(11);
         source.ShouldContain("MentionsShowCaseLangResource BasicTitle");
+        source.ShouldContain("MentionsShowCaseLangResource ValueBindingTitle");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("MentionsShowCaseLangResource SizeTypeTitle");
         source.ShouldContain("MentionsShowCaseLangResource SizeTypeDescription");
         source.ShouldContain("MentionsShowCaseLangResource VariantsTitle");
@@ -97,7 +99,7 @@ public class MentionsShowCasePageTests
         codeBehindSource.ShouldNotContain("AutoSizeMentions");
         codeBehindSource.ShouldNotContain("ClearableMentions1");
         codeBehindSource.ShouldNotContain("ClearableMentions2");
-        CountOccurrences(pageSource, "OptionsSource=\"{Binding BasicMentionOptions}\"").ShouldBe(13);
+        CountOccurrences(pageSource, "OptionsSource=\"{Binding BasicMentionOptions}\"").ShouldBe(14);
         pageSource.ShouldContain("OptionsAsyncLoader=\"{Binding MentionOptionAsyncLoader}\"");
         pageSource.ShouldContain("TriggerPrefix=\"{Binding MentionTriggers}\"");
         pageSource.ShouldContain("CandidateTriggered=\"HandleCandidateTriggered\"");
@@ -159,6 +161,7 @@ public class MentionsShowCasePageTests
             source.ShouldContain("P2PlaceholderTextCustom");
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
+            source.ShouldContain("ValueBindingTitle");
             source.ShouldContain("ApiPropertyOptionsSource");
             source.ShouldContain("ApiPropertyOptionsAsyncLoader");
             source.ShouldContain("ApiPropertyTriggerPrefix");

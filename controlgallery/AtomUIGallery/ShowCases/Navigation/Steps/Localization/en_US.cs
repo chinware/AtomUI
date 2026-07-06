@@ -28,7 +28,7 @@ internal partial class en_US
     public const string TokenColumnDescription = "Description";
     public const string TokenColumnScope = "Scope";
     public const string TokenColumnStatus = "Status";
-    public const string ApiPropertyCurrentStep = "Sets or binds the current active step index.";
+    public const string ApiPropertyCurrentStep = "Sets or binds the current active step index. Defaults to TwoWay binding.";
     public const string ApiPropertyInitialStep = "Sets the initial active step when the control is first configured.";
     public const string ApiPropertyProgressValue = "Progress percentage used by the current step when item progress is visible.";
     public const string ApiPropertyCurrentStepStatus = "Status applied to the current step.";
@@ -71,7 +71,7 @@ internal partial class en_US
     public const string WithIconTitle = "With icon";
     public const string WithIconDescription = "You can use your own custom icons by setting the property icon for items.";
     public const string SwitchStepTitle = "Switch Step";
-    public const string SwitchStepDescription = "Cooperate with the content and buttons, to represent the progress of a process.";
+    public const string SwitchStepDescription = "Cooperate with content, buttons, and clickable steps to represent process progress with CurrentStep binding.";
     public const string VerticalTitle = "Vertical";
     public const string VerticalDescription = "A simple step bar in the vertical direction.";
     public const string VerticalMiniVersionTitle = "Vertical mini version";
@@ -118,6 +118,7 @@ internal partial class en_US
     public const string P2TextAntDesignTitleN2 = "Ant Design Title 2";
     public const string P2TextAntDesignTitleN3 = "Ant Design Title 3";
     public const string P2TextAntDesignTitleN4 = "Ant Design Title 4";
+    public const string P2TextCurrentStep = "CurrentStep:";
 
     public const string P2ContentFirstContent = "First-content";
 

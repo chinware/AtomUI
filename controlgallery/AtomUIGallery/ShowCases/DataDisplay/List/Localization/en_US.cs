@@ -21,6 +21,7 @@ internal partial class en_US
     public const string ApiPropertySizeType = "Controls list item density.";
     public const string ApiPropertyIsBorderless = "Removes the list surface border.";
     public const string ApiPropertySelectionMode = "Controls single, multiple, or toggle selection behavior.";
+    public const string ApiPropertySelectedItems = "Selected item collection. Defaults to TwoWay binding and participates in Avalonia data validation.";
     public const string ApiPropertyIsShowSelectedIndicator = "Shows a selected indicator inside selected items.";
     public const string ApiPropertyIsShowEmptyIndicator = "Shows the empty indicator when there are no items.";
     public const string ApiPropertyIsGroupEnabled = "Groups items by their group value.";
@@ -60,6 +61,8 @@ internal partial class en_US
     public const string BasicUsageDescription = "Basic usage example.";
     public const string SelectionTitle = "Selection";
     public const string SelectionDescription = "You can set single selection, multiple selection or no selection.";
+    public const string SelectedItemsBindingTitle = "SelectedItems binding";
+    public const string SelectedItemsBindingDescription = "SelectedItems can be bound without an explicit Mode=TwoWay; both user selection and collection mutations stay synchronized.";
     public const string GroupTitle = "Group";
     public const string GroupDescription = "You can group the data based on conditions.";
     public const string ItemDisabledTitle = "Item disabled";
@@ -84,6 +87,10 @@ internal partial class en_US
     public const string P2ContentSingle = "Single";
     public const string P2ContentMultiple = "Multiple";
     public const string P2ContentToggle = "Toggle";
+    public const string P2TextSelectedItems = "Selected:";
+    public const string P2TextNoSelection = "None";
+    public const string P2ContentSelectColors = "Select Green / Yellow";
+    public const string P2ContentClearSelection = "Clear";
     public const string P2ColorBlue = "Blue";
     public const string P2ColorGreen = "Green";
     public const string P2ColorRed = "Red";

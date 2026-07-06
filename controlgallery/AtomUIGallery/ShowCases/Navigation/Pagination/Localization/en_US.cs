@@ -18,8 +18,8 @@ internal partial class en_US
     public const string ApiColumnType = "Type";
     public const string ApiColumnDefault = "Default";
     public const string ApiPropertyTotal = "Total number of records across all pages.";
-    public const string ApiPropertyCurrentPage = "Current one-based page index.";
-    public const string ApiPropertyPageSize = "Number of records represented by each page.";
+    public const string ApiPropertyCurrentPage = "Current one-based page index. Defaults to TwoWay binding.";
+    public const string ApiPropertyPageSize = "Number of records represented by each page. Defaults to TwoWay binding.";
     public const string ApiPropertyPageCount = "Computed number of pages from total and page size.";
     public const string ApiPropertyIsHideOnSinglePage = "Hides pagination when total records fit on a single page.";
     public const string ApiPropertyAlign = "Aligns the pagination content to the start, center, or end.";
@@ -53,6 +53,8 @@ internal partial class en_US
     public const string TokenStatusStable = "Stable";
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Basic pagination.";
+    public const string BindingTitle = "Controlled binding";
+    public const string BindingDescription = "CurrentPage and PageSize can be bound without an explicit Mode=TwoWay; page clicks and size changes write back to the view model.";
     public const string AlignTitle = "Align";
     public const string AlignDescription = "Support three alignment modes: left alignment, center alignment, right alignment.";
     public const string MoreTitle = "More";
@@ -63,5 +65,9 @@ internal partial class en_US
     public const string TotalNumberDescription = "You can show the total number of data by setting showTotal.";
     public const string SimpleModeTitle = "Simple mode";
     public const string SimpleModeDescription = "Simple mode.";
+    public const string P2TextCurrentPage = "CurrentPage:";
+    public const string P2TextPageSize = "PageSize:";
+    public const string P2ContentSetPage = "Set page 5 / 20";
+    public const string P2ContentReset = "Reset";
 
 }

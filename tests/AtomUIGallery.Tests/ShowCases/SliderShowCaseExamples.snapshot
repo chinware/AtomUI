@@ -31,6 +31,35 @@ RangeValue="20, 80" />
 </StackPanel>
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
+Title="{gallery:SliderShowCaseLangResource RangeValueBindingTitle}"
+Description="{gallery:SliderShowCaseLangResource RangeValueBindingDescription}"
+BadgeText="v6.0.8">
+<StackPanel Orientation="Vertical" Spacing="12">
+<atom:Slider
+Width="260"
+Maximum="100"
+Minimum="0"
+IsRangeMode="True"
+IsSnapToTickEnabled="True"
+TickFrequency="5"
+RangeValue="{Binding BoundRangeValue}" />
+<StackPanel Orientation="Horizontal" Spacing="8">
+<atom:TextBlock VerticalAlignment="Center"
+Text="{gallery:SliderShowCaseLangResource P2TextBoundRangeValue}" />
+<atom:TextBlock VerticalAlignment="Center"
+Text="{Binding BoundRangeValueText}" />
+</StackPanel>
+<StackPanel Orientation="Horizontal" Spacing="10">
+<atom:Button SizeType="Small"
+Command="{Binding SetBoundRangeValueCommand}"
+Content="{gallery:SliderShowCaseLangResource P2ContentSetRange}" />
+<atom:Button SizeType="Small"
+Command="{Binding ClearBoundRangeValueCommand}"
+Content="{gallery:SliderShowCaseLangResource P2ContentClear}" />
+</StackPanel>
+</StackPanel>
+</gallery:ShowCaseItem>
+<gallery:ShowCaseItem
 Title="{gallery:SliderShowCaseLangResource CustomizeTooltipTitle}"
 Description="{gallery:SliderShowCaseLangResource CustomizeTooltipDescription}">
 <StackPanel Orientation="Vertical" Spacing="20">

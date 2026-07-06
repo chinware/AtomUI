@@ -279,7 +279,7 @@ public class RangeTimePicker : RangeInfoPickerInput
         }
         else
         {
-            Text = null;
+            ClearHoverSelectedInfo();
         }
     }
     
@@ -430,8 +430,8 @@ public class RangeTimePicker : RangeInfoPickerInput
         else
         {
             var preferredInputWidth = Math.Max(
-                CalculateContentPreferredWidth(Text, PlaceholderText),
-                CalculateContentPreferredWidth(SecondaryText, SecondaryPlaceholderText));
+                CalculateContentPreferredWidth(PlaceholderText),
+                CalculateContentPreferredWidth(SecondaryPlaceholderText));
 
             if (!double.IsNaN(MinWidth))
             {
@@ -447,53 +447,45 @@ public class RangeTimePicker : RangeInfoPickerInput
         }
     }
 
-    private double CalculateContentPreferredWidth(string? text, string? placeholderText)
+    private double CalculateContentPreferredWidth(string? placeholderText)
     {
-        if (!string.IsNullOrEmpty(text))
-        {
-            return TextUtils.CalculateTextSize(text, FontSize, FontFamily, FontStyle, FontWeight).Width;
-        }
-
-        if (!string.IsNullOrEmpty(placeholderText))
-        {
-            return TextUtils.CalculateTextSize(placeholderText, FontSize, FontFamily, FontStyle, FontWeight).Width;
-        }
-
-        return DateTimeUtils.CalculateWidestFormattedTimeSpanSize(
+        var preferredWidth = DateTimeUtils.CalculateWidestFormattedTimeSpanSize(
             ClockIdentifier == ClockIdentifierType.HourClock12,
             AmText, PmText,
             FontSize, FontFamily, FontStyle, FontWeight).Width;
+
+        if (!string.IsNullOrEmpty(placeholderText))
+        {
+            var placeholderWidth = TextUtils.CalculateTextSize(placeholderText, FontSize, FontFamily, FontStyle, FontWeight).Width;
+            preferredWidth = Math.Max(preferredWidth, placeholderWidth);
+        }
+
+        return preferredWidth;
     }
     
     protected void ResetRangeStartTimeValue()
     {
-        if (InfoInputBox is not null)
+        if (RangeStartDefaultTime is not null)
         {
-            if (RangeStartDefaultTime is not null)
-            {
-                InfoInputBox.Text = DateTimeUtils.FormatTimeSpan(RangeStartDefaultTime.Value,
-                    ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
-            }
-            else
-            {
-                InfoInputBox.Clear();
-            }
+            Text = DateTimeUtils.FormatTimeSpan(RangeStartDefaultTime.Value,
+                ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
+        }
+        else
+        {
+            Text = null;
         }
     }
     
     protected void ResetRangeEndTimeValue()
     {
-        if (SecondaryInfoInputBox is not null)
+        if (RangeEndDefaultTime is not null)
         {
-            if (RangeEndDefaultTime is not null)
-            {
-                SecondaryInfoInputBox.Text = DateTimeUtils.FormatTimeSpan(RangeEndDefaultTime.Value,
-                    ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
-            }
-            else
-            {
-                SecondaryInfoInputBox.Clear();
-            }
+            SecondaryText = DateTimeUtils.FormatTimeSpan(RangeEndDefaultTime.Value,
+                ClockIdentifier == ClockIdentifierType.HourClock12, AmText, PmText);
+        }
+        else
+        {
+            SecondaryText = null;
         }
     }
     

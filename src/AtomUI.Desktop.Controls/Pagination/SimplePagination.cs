@@ -112,7 +112,7 @@ public class SimplePagination : AbstractPagination
     {
         if (sender is PaginationNavItem navItemSender)
         {
-            CurrentPage = navItemSender.PageNumber;
+            SetCurrentValue(CurrentPageProperty, navItemSender.PageNumber);
             HandlePageConditionChanged();
         }
     }
@@ -127,7 +127,7 @@ public class SimplePagination : AbstractPagination
                 {
                     var pageSize    = PageSize <= 0 ? DefaultPageSize : PageSize;
                     var pageCount   = (int)Math.Ceiling(Total / (double)pageSize);
-                    CurrentPage = Math.Max(1, Math.Min(pageNumber, pageCount));
+                    SetCurrentValue(CurrentPageProperty, Math.Max(1, Math.Min(pageNumber, pageCount)));
                 }
             }
         }

@@ -67,7 +67,7 @@
                                 Padding="{gallery:ShowCaseItemTokenResource CardPadding}"
                                 CornerRadius="{gallery:ShowCaseItemTokenResource CardCornerRadius}">
                             <StackPanel Orientation="Vertical">
-                                <Grid Margin="{gallery:ShowCaseItemTokenResource PreviewMargin}">
+                                <Grid Margin="{gallery:ShowCaseItemTokenResource BadgePreviewMargin}">
                                     <Border Name="PART_DeferredPlaceholder"
                                             IsVisible="{Binding IsDeferredPlaceholderVisible, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"
                                             MinHeight="{Binding DeferredPlaceholderHeight, RelativeSource={RelativeSource AncestorType=gallery:ShowCaseItem}}"

@@ -8,7 +8,7 @@ internal partial class zh_TW
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "點擊 TimePicker 後，可以在面板中選擇或輸入時間。";
     public const string BindingTitle = "SelectedTime 綁定";
-    public const string BindingDescription = "SelectedTime 默認與 ViewModel 雙向同步，無需顯式設置 Binding Mode=TwoWay。";
+    public const string BindingDescription = "SelectedTime、RangeStartSelectedTime 與 RangeEndSelectedTime 默認與 ViewModel 雙向同步，無需顯式設置 Binding Mode=TwoWay。";
     public const string PickerDisplayTimeTitle = "彈出面板顯示時間";
     public const string PickerDisplayTimeDescription = "打開彈出面板時定位到指定時間，但不提交選中值。";
     public const string HourFormatsTitle = "12 小時和 24 小時格式";
@@ -39,7 +39,9 @@ internal partial class zh_TW
     public const string P2ContentSmall = "小號";
     public const string P2ContentCustom = "自定義";
     public const string P2TextSelectedTime = "選中值：";
+    public const string P2TextSelectedTimeRange = "選中範圍：";
     public const string P2ContentSetNoon = "設置為中午";
+    public const string P2ContentSetWorkHours = "設置工作時間";
     public const string P2ContentClear = "清空";
     public const string PageSubtitle = "從彈出時間面板中選擇單個時間或時間範圍。";
     public const string PageDescription = "TimePicker 支援 12 小時和 24 小時制、尺寸變體、禁用狀態、分鐘和秒的步進選項、視覺變體、校驗狀態以及範圍選擇。";

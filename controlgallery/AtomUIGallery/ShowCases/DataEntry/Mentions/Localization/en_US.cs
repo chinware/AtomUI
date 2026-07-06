@@ -8,6 +8,8 @@ internal partial class en_US
 {
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The simplest use.";
+    public const string ValueBindingTitle = "Value binding";
+    public const string ValueBindingDescription = "Value now defaults to TwoWay binding, so typing or clearing the input updates the ViewModel without an explicit binding mode.";
     public const string SizeTypeTitle = "Mentions size";
     public const string SizeTypeDescription = "Mentions supports large, middle, small, and Custom sizes with local height and font overrides.";
     public const string VariantsTitle = "Variants";
@@ -49,7 +51,7 @@ internal partial class en_US
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";
     public const string ApiColumnDefault = "Default";
-    public const string ApiPropertyValue = "Current text value of the mentions input.";
+    public const string ApiPropertyValue = "Current text value of the mentions input. Defaults to TwoWay binding and participates in Avalonia data validation.";
     public const string ApiPropertyDefaultValue = "Initial text value applied when the control is created.";
     public const string ApiPropertyOptionsSource = "Static option source used for mention suggestions.";
     public const string ApiPropertyOptionsAsyncLoader = "Asynchronous loader that provides options from the current mention context.";
@@ -79,5 +81,8 @@ internal partial class en_US
     public const string TokenNameMinPopupWidth = "Minimum width of the candidate popup.";
     public const string TokenScopeComponent = "Mentions";
     public const string TokenStatusStable = "Stable";
+    public const string P2TextBoundValue = "Bound value:";
+    public const string P2ContentSetMention = "Set mention";
+    public const string P2ContentClear = "Clear";
 
 }

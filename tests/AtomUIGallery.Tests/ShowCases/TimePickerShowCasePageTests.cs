@@ -54,8 +54,23 @@ public class TimePickerShowCasePageTests
         source.ShouldContain("Text=\"{Binding BoundSelectedTimeText}\"");
         source.ShouldContain("Click=\"SetBoundSelectedTimeToNoon\"");
         source.ShouldContain("Click=\"ClearBoundSelectedTime\"");
+        source.ShouldContain("RangeStartSelectedTime=\"{Binding BoundRangeStartSelectedTime}\"");
+        source.ShouldContain("RangeEndSelectedTime=\"{Binding BoundRangeEndSelectedTime}\"");
+        source.ShouldContain("Text=\"{Binding BoundRangeSelectedTimeText}\"");
+        source.ShouldContain("Click=\"SetBoundSelectedTimeRangeToWorkHours\"");
+        source.ShouldContain("Click=\"ClearBoundSelectedTimeRange\"");
+        source.ShouldNotContain("TimePickerShowCaseLangResource RangeBindingTitle");
+        source.ShouldNotContain("TimePickerShowCaseLangResource RangeBindingDescription");
+        AssertResourceOrder(
+            ExtractShowCaseItemByTitle(source, "TimePickerShowCaseLangResource BindingTitle"),
+            "SelectedTime=\"{Binding BoundSelectedTime}\"",
+            "RangeStartSelectedTime=\"{Binding BoundRangeStartSelectedTime}\"");
         source.ShouldContain("TimePickerShowCaseLangResource PickerDisplayTimeTitle");
         source.ShouldContain("PickerDisplayTime=\"14:25:30\"");
+        AssertResourceOrder(
+            source,
+            "TimePickerShowCaseLangResource BindingTitle",
+            "TimePickerShowCaseLangResource PickerDisplayTimeTitle");
         source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("TimePickerShowCaseLangResource HourFormatsTitle");
         source.ShouldContain("Name=\"PickerSizeTypeOptionGroup\"");
@@ -158,8 +173,12 @@ public class TimePickerShowCasePageTests
             source.ShouldContain("P2ContentCustom");
             source.ShouldContain("BindingTitle");
             source.ShouldContain("BindingDescription");
+            source.ShouldNotContain("RangeBindingTitle");
+            source.ShouldNotContain("RangeBindingDescription");
             source.ShouldContain("P2TextSelectedTime");
+            source.ShouldContain("P2TextSelectedTimeRange");
             source.ShouldContain("P2ContentSetNoon");
+            source.ShouldContain("P2ContentSetWorkHours");
             source.ShouldContain("P2ContentClear");
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
@@ -202,6 +221,34 @@ public class TimePickerShowCasePageTests
     private static string NormalizeMarkup(string source)
     {
         return ShowCaseSnapshotMarkup.Normalize(source);
+    }
+
+    private static void AssertResourceOrder(string source, params string[] resources)
+    {
+        var previousIndex = -1;
+        foreach (var resource in resources)
+        {
+            var index = source.IndexOf(resource, StringComparison.Ordinal);
+            index.ShouldBeGreaterThan(previousIndex, $"{resource} should appear after the previous resource.");
+            previousIndex = index;
+        }
+    }
+
+    private static string ExtractShowCaseItemByTitle(string source, string titleResource)
+    {
+        var titleIndex = source.IndexOf(titleResource, StringComparison.Ordinal);
+        titleIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+        const string itemStartMarker = "<gallery:ShowCaseItem";
+        const string itemEndMarker   = "</gallery:ShowCaseItem>";
+
+        var itemStart = source.LastIndexOf(itemStartMarker, titleIndex, StringComparison.Ordinal);
+        itemStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemEnd = source.IndexOf(itemEndMarker, titleIndex, StringComparison.Ordinal);
+        itemEnd.ShouldBeGreaterThan(titleIndex);
+
+        return source[itemStart..(itemEnd + itemEndMarker.Length)];
     }
 
     private static string ComputeSha256(string source)

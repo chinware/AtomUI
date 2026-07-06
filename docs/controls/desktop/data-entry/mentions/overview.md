@@ -40,7 +40,7 @@ Mentions 的公共 API 由文本值、触发符、候选数据、过滤、弹层
 
 | API | 类型 | 语义 |
 | --- | --- | --- |
-| `Value` | `string?` | 当前文本值，双向绑定到内部 `MentionTextArea.Text`。 |
+| `Value` | `string?` | 当前文本值，默认 `TwoWay` 绑定到内部 `MentionTextArea.Text`，并接入 Avalonia `DataValidationErrors`。 |
 | `DefaultValue` | `string?` | 初始化时 `Value` 为空时写入的默认文本。 |
 | `PlaceholderText` | `string?` | 空文本状态的占位提示。 |
 | `IsReadOnly` | `bool` | 只读状态，内部文本区域不可编辑。 |
@@ -174,7 +174,7 @@ Disabled / invisible / window deactivated
 - `F4` 切换弹层打开状态。
 - 弹层关闭时，`Down` 可打开弹层，除非该按键被 XY focus 导航占用。
 
-Form 集成以 `Value` 作为表单值。错误校验状态通过 `DataValidationErrors` 投射到外层 AddOn 和内部 `MentionTextArea`；`NotifyValidateStatus` 只同步 warning、success、validating 等 Form 扩展状态。Form feedback 控件传递给内部 `MentionTextArea`。
+Form 集成以 `Value` 作为表单值。`Value` 是用户拥有的受控文本值，默认双向绑定；错误校验状态通过 `DataValidationErrors` 投射到外层 AddOn 和内部 `MentionTextArea`；`NotifyValidateStatus` 只同步 warning、success、validating 等 Form 扩展状态。Form feedback 控件传递给内部 `MentionTextArea`。
 
 ## 5. 视觉与主题模型
 
