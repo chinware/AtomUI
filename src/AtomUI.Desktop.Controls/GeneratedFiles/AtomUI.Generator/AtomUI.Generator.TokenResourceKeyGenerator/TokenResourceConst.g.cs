@@ -1252,6 +1252,7 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         PictureListPreviewerSize,
         TextListItemMargin,
         TextListNamePadding,
+        TextListProgressPadding,
         UploadThumbnailSize
     }
 

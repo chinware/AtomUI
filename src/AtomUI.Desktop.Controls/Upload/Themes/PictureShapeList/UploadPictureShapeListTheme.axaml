@@ -10,7 +10,10 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}"
                         ClipToBounds="True">
-                    <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                    <ScrollViewer MaxHeight="{TemplateBinding ListMaxHeight}"
+                                  VerticalScrollBarVisibility="{TemplateBinding ListScrollBarVisibility}">
+                        <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                    </ScrollViewer>
                 </Border>
             </ControlTemplate>
         </Setter>

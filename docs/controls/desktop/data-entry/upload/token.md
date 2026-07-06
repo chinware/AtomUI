@@ -17,7 +17,7 @@ Token 按控件语义分类维护：
 | 分类 | 语义 | 代表 Token |
 | --- | --- | --- |
 | 尺寸与密度 | 控件高度、宽度、图标尺寸、内容最小尺寸。 | `PictureCardSize`、`UploadThumbnailSize`、`DragIconSize`、`PictureListPreviewerSize` |
-| 间距与布局 | padding、margin、gap、offset、popup content padding。 | `TextListItemMargin`、`TextListNamePadding`、`DragIconMargin`、`DragHeaderMargin`、`PictureListItemMargin` |
+| 间距与布局 | padding、margin、gap、offset、popup content padding。 | `TextListItemMargin`、`TextListNamePadding`、`TextListProgressPadding`、`DragIconMargin`、`DragHeaderMargin`、`PictureListItemMargin` |
 | 颜色与状态视觉 | 文本、背景、边框、hover、selected、active、disabled 视觉。 | `ActionsColor` |
 | 结构与装饰 | 圆角、阴影、指示器、弹层和装饰线相关变量。 | 按源码 Token 语义维护 |
 
@@ -37,9 +37,10 @@ Upload 的控件专项模型通过 Theme 消费 Token：
 调整 Upload Token 时必须评估以下范围：
 
 - `Upload`
-- `UploadTaskInfo`
-- `UploadFileList`
+- `UploadFileItem`
+- `UploadList`
 - `UploadPictureList`
+- `UploadPictureShapeList`
 - 对应 Gallery ShowCase 的示例、API 表和 Token 表。
 - Light/Dark 主题、Browser/Desktop 主题和 Compact/Form/Popup 集成场景。
 

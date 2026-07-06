@@ -10,7 +10,13 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{TemplateBinding Padding}"
                         ClipToBounds="True">
-                    <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                    <atom:ScrollViewer IsLiteMode="True"
+                                       AllowAutoHide="True"
+                                       MaxHeight="{TemplateBinding ListMaxHeight}"
+                                       HorizontalScrollBarVisibility="Disabled"
+                                       VerticalScrollBarVisibility="{TemplateBinding ListScrollBarVisibility}">
+                        <ItemsPresenter Name="PART_ItemsPresenter" ItemsPanel="{TemplateBinding ItemsPanel}"/>
+                    </atom:ScrollViewer>
                 </Border>
             </ControlTemplate>
         </Setter>

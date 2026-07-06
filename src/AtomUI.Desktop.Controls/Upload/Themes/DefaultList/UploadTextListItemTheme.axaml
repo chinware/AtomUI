@@ -11,17 +11,21 @@
                                                    Status="{TemplateBinding Status}"
                                                    ErrorMessage="{TemplateBinding ErrorMessage}"
                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
-                    <atom:ProgressBar Name="ProgressBar" 
-                                      SizeType="Small" 
-                                      Value="{TemplateBinding Progress}"
-                                      IsProgressInfoVisible="False"
-                                      IsVisible="False" />
+                    <Border Name="ProgressBarFrame"
+                            Padding="{atom:UploadTokenResource TextListProgressPadding}"
+                            IsHitTestVisible="False"
+                            IsVisible="False">
+                        <atom:ProgressBar Name="ProgressBar"
+                                          SizeType="Small"
+                                          Value="{TemplateBinding Progress}"
+                                          IsProgressInfoVisible="False" />
+                    </Border>
                 </StackPanel>
             </ControlTemplate>
         </Setter>
 
         <Style Selector="^[Status=Uploading]">
-            <Style Selector="^ /template/ atom|ProgressBar#ProgressBar">
+            <Style Selector="^ /template/ Border#ProgressBarFrame">
                 <Setter Property="IsVisible" Value="True" />
             </Style>
         </Style>

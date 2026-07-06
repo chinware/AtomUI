@@ -9,6 +9,7 @@ internal class FileUploadTask
     public object? Context { get; set; }
     public FileUploadResult? Result { get; set; }
     public CancellationTokenSource? CancellationTokenSource { get; set; }
+    internal Task? ExecutionTask { get; set; }
     
     public Action<Guid, UploadFileInfo, double>? UploadProgressHandler { get; set; }
     public Action<Guid, UploadFileInfo, FileUploadResult>? UploadCompletedHandler { get; set; }

@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -13,6 +14,12 @@ internal class UploadList : ItemsControl, IMotionAwareControl
     
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<UploadList>();
+
+    public static readonly StyledProperty<double> ListMaxHeightProperty =
+        Upload.ListMaxHeightProperty.AddOwner<UploadList>();
+
+    public static readonly StyledProperty<ScrollBarVisibility> ListScrollBarVisibilityProperty =
+        Upload.ListScrollBarVisibilityProperty.AddOwner<UploadList>();
     
     public UploadListType ListType
     {
@@ -24,6 +31,18 @@ internal class UploadList : ItemsControl, IMotionAwareControl
     {
         get => GetValue(IsMotionEnabledProperty);
         set => SetValue(IsMotionEnabledProperty, value);
+    }
+
+    public double ListMaxHeight
+    {
+        get => GetValue(ListMaxHeightProperty);
+        set => SetValue(ListMaxHeightProperty, value);
+    }
+
+    public ScrollBarVisibility ListScrollBarVisibility
+    {
+        get => GetValue(ListScrollBarVisibilityProperty);
+        set => SetValue(ListScrollBarVisibilityProperty, value);
     }
     
     #endregion
@@ -60,21 +79,39 @@ internal class UploadList : ItemsControl, IMotionAwareControl
         base.PrepareContainerForItemOverride(container, item, index);
         if (container is AbstractUploadListItem listItem)
         {
-            if (item != null && item is UploadTaskInfo uploadTaskInfo)
+            if (item is UploadFileItem uploadFileItem)
             {
-                listItem[!AbstractUploadListItem.TaskIdProperty]   = uploadTaskInfo[!UploadTaskInfo.TaskIdProperty];
-                listItem[!AbstractUploadListItem.FileNameProperty] = uploadTaskInfo[!UploadTaskInfo.FileNameProperty];
-                listItem[!AbstractUploadListItem.ProgressProperty] = uploadTaskInfo[!UploadTaskInfo.ProgressProperty];
+                listItem[!AbstractUploadListItem.TaskIdProperty]   = uploadFileItem[!UploadFileItem.IdProperty];
+                listItem[!AbstractUploadListItem.FileNameProperty] = uploadFileItem[!UploadFileItem.NameProperty];
+                listItem[!AbstractUploadListItem.ProgressProperty] = uploadFileItem[!UploadFileItem.ProgressProperty];
                 listItem[!AbstractUploadListItem.IsImageFileProperty] =
-                    uploadTaskInfo[!UploadTaskInfo.IsImageFileProperty];
-                listItem[!AbstractUploadListItem.StatusProperty]       = uploadTaskInfo[!UploadTaskInfo.StatusProperty];
-                listItem[!AbstractUploadListItem.ErrorMessageProperty] = uploadTaskInfo[!UploadTaskInfo.ErrorMessageProperty];
-                listItem[!AbstractUploadListItem.FilePathProperty] = uploadTaskInfo[!UploadTaskInfo.FilePathProperty];
+                    uploadFileItem[!UploadFileItem.IsImageFileProperty];
+                listItem[!AbstractUploadListItem.StatusProperty]       = uploadFileItem[!UploadFileItem.StatusProperty];
+                listItem[!AbstractUploadListItem.ErrorMessageProperty] = uploadFileItem[!UploadFileItem.ErrorMessageProperty];
+                listItem[!AbstractUploadListItem.FilePathProperty]     = uploadFileItem[!UploadFileItem.PathProperty];
             }
             listItem[!IsMotionEnabledProperty] = this[!IsMotionEnabledProperty];
             listItem[!ListTypeProperty]        = this[!ListTypeProperty];
             NotifyPrepareUploadListItem(listItem);
         }
+    }
+
+    protected override void ClearContainerForItemOverride(Control container)
+    {
+        if (container is AbstractUploadListItem listItem)
+        {
+            listItem.ClearValue(AbstractUploadListItem.TaskIdProperty);
+            listItem.ClearValue(AbstractUploadListItem.FileNameProperty);
+            listItem.ClearValue(AbstractUploadListItem.ProgressProperty);
+            listItem.ClearValue(AbstractUploadListItem.IsImageFileProperty);
+            listItem.ClearValue(AbstractUploadListItem.StatusProperty);
+            listItem.ClearValue(AbstractUploadListItem.ErrorMessageProperty);
+            listItem.ClearValue(AbstractUploadListItem.FilePathProperty);
+            listItem.ClearValue(IsMotionEnabledProperty);
+            listItem.ClearValue(ListTypeProperty);
+        }
+
+        base.ClearContainerForItemOverride(container);
     }
 
     protected virtual void NotifyPrepareUploadListItem(AbstractUploadListItem listItem)

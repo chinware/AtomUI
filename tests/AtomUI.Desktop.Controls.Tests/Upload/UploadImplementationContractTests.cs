@@ -7,15 +7,14 @@ namespace AtomUI.Desktop.Controls.Tests.Upload;
 public class UploadImplementationContractTests
 {
     [Fact]
-    public void Trigger_Content_File_Select_Request_Event_Is_Registered_On_Trigger_Content()
+    public void Legacy_Trigger_Content_And_Task_Info_Artifacts_Are_Removed()
     {
-        var source = ReadRepoFile("src/AtomUI.Desktop.Controls/Upload/UploadTriggerContent.cs");
-
-        source.ShouldContain("RoutedEvent.Register<UploadTriggerContent, RoutedEventArgs>(nameof(FileSelectRequest), RoutingStrategies.Bubble)");
-        source.ShouldNotContain("RoutedEvent.Register<AbstractUploadListItem, RoutedEventArgs>(nameof(FileSelectRequest)");
+        File.Exists(GetRepoFile("src/AtomUI.Desktop.Controls/Upload/UploadTriggerContent.cs")).ShouldBeFalse();
+        File.Exists(GetRepoFile("src/AtomUI.Desktop.Controls/Upload/UploadTaskInfo.cs")).ShouldBeFalse();
+        File.Exists(GetRepoFile("src/AtomUI.Desktop.Controls/Upload/Themes/UploadTriggerContentTheme.axaml")).ShouldBeFalse();
     }
 
-    private static string ReadRepoFile(string relativePath)
+    private static string GetRepoFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory is not null)
@@ -23,12 +22,12 @@ public class UploadImplementationContractTests
             var candidate = Path.Combine(directory.FullName, relativePath);
             if (File.Exists(candidate))
             {
-                return File.ReadAllText(candidate);
+                return candidate;
             }
 
             directory = directory.Parent;
         }
 
-        throw new FileNotFoundException($"Unable to locate repository file '{relativePath}'.");
+        return Path.Combine(AppContext.BaseDirectory, relativePath);
     }
 }

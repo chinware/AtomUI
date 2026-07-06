@@ -2,6 +2,17 @@
 
 本文档记录 Upload 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## Unreleased
+
+- API
+  - Redesign Upload around `Files` as the single state owner.
+  - Replace directory mode with composable `UploadTrigger.SourceKind`.
+- Theme
+  - Move list scrolling into `UploadList`.
+  - Replace picture trigger fake task with append trigger content.
+- Behavior
+  - Add configurable success auto-remove and pending text.
+
 ## 2026-06-26
 
 - Docs
