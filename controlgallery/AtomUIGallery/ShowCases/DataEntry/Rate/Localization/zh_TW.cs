@@ -23,7 +23,7 @@ internal partial class zh_TW
     public const string ApiPropertyStarColor = "覆蓋已選評分項顏色。";
     public const string ApiPropertyStarBgColor = "覆蓋未選評分項顏色。";
     public const string ApiPropertyCount = "評分項總數。";
-    public const string ApiPropertyValue = "當前選中的評分值。";
+    public const string ApiPropertyValue = "當前選中的評分值，預設 TwoWay 綁定，並支援 Avalonia 資料驗證。";
     public const string ApiPropertyDefaultValue = "未顯式設置 Value 時使用的初始評分值。";
     public const string ApiPropertyIsKeyboardEnabled = "控制是否啟用鍵盤交互。";
     public const string ApiPropertyToolTips = "每個評分值對應的提示文本列表。";
@@ -45,6 +45,8 @@ internal partial class zh_TW
     public const string TokenStatusStable = "穩定";
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "最簡單的用法。";
+    public const string TwoWayBindingTitle = "雙向綁定";
+    public const string TwoWayBindingDescription = "Value 預設使用 TwoWay 綁定，使用者評分和 ViewModel 更新會保持同步。";
     public const string HalfStarTitle = "半星";
     public const string HalfStarDescription = "支持選擇半星。";
     public const string ShowCopywritingTitle = "顯示文案";
@@ -57,6 +59,9 @@ internal partial class zh_TW
     public const string OtherCharacterDescription = "將默認星形替換為其他字符，例如字母、數字、圖標字體，甚至中文文字。";
     public const string P2TextIsallowclearTrue = "允許清除：true";
     public const string P2TextIsallowclearFalse = "允許清除：false";
+    public const string P2ContentSetFourStars = "設為 4 星";
+    public const string P2ContentClear = "清空";
+    public const string P2TwoWayValueSummaryFormat = "目前評分：{0:0.#}";
     public const string P2TooltipTerrible = "糟糕";
     public const string P2TooltipBad = "不好";
     public const string P2TooltipNormal = "一般";

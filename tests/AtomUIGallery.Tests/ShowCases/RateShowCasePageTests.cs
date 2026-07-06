@@ -41,6 +41,8 @@ public class RateShowCasePageTests
         source.ShouldContain("Description=\"{gallery:RateShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("RateShowCaseLangResource BasicTitle");
+        source.ShouldContain("RateShowCaseLangResource TwoWayBindingTitle");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("RateShowCaseLangResource HalfStarTitle");
         source.ShouldContain("RateShowCaseLangResource ShowCopywritingTitle");
         source.ShouldContain("RateShowCaseLangResource ReadOnlyTitle");
@@ -67,6 +69,10 @@ public class RateShowCasePageTests
         pageSource.ShouldContain("Tag=\"DesignToken\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
+        pageSource.ShouldContain("Value=\"{Binding TwoWayValue}\"");
+        pageSource.ShouldContain("Text=\"{Binding TwoWayValueSummary}\"");
+        pageSource.ShouldContain("Command=\"{Binding SetFourStarsCommand}\"");
+        pageSource.ShouldContain("Command=\"{Binding ClearTwoWayValueCommand}\"");
 
         codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
         codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
@@ -125,11 +131,14 @@ public class RateShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
+            source.ShouldContain("TwoWayBindingTitle");
+            source.ShouldContain("TwoWayBindingDescription");
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyIsAllowClear");
             source.ShouldContain("ApiPropertyIsAllowHalf");
             source.ShouldContain("ApiPropertyToolTips");
             source.ShouldContain("ApiPropertyValueChanged");
+            source.ShouldContain("P2TwoWayValueSummaryFormat");
             source.ShouldContain("TokenNameStarColor");
             source.ShouldContain("TokenNameStarHoverScale");
         }

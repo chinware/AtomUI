@@ -15433,6 +15433,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.HalfStarTitle] = global::AtomUIGallery.ShowCases.Rate.en_US.HalfStarTitle;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterDescription] = global::AtomUIGallery.ShowCases.Rate.en_US.OtherCharacterDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterTitle] = global::AtomUIGallery.ShowCases.Rate.en_US.OtherCharacterTitle;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2ContentClear] = global::AtomUIGallery.ShowCases.Rate.en_US.P2ContentClear;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2ContentSetFourStars] = global::AtomUIGallery.ShowCases.Rate.en_US.P2ContentSetFourStars;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TextIsallowclearFalse] = global::AtomUIGallery.ShowCases.Rate.en_US.P2TextIsallowclearFalse;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TextIsallowclearTrue] = global::AtomUIGallery.ShowCases.Rate.en_US.P2TextIsallowclearTrue;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipBad] = global::AtomUIGallery.ShowCases.Rate.en_US.P2TooltipBad;
@@ -15440,6 +15442,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipNormal] = global::AtomUIGallery.ShowCases.Rate.en_US.P2TooltipNormal;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipTerrible] = global::AtomUIGallery.ShowCases.Rate.en_US.P2TooltipTerrible;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipWonderful] = global::AtomUIGallery.ShowCases.Rate.en_US.P2TooltipWonderful;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TwoWayValueSummaryFormat] = global::AtomUIGallery.ShowCases.Rate.en_US.P2TwoWayValueSummaryFormat;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Rate.en_US.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Rate.en_US.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.ReadOnlyDescription] = global::AtomUIGallery.ShowCases.Rate.en_US.ReadOnlyDescription;
@@ -15461,6 +15464,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TokenNameStarSizeSM] = global::AtomUIGallery.ShowCases.Rate.en_US.TokenNameStarSizeSM;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Rate.en_US.TokenScopeComponent;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Rate.en_US.TokenStatusStable;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TwoWayBindingDescription] = global::AtomUIGallery.ShowCases.Rate.en_US.TwoWayBindingDescription;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TwoWayBindingTitle] = global::AtomUIGallery.ShowCases.Rate.en_US.TwoWayBindingTitle;
             }
             catch (System.Exception)
             {
@@ -15515,6 +15520,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.HalfStarTitle] = global::AtomUIGallery.ShowCases.Rate.zh_CN.HalfStarTitle;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterDescription] = global::AtomUIGallery.ShowCases.Rate.zh_CN.OtherCharacterDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterTitle] = global::AtomUIGallery.ShowCases.Rate.zh_CN.OtherCharacterTitle;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2ContentClear] = global::AtomUIGallery.ShowCases.Rate.zh_CN.P2ContentClear;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2ContentSetFourStars] = global::AtomUIGallery.ShowCases.Rate.zh_CN.P2ContentSetFourStars;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TextIsallowclearFalse] = global::AtomUIGallery.ShowCases.Rate.zh_CN.P2TextIsallowclearFalse;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TextIsallowclearTrue] = global::AtomUIGallery.ShowCases.Rate.zh_CN.P2TextIsallowclearTrue;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipBad] = global::AtomUIGallery.ShowCases.Rate.zh_CN.P2TooltipBad;
@@ -15522,6 +15529,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipNormal] = global::AtomUIGallery.ShowCases.Rate.zh_CN.P2TooltipNormal;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipTerrible] = global::AtomUIGallery.ShowCases.Rate.zh_CN.P2TooltipTerrible;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipWonderful] = global::AtomUIGallery.ShowCases.Rate.zh_CN.P2TooltipWonderful;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TwoWayValueSummaryFormat] = global::AtomUIGallery.ShowCases.Rate.zh_CN.P2TwoWayValueSummaryFormat;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Rate.zh_CN.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Rate.zh_CN.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.ReadOnlyDescription] = global::AtomUIGallery.ShowCases.Rate.zh_CN.ReadOnlyDescription;
@@ -15543,6 +15551,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TokenNameStarSizeSM] = global::AtomUIGallery.ShowCases.Rate.zh_CN.TokenNameStarSizeSM;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Rate.zh_CN.TokenScopeComponent;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Rate.zh_CN.TokenStatusStable;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TwoWayBindingDescription] = global::AtomUIGallery.ShowCases.Rate.zh_CN.TwoWayBindingDescription;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TwoWayBindingTitle] = global::AtomUIGallery.ShowCases.Rate.zh_CN.TwoWayBindingTitle;
             }
             catch (System.Exception)
             {
@@ -15597,6 +15607,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.HalfStarTitle] = global::AtomUIGallery.ShowCases.Rate.zh_TW.HalfStarTitle;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterDescription] = global::AtomUIGallery.ShowCases.Rate.zh_TW.OtherCharacterDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.OtherCharacterTitle] = global::AtomUIGallery.ShowCases.Rate.zh_TW.OtherCharacterTitle;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2ContentClear] = global::AtomUIGallery.ShowCases.Rate.zh_TW.P2ContentClear;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2ContentSetFourStars] = global::AtomUIGallery.ShowCases.Rate.zh_TW.P2ContentSetFourStars;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TextIsallowclearFalse] = global::AtomUIGallery.ShowCases.Rate.zh_TW.P2TextIsallowclearFalse;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TextIsallowclearTrue] = global::AtomUIGallery.ShowCases.Rate.zh_TW.P2TextIsallowclearTrue;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipBad] = global::AtomUIGallery.ShowCases.Rate.zh_TW.P2TooltipBad;
@@ -15604,6 +15616,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipNormal] = global::AtomUIGallery.ShowCases.Rate.zh_TW.P2TooltipNormal;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipTerrible] = global::AtomUIGallery.ShowCases.Rate.zh_TW.P2TooltipTerrible;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TooltipWonderful] = global::AtomUIGallery.ShowCases.Rate.zh_TW.P2TooltipWonderful;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.P2TwoWayValueSummaryFormat] = global::AtomUIGallery.ShowCases.Rate.zh_TW.P2TwoWayValueSummaryFormat;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.PageDescription] = global::AtomUIGallery.ShowCases.Rate.zh_TW.PageDescription;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.PageSubtitle] = global::AtomUIGallery.ShowCases.Rate.zh_TW.PageSubtitle;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.ReadOnlyDescription] = global::AtomUIGallery.ShowCases.Rate.zh_TW.ReadOnlyDescription;
@@ -15625,6 +15638,8 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TokenNameStarSizeSM] = global::AtomUIGallery.ShowCases.Rate.zh_TW.TokenNameStarSizeSM;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TokenScopeComponent] = global::AtomUIGallery.ShowCases.Rate.zh_TW.TokenScopeComponent;
                 dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TokenStatusStable] = global::AtomUIGallery.ShowCases.Rate.zh_TW.TokenStatusStable;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TwoWayBindingDescription] = global::AtomUIGallery.ShowCases.Rate.zh_TW.TwoWayBindingDescription;
+                dictionary[global::AtomUIGallery.Localization.RateShowCaseLangResourceKind.TwoWayBindingTitle] = global::AtomUIGallery.ShowCases.Rate.zh_TW.TwoWayBindingTitle;
             }
             catch (System.Exception)
             {

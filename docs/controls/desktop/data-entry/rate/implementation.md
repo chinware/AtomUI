@@ -72,6 +72,8 @@ Public API / ItemsSource / Command / Event
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
 
+`AbstractRate.Value` 是评分控件的 Form value 和当前评分 source of truth。属性注册默认 `BindingMode.TwoWay` 并启用 Avalonia data validation；pointer、keyboard 和 Form set/clear 都应更新 `Value`，再由 `Value` 回放到 `EffectiveValue` 和 `RateItem.SelectedState`。
+
 ## 5. 生命周期与模板接入
 
 生命周期规则：
@@ -106,6 +108,7 @@ Rate 的交互事件应从输入源收敛到控件级语义事件：
 - Template part 重新应用时的状态回放。
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - 内容、命令和视觉状态在模板节点之间的同步。
+- `Value` 的 ViewModel 更新、用户评分、Form set/get/clear、`ValueChanged` 和 hover 状态通知。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。

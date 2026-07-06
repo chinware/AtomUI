@@ -4872,6 +4872,8 @@ namespace AtomUIGallery.Localization
         HalfStarTitle,
         OtherCharacterDescription,
         OtherCharacterTitle,
+        P2ContentClear,
+        P2ContentSetFourStars,
         P2TextIsallowclearFalse,
         P2TextIsallowclearTrue,
         P2TooltipBad,
@@ -4879,6 +4881,7 @@ namespace AtomUIGallery.Localization
         P2TooltipNormal,
         P2TooltipTerrible,
         P2TooltipWonderful,
+        P2TwoWayValueSummaryFormat,
         PageDescription,
         PageSubtitle,
         ReadOnlyDescription,
@@ -4899,7 +4902,9 @@ namespace AtomUIGallery.Localization
         TokenNameStarSizeLG,
         TokenNameStarSizeSM,
         TokenScopeComponent,
-        TokenStatusStable
+        TokenStatusStable,
+        TwoWayBindingDescription,
+        TwoWayBindingTitle
     }
 
     public class RateShowCaseLangResourceExtension : LanguageResourceExtension<RateShowCaseLangResourceKind>
