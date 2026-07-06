@@ -21,6 +21,8 @@ internal partial class zh_CN
     public const string VerticalRadioGroupDescription = "垂直排列的单选框组。";
     public const string ItemsSourceRadioGroupTitle = "通过 ItemsSource 生成单选框组";
     public const string ItemsSourceRadioGroupDescription = "单选框组。";
+    public const string CheckedItemBindingTitle = "CheckedItem 绑定";
+    public const string CheckedItemBindingDescription = "CheckedItem 默认使用 TwoWay 绑定，可由用户选择或 ViewModel 状态双向更新。";
     public const string OptionButtonTitle = "选项按钮";
     public const string OptionButtonDescription = "选项按钮组。";
     public const string OptionButtonWithIconTitle = "带图标的选项按钮";
@@ -54,6 +56,10 @@ internal partial class zh_CN
     public const string P2ContentShanghai = "上海";
     public const string P2ContentBeijing = "北京";
     public const string P2ContentChengdu = "成都";
+    public const string P2ContentSelectChengdu = "选择成都";
+    public const string P2ContentClear = "清空";
+    public const string P2ContentNone = "无";
+    public const string P2CheckedItemSummaryFormat = "已选择：{0}";
     public const string ScenarioExamples = "示例";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "设计 Token";
@@ -71,7 +77,7 @@ internal partial class zh_CN
     public const string ApiPropertyIsEnabled = "选项是否可交互。";
     public const string ApiPropertyIsMotionEnabled = "启用单选交互的动效。";
     public const string ApiPropertyIsWaveSpiritEnabled = "启用点击波纹反馈效果。";
-    public const string ApiPropertyCheckedItem = "单选框组当前选中的项。";
+    public const string ApiPropertyCheckedItem = "单选框组当前选中的项，默认 TwoWay 绑定，并支持 Avalonia 数据验证。";
     public const string ApiPropertyItemsSource = "用于生成单选框组条目的数据源。";
     public const string ApiPropertyItemTemplate = "用于渲染生成条目的模板。";
     public const string ApiPropertyOrientation = "单选框组条目的排列方向。";

@@ -2,6 +2,14 @@
 
 本文档记录 RadioButton 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-06
+
+- Behavior
+  - Make `RadioButtonGroup.CheckedItem` default to TwoWay binding and enable Avalonia data validation.
+  - Keep user selection, Form value and ViewModel state on the same `CheckedItem` source of truth.
+- Gallery
+  - Add a `v6.0.8` RadioButtonGroup binding example showing user selection and ViewModel updates staying synchronized.
+
 ## 2026-06-26
 
 - Docs

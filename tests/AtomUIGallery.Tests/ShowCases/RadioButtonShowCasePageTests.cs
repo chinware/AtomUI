@@ -45,11 +45,13 @@ public class RadioButtonShowCasePageTests
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:RadioButtonShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(10);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(10);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:RadioButtonViewModel\"").ShouldBe(10);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(11);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(11);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:RadioButtonViewModel\"").ShouldBe(11);
         source.ShouldContain("RadioButtonShowCaseLangResource BasicTitle");
         source.ShouldContain("RadioButtonShowCaseLangResource RadioGroupTitle");
+        source.ShouldContain("RadioButtonShowCaseLangResource CheckedItemBindingTitle");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("RadioButtonShowCaseLangResource OptionButtonTitle");
         source.ShouldContain("RadioButtonShowCaseLangResource SizeTypeTitle");
         source.ShouldNotContain("<atom:TabControl");
@@ -75,6 +77,11 @@ public class RadioButtonShowCasePageTests
         pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
         pageSource.ShouldContain("ItemsSource=\"{Binding RadioOptions}\"");
+        pageSource.ShouldContain("ItemsSource=\"{Binding TwoWayRadioOptions}\"");
+        pageSource.ShouldContain("CheckedItem=\"{Binding TwoWayCheckedItem}\"");
+        pageSource.ShouldContain("Text=\"{Binding TwoWayCheckedSummary}\"");
+        pageSource.ShouldContain("Command=\"{Binding SelectChengduCommand}\"");
+        pageSource.ShouldContain("Command=\"{Binding ClearTwoWayCheckedItemCommand}\"");
 
         codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
         codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
@@ -138,12 +145,15 @@ public class RadioButtonShowCasePageTests
             source.ShouldContain("ScenarioApi");
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
+            source.ShouldContain("CheckedItemBindingTitle");
+            source.ShouldContain("CheckedItemBindingDescription");
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyIsChecked");
             source.ShouldContain("ApiPropertyCheckedItem");
             source.ShouldContain("ApiPropertyItemsSource");
             source.ShouldContain("ApiPropertyButtonStyle");
             source.ShouldContain("ApiPropertyIcon");
+            source.ShouldContain("P2CheckedItemSummaryFormat");
             source.ShouldContain("TokenNameRadioSize");
             source.ShouldContain("TokenNameButtonBackground");
             source.ShouldContain("TokenNameButtonPadding");

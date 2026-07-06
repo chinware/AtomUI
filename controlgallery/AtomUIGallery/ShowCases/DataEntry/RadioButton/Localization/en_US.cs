@@ -21,6 +21,8 @@ internal partial class en_US
     public const string VerticalRadioGroupDescription = "Vertical Radio Group.";
     public const string ItemsSourceRadioGroupTitle = "Radio Group by Items source";
     public const string ItemsSourceRadioGroupDescription = "Radio Group.";
+    public const string CheckedItemBindingTitle = "CheckedItem binding";
+    public const string CheckedItemBindingDescription = "CheckedItem uses TwoWay binding by default and can be updated by either user selection or ViewModel state.";
     public const string OptionButtonTitle = "Option Button";
     public const string OptionButtonDescription = "OptionButton Group.";
     public const string OptionButtonWithIconTitle = "Option Button with icon";
@@ -54,6 +56,10 @@ internal partial class en_US
     public const string P2ContentShanghai = "Shanghai";
     public const string P2ContentBeijing = "Beijing";
     public const string P2ContentChengdu = "Chengdu";
+    public const string P2ContentSelectChengdu = "Select Chengdu";
+    public const string P2ContentClear = "Clear";
+    public const string P2ContentNone = "None";
+    public const string P2CheckedItemSummaryFormat = "Selected: {0}";
     public const string ScenarioExamples = "Examples";
     public const string ScenarioApi = "API";
     public const string ScenarioDesignToken = "Design Token";
@@ -71,7 +77,7 @@ internal partial class en_US
     public const string ApiPropertyIsEnabled = "Whether the option can be interacted with.";
     public const string ApiPropertyIsMotionEnabled = "Enables motion effects for radio interactions.";
     public const string ApiPropertyIsWaveSpiritEnabled = "Enables the click wave feedback effect.";
-    public const string ApiPropertyCheckedItem = "Current selected item in a radio group.";
+    public const string ApiPropertyCheckedItem = "Current selected item in a radio group. It uses TwoWay binding by default and supports Avalonia data validation.";
     public const string ApiPropertyItemsSource = "Data source used to generate radio group items.";
     public const string ApiPropertyItemTemplate = "Template used to render generated radio group items.";
     public const string ApiPropertyOrientation = "Layout direction of radio group items.";
