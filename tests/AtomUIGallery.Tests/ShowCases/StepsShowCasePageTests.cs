@@ -51,6 +51,8 @@ public class StepsShowCasePageTests
         CountOccurrences(source, "DataTemplate x:DataType=\"vm:StepsViewModel\"").ShouldBe(14);
         source.ShouldContain("StepsShowCaseLangResource BasicTitle");
         source.ShouldContain("StepsShowCaseLangResource SwitchStepTitle");
+        source.ShouldContain("StepsShowCaseLangResource P2TextCurrentStep");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("StepsShowCaseLangResource NavigationStepsTitle");
         source.ShouldContain("StepsShowCaseLangResource InlineStepsTitle");
         source.ShouldNotContain("{Binding #");
@@ -150,6 +152,7 @@ public class StepsShowCasePageTests
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyCurrentStep");
+            source.ShouldContain("P2TextCurrentStep");
             source.ShouldContain("ApiPropertyProgressValue");
             source.ShouldContain("ApiPropertyItemIndicatorType");
             source.ShouldContain("ApiPropertyIsItemClickable");

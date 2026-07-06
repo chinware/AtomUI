@@ -43,7 +43,10 @@ public class Steps : SelectingItemsControl,
     #region 公共属性定义
     
     public static readonly StyledProperty<int> CurrentStepProperty =
-        AvaloniaProperty.Register<Steps, int>(nameof(CurrentStep), 0);
+        AvaloniaProperty.Register<Steps, int>(
+            nameof(CurrentStep),
+            0,
+            defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly StyledProperty<int> InitialStepProperty =
         AvaloniaProperty.Register<Steps, int>(nameof(InitialStep), -1);
@@ -211,6 +214,7 @@ public class Steps : SelectingItemsControl,
         AffectsMeasure<Steps>(SizeTypeProperty);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<Steps>(false);
         OrientationProperty.OverrideDefaultValue<Steps>(Orientation.Horizontal);
+        SelectedIndexProperty.Changed.AddClassHandler<Steps>((x, e) => x.SyncSelectedIndexToCurrentStep());
         SelectedItemProperty.Changed.AddClassHandler<Steps>((x, e) => x.UpdateCurrentContent());
     }
     
@@ -464,6 +468,14 @@ public class Steps : SelectingItemsControl,
         else
         {
             SetCurrentValue(SelectedIndexProperty, -1);
+        }
+    }
+
+    private void SyncSelectedIndexToCurrentStep()
+    {
+        if (SelectedIndex >= 0 && SelectedIndex != CurrentStep)
+        {
+            SetCurrentValue(CurrentStepProperty, SelectedIndex);
         }
     }
     

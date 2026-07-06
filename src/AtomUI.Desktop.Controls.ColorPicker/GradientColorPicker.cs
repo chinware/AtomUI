@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -15,7 +16,8 @@ public class GradientColorPicker : AbstractColorPicker
         GradientColorPickerView.DefaultValueProperty.AddOwner<GradientColorPicker>();
 
     public static readonly StyledProperty<LinearGradientBrush?> ValueProperty =
-        GradientColorPickerView.ValueProperty.AddOwner<GradientColorPicker>();
+        GradientColorPickerView.ValueProperty.AddOwner<GradientColorPicker>(
+            new(defaultBindingMode: BindingMode.TwoWay, enableDataValidation: true));
 
     public static readonly AttachedProperty<Action<LinearGradientBrush?, ColorFormat, Avalonia.Controls.Controls>?> ColorTextFormatterProperty =
         AvaloniaProperty.RegisterAttached<GradientColorPicker, Control, Action<LinearGradientBrush?, ColorFormat, Avalonia.Controls.Controls>?>("ColorTextFormatter");
@@ -29,7 +31,7 @@ public class GradientColorPicker : AbstractColorPicker
     public LinearGradientBrush? Value
     {
         get => GetValue(ValueProperty);
-        private set => SetValue(ValueProperty, value);
+        set => SetValue(ValueProperty, value);
     }
 
     public static Action<LinearGradientBrush?, ColorFormat, Avalonia.Controls.Controls>? GetColorTextFormatter(GradientColorPicker colorPicker)
@@ -210,16 +212,20 @@ public class GradientColorPicker : AbstractColorPicker
 
     protected override void GenerateColorBlockBackground()
     {
-        if (_colorIndicator != null)
-        {
-            _colorIndicator.SetCurrentValue(ColorBlock.IsEmptyColorModeProperty, false);
-        }
         if (Value == null)
         {
+            if (_colorIndicator != null)
+            {
+                _colorIndicator.SetCurrentValue(ColorBlock.IsEmptyColorModeProperty, true);
+            }
             SetColorBlockBackgroundBrushIfChanged(Brushes.Transparent);
         }
         else
         {
+            if (_colorIndicator != null)
+            {
+                _colorIndicator.SetCurrentValue(ColorBlock.IsEmptyColorModeProperty, false);
+            }
             SetColorBlockBackgroundBrushIfChanged(Value);
         }
     }
@@ -328,6 +334,8 @@ public class GradientColorPicker : AbstractColorPicker
 
     private void ClearColor()
     {
+        SetCurrentValue(ValueProperty, null);
+
         if (_colorIndicator != null)
         {
             _colorIndicator.SetCurrentValue(ColorBlock.IsEmptyColorModeProperty, true);
@@ -341,7 +349,7 @@ public class GradientColorPicker : AbstractColorPicker
     #region 实现 FormItem 接口
     protected override void NotifySetFormValue(object? value)
     {
-        Value = value as LinearGradientBrush;
+        SetCurrentValue(ValueProperty, value as LinearGradientBrush);
     }
 
     protected override object? NotifyGetFormValue()

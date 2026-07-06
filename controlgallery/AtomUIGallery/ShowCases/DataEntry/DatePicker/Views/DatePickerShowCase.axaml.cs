@@ -88,4 +88,26 @@ public partial class DatePickerShowCase : GalleryReactiveUserControl<DatePickerV
             viewModel.BoundSelectedDateTime = null;
         }
     }
+
+    private void SetBoundSelectedDateRangeThisWeek(object? sender, Avalonia.Interactivity.RoutedEventArgs args)
+    {
+        if (DataContext is DatePickerViewModel viewModel)
+        {
+            var today       = DateTime.Today;
+            var daysToStart = ((int)today.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+            var startDate   = today.AddDays(-daysToStart);
+
+            viewModel.BoundRangeStartSelectedDate = startDate;
+            viewModel.BoundRangeEndSelectedDate   = startDate.AddDays(6);
+        }
+    }
+
+    private void ClearBoundSelectedDateRange(object? sender, Avalonia.Interactivity.RoutedEventArgs args)
+    {
+        if (DataContext is DatePickerViewModel viewModel)
+        {
+            viewModel.BoundRangeStartSelectedDate = null;
+            viewModel.BoundRangeEndSelectedDate   = null;
+        }
+    }
 }

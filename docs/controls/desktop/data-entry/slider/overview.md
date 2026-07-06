@@ -43,7 +43,7 @@ RangeBase 数值 API：
 | --- | --- | --- |
 | `Minimum` | `double` | 允许的最小值。 |
 | `Maximum` | `double` | 允许的最大值。 |
-| `Value` | `double` | 单值模式的当前值，支持数据校验。 |
+| `Value` | `double` | 单值模式的当前值，沿用 `RangeBase` 数值契约并支持数据校验。 |
 | `SmallChange` | `double` | 方向键单次调整量。 |
 | `LargeChange` | `double` | PageUp / PageDown 单次调整量。 |
 
@@ -55,7 +55,7 @@ Slider 扩展 API：
 | `IsDirectionReversed` | `bool` | 反转数值增长方向。 |
 | `IsSnapToTickEnabled` | `bool` | 是否把指针和键盘输入吸附到 tick。 |
 | `TickFrequency` | `double` | tick 间隔；大于 0 时参与吸附计算。 |
-| `RangeValue` | `SliderRangeValue` | 范围模式的起止值。 |
+| `RangeValue` | `SliderRangeValue` | 范围模式的起止值，默认 `TwoWay` 绑定并接入 Avalonia `DataValidationErrors`。 |
 | `IsRangeMode` | `bool` | 是否显示第二个 thumb 并使用范围选择模型。 |
 | `Marks` | `List<SliderMark>?` | 刻度点和标签集合。 |
 | `ValueFormatTemplate` | `string` | tooltip 文本格式，默认 `{0:0}`。 |
@@ -87,7 +87,7 @@ Slider 扩展 API：
 | `:vertical` | 当前为垂直布局。 |
 | `:pressed` | Slider 处于 pressed 状态，由 PressedMixin 维护。 |
 
-Form 集成以 `IsRangeMode` 决定值模型：单值模式读取和设置 `Value`，范围模式读取和设置 `RangeValue`。Slider 不把 tooltip 文本、mark 标签或格式化字符串作为表单值。
+Form 集成以 `IsRangeMode` 决定值模型：单值模式读取和设置 `Value`，范围模式读取和设置 `RangeValue`。`RangeValue` 是用户拥有的受控值，默认双向绑定；绑定错误和 Form error 都通过 Avalonia `DataValidationErrors` 投射。Slider 不把 tooltip 文本、mark 标签或格式化字符串作为表单值。
 
 ## 4. 行为与状态模型
 

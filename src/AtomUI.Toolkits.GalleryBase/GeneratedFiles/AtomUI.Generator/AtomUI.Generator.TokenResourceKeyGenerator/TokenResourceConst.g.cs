@@ -41,6 +41,7 @@ namespace AtomUI.Toolkits.GalleryBase.Controls.DesignTokens
 
     public enum ShowCaseItemTokenKind
     {
+        BadgePreviewMargin,
         CardCornerRadius,
         CardPadding,
         CardShadow,

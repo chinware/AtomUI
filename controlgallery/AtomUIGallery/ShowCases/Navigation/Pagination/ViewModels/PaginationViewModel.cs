@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUIGallery.Localization;
@@ -18,6 +20,8 @@ public class PaginationViewModel : ReactiveObject, IRoutableViewModel
 
     private ObservableCollection<PaginationApiRow>? _apiRows;
     private ObservableCollection<PaginationDesignTokenRow>? _designTokenRows;
+    private int _boundCurrentPage = 2;
+    private int _boundPageSize = 10;
 
     public ObservableCollection<PaginationApiRow>? ApiRows
     {
@@ -31,9 +35,61 @@ public class PaginationViewModel : ReactiveObject, IRoutableViewModel
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
     }
 
+    public int BoundCurrentPage
+    {
+        get => _boundCurrentPage;
+        set
+        {
+            if (_boundCurrentPage == value)
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _boundCurrentPage, value);
+            this.RaisePropertyChanged(nameof(BoundCurrentPageText));
+        }
+    }
+
+    public string BoundCurrentPageText => BoundCurrentPage.ToString(CultureInfo.CurrentCulture);
+
+    public int BoundPageSize
+    {
+        get => _boundPageSize;
+        set
+        {
+            if (_boundPageSize == value)
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _boundPageSize, value);
+            this.RaisePropertyChanged(nameof(BoundPageSizeText));
+        }
+    }
+
+    public string BoundPageSizeText => BoundPageSize.ToString(CultureInfo.CurrentCulture);
+
+    public ReactiveCommand<Unit, Unit> SetBoundPaginationCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> ResetBoundPaginationCommand { get; }
+
     public PaginationViewModel(IScreen screen)
     {
-        HostScreen = screen;
+        HostScreen                     = screen;
+        SetBoundPaginationCommand      = ReactiveCommand.Create(SetBoundPagination);
+        ResetBoundPaginationCommand    = ReactiveCommand.Create(ResetBoundPagination);
+    }
+
+    private void SetBoundPagination()
+    {
+        BoundCurrentPage = 5;
+        BoundPageSize    = 20;
+    }
+
+    private void ResetBoundPagination()
+    {
+        BoundCurrentPage = 2;
+        BoundPageSize    = 10;
     }
 
     public void EnsureApiRows()
@@ -132,6 +188,12 @@ public class PaginationViewModel : ReactiveObject, IRoutableViewModel
             PaginationShowCaseLangResourceKind.TokenNamePaginationItemPaddingInline       => en_US.TokenNamePaginationItemPaddingInline,
             PaginationShowCaseLangResourceKind.TokenScopeComponent                        => en_US.TokenScopeComponent,
             PaginationShowCaseLangResourceKind.TokenStatusStable                          => en_US.TokenStatusStable,
+            PaginationShowCaseLangResourceKind.BindingTitle                               => en_US.BindingTitle,
+            PaginationShowCaseLangResourceKind.BindingDescription                         => en_US.BindingDescription,
+            PaginationShowCaseLangResourceKind.P2TextCurrentPage                          => en_US.P2TextCurrentPage,
+            PaginationShowCaseLangResourceKind.P2TextPageSize                             => en_US.P2TextPageSize,
+            PaginationShowCaseLangResourceKind.P2ContentSetPage                           => en_US.P2ContentSetPage,
+            PaginationShowCaseLangResourceKind.P2ContentReset                             => en_US.P2ContentReset,
             _                                                                            => kind.ToString()
         };
     }

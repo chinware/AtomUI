@@ -1,11 +1,15 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using AtomUI;
+using AtomUI.Desktop.Controls.Primitives;
 using AtomUI.Media;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Presenters;
+using Avalonia.Data;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -435,42 +439,238 @@ public class RangePickerPreferredWidthTests
     }
 
     [Fact]
-    public void TimePicker_Selected_Input_Uses_Current_Text_As_Preferred_Width()
+    public void TimePicker_Selected_Input_Uses_Format_Reserve_As_Preferred_Width()
     {
         var picker = new TimePicker
         {
-            SelectedTime = new TimeSpan(12, 8, 23)
+            ClockIdentifier = ClockIdentifierType.HourClock12,
+            SelectedTime    = new TimeSpan(12, 8, 23),
+            PlaceholderText = "Time"
         };
 
         ShowInWindow(picker, () =>
         {
-            var input     = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
-            var textWidth = MeasureTextWidth(input, input.Text!);
+            var expectedWidth = Math.Max(
+                MeasureTextWidth(picker, picker.PlaceholderText!),
+                MeasureWidestTimePickerTextWidth(picker));
 
-            picker.PreferredInputWidth.ShouldBeGreaterThanOrEqualTo(textWidth);
-            picker.PreferredInputWidth.ShouldBeLessThanOrEqualTo(textWidth + WidthTolerance);
+            picker.PreferredInputWidth.ShouldBeGreaterThanOrEqualTo(expectedWidth);
+            picker.PreferredInputWidth.ShouldBeLessThanOrEqualTo(expectedWidth + WidthTolerance);
         });
     }
 
     [Fact]
-    public void RangeTimePicker_Selected_Input_Uses_Current_Text_As_Preferred_Width()
+    public void TimePicker_Selected_Value_Change_Does_Not_Resize_Preferred_Input_Width()
+    {
+        var picker = new TimePicker
+        {
+            ClockIdentifier = ClockIdentifierType.HourClock12,
+            PlaceholderText = "Time"
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var emptyWidth = picker.PreferredInputWidth;
+
+            picker.SelectedTime = new TimeSpan(12, 0, 0);
+            Dispatcher.UIThread.RunJobs();
+
+            picker.PreferredInputWidth.ShouldBe(emptyWidth, WidthTolerance);
+        });
+    }
+
+    [Fact]
+    public void RangeTimePicker_Selected_Input_Uses_Format_Reserve_As_Preferred_Width()
     {
         var picker = new RangeTimePicker
         {
-            RangeStartSelectedTime = new TimeSpan(10, 9, 20),
-            RangeEndSelectedTime   = new TimeSpan(12, 12, 20)
+            ClockIdentifier          = ClockIdentifierType.HourClock12,
+            RangeStartSelectedTime   = new TimeSpan(10, 9, 20),
+            RangeEndSelectedTime     = new TimeSpan(12, 12, 20),
+            PlaceholderText          = "Start",
+            SecondaryPlaceholderText = "End"
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var expectedWidth = Math.Max(
+                Math.Max(
+                    MeasureTextWidth(picker, picker.PlaceholderText!),
+                    MeasureTextWidth(picker, picker.SecondaryPlaceholderText!)),
+                MeasureWidestTimePickerTextWidth(picker));
+
+            picker.PreferredWidth.ShouldBeGreaterThanOrEqualTo(expectedWidth);
+            picker.PreferredWidth.ShouldBeLessThanOrEqualTo(expectedWidth + WidthTolerance);
+        });
+    }
+
+    [Fact]
+    public void RangeTimePicker_Selected_Value_Change_Does_Not_Resize_Preferred_Width()
+    {
+        var picker = new RangeTimePicker
+        {
+            ClockIdentifier          = ClockIdentifierType.HourClock12,
+            PlaceholderText          = "Start",
+            SecondaryPlaceholderText = "End"
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var emptyWidth = picker.PreferredWidth;
+
+            picker.RangeStartSelectedTime = new TimeSpan(10, 9, 20);
+            picker.RangeEndSelectedTime   = new TimeSpan(12, 12, 20);
+            Dispatcher.UIThread.RunJobs();
+
+            picker.PreferredWidth.ShouldBe(emptyWidth, WidthTolerance);
+            picker.PreferredInputWidth.ShouldBe(emptyWidth, WidthTolerance);
+        });
+    }
+
+    [Fact]
+    public void RangeTimePicker_Setting_Selected_Values_After_Clear_Restores_Input_Text()
+    {
+        var picker = new RangeTimePicker
+        {
+            ClockIdentifier          = ClockIdentifierType.HourClock12,
+            PlaceholderText          = "Start",
+            SecondaryPlaceholderText = "End"
         };
 
         ShowInWindow(picker, () =>
         {
             var startInput = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
             var endInput   = FindPart(picker, "PART_SecondaryInfoInputBox").ShouldBeOfType<TextBox>();
-            var textWidth  = Math.Max(
-                MeasureTextWidth(startInput, startInput.Text!),
-                MeasureTextWidth(endInput, endInput.Text!));
 
-            picker.PreferredWidth.ShouldBeGreaterThanOrEqualTo(textWidth);
-            picker.PreferredWidth.ShouldBeLessThanOrEqualTo(textWidth + WidthTolerance);
+            picker.RangeStartSelectedTime = new TimeSpan(9, 0, 0);
+            picker.RangeEndSelectedTime   = new TimeSpan(18, 0, 0);
+            Dispatcher.UIThread.RunJobs();
+            startInput.Text.ShouldBe("09:00:00 AM");
+            endInput.Text.ShouldBe("06:00:00 PM");
+
+            picker.RangeStartSelectedTime = null;
+            picker.RangeEndSelectedTime   = null;
+            Dispatcher.UIThread.RunJobs();
+            startInput.Text.ShouldBeNullOrEmpty();
+            endInput.Text.ShouldBeNullOrEmpty();
+
+            picker.RangeStartSelectedTime = new TimeSpan(10, 9, 20);
+            picker.RangeEndSelectedTime   = new TimeSpan(12, 12, 20);
+            Dispatcher.UIThread.RunJobs();
+
+            startInput.Text.ShouldBe("10:09:20 AM");
+            endInput.Text.ShouldBe("12:12:20 PM");
+        });
+    }
+
+    [Fact]
+    public void RangeTimePicker_Bound_Selected_Values_After_Clear_Restore_Input_Text()
+    {
+        var viewModel = new RangeTimePickerBindingViewModel
+        {
+            Start = new TimeSpan(9, 0, 0),
+            End   = new TimeSpan(18, 0, 0)
+        };
+        var picker = new RangeTimePicker
+        {
+            ClockIdentifier          = ClockIdentifierType.HourClock12,
+            PlaceholderText          = "Start",
+            SecondaryPlaceholderText = "End",
+            DataContext              = viewModel
+        };
+        picker.Bind(RangeTimePicker.RangeStartSelectedTimeProperty, new Binding(nameof(RangeTimePickerBindingViewModel.Start)));
+        picker.Bind(RangeTimePicker.RangeEndSelectedTimeProperty, new Binding(nameof(RangeTimePickerBindingViewModel.End)));
+
+        ShowInWindow(picker, () =>
+        {
+            var startInput = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var endInput   = FindPart(picker, "PART_SecondaryInfoInputBox").ShouldBeOfType<TextBox>();
+
+            startInput.Text.ShouldBe("09:00:00 AM");
+            endInput.Text.ShouldBe("06:00:00 PM");
+
+            viewModel.Start = null;
+            viewModel.End   = null;
+            Dispatcher.UIThread.RunJobs();
+            startInput.Text.ShouldBeNullOrEmpty();
+            endInput.Text.ShouldBeNullOrEmpty();
+
+            viewModel.Start = new TimeSpan(9, 0, 0);
+            viewModel.End   = new TimeSpan(18, 0, 0);
+            Dispatcher.UIThread.RunJobs();
+
+            startInput.Text.ShouldBe("09:00:00 AM");
+            endInput.Text.ShouldBe("06:00:00 PM");
+        });
+    }
+
+    [Fact]
+    public void RangeTimePicker_Bound_Selected_Values_After_Control_Clear_Restore_Input_Text()
+    {
+        var viewModel = new RangeTimePickerBindingViewModel
+        {
+            Start = new TimeSpan(9, 0, 0),
+            End   = new TimeSpan(18, 0, 0)
+        };
+        var picker = new RangeTimePicker
+        {
+            ClockIdentifier          = ClockIdentifierType.HourClock12,
+            PlaceholderText          = "Start",
+            SecondaryPlaceholderText = "End",
+            DataContext              = viewModel
+        };
+        picker.Bind(RangeTimePicker.RangeStartSelectedTimeProperty, new Binding(nameof(RangeTimePickerBindingViewModel.Start)));
+        picker.Bind(RangeTimePicker.RangeEndSelectedTimeProperty, new Binding(nameof(RangeTimePickerBindingViewModel.End)));
+
+        ShowInWindow(picker, () =>
+        {
+            var startInput = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var endInput   = FindPart(picker, "PART_SecondaryInfoInputBox").ShouldBeOfType<TextBox>();
+
+            startInput.Text.ShouldBe("09:00:00 AM");
+            endInput.Text.ShouldBe("06:00:00 PM");
+
+            picker.Clear();
+            Dispatcher.UIThread.RunJobs();
+            startInput.Text.ShouldBeNullOrEmpty();
+            endInput.Text.ShouldBeNullOrEmpty();
+            viewModel.Start.ShouldBeNull();
+            viewModel.End.ShouldBeNull();
+
+            viewModel.Start = new TimeSpan(10, 9, 20);
+            viewModel.End   = new TimeSpan(12, 12, 20);
+            Dispatcher.UIThread.RunJobs();
+
+            startInput.Text.ShouldBe("10:09:20 AM");
+            endInput.Text.ShouldBe("12:12:20 PM");
+        });
+    }
+
+    [Fact]
+    public void RangeTimePicker_End_Part_Hover_Clear_Does_Not_Clear_Start_Input_Text()
+    {
+        var picker = new RangeTimePicker
+        {
+            ClockIdentifier          = ClockIdentifierType.HourClock12,
+            RangeStartSelectedTime   = new TimeSpan(9, 0, 0),
+            PlaceholderText          = "Start",
+            SecondaryPlaceholderText = "End"
+        };
+
+        ShowInWindow(picker, () =>
+        {
+            var startInput = FindPart(picker, "PART_InfoInputBox").ShouldBeOfType<TextBox>();
+            var endInput   = FindPart(picker, "PART_SecondaryInfoInputBox").ShouldBeOfType<TextBox>();
+
+            startInput.Text.ShouldBe("09:00:00 AM");
+            endInput.Text.ShouldBeNullOrEmpty();
+
+            picker.RangeActivatedPart = RangeActivatedPart.End;
+            InvokeHoverTimeChanged(picker, null);
+            Dispatcher.UIThread.RunJobs();
+
+            startInput.Text.ShouldBe("09:00:00 AM");
+            endInput.Text.ShouldBeNullOrEmpty();
         });
     }
 
@@ -547,6 +747,54 @@ public class RangePickerPreferredWidthTests
             formatInfo);
     }
 
+    private static double MeasureWidestTimePickerTextWidth(TimePicker picker)
+    {
+        return MeasureWidestTimePickerTextWidth(
+            picker,
+            picker.ClockIdentifier == ClockIdentifierType.HourClock12,
+            picker.AmText,
+            picker.PmText);
+    }
+
+    private static double MeasureWidestTimePickerTextWidth(RangeTimePicker picker)
+    {
+        return MeasureWidestTimePickerTextWidth(
+            picker,
+            picker.ClockIdentifier == ClockIdentifierType.HourClock12,
+            picker.AmText,
+            picker.PmText);
+    }
+
+    private static double MeasureWidestTimePickerTextWidth(
+        Control picker,
+        bool is12HourClock,
+        string? amText,
+        string? pmText)
+    {
+        var widestDigit = Enumerable.Range(0, 10)
+                                    .Select(digit => digit.ToString())
+                                    .MaxBy(text => MeasureTextWidth(picker, text))!;
+        var widestTimeText = $"{widestDigit}{widestDigit}:{widestDigit}{widestDigit}:{widestDigit}{widestDigit}";
+        if (!is12HourClock)
+        {
+            return MeasureTextWidth(picker, widestTimeText);
+        }
+
+        return Math.Max(
+            MeasureTextWidth(picker, $"{widestTimeText} {amText ?? "AM"}"),
+            MeasureTextWidth(picker, $"{widestTimeText} {pmText ?? "PM"}"));
+    }
+
+    private static void InvokeHoverTimeChanged(RangeTimePicker picker, TimeSpan? time)
+    {
+        var method = typeof(RangeTimePicker).GetMethod(
+            "HandleHoverTimeChanged",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+
+        method.ShouldNotBeNull();
+        method.Invoke(picker, [null, new TimeSelectedEventArgs(time)]);
+    }
+
     private static void ShowInWindow(Control content, Action assertion, double width = 360)
     {
         var window = new AvaloniaWindow
@@ -566,5 +814,43 @@ public class RangePickerPreferredWidthTests
         {
             window.Close();
         }
+    }
+
+    private sealed class RangeTimePickerBindingViewModel : INotifyPropertyChanged
+    {
+        private TimeSpan? _start;
+        private TimeSpan? _end;
+
+        public TimeSpan? Start
+        {
+            get => _start;
+            set
+            {
+                if (_start == value)
+                {
+                    return;
+                }
+
+                _start = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Start)));
+            }
+        }
+
+        public TimeSpan? End
+        {
+            get => _end;
+            set
+            {
+                if (_end == value)
+                {
+                    return;
+                }
+
+                _end = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(End)));
+            }
+        }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

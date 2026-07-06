@@ -1,4 +1,7 @@
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUIGallery.Localization;
@@ -29,6 +32,44 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
     {
         get => _selectionListItems;
         set => this.RaiseAndSetIfChanged(ref _selectionListItems, value);
+    }
+
+    private ObservableCollection<IListItemData> _boundSelectedItems = [];
+
+    public ObservableCollection<IListItemData> BoundSelectedItems
+    {
+        get => _boundSelectedItems;
+        set
+        {
+            var nextSelectedItems = value ?? [];
+
+            if (ReferenceEquals(_boundSelectedItems, nextSelectedItems))
+            {
+                return;
+            }
+
+            _boundSelectedItems.CollectionChanged -= HandleBoundSelectedItemsCollectionChanged;
+            this.RaiseAndSetIfChanged(ref _boundSelectedItems, nextSelectedItems);
+            _boundSelectedItems.CollectionChanged += HandleBoundSelectedItemsCollectionChanged;
+            this.RaisePropertyChanged(nameof(BoundSelectedItemsText));
+        }
+    }
+
+    public string BoundSelectedItemsText
+    {
+        get
+        {
+            if (BoundSelectedItems.Count == 0)
+            {
+                return Lang(ListShowCaseLangResourceKind.P2TextNoSelection);
+            }
+
+            return string.Join(
+                ", ",
+                BoundSelectedItems
+                    .Select(item => item.Content?.ToString())
+                    .Where(text => !string.IsNullOrWhiteSpace(text)));
+        }
     }
 
     private List<IListItemData>? _listItemsWidthDisabled = [];
@@ -124,9 +165,53 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
     }
 
+    public ReactiveCommand<Unit, Unit> SelectBoundSelectedItemsCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> ClearBoundSelectedItemsCommand { get; }
+
     public ListViewModel(IScreen screen)
     {
-        HostScreen = screen;
+        HostScreen                         = screen;
+        SelectBoundSelectedItemsCommand    = ReactiveCommand.Create(SelectBoundSelectedItems);
+        ClearBoundSelectedItemsCommand     = ReactiveCommand.Create(ClearBoundSelectedItems);
+        _boundSelectedItems.CollectionChanged += HandleBoundSelectedItemsCollectionChanged;
+    }
+
+    public void ResetBoundSelectedItems()
+    {
+        if (SelectionListItems is { Count: > 1 })
+        {
+            BoundSelectedItems = new ObservableCollection<IListItemData>
+            {
+                SelectionListItems[1]
+            };
+            return;
+        }
+
+        BoundSelectedItems = [];
+    }
+
+    public void ClearBoundSelectedItems()
+    {
+        BoundSelectedItems.Clear();
+    }
+
+    private void SelectBoundSelectedItems()
+    {
+        BoundSelectedItems.Clear();
+
+        if (SelectionListItems is not { Count: > 3 })
+        {
+            return;
+        }
+
+        BoundSelectedItems.Add(SelectionListItems[1]);
+        BoundSelectedItems.Add(SelectionListItems[3]);
+    }
+
+    private void HandleBoundSelectedItemsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        this.RaisePropertyChanged(nameof(BoundSelectedItemsText));
     }
 
     public void EnsureApiRows()
@@ -142,6 +227,7 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
             new ListApiRow("SizeType", Lang(ListShowCaseLangResourceKind.ApiPropertySizeType), "CustomizableSizeType", "blue", "Middle"),
             new ListApiRow("IsBorderless", Lang(ListShowCaseLangResourceKind.ApiPropertyIsBorderless), "bool", "purple", "false"),
             new ListApiRow("SelectionMode", Lang(ListShowCaseLangResourceKind.ApiPropertySelectionMode), "SelectionMode", "blue", "Single"),
+            new ListApiRow("SelectedItems", Lang(ListShowCaseLangResourceKind.ApiPropertySelectedItems), "IList?", "cyan", "null"),
             new ListApiRow("IsShowSelectedIndicator", Lang(ListShowCaseLangResourceKind.ApiPropertyIsShowSelectedIndicator), "bool", "purple", "false"),
             new ListApiRow("IsShowEmptyIndicator", Lang(ListShowCaseLangResourceKind.ApiPropertyIsShowEmptyIndicator), "bool", "purple", "true"),
             new ListApiRow("IsGroupEnabled", Lang(ListShowCaseLangResourceKind.ApiPropertyIsGroupEnabled), "bool", "purple", "false"),
@@ -198,6 +284,7 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
             ListShowCaseLangResourceKind.ApiPropertySizeType                 => en_US.ApiPropertySizeType,
             ListShowCaseLangResourceKind.ApiPropertyIsBorderless             => en_US.ApiPropertyIsBorderless,
             ListShowCaseLangResourceKind.ApiPropertySelectionMode            => en_US.ApiPropertySelectionMode,
+            ListShowCaseLangResourceKind.ApiPropertySelectedItems             => en_US.ApiPropertySelectedItems,
             ListShowCaseLangResourceKind.ApiPropertyIsShowSelectedIndicator  => en_US.ApiPropertyIsShowSelectedIndicator,
             ListShowCaseLangResourceKind.ApiPropertyIsShowEmptyIndicator     => en_US.ApiPropertyIsShowEmptyIndicator,
             ListShowCaseLangResourceKind.ApiPropertyIsGroupEnabled           => en_US.ApiPropertyIsGroupEnabled,
@@ -227,6 +314,12 @@ public class ListViewModel : ReactiveObject, IRoutableViewModel
             ListShowCaseLangResourceKind.TokenNameSelectedIndicatorMargin    => en_US.TokenNameSelectedIndicatorMargin,
             ListShowCaseLangResourceKind.TokenNameFilterHighlightColor       => en_US.TokenNameFilterHighlightColor,
             ListShowCaseLangResourceKind.TokenStatusStable                   => en_US.TokenStatusStable,
+            ListShowCaseLangResourceKind.SelectedItemsBindingTitle           => en_US.SelectedItemsBindingTitle,
+            ListShowCaseLangResourceKind.SelectedItemsBindingDescription     => en_US.SelectedItemsBindingDescription,
+            ListShowCaseLangResourceKind.P2TextSelectedItems                 => en_US.P2TextSelectedItems,
+            ListShowCaseLangResourceKind.P2TextNoSelection                   => en_US.P2TextNoSelection,
+            ListShowCaseLangResourceKind.P2ContentSelectColors               => en_US.P2ContentSelectColors,
+            ListShowCaseLangResourceKind.P2ContentClearSelection             => en_US.P2ContentClearSelection,
             _                                                                => kind.ToString()
         };
     }

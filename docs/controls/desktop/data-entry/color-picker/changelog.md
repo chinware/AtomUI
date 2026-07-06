@@ -2,6 +2,15 @@
 
 本文档记录 ColorPicker 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-06
+
+- API
+  - Make `ColorPicker.Value` and `GradientColorPicker.Value` public controlled values with default `TwoWay` binding and Avalonia data validation.
+- Behavior
+  - Align clear/Form clear behavior so `Value` becomes `null` instead of only clearing trigger visuals.
+- Gallery
+  - Add a `v6.0.8` value binding example for solid and gradient pickers.
+
 ## 2026-06-26
 
 - Docs

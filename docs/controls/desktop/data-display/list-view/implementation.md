@@ -140,10 +140,14 @@ Selection index
       ↓
 ISelectionModel
       ↓
+SelectedItems direct property write-back
+      ↓
 ListView.IsSelected attached property on container
       ↓
 ListViewItem.IsSelectedIndicatorVisible
 ```
+
+`SelectedItems` 注册为默认 `TwoWay` direct property，并启用 Avalonia `DataValidationErrors`。默认 `ListViewSelectionModel.WritableSelectedItems` 是内部选择集合；当外部绑定集合替换为 writable `IList` 时，选择模型必须把用户选择写回同一集合，而不是维护另一份对外不可见的副本。
 
 分页流：
 
@@ -355,6 +359,7 @@ ListView 不通过反射访问模板内部结构。模板接入依赖稳定 part
 
 - `ListView.cs` 保留 public API、事件、ItemsSource 归一、容器生命周期和 collection view 配置入口。
 - `ListView.Selecting.cs` 保持选择模型、索引映射、SelectedValue 和键盘 / 文本搜索职责，不把选择状态写入数据项作为唯一来源。
+- `SelectedItems` 的 property replacement、用户选择写回和 data validation 投射必须共享同一 direct property，不得新增平行 selected collection。
 - `ListView.Pagination.cs` 只处理分页器接入和 collection view page 状态同步，不执行数据请求。
 - `ListViewItem.cs` 保持条目容器角色，不承载排序、过滤、分页或跨列表全局状态。
 - collection view 替换时必须解绑旧 view 事件；只有 ListView 自建 view 才能由 ListView dispose。

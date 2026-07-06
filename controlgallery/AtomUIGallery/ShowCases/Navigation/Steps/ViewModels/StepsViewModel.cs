@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Theme.Language;
@@ -27,10 +28,13 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
         set
         {
             this.RaiseAndSetIfChanged(ref _currentStep, value);
+            this.RaisePropertyChanged(nameof(CurrentStepText));
             PreviousButtonVisible = CurrentStep > 0;
             RefreshInteractiveButtonText();
         }
     }
+
+    public string CurrentStepText => CurrentStep.ToString(CultureInfo.CurrentCulture);
 
     private bool _previousButtonVisible;
 
@@ -212,6 +216,7 @@ public class StepsViewModel : ReactiveObject, IRoutableViewModel
             StepsShowCaseLangResourceKind.TokenNameErrorIconBgColor             => en_US.TokenNameErrorIconBgColor,
             StepsShowCaseLangResourceKind.TokenScopeComponent                   => en_US.TokenScopeComponent,
             StepsShowCaseLangResourceKind.TokenStatusStable                     => en_US.TokenStatusStable,
+            StepsShowCaseLangResourceKind.P2TextCurrentStep                    => en_US.P2TextCurrentStep,
             _                                                                  => kind.ToString()
         };
     }

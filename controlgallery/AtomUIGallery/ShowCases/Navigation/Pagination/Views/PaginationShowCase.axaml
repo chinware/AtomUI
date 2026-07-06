@@ -54,6 +54,49 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:PaginationShowCaseLangResource BindingTitle}"
+            Description="{gallery:PaginationShowCaseLangResource BindingDescription}"
+            BadgeText="v6.0.8"
+            IsOccupyEntireRow="True"
+            MinHeight="260"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:PaginationViewModel">
+            <StackPanel Orientation="Vertical" Spacing="12">
+                <atom:Pagination Total="120"
+                                 CurrentPage="{Binding BoundCurrentPage}"
+                                 PageSize="{Binding BoundPageSize}"
+                                 IsShowSizeChanger="True"
+                                 IsShowQuickJumper="True"
+                                 IsShowTotalInfo="True" />
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <atom:TextBlock VerticalAlignment="Center"
+                                        Text="{gallery:PaginationShowCaseLangResource P2TextCurrentPage}" />
+                        <atom:TextBlock VerticalAlignment="Center"
+                                        Text="{Binding BoundCurrentPageText}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <atom:TextBlock VerticalAlignment="Center"
+                                        Text="{gallery:PaginationShowCaseLangResource P2TextPageSize}" />
+                        <atom:TextBlock VerticalAlignment="Center"
+                                        Text="{Binding BoundPageSizeText}" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding SetBoundPaginationCommand}"
+                                 Content="{gallery:PaginationShowCaseLangResource P2ContentSetPage}" />
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding ResetBoundPaginationCommand}"
+                                 Content="{gallery:PaginationShowCaseLangResource P2ContentReset}" />
+                </StackPanel>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:PaginationShowCaseLangResource AlignTitle}"
             Description="{gallery:PaginationShowCaseLangResource AlignDescription}"
             IsOccupyEntireRow="True"

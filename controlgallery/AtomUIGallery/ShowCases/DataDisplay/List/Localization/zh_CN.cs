@@ -21,6 +21,7 @@ internal partial class zh_CN
     public const string ApiPropertySizeType = "控制列表项密度。";
     public const string ApiPropertyIsBorderless = "移除列表表面边框。";
     public const string ApiPropertySelectionMode = "控制单选、多选或切换选择行为。";
+    public const string ApiPropertySelectedItems = "选中项集合。默认使用 TwoWay 绑定，并参与 Avalonia 数据验证。";
     public const string ApiPropertyIsShowSelectedIndicator = "在选中项内部显示选中指示器。";
     public const string ApiPropertyIsShowEmptyIndicator = "无项目时显示空状态指示。";
     public const string ApiPropertyIsGroupEnabled = "根据项目的分组值对列表项分组。";
@@ -60,6 +61,8 @@ internal partial class zh_CN
     public const string BasicUsageDescription = "基础用法示例。";
     public const string SelectionTitle = "选择";
     public const string SelectionDescription = "可以设置单选、多选或不可选择。";
+    public const string SelectedItemsBindingTitle = "SelectedItems 绑定";
+    public const string SelectedItemsBindingDescription = "SelectedItems 不需要显式设置 Mode=TwoWay；用户选择和集合变更都会保持同步。";
     public const string GroupTitle = "分组";
     public const string GroupDescription = "可以根据条件对数据分组。";
     public const string ItemDisabledTitle = "禁用项";
@@ -84,6 +87,10 @@ internal partial class zh_CN
     public const string P2ContentSingle = "单选";
     public const string P2ContentMultiple = "多选";
     public const string P2ContentToggle = "切换选择";
+    public const string P2TextSelectedItems = "已选：";
+    public const string P2TextNoSelection = "无";
+    public const string P2ContentSelectColors = "选择绿色 / 黄色";
+    public const string P2ContentClearSelection = "清空";
     public const string P2ColorBlue = "蓝色";
     public const string P2ColorGreen = "绿色";
     public const string P2ColorRed = "红色";

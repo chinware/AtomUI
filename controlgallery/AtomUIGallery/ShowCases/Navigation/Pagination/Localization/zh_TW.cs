@@ -18,8 +18,8 @@ internal partial class zh_TW
     public const string ApiColumnType = "類型";
     public const string ApiColumnDefault = "默認值";
     public const string ApiPropertyTotal = "所有頁面中的記錄總數。";
-    public const string ApiPropertyCurrentPage = "當前頁碼，從 1 開始。";
-    public const string ApiPropertyPageSize = "每頁表示的記錄數量。";
+    public const string ApiPropertyCurrentPage = "當前頁碼，從 1 開始。預設使用 TwoWay 繫結。";
+    public const string ApiPropertyPageSize = "每頁表示的記錄數量。預設使用 TwoWay 繫結。";
     public const string ApiPropertyPageCount = "根據總數和頁大小計算出的頁數。";
     public const string ApiPropertyIsHideOnSinglePage = "當所有記錄能放入單頁時隱藏分頁。";
     public const string ApiPropertyAlign = "將分頁內容對齊到起始、中間或末尾。";
@@ -53,6 +53,8 @@ internal partial class zh_TW
     public const string TokenStatusStable = "穩定";
     public const string BasicTitle = "基礎分頁";
     public const string BasicDescription = "基礎分頁。";
+    public const string BindingTitle = "受控繫結";
+    public const string BindingDescription = "CurrentPage 和 PageSize 不需要顯式設置 Mode=TwoWay；點擊頁碼和修改頁大小都會寫回 ViewModel。";
     public const string AlignTitle = "對齊方式";
     public const string AlignDescription = "支持左對齊、居中對齊和右對齊三種對齊方式。";
     public const string MoreTitle = "更多頁碼";
@@ -63,5 +65,9 @@ internal partial class zh_TW
     public const string TotalNumberDescription = "可以通過設置 showTotal 展示數據總量。";
     public const string SimpleModeTitle = "簡潔模式";
     public const string SimpleModeDescription = "簡潔模式。";
+    public const string P2TextCurrentPage = "CurrentPage：";
+    public const string P2TextPageSize = "PageSize：";
+    public const string P2ContentSetPage = "設置第 5 頁 / 20";
+    public const string P2ContentReset = "重置";
 
 }

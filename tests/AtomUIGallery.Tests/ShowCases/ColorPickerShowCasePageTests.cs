@@ -41,6 +41,8 @@ public class ColorPickerShowCasePageTests
         source.ShouldContain("Description=\"{gallery:ColorPickerShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("ColorPickerShowCaseLangResource BasicTitle");
+        source.ShouldContain("ColorPickerShowCaseLangResource ValueBindingTitle");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("ColorPickerShowCaseLangResource PresetColorsTitle");
         source.ShouldContain("SizeType=\"Custom\"");
         source.ShouldContain("ColorPickerShowCaseLangResource P2LabelSizeTypeSmall");
@@ -134,6 +136,7 @@ public class ColorPickerShowCasePageTests
             source.ShouldContain("P2LabelSizeTypeCustom");
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
+            source.ShouldContain("ValueBindingTitle");
             source.ShouldContain("ApiPropertyDefaultValue");
             source.ShouldContain("ApiPropertyValueSyncStrategy");
             source.ShouldContain("ApiPropertyIsPaletteGroupEnabled");

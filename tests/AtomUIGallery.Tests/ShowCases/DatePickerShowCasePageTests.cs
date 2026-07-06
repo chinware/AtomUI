@@ -43,8 +43,23 @@ public class DatePickerShowCasePageTests
         source.ShouldContain("DatePickerShowCaseLangResource BasicTitle");
         source.ShouldContain("DatePickerShowCaseLangResource BindingTitle");
         source.ShouldContain("SelectedDateTime=\"{Binding BoundSelectedDateTime}\"");
+        source.ShouldContain("RangeStartSelectedDate=\"{Binding BoundRangeStartSelectedDate}\"");
+        source.ShouldContain("RangeEndSelectedDate=\"{Binding BoundRangeEndSelectedDate}\"");
+        source.ShouldContain("Text=\"{Binding BoundRangeSelectedDateText}\"");
+        source.ShouldContain("Click=\"SetBoundSelectedDateRangeThisWeek\"");
+        source.ShouldContain("Click=\"ClearBoundSelectedDateRange\"");
+        source.ShouldNotContain("DatePickerShowCaseLangResource RangeBindingTitle");
+        source.ShouldNotContain("DatePickerShowCaseLangResource RangeBindingDescription");
+        AssertResourceOrder(
+            ExtractShowCaseItemByTitle(source, "DatePickerShowCaseLangResource BindingTitle"),
+            "SelectedDateTime=\"{Binding BoundSelectedDateTime}\"",
+            "RangeStartSelectedDate=\"{Binding BoundRangeStartSelectedDate}\"");
         source.ShouldContain("DatePickerShowCaseLangResource PickerDisplayDateTitle");
         source.ShouldContain("PickerDisplayDate=\"2026-10-20\"");
+        AssertResourceOrder(
+            source,
+            "DatePickerShowCaseLangResource BindingTitle",
+            "DatePickerShowCaseLangResource PickerDisplayDateTitle");
         source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("DatePickerShowCaseLangResource PlacementTitle");
         source.ShouldContain("Name=\"PickerSizeTypeOptionGroup\"");
@@ -146,7 +161,9 @@ public class DatePickerShowCasePageTests
     [Fact]
     public void DatePicker_ShowCase_RangePicker_Example_Exposes_All_AntDesign_Range_Picker_Modes()
     {
-        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml");
+        var source = ExtractShowCaseItemByTitle(
+            ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerShowCase.axaml"),
+            "DatePickerShowCaseLangResource RangePickerTitle");
 
         CountOccurrences(source, "<atom:RangeDatePicker PickerMode=\"Date\"").ShouldBe(2);
         source.ShouldContain("PickerMode=\"Date\"\n                                      IsShowTime=\"True\"");
@@ -182,6 +199,8 @@ public class DatePickerShowCasePageTests
             source.ShouldContain("PickerDisplayDateTitle");
             source.ShouldContain("BindingTitle");
             source.ShouldContain("BindingDescription");
+            source.ShouldNotContain("RangeBindingTitle");
+            source.ShouldNotContain("RangeBindingDescription");
             source.ShouldContain("ApiPropertySelectedDateTime");
             source.ShouldContain("ApiPropertyPickerDisplayDate");
             source.ShouldContain("ApiPropertyPickerMode");
@@ -199,6 +218,8 @@ public class DatePickerShowCasePageTests
             source.ShouldContain("P2SecondaryPlaceholderTextEndQuarter");
             source.ShouldContain("P2PlaceholderTextStartYear");
             source.ShouldContain("P2SecondaryPlaceholderTextEndYear");
+            source.ShouldContain("P2TextSelectedDateRange");
+            source.ShouldContain("P2ContentSetThisWeek");
             source.ShouldContain("TokenNameCellActiveWithRangeBg");
             source.ShouldContain("TokenNameCellHoverBg");
         }
@@ -231,6 +252,34 @@ public class DatePickerShowCasePageTests
     private static string NormalizeMarkup(string source)
     {
         return ShowCaseSnapshotMarkup.Normalize(source);
+    }
+
+    private static void AssertResourceOrder(string source, params string[] resources)
+    {
+        var previousIndex = -1;
+        foreach (var resource in resources)
+        {
+            var index = source.IndexOf(resource, StringComparison.Ordinal);
+            index.ShouldBeGreaterThan(previousIndex, $"{resource} should appear after the previous resource.");
+            previousIndex = index;
+        }
+    }
+
+    private static string ExtractShowCaseItemByTitle(string source, string titleResource)
+    {
+        var titleIndex = source.IndexOf(titleResource, StringComparison.Ordinal);
+        titleIndex.ShouldBeGreaterThanOrEqualTo(0);
+
+        const string itemStartMarker = "<gallery:ShowCaseItem";
+        const string itemEndMarker   = "</gallery:ShowCaseItem>";
+
+        var itemStart = source.LastIndexOf(itemStartMarker, titleIndex, StringComparison.Ordinal);
+        itemStart.ShouldBeGreaterThanOrEqualTo(0);
+
+        var itemEnd = source.IndexOf(itemEndMarker, titleIndex, StringComparison.Ordinal);
+        itemEnd.ShouldBeGreaterThan(titleIndex);
+
+        return source[itemStart..(itemEnd + itemEndMarker.Length)];
     }
 
     private static int CountOccurrences(string source, string value)

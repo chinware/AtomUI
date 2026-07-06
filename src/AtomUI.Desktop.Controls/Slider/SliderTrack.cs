@@ -8,6 +8,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Interactivity;
@@ -31,7 +32,10 @@ public class SliderTrack : TemplatedControl
         RangeBase.ValueProperty.AddOwner<SliderTrack>();
 
     public static readonly StyledProperty<SliderRangeValue> RangeValueProperty =
-        AvaloniaProperty.Register<SliderTrack, SliderRangeValue>(nameof(RangeValue),
+        AvaloniaProperty.Register<SliderTrack, SliderRangeValue>(
+            nameof(RangeValue),
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true,
             coerce: CoerceRangeValue);
 
     public static readonly StyledProperty<bool> IsRangeModeProperty =

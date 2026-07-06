@@ -26,7 +26,7 @@ internal partial class zh_CN
     public const string ApiPropertyIsDirectionReversed = "反转数值增长的视觉方向。";
     public const string ApiPropertyIsSnapToTickEnabled = "将滑块移动吸附到刻度值。";
     public const string ApiPropertyTickFrequency = "刻度值之间的间距。";
-    public const string ApiPropertyRangeValue = "范围模式下选中的开始值和结束值。";
+    public const string ApiPropertyRangeValue = "范围模式下选中的开始值和结束值，默认双向绑定，并接入 Avalonia 数据验证。";
     public const string ApiPropertyIsRangeMode = "启用双滑块范围选择。";
     public const string ApiPropertyMarks = "沿轨道显示的刻度标记文本。";
     public const string ApiPropertyValueFormatTemplate = "用于提示值的格式化字符串。";
@@ -66,6 +66,8 @@ internal partial class zh_CN
     public const string TokenStatusStable = "稳定";
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "基础滑块。range 为 true 时显示为双滑块模式；disable 为 true 时滑块不可交互。";
+    public const string RangeValueBindingTitle = "RangeValue 绑定";
+    public const string RangeValueBindingDescription = "RangeValue 现在默认双向绑定，拖动范围会直接更新 ViewModel，无需显式设置绑定模式。";
     public const string CustomizeTooltipTitle = "自定义提示";
     public const string CustomizeTooltipDescription = "使用 tooltip.formatter 格式化 Tooltip 内容；当 tooltip.formatter 为 null 时隐藏提示。";
     public const string VerticalTitle = "垂直方向";
@@ -75,5 +77,8 @@ internal partial class zh_CN
     public const string P2TextEnabled = "Enabled:";
     public const string P2TextIncludedTrue = "included=true";
     public const string P2TextIncludedFalse = "included=false";
+    public const string P2TextBoundRangeValue = "绑定范围：";
+    public const string P2ContentSetRange = "设为 35-85";
+    public const string P2ContentClear = "清空";
 
 }

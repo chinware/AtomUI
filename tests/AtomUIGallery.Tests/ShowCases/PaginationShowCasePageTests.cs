@@ -41,6 +41,8 @@ public class PaginationShowCasePageTests
         source.ShouldContain("Description=\"{gallery:PaginationShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("PaginationShowCaseLangResource BasicTitle");
+        source.ShouldContain("PaginationShowCaseLangResource BindingTitle");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("PaginationShowCaseLangResource AlignTitle");
         source.ShouldContain("PaginationShowCaseLangResource MoreTitle");
         source.ShouldContain("PaginationShowCaseLangResource MiniSizeTitle");
@@ -128,6 +130,8 @@ public class PaginationShowCasePageTests
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyTotal");
             source.ShouldContain("ApiPropertyCurrentPage");
+            source.ShouldContain("BindingTitle");
+            source.ShouldContain("P2ContentSetPage");
             source.ShouldContain("ApiPropertyIsShowSizeChanger");
             source.ShouldContain("ApiPropertyIsReadOnly");
             source.ShouldContain("TokenNameItemSize");

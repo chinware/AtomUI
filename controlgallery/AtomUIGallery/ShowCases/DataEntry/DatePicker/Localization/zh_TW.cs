@@ -8,7 +8,7 @@ internal partial class zh_TW
     public const string BasicTitle = "基礎用法";
     public const string BasicDescription = "點擊 DatePicker 後，可以在面板中選擇或輸入日期。";
     public const string BindingTitle = "SelectedDateTime 綁定";
-    public const string BindingDescription = "SelectedDateTime 默認與 ViewModel 雙向同步，無需顯式設置 Binding Mode=TwoWay。";
+    public const string BindingDescription = "SelectedDateTime、RangeStartSelectedDate 與 RangeEndSelectedDate 默認與 ViewModel 雙向同步，無需顯式設置 Binding Mode=TwoWay。";
     public const string PickerDisplayDateTitle = "彈出面板顯示日期";
     public const string PickerDisplayDateDescription = "打開彈出面板時定位到指定日期，但不提交選中值。";
     public const string RangePickerTitle = "範圍選擇器";
@@ -53,7 +53,9 @@ internal partial class zh_TW
     public const string P2ContentCustom = "自定義";
     public const string P2TextPlacement = "彈出位置：";
     public const string P2TextSelectedDateTime = "選中值：";
+    public const string P2TextSelectedDateRange = "選中範圍：";
     public const string P2ContentSetTomorrow = "設置為明天";
+    public const string P2ContentSetThisWeek = "設置為本週";
     public const string P2ContentClear = "清空";
     public const string P2ContentTopleft = "左上";
     public const string P2ContentTopright = "右上";

@@ -21,6 +21,33 @@ IsShowSelectedIndicator="True" />
 </StackPanel>
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
+Title="{gallery:ListShowCaseLangResource SelectedItemsBindingTitle}"
+Description="{gallery:ListShowCaseLangResource SelectedItemsBindingDescription}"
+BadgeText="v6.0.8">
+<StackPanel Spacing="12">
+<atom:ListView Width="240"
+Height="180"
+SelectionMode="Multiple"
+ItemsSource="{Binding SelectionListItems}"
+SelectedItems="{Binding BoundSelectedItems}"
+IsShowSelectedIndicator="True" />
+<StackPanel Orientation="Horizontal" Spacing="8">
+<atom:TextBlock VerticalAlignment="Center"
+Text="{gallery:ListShowCaseLangResource P2TextSelectedItems}" />
+<atom:TextBlock VerticalAlignment="Center"
+Text="{Binding BoundSelectedItemsText}" />
+</StackPanel>
+<StackPanel Orientation="Horizontal" Spacing="10">
+<atom:Button SizeType="Small"
+Command="{Binding SelectBoundSelectedItemsCommand}"
+Content="{gallery:ListShowCaseLangResource P2ContentSelectColors}" />
+<atom:Button SizeType="Small"
+Command="{Binding ClearBoundSelectedItemsCommand}"
+Content="{gallery:ListShowCaseLangResource P2ContentClearSelection}" />
+</StackPanel>
+</StackPanel>
+</gallery:ShowCaseItem>
+<gallery:ShowCaseItem
 Title="{gallery:ListShowCaseLangResource GroupTitle}"
 Description="{gallery:ListShowCaseLangResource GroupDescription}">
 <atom:ListView ItemsSource="{Binding GroupListItems}"

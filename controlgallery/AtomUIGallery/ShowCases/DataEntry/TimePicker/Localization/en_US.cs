@@ -8,7 +8,7 @@ internal partial class en_US
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "Click TimePicker, and then we could select or input a time in panel.";
     public const string BindingTitle = "SelectedTime binding";
-    public const string BindingDescription = "SelectedTime synchronizes with the ViewModel without explicitly setting Binding Mode=TwoWay.";
+    public const string BindingDescription = "SelectedTime, RangeStartSelectedTime, and RangeEndSelectedTime synchronize with the ViewModel without explicitly setting Binding Mode=TwoWay.";
     public const string PickerDisplayTimeTitle = "Popup display time";
     public const string PickerDisplayTimeDescription = "Open the popup panel at a specific display time without committing a selected value.";
     public const string HourFormatsTitle = "12-hour and 24-hour formats";
@@ -39,7 +39,9 @@ internal partial class en_US
     public const string P2ContentSmall = "Small";
     public const string P2ContentCustom = "Custom";
     public const string P2TextSelectedTime = "Selected value:";
+    public const string P2TextSelectedTimeRange = "Selected range:";
     public const string P2ContentSetNoon = "Set noon";
+    public const string P2ContentSetWorkHours = "Set work hours";
     public const string P2ContentClear = "Clear";
     public const string PageSubtitle = "Select a time or a time range from a popup time panel.";
     public const string PageDescription = "TimePicker supports 12-hour and 24-hour clocks, size variants, disabled states, stepped minute and second options, visual variants, validation status, and range selection.";

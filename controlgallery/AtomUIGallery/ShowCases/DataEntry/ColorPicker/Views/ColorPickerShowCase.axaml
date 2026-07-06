@@ -50,6 +50,53 @@
                 </DataTemplate>
             </gallery:ShowCaseItem.DeferredContentTemplate>
         </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
+            Title="{gallery:ColorPickerShowCaseLangResource ValueBindingTitle}"
+            Description="{gallery:ColorPickerShowCaseLangResource ValueBindingDescription}"
+            BadgeText="v6.0.8"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:ColorPickerViewModel">
+            <StackPanel Orientation="Vertical" Spacing="12">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:ColorPicker Value="{Binding BoundColorValue}"
+                                      IsTextVisible="True"
+                                      IsClearEnabled="True" />
+                    <atom:GradientColorPicker Value="{Binding BoundGradientValue}"
+                                              IsTextVisible="True"
+                                              IsClearEnabled="True" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <atom:TextBlock VerticalAlignment="Center"
+                                    Text="{gallery:ColorPickerShowCaseLangResource P2TextColorValue}" />
+                    <atom:TextBlock VerticalAlignment="Center"
+                                    Text="{Binding BoundColorValueText}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <atom:TextBlock VerticalAlignment="Center"
+                                    Text="{gallery:ColorPickerShowCaseLangResource P2TextGradientValue}" />
+                    <atom:TextBlock VerticalAlignment="Center"
+                                    Text="{Binding BoundGradientValueText}" />
+                </StackPanel>
+                <WrapPanel ItemSpacing="10" LineSpacing="8">
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding SetBoundColorValueCommand}"
+                                 Content="{gallery:ColorPickerShowCaseLangResource P2ContentSetColor}" />
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding SetBoundGradientValueCommand}"
+                                 Content="{gallery:ColorPickerShowCaseLangResource P2ContentSetGradient}" />
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding ClearBoundColorValueCommand}"
+                                 Content="{gallery:ColorPickerShowCaseLangResource P2ContentClearColor}" />
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding ClearBoundGradientValueCommand}"
+                                 Content="{gallery:ColorPickerShowCaseLangResource P2ContentClearGradient}" />
+                </WrapPanel>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
         
         <gallery:ShowCaseItem
             Title="{gallery:ColorPickerShowCaseLangResource TriggerSizeTitle}"

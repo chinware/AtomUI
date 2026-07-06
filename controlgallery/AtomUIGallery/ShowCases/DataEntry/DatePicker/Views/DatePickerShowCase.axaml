@@ -69,23 +69,47 @@
             IsDeferredContentEnabled="True">
             <gallery:ShowCaseItem.DeferredContentTemplate>
                 <DataTemplate x:DataType="vm:DatePickerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="12">
-                <atom:DatePicker Width="240"
-                                 SelectedDateTime="{Binding BoundSelectedDateTime}"
-                                 PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" />
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <atom:TextBlock VerticalAlignment="Center"
-                                    Text="{gallery:DatePickerShowCaseLangResource P2TextSelectedDateTime}" />
-                    <atom:TextBlock VerticalAlignment="Center"
-                                    Text="{Binding BoundSelectedDateTimeText}" />
+            <StackPanel Orientation="Vertical" Spacing="16">
+                <StackPanel Orientation="Vertical" Spacing="12">
+                    <atom:DatePicker Width="240"
+                                     SelectedDateTime="{Binding BoundSelectedDateTime}"
+                                     PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextSelectDate}" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <atom:TextBlock VerticalAlignment="Center"
+                                        Text="{gallery:DatePickerShowCaseLangResource P2TextSelectedDateTime}" />
+                        <atom:TextBlock VerticalAlignment="Center"
+                                        Text="{Binding BoundSelectedDateTimeText}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <atom:Button SizeType="Small"
+                                     Click="SetBoundSelectedDateTimeTomorrow"
+                                     Content="{gallery:DatePickerShowCaseLangResource P2ContentSetTomorrow}" />
+                        <atom:Button SizeType="Small"
+                                     Click="ClearBoundSelectedDateTime"
+                                     Content="{gallery:DatePickerShowCaseLangResource P2ContentClear}" />
+                    </StackPanel>
                 </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <atom:Button SizeType="Small"
-                                 Click="SetBoundSelectedDateTimeTomorrow"
-                                 Content="{gallery:DatePickerShowCaseLangResource P2ContentSetTomorrow}" />
-                    <atom:Button SizeType="Small"
-                                 Click="ClearBoundSelectedDateTime"
-                                 Content="{gallery:DatePickerShowCaseLangResource P2ContentClear}" />
+                <StackPanel Orientation="Vertical" Spacing="12">
+                    <atom:RangeDatePicker PickerMode="Date"
+                                          IsShowTime="False"
+                                          RangeStartSelectedDate="{Binding BoundRangeStartSelectedDate}"
+                                          RangeEndSelectedDate="{Binding BoundRangeEndSelectedDate}"
+                                          PlaceholderText="{gallery:DatePickerShowCaseLangResource P2PlaceholderTextStartDate}"
+                                          SecondaryPlaceholderText="{gallery:DatePickerShowCaseLangResource P2SecondaryPlaceholderTextEndDate}" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <atom:TextBlock VerticalAlignment="Center"
+                                        Text="{gallery:DatePickerShowCaseLangResource P2TextSelectedDateRange}" />
+                        <atom:TextBlock VerticalAlignment="Center"
+                                        Text="{Binding BoundRangeSelectedDateText}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <atom:Button SizeType="Small"
+                                     Click="SetBoundSelectedDateRangeThisWeek"
+                                     Content="{gallery:DatePickerShowCaseLangResource P2ContentSetThisWeek}" />
+                        <atom:Button SizeType="Small"
+                                     Click="ClearBoundSelectedDateRange"
+                                     Content="{gallery:DatePickerShowCaseLangResource P2ContentClear}" />
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
                 </DataTemplate>

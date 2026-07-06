@@ -322,7 +322,8 @@ public class Slider : RangeBase,
         BindingValueType state,
         Exception? error)
     {
-        if (property == ValueProperty)
+        if (property == ValueProperty ||
+            property == RangeValueProperty)
         {
             DataValidationErrors.SetError(this, error);
         }

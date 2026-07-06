@@ -57,6 +57,7 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
                     viewModel.PaginationListItems    = null;
                     viewModel.OrderedSortDescriptions = null;
                     viewModel.SearchFilterValue       = null;
+                    viewModel.ClearBoundSelectedItems();
                 }).DisposeWith(disposables);
             }
         });
@@ -193,6 +194,7 @@ public partial class ListShowCase : GalleryReactiveUserControl<ListViewModel>
     private void InitSelectionListItems(ListViewModel viewModel)
     {
         viewModel.SelectionListItems = BuildBasicListItems();
+        viewModel.ResetBoundSelectedItems();
     }
 
     private void InitializeDisabledItems(ListViewModel viewModel)

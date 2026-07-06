@@ -8,6 +8,8 @@ internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "最简单的用法。";
+    public const string ValueBindingTitle = "Value 绑定";
+    public const string ValueBindingDescription = "Value 现在默认双向绑定，输入或清空内容会直接更新 ViewModel，无需显式设置绑定模式。";
     public const string SizeTypeTitle = "Mentions 尺寸";
     public const string SizeTypeDescription = "Mentions 支持大号、中号、小号，也支持通过 Custom 配合本地高度和字号自定义。";
     public const string VariantsTitle = "变体";
@@ -49,7 +51,7 @@ internal partial class zh_CN
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";
     public const string ApiColumnDefault = "默认值";
-    public const string ApiPropertyValue = "Mentions 输入框的当前文本值。";
+    public const string ApiPropertyValue = "Mentions 输入框的当前文本值，默认双向绑定，并接入 Avalonia 数据验证。";
     public const string ApiPropertyDefaultValue = "控件创建时应用的初始文本值。";
     public const string ApiPropertyOptionsSource = "用于提及建议的静态选项数据源。";
     public const string ApiPropertyOptionsAsyncLoader = "根据当前提及上下文提供选项的异步加载器。";
@@ -79,5 +81,8 @@ internal partial class zh_CN
     public const string TokenNameMinPopupWidth = "候选弹窗最小宽度。";
     public const string TokenScopeComponent = "Mentions";
     public const string TokenStatusStable = "稳定";
+    public const string P2TextBoundValue = "绑定值：";
+    public const string P2ContentSetMention = "设置提及";
+    public const string P2ContentClear = "清空";
 
 }

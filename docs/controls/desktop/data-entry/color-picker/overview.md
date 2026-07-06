@@ -46,6 +46,8 @@ ColorPicker 的公共契约由 public/protected 类型成员、Avalonia 属性�
 | 动效与异步 | `MouseEnterDelay`、`MouseLeaveDelay` | 约束动效开关、异步加载、播放速度、超时和任务边界。 |
 | 其他稳定入口 | `ActivatedThumb`、`Components`、`DecreaseButton`、`Format`、`IncreaseButton`、`MaxHue`、`MaxSaturation`、`Maximum`、`MinHue`、`MinSaturation` 等 14 项 | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
+`ColorPicker.Value` 和 `GradientColorPicker.Value` 是用户拥有的当前值：纯色选择器使用 `Color?`，渐变选择器使用 `LinearGradientBrush?`。两个 `Value` CLR wrapper 均可公开设置，默认 `TwoWay` 绑定，并接入 Avalonia `DataValidationErrors`。清除按钮、Form clear 和外部绑定写入 `null` 都必须让 `Value` 变为 `null`，不能只清空触发器文字或色块视觉。
+
 稳定事件包括 `ClearRequest`、`GradientActiveStopChanged`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
 
 主要公开类型与枚举：
@@ -101,6 +103,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - open/close、collection/filter、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `Value`、trigger 色块、trigger 文本、picker presenter 和 Form 值必须由同一份 current value 派生；清空状态以 `Value=null` 为源头。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 

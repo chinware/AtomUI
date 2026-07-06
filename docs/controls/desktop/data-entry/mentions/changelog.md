@@ -8,6 +8,13 @@
 - 不记录临时讨论、纯格式化或没有长期价值的实现细节。
 - 架构文档始终描述最新设计状态；历史变化记录在本文档。
 
+## 2026-07-06
+
+- API
+  - Make `Value` a default `TwoWay` Form value and keep validation integrated with Avalonia `DataValidationErrors`.
+- Gallery
+  - Add a `v6.0.8` `Value` binding example.
+
 ## 2026-06-26
 
 - Docs

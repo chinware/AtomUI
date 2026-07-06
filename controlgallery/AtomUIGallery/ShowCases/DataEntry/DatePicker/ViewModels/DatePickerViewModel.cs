@@ -65,6 +65,40 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
 
     public string BoundSelectedDateTimeText => BoundSelectedDateTime?.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture) ?? "-";
 
+    private DateTime? _boundRangeStartSelectedDate = new DateTime(2026, 7, 6);
+
+    public DateTime? BoundRangeStartSelectedDate
+    {
+        get => _boundRangeStartSelectedDate;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _boundRangeStartSelectedDate, value);
+            this.RaisePropertyChanged(nameof(BoundRangeSelectedDateText));
+        }
+    }
+
+    private DateTime? _boundRangeEndSelectedDate = new DateTime(2026, 7, 12);
+
+    public DateTime? BoundRangeEndSelectedDate
+    {
+        get => _boundRangeEndSelectedDate;
+        set
+        {
+            this.RaiseAndSetIfChanged(ref _boundRangeEndSelectedDate, value);
+            this.RaisePropertyChanged(nameof(BoundRangeSelectedDateText));
+        }
+    }
+
+    public string BoundRangeSelectedDateText
+    {
+        get
+        {
+            var startText = BoundRangeStartSelectedDate?.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture) ?? "-";
+            var endText   = BoundRangeEndSelectedDate?.ToString("yyyy-MM-dd", CultureInfo.CurrentCulture) ?? "-";
+            return $"{startText} → {endText}";
+        }
+    }
+
     public DatePickerViewModel(IScreen screen)
     {
         HostScreen = screen;
@@ -188,7 +222,9 @@ public class DatePickerViewModel : ReactiveObject, IRoutableViewModel
             DatePickerShowCaseLangResourceKind.TokenScopeComponent                    => en_US.TokenScopeComponent,
             DatePickerShowCaseLangResourceKind.TokenStatusStable                      => en_US.TokenStatusStable,
             DatePickerShowCaseLangResourceKind.P2ContentClear                         => en_US.P2ContentClear,
+            DatePickerShowCaseLangResourceKind.P2ContentSetThisWeek                   => en_US.P2ContentSetThisWeek,
             DatePickerShowCaseLangResourceKind.P2ContentSetTomorrow                   => en_US.P2ContentSetTomorrow,
+            DatePickerShowCaseLangResourceKind.P2TextSelectedDateRange                => en_US.P2TextSelectedDateRange,
             DatePickerShowCaseLangResourceKind.P2TextSelectedDateTime                 => en_US.P2TextSelectedDateTime,
             _                                                                         => kind.ToString()
         };

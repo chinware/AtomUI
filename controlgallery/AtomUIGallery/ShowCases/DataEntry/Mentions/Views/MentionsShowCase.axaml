@@ -56,6 +56,37 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:MentionsShowCaseLangResource ValueBindingTitle}"
+            IsDeferredContentEnabled="True"
+            BadgeText="v6.0.8"
+            Description="{gallery:MentionsShowCaseLangResource ValueBindingDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:MentionsViewModel">
+            <StackPanel Orientation="Vertical" Spacing="12">
+                <atom:Mentions HorizontalAlignment="Stretch"
+                               OptionsSource="{Binding BasicMentionOptions}"
+                               IsAllowClear="True"
+                               Value="{Binding BoundValue}" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <atom:TextBlock VerticalAlignment="Center"
+                                    Text="{gallery:MentionsShowCaseLangResource P2TextBoundValue}" />
+                    <atom:TextBlock VerticalAlignment="Center"
+                                    Text="{Binding BoundValueText}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding SetBoundValueCommand}"
+                                 Content="{gallery:MentionsShowCaseLangResource P2ContentSetMention}" />
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding ClearBoundValueCommand}"
+                                 Content="{gallery:MentionsShowCaseLangResource P2ContentClear}" />
+                </StackPanel>
+            </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:MentionsShowCaseLangResource SizeTypeTitle}"
             IsDeferredContentEnabled="True"
             Description="{gallery:MentionsShowCaseLangResource SizeTypeDescription}">

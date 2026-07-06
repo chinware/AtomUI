@@ -60,6 +60,8 @@ SyncCurrentStepToSelectedItem
       ↓
 SelectedIndex changed
       ↓
+SyncSelectedIndexToCurrentStep for user selection
+      ↓
 ConfigureCurrentStepsItem
       ↓
 Position / IsFirst / IsLast / IsFinished / Status
@@ -78,6 +80,8 @@ CurrentContent + CurrentContentTemplate
 ```
 
 `CurrentContentTemplate` 使用当前容器 `ContentTemplate`，为空时回退根控件 `ContentTemplate`。当模板将要变化时，先清空 `CurrentContentTemplate`，再更新内容，避免旧模板生成的控件在 DataContext 变化时被复用。
+
+`CurrentStep` 注册为默认 `TwoWay` 受控状态。外部设置 `CurrentStep` 时仍由 `SyncCurrentStepToSelectedItem` 推动底层选择；用户点击可选 item 或代码设置 `SelectedIndex` 时，`SelectedIndexProperty` class handler 必须把新索引回写到 `CurrentStep`，让绑定源、当前内容和 item 状态保持同一事实来源。
 
 ## 5. 生命周期与模板接入
 
@@ -232,6 +236,7 @@ AOT 边界：
 内部重构必须保持以下不变量：
 
 - `CurrentStep` 写入必须同步 `SelectedIndex`。
+- `SelectedIndex` 由用户选择路径改变时必须回写 `CurrentStep`，且不能形成递归状态竞争。
 - `SelectedItem` 变化必须更新 `CurrentContent`。
 - 动态 item 增删、容器准备、index 变化和容器清理必须触发布局同步。
 - `Status` 派生必须使用不覆盖本地值的优先级。

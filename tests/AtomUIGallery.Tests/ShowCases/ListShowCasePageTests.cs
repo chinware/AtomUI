@@ -42,6 +42,8 @@ public class ListShowCasePageTests
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("ListShowCaseLangResource BasicUsageTitle");
         source.ShouldContain("ListShowCaseLangResource SelectionTitle");
+        source.ShouldContain("ListShowCaseLangResource SelectedItemsBindingTitle");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("ListShowCaseLangResource FilterTitle");
         source.ShouldContain("ListShowCaseLangResource SearchableTitle");
         source.ShouldContain("ListShowCaseLangResource PaginationListTitle");
@@ -131,8 +133,11 @@ public class ListShowCasePageTests
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyIsGroupEnabled");
+            source.ShouldContain("ApiPropertySelectedItems");
             source.ShouldContain("ApiPropertyFilterValue");
             source.ShouldContain("ApiPropertyPaginationVisibility");
+            source.ShouldContain("SelectedItemsBindingTitle");
+            source.ShouldContain("P2ContentSelectColors");
             source.ShouldContain("TokenNameContentPadding");
             source.ShouldContain("TokenNameItemHoverBgColor");
         }

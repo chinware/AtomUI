@@ -45,7 +45,7 @@ Steps 的公共契约由根控件 API、item API、枚举模型、选择 API 和
 
 | API | 类型 | 语义 |
 | --- | --- | --- |
-| `CurrentStep` | `int` | 当前步骤索引，默认 `0`；有效范围内会同步到 `SelectedIndex`。 |
+| `CurrentStep` | `int` | 当前步骤索引，默认 `0`；默认 `TwoWay` 绑定，有效范围内会同步到 `SelectedIndex`。 |
 | `InitialStep` | `int` | 模板应用时写入 `CurrentStep` 的初始步骤，默认 `-1` 表示不接管。 |
 | `ProgressValue` | `double` | 当前步骤进度环数值，写入时被约束到 `0..100`。 |
 | `CurrentStepStatus` | `StepsItemStatus` | 当前步骤的默认状态，默认 `Process`。 |
@@ -122,6 +122,7 @@ StepsItem theme + StepsItemIndicator theme
 当前步骤语义：
 
 - `CurrentStep` 在有效范围内同步到 `SelectedIndex`。
+- 用户点击可选步骤或外部修改 `SelectedIndex` 时会写回 `CurrentStep`，从而让默认 `TwoWay` binding 同步到 ViewModel。
 - `CurrentStep` 超出范围时 `SelectedIndex` 被设置为 `-1`。
 - `InitialStep != -1` 时，模板应用阶段把 `InitialStep` 写入 `CurrentStep`。
 - `SelectedIndex` 变化后会重新计算所有 item 的位置、完成态和状态。
@@ -223,7 +224,7 @@ Steps 不实现 Form、CompactSpace、Popup 或路由接口。
 
 ### 8.1 CurrentStep 与 Selection 模型
 
-`CurrentStep` 是 Steps 的流程入口，`SelectedIndex` 是底层选择状态。`CurrentStep` 写入时同步 `SelectedIndex`，点击可选 item 时通过 selection pipeline 更新选择。维护者修改选择逻辑时，必须同时验证 root 状态、item `IsSelected`、`Status`、`:finished` 和 `CurrentContent`。
+`CurrentStep` 是 Steps 的流程入口，`SelectedIndex` 是底层选择状态。`CurrentStep` 写入时同步 `SelectedIndex`，点击可选 item 或外部设置 `SelectedIndex` 时通过 selection pipeline 回写 `CurrentStep`。维护者修改选择逻辑时，必须同时验证 root 状态、item `IsSelected`、`Status`、`:finished`、`CurrentContent` 和绑定写回。
 
 ### 8.2 Status 派生模型
 

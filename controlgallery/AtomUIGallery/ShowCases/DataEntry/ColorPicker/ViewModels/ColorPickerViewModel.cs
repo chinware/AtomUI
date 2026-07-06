@@ -1,7 +1,11 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Data;
 using Avalonia;
+using Avalonia.Media;
 using Avalonia.Threading;
 using AtomUIGallery.Localization;
 using ReactiveUI;
@@ -18,6 +22,8 @@ public class ColorPickerViewModel : ReactiveObject, IRoutableViewModel
 
     private ObservableCollection<ColorPickerApiRow>? _apiRows;
     private ObservableCollection<ColorPickerDesignTokenRow>? _designTokenRows;
+    private Color? _boundColorValue = Color.Parse("#1677ff");
+    private LinearGradientBrush? _boundGradientValue = CreateGradient("#108ee9", "#87d068");
 
     public ObservableCollection<ColorPickerApiRow>? ApiRows
     {
@@ -31,9 +37,75 @@ public class ColorPickerViewModel : ReactiveObject, IRoutableViewModel
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
     }
 
+    public Color? BoundColorValue
+    {
+        get => _boundColorValue;
+        set
+        {
+            if (_boundColorValue == value)
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _boundColorValue, value);
+            this.RaisePropertyChanged(nameof(BoundColorValueText));
+        }
+    }
+
+    public string BoundColorValueText => BoundColorValue?.ToString() ?? "-";
+
+    public LinearGradientBrush? BoundGradientValue
+    {
+        get => _boundGradientValue;
+        set
+        {
+            if (ReferenceEquals(_boundGradientValue, value))
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _boundGradientValue, value);
+            this.RaisePropertyChanged(nameof(BoundGradientValueText));
+        }
+    }
+
+    public string BoundGradientValueText => FormatGradientValue(BoundGradientValue);
+
+    public ReactiveCommand<Unit, Unit> SetBoundColorValueCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> ClearBoundColorValueCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> SetBoundGradientValueCommand { get; }
+
+    public ReactiveCommand<Unit, Unit> ClearBoundGradientValueCommand { get; }
+
     public ColorPickerViewModel(IScreen screen)
     {
-        HostScreen = screen;
+        HostScreen                         = screen;
+        SetBoundColorValueCommand          = ReactiveCommand.Create(SetBoundColorValue);
+        ClearBoundColorValueCommand        = ReactiveCommand.Create(ClearBoundColorValue);
+        SetBoundGradientValueCommand       = ReactiveCommand.Create(SetBoundGradientValue);
+        ClearBoundGradientValueCommand     = ReactiveCommand.Create(ClearBoundGradientValue);
+    }
+
+    private void SetBoundColorValue()
+    {
+        BoundColorValue = Color.Parse("#722ed1");
+    }
+
+    private void ClearBoundColorValue()
+    {
+        BoundColorValue = null;
+    }
+
+    private void SetBoundGradientValue()
+    {
+        BoundGradientValue = CreateGradient("#f5222d", "#faad14");
+    }
+
+    private void ClearBoundGradientValue()
+    {
+        BoundGradientValue = null;
     }
 
     public void EnsureApiRows()
@@ -103,6 +175,14 @@ public class ColorPickerViewModel : ReactiveObject, IRoutableViewModel
             ColorPickerShowCaseLangResourceKind.ApiPropertyTriggerType                 => en_US.ApiPropertyTriggerType,
             ColorPickerShowCaseLangResourceKind.ApiPropertyValueSyncStrategy           => en_US.ApiPropertyValueSyncStrategy,
             ColorPickerShowCaseLangResourceKind.ApiPropertyIsPaletteGroupEnabled       => en_US.ApiPropertyIsPaletteGroupEnabled,
+            ColorPickerShowCaseLangResourceKind.ValueBindingTitle                      => en_US.ValueBindingTitle,
+            ColorPickerShowCaseLangResourceKind.ValueBindingDescription                => en_US.ValueBindingDescription,
+            ColorPickerShowCaseLangResourceKind.P2TextColorValue                       => en_US.P2TextColorValue,
+            ColorPickerShowCaseLangResourceKind.P2TextGradientValue                    => en_US.P2TextGradientValue,
+            ColorPickerShowCaseLangResourceKind.P2ContentSetColor                      => en_US.P2ContentSetColor,
+            ColorPickerShowCaseLangResourceKind.P2ContentSetGradient                   => en_US.P2ContentSetGradient,
+            ColorPickerShowCaseLangResourceKind.P2ContentClearColor                    => en_US.P2ContentClearColor,
+            ColorPickerShowCaseLangResourceKind.P2ContentClearGradient                 => en_US.P2ContentClearGradient,
             ColorPickerShowCaseLangResourceKind.TokenNameColorPickerWidth              => en_US.TokenNameColorPickerWidth,
             ColorPickerShowCaseLangResourceKind.TokenNameColorSpectrumHeight           => en_US.TokenNameColorSpectrumHeight,
             ColorPickerShowCaseLangResourceKind.TokenNameColorPickerHandlerSize        => en_US.TokenNameColorPickerHandlerSize,
@@ -116,6 +196,31 @@ public class ColorPickerViewModel : ReactiveObject, IRoutableViewModel
             ColorPickerShowCaseLangResourceKind.TokenStatusStable                      => en_US.TokenStatusStable,
             _                                                                          => kind.ToString()
         };
+    }
+
+    private static LinearGradientBrush CreateGradient(string startColor, string endColor)
+    {
+        return new LinearGradientBrush
+        {
+            StartPoint = new RelativePoint(0, 0.5, RelativeUnit.Relative),
+            EndPoint   = new RelativePoint(1, 0.5, RelativeUnit.Relative),
+            GradientStops =
+            [
+                new GradientStop(Color.Parse(startColor), 0),
+                new GradientStop(Color.Parse(endColor), 1)
+            ]
+        };
+    }
+
+    private static string FormatGradientValue(LinearGradientBrush? brush)
+    {
+        if (brush?.GradientStops is not { Count: > 0 } stops)
+        {
+            return "-";
+        }
+
+        return string.Join(" → ", stops.Select(stop =>
+            string.Format(CultureInfo.CurrentCulture, "{0} {1:0.#}%", stop.Color, stop.Offset * 100)));
     }
 }
 

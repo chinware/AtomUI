@@ -8,6 +8,8 @@ internal partial class zh_CN
 {
     public const string BasicTitle = "基础用法";
     public const string BasicDescription = "基础用法。";
+    public const string ValueBindingTitle = "Value 绑定";
+    public const string ValueBindingDescription = "纯色和渐变选择器的 Value 现在默认双向绑定，编辑颜色会直接更新 ViewModel，无需显式设置绑定模式。";
     public const string TriggerSizeTitle = "触发器尺寸";
     public const string TriggerSizeDescription = "Ant Design 支持小号、默认和大号三种触发器尺寸。需要大号或小号触发器时分别设置 size 属性；省略 size 属性时使用默认尺寸。";
     public const string P2LabelSizeTypeSmall = "小号";
@@ -44,7 +46,7 @@ internal partial class zh_CN
     public const string ApiColumnType = "类型";
     public const string ApiColumnDefault = "默认值";
     public const string ApiPropertyDefaultValue = "控件加载时应用的初始颜色或渐变。";
-    public const string ApiPropertyValue = "当前选中的颜色或渐变值。";
+    public const string ApiPropertyValue = "当前选中的颜色或渐变值，默认双向绑定，并接入 Avalonia 数据验证。";
     public const string ApiPropertyFormat = "颜色文本的显示和输入格式。";
     public const string ApiPropertyIsAlphaEnabled = "控制是否允许编辑透明度。";
     public const string ApiPropertyIsTextVisible = "在触发器中显示格式化后的颜色文本。";
@@ -68,5 +70,11 @@ internal partial class zh_CN
     public const string TokenNameTriggerPadding = "颜色选择器触发器内部间距。";
     public const string TokenNameTriggerTextMargin = "颜色块与触发器文本之间的外间距。";
     public const string TokenNameColorBlockDisabledOpacity = "禁用状态下颜色块的不透明度。";
+    public const string P2TextColorValue = "绑定颜色：";
+    public const string P2TextGradientValue = "绑定渐变：";
+    public const string P2ContentSetColor = "设置颜色";
+    public const string P2ContentSetGradient = "设置渐变";
+    public const string P2ContentClearColor = "清空颜色";
+    public const string P2ContentClearGradient = "清空渐变";
 
 }

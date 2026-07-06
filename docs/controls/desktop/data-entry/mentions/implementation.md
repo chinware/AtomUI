@@ -218,7 +218,7 @@ AOT 边界：
 
 内部重构必须保持以下不变量：
 
-- `Value` 和 `MentionTextArea.Text` 继续双向同步。
+- `Value` 和 `MentionTextArea.Text` 继续双向同步；`Value` 作为 Form 值必须默认 `TwoWay` 并启用 Avalonia 数据验证。
 - `TriggerPrefix` 默认值、单字符识别和空白边界不能改变。
 - `FilterValue` 必须随 caret 和文本变化更新。
 - 打开候选弹层必须先触发 `CandidateTriggered`，再走打开和填充流程。

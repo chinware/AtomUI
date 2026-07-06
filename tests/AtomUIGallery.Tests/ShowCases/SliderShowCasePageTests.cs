@@ -41,6 +41,8 @@ public class SliderShowCasePageTests
         source.ShouldContain("Description=\"{gallery:SliderShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
         source.ShouldContain("SliderShowCaseLangResource BasicTitle");
+        source.ShouldContain("SliderShowCaseLangResource RangeValueBindingTitle");
+        source.ShouldContain("BadgeText=\"v6.0.8\"");
         source.ShouldContain("SliderShowCaseLangResource CustomizeTooltipTitle");
         source.ShouldContain("SliderShowCaseLangResource VerticalTitle");
         source.ShouldContain("SliderShowCaseLangResource GraduatedSliderTitle");
@@ -124,6 +126,7 @@ public class SliderShowCasePageTests
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
+            source.ShouldContain("RangeValueBindingTitle");
             source.ShouldContain("ApiPropertyIsRangeMode");
             source.ShouldContain("ApiPropertyRangeValue");
             source.ShouldContain("ApiPropertyMarks");

@@ -28,7 +28,7 @@ internal partial class zh_CN
     public const string TokenColumnDescription = "说明";
     public const string TokenColumnScope = "范围";
     public const string TokenColumnStatus = "状态";
-    public const string ApiPropertyCurrentStep = "设置或绑定当前激活步骤索引。";
+    public const string ApiPropertyCurrentStep = "设置或绑定当前激活步骤索引。默认使用 TwoWay 绑定。";
     public const string ApiPropertyInitialStep = "设置控件首次配置时的初始激活步骤。";
     public const string ApiPropertyProgressValue = "显示步骤项进度时当前步骤使用的百分比。";
     public const string ApiPropertyCurrentStepStatus = "应用到当前步骤的状态。";
@@ -71,7 +71,7 @@ internal partial class zh_CN
     public const string WithIconTitle = "带图标";
     public const string WithIconDescription = "可以通过为项目设置 icon 属性使用自定义图标。";
     public const string SwitchStepTitle = "切换步骤";
-    public const string SwitchStepDescription = "配合内容和按钮展示流程进度。";
+    public const string SwitchStepDescription = "配合内容、按钮和可点击步骤，通过 CurrentStep 绑定展示流程进度。";
     public const string VerticalTitle = "垂直方向";
     public const string VerticalDescription = "垂直方向的简单步骤条。";
     public const string VerticalMiniVersionTitle = "垂直迷你版本";
@@ -118,6 +118,7 @@ internal partial class zh_CN
     public const string P2TextAntDesignTitleN2 = "Ant Design 标题 2";
     public const string P2TextAntDesignTitleN3 = "Ant Design 标题 3";
     public const string P2TextAntDesignTitleN4 = "Ant Design 标题 4";
+    public const string P2TextCurrentStep = "CurrentStep：";
 
     public const string P2ContentFirstContent = "第一步内容";
 
