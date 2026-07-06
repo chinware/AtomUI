@@ -35,28 +35,44 @@ public class UploadViewModel : ReactiveObject, IRoutableViewModel
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
     }
 
-    private List<UploadTaskInfo>? _defaultTaskList;
+    private ObservableCollection<UploadFileItem>? _defaultFiles;
 
-    public List<UploadTaskInfo>? DefaultTaskList
+    public ObservableCollection<UploadFileItem>? DefaultFiles
     {
-        get => _defaultTaskList;
-        set => this.RaiseAndSetIfChanged(ref _defaultTaskList, value);
+        get => _defaultFiles;
+        set => this.RaiseAndSetIfChanged(ref _defaultFiles, value);
     }
 
-    private List<UploadTaskInfo>? _picturesWallDefaultTaskList;
+    private ObservableCollection<UploadFileItem>? _picturesWallFiles;
 
-    public List<UploadTaskInfo>? PicturesWallDefaultTaskList
+    public ObservableCollection<UploadFileItem>? PicturesWallFiles
     {
-        get => _picturesWallDefaultTaskList;
-        set => this.RaiseAndSetIfChanged(ref _picturesWallDefaultTaskList, value);
+        get => _picturesWallFiles;
+        set => this.RaiseAndSetIfChanged(ref _picturesWallFiles, value);
     }
 
-    private List<UploadTaskInfo>? _pictureListStyleDefaultTaskList;
+    private ObservableCollection<UploadFileItem>? _pictureCircleFiles;
 
-    public List<UploadTaskInfo>? PictureListStyleDefaultTaskList
+    public ObservableCollection<UploadFileItem>? PictureCircleFiles
     {
-        get => _pictureListStyleDefaultTaskList;
-        set => this.RaiseAndSetIfChanged(ref _pictureListStyleDefaultTaskList, value);
+        get => _pictureCircleFiles;
+        set => this.RaiseAndSetIfChanged(ref _pictureCircleFiles, value);
+    }
+
+    private ObservableCollection<UploadFileItem>? _pictureListStyleFiles;
+
+    public ObservableCollection<UploadFileItem>? PictureListStyleFiles
+    {
+        get => _pictureListStyleFiles;
+        set => this.RaiseAndSetIfChanged(ref _pictureListStyleFiles, value);
+    }
+
+    private ObservableCollection<UploadFileItem>? _scrollableUploadFiles;
+
+    public ObservableCollection<UploadFileItem>? ScrollableUploadFiles
+    {
+        get => _scrollableUploadFiles;
+        set => this.RaiseAndSetIfChanged(ref _scrollableUploadFiles, value);
     }
 
     public UploadViewModel(IScreen screen)
@@ -73,18 +89,24 @@ public class UploadViewModel : ReactiveObject, IRoutableViewModel
 
         ApiRows =
         [
+            new UploadApiRow("Files", Lang(UploadShowCaseLangResourceKind.ApiPropertyFiles), "IList<UploadFileItem>?", "cyan", "null"),
             new UploadApiRow("Accepts", Lang(UploadShowCaseLangResourceKind.ApiPropertyAccepts), "IReadOnlyList<string>?", "cyan", "null"),
             new UploadApiRow("ExtraContext", Lang(UploadShowCaseLangResourceKind.ApiPropertyExtraContext), "object?", "cyan", "null"),
             new UploadApiRow("MaxCount", Lang(UploadShowCaseLangResourceKind.ApiPropertyMaxCount), "int", "cyan", "int.MaxValue"),
-            new UploadApiRow("IsUploadDirectoryEnabled", Lang(UploadShowCaseLangResourceKind.ApiPropertyIsUploadDirectoryEnabled), "bool", "green", "false"),
+            new UploadApiRow("MaxConcurrentTasks", Lang(UploadShowCaseLangResourceKind.ApiPropertyMaxConcurrentTasks), "int", "cyan", "3"),
+            new UploadApiRow("AutoUpload", Lang(UploadShowCaseLangResourceKind.ApiPropertyAutoUpload), "bool", "green", "true"),
+            new UploadApiRow("UploadTransport", Lang(UploadShowCaseLangResourceKind.ApiPropertyUploadTransport), "IFileUploadTransport?", "cyan", "null"),
             new UploadApiRow("ListType", Lang(UploadShowCaseLangResourceKind.ApiPropertyListType), "UploadListType", "blue", "Text"),
             new UploadApiRow("IsMultipleEnabled", Lang(UploadShowCaseLangResourceKind.ApiPropertyIsMultipleEnabled), "bool", "green", "false"),
             new UploadApiRow("IsOpenFileDialogOnClick", Lang(UploadShowCaseLangResourceKind.ApiPropertyIsOpenFileDialogOnClick), "bool", "green", "true"),
             new UploadApiRow("IsShowUploadList", Lang(UploadShowCaseLangResourceKind.ApiPropertyIsShowUploadList), "bool", "green", "true"),
-            new UploadApiRow("IsShowUploadTrigger", Lang(UploadShowCaseLangResourceKind.ApiPropertyIsShowUploadTrigger), "bool", "green", "true"),
-            new UploadApiRow("DefaultTaskList", Lang(UploadShowCaseLangResourceKind.ApiPropertyDefaultTaskList), "IList<UploadTaskInfo>?", "cyan", "null"),
-            new UploadApiRow("MaxConcurrentTasks", Lang(UploadShowCaseLangResourceKind.ApiPropertyMaxConcurrentTasks), "int", "cyan", "3"),
-            new UploadApiRow("UploadTransport", Lang(UploadShowCaseLangResourceKind.ApiPropertyUploadTransport), "IFileUploadTransport?", "cyan", "null")
+            new UploadApiRow("ListMaxHeight", Lang(UploadShowCaseLangResourceKind.ApiPropertyListMaxHeight), "double", "cyan", "Infinity"),
+            new UploadApiRow("ListScrollBarVisibility", Lang(UploadShowCaseLangResourceKind.ApiPropertyListScrollBarVisibility), "ScrollBarVisibility", "blue", "Disabled"),
+            new UploadApiRow("SuccessAutoRemoveDelay", Lang(UploadShowCaseLangResourceKind.ApiPropertySuccessAutoRemoveDelay), "TimeSpan?", "cyan", "null"),
+            new UploadApiRow("PendingText", Lang(UploadShowCaseLangResourceKind.ApiPropertyPendingText), "string?", "cyan", "null"),
+            new UploadApiRow("FileValueMode", Lang(UploadShowCaseLangResourceKind.ApiPropertyFileValueMode), "UploadFileValueMode", "blue", "SuccessfulFiles"),
+            new UploadApiRow("TriggerContent", Lang(UploadShowCaseLangResourceKind.ApiPropertyTriggerContent), "object?", "cyan", "null"),
+            new UploadApiRow("UploadTrigger.SourceKind", Lang(UploadShowCaseLangResourceKind.ApiPropertyUploadTriggerSourceKind), "UploadSourceKind", "blue", "Files")
         ];
     }
 
@@ -101,6 +123,7 @@ public class UploadViewModel : ReactiveObject, IRoutableViewModel
             new UploadDesignTokenRow("PictureCardSize", Lang(UploadShowCaseLangResourceKind.TokenNamePictureCardSize), Lang(UploadShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(UploadShowCaseLangResourceKind.TokenStatusStable), "success"),
             new UploadDesignTokenRow("TextListItemMargin", Lang(UploadShowCaseLangResourceKind.TokenNameTextListItemMargin), Lang(UploadShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(UploadShowCaseLangResourceKind.TokenStatusStable), "success"),
             new UploadDesignTokenRow("TextListNamePadding", Lang(UploadShowCaseLangResourceKind.TokenNameTextListNamePadding), Lang(UploadShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(UploadShowCaseLangResourceKind.TokenStatusStable), "success"),
+            new UploadDesignTokenRow("TextListProgressPadding", Lang(UploadShowCaseLangResourceKind.TokenNameTextListProgressPadding), Lang(UploadShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(UploadShowCaseLangResourceKind.TokenStatusStable), "success"),
             new UploadDesignTokenRow("UploadThumbnailSize", Lang(UploadShowCaseLangResourceKind.TokenNameUploadThumbnailSize), Lang(UploadShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(UploadShowCaseLangResourceKind.TokenStatusStable), "success"),
             new UploadDesignTokenRow("DragIconSize", Lang(UploadShowCaseLangResourceKind.TokenNameDragIconSize), Lang(UploadShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(UploadShowCaseLangResourceKind.TokenStatusStable), "success"),
             new UploadDesignTokenRow("DragIconMargin", Lang(UploadShowCaseLangResourceKind.TokenNameDragIconMargin), Lang(UploadShowCaseLangResourceKind.TokenScopeComponent), "cyan", Lang(UploadShowCaseLangResourceKind.TokenStatusStable), "success"),
@@ -124,22 +147,29 @@ public class UploadViewModel : ReactiveObject, IRoutableViewModel
     {
         return kind switch
         {
+            UploadShowCaseLangResourceKind.ApiPropertyFiles                      => en_US.ApiPropertyFiles,
             UploadShowCaseLangResourceKind.ApiPropertyAccepts                    => en_US.ApiPropertyAccepts,
             UploadShowCaseLangResourceKind.ApiPropertyExtraContext               => en_US.ApiPropertyExtraContext,
             UploadShowCaseLangResourceKind.ApiPropertyMaxCount                   => en_US.ApiPropertyMaxCount,
-            UploadShowCaseLangResourceKind.ApiPropertyIsUploadDirectoryEnabled   => en_US.ApiPropertyIsUploadDirectoryEnabled,
+            UploadShowCaseLangResourceKind.ApiPropertyMaxConcurrentTasks         => en_US.ApiPropertyMaxConcurrentTasks,
+            UploadShowCaseLangResourceKind.ApiPropertyAutoUpload                 => en_US.ApiPropertyAutoUpload,
+            UploadShowCaseLangResourceKind.ApiPropertyUploadTransport            => en_US.ApiPropertyUploadTransport,
             UploadShowCaseLangResourceKind.ApiPropertyListType                   => en_US.ApiPropertyListType,
             UploadShowCaseLangResourceKind.ApiPropertyIsMultipleEnabled          => en_US.ApiPropertyIsMultipleEnabled,
             UploadShowCaseLangResourceKind.ApiPropertyIsOpenFileDialogOnClick    => en_US.ApiPropertyIsOpenFileDialogOnClick,
             UploadShowCaseLangResourceKind.ApiPropertyIsShowUploadList           => en_US.ApiPropertyIsShowUploadList,
-            UploadShowCaseLangResourceKind.ApiPropertyIsShowUploadTrigger        => en_US.ApiPropertyIsShowUploadTrigger,
-            UploadShowCaseLangResourceKind.ApiPropertyDefaultTaskList            => en_US.ApiPropertyDefaultTaskList,
-            UploadShowCaseLangResourceKind.ApiPropertyMaxConcurrentTasks         => en_US.ApiPropertyMaxConcurrentTasks,
-            UploadShowCaseLangResourceKind.ApiPropertyUploadTransport            => en_US.ApiPropertyUploadTransport,
+            UploadShowCaseLangResourceKind.ApiPropertyListMaxHeight              => en_US.ApiPropertyListMaxHeight,
+            UploadShowCaseLangResourceKind.ApiPropertyListScrollBarVisibility    => en_US.ApiPropertyListScrollBarVisibility,
+            UploadShowCaseLangResourceKind.ApiPropertySuccessAutoRemoveDelay     => en_US.ApiPropertySuccessAutoRemoveDelay,
+            UploadShowCaseLangResourceKind.ApiPropertyPendingText                => en_US.ApiPropertyPendingText,
+            UploadShowCaseLangResourceKind.ApiPropertyFileValueMode              => en_US.ApiPropertyFileValueMode,
+            UploadShowCaseLangResourceKind.ApiPropertyTriggerContent             => en_US.ApiPropertyTriggerContent,
+            UploadShowCaseLangResourceKind.ApiPropertyUploadTriggerSourceKind    => en_US.ApiPropertyUploadTriggerSourceKind,
             UploadShowCaseLangResourceKind.TokenNameActionsColor                 => en_US.TokenNameActionsColor,
             UploadShowCaseLangResourceKind.TokenNamePictureCardSize              => en_US.TokenNamePictureCardSize,
             UploadShowCaseLangResourceKind.TokenNameTextListItemMargin           => en_US.TokenNameTextListItemMargin,
             UploadShowCaseLangResourceKind.TokenNameTextListNamePadding          => en_US.TokenNameTextListNamePadding,
+            UploadShowCaseLangResourceKind.TokenNameTextListProgressPadding      => en_US.TokenNameTextListProgressPadding,
             UploadShowCaseLangResourceKind.TokenNameUploadThumbnailSize          => en_US.TokenNameUploadThumbnailSize,
             UploadShowCaseLangResourceKind.TokenNameDragIconSize                 => en_US.TokenNameDragIconSize,
             UploadShowCaseLangResourceKind.TokenNameDragIconMargin               => en_US.TokenNameDragIconMargin,

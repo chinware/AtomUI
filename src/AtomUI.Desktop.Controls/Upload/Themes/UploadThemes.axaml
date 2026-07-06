@@ -18,6 +18,7 @@
         <ResourceInclude Source="PictureList/UploadPicturePreviewContentTheme.axaml" />
         <ResourceInclude Source="UploadListTheme.axaml" />
         <ResourceInclude Source="UploadDefaultDropAreaTheme.axaml" />
-        <ResourceInclude Source="UploadTriggerContentTheme.axaml" />
+        <ResourceInclude Source="UploadTriggerTheme.axaml" />
+        <ResourceInclude Source="UploadDropZoneTheme.axaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

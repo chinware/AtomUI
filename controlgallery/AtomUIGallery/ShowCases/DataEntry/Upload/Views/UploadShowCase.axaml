@@ -41,173 +41,330 @@
                                        InitialDeferredLoadItemCount="4"
                                        DeferredLoadBatchSize="2"
                                        ContentMargin="28,10,28,28">
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource UploadByClickingTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:UploadShowCaseLangResource UploadByClickingDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:UploadViewModel">
-            <atom:Upload Name="BasicUpload" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted">
-                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
-            </atom:Upload>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource UploadByClickingTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource UploadByClickingDescription}">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <atom:Upload Name="BasicUpload"
+                                             UploadTransport="{Binding UploadTransport}"
+                                             UploadTaskFailed="HandleUploadFailed"
+                                             UploadTaskCompleted="HandleUploadCompleted">
+                                    <atom:Upload.TriggerContent>
+                                        <atom:UploadTrigger SourceKind="Files">
+                                            <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}"
+                                                         Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
+                                        </atom:UploadTrigger>
+                                    </atom:Upload.TriggerContent>
+                                </atom:Upload>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource AvatarTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:UploadShowCaseLangResource AvatarDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:UploadViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="20">
-                <atom:Upload Name="AvatarDemoPictureCardUpload" ListType="PictureCard" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted" UploadTaskAboutToScheduling="HandleImageUploadAboutToScheduling">
-                   <StackPanel Orientation="Vertical">
-                       <Panel>
-                           <antdicons:PlusOutlined IsVisible="{Binding IsTaskRunning ,RelativeSource={RelativeSource AncestorType=atom:Upload}, Converter={x:Static BoolConverters.Not}}"/>
-                           <antdicons:LoadingOutlined IsVisible="{Binding IsTaskRunning ,RelativeSource={RelativeSource AncestorType=atom:Upload}}"
-                                                      LoadingAnimation="Spin"/>
-                       </Panel>
-                       <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
-                   </StackPanel>
-                </atom:Upload>
-                <atom:Upload Name="AvatarDemoPictureCircleUpload" ListType="PictureCircle" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted" UploadTaskAboutToScheduling="HandleImageUploadAboutToScheduling">
-                    <StackPanel Orientation="Vertical">
-                        <antdicons:PlusOutlined/>
-                        <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
-                    </StackPanel>
-                </atom:Upload>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource AvatarTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource AvatarDescription}">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <StackPanel Orientation="Horizontal" Spacing="20">
+                                    <atom:Upload Name="AvatarDemoPictureCardUpload"
+                                                 ListType="PictureCard"
+                                                 UploadTransport="{Binding UploadTransport}"
+                                                 UploadTaskFailed="HandleUploadFailed"
+                                                 UploadTaskCompleted="HandleUploadCompleted"
+                                                 UploadTaskAboutToScheduling="HandleImageUploadAboutToScheduling">
+                                        <atom:Upload.TriggerContent>
+                                            <atom:UploadTrigger SourceKind="Files">
+                                                <StackPanel Orientation="Vertical">
+                                                    <Panel>
+                                                        <antdicons:PlusOutlined IsVisible="{Binding IsTaskRunning, RelativeSource={RelativeSource AncestorType=atom:Upload}, Converter={x:Static BoolConverters.Not}}" />
+                                                        <antdicons:LoadingOutlined IsVisible="{Binding IsTaskRunning, RelativeSource={RelativeSource AncestorType=atom:Upload}}"
+                                                                                   LoadingAnimation="Spin" />
+                                                    </Panel>
+                                                    <TextBlock Margin="0, 8, 0, 0"
+                                                               Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
+                                                </StackPanel>
+                                            </atom:UploadTrigger>
+                                        </atom:Upload.TriggerContent>
+                                    </atom:Upload>
+                                    <atom:Upload Name="AvatarDemoPictureCircleUpload"
+                                                 ListType="PictureCircle"
+                                                 UploadTransport="{Binding UploadTransport}"
+                                                 UploadTaskFailed="HandleUploadFailed"
+                                                 UploadTaskCompleted="HandleUploadCompleted"
+                                                 UploadTaskAboutToScheduling="HandleImageUploadAboutToScheduling">
+                                        <atom:Upload.TriggerContent>
+                                            <atom:UploadTrigger SourceKind="Files">
+                                                <StackPanel Orientation="Vertical">
+                                                    <antdicons:PlusOutlined />
+                                                    <TextBlock Margin="0, 8, 0, 0"
+                                                               Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
+                                                </StackPanel>
+                                            </atom:UploadTrigger>
+                                        </atom:Upload.TriggerContent>
+                                    </atom:Upload>
+                                </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource DefaultFilesTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:UploadShowCaseLangResource DefaultFilesDescription}"
-            IsOccupyEntireRow="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:UploadViewModel">
-            <atom:Upload Name="DefaultFileList" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted"
-                         DefaultTaskList="{Binding DefaultTaskList}">
-                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
-            </atom:Upload>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource DefaultFilesTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource DefaultFilesDescription}"
+                        IsOccupyEntireRow="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <atom:Upload Name="DefaultFileList"
+                                             Files="{Binding DefaultFiles}"
+                                             UploadTransport="{Binding UploadTransport}"
+                                             UploadTaskFailed="HandleUploadFailed"
+                                             UploadTaskCompleted="HandleUploadCompleted">
+                                    <atom:Upload.TriggerContent>
+                                        <atom:UploadTrigger SourceKind="Files">
+                                            <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}"
+                                                         Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
+                                        </atom:UploadTrigger>
+                                    </atom:Upload.TriggerContent>
+                                </atom:Upload>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource PicturesWallTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:UploadShowCaseLangResource PicturesWallDescription}"
-            IsOccupyEntireRow="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:UploadViewModel">
-            <atom:Upload Name="PicturesWallUpload" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted"
-                         ListType="PictureCard"
-                         DefaultTaskList="{Binding PicturesWallDefaultTaskList}">
-                <StackPanel Orientation="Vertical">
-                    <antdicons:PlusOutlined/>
-                    <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
-                </StackPanel>
-            </atom:Upload>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource PicturesWallTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource PicturesWallDescription}"
+                        IsOccupyEntireRow="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <atom:Upload Name="PicturesWallUpload"
+                                             Files="{Binding PicturesWallFiles}"
+                                             UploadTransport="{Binding UploadTransport}"
+                                             UploadTaskFailed="HandleUploadFailed"
+                                             UploadTaskCompleted="HandleUploadCompleted"
+                                             ListType="PictureCard">
+                                    <atom:Upload.TriggerContent>
+                                        <atom:UploadTrigger SourceKind="Files">
+                                            <StackPanel Orientation="Vertical">
+                                                <antdicons:PlusOutlined />
+                                                <TextBlock Margin="0, 8, 0, 0"
+                                                           Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
+                                            </StackPanel>
+                                        </atom:UploadTrigger>
+                                    </atom:Upload.TriggerContent>
+                                </atom:Upload>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource PictureCircleTypeTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:UploadShowCaseLangResource PictureCircleTypeDescription}"
-            IsOccupyEntireRow="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:UploadViewModel">
-            <atom:Upload Name="PicturesCircleWallUpload" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted"
-                         ListType="PictureCircle"
-                         DefaultTaskList="{Binding PicturesWallDefaultTaskList}">
-                <StackPanel Orientation="Vertical">
-                    <antdicons:PlusOutlined/>
-                    <TextBlock Margin="0, 8, 0, 0" Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
-                </StackPanel>
-            </atom:Upload>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource PictureCircleTypeTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource PictureCircleTypeDescription}"
+                        IsOccupyEntireRow="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <atom:Upload Name="PicturesCircleWallUpload"
+                                             Files="{Binding PictureCircleFiles}"
+                                             UploadTransport="{Binding UploadTransport}"
+                                             UploadTaskFailed="HandleUploadFailed"
+                                             UploadTaskCompleted="HandleUploadCompleted"
+                                             ListType="PictureCircle">
+                                    <atom:Upload.TriggerContent>
+                                        <atom:UploadTrigger SourceKind="Files">
+                                            <StackPanel Orientation="Vertical">
+                                                <antdicons:PlusOutlined />
+                                                <TextBlock Margin="0, 8, 0, 0"
+                                                           Text="{gallery:UploadShowCaseLangResource P2TextUpload}" />
+                                            </StackPanel>
+                                        </atom:UploadTrigger>
+                                    </atom:Upload.TriggerContent>
+                                </atom:Upload>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource DragAndDropTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:UploadShowCaseLangResource DragAndDropDescription}"
-            IsOccupyEntireRow="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:UploadViewModel">
-            <atom:Upload Name="DragAndDropUpload" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted">
-                <atom:UploadDefaultDropArea/>
-            </atom:Upload>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource DragAndDropTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource DragAndDropDescription}"
+                        IsOccupyEntireRow="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <atom:Upload Name="DragAndDropUpload"
+                                             UploadTransport="{Binding UploadTransport}"
+                                             UploadTaskFailed="HandleUploadFailed"
+                                             UploadTaskCompleted="HandleUploadCompleted">
+                                    <atom:Upload.TriggerContent>
+                                        <atom:UploadDropZone>
+                                            <atom:UploadDefaultDropArea />
+                                        </atom:UploadDropZone>
+                                    </atom:Upload.TriggerContent>
+                                </atom:Upload>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource PicturesWithListStyleTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:UploadShowCaseLangResource PicturesWithListStyleDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:UploadViewModel">
-            <atom:Upload Name="PictureListUpload" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted"
-                         ListType="Picture"
-                         DefaultTaskList="{Binding PictureListStyleDefaultTaskList}">
-                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" ButtonType="Primary" Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
-            </atom:Upload>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource PicturesWithListStyleTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource PicturesWithListStyleDescription}">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <atom:Upload Name="PictureListUpload"
+                                             Files="{Binding PictureListStyleFiles}"
+                                             UploadTransport="{Binding UploadTransport}"
+                                             UploadTaskFailed="HandleUploadFailed"
+                                             UploadTaskCompleted="HandleUploadCompleted"
+                                             ListType="Picture">
+                                    <atom:Upload.TriggerContent>
+                                        <atom:UploadTrigger SourceKind="Files">
+                                            <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}"
+                                                         ButtonType="Primary"
+                                                         Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
+                                        </atom:UploadTrigger>
+                                    </atom:Upload.TriggerContent>
+                                </atom:Upload>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource MaxCountTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:UploadShowCaseLangResource MaxCountDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:UploadViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:Upload Name="MaxCount1Upload" MaxCount="1" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted">
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadMaxN1}" />
-                </atom:Upload>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource MaxCountTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource MaxCountDescription}">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <StackPanel Orientation="Vertical" Spacing="20">
+                                    <atom:Upload Name="MaxCount1Upload"
+                                                 MaxCount="1"
+                                                 UploadTransport="{Binding UploadTransport}"
+                                                 UploadTaskFailed="HandleUploadFailed"
+                                                 UploadTaskCompleted="HandleUploadCompleted">
+                                        <atom:Upload.TriggerContent>
+                                            <atom:UploadTrigger SourceKind="Files">
+                                                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}"
+                                                             Content="{gallery:UploadShowCaseLangResource P2ContentUploadMaxN1}" />
+                                            </atom:UploadTrigger>
+                                        </atom:Upload.TriggerContent>
+                                    </atom:Upload>
 
-                <atom:Upload Name="MaxCount3Upload" MaxCount="3" IsMultipleEnabled="True" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted">
-                    <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadMaxN3}" />
-                </atom:Upload>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                                    <atom:Upload Name="MaxCount3Upload"
+                                                 MaxCount="3"
+                                                 IsMultipleEnabled="True"
+                                                 UploadTransport="{Binding UploadTransport}"
+                                                 UploadTaskFailed="HandleUploadFailed"
+                                                 UploadTaskCompleted="HandleUploadCompleted">
+                                        <atom:Upload.TriggerContent>
+                                            <atom:UploadTrigger SourceKind="Files">
+                                                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}"
+                                                             Content="{gallery:UploadShowCaseLangResource P2ContentUploadMaxN3}" />
+                                            </atom:UploadTrigger>
+                                        </atom:Upload.TriggerContent>
+                                    </atom:Upload>
+                                </StackPanel>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource UploadDirectoryTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:UploadShowCaseLangResource UploadDirectoryDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:UploadViewModel">
-            <atom:Upload Name="DirectoryUpload" IsUploadDirectoryEnabled="True" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted">
-                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadDirectory}" />
-            </atom:Upload>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource FileAndDirectoryTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource FileAndDirectoryDescription}">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <atom:Upload Name="FileAndDirectoryUpload"
+                                             UploadTransport="{Binding UploadTransport}"
+                                             UploadTaskFailed="HandleUploadFailed"
+                                             UploadTaskCompleted="HandleUploadCompleted">
+                                    <atom:Upload.TriggerContent>
+                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                            <atom:UploadTrigger SourceKind="Files">
+                                                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}"
+                                                             Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
+                                            </atom:UploadTrigger>
+                                            <atom:UploadTrigger SourceKind="Directories">
+                                                <atom:Button Content="{gallery:UploadShowCaseLangResource P2ContentUploadDirectory}" />
+                                            </atom:UploadTrigger>
+                                        </StackPanel>
+                                    </atom:Upload.TriggerContent>
+                                </atom:Upload>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:UploadShowCaseLangResource UploadPngOnlyTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:UploadShowCaseLangResource UploadPngOnlyDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:UploadViewModel">
-            <atom:Upload Name="PngOnlyUpload" Accepts="*.png" UploadTransport="{Binding UploadTransport}" UploadTaskFailed="HandleUploadFailed" UploadTaskCompleted="HandleUploadCompleted" UploadTaskAboutToScheduling="HandlePngUploadAboutToScheduling">
-                <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}" Content="{gallery:UploadShowCaseLangResource P2ContentUploadPngOnly}" />
-            </atom:Upload>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource UploadPngOnlyTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource UploadPngOnlyDescription}">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <atom:Upload Name="PngOnlyUpload"
+                                             Accepts="*.png"
+                                             UploadTransport="{Binding UploadTransport}"
+                                             UploadTaskFailed="HandleUploadFailed"
+                                             UploadTaskCompleted="HandleUploadCompleted"
+                                             UploadTaskAboutToScheduling="HandlePngUploadAboutToScheduling">
+                                    <atom:Upload.TriggerContent>
+                                        <atom:UploadTrigger SourceKind="Files">
+                                            <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}"
+                                                         Content="{gallery:UploadShowCaseLangResource P2ContentUploadPngOnly}" />
+                                        </atom:UploadTrigger>
+                                    </atom:Upload.TriggerContent>
+                                </atom:Upload>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource ScrollableListTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource ScrollableListDescription}"
+                        IsOccupyEntireRow="True">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <atom:Upload Name="ScrollableUpload"
+                                             Files="{Binding ScrollableUploadFiles}"
+                                             ListMaxHeight="160"
+                                             ListScrollBarVisibility="Auto"
+                                             UploadTransport="{Binding UploadTransport}"
+                                             UploadTaskFailed="HandleUploadFailed"
+                                             UploadTaskCompleted="HandleUploadCompleted">
+                                    <atom:Upload.TriggerContent>
+                                        <atom:UploadTrigger SourceKind="Files">
+                                            <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}"
+                                                         Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
+                                        </atom:UploadTrigger>
+                                    </atom:Upload.TriggerContent>
+                                </atom:Upload>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
+
+                    <gallery:ShowCaseItem
+                        Title="{gallery:UploadShowCaseLangResource SuccessAutoRemoveTitle}"
+                        IsDeferredContentEnabled="True"
+                        Description="{gallery:UploadShowCaseLangResource SuccessAutoRemoveDescription}">
+                        <gallery:ShowCaseItem.DeferredContentTemplate>
+                            <DataTemplate x:DataType="vm:UploadViewModel">
+                                <atom:Upload Name="SuccessAutoRemoveUpload"
+                                             SuccessAutoRemoveDelay="0:0:3"
+                                             UploadTransport="{Binding UploadTransport}"
+                                             UploadTaskFailed="HandleUploadFailed"
+                                             UploadTaskCompleted="HandleUploadCompleted">
+                                    <atom:Upload.TriggerContent>
+                                        <atom:UploadTrigger SourceKind="Files">
+                                            <atom:Button Icon="{antdicons:AntDesignIconProvider UploadOutlined}"
+                                                         Content="{gallery:UploadShowCaseLangResource P2ContentClickToUpload}" />
+                                        </atom:UploadTrigger>
+                                    </atom:Upload.TriggerContent>
+                                </atom:Upload>
+                            </DataTemplate>
+                        </gallery:ShowCaseItem.DeferredContentTemplate>
+                    </gallery:ShowCaseItem>
                 </gallery:ShowCasePanel>
             </ContentControl>
         </gallery:GalleryStickyTabsHost>

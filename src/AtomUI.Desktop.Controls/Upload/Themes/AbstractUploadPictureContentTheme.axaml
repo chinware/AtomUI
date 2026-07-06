@@ -29,7 +29,15 @@
                     Value="{atom:SharedTokenResource ColorTextLightSolid}" />
         </Style>
 
-        <Style Selector="^:pointerover">
+        <Style Selector="^[Status=Success]:pointerover">
+            <Setter Property="MaskOpacity" Value="1" />
+        </Style>
+
+        <Style Selector="^[Status=Failed]:pointerover">
+            <Setter Property="MaskOpacity" Value="1" />
+        </Style>
+
+        <Style Selector="^[Status=Cancelled]:pointerover">
             <Setter Property="MaskOpacity" Value="1" />
         </Style>
         
