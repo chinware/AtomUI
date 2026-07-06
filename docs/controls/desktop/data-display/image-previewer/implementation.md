@@ -103,7 +103,7 @@ PreviewTitleIcon
 
 - 图片来源：`SourceUri`、`SourceUris`、`CoverSourceUri`、`FallbackSourceUri`。
 - 内容与数据：`CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`LoadingContent`、`LoadingContentTemplate`、`ErrorContent`、`ErrorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageTranslateX`、`ImageTranslateY`。
-- 选择与集合：`Count`、`CurrentIndex`。`CurrentIndex` 是控件级当前项索引，不是弹层局部状态；未设置 `CoverSourceUri` 时，普通封面和弹出预览宿主都必须从同一 current effective item 派生展示内容。
+- 选择与集合：`Count`、`CurrentIndex`。`CurrentIndex` 是控件级当前项索引，默认双向绑定，不是弹层局部状态；未设置 `CoverSourceUri` 时，普通封面和弹出预览宿主都必须从同一 current effective item 派生展示内容。
 - 预览标题：`PreviewTitle`、`PreviewTitleIcon`、`PreviewTitleResolver`、`IImagePreviewTitleResolver`、`ImagePreviewTitleResolveContext`。非空白显式标题优先；显式标题为空时从 current effective item 解析标题；标题图标使用 `PathIcon?`，只在显式设置时进入预览标题栏。
 - 交互与状态：`IsDialogModal`、`IsDialogTopmost`、`IsModal`、`IsMotionEnabled`、`IsOpen`、`IsShowCoverMask`。
 - 视觉与布局：`CoverHeight`、`CoverWidth`。
@@ -113,6 +113,8 @@ PreviewTitleIcon
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、当前项、图片来源替换、fallback 和异步 loader 必须能处理 reset、replace 和 clear。
+- `IsOpen` 与 `CurrentIndex` 必须作为受控状态保持默认 `TwoWay`；控件内部打开、关闭或导航应使用 current value 语义，不覆盖用户绑定。
+- `CurrentIndex` 转接到 `ImagePreviewerDialog` 与 `ImagePreviewerOverlayHost` 时必须保持 `TwoWay`，转接 binding 归宿主 disposable 管理，关闭或重新创建宿主时释放。
 - `CurrentIndexProperty` 变更、`SourceUri` / `SourceUris` 变更、fallback 状态变化和 effective items 重建都必须触发封面 effective item 重新解析。
 - 封面 effective item resolver 必须使用 clamp 后的 `CurrentIndex` 选择项，不能把默认封面硬编码为 `EffectiveItems[0]`。
 - `CoverSourceUri` 拥有最高封面优先级；它命中时封面走独立的来源、加载和 fallback 路径，不能反向改写 `CurrentIndex`。

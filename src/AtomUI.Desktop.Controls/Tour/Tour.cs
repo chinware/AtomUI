@@ -75,7 +75,9 @@ public class Tour : TemplatedControl, IMotionAwareControl
         AvaloniaProperty.Register<Tour, bool>(nameof(IsScrollIntoView), true);
     
     public static readonly StyledProperty<bool> IsOpenProperty =
-        AvaloniaProperty.Register<Tour, bool>(nameof(IsOpen));
+        AvaloniaProperty.Register<Tour, bool>(
+            nameof(IsOpen),
+            defaultBindingMode: BindingMode.TwoWay);
     
     public static readonly DirectProperty<Tour, int> CurrentIndexProperty =
         AvaloniaProperty.RegisterDirect<Tour, int>(

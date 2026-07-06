@@ -12,6 +12,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
@@ -55,7 +56,9 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         AvaloniaProperty.Register<AbstractImagePreviewer, IDataTemplate?>(nameof(ErrorContentTemplate));
 
     public static readonly StyledProperty<bool> IsOpenProperty =
-        AvaloniaProperty.Register<AbstractImagePreviewer, bool>(nameof(IsOpen));
+        AvaloniaProperty.Register<AbstractImagePreviewer, bool>(
+            nameof(IsOpen),
+            defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly StyledProperty<bool> IsMotionEnabledProperty =
         MotionAwareControlProperty.IsMotionEnabledProperty.AddOwner<AbstractImagePreviewer>();
@@ -67,7 +70,10 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         AvaloniaProperty.Register<AbstractImagePreviewer, double>(nameof(CoverHeight), double.NaN);
 
     public static readonly StyledProperty<int> CurrentIndexProperty =
-        AvaloniaProperty.Register<AbstractImagePreviewer, int>(nameof(CurrentIndex), 0);
+        AvaloniaProperty.Register<AbstractImagePreviewer, int>(
+            nameof(CurrentIndex),
+            0,
+            defaultBindingMode: BindingMode.TwoWay);
 
     public ImageSourceUri? SourceUri
     {
@@ -780,7 +786,11 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         disposables.Add(BindUtils.RelayBind(this, ErrorContentTemplateProperty, dialogHost, ImagePreviewerDialog.ErrorContentTemplateProperty));
         disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, dialogHost, ImagePreviewerDialog.IsMotionEnabledProperty));
         disposables.Add(BindUtils.RelayBind(this, IsDialogModalProperty, dialogHost, ImagePreviewerDialog.IsModalProperty));
-        disposables.Add(BindUtils.RelayBind(this, CurrentIndexProperty, dialogHost, ImagePreviewerDialog.CurrentIndexProperty));
+        disposables.Add(BindUtils.RelayBind(this,
+            CurrentIndexProperty,
+            dialogHost,
+            ImagePreviewerDialog.CurrentIndexProperty,
+            BindingMode.TwoWay));
         disposables.Add(BindUtils.RelayBind(this, PreviewTitleProperty, dialogHost, Window.TitleProperty));
         disposables.Add(BindUtils.RelayBind(this, PreviewTitleIconProperty, dialogHost, ImagePreviewerDialog.TitleIconProperty));
         disposables.Add(BindUtils.RelayBind(this, PreviewTitleResolverProperty, dialogHost, ImagePreviewerDialog.PreviewTitleResolverProperty));
@@ -799,7 +809,11 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         disposables.Add(BindUtils.RelayBind(this, ErrorContentTemplateProperty, overlayHost, ImagePreviewerOverlayHost.ErrorContentTemplateProperty));
         disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, overlayHost, ImagePreviewerOverlayHost.IsMotionEnabledProperty));
         disposables.Add(BindUtils.RelayBind(this, IsDialogModalProperty, overlayHost, ImagePreviewerOverlayHost.IsModalProperty));
-        disposables.Add(BindUtils.RelayBind(this, CurrentIndexProperty, overlayHost, ImagePreviewerOverlayHost.CurrentIndexProperty));
+        disposables.Add(BindUtils.RelayBind(this,
+            CurrentIndexProperty,
+            overlayHost,
+            ImagePreviewerOverlayHost.CurrentIndexProperty,
+            BindingMode.TwoWay));
     }
 
     private void RootTemplateApplied(object? sender, TemplateAppliedEventArgs e)

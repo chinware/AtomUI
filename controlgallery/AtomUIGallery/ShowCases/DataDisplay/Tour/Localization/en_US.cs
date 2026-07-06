@@ -55,8 +55,8 @@ internal partial class en_US
     public const string ApiColumnDefault = "Default";
     public const string ApiPropertyStepsSource = "Provides step data when steps are generated from a collection.";
     public const string ApiPropertyItemTemplate = "Defines the template used to render each item from StepsSource.";
-    public const string ApiPropertyIsOpen = "Controls whether the tour popup is open.";
-    public const string ApiPropertyCurrentIndex = "Gets or sets the current step index.";
+    public const string ApiPropertyIsOpen = "Controls whether the tour popup is open. Two-way binding is enabled by default.";
+    public const string ApiPropertyCurrentIndex = "Gets or sets the current step index. Two-way binding is enabled by default.";
     public const string ApiPropertyStepCount = "Gets the total number of steps currently available.";
     public const string ApiPropertyPlacement = "Sets the default popup placement relative to the target.";
     public const string ApiPropertyIsShowMask = "Controls whether the page mask is shown.";

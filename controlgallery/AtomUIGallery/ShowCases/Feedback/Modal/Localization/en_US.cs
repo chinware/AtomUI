@@ -36,7 +36,7 @@ internal partial class en_US
     public const string ApiColumnType = "Type";
     public const string ApiColumnDefault = "Default";
     public const string ApiPropertyDialogContent = "Content displayed inside the dialog body.";
-    public const string ApiPropertyDialogIsOpen = "Controls whether the dialog is currently open.";
+    public const string ApiPropertyDialogIsOpen = "Controls whether the dialog is currently open. Two-way binding is enabled by default.";
     public const string ApiPropertyDialogIsModal = "Blocks interaction with the owner while the dialog is open.";
     public const string ApiPropertyDialogDialogHostType = "Determines whether the dialog is hosted in an overlay or native window.";
     public const string ApiPropertyDialogStandardButtons = "Standard footer button set rendered by the dialog.";

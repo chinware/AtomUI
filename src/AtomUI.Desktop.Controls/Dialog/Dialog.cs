@@ -11,6 +11,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
+using Avalonia.Data;
 using Avalonia.Metadata;
 using Avalonia.Input;
 using Avalonia.Threading;
@@ -35,7 +36,9 @@ public partial class Dialog : TemplatedControl,
         ContentPresenter.ContentTemplateProperty.AddOwner<Dialog>();
 
     public static readonly StyledProperty<bool> IsOpenProperty =
-        AvaloniaProperty.Register<Dialog, bool>(nameof(IsOpen));
+        AvaloniaProperty.Register<Dialog, bool>(
+            nameof(IsOpen),
+            defaultBindingMode: BindingMode.TwoWay);
 
     public static readonly StyledProperty<bool> IsModalProperty =
         AvaloniaProperty.Register<Dialog, bool>(nameof(IsModal), true);

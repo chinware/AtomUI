@@ -69,7 +69,7 @@ Public API / ItemsSource / Command / Event
 
 - 内容与数据：`AbortButtonText`、`AddOnTemplate`、`ApplyButtonText`、`CancelButtonText`、`CheckedIcon`、`CloseButtonText`、`Content`、`ContentTemplate`、`DialogContent`、`DialogContentTemplate` 等 33 项。
 - 选择与集合：`IsChecked`。
-- 交互与状态：`IsActivated`、`IsClosable`、`IsCloseButtonEnabled`、`IsConfirmLoading`、`IsDragMovable`、`IsEffectiveFooterVisible`、`IsFooterVisible`、`IsLoading`、`IsMaximizable`、`IsMaximizeButtonEnabled` 等 17 项。
+- 交互与状态：`IsActivated`、`IsClosable`、`IsCloseButtonEnabled`、`IsConfirmLoading`、`IsDragMovable`、`IsEffectiveFooterVisible`、`IsFooterVisible`、`IsLoading`、`IsOpen`、`IsMaximizable`、`IsMaximizeButtonEnabled` 等 17 项。
 - 视觉与布局：`HorizontalOffset`、`HorizontalStartupLocation`、`HostHeight`、`HostMaxHeight`、`HostMaxWidth`、`HostMinHeight`、`HostMinWidth`、`HostWidth`、`PlacementTarget`、`VerticalOffset` 等 11 项。
 - 弹层与窗口：`DialogHostType`。
 - 动效与异步：`AnimationDuration`。
@@ -79,6 +79,7 @@ Public API / ItemsSource / Command / Event
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
+- `Dialog.IsOpen` 必须保持默认 `TwoWay`；内部打开或关闭路径应通过 public 属性状态回写 ViewModel，不用样式优先级或模板局部状态覆盖用户绑定。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
 

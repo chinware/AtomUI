@@ -36,7 +36,7 @@ internal partial class zh_TW
     public const string ApiColumnType = "類型";
     public const string ApiColumnDefault = "默認值";
     public const string ApiPropertyDialogContent = "顯示在對話框內容區域中的內容。";
-    public const string ApiPropertyDialogIsOpen = "控制對話框當前是否打開。";
+    public const string ApiPropertyDialogIsOpen = "控制對話框當前是否打開，預設支援雙向繫結。";
     public const string ApiPropertyDialogIsModal = "對話框打開時阻止與所屬窗口交互。";
     public const string ApiPropertyDialogDialogHostType = "決定對話框承載在浮層中還是原生窗口中。";
     public const string ApiPropertyDialogStandardButtons = "對話框渲染的標準頁腳按鈕集合。";
