@@ -415,6 +415,8 @@
                 <atom:Button ButtonType="Primary" Click="HandleOpenWindowDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenWindowDialog}" />
 
                 <atom:Button ButtonType="Primary" Click="HandleOpenCustomViewDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenCustomviewDialog}" />
+
+                <atom:Button ButtonType="Primary" Click="HandleOpenBeforeCloseDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenBeforeCloseDialog}" />
             </WrapPanel>
                 </DataTemplate>
             </gallery:ShowCaseItem.DeferredContentTemplate>

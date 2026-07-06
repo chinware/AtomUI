@@ -46,6 +46,7 @@ public class ModalShowCasePageTests
         source.ShouldContain("ModalShowCaseLangResource BasicTitle");
         source.ShouldContain("ModalShowCaseLangResource MessageBoxStyleTitle");
         source.ShouldContain("ModalShowCaseLangResource StaticDialogApiTitle");
+        source.ShouldContain("ModalShowCaseLangResource P2ContentOpenBeforeCloseDialog");
         source.ShouldNotContain("PlacementTarget=\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
@@ -132,6 +133,7 @@ public class ModalShowCasePageTests
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyDialogIsOpen");
             source.ShouldContain("ApiPropertyDialogDialogHostType");
+            source.ShouldContain("ApiPropertyDialogOptionsBeforeCloseAsync");
             source.ShouldContain("ApiMethodDialogShowDialogModalAsync");
             source.ShouldContain("ApiPropertyMessageBoxStyle");
             source.ShouldContain("TokenNameDialogHeaderBg");

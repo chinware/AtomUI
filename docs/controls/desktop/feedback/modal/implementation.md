@@ -127,21 +127,22 @@ Dialog 的交互语义主要通过 `ButtonClicked`、`Closing`、`Accepted`、`R
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
-### 7.1 关闭前校验管线（待实现设计）
+### 7.1 关闭前校验管线
 
 静态 API 的关闭前校验应在 `Dialog` 内部形成统一管线，而不是只挂接某一个按钮事件。管线的维护目标是让 `ShowDialogModalAsync` 用户能够通过 `DialogOptions.BeforeCloseAsync` 拦截关闭，同时保留现有 `ButtonClicked`、`Closing`、`Accepted`、`Rejected`、`Finished` 和 `Closed` 的顺序。
 
-建议实现边界：
+实现边界：
 
 - `DialogOptions` 承载 `BeforeCloseAsync`，`CreateDialog(...)` 将该选项复制到 `Dialog` 实例或内部关闭策略中。
-- `Dialog` 新增 close request 归一逻辑，将 `Accept()`、`Reject()`、`Done(...)`、caption close、host close request、parent close 和 placement target detach 映射为统一的 `DialogClosingContext`。
+- `Dialog` 使用 close request 归一逻辑，将 `Accept()`、`Reject()`、`Done(...)`、caption close、host close request、parent close 和 placement target detach 映射为统一的 `DialogClosingContext`。
 - `NotifyDialogButtonBoxClicked(...)` 继续先触发 `ButtonClicked`；当 `DialogButtonClickedEventArgs.Handled` 为 `true` 时，不进入默认关闭，也不调用 `BeforeCloseAsync`。
 - 既有 `Closing` 事件仍先于新增回调执行；`CancelEventArgs.Cancel` 为 `true` 时直接取消本次关闭请求。
 - `BeforeCloseAsync` 返回 `false` 或发生异常时，Dialog 保持打开，`Result` 不应被提交为最终关闭结果，关闭请求状态必须复位。
+- `IsOpen=false` 触发的关闭请求如果被取消，需要把 `IsOpen` 恢复为 `true`；这是 close request 的状态责任，不应在外部绑定层打补丁。
 - `BeforeCloseAsync` 返回 `true` 后，继续执行现有 `Accepted`、`Rejected`、`Finished`、`NotifyClosed`、host close 和 `Closed` 流程。
 - 同一时刻只允许一个关闭请求处于校验或关闭中。异步校验未完成时，重复点击、快捷键和 host close request 应被忽略或合并为当前请求，不能并发调用业务校验。
 
-同步 public 方法 `Accept()`、`Reject()`、`Done(...)` 和 `Done()` 不应改签名。实现异步校验时，它们可以启动内部关闭请求并立即返回；`ShowDialog(...)` 的同步 frame 和 `ShowDialogModalAsync(...)` 的 task 仍以最终关闭完成作为结束条件。
+同步 public 方法 `Accept()`、`Reject()`、`Done(...)` 和 `Done()` 不改签名。未配置 `BeforeCloseAsync`，或回调同步完成时，关闭管线走同步快路径，保持既有事件时序和同步异常传播；只有回调返回未完成的异步结果时，关闭请求才进入 in-flight 状态并由异步续跑完成。`ShowDialog(...)` 的同步 frame 和 `ShowDialogModalAsync(...)` 的 task 仍以最终关闭完成作为结束条件。同步 `ShowDialogModal(...)` 依赖现有 `DispatcherFrame` 消息循环承载异步校验，不允许用阻塞式 `.Result` / `.GetAwaiter().GetResult()` 等方式等待 `BeforeCloseAsync`。
 
 ## 8. 资源、性能与 AOT 边界
 

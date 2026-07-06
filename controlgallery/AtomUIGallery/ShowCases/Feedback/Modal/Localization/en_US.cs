@@ -44,6 +44,7 @@ internal partial class en_US
     public const string ApiPropertyDialogIsLoading = "Shows the loading state over the dialog content.";
     public const string ApiPropertyDialogIsConfirmLoading = "Shows loading on the confirm action while async work is running.";
     public const string ApiPropertyDialogHostWidth = "Explicit width of the dialog host.";
+    public const string ApiPropertyDialogOptionsBeforeCloseAsync = "Async callback that decides whether a static Dialog close request may continue.";
     public const string ApiMethodDialogShowDialogModalAsync = "Creates and displays a modal dialog through the static API.";
     public const string ApiPropertyMessageBoxStyle = "Semantic style used by MessageBox, such as Confirm, Information, Success, Warning, or Error.";
     public const string ApiPropertyMessageBoxOkButtonStyle = "Visual style used by the MessageBox OK button.";
@@ -99,6 +100,7 @@ internal partial class en_US
     public const string P2ContentOpenOverlayDialog = "Open Overlay Dialog";
     public const string P2ContentOpenWindowDialog = "Open Window Dialog";
     public const string P2ContentOpenCustomviewDialog = "Open CustomView Dialog";
+    public const string P2ContentOpenBeforeCloseDialog = "Open BeforeCloseAsync Dialog";
     public const string P2TextName = "Name";
     public const string P2TextAge = "Age";
     public const string P2RunThisModalWillBeDestroyedAfter = "This modal will be destroyed after ";

@@ -184,6 +184,7 @@ public class ModalViewModel : ReactiveObject, IRoutableViewModel
             new ModalApiRow("Dialog.IsLoading", Lang(ModalShowCaseLangResourceKind.ApiPropertyDialogIsLoading), "bool", "purple", "false"),
             new ModalApiRow("Dialog.IsConfirmLoading", Lang(ModalShowCaseLangResourceKind.ApiPropertyDialogIsConfirmLoading), "bool", "purple", "false"),
             new ModalApiRow("Dialog.HostWidth", Lang(ModalShowCaseLangResourceKind.ApiPropertyDialogHostWidth), "double", "cyan", "NaN"),
+            new ModalApiRow("DialogOptions.BeforeCloseAsync", Lang(ModalShowCaseLangResourceKind.ApiPropertyDialogOptionsBeforeCloseAsync), "Func<DialogClosingContext, ValueTask<bool>>?", "cyan", "null"),
             new ModalApiRow("Dialog.ShowDialogModalAsync", Lang(ModalShowCaseLangResourceKind.ApiMethodDialogShowDialogModalAsync), "Task<object?>", "cyan", "-"),
             new ModalApiRow("MessageBox.Style", Lang(ModalShowCaseLangResourceKind.ApiPropertyMessageBoxStyle), "MessageBoxStyle", "blue", "Information"),
             new ModalApiRow("MessageBox.OkButtonStyle", Lang(ModalShowCaseLangResourceKind.ApiPropertyMessageBoxOkButtonStyle), "MessageBoxOkButtonStyle", "blue", "Primary")
@@ -234,6 +235,7 @@ public class ModalViewModel : ReactiveObject, IRoutableViewModel
             ModalShowCaseLangResourceKind.ApiPropertyDialogIsLoading               => en_US.ApiPropertyDialogIsLoading,
             ModalShowCaseLangResourceKind.ApiPropertyDialogIsConfirmLoading        => en_US.ApiPropertyDialogIsConfirmLoading,
             ModalShowCaseLangResourceKind.ApiPropertyDialogHostWidth               => en_US.ApiPropertyDialogHostWidth,
+            ModalShowCaseLangResourceKind.ApiPropertyDialogOptionsBeforeCloseAsync => en_US.ApiPropertyDialogOptionsBeforeCloseAsync,
             ModalShowCaseLangResourceKind.ApiMethodDialogShowDialogModalAsync      => en_US.ApiMethodDialogShowDialogModalAsync,
             ModalShowCaseLangResourceKind.ApiPropertyMessageBoxStyle               => en_US.ApiPropertyMessageBoxStyle,
             ModalShowCaseLangResourceKind.ApiPropertyMessageBoxOkButtonStyle       => en_US.ApiPropertyMessageBoxOkButtonStyle,

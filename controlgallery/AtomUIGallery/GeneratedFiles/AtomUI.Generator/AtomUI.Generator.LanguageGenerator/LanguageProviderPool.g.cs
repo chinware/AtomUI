@@ -12784,6 +12784,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsLoading] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogIsLoading;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsModal] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogIsModal;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsOpen] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogIsOpen;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogOptionsBeforeCloseAsync] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogOptionsBeforeCloseAsync;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogStandardButtons] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyDialogStandardButtons;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxOkButtonStyle] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyMessageBoxOkButtonStyle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxStyle] = global::AtomUIGallery.ShowCases.Modal.en_US.ApiPropertyMessageBoxStyle;
@@ -12809,6 +12810,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentCustomButton] = global::AtomUIGallery.ShowCases.Modal.en_US.P2ContentCustomButton;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentError] = global::AtomUIGallery.ShowCases.Modal.en_US.P2ContentError;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentInformation] = global::AtomUIGallery.ShowCases.Modal.en_US.P2ContentInformation;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenBeforeCloseDialog] = global::AtomUIGallery.ShowCases.Modal.en_US.P2ContentOpenBeforeCloseDialog;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenCustomviewDialog] = global::AtomUIGallery.ShowCases.Modal.en_US.P2ContentOpenCustomviewDialog;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenModal] = global::AtomUIGallery.ShowCases.Modal.en_US.P2ContentOpenModal;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenModalOverlay] = global::AtomUIGallery.ShowCases.Modal.en_US.P2ContentOpenModalOverlay;
@@ -12907,6 +12909,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsLoading] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogIsLoading;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsModal] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogIsModal;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsOpen] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogIsOpen;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogOptionsBeforeCloseAsync] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogOptionsBeforeCloseAsync;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogStandardButtons] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyDialogStandardButtons;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxOkButtonStyle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyMessageBoxOkButtonStyle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxStyle] = global::AtomUIGallery.ShowCases.Modal.zh_CN.ApiPropertyMessageBoxStyle;
@@ -12932,6 +12935,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentCustomButton] = global::AtomUIGallery.ShowCases.Modal.zh_CN.P2ContentCustomButton;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentError] = global::AtomUIGallery.ShowCases.Modal.zh_CN.P2ContentError;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentInformation] = global::AtomUIGallery.ShowCases.Modal.zh_CN.P2ContentInformation;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenBeforeCloseDialog] = global::AtomUIGallery.ShowCases.Modal.zh_CN.P2ContentOpenBeforeCloseDialog;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenCustomviewDialog] = global::AtomUIGallery.ShowCases.Modal.zh_CN.P2ContentOpenCustomviewDialog;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenModal] = global::AtomUIGallery.ShowCases.Modal.zh_CN.P2ContentOpenModal;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenModalOverlay] = global::AtomUIGallery.ShowCases.Modal.zh_CN.P2ContentOpenModalOverlay;
@@ -13030,6 +13034,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsLoading] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogIsLoading;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsModal] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogIsModal;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogIsOpen] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogIsOpen;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogOptionsBeforeCloseAsync] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogOptionsBeforeCloseAsync;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyDialogStandardButtons] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyDialogStandardButtons;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxOkButtonStyle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyMessageBoxOkButtonStyle;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.ApiPropertyMessageBoxStyle] = global::AtomUIGallery.ShowCases.Modal.zh_TW.ApiPropertyMessageBoxStyle;
@@ -13055,6 +13060,7 @@ namespace AtomUI.Theme.Language
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentCustomButton] = global::AtomUIGallery.ShowCases.Modal.zh_TW.P2ContentCustomButton;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentError] = global::AtomUIGallery.ShowCases.Modal.zh_TW.P2ContentError;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentInformation] = global::AtomUIGallery.ShowCases.Modal.zh_TW.P2ContentInformation;
+                dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenBeforeCloseDialog] = global::AtomUIGallery.ShowCases.Modal.zh_TW.P2ContentOpenBeforeCloseDialog;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenCustomviewDialog] = global::AtomUIGallery.ShowCases.Modal.zh_TW.P2ContentOpenCustomviewDialog;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenModal] = global::AtomUIGallery.ShowCases.Modal.zh_TW.P2ContentOpenModal;
                 dictionary[global::AtomUIGallery.Localization.ModalShowCaseLangResourceKind.P2ContentOpenModalOverlay] = global::AtomUIGallery.ShowCases.Modal.zh_TW.P2ContentOpenModalOverlay;
