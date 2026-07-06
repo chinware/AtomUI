@@ -445,6 +445,69 @@ public partial class ModalShowCase : GalleryReactiveUserControl<ModalViewModel>
         catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
     }
 
+    private async void HandleOpenBeforeCloseDialogButtonClick(object? sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            var validationAttempts = 0;
+            var statusText = new TextBlock
+            {
+                Text         = "The first OK click will fail async validation. Click OK again to close.",
+                TextWrapping = Avalonia.Media.TextWrapping.Wrap
+            };
+            var content = new StackPanel
+            {
+                Spacing = 8,
+                Children =
+                {
+                    new TextBlock { Text = "DialogOptions.BeforeCloseAsync can decide whether a static dialog is allowed to close." },
+                    statusText
+                }
+            };
+            var options = new DialogOptions
+            {
+                Title                     = "Async before-close validation",
+                IsResizable               = false,
+                IsDragMovable             = true,
+                IsMaximizable             = false,
+                StandardButtons           = DialogStandardButtons.Parse("Cancel,Ok"),
+                DefaultStandardButton     = DialogStandardButton.Ok,
+                HorizontalStartupLocation = DialogHorizontalAnchor.Center,
+                VerticalStartupLocation   = DialogVerticalAnchor.Center,
+                HostMinWidth              = 420,
+                PlacementTarget           = sender as Control,
+                BeforeCloseAsync = async context =>
+                {
+                    if (context.DialogCode != DialogCode.Accepted)
+                    {
+                        return true;
+                    }
+
+                    context.Dialog.IsConfirmLoading = true;
+                    try
+                    {
+                        await Task.Delay(1000, context.CancellationToken);
+                        validationAttempts++;
+                        if (validationAttempts == 1)
+                        {
+                            statusText.Text = "Validation failed. The dialog stayed open; click OK again to pass.";
+                            return false;
+                        }
+
+                        return true;
+                    }
+                    finally
+                    {
+                        context.Dialog.IsConfirmLoading = false;
+                    }
+                }
+            };
+            await Dialog.ShowDialogModalAsync(content, null, options);
+        }
+        catch (Exception ex) { System.Diagnostics.Debug.WriteLine($"Modal demo failed: {ex}"); }
+    }
+
     private async void HandleCreateConfirmMessageBox(object? sender, RoutedEventArgs e)
     {
         try

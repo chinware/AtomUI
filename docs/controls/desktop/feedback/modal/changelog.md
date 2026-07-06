@@ -6,8 +6,12 @@
 
 - API
   - Make `Dialog.IsOpen` default to `BindingMode.TwoWay` so controlled dialog open state updates the bound ViewModel without explicit binding mode.
+  - Add `DialogOptions.BeforeCloseAsync`, `DialogClosingContext` and `DialogCloseReason` for static Dialog close-before validation.
+- Behavior
+  - Route Dialog button, keyboard, host, owner, placement-target and programmatic close requests through one async close pipeline.
 - Docs
   - Document `Dialog.IsOpen` as controlled open state and clarify that it is not a Form validation value.
+  - Update the close-before validation design from planned behavior to implemented API and pipeline invariants.
 
 ## 2026-07-03
 

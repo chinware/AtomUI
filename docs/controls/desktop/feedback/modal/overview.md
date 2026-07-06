@@ -71,11 +71,11 @@ Dialog 当前公开事件包括 `Opened`、`Closing`、`Closed`、`Accepted`、`
 
 当前未抽取到控件专属伪类；主题主要依赖 Avalonia 标准伪类、模板绑定和内部 StyledProperty。
 
-### 3.1 关闭前校验入口（待实现设计）
+### 3.1 关闭前校验入口
 
 Modal 应为静态 API 用户提供一等公民的关闭前校验入口，用于表单提交、异步保存、服务端校验等需要在用户触发关闭后、Dialog 实际关闭前决定是否放行的场景。该能力定位为 L1 兼容新增，不改变既有 `Closing`、`ButtonClicked`、`Accepted`、`Rejected`、`Finished` 和 `Closed` 的默认行为。
 
-推荐在 `DialogOptions` 增加异步回调，而不是扩展 `ShowDialogModalAsync` 的方法签名：
+`DialogOptions` 提供异步回调承载关闭前校验，而不是扩展 `ShowDialogModalAsync` 的方法签名：
 
 ```csharp
 public Func<DialogClosingContext, ValueTask<bool>>? BeforeCloseAsync { get; init; }
@@ -83,7 +83,7 @@ public Func<DialogClosingContext, ValueTask<bool>>? BeforeCloseAsync { get; init
 
 `BeforeCloseAsync` 默认值为 `null`。未设置时，Dialog 关闭流程必须保持现有语义。设置后，返回 `true` 表示允许继续关闭，返回 `false` 表示取消本次关闭请求并保持 Dialog 打开。
 
-关闭前上下文应使用独立 public 类型承载，不只传递 `DialogCode`：
+关闭前上下文使用独立 public 类型承载，不只传递 `DialogCode`：
 
 ```csharp
 public sealed class DialogClosingContext
@@ -119,6 +119,7 @@ public enum DialogCloseReason
 - `ButtonClicked` 已设置 `Handled = true` 时，不进入 `BeforeCloseAsync`，由调用方自行决定后续关闭。
 - `Closing.Cancel = true` 时，不继续调用 `BeforeCloseAsync`。
 - `BeforeCloseAsync` 发生异常时不得关闭 Dialog；实现应重置关闭请求状态，并以可诊断方式暴露异常。
+- `IsOpen=false` 触发的关闭请求被取消时，`IsOpen` 会恢复为 `true`，避免控件仍打开但绑定状态已经变为关闭。
 - 该入口用于简化静态 API 场景；高级 MVVM 场景仍可继续使用 `IDialogAwareDataContext`、`ButtonClicked` 和 `Closing` 直接接管 Dialog。
 
 示例用法：
@@ -256,9 +257,9 @@ Modal 的动效只表达状态变化反馈，不应改变 public API 语义。�
 
 Modal 的视觉选项通过 public API 归一为 theme variables、伪类或模板绑定。Token 保存组件语义值，不能保存实例运行时状态或业务色值。
 
-### 8.5 关闭请求模型（待实现设计）
+### 8.5 关闭请求模型
 
-Modal 的关闭请求应收敛到单一管线，保证按钮、键盘、标题栏关闭、Window host 关闭、父窗口关闭、placement target detach 和 programmatic close 使用一致的校验与事件顺序。新增关闭前校验能力时，应保留既有事件语义：
+Modal 的关闭请求收敛到单一管线，保证按钮、键盘、标题栏关闭、Window host 关闭、父窗口关闭、placement target detach 和 programmatic close 使用一致的校验与事件顺序。关闭前校验能力保留既有事件语义：
 
 ```text
 用户触发按钮 / 键盘 / 标题栏 / programmatic close
@@ -275,7 +276,7 @@ Modal 的关闭请求应收敛到单一管线，保证按钮、键盘、标题�
   -> Closed
 ```
 
-关闭请求管线必须单次执行。`BeforeCloseAsync` 未完成时，重复点击确认按钮、重复触发 Escape 或重复收到 host close request 不应产生并发关闭；实现可以复用现有 `_closing` 状态或引入明确的 close-request in-flight 状态，但不能通过延时或吞异常隐藏重入问题。
+关闭请求管线必须单次执行。`BeforeCloseAsync` 未完成时，重复点击确认按钮、重复触发 Escape 或重复收到 host close request 不会产生并发关闭；实现以 close-request in-flight 状态保护整条关闭管线，不能通过延时或强制刷新隐藏重入问题。
 
 ## 9. 文档导航、LLMS 导出与验证策略
 

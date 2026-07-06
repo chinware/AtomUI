@@ -32,4 +32,5 @@ public record DialogOptions
     public DialogStandardButton DefaultStandardButton { get; init; }
     public DialogHorizontalAnchor HorizontalStartupLocation { get; init; } = DialogHorizontalAnchor.Custom;
     public DialogVerticalAnchor VerticalStartupLocation { get; init; } = DialogVerticalAnchor.Custom;
+    public Func<DialogClosingContext, ValueTask<bool>>? BeforeCloseAsync { get; init; }
 }

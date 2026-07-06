@@ -1,5 +1,3 @@
-using AtomUI.Controls.Primitives;
-using Avalonia;
 using Avalonia.Controls;
 
 namespace AtomUI.Desktop.Controls;
@@ -157,7 +155,8 @@ public partial class Dialog
             HostMinWidth              = options?.HostMinWidth ?? 0d,
             HostMinHeight             = options?.HostMinHeight ?? 0d,
             HostMaxWidth              = options?.HostMaxWidth ?? double.PositiveInfinity,
-            HostMaxHeight             = options?.HostMaxHeight ?? double.PositiveInfinity
+            HostMaxHeight             = options?.HostMaxHeight ?? double.PositiveInfinity,
+            BeforeCloseAsync          = options?.BeforeCloseAsync
         };
     }
 

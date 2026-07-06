@@ -44,6 +44,7 @@ internal partial class zh_TW
     public const string ApiPropertyDialogIsLoading = "在對話框內容上顯示加載狀態。";
     public const string ApiPropertyDialogIsConfirmLoading = "異步確認操作進行中時顯示確認按鈕加載狀態。";
     public const string ApiPropertyDialogHostWidth = "對話框宿主的顯式寬度。";
+    public const string ApiPropertyDialogOptionsBeforeCloseAsync = "異步回調，用於決定靜態 Dialog 的關閉請求是否可以繼續。";
     public const string ApiMethodDialogShowDialogModalAsync = "通過靜態 API 創建並顯示模態對話框。";
     public const string ApiPropertyMessageBoxStyle = "MessageBox 的語義樣式，例如 Confirm、Information、Success、Warning 或 Error。";
     public const string ApiPropertyMessageBoxOkButtonStyle = "MessageBox 確認按鈕使用的視覺樣式。";
@@ -99,6 +100,7 @@ internal partial class zh_TW
     public const string P2ContentOpenOverlayDialog = "打開浮層對話框";
     public const string P2ContentOpenWindowDialog = "打開窗口對話框";
     public const string P2ContentOpenCustomviewDialog = "打開自定義視圖對話框";
+    public const string P2ContentOpenBeforeCloseDialog = "打開關閉前校驗對話框";
     public const string P2TextName = "姓名";
     public const string P2TextAge = "年齡";
     public const string P2RunThisModalWillBeDestroyedAfter = "此模態框將在 ";
