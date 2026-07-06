@@ -53,6 +53,29 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:RateShowCaseLangResource TwoWayBindingTitle}"
+            Description="{gallery:RateShowCaseLangResource TwoWayBindingDescription}"
+            BadgeText="v6.0.8"
+            IsDeferredContentEnabled="True">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:RateViewModel">
+                    <StackPanel Orientation="Vertical" Spacing="10">
+                        <atom:Rate Value="{Binding TwoWayValue}" />
+                        <atom:TextBlock Text="{Binding TwoWayValueSummary}" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <atom:Button SizeType="Small"
+                                         Command="{Binding SetFourStarsCommand}"
+                                         Content="{gallery:RateShowCaseLangResource P2ContentSetFourStars}" />
+                            <atom:Button SizeType="Small"
+                                         Command="{Binding ClearTwoWayValueCommand}"
+                                         Content="{gallery:RateShowCaseLangResource P2ContentClear}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:RateShowCaseLangResource HalfStarTitle}"
             Description="{gallery:RateShowCaseLangResource HalfStarDescription}"
             IsDeferredContentEnabled="True">

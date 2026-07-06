@@ -86,6 +86,7 @@ public partial class RateShowCase : GalleryReactiveUserControl<RateViewModel>
             RateShowCaseLanguage.Get(RateShowCaseLangResourceKind.P2TooltipWonderful, "wonderful"),
         };
         SyncActiveTooltip(viewModel, 0);
+        viewModel.RefreshLocalizedState();
     }
 
     private void HandleValueChanged(object? sender, RateValueChangedEventArgs e)

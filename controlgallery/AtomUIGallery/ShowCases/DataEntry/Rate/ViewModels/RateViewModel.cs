@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUIGallery.Localization;
@@ -20,6 +22,8 @@ public class RateViewModel : ReactiveObject, IRoutableViewModel
     private ObservableCollection<RateApiRow>? _apiRows;
     private ObservableCollection<RateDesignTokenRow>? _designTokenRows;
     private IList<string>? _tooltips;
+    private double _twoWayValue;
+    private string? _twoWayValueSummary;
 
     public ObservableCollection<RateApiRow>? ApiRows
     {
@@ -39,6 +43,27 @@ public class RateViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _tooltips, value);
     }
 
+    public double TwoWayValue
+    {
+        get => _twoWayValue;
+        set
+        {
+            if (Math.Abs(_twoWayValue - value) < double.Epsilon)
+            {
+                return;
+            }
+
+            this.RaiseAndSetIfChanged(ref _twoWayValue, value);
+            UpdateTwoWayValueSummary();
+        }
+    }
+
+    public string? TwoWayValueSummary
+    {
+        get => _twoWayValueSummary;
+        set => this.RaiseAndSetIfChanged(ref _twoWayValueSummary, value);
+    }
+
     private string? _activeTooltip;
 
     public string? ActiveTooltip
@@ -47,9 +72,38 @@ public class RateViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _activeTooltip, value);
     }
 
+    public ReactiveCommand<Unit, Unit> SetFourStarsCommand { get; }
+    public ReactiveCommand<Unit, Unit> ClearTwoWayValueCommand { get; }
+
     public RateViewModel(IScreen screen)
     {
         HostScreen = screen;
+        _twoWayValue = 2.0;
+        SetFourStarsCommand      = ReactiveCommand.Create(HandleSetFourStars);
+        ClearTwoWayValueCommand  = ReactiveCommand.Create(HandleClearTwoWayValue);
+        UpdateTwoWayValueSummary();
+    }
+
+    public void RefreshLocalizedState()
+    {
+        UpdateTwoWayValueSummary();
+    }
+
+    private void HandleSetFourStars()
+    {
+        TwoWayValue = 4.0;
+    }
+
+    private void HandleClearTwoWayValue()
+    {
+        TwoWayValue = 0.0;
+    }
+
+    private void UpdateTwoWayValueSummary()
+    {
+        TwoWayValueSummary = string.Format(CultureInfo.CurrentCulture,
+            RateShowCaseLanguage.Get(RateShowCaseLangResourceKind.P2TwoWayValueSummaryFormat, "Selected value: {0:0.#}"),
+            TwoWayValue);
     }
 
     public void EnsureApiRows()
@@ -124,6 +178,11 @@ public class RateViewModel : ReactiveObject, IRoutableViewModel
             RateShowCaseLangResourceKind.ApiPropertyIsMotionEnabled    => en_US.ApiPropertyIsMotionEnabled,
             RateShowCaseLangResourceKind.ApiPropertyValueChanged       => en_US.ApiPropertyValueChanged,
             RateShowCaseLangResourceKind.ApiPropertyHoverValueChanged  => en_US.ApiPropertyHoverValueChanged,
+            RateShowCaseLangResourceKind.TwoWayBindingTitle            => en_US.TwoWayBindingTitle,
+            RateShowCaseLangResourceKind.TwoWayBindingDescription      => en_US.TwoWayBindingDescription,
+            RateShowCaseLangResourceKind.P2ContentSetFourStars         => en_US.P2ContentSetFourStars,
+            RateShowCaseLangResourceKind.P2ContentClear                => en_US.P2ContentClear,
+            RateShowCaseLangResourceKind.P2TwoWayValueSummaryFormat    => en_US.P2TwoWayValueSummaryFormat,
             RateShowCaseLangResourceKind.TokenNameStarColor            => en_US.TokenNameStarColor,
             RateShowCaseLangResourceKind.TokenNameStarSize             => en_US.TokenNameStarSize,
             RateShowCaseLangResourceKind.TokenNameStarSizeSM           => en_US.TokenNameStarSizeSM,

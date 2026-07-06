@@ -23,7 +23,7 @@ internal partial class en_US
     public const string ApiPropertyStarColor = "Overrides the filled rating item color.";
     public const string ApiPropertyStarBgColor = "Overrides the unselected rating item color.";
     public const string ApiPropertyCount = "Total number of rating items.";
-    public const string ApiPropertyValue = "Current selected rating value.";
+    public const string ApiPropertyValue = "Current selected rating value. It uses TwoWay binding by default and supports Avalonia data validation.";
     public const string ApiPropertyDefaultValue = "Initial rating value used when Value is not explicitly set.";
     public const string ApiPropertyIsKeyboardEnabled = "Controls whether keyboard interaction is enabled.";
     public const string ApiPropertyToolTips = "Tooltip text list displayed for each rating value.";
@@ -45,6 +45,8 @@ internal partial class en_US
     public const string TokenStatusStable = "Stable";
     public const string BasicTitle = "Basic";
     public const string BasicDescription = "The simplest usage.";
+    public const string TwoWayBindingTitle = "Two-way binding";
+    public const string TwoWayBindingDescription = "Value uses TwoWay binding by default, so user selection and ViewModel updates stay synchronized.";
     public const string HalfStarTitle = "Half star";
     public const string HalfStarDescription = "Support select half star.";
     public const string ShowCopywritingTitle = "Show copywriting";
@@ -57,6 +59,9 @@ internal partial class en_US
     public const string OtherCharacterDescription = "Replace the default star to other character like alphabet, digit, iconfont or even Chinese word.";
     public const string P2TextIsallowclearTrue = "IsAllowClear: true";
     public const string P2TextIsallowclearFalse = "IsAllowClear: false";
+    public const string P2ContentSetFourStars = "Set 4 stars";
+    public const string P2ContentClear = "Clear";
+    public const string P2TwoWayValueSummaryFormat = "Selected value: {0:0.#}";
     public const string P2TooltipTerrible = "terrible";
     public const string P2TooltipBad = "bad";
     public const string P2TooltipNormal = "normal";

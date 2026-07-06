@@ -78,6 +78,7 @@ Public API / inherited command / item source / user input
 
 - Disabled 或不可交互状态优先屏蔽 pointer、keyboard、motion 和提交类反馈。
 - selection/checked/active、input/value、motion、visual option 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `Rate.Value` 是评分控件的外部值 owner，默认 `BindingMode.TwoWay` 并启用 Avalonia data validation；用户评分、键盘调整、Form value 和 ViewModel 更新必须收敛到同一份数值状态。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。
 - 集合、弹层、异步、动效或窗口相关状态必须能处理 reset、close、cancel、detach 和 owner 释放。
 
@@ -137,6 +138,8 @@ Rate 与同分类控件共享尺寸、状态、Token、Gallery 展示和验证�
 ### 8.1 选择与当前项模型
 
 Rate 的当前项状态必须由单一 owner 推导。public 选择属性、集合项容器和伪类之间只能做单向同步，集合替换、清空和模板重套用时必须回放当前状态。
+
+`Value` 作为 Form value 和受控评分值暴露给用户。控件从 `Value` 同步 `EffectiveValue` 与每个 `RateItem.SelectedState`，也会在 pointer 或 keyboard 交互后更新 `Value`，默认绑定模式负责把该值回写到 ViewModel。
 
 ### 8.2 动效模型
 

@@ -4,6 +4,23 @@ Description="{gallery:RateShowCaseLangResource BasicDescription}">
 <atom:Rate/>
 </gallery:ShowCaseItem>
 <gallery:ShowCaseItem
+Title="{gallery:RateShowCaseLangResource TwoWayBindingTitle}"
+Description="{gallery:RateShowCaseLangResource TwoWayBindingDescription}"
+BadgeText="v6.0.8">
+<StackPanel Orientation="Vertical" Spacing="10">
+<atom:Rate Value="{Binding TwoWayValue}" />
+<atom:TextBlock Text="{Binding TwoWayValueSummary}" />
+<StackPanel Orientation="Horizontal" Spacing="10">
+<atom:Button SizeType="Small"
+Command="{Binding SetFourStarsCommand}"
+Content="{gallery:RateShowCaseLangResource P2ContentSetFourStars}" />
+<atom:Button SizeType="Small"
+Command="{Binding ClearTwoWayValueCommand}"
+Content="{gallery:RateShowCaseLangResource P2ContentClear}" />
+</StackPanel>
+</StackPanel>
+</gallery:ShowCaseItem>
+<gallery:ShowCaseItem
 Title="{gallery:RateShowCaseLangResource HalfStarTitle}"
 Description="{gallery:RateShowCaseLangResource HalfStarDescription}">
 <atom:Rate DefaultValue="3.5" IsAllowHalf="True"/>

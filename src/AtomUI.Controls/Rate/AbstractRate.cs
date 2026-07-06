@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Media;
@@ -39,7 +40,11 @@ public abstract class AbstractRate : TemplatedControl,
         AvaloniaProperty.Register<AbstractRate, int>(nameof(Count), 5);
     
     public static readonly StyledProperty<double> ValueProperty =
-        AvaloniaProperty.Register<AbstractRate, double>(nameof(Value), double.NaN);
+        AvaloniaProperty.Register<AbstractRate, double>(
+            nameof(Value),
+            double.NaN,
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
     
     public static readonly StyledProperty<double> DefaultValueProperty =
         AvaloniaProperty.Register<AbstractRate, double>(nameof(DefaultValue), 0);
