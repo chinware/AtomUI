@@ -2,6 +2,15 @@
 
 本文档记录 ImagePreviewer 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-06
+
+- API
+  - Make `IsOpen` and `CurrentIndex` default to `BindingMode.TwoWay` so controlled preview open state and current image index update the bound ViewModel without explicit binding mode.
+- Implementation
+  - Keep dialog and overlay `CurrentIndex` relay bindings `TwoWay` and owned by host disposables.
+- Docs
+  - Document the controlled state contract and clarify that these properties are not Form validation values.
+
 ## 2026-07-01
 
 - API

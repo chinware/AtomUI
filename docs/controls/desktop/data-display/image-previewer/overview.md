@@ -41,13 +41,18 @@ ImagePreviewer 的公共契约由 public/protected 类型成员、Avalonia 属�
 | --- | --- | --- |
 | 图片来源 | `SourceUri`、`SourceUris`、`CoverSourceUri`、`FallbackSourceUri` | 统一表达单图、多图、封面和失败兜底图片来源，来源可以是 `avares://`、本地路径、`file://` 或 `http(s)://`。 |
 | 内容与数据 | `CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`LoadingContent`、`LoadingContentTemplate`、`ErrorContent`、`ErrorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageTranslateX`、`ImageTranslateY` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `Count`、`CurrentIndex` | 维护当前预览项、多图切换和集合状态；`CurrentIndex` 是控件级当前项索引，未设置 `CoverSourceUri` 时也决定普通 `ImagePreviewer` 的封面图片。 |
+| 选择与集合 | `Count`、`CurrentIndex` | 维护当前预览项、多图切换和集合状态；`CurrentIndex` 是控件级当前项索引，默认双向绑定，未设置 `CoverSourceUri` 时也决定普通 `ImagePreviewer` 的封面图片。 |
 | 预览标题 | `PreviewTitle`、`PreviewTitleIcon`、`PreviewTitleResolver`、`IImagePreviewTitleResolver`、`ImagePreviewTitleResolveContext` | 定义预览宿主标题和标题图标契约。显式标题非空时优先显示；显式标题为空时由 resolver 基于 current effective item 解析标题；`PreviewTitleIcon` 使用 `PathIcon?`，只在显式设置时显示，不继承应用或主窗口图标。 |
-| 交互与状态 | `IsDialogModal`、`IsDialogTopmost`、`IsModal`、`IsMotionEnabled`、`IsOpen`、`IsShowCoverMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
+| 交互与状态 | `IsDialogModal`、`IsDialogTopmost`、`IsModal`、`IsMotionEnabled`、`IsOpen`、`IsShowCoverMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义；`IsOpen` 默认双向绑定。 |
 | 视觉与布局 | `CoverHeight`、`CoverWidth` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `MaxScale`、`MinScale`、`ScaleStep`、`Stretch`、`Transform` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |
 
 稳定事件包括 `FitToWindowRequest`、`HorizontalFlipRequest`、`NextRequest`、`PreviousRequest`、`RotateLeftRequest`、`RotateRightRequest`、`ScaleDownRequest`、`ScaleUpRequest`、`VerticalFlipRequest`。事件触发顺序属于兼容契约，不能因内部状态重排而改变。
+
+受控状态契约：
+
+- `IsOpen` 与 `CurrentIndex` 是用户可拥有的受控状态，Avalonia Binding 默认使用 `TwoWay`；预览关闭、图片切换、dialog 导航和 overlay 导航都必须回写同一 public 属性。
+- 这两个属性不是 Form value，不写入 `DataValidationErrors`；验证语义仍由图片来源、加载状态或业务 ViewModel 自行表达。
 
 主要公开类型与枚举：
 
@@ -96,6 +101,7 @@ Public API / ImageSourceUri / inherited command / user input
 - `ImageSourceUri` 是用户输入层，`ImagePreviewItem` 是控件内部图片项状态 owner，`LoadedImageSource` 是加载完成结果。三者不能混用职责。
 - 图片项状态按 `Pending -> Loading -> Loaded/Failed` 收敛，加载失败且存在 `FallbackSourceUri` 时转入 fallback 加载，不直接吞掉失败。
 - current item、open/close、image loading、loaded/failed、fallback、motion 状态由控件实例或明确的数据 owner 推导，不能在 template part 之间双向竞争。
+- `IsOpen` 与 `CurrentIndex` 是默认 `TwoWay` 的受控状态；dialog、overlay 和封面只能消费或回写这条 public 状态路径，不能保留独立打开状态或当前项状态。
 - `CurrentIndex` 是普通封面、弹出 dialog 和 overlay host 共享的当前项状态。`CoverSourceUri` 是显式封面覆盖入口，优先级高于 `CurrentIndex`；未设置 `CoverSourceUri` 时，封面从 effective items 中按 `CurrentIndex` 选取。
 - 预览标题由单一 effective title 算法生成：非空白显式标题优先；显式标题为空时，使用 resolver 基于 current effective item 解析标题；解析不到标题时标题区域保持空态。
 - 模板重套用时必须把 public API 对应状态回放到新的 part、伪类和主题变量。

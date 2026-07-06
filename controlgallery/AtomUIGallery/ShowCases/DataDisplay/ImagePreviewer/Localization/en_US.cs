@@ -32,10 +32,10 @@ internal partial class en_US
     public const string ApiPropertySourceUri = "Single image source URI used by ImagePreviewer.";
     public const string ApiPropertySourceUris = "Image source URI list used by ImagePreviewer and ImageGroupPreviewer.";
     public const string ApiPropertyFallbackSourceUri = "Fallback image source URI shown when the configured image cannot be loaded.";
-    public const string ApiPropertyIsOpen = "Controls whether the preview overlay or dialog is open.";
+    public const string ApiPropertyIsOpen = "Controls whether the preview overlay or dialog is open. Two-way binding is enabled by default.";
     public const string ApiPropertyCoverWidth = "Width of the image cover.";
     public const string ApiPropertyCoverHeight = "Height of the image cover.";
-    public const string ApiPropertyCurrentIndex = "Current preview image index in a group.";
+    public const string ApiPropertyCurrentIndex = "Current preview image index in a group. Two-way binding is enabled by default.";
     public const string ApiPropertyPreviewTitle = "Explicit title shown in the preview dialog title bar.";
     public const string ApiPropertyPreviewTitleIcon = "Optional icon shown before the preview dialog title.";
     public const string ApiPropertyPreviewTitleResolver = "Resolver used to derive the preview dialog title when PreviewTitle is empty.";

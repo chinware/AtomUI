@@ -32,10 +32,10 @@ internal partial class zh_CN
     public const string ApiPropertySourceUri = "ImagePreviewer 使用的单张图片源 URI。";
     public const string ApiPropertySourceUris = "ImagePreviewer 和 ImageGroupPreviewer 使用的图片源 URI 列表。";
     public const string ApiPropertyFallbackSourceUri = "配置图片加载失败时显示的容错图片源 URI。";
-    public const string ApiPropertyIsOpen = "控制预览覆盖层或预览窗口是否打开。";
+    public const string ApiPropertyIsOpen = "控制预览覆盖层或预览窗口是否打开，默认支持双向绑定。";
     public const string ApiPropertyCoverWidth = "图片封面的宽度。";
     public const string ApiPropertyCoverHeight = "图片封面的高度。";
-    public const string ApiPropertyCurrentIndex = "多图预览中的当前图片索引。";
+    public const string ApiPropertyCurrentIndex = "多图预览中的当前图片索引，默认支持双向绑定。";
     public const string ApiPropertyPreviewTitle = "预览窗口标题栏显示的显式标题。";
     public const string ApiPropertyPreviewTitleIcon = "显示在预览窗口标题左侧的可选图标。";
     public const string ApiPropertyPreviewTitleResolver = "PreviewTitle 为空时用于解析预览窗口标题的 resolver。";

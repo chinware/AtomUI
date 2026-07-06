@@ -76,8 +76,8 @@ Public API / ItemsSource / Command / Event
 源码中的状态入口按以下语义维护：
 
 - 内容与数据：`CloseIcon`、`CoverTemplate`、`Description`、`DescriptionTemplate`、`ItemSpacing`、`ItemTemplate`、`Title`、`TitleTemplate`。
-- 选择与集合：`ActiveIndex`、`CurrentIndex`、`IndicatorActiveColor`、`StepCount`。
-- 交互与状态：`IsArrowVisible`、`IsDisabledInteraction`、`IsMotionEnabled`、`IsOpen`、`IsPointAtCenter`、`IsScrollIntoView`、`IsShowMask`。
+- 选择与集合：`ActiveIndex`、`CurrentIndex`、`IndicatorActiveColor`、`StepCount`。`CurrentIndex` 默认双向绑定。
+- 交互与状态：`IsArrowVisible`、`IsDisabledInteraction`、`IsMotionEnabled`、`IsOpen`、`IsPointAtCenter`、`IsScrollIntoView`、`IsShowMask`。`IsOpen` 默认双向绑定。
 - 视觉与布局：`Background`、`GapOffsetX`、`GapOffsetY`、`GapRadius`、`IndicatorColor`、`IndicatorSize`、`MaskColor`、`Placement`、`StyleType`、`TargetRegionCornerRadius`。
 - 其他稳定入口：`Cover`、`Indicator`、`Target`、`TargetRegion`。
 
@@ -85,6 +85,7 @@ Public API / ItemsSource / Command / Event
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
+- `IsOpen` 与 `CurrentIndex` 必须保持默认 `TwoWay`；开始、关闭、下一步和上一步应通过 current value 语义更新受控状态，确保 ViewModel 与 popup/indicator 同步。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
 

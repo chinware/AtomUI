@@ -55,8 +55,8 @@ internal partial class zh_TW
     public const string ApiColumnDefault = "默認值";
     public const string ApiPropertyStepsSource = "透過集合資料生成引導步驟。";
     public const string ApiPropertyItemTemplate = "定義 StepsSource 中每一項的渲染模板。";
-    public const string ApiPropertyIsOpen = "控制引導浮層是否打開。";
-    public const string ApiPropertyCurrentIndex = "獲取或設定當前步驟索引。";
+    public const string ApiPropertyIsOpen = "控制引導浮層是否打開，預設支援雙向繫結。";
+    public const string ApiPropertyCurrentIndex = "獲取或設定當前步驟索引，預設支援雙向繫結。";
     public const string ApiPropertyStepCount = "獲取當前可用步驟總數。";
     public const string ApiPropertyPlacement = "設定相對目標控件的默認彈出位置。";
     public const string ApiPropertyIsShowMask = "控制是否顯示頁面遮罩。";

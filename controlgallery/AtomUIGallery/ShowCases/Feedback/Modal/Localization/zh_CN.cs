@@ -36,7 +36,7 @@ internal partial class zh_CN
     public const string ApiColumnType = "类型";
     public const string ApiColumnDefault = "默认值";
     public const string ApiPropertyDialogContent = "显示在对话框内容区域中的内容。";
-    public const string ApiPropertyDialogIsOpen = "控制对话框当前是否打开。";
+    public const string ApiPropertyDialogIsOpen = "控制对话框当前是否打开，默认支持双向绑定。";
     public const string ApiPropertyDialogIsModal = "对话框打开时阻止与所属窗口交互。";
     public const string ApiPropertyDialogDialogHostType = "决定对话框承载在浮层中还是原生窗口中。";
     public const string ApiPropertyDialogStandardButtons = "对话框渲染的标准页脚按钮集合。";
