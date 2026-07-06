@@ -145,6 +145,30 @@
         </gallery:ShowCaseItem>
 
         <gallery:ShowCaseItem
+            Title="{gallery:RadioButtonShowCaseLangResource CheckedItemBindingTitle}"
+            IsDeferredContentEnabled="True"
+            BadgeText="v6.0.8"
+            Description="{gallery:RadioButtonShowCaseLangResource CheckedItemBindingDescription}">
+            <gallery:ShowCaseItem.DeferredContentTemplate>
+                <DataTemplate x:DataType="vm:RadioButtonViewModel">
+                    <StackPanel HorizontalAlignment="Left" Spacing="10" Orientation="Vertical">
+                        <atom:RadioButtonGroup ItemsSource="{Binding TwoWayRadioOptions}"
+                                               CheckedItem="{Binding TwoWayCheckedItem}" />
+                        <atom:TextBlock Text="{Binding TwoWayCheckedSummary}" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <atom:Button SizeType="Small"
+                                         Command="{Binding SelectChengduCommand}"
+                                         Content="{gallery:RadioButtonShowCaseLangResource P2ContentSelectChengdu}" />
+                            <atom:Button SizeType="Small"
+                                         Command="{Binding ClearTwoWayCheckedItemCommand}"
+                                         Content="{gallery:RadioButtonShowCaseLangResource P2ContentClear}" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </gallery:ShowCaseItem.DeferredContentTemplate>
+        </gallery:ShowCaseItem>
+
+        <gallery:ShowCaseItem
             Title="{gallery:RadioButtonShowCaseLangResource OptionButtonTitle}"
             IsDeferredContentEnabled="True"
             Description="{gallery:RadioButtonShowCaseLangResource OptionButtonDescription}">

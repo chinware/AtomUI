@@ -44,6 +44,7 @@ public partial class RadioButtonShowCase : GalleryReactiveUserControl<RadioButto
                 Disposable.Create(() =>
                 {
                     viewModel.RadioOptions = null;
+                    viewModel.ClearTwoWayRadioOptions();
                 }).DisposeWith(disposables);
             }
         });
@@ -86,6 +87,23 @@ public partial class RadioButtonShowCase : GalleryReactiveUserControl<RadioButto
             new () { Content = RadioButtonShowCaseLanguage.Get(RadioButtonShowCaseLangResourceKind.P2ContentOptionC, "Option C") },
             new () { Content = RadioButtonShowCaseLanguage.Get(RadioButtonShowCaseLangResourceKind.P2ContentOptionD, "Option D"), IsEnabled = false },
         };
+        viewModel.ConfigureTwoWayRadioOptions(
+            new RadioButtonOption
+            {
+                Content = RadioButtonShowCaseLanguage.Get(RadioButtonShowCaseLangResourceKind.P2ContentHangzhou, "Hangzhou")
+            },
+            new RadioButtonOption
+            {
+                Content = RadioButtonShowCaseLanguage.Get(RadioButtonShowCaseLangResourceKind.P2ContentShanghai, "Shanghai")
+            },
+            new RadioButtonOption
+            {
+                Content = RadioButtonShowCaseLanguage.Get(RadioButtonShowCaseLangResourceKind.P2ContentBeijing, "Beijing")
+            },
+            new RadioButtonOption
+            {
+                Content = RadioButtonShowCaseLanguage.Get(RadioButtonShowCaseLangResourceKind.P2ContentChengdu, "Chengdu")
+            });
     }
 }
 

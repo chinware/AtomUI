@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Data;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 
@@ -11,7 +12,10 @@ public abstract class AbstractRadioButtonGroup : ItemsControl,
 {
     #region 公共属性定义
     public static readonly StyledProperty<object?> CheckedItemProperty = 
-        AvaloniaProperty.Register<AbstractRadioButtonGroup, object?>(nameof (CheckedItem));
+        AvaloniaProperty.Register<AbstractRadioButtonGroup, object?>(
+            nameof(CheckedItem),
+            defaultBindingMode: BindingMode.TwoWay,
+            enableDataValidation: true);
     
     public static readonly StyledProperty<double> ItemSpacingProperty = 
         AvaloniaProperty.Register<AbstractRadioButtonGroup, double>(nameof (ItemSpacing));
