@@ -4865,6 +4865,12 @@ namespace AtomUI.Theme.Language
             {
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.AboutAtomUI] = global::AtomUIGallery.ShowCases.Community.en_US.AboutAtomUI;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.HomePage] = global::AtomUIGallery.ShowCases.Community.en_US.HomePage;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationDescription] = global::AtomUIGallery.ShowCases.Community.en_US.IncubationDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationEyebrow] = global::AtomUIGallery.ShowCases.Community.en_US.IncubationEyebrow;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationPointEcosystem] = global::AtomUIGallery.ShowCases.Community.en_US.IncubationPointEcosystem;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationPointLicense] = global::AtomUIGallery.ShowCases.Community.en_US.IncubationPointLicense;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationPointOpenSource] = global::AtomUIGallery.ShowCases.Community.en_US.IncubationPointOpenSource;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationTitle] = global::AtomUIGallery.ShowCases.Community.en_US.IncubationTitle;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionLabel] = global::AtomUIGallery.ShowCases.Community.en_US.MissionLabel;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.Community.en_US.MissionText;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.Community.en_US.QQGroup;
@@ -4905,6 +4911,12 @@ namespace AtomUI.Theme.Language
             {
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.AboutAtomUI] = global::AtomUIGallery.ShowCases.Community.zh_CN.AboutAtomUI;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.HomePage] = global::AtomUIGallery.ShowCases.Community.zh_CN.HomePage;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationDescription] = global::AtomUIGallery.ShowCases.Community.zh_CN.IncubationDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationEyebrow] = global::AtomUIGallery.ShowCases.Community.zh_CN.IncubationEyebrow;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationPointEcosystem] = global::AtomUIGallery.ShowCases.Community.zh_CN.IncubationPointEcosystem;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationPointLicense] = global::AtomUIGallery.ShowCases.Community.zh_CN.IncubationPointLicense;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationPointOpenSource] = global::AtomUIGallery.ShowCases.Community.zh_CN.IncubationPointOpenSource;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationTitle] = global::AtomUIGallery.ShowCases.Community.zh_CN.IncubationTitle;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionLabel] = global::AtomUIGallery.ShowCases.Community.zh_CN.MissionLabel;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.Community.zh_CN.MissionText;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.Community.zh_CN.QQGroup;
@@ -4945,6 +4957,12 @@ namespace AtomUI.Theme.Language
             {
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.AboutAtomUI] = global::AtomUIGallery.ShowCases.Community.zh_TW.AboutAtomUI;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.HomePage] = global::AtomUIGallery.ShowCases.Community.zh_TW.HomePage;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationDescription] = global::AtomUIGallery.ShowCases.Community.zh_TW.IncubationDescription;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationEyebrow] = global::AtomUIGallery.ShowCases.Community.zh_TW.IncubationEyebrow;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationPointEcosystem] = global::AtomUIGallery.ShowCases.Community.zh_TW.IncubationPointEcosystem;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationPointLicense] = global::AtomUIGallery.ShowCases.Community.zh_TW.IncubationPointLicense;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationPointOpenSource] = global::AtomUIGallery.ShowCases.Community.zh_TW.IncubationPointOpenSource;
+                dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.IncubationTitle] = global::AtomUIGallery.ShowCases.Community.zh_TW.IncubationTitle;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionLabel] = global::AtomUIGallery.ShowCases.Community.zh_TW.MissionLabel;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.MissionText] = global::AtomUIGallery.ShowCases.Community.zh_TW.MissionText;
                 dictionary[global::AtomUIGallery.Localization.CommunityPageLangResourceKind.QQGroup] = global::AtomUIGallery.ShowCases.Community.zh_TW.QQGroup;

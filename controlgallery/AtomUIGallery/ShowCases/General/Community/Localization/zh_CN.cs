@@ -20,5 +20,11 @@ internal partial class zh_CN
     public const string WeChatGroupDescription = "加入微信交流群";
     public const string QQGroup = "QQ群";
     public const string QQGroupDescription = "加入 QQ 交流群";
+    public const string IncubationEyebrow = "INCUBATION SUPPORT";
+    public const string IncubationTitle = "AtomUI OSS 纳入通明湖中心开源孵化体系";
+    public const string IncubationDescription = "获得通明湖中心开源孵化体系支持，持续推进跨平台桌面软件、开源社区运营与开发者生态建设。";
+    public const string IncubationPointOpenSource = "开源孵化";
+    public const string IncubationPointEcosystem = "生态共建";
+    public const string IncubationPointLicense = "开放许可";
 
 }
