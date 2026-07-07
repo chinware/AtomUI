@@ -9,15 +9,15 @@
         <Style Selector="Image#QinwareLogo">
             <Setter Property="Source" Value="/Assets/qinware-logo.png" />
         </Style>
-        <Style Selector="Image#TLAIC">
-            <Setter Property="Source" Value="/Assets/TLAIC.png" />
+        <Style Selector="Svg#TLAICIncubationLogo">
+            <Setter Property="Path" Value="/Assets/TLAIC.svg" />
         </Style>
         <Style Selector="views|CommunityPage[IsDarkThemeMode=True]">
             <Style Selector="^ Image#QinwareLogo">
                 <Setter Property="Source" Value="/Assets/qinware-logo-white.png" />
             </Style>
-            <Style Selector="^ Image#TLAIC">
-                <Setter Property="Source" Value="/Assets/TLAIC-white.png" />
+            <Style Selector="^ Svg#TLAICIncubationLogo">
+                <Setter Property="Path" Value="/Assets/TLAIC-white.svg" />
             </Style>
         </Style>
     </UserControl.Styles>
@@ -33,17 +33,13 @@
             <Border Background="{atom:SharedTokenResource ColorBgContainer}"
                     BoxShadow="{atom:SharedTokenResource BoxShadowsTertiary}"
                     CornerRadius="8"
-                    Padding="24">
+                    Padding="20">
                 <Grid ColumnDefinitions="Auto,*"
-                      ColumnSpacing="28">
-                    <StackPanel Width="250"
-                                Spacing="16"
+                      ColumnSpacing="24">
+                    <StackPanel Width="230"
                                 VerticalAlignment="Center">
                         <Image Name="QinwareLogo"
                                Width="220"
-                               HorizontalAlignment="Left" />
-                        <Image Name="TLAIC"
-                               Width="160"
                                HorizontalAlignment="Left" />
                     </StackPanel>
 
@@ -108,9 +104,92 @@
                 </Grid>
             </Border>
 
+            <Border Background="{atom:SharedTokenResource ColorBgContainer}"
+                    BoxShadow="{atom:SharedTokenResource BoxShadowsTertiary}"
+                    CornerRadius="8"
+                    Padding="24">
+                <Grid MinHeight="188"
+                      ColumnDefinitions="220,*"
+                      ColumnSpacing="32">
+                    <Svg Name="TLAICIncubationLogo"
+                         Width="210"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Left" />
+
+                    <StackPanel Grid.Column="1"
+                                Spacing="16"
+                                VerticalAlignment="Center">
+                        <StackPanel Spacing="6">
+                            <atom:TextBlock Text="{gallery:CommunityPageLangResource IncubationEyebrow}"
+                                            FontSize="12"
+                                            FontWeight="Bold"
+                                            Foreground="{atom:SharedTokenResource ColorPrimary}" />
+                            <atom:TextBlock Text="{gallery:CommunityPageLangResource IncubationTitle}"
+                                            FontSize="24"
+                                            FontWeight="Bold"
+                                            LineHeight="30"
+                                            TextWrapping="Wrap"
+                                            Foreground="{atom:SharedTokenResource ColorText}" />
+                            <atom:TextBlock Text="{gallery:CommunityPageLangResource IncubationDescription}"
+                                            FontSize="14"
+                                            LineHeight="22"
+                                            TextWrapping="Wrap"
+                                            Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                        </StackPanel>
+
+                        <Grid ColumnDefinitions="*,*,*"
+                              ColumnSpacing="16">
+                            <StackPanel Spacing="4">
+                                <Border Height="1"
+                                        Background="{atom:SharedTokenResource ColorPrimaryBorder}" />
+                                <atom:TextBlock Text="01"
+                                                FontSize="12"
+                                                FontWeight="Bold"
+                                                Foreground="{atom:SharedTokenResource ColorPrimary}" />
+                                <atom:TextBlock Text="{gallery:CommunityPageLangResource IncubationPointOpenSource}"
+                                                FontSize="15"
+                                                FontWeight="Bold"
+                                                TextWrapping="Wrap"
+                                                Foreground="{atom:SharedTokenResource ColorText}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1"
+                                        Spacing="4">
+                                <Border Height="1"
+                                        Background="{atom:SharedTokenResource ColorPrimaryBorder}" />
+                                <atom:TextBlock Text="02"
+                                                FontSize="12"
+                                                FontWeight="Bold"
+                                                Foreground="{atom:SharedTokenResource ColorPrimary}" />
+                                <atom:TextBlock Text="{gallery:CommunityPageLangResource IncubationPointEcosystem}"
+                                                FontSize="15"
+                                                FontWeight="Bold"
+                                                TextWrapping="Wrap"
+                                                Foreground="{atom:SharedTokenResource ColorText}" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2"
+                                        Spacing="4">
+                                <Border Height="1"
+                                        Background="{atom:SharedTokenResource ColorPrimaryBorder}" />
+                                <atom:TextBlock Text="03"
+                                                FontSize="12"
+                                                FontWeight="Bold"
+                                                Foreground="{atom:SharedTokenResource ColorPrimary}" />
+                                <atom:TextBlock Text="{gallery:CommunityPageLangResource IncubationPointLicense}"
+                                                FontSize="15"
+                                                FontWeight="Bold"
+                                                TextWrapping="Wrap"
+                                                Foreground="{atom:SharedTokenResource ColorText}" />
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
             <Grid ColumnDefinitions="*,*,*,*"
                   ColumnSpacing="12"
-                  Margin="0,6,0,20">
+                  Margin="0,6,0,0">
                 <Border Background="{atom:SharedTokenResource ColorBgContainer}"
                         BoxShadow="{atom:SharedTokenResource BoxShadowsTertiary}"
                         CornerRadius="8"

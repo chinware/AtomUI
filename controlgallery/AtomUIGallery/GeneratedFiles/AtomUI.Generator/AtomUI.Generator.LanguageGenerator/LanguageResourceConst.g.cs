@@ -1596,6 +1596,12 @@ namespace AtomUIGallery.Localization
     {
         AboutAtomUI,
         HomePage,
+        IncubationDescription,
+        IncubationEyebrow,
+        IncubationPointEcosystem,
+        IncubationPointLicense,
+        IncubationPointOpenSource,
+        IncubationTitle,
         MissionLabel,
         MissionText,
         QQGroup,

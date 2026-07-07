@@ -126,7 +126,8 @@ public class GalleryLandingPagesTests
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Community/Views/CommunityPage.axaml");
 
         source.ShouldContain("QinwareLogo");
-        source.ShouldContain("TLAIC");
+        source.ShouldNotContain("<Svg Name=\"TLAIC\"");
+        source.ShouldContain("<Svg Name=\"TLAICIncubationLogo\"");
         source.ShouldContain("VisionLabel");
         source.ShouldContain("MissionLabel");
         source.ShouldContain("https://www.atomui.net");
@@ -155,10 +156,36 @@ public class GalleryLandingPagesTests
         source.ShouldContain("Width=\"820\"");
         source.ShouldContain("BoxShadow=\"{atom:SharedTokenResource BoxShadowsTertiary}\"");
         source.ShouldContain("ColorBgContainer");
+        source.ShouldNotContain("Style Selector=\"Svg#TLAIC\"");
+        source.ShouldNotContain("Width=\"160\"");
         source.ShouldNotContain("<atom:GroupBox");
         source.ShouldNotContain("Foreground=\"Red\"");
         source.ShouldNotContain("Width=\"300\"");
         source.ShouldNotContain("Width=\"200\" />");
+    }
+
+    [Fact]
+    public void Community_Page_Uses_Compact_Tlaic_Incubation_Block()
+    {
+        var source       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Community/Views/CommunityPage.axaml");
+        var zhCnResource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Community/Localization/zh_CN.cs");
+
+        source.ShouldContain("CommunityPageLangResource IncubationEyebrow");
+        source.ShouldContain("CommunityPageLangResource IncubationTitle");
+        source.ShouldContain("CommunityPageLangResource IncubationDescription");
+        source.ShouldContain("CommunityPageLangResource IncubationPointOpenSource");
+        source.ShouldContain("CommunityPageLangResource IncubationPointEcosystem");
+        source.ShouldContain("CommunityPageLangResource IncubationPointLicense");
+        source.ShouldContain("<Svg Name=\"TLAICIncubationLogo\"");
+        source.ShouldNotContain("atomui-oss-banner.png");
+        source.IndexOf("CommunityPageLangResource IncubationEyebrow", StringComparison.Ordinal)
+              .ShouldBeLessThan(source.IndexOf("CommunityPageLangResource WeChatOfficial", StringComparison.Ordinal));
+
+        zhCnResource.ShouldContain("INCUBATION SUPPORT");
+        zhCnResource.ShouldContain("AtomUI OSS 纳入通明湖中心开源孵化体系");
+        zhCnResource.ShouldContain("开源孵化");
+        zhCnResource.ShouldContain("生态共建");
+        zhCnResource.ShouldContain("开放许可");
     }
 
     [Fact]
