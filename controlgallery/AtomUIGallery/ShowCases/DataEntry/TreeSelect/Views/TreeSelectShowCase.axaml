@@ -20,372 +20,357 @@
                     MetadataValueWidth="220" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:TreeSelectShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:TreeSelectShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:TreeSelectShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-                    <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource BasicTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource BasicDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <atom:TreeSelect Name="BasicTreeSelect"
-                             HorizontalAlignment="Stretch"
-                             IsDefaultExpandAll="True"
-                             IsAllowClear="True"
-                             IsFilterEnabled="True"
-                             ItemsSource="{Binding BasicTreeNodes}"
-                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+                <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource BasicTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource BasicDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <atom:TreeSelect Name="BasicTreeSelect"
+                         HorizontalAlignment="Stretch"
+                         IsDefaultExpandAll="True"
+                         IsAllowClear="True"
+                         IsFilterEnabled="True"
+                         ItemsSource="{Binding BasicTreeNodes}"
+                         PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource BindingTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource BindingDescription}"
-            BadgeText="v6.0.8"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <StackPanel Orientation="Vertical" Spacing="16">
-                <StackPanel Spacing="8">
-                    <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingSingleLabel}"
-                               FontWeight="SemiBold" />
-                    <atom:TreeSelect Name="BindingSingleTreeSelect"
-                                     HorizontalAlignment="Stretch"
-                                     IsDefaultExpandAll="True"
-                                     IsAllowClear="True"
-                                     IsFilterEnabled="True"
-                                     ItemsSource="{Binding BindingSingleTreeNodes}"
-                                     SelectedItem="{Binding BoundSelectedItem}"
-                                     PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
-                    <WrapPanel ItemSpacing="8">
-                        <atom:Button SizeType="Small"
-                                     Command="{Binding SetBoundSelectedItemCommand}"
-                                     Content="{gallery:TreeSelectShowCaseLangResource BindingSetSingleButton}" />
-                        <atom:Button SizeType="Small"
-                                     Command="{Binding ClearBoundSelectedItemCommand}"
-                                     Content="{gallery:TreeSelectShowCaseLangResource BindingClearButton}" />
-                    </WrapPanel>
-                    <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingViewModelValueLabel}" />
-                    <TextBlock Text="{Binding BoundSelectedItemText}" />
-                </StackPanel>
-
-                <StackPanel Spacing="8">
-                    <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingMultipleLabel}"
-                               FontWeight="SemiBold" />
-                    <atom:TreeSelect Name="BindingMultipleTreeSelect"
-                                     HorizontalAlignment="Stretch"
-                                     IsDefaultExpandAll="True"
-                                     IsAllowClear="True"
-                                     IsFilterEnabled="True"
-                                     IsMultiple="True"
-                                     ItemsSource="{Binding BindingMultipleTreeNodes}"
-                                     SelectedItems="{Binding BoundSelectedItems}"
-                                     PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
-                    <WrapPanel ItemSpacing="8">
-                        <atom:Button SizeType="Small"
-                                     Command="{Binding SetBoundSelectedItemsCommand}"
-                                     Content="{gallery:TreeSelectShowCaseLangResource BindingSetMultipleButton}" />
-                        <atom:Button SizeType="Small"
-                                     Command="{Binding ClearBoundSelectedItemsCommand}"
-                                     Content="{gallery:TreeSelectShowCaseLangResource BindingClearButton}" />
-                    </WrapPanel>
-                    <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingViewModelValueLabel}" />
-                    <TextBlock Text="{Binding BoundSelectedItemsText}"
-                               TextWrapping="Wrap" />
-                </StackPanel>
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource BindingTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource BindingDescription}"
+        BadgeText="v6.0.8"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <StackPanel Orientation="Vertical" Spacing="16">
+            <StackPanel Spacing="8">
+                <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingSingleLabel}"
+                           FontWeight="SemiBold" />
+                <atom:TreeSelect Name="BindingSingleTreeSelect"
+                                 HorizontalAlignment="Stretch"
+                                 IsDefaultExpandAll="True"
+                                 IsAllowClear="True"
+                                 IsFilterEnabled="True"
+                                 ItemsSource="{Binding BindingSingleTreeNodes}"
+                                 SelectedItem="{Binding BoundSelectedItem}"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+                <WrapPanel ItemSpacing="8">
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding SetBoundSelectedItemCommand}"
+                                 Content="{gallery:TreeSelectShowCaseLangResource BindingSetSingleButton}" />
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding ClearBoundSelectedItemCommand}"
+                                 Content="{gallery:TreeSelectShowCaseLangResource BindingClearButton}" />
+                </WrapPanel>
+                <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingViewModelValueLabel}" />
+                <TextBlock Text="{Binding BoundSelectedItemText}" />
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource MultipleSelectionTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource MultipleSelectionDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <atom:TreeSelect Name="MultiSelectionTreeSelect"
-                             HorizontalAlignment="Stretch"
-                             IsDefaultExpandAll="True"
-                             IsAllowClear="True"
-                             IsFilterEnabled="True"
-                             IsMultiple="True"
-                             ItemsSource="{Binding MultiSelectionTreeNodes}"
-                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            <StackPanel Spacing="8">
+                <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingMultipleLabel}"
+                           FontWeight="SemiBold" />
+                <atom:TreeSelect Name="BindingMultipleTreeSelect"
+                                 HorizontalAlignment="Stretch"
+                                 IsDefaultExpandAll="True"
+                                 IsAllowClear="True"
+                                 IsFilterEnabled="True"
+                                 IsMultiple="True"
+                                 ItemsSource="{Binding BindingMultipleTreeNodes}"
+                                 SelectedItems="{Binding BoundSelectedItems}"
+                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+                <WrapPanel ItemSpacing="8">
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding SetBoundSelectedItemsCommand}"
+                                 Content="{gallery:TreeSelectShowCaseLangResource BindingSetMultipleButton}" />
+                    <atom:Button SizeType="Small"
+                                 Command="{Binding ClearBoundSelectedItemsCommand}"
+                                 Content="{gallery:TreeSelectShowCaseLangResource BindingClearButton}" />
+                </WrapPanel>
+                <TextBlock Text="{gallery:TreeSelectShowCaseLangResource BindingViewModelValueLabel}" />
+                <TextBlock Text="{Binding BoundSelectedItemsText}"
+                           TextWrapping="Wrap" />
+            </StackPanel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource GenerateFromTreeDataTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource GenerateFromTreeDataDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <atom:TreeSelect Name="ItemsSourceTreeSelect"
-                             HorizontalAlignment="Stretch"
-                             IsDefaultExpandAll="True"
-                             IsAllowClear="True"
-                             IsFilterEnabled="True"
-                             ItemsSource="{Binding ItemsSourceTreeNodes}"
-                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource MultipleSelectionTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource MultipleSelectionDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <atom:TreeSelect Name="MultiSelectionTreeSelect"
+                         HorizontalAlignment="Stretch"
+                         IsDefaultExpandAll="True"
+                         IsAllowClear="True"
+                         IsFilterEnabled="True"
+                         IsMultiple="True"
+                         ItemsSource="{Binding MultiSelectionTreeNodes}"
+                         PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource CheckableTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource CheckableDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <atom:TreeSelect Name="CheckableTreeSelect"
-                             HorizontalAlignment="Stretch"
-                             IsDefaultExpandAll="True"
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource GenerateFromTreeDataTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource GenerateFromTreeDataDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <atom:TreeSelect Name="ItemsSourceTreeSelect"
+                         HorizontalAlignment="Stretch"
+                         IsDefaultExpandAll="True"
+                         IsAllowClear="True"
+                         IsFilterEnabled="True"
+                         ItemsSource="{Binding ItemsSourceTreeNodes}"
+                         PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource CheckableTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource CheckableDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <atom:TreeSelect Name="CheckableTreeSelect"
+                         HorizontalAlignment="Stretch"
+                         IsDefaultExpandAll="True"
+                         IsAllowClear="True"
+                         IsFilterEnabled="True"
+                         IsTreeCheckable="True"
+                         ItemsSource="{Binding CheckableTreeNodes}"
+                         PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                         ShowCheckedStrategy="ShowParent" />
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource AsynchronousLoadingTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource AsynchronousLoadingDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <atom:TreeSelect Name="AsyncLoadTreeSelect"
+                         HorizontalAlignment="Stretch"
+                         IsAllowClear="True"
+                         ItemsSource="{Binding AsyncLoadTreeNodes}"
+                         DataLoader="{Binding AsyncLoadTreeNodeLoader}"
+                         PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource PlacementTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource PlacementDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TreeSelectShowCaseLangResource P2TextPlacement}" />
+            <atom:OptionButtonGroup ButtonStyle="Outline"
+                                    Name="PlacementOptionGroup"
+                                    OptionCheckedChanged="HandlePlacementOptionCheckedChanged">
+                <atom:OptionButton IsChecked="True" Content="{gallery:TreeSelectShowCaseLangResource P2ContentTopleft}" />
+                <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentTopright}" />
+                <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentBottomleft}" />
+                <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentBottomright}" />
+            </atom:OptionButtonGroup>
+            <atom:TreeSelect Name="PlacementTreeSelect"
                              IsAllowClear="True"
-                             IsFilterEnabled="True"
-                             IsTreeCheckable="True"
-                             ItemsSource="{Binding CheckableTreeNodes}"
                              PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                             ShowCheckedStrategy="ShowParent" />
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                             IsDefaultExpandAll="True"
+                             IsFilterEnabled="True"
+                             IsPopupMatchSelectWidth="False"
+                             ItemsSource="{Binding PlacementTreeNodes}"
+                             Placement="{Binding Placement}" />
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource AsynchronousLoadingTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource AsynchronousLoadingDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <atom:TreeSelect Name="AsyncLoadTreeSelect"
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource ShowTreeLineTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource ShowTreeLineDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowIcon}" Name="ShowIconSwitch"
+                               IsChecked="{Binding IsShowTreeSelectIcon, Mode=TwoWay}" />
+            <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentTreeLine}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentTreeLine}"
+                               Name="ShowTreeLineSwitch"
+                               IsChecked="{Binding IsShowTreeSelectLine, Mode=TwoWay}" />
+            <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowLeafIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowLeafIcon}" Name="ShowLeafIconSwitch"
+                               IsChecked="{Binding IsShowTreeSelectLeafIcon, Mode=TwoWay}" />
+            <atom:TreeSelect Name="ShowTreeLineTreeSelect"
                              HorizontalAlignment="Stretch"
                              IsAllowClear="True"
-                             ItemsSource="{Binding AsyncLoadTreeNodes}"
-                             DataLoader="{Binding AsyncLoadTreeNodeLoader}"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             ItemsSource="{Binding ShowTreeLineTreeNodes}"
+                             IsShowIcon="{Binding IsShowTreeSelectIcon}"
+                             IsShowLeafIcon="{Binding IsShowTreeSelectLeafIcon}"
+                             IsShowLine="{Binding IsShowTreeSelectLine}"
+                             IsSwitcherRotation="{Binding IsShowTreeSelectLine, Converter={x:Static BoolConverters.Not}}" />
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource MaxCountTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource MaxCountDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:TreeSelect Name="MaxSelectedTreeSelect"
+                             HorizontalAlignment="Stretch"
+                             IsDefaultExpandAll="True"
+                             IsMultiple="True"
+                             IsAllowClear="True"
+                             IsFilterEnabled="True"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             IsShowMaxCountIndicator="True"
+                             ItemsSource="{Binding MaxSelectedTreeNodes}"
+                             MaxCount="3" />
+            <atom:TreeSelect Name="MaxCheckedTreeSelect"
+                             HorizontalAlignment="Stretch"
+                             IsDefaultExpandAll="True"
+                             IsMultiple="True"
+                             IsTreeCheckable="True"
+                             IsAllowClear="True"
+                             IsFilterEnabled="True"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             IsShowMaxCountIndicator="True"
+                             ItemsSource="{Binding MaxCheckedTreeNodes}"
+                             MaxCount="3" />
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource SizeTypeTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource SizeTypeDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <StackPanel.Styles>
+                <Style Selector="atom|TreeSelect.size-demo-tree-select[SizeType=Custom]">
+                    <Setter Property="Height" Value="38" />
+                    <Setter Property="FontSize" Value="15" />
+                </Style>
+            </StackPanel.Styles>
+            <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleSizeTypeChanged">
+                <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Large}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentLarge}" />
+                <atom:OptionButton IsChecked="True" Tag="{x:Static atom:CustomizableSizeType.Middle}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentDefault}" />
+                <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Small}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentSmall}" />
+                <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Custom}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentCustom}" />
+            </atom:OptionButtonGroup>
+            <atom:TreeSelect Classes="size-demo-tree-select"
+                             Name="SizeTypeTreeSelectSingle"
+                             Width="220"
+                             SizeType="{Binding TreeSelectSizeType}"
+                             IsAllowClear="True"
+                             IsDefaultExpandAll="True"
+                             IsFilterEnabled="False"
+                             ItemsSource="{Binding SizeTypeTreeNodes}"
                              PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            <atom:TreeSelect Classes="size-demo-tree-select"
+                             Name="SizeTypeTreeSelectMultiple"
+                             HorizontalAlignment="Stretch"
+                             SizeType="{Binding TreeSelectSizeType}"
+                             IsAllowClear="True"
+                             IsDefaultExpandAll="True"
+                             IsFilterEnabled="False"
+                             IsMultiple="True"
+                             ItemsSource="{Binding SizeTypeTreeNodes}"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource PlacementTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource PlacementDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TreeSelectShowCaseLangResource P2TextPlacement}" />
-                <atom:OptionButtonGroup ButtonStyle="Outline"
-                                        Name="PlacementOptionGroup"
-                                        OptionCheckedChanged="HandlePlacementOptionCheckedChanged">
-                    <atom:OptionButton IsChecked="True" Content="{gallery:TreeSelectShowCaseLangResource P2ContentTopleft}" />
-                    <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentTopright}" />
-                    <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentBottomleft}" />
-                    <atom:OptionButton Content="{gallery:TreeSelectShowCaseLangResource P2ContentBottomright}" />
-                </atom:OptionButtonGroup>
-                <atom:TreeSelect Name="PlacementTreeSelect"
-                                 IsAllowClear="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 IsDefaultExpandAll="True"
-                                 IsFilterEnabled="True"
-                                 IsPopupMatchSelectWidth="False"
-                                 ItemsSource="{Binding PlacementTreeNodes}"
-                                 Placement="{Binding Placement}" />
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource VariantsTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource VariantsDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:TreeSelect HorizontalAlignment="Stretch"
+                             IsAllowClear="True"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             StyleVariant="Borderless" />
+            <atom:TreeSelect HorizontalAlignment="Stretch"
+                             IsAllowClear="True"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             StyleVariant="Filled" />
+            <atom:TreeSelect HorizontalAlignment="Stretch"
+                             IsAllowClear="True"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             StyleVariant="Outlined" />
+            <atom:TreeSelect HorizontalAlignment="Stretch"
+                             IsAllowClear="True"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             StyleVariant="Underlined" />
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource ShowTreeLineTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource ShowTreeLineDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowIcon}" Name="ShowIconSwitch"
-                                   IsChecked="{Binding IsShowTreeSelectIcon, Mode=TwoWay}" />
-                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentTreeLine}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentTreeLine}"
-                                   Name="ShowTreeLineSwitch"
-                                   IsChecked="{Binding IsShowTreeSelectLine, Mode=TwoWay}" />
-                <atom:ToggleSwitch OnContent="{gallery:TreeSelectShowCaseLangResource P2OnContentShowLeafIcon}" OffContent="{gallery:TreeSelectShowCaseLangResource P2OffContentShowLeafIcon}" Name="ShowLeafIconSwitch"
-                                   IsChecked="{Binding IsShowTreeSelectLeafIcon, Mode=TwoWay}" />
-                <atom:TreeSelect Name="ShowTreeLineTreeSelect"
-                                 HorizontalAlignment="Stretch"
-                                 IsAllowClear="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 ItemsSource="{Binding ShowTreeLineTreeNodes}"
-                                 IsShowIcon="{Binding IsShowTreeSelectIcon}"
-                                 IsShowLeafIcon="{Binding IsShowTreeSelectLeafIcon}"
-                                 IsShowLine="{Binding IsShowTreeSelectLine}"
-                                 IsSwitcherRotation="{Binding IsShowTreeSelectLine, Converter={x:Static BoolConverters.Not}}" />
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource StatusTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource StatusDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:TreeSelect HorizontalAlignment="Stretch"
+                             IsAllowClear="True"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             Status="Error" />
+            <atom:TreeSelect HorizontalAlignment="Stretch"
+                             IsAllowClear="True"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             Status="Warning" />
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource MaxCountTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource MaxCountDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:TreeSelect Name="MaxSelectedTreeSelect"
-                                 HorizontalAlignment="Stretch"
-                                 IsDefaultExpandAll="True"
-                                 IsMultiple="True"
-                                 IsAllowClear="True"
-                                 IsFilterEnabled="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 IsShowMaxCountIndicator="True"
-                                 ItemsSource="{Binding MaxSelectedTreeNodes}"
-                                 MaxCount="3" />
-                <atom:TreeSelect Name="MaxCheckedTreeSelect"
-                                 HorizontalAlignment="Stretch"
-                                 IsDefaultExpandAll="True"
-                                 IsMultiple="True"
-                                 IsTreeCheckable="True"
-                                 IsAllowClear="True"
-                                 IsFilterEnabled="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 IsShowMaxCountIndicator="True"
-                                 ItemsSource="{Binding MaxCheckedTreeNodes}"
-                                 MaxCount="3" />
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource SizeTypeTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource SizeTypeDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <StackPanel.Styles>
-                    <Style Selector="atom|TreeSelect.size-demo-tree-select[SizeType=Custom]">
-                        <Setter Property="Height" Value="38" />
-                        <Setter Property="FontSize" Value="15" />
-                    </Style>
-                </StackPanel.Styles>
-                <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleSizeTypeChanged">
-                    <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Large}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentLarge}" />
-                    <atom:OptionButton IsChecked="True" Tag="{x:Static atom:CustomizableSizeType.Middle}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentDefault}" />
-                    <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Small}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentSmall}" />
-                    <atom:OptionButton Tag="{x:Static atom:CustomizableSizeType.Custom}" Content="{gallery:TreeSelectShowCaseLangResource P2ContentCustom}" />
-                </atom:OptionButtonGroup>
-                <atom:TreeSelect Classes="size-demo-tree-select"
-                                 Name="SizeTypeTreeSelectSingle"
-                                 Width="220"
-                                 SizeType="{Binding TreeSelectSizeType}"
-                                 IsAllowClear="True"
-                                 IsDefaultExpandAll="True"
-                                 IsFilterEnabled="False"
-                                 ItemsSource="{Binding SizeTypeTreeNodes}"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
-                <atom:TreeSelect Classes="size-demo-tree-select"
-                                 Name="SizeTypeTreeSelectMultiple"
-                                 HorizontalAlignment="Stretch"
-                                 SizeType="{Binding TreeSelectSizeType}"
-                                 IsAllowClear="True"
-                                 IsDefaultExpandAll="True"
-                                 IsFilterEnabled="False"
-                                 IsMultiple="True"
-                                 ItemsSource="{Binding SizeTypeTreeNodes}"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}" />
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource VariantsTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource VariantsDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:TreeSelect HorizontalAlignment="Stretch"
-                                 IsAllowClear="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 StyleVariant="Borderless" />
-                <atom:TreeSelect HorizontalAlignment="Stretch"
-                                 IsAllowClear="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 StyleVariant="Filled" />
-                <atom:TreeSelect HorizontalAlignment="Stretch"
-                                 IsAllowClear="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 StyleVariant="Outlined" />
-                <atom:TreeSelect HorizontalAlignment="Stretch"
-                                 IsAllowClear="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 StyleVariant="Underlined" />
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource StatusTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource StatusDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:TreeSelect HorizontalAlignment="Stretch"
-                                 IsAllowClear="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 Status="Error" />
-                <atom:TreeSelect HorizontalAlignment="Stretch"
-                                 IsAllowClear="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 Status="Warning" />
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:TreeSelectShowCaseLangResource PrefixAndSuffixTitle}"
-            Description="{gallery:TreeSelectShowCaseLangResource PrefixAndSuffixDescription}" IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TreeSelectViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:TreeSelect Name="LeftAddTreeSelect"
-                                 HorizontalAlignment="Stretch"
-                                 IsAllowClear="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 IsDefaultExpandAll="True"
-                                 LeftAddOn="{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}"
-                                 IsFilterEnabled="True"
-                                 ItemsSource="{Binding LeftAddTreeNodes}" />
-                <atom:TreeSelect Name="ContentLeftAddTreeSelect"
-                                 HorizontalAlignment="Stretch"
-                                 IsAllowClear="True"
-                                 PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                 IsDefaultExpandAll="True"
-                                 ContentLeftAddOn="{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}"
-                                 IsFilterEnabled="True"
-                                 ItemsSource="{Binding ContentLeftAddTreeNodes}" />
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+    <gallery:ShowCaseItem
+        Title="{gallery:TreeSelectShowCaseLangResource PrefixAndSuffixTitle}"
+        Description="{gallery:TreeSelectShowCaseLangResource PrefixAndSuffixDescription}" IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TreeSelectViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:TreeSelect Name="LeftAddTreeSelect"
+                             HorizontalAlignment="Stretch"
+                             IsAllowClear="True"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             IsDefaultExpandAll="True"
+                             LeftAddOn="{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}"
+                             IsFilterEnabled="True"
+                             ItemsSource="{Binding LeftAddTreeNodes}" />
+            <atom:TreeSelect Name="ContentLeftAddTreeSelect"
+                             HorizontalAlignment="Stretch"
+                             IsAllowClear="True"
+                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                             IsDefaultExpandAll="True"
+                             ContentLeftAddOn="{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}"
+                             IsFilterEnabled="True"
+                             ItemsSource="{Binding ContentLeftAddTreeNodes}" />
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

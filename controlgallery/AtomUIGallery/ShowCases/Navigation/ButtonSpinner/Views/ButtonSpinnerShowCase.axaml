@@ -20,357 +20,342 @@
                     BaseClass="Spinner" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:ButtonSpinnerShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:ButtonSpinnerShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:ButtonSpinnerShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-        <gallery:ShowCaseItem
-            Title="{gallery:ButtonSpinnerShowCaseLangResource BasicTitle}"
-            Description="{gallery:ButtonSpinnerShowCaseLangResource BasicDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
-            <atom:ButtonSpinner>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+    <gallery:ShowCaseItem
+        Title="{gallery:ButtonSpinnerShowCaseLangResource BasicTitle}"
+        Description="{gallery:ButtonSpinnerShowCaseLangResource BasicDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
+        <atom:ButtonSpinner>
+            <atom:TextBlock
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Text="床前明月光" />
+        </atom:ButtonSpinner>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ButtonSpinnerShowCaseLangResource ThreeSizesTitle}"
+        Description="{gallery:ButtonSpinnerShowCaseLangResource ThreeSizesDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <atom:TextBlock Width="64"
+                                VerticalAlignment="Center"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeLarge}" />
+                <atom:ButtonSpinner SizeType="Large">
+                    <atom:TextBlock
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="床前明月光" />
+                </atom:ButtonSpinner>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <atom:TextBlock Width="64"
+                                VerticalAlignment="Center"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeMiddle}" />
+                <atom:ButtonSpinner SizeType="Middle">
+                    <atom:TextBlock
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="床前明月光" />
+                </atom:ButtonSpinner>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <atom:TextBlock Width="64"
+                                VerticalAlignment="Center"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeSmall}" />
+                <atom:ButtonSpinner SizeType="Small">
+                    <atom:TextBlock
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Text="床前明月光" />
+                </atom:ButtonSpinner>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <atom:TextBlock Width="64"
+                                VerticalAlignment="Center"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeCustom}" />
+                <atom:ButtonSpinner SizeType="Custom"
+                                    Height="36"
+                                    SpinnerHandleWidth="28">
+                    <atom:TextBlock
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        FontSize="15"
+                        Text="床前明月光" />
+                </atom:ButtonSpinner>
+            </StackPanel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ButtonSpinnerShowCaseLangResource VariantsTitle}"
+        Description="{gallery:ButtonSpinnerShowCaseLangResource VariantsDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ButtonSpinner StyleVariant="Outlined">
                 <atom:TextBlock
                     HorizontalAlignment="Left"
                     VerticalAlignment="Center"
                     Text="床前明月光" />
             </atom:ButtonSpinner>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ButtonSpinnerShowCaseLangResource ThreeSizesTitle}"
-            Description="{gallery:ButtonSpinnerShowCaseLangResource ThreeSizesDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <atom:TextBlock Width="64"
-                                    VerticalAlignment="Center"
-                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                    Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeLarge}" />
-                    <atom:ButtonSpinner SizeType="Large">
-                        <atom:TextBlock
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Text="床前明月光" />
-                    </atom:ButtonSpinner>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <atom:TextBlock Width="64"
-                                    VerticalAlignment="Center"
-                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                    Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeMiddle}" />
-                    <atom:ButtonSpinner SizeType="Middle">
-                        <atom:TextBlock
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Text="床前明月光" />
-                    </atom:ButtonSpinner>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <atom:TextBlock Width="64"
-                                    VerticalAlignment="Center"
-                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                    Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeSmall}" />
-                    <atom:ButtonSpinner SizeType="Small">
-                        <atom:TextBlock
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Text="床前明月光" />
-                    </atom:ButtonSpinner>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <atom:TextBlock Width="64"
-                                    VerticalAlignment="Center"
-                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                    Text="{gallery:ButtonSpinnerShowCaseLangResource P2LabelSizeTypeCustom}" />
-                    <atom:ButtonSpinner SizeType="Custom"
-                                        Height="36"
-                                        SpinnerHandleWidth="28">
-                        <atom:TextBlock
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            FontSize="15"
-                            Text="床前明月光" />
-                    </atom:ButtonSpinner>
-                </StackPanel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ButtonSpinnerShowCaseLangResource VariantsTitle}"
-            Description="{gallery:ButtonSpinnerShowCaseLangResource VariantsDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ButtonSpinner StyleVariant="Outlined">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-                <atom:ButtonSpinner StyleVariant="Filled">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-                <atom:ButtonSpinner StyleVariant="Borderless">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ButtonSpinnerShowCaseLangResource DisabledTitle}"
-            Description="{gallery:ButtonSpinnerShowCaseLangResource DisabledDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ButtonSpinner StyleVariant="Outlined" IsEnabled="False">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-                <atom:ButtonSpinner StyleVariant="Filled" IsEnabled="False">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-                <atom:ButtonSpinner StyleVariant="Borderless" IsEnabled="False">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ButtonSpinnerShowCaseLangResource PrePostTabTitle}"
-            Description="{gallery:ButtonSpinnerShowCaseLangResource PrePostTabDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ButtonSpinner
-                    LeftAddOn="http://"
-                    RightAddOn=".com"
-                    Width="400"
-                    HorizontalAlignment="Left">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-
-                <atom:ButtonSpinner
-                    RightAddOn="{antdicons:AntDesignIconProvider Kind=SettingOutlined}"
-                    Width="400"
-                    HorizontalAlignment="Left">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-
-                <atom:ButtonSpinner
-                    LeftAddOn="http://"
-                    Width="400"
+            <atom:ButtonSpinner StyleVariant="Filled">
+                <atom:TextBlock
                     HorizontalAlignment="Left"
-                    InnerRightContent=".com">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ButtonSpinnerShowCaseLangResource PrefixSuffixTitle}"
-            Description="{gallery:ButtonSpinnerShowCaseLangResource PrefixSuffixDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-
-                <atom:ButtonSpinner
-                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
-                    InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, FillBrush=#8C8C8C}"
-                    Width="400"
-                    HorizontalAlignment="Left">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-
-                <atom:ButtonSpinner
-                    InnerLeftContent="￥"
-                    InnerRightContent="RMB"
-                    Width="400"
-                    HorizontalAlignment="Left">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-
-                <atom:ButtonSpinner
-                    InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False"
-                    Width="400"
-                    HorizontalAlignment="Left">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ButtonSpinnerShowCaseLangResource StatusTitle}"
-            Description="{gallery:ButtonSpinnerShowCaseLangResource StatusDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <atom:ButtonSpinner
-                    Status="Error"
-                    Width="400"
-                    HorizontalAlignment="Left">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-                <atom:ButtonSpinner
-                    Status="Warning"
-                    Width="400"
-                    HorizontalAlignment="Left">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-
-                <atom:ButtonSpinner
-                    Status="Error"
-                    Width="400"
-                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
-                    HorizontalAlignment="Left">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-
-                <atom:ButtonSpinner
-                    Status="Warning"
-                    Width="400"
-                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
-                    HorizontalAlignment="Left">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-
-                <atom:ButtonSpinner
-                    Status="Error"
-                    Width="400"
-                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+            <atom:ButtonSpinner StyleVariant="Borderless">
+                <atom:TextBlock
                     HorizontalAlignment="Left"
-                    StyleVariant="Filled">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-                <atom:ButtonSpinner
-                    Status="Warning"
-                    Width="400"
-                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+    <gallery:ShowCaseItem
+        Title="{gallery:ButtonSpinnerShowCaseLangResource DisabledTitle}"
+        Description="{gallery:ButtonSpinnerShowCaseLangResource DisabledDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ButtonSpinner StyleVariant="Outlined" IsEnabled="False">
+                <atom:TextBlock
                     HorizontalAlignment="Left"
-                    StyleVariant="Filled">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-
-                <atom:ButtonSpinner
-                    Status="Error"
-                    Width="400"
-                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+            <atom:ButtonSpinner StyleVariant="Filled" IsEnabled="False">
+                <atom:TextBlock
                     HorizontalAlignment="Left"
-                    StyleVariant="Borderless">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
-
-                <atom:ButtonSpinner
-                    Status="Warning"
-                    Width="400"
-                    InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined, FillBrush=Red}"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+            <atom:ButtonSpinner StyleVariant="Borderless" IsEnabled="False">
+                <atom:TextBlock
                     HorizontalAlignment="Left"
-                    StyleVariant="Borderless">
-                    <atom:TextBlock
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        Text="床前明月光" />
-                </atom:ButtonSpinner>
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+    <gallery:ShowCaseItem
+        Title="{gallery:ButtonSpinnerShowCaseLangResource PrePostTabTitle}"
+        Description="{gallery:ButtonSpinnerShowCaseLangResource PrePostTabDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ButtonSpinner
+                LeftAddOn="http://"
+                RightAddOn=".com"
+                Width="400"
+                HorizontalAlignment="Left">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+            <atom:ButtonSpinner
+                RightAddOn="{antdicons:AntDesignIconProvider Kind=SettingOutlined}"
+                Width="400"
+                HorizontalAlignment="Left">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+            <atom:ButtonSpinner
+                LeftAddOn="http://"
+                Width="400"
+                HorizontalAlignment="Left"
+                InnerRightContent=".com">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ButtonSpinnerShowCaseLangResource PrefixSuffixTitle}"
+        Description="{gallery:ButtonSpinnerShowCaseLangResource PrefixSuffixDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+
+            <atom:ButtonSpinner
+                InnerLeftContent="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
+                InnerRightContent="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, FillBrush=#8C8C8C}"
+                Width="400"
+                HorizontalAlignment="Left">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+            <atom:ButtonSpinner
+                InnerLeftContent="￥"
+                InnerRightContent="RMB"
+                Width="400"
+                HorizontalAlignment="Left">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+            <atom:ButtonSpinner
+                InnerLeftContent="￥" InnerRightContent="RMB" IsEnabled="False"
+                Width="400"
+                HorizontalAlignment="Left">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ButtonSpinnerShowCaseLangResource StatusTitle}"
+        Description="{gallery:ButtonSpinnerShowCaseLangResource StatusDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ButtonSpinnerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+            <atom:ButtonSpinner
+                Status="Error"
+                Width="400"
+                HorizontalAlignment="Left">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+            <atom:ButtonSpinner
+                Status="Warning"
+                Width="400"
+                HorizontalAlignment="Left">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+            <atom:ButtonSpinner
+                Status="Error"
+                Width="400"
+                InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                HorizontalAlignment="Left">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+            <atom:ButtonSpinner
+                Status="Warning"
+                Width="400"
+                InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                HorizontalAlignment="Left">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+            <atom:ButtonSpinner
+                Status="Error"
+                Width="400"
+                InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                HorizontalAlignment="Left"
+                StyleVariant="Filled">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+            <atom:ButtonSpinner
+                Status="Warning"
+                Width="400"
+                InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                HorizontalAlignment="Left"
+                StyleVariant="Filled">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+            <atom:ButtonSpinner
+                Status="Error"
+                Width="400"
+                InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}"
+                HorizontalAlignment="Left"
+                StyleVariant="Borderless">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+            <atom:ButtonSpinner
+                Status="Warning"
+                Width="400"
+                InnerLeftContent="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined, FillBrush=Red}"
+                HorizontalAlignment="Left"
+                StyleVariant="Borderless">
+                <atom:TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Text="床前明月光" />
+            </atom:ButtonSpinner>
+
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

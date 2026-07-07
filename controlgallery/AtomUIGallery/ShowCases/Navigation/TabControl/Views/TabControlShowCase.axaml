@@ -22,394 +22,379 @@
                     BaseClass="BaseTabControl" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:TabControlShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlBasicTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlBasicDescription}"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:TabControl Name="TestControl">
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                        </atom:TabControl>
-                    </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlBasicTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlBasicDescription}"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <atom:TabControl Name="TestControl">
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                    </atom:TabControl>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlItemsSourceTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlItemsSourceDescription}"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:TabControl ItemsSource="{Binding TabItemDataSource}">
-                            <atom:TabControl.ItemTemplate>
-                                <DataTemplate x:DataType="views:MyTabItemData">
-                                    <Border Padding="10">
-                                        <TextBlock Text="{Binding Content}" />
-                                    </Border>
-                                </DataTemplate>
-                            </atom:TabControl.ItemTemplate>
-                        </atom:TabControl>
-                    </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlItemsSourceTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlItemsSourceDescription}"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <atom:TabControl ItemsSource="{Binding TabItemDataSource}">
+                        <atom:TabControl.ItemTemplate>
+                            <DataTemplate x:DataType="views:MyTabItemData">
+                                <Border Padding="10">
+                                    <TextBlock Text="{Binding Content}" />
+                                </Border>
+                            </DataTemplate>
+                        </atom:TabControl.ItemTemplate>
+                    </atom:TabControl>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlDisabledTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlDisabledDescription}"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:CardTabControl HeaderStartEdgePadding="">
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" IsEnabled="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                        </atom:CardTabControl>
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlDisabledTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlDisabledDescription}"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <atom:CardTabControl HeaderStartEdgePadding="">
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" IsEnabled="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                    </atom:CardTabControl>
 
-                        <atom:TabControl>
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" IsEnabled="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                        </atom:TabControl>
-                    </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
+                    <atom:TabControl>
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" IsEnabled="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                    </atom:TabControl>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlCenteredTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlCenteredDescription}"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:TabControl TabAlignmentCenter="True">
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                        </atom:TabControl>
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlCenteredTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlCenteredDescription}"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <atom:TabControl TabAlignmentCenter="True">
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                    </atom:TabControl>
 
-                        <atom:CardTabControl TabAlignmentCenter="True">
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                        </atom:CardTabControl>
+                    <atom:CardTabControl TabAlignmentCenter="True">
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                    </atom:CardTabControl>
 
-                    </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlIconTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlIconDescription}"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:TabControl>
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                        </atom:TabControl>
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlIconTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlIconDescription}"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <atom:TabControl>
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                    </atom:TabControl>
 
-                    </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlSlideTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlSlideDescription}"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:TabControl>
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN9}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN9}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN10}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN10}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN11}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN11}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN12}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN12}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN13}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN13}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN14}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN14}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN15}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN15}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN16}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN16}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN17}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN17}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN18}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN18}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN19}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN19}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN20}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN20}" />
-                        </atom:TabControl>
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlSlideTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlSlideDescription}"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <atom:TabControl>
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN9}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN9}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN10}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN10}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN11}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN11}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN12}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN12}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN13}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN13}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN14}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN14}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN15}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN15}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN16}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN16}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN17}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN17}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN18}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN18}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN19}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN19}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN20}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN20}" />
+                    </atom:TabControl>
 
-                        <atom:CardTabControl>
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN9}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN9}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN10}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN10}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN11}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN11}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN12}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN12}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN13}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN13}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN14}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN14}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN15}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN15}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN16}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN16}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN17}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN17}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN18}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN18}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN19}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN19}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN20}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN20}" />
-                        </atom:CardTabControl>
-                    </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
+                    <atom:CardTabControl>
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN9}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN9}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN10}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN10}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN11}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN11}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN12}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN12}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN13}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN13}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN14}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN14}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN15}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN15}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN16}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN16}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN17}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN17}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN18}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN18}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN19}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN19}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN20}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN20}" />
+                    </atom:CardTabControl>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlCardTypeTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlCardTypeDescription}"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlCardTypeTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlCardTypeDescription}"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
 
-                        <atom:CardTabControl>
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                        </atom:CardTabControl>
+                    <atom:CardTabControl>
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                    </atom:CardTabControl>
 
-                    </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlClosableTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlClosableDescription}"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:CardTabControl IsTabClosable="True"
-                                             IsTabAutoHideCloseButton="True">
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}"
-                                          Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}"
-                                          IsClosable="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                        </atom:CardTabControl>
-
-                        <atom:TabControl IsTabClosable="True"
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlClosableTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlClosableDescription}"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <atom:CardTabControl IsTabClosable="True"
                                          IsTabAutoHideCloseButton="True">
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}"
-                                          Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}"
-                                          IsClosable="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                        </atom:TabControl>
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}"
+                                      Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}"
+                                      IsClosable="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                    </atom:CardTabControl>
+
+                    <atom:TabControl IsTabClosable="True"
+                                     IsTabAutoHideCloseButton="True">
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}"
+                                      Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}"
+                                      IsClosable="False" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                    </atom:TabControl>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
+
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlPositionTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlPositionDescription}"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
+                        <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionTabControlOptionGroup"
+                                                OptionCheckedChanged="HandleTabControlPlacementOptionCheckedChanged">
+                            <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
+                            <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
+                            <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
+                            <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentRight}" />
+                        </atom:OptionButtonGroup>
                     </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlPositionTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlPositionDescription}"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <StackPanel Orientation="Horizontal" Spacing="5">
-                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
-                            <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionTabControlOptionGroup"
-                                                    OptionCheckedChanged="HandleTabControlPlacementOptionCheckedChanged">
-                                <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
-                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
-                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
-                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentRight}" />
-                            </atom:OptionButtonGroup>
-                        </StackPanel>
+                    <atom:TabControl Name="PositionTabControl"
+                                     DockPanel.Dock="{Binding PositionTabControlPlacement}"
+                                     TabStripPlacement="{Binding PositionTabControlPlacement}">
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
+                    </atom:TabControl>
 
-                        <atom:TabControl Name="PositionTabControl"
-                                         DockPanel.Dock="{Binding PositionTabControlPlacement}"
-                                         TabStripPlacement="{Binding PositionTabControlPlacement}">
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
-                        </atom:TabControl>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
 
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlCardShapePositionTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlCardShapePositionDescription}"
+                Margin="0, 0, 10, 0"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
+                        <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionCardTabControlOptionGroup"
+                                                OptionCheckedChanged="HandleCardTabControlPlacementOptionCheckedChanged">
+                            <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
+                            <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
+                            <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
+                            <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentRight}" />
+                        </atom:OptionButtonGroup>
                     </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlCardShapePositionTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlCardShapePositionDescription}"
-                    Margin="0, 0, 10, 0"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <StackPanel Orientation="Horizontal" Spacing="5">
-                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
-                            <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionCardTabControlOptionGroup"
-                                                    OptionCheckedChanged="HandleCardTabControlPlacementOptionCheckedChanged">
-                                <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
-                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
-                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
-                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentRight}" />
-                            </atom:OptionButtonGroup>
-                        </StackPanel>
+                    <atom:CardTabControl Name="PositionCardTabControl"
+                                         DockPanel.Dock="{Binding PositionCardTabControlPlacement}"
+                                         TabStripPlacement="{Binding PositionCardTabControlPlacement}"
+                                         IsShowAddTabButton="True">
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN9}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN9}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN10}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN10}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN11}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN11}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN12}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN12}" />
+                    </atom:CardTabControl>
 
-                        <atom:CardTabControl Name="PositionCardTabControl"
-                                             DockPanel.Dock="{Binding PositionCardTabControlPlacement}"
-                                             TabStripPlacement="{Binding PositionCardTabControlPlacement}"
-                                             IsShowAddTabButton="True">
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN7}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN7}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN8}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN8}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN9}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN9}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN10}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN10}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN11}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN11}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN12}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN12}" />
-                        </atom:CardTabControl>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
 
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlSizeTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlSizeDescription}"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
+                        <atom:OptionButtonGroup ButtonStyle="Outline" Name="SizeTypeTabControlOptionGroup"
+                                                OptionCheckedChanged="HandleTabControlSizeTypeOptionCheckedChanged">
+                            <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentSmall}" />
+                            <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentMiddle}" />
+                            <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLarge}" />
+                        </atom:OptionButtonGroup>
                     </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlSizeTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlSizeDescription}"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <StackPanel Orientation="Horizontal" Spacing="5">
-                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
-                            <atom:OptionButtonGroup ButtonStyle="Outline" Name="SizeTypeTabControlOptionGroup"
-                                                    OptionCheckedChanged="HandleTabControlSizeTypeOptionCheckedChanged">
-                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentSmall}" />
-                                <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentMiddle}" />
-                                <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLarge}" />
-                            </atom:OptionButtonGroup>
-                        </StackPanel>
+                    <atom:TabControl SizeType="{Binding SizeTypeTabControl}">
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                    </atom:TabControl>
 
-                        <atom:TabControl SizeType="{Binding SizeTypeTabControl}">
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
-                        </atom:TabControl>
-
-                        <atom:CardTabControl SizeType="{Binding SizeTypeTabControl}">
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
-                        </atom:CardTabControl>
-
-                    </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
-
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlAddCloseTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlAddCloseDescription}" Margin="0, 0, 30, 0"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <atom:CardTabControl IsShowAddTabButton="True" Name="AddTabDemoTabControl"
-                                         AddTabRequest="HandleTabControlAddTabRequest">
+                    <atom:CardTabControl SizeType="{Binding SizeTypeTabControl}">
                         <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
                         <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
                         <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
                         <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
                     </atom:CardTabControl>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
 
-                <gallery:ShowCaseItem
-                    Title="{gallery:TabControlShowCaseLangResource TabControlExtraContentTitle}"
-                    Description="{gallery:TabControlShowCaseLangResource TabControlExtraContentDescription}"
-                    IsOccupyEntireRow="True"
-                    IsDeferredContentEnabled="True">
-                    <gallery:ShowCaseItem.DeferredContentTemplate>
-                        <DataTemplate x:DataType="vm:TabControlViewModel">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:TabControl TabStripPlacement="Top">
-                            <atom:TabControl.HeaderStartExtraContent>
-                                <atom:Button Content="{gallery:TabControlShowCaseLangResource P2ContentStartExtraAction}" />
-                            </atom:TabControl.HeaderStartExtraContent>
-                            <atom:TabControl.HeaderEndExtraContent>
-                                <atom:Button Content="{gallery:TabControlShowCaseLangResource P2ContentEndExtraAction}" />
-                            </atom:TabControl.HeaderEndExtraContent>
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
-                            <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
-                        </atom:TabControl>
-                    </StackPanel>
-                        </DataTemplate>
-                    </gallery:ShowCaseItem.DeferredContentTemplate>
-                </gallery:ShowCaseItem>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
+
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlAddCloseTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlAddCloseDescription}" Margin="0, 0, 30, 0"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <atom:CardTabControl IsShowAddTabButton="True" Name="AddTabDemoTabControl"
+                                     AddTabRequest="HandleTabControlAddTabRequest">
+                    <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                    <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                    <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                    <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                </atom:CardTabControl>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
+
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlExtraContentTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlExtraContentDescription}"
+                IsOccupyEntireRow="True"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <atom:TabControl TabStripPlacement="Top">
+                        <atom:TabControl.HeaderStartExtraContent>
+                            <atom:Button Content="{gallery:TabControlShowCaseLangResource P2ContentStartExtraAction}" />
+                        </atom:TabControl.HeaderStartExtraContent>
+                        <atom:TabControl.HeaderEndExtraContent>
+                            <atom:Button Content="{gallery:TabControlShowCaseLangResource P2ContentEndExtraAction}" />
+                        </atom:TabControl.HeaderEndExtraContent>
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                        <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                    </atom:TabControl>
+                </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
 
 
-                </gallery:ShowCasePanel>
-            </ContentControl>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

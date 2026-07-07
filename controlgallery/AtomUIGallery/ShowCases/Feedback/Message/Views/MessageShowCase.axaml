@@ -19,76 +19,61 @@
                     BaseClass="WindowMessageManager" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:MessageShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:MessageShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:MessageShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-                    <gallery:ShowCaseItem
-                        Title="{gallery:MessageShowCaseLangResource BasicTitle}"
-                        Description="{gallery:MessageShowCaseLangResource BasicDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:MessageViewModel">
-                                <atom:Button ButtonType="Primary" Click="ShowSimpleMessage" Content="{gallery:MessageShowCaseLangResource P2ContentDisplayNormalMessage}" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+                <gallery:ShowCaseItem
+                    Title="{gallery:MessageShowCaseLangResource BasicTitle}"
+                    Description="{gallery:MessageShowCaseLangResource BasicDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:MessageViewModel">
+                            <atom:Button ButtonType="Primary" Click="ShowSimpleMessage" Content="{gallery:MessageShowCaseLangResource P2ContentDisplayNormalMessage}" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:MessageShowCaseLangResource OtherTypesTitle}"
-                        Description="{gallery:MessageShowCaseLangResource OtherTypesDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:MessageViewModel">
-                                <StackPanel Orientation="Horizontal" Spacing="10">
-                                    <atom:Button ButtonType="Default" Click="ShowSuccessMessage" Content="{gallery:MessageShowCaseLangResource P2ContentSuccess}" />
-                                    <atom:Button ButtonType="Default" Click="ShowInfoMessage" Content="{gallery:MessageShowCaseLangResource P2ContentInfo}" />
-                                    <atom:Button ButtonType="Default" Click="ShowWarningMessage" Content="{gallery:MessageShowCaseLangResource P2ContentWarning}" />
-                                    <atom:Button ButtonType="Default" Click="ShowErrorMessage" Content="{gallery:MessageShowCaseLangResource P2ContentError}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:MessageShowCaseLangResource OtherTypesTitle}"
+                    Description="{gallery:MessageShowCaseLangResource OtherTypesDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:MessageViewModel">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <atom:Button ButtonType="Default" Click="ShowSuccessMessage" Content="{gallery:MessageShowCaseLangResource P2ContentSuccess}" />
+                                <atom:Button ButtonType="Default" Click="ShowInfoMessage" Content="{gallery:MessageShowCaseLangResource P2ContentInfo}" />
+                                <atom:Button ButtonType="Default" Click="ShowWarningMessage" Content="{gallery:MessageShowCaseLangResource P2ContentWarning}" />
+                                <atom:Button ButtonType="Default" Click="ShowErrorMessage" Content="{gallery:MessageShowCaseLangResource P2ContentError}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem Title="{gallery:MessageShowCaseLangResource LoadingIndicatorTitle}"
-                                          Description="{gallery:MessageShowCaseLangResource LoadingIndicatorDescription}"
-                                          IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:MessageViewModel">
-                                <atom:Button ButtonType="Default" Click="ShowLoadingMessage" Content="{gallery:MessageShowCaseLangResource P2ContentDisplayALoadingIndicator}" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem Title="{gallery:MessageShowCaseLangResource LoadingIndicatorTitle}"
+                                      Description="{gallery:MessageShowCaseLangResource LoadingIndicatorDescription}"
+                                      IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:MessageViewModel">
+                            <atom:Button ButtonType="Default" Click="ShowLoadingMessage" Content="{gallery:MessageShowCaseLangResource P2ContentDisplayALoadingIndicator}" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:MessageShowCaseLangResource CallbackTitle}"
-                        Description="{gallery:MessageShowCaseLangResource CallbackDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:MessageViewModel">
-                                <atom:Button ButtonType="Default" Click="ShowSequentialMessage" Content="{gallery:MessageShowCaseLangResource P2ContentDisplayALoadingIndicator}" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+                <gallery:ShowCaseItem
+                    Title="{gallery:MessageShowCaseLangResource CallbackTitle}"
+                    Description="{gallery:MessageShowCaseLangResource CallbackDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:MessageViewModel">
+                            <atom:Button ButtonType="Default" Click="ShowSequentialMessage" Content="{gallery:MessageShowCaseLangResource P2ContentDisplayALoadingIndicator}" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

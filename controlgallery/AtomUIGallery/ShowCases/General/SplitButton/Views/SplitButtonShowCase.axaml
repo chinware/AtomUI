@@ -20,33 +20,281 @@
                     BaseClass="ContentControl" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:SplitButtonShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:SplitButtonShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:SplitButtonShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-        <gallery:ShowCaseItem
-            Title="{gallery:SplitButtonShowCaseLangResource BasicTitle}"
-            Description="{gallery:SplitButtonShowCaseLangResource BasicDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:SplitButtonViewModel">
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+    <gallery:ShowCaseItem
+        Title="{gallery:SplitButtonShowCaseLangResource BasicTitle}"
+        Description="{gallery:SplitButtonShowCaseLangResource BasicDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:SplitButtonViewModel">
+        <atom:SplitButton TriggerType="Hover"
+                          Content="{gallery:SplitButtonShowCaseLangResource P2ContentHoverMe}">
+            <atom:SplitButton.Flyout>
+                <atom:MenuFlyout>
+                    <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                   Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                    <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                   Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                    <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                   Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                </atom:MenuFlyout>
+            </atom:SplitButton.Flyout>
+        </atom:SplitButton>
+
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:SplitButtonShowCaseLangResource SizeTitle}"
+        Description="{gallery:SplitButtonShowCaseLangResource SizeDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.Styles>
+            <Style Selector="atom|SplitButton">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
+            </Style>
+        </gallery:ShowCaseItem.Styles>
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:SplitButtonViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <WrapPanel>
+                <atom:SplitButton SizeType="Large"
+                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentLarge}">
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+                <atom:SplitButton SizeType="Middle"
+                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentMiddle}">
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+                <atom:SplitButton SizeType="Small"
+                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentSmall}">
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+            </WrapPanel>
+            <WrapPanel>
+                <atom:SplitButton SizeType="Large"
+                                  IsPrimaryButtonType="True"
+                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentLarge}">
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+                <atom:SplitButton SizeType="Middle"
+                                  IsPrimaryButtonType="True"
+                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentMiddle}">
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+                <atom:SplitButton SizeType="Small"
+                                  IsPrimaryButtonType="True"
+                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentSmall}">
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+            </WrapPanel>
+            <WrapPanel>
+                <atom:SplitButton SizeType="Custom"
+                                  Height="44"
+                                  Padding="18,0"
+                                  FontSize="15"
+                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentCustom}">
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+                <atom:SplitButton SizeType="Custom"
+                                  IsPrimaryButtonType="True"
+                                  Height="44"
+                                  Padding="18,0"
+                                  FontSize="15"
+                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentCustom}">
+                    <atom:SplitButton.Flyout>
+                        <atom:MenuFlyout>
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                        </atom:MenuFlyout>
+                    </atom:SplitButton.Flyout>
+                </atom:SplitButton>
+            </WrapPanel>
+        </StackPanel>
+
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:SplitButtonShowCaseLangResource DangerButtonsTitle}"
+        Description="{gallery:SplitButtonShowCaseLangResource DangerButtonsDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.Styles>
+            <Style Selector="atom|SplitButton">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
+            </Style>
+        </gallery:ShowCaseItem.Styles>
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:SplitButtonViewModel">
+        <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+            <atom:SplitButton IsDanger="True"
+                              Content="{gallery:SplitButtonShowCaseLangResource P2ContentDefault}">
+                <atom:SplitButton.Flyout>
+                    <atom:MenuFlyout>
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                    </atom:MenuFlyout>
+                </atom:SplitButton.Flyout>
+            </atom:SplitButton>
+
+            <atom:SplitButton IsDanger="True"
+                              IsPrimaryButtonType="True"
+                              Content="{gallery:SplitButtonShowCaseLangResource P2ContentPrimary}">
+                <atom:SplitButton.Flyout>
+                    <atom:MenuFlyout>
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                    </atom:MenuFlyout>
+                </atom:SplitButton.Flyout>
+            </atom:SplitButton>
+        </WrapPanel>
+
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:SplitButtonShowCaseLangResource CustomIconTitle}"
+        Description="{gallery:SplitButtonShowCaseLangResource CustomIconDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.Styles>
+            <Style Selector="atom|SplitButton">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
+            </Style>
+        </gallery:ShowCaseItem.Styles>
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:SplitButtonViewModel">
+        <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+            <atom:SplitButton Content="{gallery:SplitButtonShowCaseLangResource P2ContentDefault}">
+                <atom:SplitButton.Flyout>
+                    <atom:MenuFlyout>
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                    </atom:MenuFlyout>
+                </atom:SplitButton.Flyout>
+            </atom:SplitButton>
+
+            <atom:SplitButton OpenIndicator="{antdicons:AntDesignIconProvider Kind=UserOutlined}"
+                              Content="{gallery:SplitButtonShowCaseLangResource P2ContentPrimary}">
+                <atom:SplitButton.Flyout>
+                    <atom:MenuFlyout>
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                    </atom:MenuFlyout>
+                </atom:SplitButton.Flyout>
+            </atom:SplitButton>
+        </WrapPanel>
+
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:SplitButtonShowCaseLangResource FlyoutTriggerTypeTitle}"
+        Description="{gallery:SplitButtonShowCaseLangResource FlyoutTriggerTypeDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.Styles>
+            <Style Selector="atom|SplitButton">
+                <Setter Property="Margin" Value="5" />
+                <Setter Property="VerticalAlignment" Value="Bottom" />
+            </Style>
+        </gallery:ShowCaseItem.Styles>
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:SplitButtonViewModel">
+        <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
             <atom:SplitButton TriggerType="Hover"
                               Content="{gallery:SplitButtonShowCaseLangResource P2ContentHoverMe}">
                 <atom:SplitButton.Flyout>
@@ -61,289 +309,26 @@
                 </atom:SplitButton.Flyout>
             </atom:SplitButton>
 
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            <atom:SplitButton OpenIndicator="{antdicons:AntDesignIconProvider Kind=UserOutlined}"
+                              TriggerType="Click"
+                              Content="{gallery:SplitButtonShowCaseLangResource P2ContentClickMe}">
+                <atom:SplitButton.Flyout>
+                    <atom:MenuFlyout>
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
+                        <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
+                                       Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
+                    </atom:MenuFlyout>
+                </atom:SplitButton.Flyout>
+            </atom:SplitButton>
+        </WrapPanel>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:SplitButtonShowCaseLangResource SizeTitle}"
-            Description="{gallery:SplitButtonShowCaseLangResource SizeDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.Styles>
-                <Style Selector="atom|SplitButton">
-                    <Setter Property="Margin" Value="5" />
-                    <Setter Property="VerticalAlignment" Value="Bottom" />
-                </Style>
-            </gallery:ShowCaseItem.Styles>
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:SplitButtonViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <WrapPanel>
-                    <atom:SplitButton SizeType="Large"
-                                      Content="{gallery:SplitButtonShowCaseLangResource P2ContentLarge}">
-                        <atom:SplitButton.Flyout>
-                            <atom:MenuFlyout>
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                            </atom:MenuFlyout>
-                        </atom:SplitButton.Flyout>
-                    </atom:SplitButton>
-                    <atom:SplitButton SizeType="Middle"
-                                      Content="{gallery:SplitButtonShowCaseLangResource P2ContentMiddle}">
-                        <atom:SplitButton.Flyout>
-                            <atom:MenuFlyout>
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                            </atom:MenuFlyout>
-                        </atom:SplitButton.Flyout>
-                    </atom:SplitButton>
-                    <atom:SplitButton SizeType="Small"
-                                      Content="{gallery:SplitButtonShowCaseLangResource P2ContentSmall}">
-                        <atom:SplitButton.Flyout>
-                            <atom:MenuFlyout>
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                            </atom:MenuFlyout>
-                        </atom:SplitButton.Flyout>
-                    </atom:SplitButton>
-                </WrapPanel>
-                <WrapPanel>
-                    <atom:SplitButton SizeType="Large"
-                                      IsPrimaryButtonType="True"
-                                      Content="{gallery:SplitButtonShowCaseLangResource P2ContentLarge}">
-                        <atom:SplitButton.Flyout>
-                            <atom:MenuFlyout>
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                            </atom:MenuFlyout>
-                        </atom:SplitButton.Flyout>
-                    </atom:SplitButton>
-                    <atom:SplitButton SizeType="Middle"
-                                      IsPrimaryButtonType="True"
-                                      Content="{gallery:SplitButtonShowCaseLangResource P2ContentMiddle}">
-                        <atom:SplitButton.Flyout>
-                            <atom:MenuFlyout>
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                            </atom:MenuFlyout>
-                        </atom:SplitButton.Flyout>
-                    </atom:SplitButton>
-                    <atom:SplitButton SizeType="Small"
-                                      IsPrimaryButtonType="True"
-                                      Content="{gallery:SplitButtonShowCaseLangResource P2ContentSmall}">
-                        <atom:SplitButton.Flyout>
-                            <atom:MenuFlyout>
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                            </atom:MenuFlyout>
-                        </atom:SplitButton.Flyout>
-                    </atom:SplitButton>
-                </WrapPanel>
-                <WrapPanel>
-                    <atom:SplitButton SizeType="Custom"
-                                      Height="44"
-                                      Padding="18,0"
-                                      FontSize="15"
-                                      Content="{gallery:SplitButtonShowCaseLangResource P2ContentCustom}">
-                        <atom:SplitButton.Flyout>
-                            <atom:MenuFlyout>
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                            </atom:MenuFlyout>
-                        </atom:SplitButton.Flyout>
-                    </atom:SplitButton>
-                    <atom:SplitButton SizeType="Custom"
-                                      IsPrimaryButtonType="True"
-                                      Height="44"
-                                      Padding="18,0"
-                                      FontSize="15"
-                                      Content="{gallery:SplitButtonShowCaseLangResource P2ContentCustom}">
-                        <atom:SplitButton.Flyout>
-                            <atom:MenuFlyout>
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                                <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                               Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                            </atom:MenuFlyout>
-                        </atom:SplitButton.Flyout>
-                    </atom:SplitButton>
-                </WrapPanel>
-            </StackPanel>
-
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:SplitButtonShowCaseLangResource DangerButtonsTitle}"
-            Description="{gallery:SplitButtonShowCaseLangResource DangerButtonsDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.Styles>
-                <Style Selector="atom|SplitButton">
-                    <Setter Property="Margin" Value="5" />
-                    <Setter Property="VerticalAlignment" Value="Bottom" />
-                </Style>
-            </gallery:ShowCaseItem.Styles>
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:SplitButtonViewModel">
-            <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                <atom:SplitButton IsDanger="True"
-                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentDefault}">
-                    <atom:SplitButton.Flyout>
-                        <atom:MenuFlyout>
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                        </atom:MenuFlyout>
-                    </atom:SplitButton.Flyout>
-                </atom:SplitButton>
-
-                <atom:SplitButton IsDanger="True"
-                                  IsPrimaryButtonType="True"
-                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentPrimary}">
-                    <atom:SplitButton.Flyout>
-                        <atom:MenuFlyout>
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                        </atom:MenuFlyout>
-                    </atom:SplitButton.Flyout>
-                </atom:SplitButton>
-            </WrapPanel>
-
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:SplitButtonShowCaseLangResource CustomIconTitle}"
-            Description="{gallery:SplitButtonShowCaseLangResource CustomIconDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.Styles>
-                <Style Selector="atom|SplitButton">
-                    <Setter Property="Margin" Value="5" />
-                    <Setter Property="VerticalAlignment" Value="Bottom" />
-                </Style>
-            </gallery:ShowCaseItem.Styles>
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:SplitButtonViewModel">
-            <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                <atom:SplitButton Content="{gallery:SplitButtonShowCaseLangResource P2ContentDefault}">
-                    <atom:SplitButton.Flyout>
-                        <atom:MenuFlyout>
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                        </atom:MenuFlyout>
-                    </atom:SplitButton.Flyout>
-                </atom:SplitButton>
-
-                <atom:SplitButton OpenIndicator="{antdicons:AntDesignIconProvider Kind=UserOutlined}"
-                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentPrimary}">
-                    <atom:SplitButton.Flyout>
-                        <atom:MenuFlyout>
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                        </atom:MenuFlyout>
-                    </atom:SplitButton.Flyout>
-                </atom:SplitButton>
-            </WrapPanel>
-
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:SplitButtonShowCaseLangResource FlyoutTriggerTypeTitle}"
-            Description="{gallery:SplitButtonShowCaseLangResource FlyoutTriggerTypeDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.Styles>
-                <Style Selector="atom|SplitButton">
-                    <Setter Property="Margin" Value="5" />
-                    <Setter Property="VerticalAlignment" Value="Bottom" />
-                </Style>
-            </gallery:ShowCaseItem.Styles>
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:SplitButtonViewModel">
-            <WrapPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
-                <atom:SplitButton TriggerType="Hover"
-                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentHoverMe}">
-                    <atom:SplitButton.Flyout>
-                        <atom:MenuFlyout>
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                        </atom:MenuFlyout>
-                    </atom:SplitButton.Flyout>
-                </atom:SplitButton>
-
-                <atom:SplitButton OpenIndicator="{antdicons:AntDesignIconProvider Kind=UserOutlined}"
-                                  TriggerType="Click"
-                                  Content="{gallery:SplitButtonShowCaseLangResource P2ContentClickMe}">
-                    <atom:SplitButton.Flyout>
-                        <atom:MenuFlyout>
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCut}" InputGesture="Ctrl+X"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=ScissorOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderCopy}" InputGesture="Ctrl+C"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=CopyOutlined}" />
-                            <atom:MenuItem Header="{gallery:SplitButtonShowCaseLangResource P2HeaderDelete}" InputGesture="Ctrl+D"
-                                           Icon="{antdicons:AntDesignIconProvider Kind=DeleteOutlined}" />
-                        </atom:MenuFlyout>
-                    </atom:SplitButton.Flyout>
-                </atom:SplitButton>
-            </WrapPanel>
-
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

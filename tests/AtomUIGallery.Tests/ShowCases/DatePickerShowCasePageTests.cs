@@ -20,16 +20,16 @@ public class DatePickerShowCasePageTests
         source.ShouldNotContain("DatePickerShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("DatePickerShowCaseLangResource ComponentCategory");
         source.ShouldContain("DatePickerShowCaseLangResource ComponentStatusStable");
-        source.ShouldContain("DatePickerShowCaseLangResource ScenarioExamples");
-        source.ShouldContain("DatePickerShowCaseLangResource ScenarioApi");
-        source.ShouldContain("DatePickerShowCaseLangResource ScenarioDesignToken");
-        source.ShouldContain("Tag=\"Examples\"");
-        source.ShouldContain("Tag=\"Api\"");
-        source.ShouldContain("Tag=\"DesignToken\"");
+        source.ShouldNotContain("DatePickerShowCaseLangResource ScenarioExamples");
+        source.ShouldNotContain("DatePickerShowCaseLangResource ScenarioApi");
+        source.ShouldNotContain("DatePickerShowCaseLangResource ScenarioDesignToken");
+        source.ShouldNotContain("Tag=\"Examples\"");
+        source.ShouldNotContain("Tag=\"Api\"");
+        source.ShouldNotContain("Tag=\"DesignToken\"");
         source.ShouldContain("<gallery:GalleryStickyTabsHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
-        source.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
+        source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
@@ -85,19 +85,18 @@ public class DatePickerShowCasePageTests
         var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerDesignTokenDataGrid.axaml");
         var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/DatePicker/Views/DatePickerDesignTokenDataGrid.axaml.cs");
 
-        pageSource.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldContain("Tag=\"Api\"");
-        pageSource.ShouldContain("Tag=\"DesignToken\"");
+        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
+        pageSource.ShouldNotContain("Tag=\"Api\"");
+        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
 
-        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldContain("ExamplesContent");
-        codeBehindSource.ShouldContain("new DatePickerApiDataGrid()");
-        codeBehindSource.ShouldContain("new DatePickerDesignTokenDataGrid()");
+        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
+        codeBehindSource.ShouldNotContain("new DatePickerApiDataGrid()");
+        codeBehindSource.ShouldNotContain("new DatePickerDesignTokenDataGrid()");
         pageSource.ShouldContain("OptionCheckedChanged=\"HandlePickerSizeTypeOptionCheckedChanged\"");
         pageSource.ShouldContain("OptionCheckedChanged=\"HandlePickerPlacementCheckedChanged\"");
         codeBehindSource.ShouldContain("HandlePickerSizeTypeOptionCheckedChanged");
@@ -166,7 +165,7 @@ public class DatePickerShowCasePageTests
             "DatePickerShowCaseLangResource RangePickerTitle");
 
         CountOccurrences(source, "<atom:RangeDatePicker PickerMode=\"Date\"").ShouldBe(2);
-        source.ShouldContain("PickerMode=\"Date\"\n                                      IsShowTime=\"True\"");
+        source.ShouldContain("PickerMode=\"Date\"\n                                  IsShowTime=\"True\"");
         source.ShouldContain("<atom:RangeDatePicker PickerMode=\"Week\"");
         source.ShouldContain("P2PlaceholderTextStartWeek");
         source.ShouldContain("P2SecondaryPlaceholderTextEndWeek");

@@ -10,43 +10,10 @@ namespace AtomUIGallery.ShowCases.Carousel;
 public partial class CarouselShowCase : GalleryReactiveUserControl<CarouselViewModel>
 {
     public const string LanguageId = nameof(CarouselShowCase);
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
-    private readonly GalleryShowCaseScenarioController _scenarioController;
 
     public CarouselShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
-    }
-
-    protected override void OnDataContextChanged(EventArgs e)
-    {
-        base.OnDataContextChanged(e);
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new CarouselApiDataGrid(),
-            DesignTokenScenario => new CarouselDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Carousel scenario: {scenario}")
-        };
     }
 
     public void HandlePositionOptionChanged(object? sender, OptionCheckedChangedEventArgs args)

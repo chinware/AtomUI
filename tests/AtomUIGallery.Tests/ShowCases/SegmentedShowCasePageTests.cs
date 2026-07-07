@@ -20,16 +20,16 @@ public class SegmentedShowCasePageTests
         source.ShouldNotContain("SegmentedShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("SegmentedShowCaseLangResource ComponentCategory");
         source.ShouldContain("SegmentedShowCaseLangResource ComponentStatusStable");
-        source.ShouldContain("SegmentedShowCaseLangResource ScenarioExamples");
-        source.ShouldContain("SegmentedShowCaseLangResource ScenarioApi");
-        source.ShouldContain("SegmentedShowCaseLangResource ScenarioDesignToken");
-        source.ShouldContain("Tag=\"Examples\"");
-        source.ShouldContain("Tag=\"Api\"");
-        source.ShouldContain("Tag=\"DesignToken\"");
+        source.ShouldNotContain("SegmentedShowCaseLangResource ScenarioExamples");
+        source.ShouldNotContain("SegmentedShowCaseLangResource ScenarioApi");
+        source.ShouldNotContain("SegmentedShowCaseLangResource ScenarioDesignToken");
+        source.ShouldNotContain("Tag=\"Examples\"");
+        source.ShouldNotContain("Tag=\"Api\"");
+        source.ShouldNotContain("Tag=\"DesignToken\"");
         source.ShouldContain("<gallery:GalleryStickyTabsHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
-        source.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
+        source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
@@ -61,19 +61,18 @@ public class SegmentedShowCasePageTests
         var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedDesignTokenDataGrid.axaml");
         var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataDisplay/Segmented/Views/SegmentedDesignTokenDataGrid.axaml.cs");
 
-        pageSource.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldContain("Tag=\"Api\"");
-        pageSource.ShouldContain("Tag=\"DesignToken\"");
+        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
+        pageSource.ShouldNotContain("Tag=\"Api\"");
+        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
 
-        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldContain("ExamplesContent");
-        codeBehindSource.ShouldContain("new SegmentedApiDataGrid()");
-        codeBehindSource.ShouldContain("new SegmentedDesignTokenDataGrid()");
+        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
+        codeBehindSource.ShouldNotContain("new SegmentedApiDataGrid()");
+        codeBehindSource.ShouldNotContain("new SegmentedDesignTokenDataGrid()");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:SegmentedApiRow\"");

@@ -19,37 +19,22 @@
                     BaseClass="TemplatedControl" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:CalendarShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:CalendarShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:CalendarShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-                    <gallery:ShowCaseItem Description="{gallery:CalendarShowCaseLangResource BasicDescription}" Title="{gallery:CalendarShowCaseLangResource BasicTitle}"
-                                          IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CalendarViewModel">
-                        <atom:Calendar />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+                <gallery:ShowCaseItem Description="{gallery:CalendarShowCaseLangResource BasicDescription}" Title="{gallery:CalendarShowCaseLangResource BasicTitle}"
+                                      IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CalendarViewModel">
+                    <atom:Calendar />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

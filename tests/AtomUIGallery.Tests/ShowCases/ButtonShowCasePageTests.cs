@@ -49,16 +49,16 @@ public class ButtonShowCasePageTests
         source.ShouldNotContain("<Setter Property=\"Width\" Value=\"128\" />");
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldNotContain("ColumnDefinitions=\"Auto,*,Auto,*,Auto,*\"");
-        source.ShouldContain("ButtonShowCaseLangResource ScenarioExamples");
-        source.ShouldContain("ButtonShowCaseLangResource ScenarioApi");
-        source.ShouldContain("ButtonShowCaseLangResource ScenarioDesignToken");
-        source.ShouldContain("Tag=\"Examples\"");
-        source.ShouldContain("Tag=\"Api\"");
-        source.ShouldContain("Tag=\"DesignToken\"");
+        source.ShouldNotContain("ButtonShowCaseLangResource ScenarioExamples");
+        source.ShouldNotContain("ButtonShowCaseLangResource ScenarioApi");
+        source.ShouldNotContain("ButtonShowCaseLangResource ScenarioDesignToken");
+        source.ShouldNotContain("Tag=\"Examples\"");
+        source.ShouldNotContain("Tag=\"Api\"");
+        source.ShouldNotContain("Tag=\"DesignToken\"");
         source.ShouldContain("<gallery:GalleryStickyTabsHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
-        source.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
+        source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("ContentMargin=\"28,10,28,28\"");
@@ -78,7 +78,7 @@ public class ButtonShowCasePageTests
         source.ShouldContain("ButtonShowCaseLangResource SizeTitle");
         source.ShouldContain("ButtonShowCaseLangResource IconPlacementTitle");
         source.ShouldContain("ButtonShowCaseLangResource LoadingTitle");
-        source.ShouldContain("Name=\"ScenarioTabs\"");
+        source.ShouldNotContain("Name=\"ScenarioTabs\"");
         source.ShouldContain("Description=\"{gallery:ButtonShowCaseLangResource PageDescription}\"");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain("Classes=\"showcase-table-row\"");
@@ -238,19 +238,18 @@ public class ButtonShowCasePageTests
         var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonDesignTokenDataGrid.axaml");
         var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/Button/Views/ButtonDesignTokenDataGrid.axaml.cs");
 
-        pageSource.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldContain("Tag=\"Api\"");
-        pageSource.ShouldContain("Tag=\"DesignToken\"");
+        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
+        pageSource.ShouldNotContain("Tag=\"Api\"");
+        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
 
-        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldContain("ExamplesContent");
-        codeBehindSource.ShouldContain("new ButtonApiDataGrid()");
-        codeBehindSource.ShouldContain("new ButtonDesignTokenDataGrid()");
+        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
+        codeBehindSource.ShouldNotContain("new ButtonApiDataGrid()");
+        codeBehindSource.ShouldNotContain("new ButtonDesignTokenDataGrid()");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:ButtonApiRow\"");

@@ -21,282 +21,296 @@
                     MetadataValueWidth="220" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:CascaderShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:CascaderShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:CascaderShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource BasicTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource BasicDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <atom:Cascader
-                Name="BasicCascader"
-                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                OptionsSource="{Binding BasicCascaderViewNodes}"
-                IsAllowClear="True">
-                <atom:Cascader.OptionTemplate>
-                    <TreeDataTemplate ItemsSource="{Binding Children}"
-                                      x:DataType="atom:ICascaderOption">
-                        <atom:TextBlock Text="{Binding Header}" />
-                    </TreeDataTemplate>
-                </atom:Cascader.OptionTemplate>
-            </atom:Cascader>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource BasicTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource BasicDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <atom:Cascader
+            Name="BasicCascader"
+            PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+            OptionsSource="{Binding BasicCascaderViewNodes}"
+            IsAllowClear="True">
+            <atom:Cascader.OptionTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                  x:DataType="atom:ICascaderOption">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:Cascader.OptionTemplate>
+        </atom:Cascader>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource DefaultValueTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource DefaultValueDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <atom:Cascader
-                Name="DefaultValueCascader"
-                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                OptionsSource="{Binding BasicCascaderViewNodes}"
-                DefaultSelectOptionPath="{Binding DefaultSelectOptionPath}"
-                IsAllowClear="True">
-                <atom:Cascader.OptionTemplate>
-                    <TreeDataTemplate ItemsSource="{Binding Children}"
-                                      x:DataType="atom:ICascaderOption">
-                        <atom:TextBlock Text="{Binding Header}" />
-                    </TreeDataTemplate>
-                </atom:Cascader.OptionTemplate>
-            </atom:Cascader>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource DefaultValueTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource DefaultValueDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <atom:Cascader
+            Name="DefaultValueCascader"
+            PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+            OptionsSource="{Binding BasicCascaderViewNodes}"
+            DefaultSelectOptionPath="{Binding DefaultSelectOptionPath}"
+            IsAllowClear="True">
+            <atom:Cascader.OptionTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                  x:DataType="atom:ICascaderOption">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:Cascader.OptionTemplate>
+        </atom:Cascader>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource SelectionBindingTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource SelectionBindingDescription}"
-                        BadgeText="v6.0.8"
-                        Span="Full"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-                                <Grid RowDefinitions="Auto,Auto" RowSpacing="24">
-                                    <Grid Grid.Row="0" ColumnDefinitions="320,*" ColumnSpacing="24">
-                                        <StackPanel Grid.Column="0" Spacing="8">
-                                            <TextBlock FontWeight="SemiBold"
-                                                       Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionBinding}" />
-                                            <atom:Cascader
-                                                Name="SelectedOptionBindingCascader"
-                                                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                                OptionsSource="{Binding BasicCascaderViewNodes}"
-                                                SelectedOption="{Binding BoundSelectedCascaderOption}"
-                                                IsAllowClear="True">
-                                                <atom:Cascader.OptionTemplate>
-                                                    <TreeDataTemplate ItemsSource="{Binding Children}"
-                                                                      x:DataType="atom:ICascaderOption">
-                                                        <atom:TextBlock Text="{Binding Header}" />
-                                                    </TreeDataTemplate>
-                                                </atom:Cascader.OptionTemplate>
-                                            </atom:Cascader>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource SelectionBindingTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource SelectionBindingDescription}"
+                    BadgeText="v6.0.8"
+                    Span="Full"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+                            <Grid RowDefinitions="Auto,Auto" RowSpacing="24">
+                                <Grid Grid.Row="0" ColumnDefinitions="320,*" ColumnSpacing="24">
+                                    <StackPanel Grid.Column="0" Spacing="8">
+                                        <TextBlock FontWeight="SemiBold"
+                                                   Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionBinding}" />
+                                        <atom:Cascader
+                                            Name="SelectedOptionBindingCascader"
+                                            PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                            OptionsSource="{Binding BasicCascaderViewNodes}"
+                                            SelectedOption="{Binding BoundSelectedCascaderOption}"
+                                            IsAllowClear="True">
+                                            <atom:Cascader.OptionTemplate>
+                                                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                                                  x:DataType="atom:ICascaderOption">
+                                                    <atom:TextBlock Text="{Binding Header}" />
+                                                </TreeDataTemplate>
+                                            </atom:Cascader.OptionTemplate>
+                                        </atom:Cascader>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" MinWidth="280" Spacing="10">
+                                        <TextBlock FontWeight="SemiBold"
+                                                   Text="{gallery:CascaderShowCaseLangResource SelectionBindingValueTitle}" />
+                                        <StackPanel Spacing="4">
+                                            <TextBlock Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionBinding}" />
+                                            <atom:TextBlock Text="{Binding BoundSelectedCascaderOptionText}" />
                                         </StackPanel>
-
-                                        <StackPanel Grid.Column="1" MinWidth="280" Spacing="10">
-                                            <TextBlock FontWeight="SemiBold"
-                                                       Text="{gallery:CascaderShowCaseLangResource SelectionBindingValueTitle}" />
-                                            <StackPanel Spacing="4">
-                                                <TextBlock Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionBinding}" />
-                                                <atom:TextBlock Text="{Binding BoundSelectedCascaderOptionText}" />
-                                            </StackPanel>
-                                            <WrapPanel>
-                                                <atom:Button Margin="0,0,8,8"
-                                                             SizeType="Small"
-                                                             Click="HandleSelectFirstBoundCascaderOptionClick"
-                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectFirst}" />
-                                                <atom:Button Margin="0,0,8,8"
-                                                             SizeType="Small"
-                                                             Click="HandleSelectSecondBoundCascaderOptionClick"
-                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectSecond}" />
-                                                <atom:Button Margin="0,0,8,8"
-                                                             SizeType="Small"
-                                                             Click="HandleClearBoundCascaderOptionSelectionClick"
-                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingClear}" />
-                                            </WrapPanel>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <Grid Grid.Row="1" ColumnDefinitions="320,*" ColumnSpacing="24">
-                                        <StackPanel Grid.Column="0" Spacing="8">
-                                            <TextBlock FontWeight="SemiBold"
-                                                       Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionsBinding}" />
-                                            <atom:Cascader
-                                                Name="SelectedOptionsBindingCascader"
-                                                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                                                OptionsSource="{Binding BasicCascaderViewNodes}"
-                                                SelectedOptions="{Binding BoundSelectedCascaderOptions}"
-                                                HorizontalAlignment="Stretch"
-                                                ShowCheckedStrategy="All"
-                                                IsAllowClear="True"
-                                                IsMultiple="True">
-                                                <atom:Cascader.OptionTemplate>
-                                                    <TreeDataTemplate ItemsSource="{Binding Children}"
-                                                                      x:DataType="atom:ICascaderOption">
-                                                        <atom:TextBlock Text="{Binding Header}" />
-                                                    </TreeDataTemplate>
-                                                </atom:Cascader.OptionTemplate>
-                                            </atom:Cascader>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1" MinWidth="280" Spacing="10">
-                                            <TextBlock FontWeight="SemiBold"
-                                                       Text="{gallery:CascaderShowCaseLangResource SelectionBindingValueTitle}" />
-                                            <StackPanel Spacing="4">
-                                                <TextBlock Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionsBinding}" />
-                                                <atom:TextBlock Text="{Binding BoundSelectedCascaderOptionsText}" TextWrapping="Wrap" />
-                                            </StackPanel>
-                                            <WrapPanel>
-                                                <atom:Button Margin="0,0,8,8"
-                                                             SizeType="Small"
-                                                             Click="HandleSelectFirstBoundCascaderOptionsClick"
-                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectFirst}" />
-                                                <atom:Button Margin="0,0,8,8"
-                                                             SizeType="Small"
-                                                             Click="HandleSelectSecondBoundCascaderOptionsClick"
-                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectSecond}" />
-                                                <atom:Button Margin="0,0,8,8"
-                                                             SizeType="Small"
-                                                             Click="HandleSelectBothBoundCascaderOptionsClick"
-                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectBoth}" />
-                                                <atom:Button Margin="0,0,8,8"
-                                                             SizeType="Small"
-                                                             Click="HandleClearBoundCascaderOptionsSelectionClick"
-                                                             Content="{gallery:CascaderShowCaseLangResource SelectionBindingClear}" />
-                                            </WrapPanel>
-                                        </StackPanel>
-                                    </Grid>
+                                        <WrapPanel>
+                                            <atom:Button Margin="0,0,8,8"
+                                                         SizeType="Small"
+                                                         Click="HandleSelectFirstBoundCascaderOptionClick"
+                                                         Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectFirst}" />
+                                            <atom:Button Margin="0,0,8,8"
+                                                         SizeType="Small"
+                                                         Click="HandleSelectSecondBoundCascaderOptionClick"
+                                                         Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectSecond}" />
+                                            <atom:Button Margin="0,0,8,8"
+                                                         SizeType="Small"
+                                                         Click="HandleClearBoundCascaderOptionSelectionClick"
+                                                         Content="{gallery:CascaderShowCaseLangResource SelectionBindingClear}" />
+                                        </WrapPanel>
+                                    </StackPanel>
                                 </Grid>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource HoverTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource HoverDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <atom:Cascader
-                Name="HoverCascader"
-                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                OptionsSource="{Binding HoverCascaderNodes}"
-                IsAllowClear="True"
-                ExpandTrigger="Hover">
-                <atom:Cascader.OptionTemplate>
-                    <TreeDataTemplate ItemsSource="{Binding Children}"
-                                      x:DataType="atom:ICascaderOption">
-                        <atom:TextBlock Text="{Binding Header}" />
-                    </TreeDataTemplate>
-                </atom:Cascader.OptionTemplate>
-            </atom:Cascader>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                                <Grid Grid.Row="1" ColumnDefinitions="320,*" ColumnSpacing="24">
+                                    <StackPanel Grid.Column="0" Spacing="8">
+                                        <TextBlock FontWeight="SemiBold"
+                                                   Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionsBinding}" />
+                                        <atom:Cascader
+                                            Name="SelectedOptionsBindingCascader"
+                                            PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                                            OptionsSource="{Binding BasicCascaderViewNodes}"
+                                            SelectedOptions="{Binding BoundSelectedCascaderOptions}"
+                                            HorizontalAlignment="Stretch"
+                                            ShowCheckedStrategy="All"
+                                            IsAllowClear="True"
+                                            IsMultiple="True">
+                                            <atom:Cascader.OptionTemplate>
+                                                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                                                  x:DataType="atom:ICascaderOption">
+                                                    <atom:TextBlock Text="{Binding Header}" />
+                                                </TreeDataTemplate>
+                                            </atom:Cascader.OptionTemplate>
+                                        </atom:Cascader>
+                                    </StackPanel>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource DisabledOptionTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource DisabledOptionDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <atom:Cascader
-                Name="DisabledCascader"
-                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                OptionsSource="{Binding DisabledCascaderNodes}"
-                IsAllowClear="True">
-                <atom:Cascader.OptionTemplate>
-                    <TreeDataTemplate ItemsSource="{Binding Children}"
-                                      x:DataType="atom:ICascaderOption">
-                        <atom:TextBlock Text="{Binding Header}" />
-                    </TreeDataTemplate>
-                </atom:Cascader.OptionTemplate>
-            </atom:Cascader>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                                    <StackPanel Grid.Column="1" MinWidth="280" Spacing="10">
+                                        <TextBlock FontWeight="SemiBold"
+                                                   Text="{gallery:CascaderShowCaseLangResource SelectionBindingValueTitle}" />
+                                        <StackPanel Spacing="4">
+                                            <TextBlock Text="{gallery:CascaderShowCaseLangResource P2TextSelectedOptionsBinding}" />
+                                            <atom:TextBlock Text="{Binding BoundSelectedCascaderOptionsText}" TextWrapping="Wrap" />
+                                        </StackPanel>
+                                        <WrapPanel>
+                                            <atom:Button Margin="0,0,8,8"
+                                                         SizeType="Small"
+                                                         Click="HandleSelectFirstBoundCascaderOptionsClick"
+                                                         Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectFirst}" />
+                                            <atom:Button Margin="0,0,8,8"
+                                                         SizeType="Small"
+                                                         Click="HandleSelectSecondBoundCascaderOptionsClick"
+                                                         Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectSecond}" />
+                                            <atom:Button Margin="0,0,8,8"
+                                                         SizeType="Small"
+                                                         Click="HandleSelectBothBoundCascaderOptionsClick"
+                                                         Content="{gallery:CascaderShowCaseLangResource SelectionBindingSelectBoth}" />
+                                            <atom:Button Margin="0,0,8,8"
+                                                         SizeType="Small"
+                                                         Click="HandleClearBoundCascaderOptionsSelectionClick"
+                                                         Content="{gallery:CascaderShowCaseLangResource SelectionBindingClear}" />
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource ChangeOnSelectTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource ChangeOnSelectDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <atom:Cascader
-                Name="SelectParentCascader"
-                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                OptionsSource="{Binding SelectParentCascaderNodes}"
-                IsAllowClear="True"
-                IsAllowSelectParent="True">
-                <atom:Cascader.OptionTemplate>
-                    <TreeDataTemplate ItemsSource="{Binding Children}"
-                                      x:DataType="atom:ICascaderOption">
-                        <atom:TextBlock Text="{Binding Header}" />
-                    </TreeDataTemplate>
-                </atom:Cascader.OptionTemplate>
-            </atom:Cascader>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource HoverTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource HoverDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <atom:Cascader
+            Name="HoverCascader"
+            PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+            OptionsSource="{Binding HoverCascaderNodes}"
+            IsAllowClear="True"
+            ExpandTrigger="Hover">
+            <atom:Cascader.OptionTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                  x:DataType="atom:ICascaderOption">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:Cascader.OptionTemplate>
+        </atom:Cascader>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource SearchTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource SearchDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <atom:Cascader
-                Name="SearchCascader"
-                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                OptionsSource="{Binding SearchCascaderNodes}"
-                IsAllowClear="True"
-                IsFilterEnabled="True">
-                <atom:Cascader.OptionTemplate>
-                    <TreeDataTemplate ItemsSource="{Binding Children}"
-                                      x:DataType="atom:ICascaderOption">
-                        <atom:TextBlock Text="{Binding Header}" />
-                    </TreeDataTemplate>
-                </atom:Cascader.OptionTemplate>
-            </atom:Cascader>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource DisabledOptionTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource DisabledOptionDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <atom:Cascader
+            Name="DisabledCascader"
+            PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+            OptionsSource="{Binding DisabledCascaderNodes}"
+            IsAllowClear="True">
+            <atom:Cascader.OptionTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                  x:DataType="atom:ICascaderOption">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:Cascader.OptionTemplate>
+        </atom:Cascader>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource MultipleTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource MultipleDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource ChangeOnSelectTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource ChangeOnSelectDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <atom:Cascader
+            Name="SelectParentCascader"
+            PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+            OptionsSource="{Binding SelectParentCascaderNodes}"
+            IsAllowClear="True"
+            IsAllowSelectParent="True">
+            <atom:Cascader.OptionTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                  x:DataType="atom:ICascaderOption">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:Cascader.OptionTemplate>
+        </atom:Cascader>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource SearchTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource SearchDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <atom:Cascader
+            Name="SearchCascader"
+            PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+            OptionsSource="{Binding SearchCascaderNodes}"
+            IsAllowClear="True"
+            IsFilterEnabled="True">
+            <atom:Cascader.OptionTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                  x:DataType="atom:ICascaderOption">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:Cascader.OptionTemplate>
+        </atom:Cascader>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource MultipleTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource MultipleDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <atom:Cascader
+            Name="MultiSelectCascader"
+            PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+            OptionsSource="{Binding MultipleSelectCascaderNodes}"
+            HorizontalAlignment="Stretch"
+            ShowCheckedStrategy="ShowParent"
+            IsAllowClear="True"
+            IsMultiple="True">
+            <atom:Cascader.OptionTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                  x:DataType="atom:ICascaderOption">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:Cascader.OptionTemplate>
+        </atom:Cascader>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource ShowCheckedStrategyTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource ShowCheckedStrategyDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <StackPanel Spacing="15">
+            <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleShowcheckedstrategyAll}" />
             <atom:Cascader
-                Name="MultiSelectCascader"
+                Name="CheckStrategyAllCascader"
                 PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                OptionsSource="{Binding MultipleSelectCascaderNodes}"
+                OptionsSource="{Binding CheckStrategyShowAllCascaderNodes}"
                 HorizontalAlignment="Stretch"
-                ShowCheckedStrategy="ShowParent"
+                ShowCheckedStrategy="All"
                 IsAllowClear="True"
+                IsResponsiveTagMode="True"
                 IsMultiple="True">
                 <atom:Cascader.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
@@ -305,68 +319,16 @@
                     </TreeDataTemplate>
                 </atom:Cascader.OptionTemplate>
             </atom:Cascader>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource ShowCheckedStrategyTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource ShowCheckedStrategyDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <StackPanel Spacing="15">
-                <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleShowcheckedstrategyAll}" />
-                <atom:Cascader
-                    Name="CheckStrategyAllCascader"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    OptionsSource="{Binding CheckStrategyShowAllCascaderNodes}"
-                    HorizontalAlignment="Stretch"
-                    ShowCheckedStrategy="All"
-                    IsAllowClear="True"
-                    IsResponsiveTagMode="True"
-                    IsMultiple="True">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
-                <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleShowcheckedstrategyShowparent}" />
-                <atom:Cascader
-                    Name="CheckStrategyShowParentCascader"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    OptionsSource="{Binding CheckStrategyShowParentCascaderNodes}"
-                    HorizontalAlignment="Stretch"
-                    ShowCheckedStrategy="ShowParent"
-                    IsAllowClear="True"
-                    IsResponsiveTagMode="True"
-                    IsMultiple="True">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
-            </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
+            <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleShowcheckedstrategyShowparent}" />
             <atom:Cascader
-                Name="AsyncLoadCascader"
+                Name="CheckStrategyShowParentCascader"
                 PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                OptionsSource="{Binding AsyncLoadCascaderViewNodes}"
-                DataLoader="{Binding AsyncCascaderNodeLoader}"
-                IsAllowClear="True">
+                OptionsSource="{Binding CheckStrategyShowParentCascaderNodes}"
+                HorizontalAlignment="Stretch"
+                ShowCheckedStrategy="ShowParent"
+                IsAllowClear="True"
+                IsResponsiveTagMode="True"
+                IsMultiple="True">
                 <atom:Cascader.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
                                       x:DataType="atom:ICascaderOption">
@@ -374,325 +336,315 @@
                     </TreeDataTemplate>
                 </atom:Cascader.OptionTemplate>
             </atom:Cascader>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+        </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource PrefixAndSuffixTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource PrefixAndSuffixDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <StackPanel Spacing="10">
-                <atom:Cascader
-                    Name="PrefixAndSuffixCascader1"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    OptionsSource="{Binding PrefixAndSuffixCascaderNodes}"
-                    IsAllowClear="True"
-                    SuffixIcon="{antdicons:AntDesignIconProvider SmileOutlined}">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <atom:Cascader
+            Name="AsyncLoadCascader"
+            PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+            OptionsSource="{Binding AsyncLoadCascaderViewNodes}"
+            DataLoader="{Binding AsyncCascaderNodeLoader}"
+            IsAllowClear="True">
+            <atom:Cascader.OptionTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                  x:DataType="atom:ICascaderOption">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:Cascader.OptionTemplate>
+        </atom:Cascader>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                <atom:Cascader
-                    Name="PrefixAndSuffixCascader2"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    OptionsSource="{Binding PrefixAndSuffixCascaderNodes}"
-                    IsAllowClear="True">
-                    <atom:Cascader.ExpandIcon>
-                        <atom:IconTemplate>
-                            <antdicons:SmileOutlined />
-                        </atom:IconTemplate>
-                    </atom:Cascader.ExpandIcon>
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource PrefixAndSuffixTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource PrefixAndSuffixDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <StackPanel Spacing="10">
+            <atom:Cascader
+                Name="PrefixAndSuffixCascader1"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                OptionsSource="{Binding PrefixAndSuffixCascaderNodes}"
+                IsAllowClear="True"
+                SuffixIcon="{antdicons:AntDesignIconProvider SmileOutlined}">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
 
-                <atom:Cascader
-                    Name="PrefixAndSuffixCascader3"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    OptionsSource="{Binding PrefixAndSuffixCascaderNodes}"
-                    IsAllowClear="True">
-                    <atom:Cascader.ContentLeftAddOn>
+            <atom:Cascader
+                Name="PrefixAndSuffixCascader2"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                OptionsSource="{Binding PrefixAndSuffixCascaderNodes}"
+                IsAllowClear="True">
+                <atom:Cascader.ExpandIcon>
+                    <atom:IconTemplate>
                         <antdicons:SmileOutlined />
-                    </atom:Cascader.ContentLeftAddOn>
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
-            </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                    </atom:IconTemplate>
+                </atom:Cascader.ExpandIcon>
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource VariantsTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource VariantsDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <StackPanel Spacing="15">
-                <atom:Cascader
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    IsAllowClear="True"
-                    StyleVariant="Borderless">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
+            <atom:Cascader
+                Name="PrefixAndSuffixCascader3"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                OptionsSource="{Binding PrefixAndSuffixCascaderNodes}"
+                IsAllowClear="True">
+                <atom:Cascader.ContentLeftAddOn>
+                    <antdicons:SmileOutlined />
+                </atom:Cascader.ContentLeftAddOn>
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                <atom:Cascader
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    IsAllowClear="True"
-                    StyleVariant="Filled">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource VariantsTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource VariantsDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <StackPanel Spacing="15">
+            <atom:Cascader
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                IsAllowClear="True"
+                StyleVariant="Borderless">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
 
-                <atom:Cascader
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    IsAllowClear="True"
-                    StyleVariant="Outlined">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
+            <atom:Cascader
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                IsAllowClear="True"
+                StyleVariant="Filled">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
 
-                <atom:Cascader
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    IsAllowClear="True"
-                    StyleVariant="Underlined">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
-            </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+            <atom:Cascader
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                IsAllowClear="True"
+                StyleVariant="Outlined">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource PlacementTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource PlacementDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:CascaderShowCaseLangResource P2TextPlacement}" />
-                <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandlePlacementOptionCheckedChanged">
-                    <atom:OptionButton IsChecked="True" Content="{gallery:CascaderShowCaseLangResource P2ContentTopleft}" />
-                    <atom:OptionButton Content="{gallery:CascaderShowCaseLangResource P2ContentTopright}" />
-                    <atom:OptionButton Content="{gallery:CascaderShowCaseLangResource P2ContentBottomleft}" />
-                    <atom:OptionButton Content="{gallery:CascaderShowCaseLangResource P2ContentBottomright}" />
-                </atom:OptionButtonGroup>
-                <atom:Cascader
-                    Name="PlacementCascader"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    OptionsSource="{Binding PlacementCascaderNodes}"
-                    IsAllowClear="True"
-                    Placement="{Binding Placement}">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
-            </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+            <atom:Cascader
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                IsAllowClear="True"
+                StyleVariant="Underlined">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource StatusTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource StatusDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <StackPanel Spacing="15">
-                <atom:Cascader
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    IsAllowClear="True"
-                    Status="Error">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource PlacementTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource PlacementDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:CascaderShowCaseLangResource P2TextPlacement}" />
+            <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandlePlacementOptionCheckedChanged">
+                <atom:OptionButton IsChecked="True" Content="{gallery:CascaderShowCaseLangResource P2ContentTopleft}" />
+                <atom:OptionButton Content="{gallery:CascaderShowCaseLangResource P2ContentTopright}" />
+                <atom:OptionButton Content="{gallery:CascaderShowCaseLangResource P2ContentBottomleft}" />
+                <atom:OptionButton Content="{gallery:CascaderShowCaseLangResource P2ContentBottomright}" />
+            </atom:OptionButtonGroup>
+            <atom:Cascader
+                Name="PlacementCascader"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                OptionsSource="{Binding PlacementCascaderNodes}"
+                IsAllowClear="True"
+                Placement="{Binding Placement}">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                <atom:Cascader
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                    IsAllowClear="True"
-                    Status="Warning">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
-            </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource StatusTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource StatusDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <StackPanel Spacing="15">
+            <atom:Cascader
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                IsAllowClear="True"
+                Status="Error">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource SizeTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource SizeDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <StackPanel Spacing="15">
-                <atom:Cascader
-                    Name="SizeCascader1"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeLarge}"
-                    OptionsSource="{Binding SizeCascaderNodes}"
-                    IsAllowClear="True"
-                    SizeType="Large">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
+            <atom:Cascader
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                IsAllowClear="True"
+                Status="Warning">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                <atom:Cascader
-                    Name="SizeCascader2"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeMiddle}"
-                    OptionsSource="{Binding SizeCascaderNodes}"
-                    IsAllowClear="True"
-                    SizeType="Middle">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource SizeTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource SizeDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <StackPanel Spacing="15">
+            <atom:Cascader
+                Name="SizeCascader1"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeLarge}"
+                OptionsSource="{Binding SizeCascaderNodes}"
+                IsAllowClear="True"
+                SizeType="Large">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
 
-                <atom:Cascader
-                    Name="SizeCascader3"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeSmall}"
-                    OptionsSource="{Binding SizeCascaderNodes}"
-                    IsAllowClear="True"
-                    SizeType="Small">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
+            <atom:Cascader
+                Name="SizeCascader2"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeMiddle}"
+                OptionsSource="{Binding SizeCascaderNodes}"
+                IsAllowClear="True"
+                SizeType="Middle">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
 
-                <atom:Cascader
-                    Name="SizeCascader4"
-                    PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeCustom}"
-                    OptionsSource="{Binding SizeCascaderNodes}"
-                    IsAllowClear="True"
-                    SizeType="Custom"
-                    Height="36">
-                    <atom:Cascader.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:Cascader.OptionTemplate>
-                </atom:Cascader>
-            </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+            <atom:Cascader
+                Name="SizeCascader3"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeSmall}"
+                OptionsSource="{Binding SizeCascaderNodes}"
+                IsAllowClear="True"
+                SizeType="Small">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource BasicCascaderViewTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource BasicCascaderViewDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:CascaderView OptionsSource="{Binding BasicCascaderViewNodes}" />
+            <atom:Cascader
+                Name="SizeCascader4"
+                PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderSizeTypeCustom}"
+                OptionsSource="{Binding SizeCascaderNodes}"
+                IsAllowClear="True"
+                SizeType="Custom"
+                Height="36">
+                <atom:Cascader.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:Cascader.OptionTemplate>
+            </atom:Cascader>
+        </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                <atom:CascaderView OptionsSource="{Binding BasicCheckableCascaderViewNodes}"
-                                   IsCheckable="True" />
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource BasicCascaderViewTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource BasicCascaderViewDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:CascaderView OptionsSource="{Binding BasicCascaderViewNodes}" />
 
-                <atom:CascaderView />
-            </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+            <atom:CascaderView OptionsSource="{Binding BasicCheckableCascaderViewNodes}"
+                               IsCheckable="True" />
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource GenerateByTemplateTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource GenerateByTemplateDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:CascaderView
-                    Name="BasicCascaderView"
-                    OptionsSource="{Binding BasicCascaderViewNodes}">
-                    <atom:CascaderView.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:CascaderView.OptionTemplate>
-                </atom:CascaderView>
+            <atom:CascaderView />
+        </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                <atom:CascaderView
-                    Name="BasicCheckableCascaderView"
-                    OptionsSource="{Binding BasicCheckableCascaderViewNodes}"
-                    IsCheckable="True">
-                    <atom:CascaderView.OptionTemplate>
-                        <TreeDataTemplate x:DataType="atom:ICascaderOption"
-                                          ItemsSource="{Binding Children}">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:CascaderView.OptionTemplate>
-                </atom:CascaderView>
-            </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource GenerateByTemplateTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource GenerateByTemplateDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
             <atom:CascaderView
-                Name="AsyncLoadCascaderView"
-                OptionsSource="{Binding AsyncLoadCascaderViewNodes}"
-                DataLoader="{Binding AsyncCascaderNodeLoader}">
+                Name="BasicCascaderView"
+                OptionsSource="{Binding BasicCascaderViewNodes}">
                 <atom:CascaderView.OptionTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}"
                                       x:DataType="atom:ICascaderOption">
@@ -700,77 +652,110 @@
                     </TreeDataTemplate>
                 </atom:CascaderView.OptionTemplate>
             </atom:CascaderView>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource SearchableTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource SearchableDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:SearchEdit PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextSearch}"
-                                 SearchButtonClick="HandleFilterCascaderViewClicked" />
-                <atom:CascaderView Name="SearchCascaderView"
-                                   OptionsSource="{Binding SearchCascaderViewNodes}" />
-            </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+            <atom:CascaderView
+                Name="BasicCheckableCascaderView"
+                OptionsSource="{Binding BasicCheckableCascaderViewNodes}"
+                IsCheckable="True">
+                <atom:CascaderView.OptionTemplate>
+                    <TreeDataTemplate x:DataType="atom:ICascaderOption"
+                                      ItemsSource="{Binding Children}">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:CascaderView.OptionTemplate>
+            </atom:CascaderView>
+        </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource SearchableItemsSourceTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource SearchableItemsSourceDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:SearchEdit PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextSearch}"
-                                 SearchButtonClick="HandleFilterCascaderViewItemsSourceClicked" />
-                <atom:CascaderView
-                    Name="SearchCascaderViewItemsSource"
-                    OptionsSource="{Binding SearchCascaderViewNodes}">
-                    <atom:CascaderView.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:CascaderView.OptionTemplate>
-                </atom:CascaderView>
-            </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource LoadOptionsLazilyDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <atom:CascaderView
+            Name="AsyncLoadCascaderView"
+            OptionsSource="{Binding AsyncLoadCascaderViewNodes}"
+            DataLoader="{Binding AsyncCascaderNodeLoader}">
+            <atom:CascaderView.OptionTemplate>
+                <TreeDataTemplate ItemsSource="{Binding Children}"
+                                  x:DataType="atom:ICascaderOption">
+                    <atom:TextBlock Text="{Binding Header}" />
+                </TreeDataTemplate>
+            </atom:CascaderView.OptionTemplate>
+        </atom:CascaderView>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:CascaderShowCaseLangResource DefaultExpandedTitle}"
-                        Description="{gallery:CascaderShowCaseLangResource DefaultExpandedDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:CascaderViewModel">
-            <StackPanel Spacing="10">
-                <atom:CascaderView OptionsSource="{Binding DefaultExpandCascaderViewNodes}"
-                                   DefaultExpandedPath="{Binding DefaultExpandPath}" />
-                <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleByTemplate}" />
-                <atom:CascaderView
-                    Name="DefaultExpandCascaderView"
-                    OptionsSource="{Binding DefaultExpandCascaderViewNodes}"
-                    DefaultExpandedPath="{Binding DefaultExpandPath}">
-                    <atom:CascaderView.OptionTemplate>
-                        <TreeDataTemplate ItemsSource="{Binding Children}"
-                                          x:DataType="atom:ICascaderOption">
-                            <atom:TextBlock Text="{Binding Header}" />
-                        </TreeDataTemplate>
-                    </atom:CascaderView.OptionTemplate>
-                </atom:CascaderView>
-            </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource SearchableTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource SearchableDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:SearchEdit PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextSearch}"
+                             SearchButtonClick="HandleFilterCascaderViewClicked" />
+            <atom:CascaderView Name="SearchCascaderView"
+                               OptionsSource="{Binding SearchCascaderViewNodes}" />
+        </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource SearchableItemsSourceTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource SearchableItemsSourceDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:SearchEdit PlaceholderText="{gallery:CascaderShowCaseLangResource P2PlaceholderTextSearch}"
+                             SearchButtonClick="HandleFilterCascaderViewItemsSourceClicked" />
+            <atom:CascaderView
+                Name="SearchCascaderViewItemsSource"
+                OptionsSource="{Binding SearchCascaderViewNodes}">
+                <atom:CascaderView.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:CascaderView.OptionTemplate>
+            </atom:CascaderView>
+        </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:CascaderShowCaseLangResource DefaultExpandedTitle}"
+                    Description="{gallery:CascaderShowCaseLangResource DefaultExpandedDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:CascaderViewModel">
+        <StackPanel Spacing="10">
+            <atom:CascaderView OptionsSource="{Binding DefaultExpandCascaderViewNodes}"
+                               DefaultExpandedPath="{Binding DefaultExpandPath}" />
+            <atom:Separator Title="{gallery:CascaderShowCaseLangResource P2TitleByTemplate}" />
+            <atom:CascaderView
+                Name="DefaultExpandCascaderView"
+                OptionsSource="{Binding DefaultExpandCascaderViewNodes}"
+                DefaultExpandedPath="{Binding DefaultExpandPath}">
+                <atom:CascaderView.OptionTemplate>
+                    <TreeDataTemplate ItemsSource="{Binding Children}"
+                                      x:DataType="atom:ICascaderOption">
+                        <atom:TextBlock Text="{Binding Header}" />
+                    </TreeDataTemplate>
+                </atom:CascaderView.OptionTemplate>
+            </atom:CascaderView>
+        </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

@@ -16,15 +16,9 @@ public partial class RadioButtonShowCase : GalleryReactiveUserControl<RadioButto
 {
     public const string LanguageId = nameof(RadioButtonShowCase);
 
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
-    private readonly GalleryShowCaseScenarioController _scenarioController;
-
     public RadioButtonShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
 
         this.WhenActivated(disposables =>
         {
@@ -48,34 +42,6 @@ public partial class RadioButtonShowCase : GalleryReactiveUserControl<RadioButto
                 }).DisposeWith(disposables);
             }
         });
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
-    }
-
-    protected override void OnDataContextChanged(EventArgs e)
-    {
-        base.OnDataContextChanged(e);
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new RadioButtonApiDataGrid(),
-            DesignTokenScenario => new RadioButtonDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown RadioButton scenario: {scenario}")
-        };
     }
 
     private static void ConfigureRadioOptions(RadioButtonViewModel viewModel)

@@ -51,9 +51,9 @@ public class SplashShowCasePageTests
         source.ShouldContain("SplashShowCaseLangResource ComponentCategory");
         source.ShouldContain("SplashShowCaseLangResource ComponentStatusPreview");
         source.ShouldContain("SplashShowCaseLangResource ComponentIntroducedVersion");
-        source.ShouldContain("SplashShowCaseLangResource ScenarioExamples");
-        source.ShouldContain("SplashShowCaseLangResource ScenarioApi");
-        source.ShouldContain("SplashShowCaseLangResource ScenarioDesignToken");
+        source.ShouldNotContain("SplashShowCaseLangResource ScenarioExamples");
+        source.ShouldNotContain("SplashShowCaseLangResource ScenarioApi");
+        source.ShouldNotContain("SplashShowCaseLangResource ScenarioDesignToken");
         source.ShouldContain("<gallery:GalleryStickyTabsHost");
         source.ShouldContain("<gallery:GalleryShowCaseHeader");
         source.ShouldContain("Title=\"Splash\"");
@@ -68,14 +68,14 @@ public class SplashShowCasePageTests
         source.ShouldContain("BaseClass=\"ContentControl\"");
         source.ShouldContain("MetadataValueWidth=\"240\"");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
-        source.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
+        source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("IsDeferredLoadingEnabled=\"True\"");
-        source.ShouldContain("Tag=\"Examples\"");
-        source.ShouldContain("Tag=\"Api\"");
-        source.ShouldContain("Tag=\"DesignToken\"");
+        source.ShouldNotContain("Tag=\"Examples\"");
+        source.ShouldNotContain("Tag=\"Api\"");
+        source.ShouldNotContain("Tag=\"DesignToken\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
     }
@@ -225,12 +225,12 @@ public class SplashShowCasePageTests
         var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashDesignTokenDataGrid.axaml");
         var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Other/Splash/Views/SplashDesignTokenDataGrid.axaml.cs");
 
-        codeBehindSource.ShouldContain("GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldContain("_scenarioController.Detach()");
-        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldContain("new SplashApiDataGrid()");
-        codeBehindSource.ShouldContain("new SplashDesignTokenDataGrid()");
+        codeBehindSource.ShouldNotContain("GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldNotContain("_scenarioController.Detach()");
+        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
+        codeBehindSource.ShouldNotContain("new SplashApiDataGrid()");
+        codeBehindSource.ShouldNotContain("new SplashDesignTokenDataGrid()");
         pageSource.ShouldNotContain("<views:SplashApiDataGrid");
         pageSource.ShouldNotContain("<views:SplashDesignTokenDataGrid");
 

@@ -13,28 +13,16 @@ public partial class MessageShowCase : GalleryReactiveUserControl<MessageViewMod
 {
     public const string LanguageId = nameof(MessageShowCase);
 
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
-    private readonly GalleryShowCaseScenarioController _scenarioController;
     private WindowMessageManager? _messageManager;
 
     public MessageShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
         _messageManager?.Dispose();
         _messageManager = null;
     }
@@ -43,17 +31,6 @@ public partial class MessageShowCase : GalleryReactiveUserControl<MessageViewMod
     {
         base.OnDataContextChanged(e);
 
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new MessageApiDataGrid(),
-            DesignTokenScenario => new MessageDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Message scenario: {scenario}")
-        };
     }
 
     private void ShowSimpleMessage(object? sender, RoutedEventArgs e)

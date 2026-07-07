@@ -91,6 +91,7 @@ public class GalleryStickyTabsHostTests
         hostSource.ShouldContain("StickyContentProperty");
         hostSource.ShouldContain("ContentProperty");
         hostSource.ShouldContain("IsStickyMirrorEnabledProperty");
+        hostSource.ShouldContain("HasStickyContentProperty");
         hostSource.ShouldContain("[Content]");
         hostSource.ShouldContain("RegisterTokenResourceScope(GalleryStickyTabsHostToken.ScopeProvider)");
         hostSource.ShouldContain("ScopeAwareAdornerLayer.GetLayer(this)");
@@ -124,6 +125,7 @@ public class GalleryStickyTabsHostTests
         themeSource.ShouldContain("StickyContentPadding");
         themeSource.ShouldContain("StickyBackground");
         themeSource.ShouldContain("StickyBorderBrush");
+        themeSource.ShouldContain("IsVisible=\"{TemplateBinding HasStickyContent}\"");
         themeSource.ShouldContain("ZIndex=\"1\"");
         themeSource.ShouldNotContain("<VisualLayerManager>");
         themeSource.ShouldContain("<ContentPresenter Content=\"{TemplateBinding Content}\" />");
@@ -138,6 +140,46 @@ public class GalleryStickyTabsHostTests
         hostSource.ShouldNotContain("MoveStickyContentToOverlay");
         hostSource.ShouldNotContain("MoveStickyContentInline");
         hostSource.ShouldNotContain("_inlineStickyContentPresenter.Content");
+    }
+
+    [Fact]
+    public void Sticky_Host_Collapses_Sticky_Content_Row_When_No_StickyContent_Is_Set()
+    {
+        var host = new GalleryStickyTabsHost
+        {
+            Header  = new FixedSizeControl(320, 80),
+            Content = new FixedSizeControl(320, 240)
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 220,
+            Content = host
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var stickyContentHost = host.GetVisualDescendants()
+                                        .OfType<Border>()
+                                        .Single(border => border.Name == "PART_StickyContentHost");
+            stickyContentHost.IsVisible.ShouldBeFalse();
+
+            host.StickyContent = new FixedSizeControl(320, 40);
+            Dispatcher.UIThread.RunJobs();
+            stickyContentHost.IsVisible.ShouldBeTrue();
+
+            host.StickyContent = null;
+            Dispatcher.UIThread.RunJobs();
+            stickyContentHost.IsVisible.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
     }
 
     [Fact]

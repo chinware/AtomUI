@@ -17,28 +17,16 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
 {
     public const string LanguageId = nameof(DataGridShowCase);
 
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
-    private readonly GalleryShowCaseScenarioController _scenarioController;
     private static int s_cellsEditableNewRowIndex = 1;
 
     public DataGridShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
         if (DataContext is DataGridViewModel viewModel)
         {
             DataGridShowCaseDataSources.ClearAll(viewModel);
@@ -49,17 +37,6 @@ public partial class DataGridShowCase : GalleryReactiveUserControl<DataGridViewM
     {
         base.OnDataContextChanged(e);
         RefreshMaterializedExampleDataGrids();
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new DataGridApiDataGrid(),
-            DesignTokenScenario => new DataGridDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown DataGrid scenario: {scenario}")
-        };
     }
 
     private void HandleExampleDataGridAttached(object? sender, VisualTreeAttachmentEventArgs args)

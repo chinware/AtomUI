@@ -8,15 +8,10 @@ namespace AtomUIGallery.ShowCases.Statistic;
 public partial class StatisticShowCase : GalleryReactiveUserControl<StatisticViewModel>
 {
     public const string LanguageId = nameof(StatisticShowCase);
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
-    private readonly GalleryShowCaseScenarioController _scenarioController;
 
     public StatisticShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
 
         this.WhenActivated(disposables =>
         {
@@ -29,31 +24,4 @@ public partial class StatisticShowCase : GalleryReactiveUserControl<StatisticVie
         });
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
-    }
-
-    protected override void OnDataContextChanged(EventArgs e)
-    {
-        base.OnDataContextChanged(e);
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new StatisticApiDataGrid(),
-            DesignTokenScenario => new StatisticDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Statistic scenario: {scenario}")
-        };
-    }
 }

@@ -20,242 +20,227 @@
                     BaseClass="TemplatedControl" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:MentionsShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:MentionsShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:MentionsShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-        <gallery:ShowCaseItem
-            Title="{gallery:MentionsShowCaseLangResource BasicTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:MentionsShowCaseLangResource BasicDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:MentionsViewModel">
-            <atom:Mentions Name="BasicMentions"
-                           HorizontalAlignment="Stretch"
-                           OptionsSource="{Binding BasicMentionOptions}"
-                           DefaultValue="@afc163"/>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+    <gallery:ShowCaseItem
+        Title="{gallery:MentionsShowCaseLangResource BasicTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:MentionsShowCaseLangResource BasicDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:MentionsViewModel">
+        <atom:Mentions Name="BasicMentions"
+                       HorizontalAlignment="Stretch"
+                       OptionsSource="{Binding BasicMentionOptions}"
+                       DefaultValue="@afc163"/>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:MentionsShowCaseLangResource ValueBindingTitle}"
-            IsDeferredContentEnabled="True"
-            BadgeText="v6.0.8"
-            Description="{gallery:MentionsShowCaseLangResource ValueBindingDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:MentionsViewModel">
-            <StackPanel Orientation="Vertical" Spacing="12">
-                <atom:Mentions HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
-                               IsAllowClear="True"
-                               Value="{Binding BoundValue}" />
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <atom:TextBlock VerticalAlignment="Center"
-                                    Text="{gallery:MentionsShowCaseLangResource P2TextBoundValue}" />
-                    <atom:TextBlock VerticalAlignment="Center"
-                                    Text="{Binding BoundValueText}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:Button SizeType="Small"
-                                 Command="{Binding SetBoundValueCommand}"
-                                 Content="{gallery:MentionsShowCaseLangResource P2ContentSetMention}" />
-                    <atom:Button SizeType="Small"
-                                 Command="{Binding ClearBoundValueCommand}"
-                                 Content="{gallery:MentionsShowCaseLangResource P2ContentClear}" />
-                </StackPanel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:MentionsShowCaseLangResource SizeTypeTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:MentionsShowCaseLangResource SizeTypeDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:MentionsViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <atom:Mentions HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
-                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextLarge}"
-                               SizeType="Large"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
-                <atom:Mentions HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
-                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextMiddle}"
-                               SizeType="Middle"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
-                <atom:Mentions HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
-                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextSmall}"
-                               SizeType="Small"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
-                <atom:Mentions Name="CustomSizeTypeMentions"
-                               HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
-                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextCustom}"
-                               SizeType="Custom"
-                               Height="38"
-                               FontSize="15"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:MentionsShowCaseLangResource VariantsTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:MentionsShowCaseLangResource VariantsDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:MentionsViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Outlined" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextOutlined}"/>
-                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Filled" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextFilled}"/>
-                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Borderless" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextBorderless}"/>
-                <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Underlined" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextUnderlined}"/>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:MentionsShowCaseLangResource AsynchronousLoadingTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:MentionsShowCaseLangResource AsynchronousLoadingDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:MentionsViewModel">
-            <atom:Mentions HorizontalAlignment="Stretch" OptionsAsyncLoader="{Binding MentionOptionAsyncLoader}"/>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:MentionsShowCaseLangResource CustomizeTriggerTokenTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:MentionsShowCaseLangResource CustomizeTriggerTokenDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:MentionsViewModel">
+    <gallery:ShowCaseItem
+        Title="{gallery:MentionsShowCaseLangResource ValueBindingTitle}"
+        IsDeferredContentEnabled="True"
+        BadgeText="v6.0.8"
+        Description="{gallery:MentionsShowCaseLangResource ValueBindingDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:MentionsViewModel">
+        <StackPanel Orientation="Vertical" Spacing="12">
             <atom:Mentions HorizontalAlignment="Stretch"
-                           TriggerPrefix="{Binding MentionTriggers}"
-                           CandidateTriggered="HandleCandidateTriggered"
-                           PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextInputToMentionPeopleToMentionTag}"/>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:MentionsShowCaseLangResource DisabledOrReadOnlyTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:MentionsShowCaseLangResource DisabledOrReadOnlyDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:MentionsViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Mentions Name="DisabledMentions"
-                               HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
-                               IsEnabled="False"
-                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextThisIsDisabledMentions}"/>
-                <atom:Mentions Name="ReadonlyMentions"
-                               HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
-                               PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextThisIsReadonlyMentions}"
-                               IsReadOnly="True"/>
+                           OptionsSource="{Binding BasicMentionOptions}"
+                           IsAllowClear="True"
+                           Value="{Binding BoundValue}" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <atom:TextBlock VerticalAlignment="Center"
+                                Text="{gallery:MentionsShowCaseLangResource P2TextBoundValue}" />
+                <atom:TextBlock VerticalAlignment="Center"
+                                Text="{Binding BoundValueText}" />
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:Button SizeType="Small"
+                             Command="{Binding SetBoundValueCommand}"
+                             Content="{gallery:MentionsShowCaseLangResource P2ContentSetMention}" />
+                <atom:Button SizeType="Small"
+                             Command="{Binding ClearBoundValueCommand}"
+                             Content="{gallery:MentionsShowCaseLangResource P2ContentClear}" />
+            </StackPanel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:MentionsShowCaseLangResource PlacementTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:MentionsShowCaseLangResource PlacementDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:MentionsViewModel">
-            <atom:Mentions Name="PlacementMentions"
+    <gallery:ShowCaseItem
+        Title="{gallery:MentionsShowCaseLangResource SizeTypeTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:MentionsShowCaseLangResource SizeTypeDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:MentionsViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+            <atom:Mentions HorizontalAlignment="Stretch"
+                           OptionsSource="{Binding BasicMentionOptions}"
+                           PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextLarge}"
+                           SizeType="Large"
+                           ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+            <atom:Mentions HorizontalAlignment="Stretch"
+                           OptionsSource="{Binding BasicMentionOptions}"
+                           PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextMiddle}"
+                           SizeType="Middle"
+                           ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+            <atom:Mentions HorizontalAlignment="Stretch"
+                           OptionsSource="{Binding BasicMentionOptions}"
+                           PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextSmall}"
+                           SizeType="Small"
+                           ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+            <atom:Mentions Name="CustomSizeTypeMentions"
                            HorizontalAlignment="Stretch"
                            OptionsSource="{Binding BasicMentionOptions}"
-                           Placement="Top"/>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                           PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextCustom}"
+                           SizeType="Custom"
+                           Height="38"
+                           FontSize="15"
+                           ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined}" />
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:MentionsShowCaseLangResource StatusTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:MentionsShowCaseLangResource StatusDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:MentionsViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Mentions Name="ErrorMentions"
-                               HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
-                               Status="Error"
-                               DefaultValue="@afc163"/>
-                <atom:Mentions Name="WarningMentions"
-                               HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
-                               DefaultValue="@afc163"
-                               Status="Warning"/>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+    <gallery:ShowCaseItem
+        Title="{gallery:MentionsShowCaseLangResource VariantsTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:MentionsShowCaseLangResource VariantsDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:MentionsViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Outlined" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextOutlined}"/>
+            <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Filled" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextFilled}"/>
+            <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Borderless" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextBorderless}"/>
+            <atom:Mentions HorizontalAlignment="Stretch" StyleVariant="Underlined" PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextUnderlined}"/>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:MentionsShowCaseLangResource AutoSizeTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:MentionsShowCaseLangResource AutoSizeDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:MentionsViewModel">
-            <atom:Mentions Name="AutoSizeMentions"
+    <gallery:ShowCaseItem
+        Title="{gallery:MentionsShowCaseLangResource AsynchronousLoadingTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:MentionsShowCaseLangResource AsynchronousLoadingDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:MentionsViewModel">
+        <atom:Mentions HorizontalAlignment="Stretch" OptionsAsyncLoader="{Binding MentionOptionAsyncLoader}"/>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:MentionsShowCaseLangResource CustomizeTriggerTokenTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:MentionsShowCaseLangResource CustomizeTriggerTokenDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:MentionsViewModel">
+        <atom:Mentions HorizontalAlignment="Stretch"
+                       TriggerPrefix="{Binding MentionTriggers}"
+                       CandidateTriggered="HandleCandidateTriggered"
+                       PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextInputToMentionPeopleToMentionTag}"/>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:MentionsShowCaseLangResource DisabledOrReadOnlyTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:MentionsShowCaseLangResource DisabledOrReadOnlyDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:MentionsViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:Mentions Name="DisabledMentions"
                            HorizontalAlignment="Stretch"
                            OptionsSource="{Binding BasicMentionOptions}"
-                           IsAutoSize="True"/>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                           IsEnabled="False"
+                           PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextThisIsDisabledMentions}"/>
+            <atom:Mentions Name="ReadonlyMentions"
+                           HorizontalAlignment="Stretch"
+                           OptionsSource="{Binding BasicMentionOptions}"
+                           PlaceholderText="{gallery:MentionsShowCaseLangResource P2PlaceholderTextThisIsReadonlyMentions}"
+                           IsReadOnly="True"/>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:MentionsShowCaseLangResource WithClearIconTitle}"
-            IsDeferredContentEnabled="True"
-            Description="{gallery:MentionsShowCaseLangResource WithClearIconDescription}">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:MentionsViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Mentions Name="ClearableMentions1"
-                               HorizontalAlignment="Stretch"
-                               OptionsSource="{Binding BasicMentionOptions}"
-                               IsAllowClear="True"/>
-                <atom:Mentions HorizontalAlignment="Stretch"
-                               Name="ClearableMentions2"
-                               OptionsSource="{Binding BasicMentionOptions}"
-                               IsAllowClear="True"
-                               Lines="3"/>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+    <gallery:ShowCaseItem
+        Title="{gallery:MentionsShowCaseLangResource PlacementTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:MentionsShowCaseLangResource PlacementDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:MentionsViewModel">
+        <atom:Mentions Name="PlacementMentions"
+                       HorizontalAlignment="Stretch"
+                       OptionsSource="{Binding BasicMentionOptions}"
+                       Placement="Top"/>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:MentionsShowCaseLangResource StatusTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:MentionsShowCaseLangResource StatusDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:MentionsViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:Mentions Name="ErrorMentions"
+                           HorizontalAlignment="Stretch"
+                           OptionsSource="{Binding BasicMentionOptions}"
+                           Status="Error"
+                           DefaultValue="@afc163"/>
+            <atom:Mentions Name="WarningMentions"
+                           HorizontalAlignment="Stretch"
+                           OptionsSource="{Binding BasicMentionOptions}"
+                           DefaultValue="@afc163"
+                           Status="Warning"/>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:MentionsShowCaseLangResource AutoSizeTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:MentionsShowCaseLangResource AutoSizeDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:MentionsViewModel">
+        <atom:Mentions Name="AutoSizeMentions"
+                       HorizontalAlignment="Stretch"
+                       OptionsSource="{Binding BasicMentionOptions}"
+                       IsAutoSize="True"/>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:MentionsShowCaseLangResource WithClearIconTitle}"
+        IsDeferredContentEnabled="True"
+        Description="{gallery:MentionsShowCaseLangResource WithClearIconDescription}">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:MentionsViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:Mentions Name="ClearableMentions1"
+                           HorizontalAlignment="Stretch"
+                           OptionsSource="{Binding BasicMentionOptions}"
+                           IsAllowClear="True"/>
+            <atom:Mentions HorizontalAlignment="Stretch"
+                           Name="ClearableMentions2"
+                           OptionsSource="{Binding BasicMentionOptions}"
+                           IsAllowClear="True"
+                           Lines="3"/>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

@@ -15,17 +15,13 @@ namespace AtomUIGallery.ShowCases.TabStrip;
 public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewModel>
 {
     public const string LanguageId = nameof(TabStripShowCase);
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
 
-    private readonly GalleryShowCaseScenarioController _scenarioController;
     private readonly List<WeakReference<CardTabStrip>> _dynamicAddTabStrips = [];
     private EventHandler<LanguageVariantChangedEventArgs>? _languageVariantChangedHandler;
 
     public TabStripShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -33,14 +29,12 @@ public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewM
         base.OnAttachedToVisualTree(e);
         RefreshViewModelData();
         SubscribeLanguageVariantChanged();
-        _scenarioController.Attach(DataContext);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         UnsubscribeLanguageVariantChanged();
-        _scenarioController.Detach();
         _dynamicAddTabStrips.Clear();
     }
 
@@ -48,17 +42,6 @@ public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewM
     {
         base.OnDataContextChanged(e);
         RefreshViewModelData();
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new TabStripApiDataGrid(),
-            DesignTokenScenario => new TabStripDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown TabStrip scenario: {scenario}")
-        };
     }
 
     private void HandleTabStripPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)

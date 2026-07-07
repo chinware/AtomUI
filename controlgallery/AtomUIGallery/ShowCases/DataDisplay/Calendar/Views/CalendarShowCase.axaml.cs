@@ -8,42 +8,10 @@ namespace AtomUIGallery.ShowCases.Calendar;
 public partial class CalendarShowCase : GalleryReactiveUserControl<CalendarViewModel>
 {
     public const string LanguageId = nameof(CalendarShowCase);
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
-    private readonly GalleryShowCaseScenarioController _scenarioController;
 
     public CalendarShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
-    }
-
-    protected override void OnDataContextChanged(EventArgs e)
-    {
-        base.OnDataContextChanged(e);
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new CalendarApiDataGrid(),
-            DesignTokenScenario => new CalendarDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Calendar scenario: {scenario}")
-        };
-    }
 }

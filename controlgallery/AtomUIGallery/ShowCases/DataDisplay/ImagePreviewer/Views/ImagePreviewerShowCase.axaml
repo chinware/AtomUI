@@ -20,114 +20,99 @@
                     MetadataValueWidth="220" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:ImagePreviewerShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:ImagePreviewerShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:ImagePreviewerShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ImagePreviewerShowCaseLangResource BasicUsageTitle}"
-                        Description="{gallery:ImagePreviewerShowCaseLangResource BasicUsageDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+                <gallery:ShowCaseItem
+                    Title="{gallery:ImagePreviewerShowCaseLangResource BasicUsageTitle}"
+                    Description="{gallery:ImagePreviewerShowCaseLangResource BasicUsageDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                            <atom:ImagePreviewer Width="200"
+                                                 SourceUris="{Binding DefaultImages}" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:ImagePreviewerShowCaseLangResource RemoteImageLoadingTitle}"
+                    Description="{gallery:ImagePreviewerShowCaseLangResource RemoteImageLoadingDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                            <StackPanel Orientation="Horizontal"
+                                        Spacing="{atom:SharedTokenResource SpacingLG}">
                                 <atom:ImagePreviewer Width="200"
-                                                     SourceUris="{Binding DefaultImages}" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                                                     SourceUri="{Binding RemoteImage}" />
+                                <Border Width="200"
+                                        Height="200"
+                                        Background="{atom:SharedTokenResource ColorFillTertiary}">
+                                    <Panel HorizontalAlignment="Center"
+                                           VerticalAlignment="Center">
+                                        <atom:SkeletonImage IsActive="True" />
+                                    </Panel>
+                                </Border>
+                            </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ImagePreviewerShowCaseLangResource RemoteImageLoadingTitle}"
-                        Description="{gallery:ImagePreviewerShowCaseLangResource RemoteImageLoadingDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="{atom:SharedTokenResource SpacingLG}">
-                                    <atom:ImagePreviewer Width="200"
-                                                         SourceUri="{Binding RemoteImage}" />
-                                    <Border Width="200"
-                                            Height="200"
-                                            Background="{atom:SharedTokenResource ColorFillTertiary}">
-                                        <Panel HorizontalAlignment="Center"
-                                               VerticalAlignment="Center">
-                                            <atom:SkeletonImage IsActive="True" />
-                                        </Panel>
-                                    </Border>
-                                </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:ImagePreviewerShowCaseLangResource FaultTolerantTitle}"
+                    Description="{gallery:ImagePreviewerShowCaseLangResource FaultTolerantDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                            <atom:ImagePreviewer Width="200"
+                                                 FallbackSourceUri="{Binding FallbackImage}" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ImagePreviewerShowCaseLangResource FaultTolerantTitle}"
-                        Description="{gallery:ImagePreviewerShowCaseLangResource FaultTolerantDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
-                                <atom:ImagePreviewer Width="200"
-                                                     FallbackSourceUri="{Binding FallbackImage}" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageTitle}"
+                    Description="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                            <atom:ImagePreviewer Width="200"
+                                                 SourceUris="{Binding ThreeImages}" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageTitle}"
-                        Description="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
-                                <atom:ImagePreviewer Width="200"
-                                                     SourceUris="{Binding ThreeImages}" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:ImagePreviewerShowCaseLangResource CustomPreviewImageTitle}"
+                    Description="{gallery:ImagePreviewerShowCaseLangResource CustomPreviewImageDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                            <atom:ImagePreviewer Width="200"
+                                                 SourceUris="{Binding DefaultImages}"
+                                                 CoverSourceUri="{Binding BlurImage}" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ImagePreviewerShowCaseLangResource CustomPreviewImageTitle}"
-                        Description="{gallery:ImagePreviewerShowCaseLangResource CustomPreviewImageDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
-                                <atom:ImagePreviewer Width="200"
-                                                     SourceUris="{Binding DefaultImages}"
-                                                     CoverSourceUri="{Binding BlurImage}" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewTitle}"
-                        Description="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewDescription}"
-                        IsOccupyEntireRow="True"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
-                                <atom:ImageGroupPreviewer CoverWidth="200"
-                                                          CoverHeight="200"
-                                                          SourceUris="{Binding TwoImages}" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+                <gallery:ShowCaseItem
+                    Title="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewTitle}"
+                    Description="{gallery:ImagePreviewerShowCaseLangResource MultipleImagePreviewDescription}"
+                    IsOccupyEntireRow="True"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                            <atom:ImageGroupPreviewer CoverWidth="200"
+                                                      CoverHeight="200"
+                                                      SourceUris="{Binding TwoImages}" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

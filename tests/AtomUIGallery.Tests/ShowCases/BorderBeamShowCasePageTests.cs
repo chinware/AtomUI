@@ -51,9 +51,9 @@ public class BorderBeamShowCasePageTests
         source.ShouldContain("BorderBeamShowCaseLangResource PageDescription");
         source.ShouldContain("BorderBeamShowCaseLangResource ComponentCategory");
         source.ShouldContain("BorderBeamShowCaseLangResource ComponentIntroducedVersion");
-        source.ShouldContain("BorderBeamShowCaseLangResource ScenarioExamples");
-        source.ShouldContain("BorderBeamShowCaseLangResource ScenarioApi");
-        source.ShouldContain("BorderBeamShowCaseLangResource ScenarioDesignToken");
+        source.ShouldNotContain("BorderBeamShowCaseLangResource ScenarioExamples");
+        source.ShouldNotContain("BorderBeamShowCaseLangResource ScenarioApi");
+        source.ShouldNotContain("BorderBeamShowCaseLangResource ScenarioDesignToken");
         source.ShouldContain("<gallery:GalleryStickyTabsHost");
         source.ShouldContain("<gallery:GalleryShowCaseHeader");
         source.ShouldContain("Title=\"BorderBeam\"");
@@ -66,14 +66,14 @@ public class BorderBeamShowCasePageTests
         source.ShouldContain("BaseClass=\"ContentControl\"");
         source.ShouldContain("MetadataValueWidth=\"220\"");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
-        source.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
+        source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("IsDeferredLoadingEnabled=\"True\"");
-        source.ShouldContain("Tag=\"Examples\"");
-        source.ShouldContain("Tag=\"Api\"");
-        source.ShouldContain("Tag=\"DesignToken\"");
+        source.ShouldNotContain("Tag=\"Examples\"");
+        source.ShouldNotContain("Tag=\"Api\"");
+        source.ShouldNotContain("Tag=\"DesignToken\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
     }

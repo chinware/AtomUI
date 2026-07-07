@@ -26,253 +26,238 @@
                     BaseClass="Control" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:DrawerShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:DrawerShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:DrawerShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-                    <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource BasicTitle}" Description="{gallery:DrawerShowCaseLangResource BasicDescription}" IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:DrawerViewModel">
-                                <Panel>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+                <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource BasicTitle}" Description="{gallery:DrawerShowCaseLangResource BasicDescription}" IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:DrawerViewModel">
+                            <Panel>
+                                <atom:ToggleSwitch />
+                                <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
+                                             Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
+                                             DialogSize="50%">
+                                    <StackPanel Orientation="Vertical" Spacing="5">
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                    </StackPanel>
+                                </atom:Drawer>
+                            </Panel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource MultiLevelTitle}"
+                                      Description="{gallery:DrawerShowCaseLangResource MultiLevelDescription}" IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:DrawerViewModel">
+                            <Panel>
+                                <StackPanel Height="120" Classes="ControllerPanel">
+                                    <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+                                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:DrawerShowCaseLangResource P2TextPlacement}" />
+                                        <atom:OptionButtonGroup ButtonStyle="Outline"
+                                                                Name="MultiLevelPlacementGroup"
+                                                                OptionCheckedChanged="HandleMultiLevelPlacementChanged">
+                                            <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Left}" Content="{gallery:DrawerShowCaseLangResource P2ContentLeft}" />
+                                            <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Top}" Content="{gallery:DrawerShowCaseLangResource P2ContentTop}" />
+                                            <atom:OptionButton IsChecked="True" Tag="{x:Static atom:DrawerPlacement.Right}" Content="{gallery:DrawerShowCaseLangResource P2ContentRight}" />
+                                            <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Bottom}" Content="{gallery:DrawerShowCaseLangResource P2ContentBottom}" />
+                                        </atom:OptionButtonGroup>
+                                    </StackPanel>
                                     <atom:ToggleSwitch />
-                                    <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
-                                                 Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
-                                                 DialogSize="50%">
-                                        <StackPanel Orientation="Vertical" Spacing="5">
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                        </StackPanel>
-                                    </atom:Drawer>
-                                </Panel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                                </StackPanel>
 
-                    <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource MultiLevelTitle}"
-                                          Description="{gallery:DrawerShowCaseLangResource MultiLevelDescription}" IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:DrawerViewModel">
-                                <Panel>
-                                    <StackPanel Height="120" Classes="ControllerPanel">
-                                        <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
-                                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:DrawerShowCaseLangResource P2TextPlacement}" />
-                                            <atom:OptionButtonGroup ButtonStyle="Outline"
-                                                                    Name="MultiLevelPlacementGroup"
-                                                                    OptionCheckedChanged="HandleMultiLevelPlacementChanged">
-                                                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Left}" Content="{gallery:DrawerShowCaseLangResource P2ContentLeft}" />
-                                                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Top}" Content="{gallery:DrawerShowCaseLangResource P2ContentTop}" />
-                                                <atom:OptionButton IsChecked="True" Tag="{x:Static atom:DrawerPlacement.Right}" Content="{gallery:DrawerShowCaseLangResource P2ContentRight}" />
-                                                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Bottom}" Content="{gallery:DrawerShowCaseLangResource P2ContentBottom}" />
-                                            </atom:OptionButtonGroup>
-                                        </StackPanel>
-                                        <atom:ToggleSwitch />
-                                    </StackPanel>
-
-                                    <atom:Drawer Title="{gallery:DrawerShowCaseLangResource P2TitleFirstLevelDrawer}"
-                                                 IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                                                 Placement="{Binding MultiLevelPlacement}">
-                                        <StackPanel Orientation="Vertical" Spacing="5">
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:Button ButtonType="Primary"
-                                                         Click="HandleOpenMultilevelLevelTwoDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentTwoLevelDrawer}" />
-                                            <atom:Drawer Title="{gallery:DrawerShowCaseLangResource P2TitleTwoLevelDrawer}"
-                                                         Name="MultiLevelDrawerLevelTwo"
-                                                         Placement="{Binding MultiLevelPlacement}">
-                                                <StackPanel Orientation="Vertical" Spacing="5">
-                                                    <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                                    <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                                    <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                                </StackPanel>
-                                            </atom:Drawer>
-                                        </StackPanel>
-                                    </atom:Drawer>
-                                </Panel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource ExtraAndFooterTitle}"
-                                          Description="{gallery:DrawerShowCaseLangResource ExtraAndFooterDescription}" IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:DrawerViewModel">
-                                <Panel>
-                                    <StackPanel Classes="ControllerPanel">
-                                        <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
-                                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:DrawerShowCaseLangResource P2TextPlacement}" />
-                                            <atom:OptionButtonGroup ButtonStyle="Outline"
-                                                                    Name="ExtraAndFooterPlacementGroup"
-                                                                    OptionCheckedChanged="HandleExtraAndFooterPlacementChanged">
-                                                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Left}" Content="{gallery:DrawerShowCaseLangResource P2ContentLeft}" />
-                                                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Top}" Content="{gallery:DrawerShowCaseLangResource P2ContentTop}" />
-                                                <atom:OptionButton IsChecked="True" Tag="{x:Static atom:DrawerPlacement.Right}" Content="{gallery:DrawerShowCaseLangResource P2ContentRight}" />
-                                                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Bottom}" Content="{gallery:DrawerShowCaseLangResource P2ContentBottom}" />
-                                            </atom:OptionButtonGroup>
-                                        </StackPanel>
-                                        <atom:ToggleSwitch Content="{gallery:DrawerShowCaseLangResource P2ContentOpen}" />
-                                    </StackPanel>
-                                    <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                                                 Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
-                                                 Placement="{Binding ExtraAndFooterPlacement}">
-                                        <atom:Drawer.Extra>
-                                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                                <atom:Button Content="{gallery:DrawerShowCaseLangResource P2ContentCancel}" />
-                                                <atom:Button ButtonType="Primary" Content="{gallery:DrawerShowCaseLangResource P2ContentOk}" />
+                                <atom:Drawer Title="{gallery:DrawerShowCaseLangResource P2TitleFirstLevelDrawer}"
+                                             IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                                             Placement="{Binding MultiLevelPlacement}">
+                                    <StackPanel Orientation="Vertical" Spacing="5">
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:Button ButtonType="Primary"
+                                                     Click="HandleOpenMultilevelLevelTwoDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentTwoLevelDrawer}" />
+                                        <atom:Drawer Title="{gallery:DrawerShowCaseLangResource P2TitleTwoLevelDrawer}"
+                                                     Name="MultiLevelDrawerLevelTwo"
+                                                     Placement="{Binding MultiLevelPlacement}">
+                                            <StackPanel Orientation="Vertical" Spacing="5">
+                                                <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                                <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                                <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
                                             </StackPanel>
-                                        </atom:Drawer.Extra>
-                                        <atom:Drawer.Footer>
-                                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                                <atom:Button Content="{gallery:DrawerShowCaseLangResource P2ContentEdit}" />
-                                                <atom:Button ButtonType="Primary" Content="{gallery:DrawerShowCaseLangResource P2ContentUpload}" />
-                                                <atom:Button ButtonType="Primary" IsDanger="True" Content="{gallery:DrawerShowCaseLangResource P2ContentDelete}" />
-                                            </StackPanel>
-                                        </atom:Drawer.Footer>
-                                        <StackPanel Orientation="Vertical" Spacing="5">
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                        </StackPanel>
-                                    </atom:Drawer>
-                                </Panel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                                        </atom:Drawer>
+                                    </StackPanel>
+                                </atom:Drawer>
+                            </Panel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource NoMaskTitle}" Description="{gallery:DrawerShowCaseLangResource NoMaskDescription}" IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:DrawerViewModel">
-                                <Panel>
+                <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource ExtraAndFooterTitle}"
+                                      Description="{gallery:DrawerShowCaseLangResource ExtraAndFooterDescription}" IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:DrawerViewModel">
+                            <Panel>
+                                <StackPanel Classes="ControllerPanel">
+                                    <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+                                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:DrawerShowCaseLangResource P2TextPlacement}" />
+                                        <atom:OptionButtonGroup ButtonStyle="Outline"
+                                                                Name="ExtraAndFooterPlacementGroup"
+                                                                OptionCheckedChanged="HandleExtraAndFooterPlacementChanged">
+                                            <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Left}" Content="{gallery:DrawerShowCaseLangResource P2ContentLeft}" />
+                                            <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Top}" Content="{gallery:DrawerShowCaseLangResource P2ContentTop}" />
+                                            <atom:OptionButton IsChecked="True" Tag="{x:Static atom:DrawerPlacement.Right}" Content="{gallery:DrawerShowCaseLangResource P2ContentRight}" />
+                                            <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Bottom}" Content="{gallery:DrawerShowCaseLangResource P2ContentBottom}" />
+                                        </atom:OptionButtonGroup>
+                                    </StackPanel>
                                     <atom:ToggleSwitch Content="{gallery:DrawerShowCaseLangResource P2ContentOpen}" />
-                                    <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
-                                                 Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
-                                                 IsShowMask="False">
-                                        <StackPanel Orientation="Vertical" Spacing="5">
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                </StackPanel>
+                                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                                             Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
+                                             Placement="{Binding ExtraAndFooterPlacement}">
+                                    <atom:Drawer.Extra>
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <atom:Button Content="{gallery:DrawerShowCaseLangResource P2ContentCancel}" />
+                                            <atom:Button ButtonType="Primary" Content="{gallery:DrawerShowCaseLangResource P2ContentOk}" />
                                         </StackPanel>
-                                    </atom:Drawer>
-                                </Panel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource CustomPlacementTitle}"
-                                          Description="{gallery:DrawerShowCaseLangResource CustomPlacementDescription}" IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:DrawerViewModel">
-                                <Panel>
-                                    <StackPanel Classes="ControllerPanel">
-                                        <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
-                                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:DrawerShowCaseLangResource P2TextPlacement}" />
-                                            <atom:OptionButtonGroup ButtonStyle="Outline"
-                                                                    Name="CustomPlacementGroup"
-                                                                    OptionCheckedChanged="HandleCustomPlacementChanged">
-                                                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Left}" Content="{gallery:DrawerShowCaseLangResource P2ContentLeft}" />
-                                                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Top}" Content="{gallery:DrawerShowCaseLangResource P2ContentTop}" />
-                                                <atom:OptionButton IsChecked="True" Tag="{x:Static atom:DrawerPlacement.Right}" Content="{gallery:DrawerShowCaseLangResource P2ContentRight}" />
-                                                <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Bottom}" Content="{gallery:DrawerShowCaseLangResource P2ContentBottom}" />
-                                            </atom:OptionButtonGroup>
+                                    </atom:Drawer.Extra>
+                                    <atom:Drawer.Footer>
+                                        <StackPanel Orientation="Horizontal" Spacing="10">
+                                            <atom:Button Content="{gallery:DrawerShowCaseLangResource P2ContentEdit}" />
+                                            <atom:Button ButtonType="Primary" Content="{gallery:DrawerShowCaseLangResource P2ContentUpload}" />
+                                            <atom:Button ButtonType="Primary" IsDanger="True" Content="{gallery:DrawerShowCaseLangResource P2ContentDelete}" />
                                         </StackPanel>
+                                    </atom:Drawer.Footer>
+                                    <StackPanel Orientation="Vertical" Spacing="5">
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                    </StackPanel>
+                                </atom:Drawer>
+                            </Panel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                                        <atom:ToggleSwitch Content="{gallery:DrawerShowCaseLangResource P2ContentOpen}" />
+                <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource NoMaskTitle}" Description="{gallery:DrawerShowCaseLangResource NoMaskDescription}" IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:DrawerViewModel">
+                            <Panel>
+                                <atom:ToggleSwitch Content="{gallery:DrawerShowCaseLangResource P2ContentOpen}" />
+                                <atom:Drawer IsOpen="{Binding $parent[Panel].((atom:ToggleSwitch)Children[0]).IsChecked}"
+                                             Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
+                                             IsShowMask="False">
+                                    <StackPanel Orientation="Vertical" Spacing="5">
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                    </StackPanel>
+                                </atom:Drawer>
+                            </Panel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource CustomPlacementTitle}"
+                                      Description="{gallery:DrawerShowCaseLangResource CustomPlacementDescription}" IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:DrawerViewModel">
+                            <Panel>
+                                <StackPanel Classes="ControllerPanel">
+                                    <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+                                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:DrawerShowCaseLangResource P2TextPlacement}" />
+                                        <atom:OptionButtonGroup ButtonStyle="Outline"
+                                                                Name="CustomPlacementGroup"
+                                                                OptionCheckedChanged="HandleCustomPlacementChanged">
+                                            <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Left}" Content="{gallery:DrawerShowCaseLangResource P2ContentLeft}" />
+                                            <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Top}" Content="{gallery:DrawerShowCaseLangResource P2ContentTop}" />
+                                            <atom:OptionButton IsChecked="True" Tag="{x:Static atom:DrawerPlacement.Right}" Content="{gallery:DrawerShowCaseLangResource P2ContentRight}" />
+                                            <atom:OptionButton Tag="{x:Static atom:DrawerPlacement.Bottom}" Content="{gallery:DrawerShowCaseLangResource P2ContentBottom}" />
+                                        </atom:OptionButtonGroup>
                                     </StackPanel>
 
-                                    <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                                                 Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
-                                                 Placement="{Binding CustomPlacement}">
-                                        <StackPanel Orientation="Vertical" Spacing="5">
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                        </StackPanel>
-                                    </atom:Drawer>
-                                </Panel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                                    <atom:ToggleSwitch Content="{gallery:DrawerShowCaseLangResource P2ContentOpen}" />
+                                </StackPanel>
 
-                    <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource RenderInCurrentAreaTitle}"
-                                          Description="{gallery:DrawerShowCaseLangResource RenderInCurrentAreaDescription}"
-                                          Height="300" IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:DrawerViewModel">
-                                <Panel>
-                                    <StackPanel Orientation="Vertical" Spacing="10">
-                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextRenderInThis}" />
-                                        <atom:ToggleSwitch />
+                                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                                             Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
+                                             Placement="{Binding CustomPlacement}">
+                                    <StackPanel Orientation="Vertical" Spacing="5">
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
                                     </StackPanel>
+                                </atom:Drawer>
+                            </Panel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                                    <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
-                                                 Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
-                                                 OpenOn="{Binding $parent[gallery:ShowCaseItem]}">
-                                        <StackPanel Orientation="Vertical" Spacing="5">
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                        </StackPanel>
-                                    </atom:Drawer>
-                                </Panel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource RenderInCurrentAreaTitle}"
+                                      Description="{gallery:DrawerShowCaseLangResource RenderInCurrentAreaDescription}"
+                                      Height="300" IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:DrawerViewModel">
+                            <Panel>
+                                <StackPanel Orientation="Vertical" Spacing="10">
+                                    <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextRenderInThis}" />
+                                    <atom:ToggleSwitch />
+                                </StackPanel>
 
-                    <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource PresetSizeTitle}"
-                                          Description="{gallery:DrawerShowCaseLangResource PresetSizeDescription}" IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:DrawerViewModel">
-                                <Panel>
-                                    <WrapPanel>
-                                        <WrapPanel.Styles>
-                                            <Style Selector="atom|Button">
-                                                <Setter Property="Margin" Value="5" />
-                                            </Style>
-                                        </WrapPanel.Styles>
-                                        <atom:Button ButtonType="Primary"
-                                                     Click="HandleOpenDefaultSizeDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentOpenDefaultSizeN378px}" />
-                                        <atom:Button ButtonType="Primary"
-                                                     Click="HandleOpenLargeSizeDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentOpenLargeSizeN736px}" />
+                                <atom:Drawer IsOpen="{Binding $parent[Panel].((Panel)Children[0]).((atom:ToggleSwitch)Children[1]).IsChecked}"
+                                             Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
+                                             OpenOn="{Binding $parent[gallery:ShowCaseItem]}">
+                                    <StackPanel Orientation="Vertical" Spacing="5">
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                    </StackPanel>
+                                </atom:Drawer>
+                            </Panel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                                        <atom:Button ButtonType="Primary"
-                                                     Click="HandleOpenCustomSizeDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentOpenCustomSizeN400px}" />
+                <gallery:ShowCaseItem Title="{gallery:DrawerShowCaseLangResource PresetSizeTitle}"
+                                      Description="{gallery:DrawerShowCaseLangResource PresetSizeDescription}" IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:DrawerViewModel">
+                            <Panel>
+                                <WrapPanel>
+                                    <WrapPanel.Styles>
+                                        <Style Selector="atom|Button">
+                                            <Setter Property="Margin" Value="5" />
+                                        </Style>
+                                    </WrapPanel.Styles>
+                                    <atom:Button ButtonType="Primary"
+                                                 Click="HandleOpenDefaultSizeDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentOpenDefaultSizeN378px}" />
+                                    <atom:Button ButtonType="Primary"
+                                                 Click="HandleOpenLargeSizeDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentOpenLargeSizeN736px}" />
 
-                                        <atom:Button ButtonType="Primary"
-                                                     Click="HandleOpenCustomPercentageSizeDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentOpenCustomSizeN50}" />
-                                    </WrapPanel>
+                                    <atom:Button ButtonType="Primary"
+                                                 Click="HandleOpenCustomSizeDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentOpenCustomSizeN400px}" />
 
-                                    <atom:Drawer Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
-                                                 Name="PresetSizeDrawer">
-                                        <StackPanel Orientation="Vertical" Spacing="5">
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                            <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
-                                        </StackPanel>
-                                    </atom:Drawer>
-                                </Panel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+                                    <atom:Button ButtonType="Primary"
+                                                 Click="HandleOpenCustomPercentageSizeDrawer" Content="{gallery:DrawerShowCaseLangResource P2ContentOpenCustomSizeN50}" />
+                                </WrapPanel>
+
+                                <atom:Drawer Title="{gallery:DrawerShowCaseLangResource P2TitleBasicDrawer}"
+                                             Name="PresetSizeDrawer">
+                                    <StackPanel Orientation="Vertical" Spacing="5">
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                        <atom:TextBlock Text="{gallery:DrawerShowCaseLangResource P2TextSomeContents}" />
+                                    </StackPanel>
+                                </atom:Drawer>
+                            </Panel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

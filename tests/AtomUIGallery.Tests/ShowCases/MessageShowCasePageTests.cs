@@ -23,16 +23,16 @@ public class MessageShowCasePageTests
         source.ShouldNotContain("MessageShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("MessageShowCaseLangResource ComponentCategory");
         source.ShouldContain("MessageShowCaseLangResource ComponentStatusStable");
-        source.ShouldContain("MessageShowCaseLangResource ScenarioExamples");
-        source.ShouldContain("MessageShowCaseLangResource ScenarioApi");
-        source.ShouldContain("MessageShowCaseLangResource ScenarioDesignToken");
-        source.ShouldContain("Tag=\"Examples\"");
-        source.ShouldContain("Tag=\"Api\"");
-        source.ShouldContain("Tag=\"DesignToken\"");
+        source.ShouldNotContain("MessageShowCaseLangResource ScenarioExamples");
+        source.ShouldNotContain("MessageShowCaseLangResource ScenarioApi");
+        source.ShouldNotContain("MessageShowCaseLangResource ScenarioDesignToken");
+        source.ShouldNotContain("Tag=\"Examples\"");
+        source.ShouldNotContain("Tag=\"Api\"");
+        source.ShouldNotContain("Tag=\"DesignToken\"");
         source.ShouldContain("<gallery:GalleryStickyTabsHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
-        source.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
+        source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("IsDeferredLoadingEnabled=\"True\"");
@@ -63,19 +63,18 @@ public class MessageShowCasePageTests
         var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageDesignTokenDataGrid.axaml");
         var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Feedback/Message/Views/MessageDesignTokenDataGrid.axaml.cs");
 
-        pageSource.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldContain("Tag=\"Api\"");
-        pageSource.ShouldContain("Tag=\"DesignToken\"");
+        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
+        pageSource.ShouldNotContain("Tag=\"Api\"");
+        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
 
-        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldContain("ExamplesContent");
-        codeBehindSource.ShouldContain("new MessageApiDataGrid()");
-        codeBehindSource.ShouldContain("new MessageDesignTokenDataGrid()");
+        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
+        codeBehindSource.ShouldNotContain("new MessageApiDataGrid()");
+        codeBehindSource.ShouldNotContain("new MessageDesignTokenDataGrid()");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:MessageApiRow\"");

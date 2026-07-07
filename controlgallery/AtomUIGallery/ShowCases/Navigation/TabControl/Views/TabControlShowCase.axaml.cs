@@ -21,17 +21,13 @@ public class MyTabItemData : TabItemData
 public partial class TabControlShowCase : GalleryReactiveUserControl<TabControlViewModel>
 {
     public const string LanguageId = nameof(TabControlShowCase);
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
 
-    private readonly GalleryShowCaseScenarioController _scenarioController;
     private readonly List<WeakReference<CardTabControl>> _dynamicAddTabControls = [];
     private EventHandler<LanguageVariantChangedEventArgs>? _languageVariantChangedHandler;
 
     public TabControlShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -39,14 +35,12 @@ public partial class TabControlShowCase : GalleryReactiveUserControl<TabControlV
         base.OnAttachedToVisualTree(e);
         RefreshViewModelData();
         SubscribeLanguageVariantChanged();
-        _scenarioController.Attach(DataContext);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
         UnsubscribeLanguageVariantChanged();
-        _scenarioController.Detach();
         _dynamicAddTabControls.Clear();
     }
 
@@ -54,17 +48,6 @@ public partial class TabControlShowCase : GalleryReactiveUserControl<TabControlV
     {
         base.OnDataContextChanged(e);
         RefreshViewModelData();
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new TabControlApiDataGrid(),
-            DesignTokenScenario => new TabControlDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown TabControl scenario: {scenario}")
-        };
     }
 
     private void HandleTabControlPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)

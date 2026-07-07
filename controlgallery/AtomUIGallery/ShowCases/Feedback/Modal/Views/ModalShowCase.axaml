@@ -19,411 +19,396 @@
                     BaseClass="Dialog" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:ModalShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:ModalShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:ModalShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-        <gallery:ShowCaseItem
-            Title="{gallery:ModalShowCaseLangResource BasicTitle}"
-            Description="{gallery:ModalShowCaseLangResource BasicDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="viewModels:ModalViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
-                <Panel>
-                    <atom:Button ButtonType="Primary" Name="BasicOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalOverlay}" />
-                    <atom:Dialog Name="BasicDialog"
-                                 IsOpen="{Binding IsBasicModalOpened, Mode=TwoWay}"
-                                 Title="{gallery:ModalShowCaseLangResource P2TitleBasicModal}"
-                                 IsModal="False"
-                                 IsResizable="False"
-                                 IsDragMovable="True"
-                                 IsMaximizable="False"
-                                 StandardButtons="Cancel,Ok"
-                                 DefaultStandardButton="Ok"
-                                 HorizontalStartupLocation="Center"
-                                 VerticalOffset="30%"
-                                 HostMinWidth="300">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                        </StackPanel>
-                    </atom:Dialog>
-                </Panel>
-                <Panel>
-                    <atom:Button ButtonType="Primary" Name="BasicWindowOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalWindow}" />
-                    <atom:Dialog Name="BasicWindowDialog"
-                                 IsOpen="{Binding IsBasicWindowModalOpened, Mode=TwoWay}"
-                                 Title="{gallery:ModalShowCaseLangResource P2TitleBasicWindowModal}"
-                                 IsModal="True"
-                                 IsResizable="True"
-                                 IsClosable="True"
-                                 IsDragMovable="True"
-                                 IsMaximizable="False"
-                                 DialogHostType="Window"
-                                 HorizontalStartupLocation="Center"
-                                 VerticalOffset="30%"
-                                 StandardButtons="Yes"
-                                 DefaultStandardButton="Yes"
-                                 HostMinWidth="300">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                        </StackPanel>
-                    </atom:Dialog>
-                </Panel>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+    <gallery:ShowCaseItem
+        Title="{gallery:ModalShowCaseLangResource BasicTitle}"
+        Description="{gallery:ModalShowCaseLangResource BasicDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:ModalViewModel">
+        <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
+            <Panel>
+                <atom:Button ButtonType="Primary" Name="BasicOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalOverlay}" />
+                <atom:Dialog Name="BasicDialog"
+                             IsOpen="{Binding IsBasicModalOpened, Mode=TwoWay}"
+                             Title="{gallery:ModalShowCaseLangResource P2TitleBasicModal}"
+                             IsModal="False"
+                             IsResizable="False"
+                             IsDragMovable="True"
+                             IsMaximizable="False"
+                             StandardButtons="Cancel,Ok"
+                             DefaultStandardButton="Ok"
+                             HorizontalStartupLocation="Center"
+                             VerticalOffset="30%"
+                             HostMinWidth="300">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                    </StackPanel>
+                </atom:Dialog>
+            </Panel>
+            <Panel>
+                <atom:Button ButtonType="Primary" Name="BasicWindowOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalWindow}" />
+                <atom:Dialog Name="BasicWindowDialog"
+                             IsOpen="{Binding IsBasicWindowModalOpened, Mode=TwoWay}"
+                             Title="{gallery:ModalShowCaseLangResource P2TitleBasicWindowModal}"
+                             IsModal="True"
+                             IsResizable="True"
+                             IsClosable="True"
+                             IsDragMovable="True"
+                             IsMaximizable="False"
+                             DialogHostType="Window"
+                             HorizontalStartupLocation="Center"
+                             VerticalOffset="30%"
+                             StandardButtons="Yes"
+                             DefaultStandardButton="Yes"
+                             HostMinWidth="300">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                    </StackPanel>
+                </atom:Dialog>
+            </Panel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ModalShowCaseLangResource AsynchronouslyCloseTitle}"
+        Description="{gallery:ModalShowCaseLangResource AsynchronouslyCloseDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:ModalViewModel">
+        <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
+            <Panel>
+                <atom:Button ButtonType="Primary" Name="AsyncDialogOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalWithAsyncLogic}" />
+                <atom:Dialog Name="AsyncDialog"
+                             IsOpen="{Binding IsAsyncDialogOpened, Mode=TwoWay}"
+                             Title="{gallery:ModalShowCaseLangResource P2TitleAsynchronouslyCloseModal}"
+                             IsModal="True"
+                             IsDragMovable="True"
+                             IsResizable="False"
+                             IsMaximizable="False"
+                             StandardButtons="Ok, Cancel"
+                             HorizontalStartupLocation="Center"
+                             VerticalStartupLocation="Center"
+                             DefaultStandardButton="Ok"
+                             ButtonClicked="HandleAsyncDialogButtonClicked"
+                             HostMinWidth="400">
+                    <StackPanel>
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextContentOfTheModal}" />
+                    </StackPanel>
+                </atom:Dialog>
+            </Panel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ModalShowCaseLangResource MessageBoxStyleTitle}"
+        Description="{gallery:ModalShowCaseLangResource MessageBoxStyleDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:ModalViewModel">
+
+        <StackPanel Orientation="Vertical" Spacing="20" Loaded="HandleDialogExampleLoaded">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <TextBlock VerticalAlignment="Center" Text="{gallery:ModalShowCaseLangResource P2TextNativeWindow}" />
+                <atom:ToggleSwitch Name="StyleCaseHostTypeSwitch" />
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ModalShowCaseLangResource AsynchronouslyCloseTitle}"
-            Description="{gallery:ModalShowCaseLangResource AsynchronouslyCloseDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="viewModels:ModalViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
-                <Panel>
-                    <atom:Button ButtonType="Primary" Name="AsyncDialogOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalWithAsyncLogic}" />
-                    <atom:Dialog Name="AsyncDialog"
-                                 IsOpen="{Binding IsAsyncDialogOpened, Mode=TwoWay}"
-                                 Title="{gallery:ModalShowCaseLangResource P2TitleAsynchronouslyCloseModal}"
-                                 IsModal="True"
-                                 IsDragMovable="True"
-                                 IsResizable="False"
-                                 IsMaximizable="False"
-                                 StandardButtons="Ok, Cancel"
-                                 HorizontalStartupLocation="Center"
-                                 VerticalStartupLocation="Center"
-                                 DefaultStandardButton="Ok"
-                                 ButtonClicked="HandleAsyncDialogButtonClicked"
-                                 HostMinWidth="400">
-                        <StackPanel>
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextContentOfTheModal}" />
-                        </StackPanel>
-                    </atom:Dialog>
-                </Panel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ModalShowCaseLangResource MessageBoxStyleTitle}"
-            Description="{gallery:ModalShowCaseLangResource MessageBoxStyleDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="viewModels:ModalViewModel">
-
-            <StackPanel Orientation="Vertical" Spacing="20" Loaded="HandleDialogExampleLoaded">
-                <StackPanel Orientation="Horizontal" Spacing="5">
-                    <TextBlock VerticalAlignment="Center" Text="{gallery:ModalShowCaseLangResource P2TextNativeWindow}" />
-                    <atom:ToggleSwitch Name="StyleCaseHostTypeSwitch" />
-                </StackPanel>
-                <atom:Separator Title="{gallery:ModalShowCaseLangResource P2TitleNormal}"/>
-                <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
-                    <Panel>
-                        <atom:MessageBox Name="ConfirmMsgBox"
-                                         Title="{gallery:ModalShowCaseLangResource P2TitleDoYouWantToDeleteTheseItems}"
-                                         IsOpen="{Binding IsConfirmMsgBoxOpened, Mode=TwoWay}"
-                                         Style="Confirm"
-                                         DialogHostType="{Binding MessageBoxStyleCaseHostType}">
-                            <StackPanel Orientation="Vertical" Spacing="5">
-                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeDescriptions}" />
-                            </StackPanel>
-                        </atom:MessageBox>
-                        <atom:Button Name="ConfirmMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentConfirm}" />
-                    </Panel>
-                    <Panel>
-                        <atom:MessageBox Name="InformationMsgBox"
-                                         Title="{gallery:ModalShowCaseLangResource P2TitleThisIsANotificationMessage}"
-                                         IsOpen="{Binding IsInformationMsgBoxOpened, Mode=TwoWay}"
-                                         Style="Information"
-                                         DialogHostType="{Binding MessageBoxStyleCaseHostType}">
-                            <StackPanel Orientation="Vertical" Spacing="5">
-                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
-                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
-                            </StackPanel>
-                        </atom:MessageBox>
-                        <atom:Button Name="InformationMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentInformation}" />
-                    </Panel>
-                    <Panel>
-                        <atom:MessageBox Name="SuccessMsgBox"
-                                         Title="{gallery:ModalShowCaseLangResource P2TitleOperationSuccessful}"
-                                         Style="Success"
-                                         DialogHostType="{Binding MessageBoxStyleCaseHostType}"
-                                         IsOpen="{Binding IsSuccessMsgBoxOpened, Mode=TwoWay}">
-                            <StackPanel Orientation="Vertical" Spacing="5">
-                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
-                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
-                            </StackPanel>
-                        </atom:MessageBox>
-                        <atom:Button Name="SuccessMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentSuccess}" />
-                    </Panel>
-                    <Panel>
-                        <atom:MessageBox Name="ErrorMsgBox"
-                                         Title="{gallery:ModalShowCaseLangResource P2TitleThisIsAnErrorMessage}"
-                                         Style="Error"
-                                         DialogHostType="{Binding MessageBoxStyleCaseHostType}"
-                                         IsOpen="{Binding IsErrorMsgBoxOpened, Mode=TwoWay}">
-                            <StackPanel Orientation="Vertical" Spacing="5">
-                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
-                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
-                            </StackPanel>
-                        </atom:MessageBox>
-                        <atom:Button Name="ErrorMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentError}" />
-                    </Panel>
-                    <Panel>
-                        <atom:MessageBox Name="WarningMsgBox"
-                                         Title="{gallery:ModalShowCaseLangResource P2TitleThisIsAWarningMessage}"
-                                         Style="Warning"
-                                         DialogHostType="{Binding MessageBoxStyleCaseHostType}"
-                                         IsOpen="{Binding IsWarningMsgBoxOpened, Mode=TwoWay}">
-                            <StackPanel Orientation="Vertical" Spacing="5">
-                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
-                                <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
-                            </StackPanel>
-                        </atom:MessageBox>
-                        <atom:Button Name="WarningMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentWarning}" />
-                    </Panel>
-                </WrapPanel>
-
-                <atom:Separator Title="{gallery:ModalShowCaseLangResource P2TitleStaticApi}" />
-                <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
-                    <atom:Button Click="HandleCreateConfirmMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentConfirm}" />
-                    <atom:Button Click="HandleCreateInformationMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentInformation}" />
-                    <atom:Button Click="HandleCreateSuccessMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentSuccess}" />
-                    <atom:Button Click="HandleCreateErrorMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentError}" />
-                    <atom:Button Click="HandleCreateWarningMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentWarning}" />
-                </WrapPanel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ModalShowCaseLangResource LoadingTitle}"
-            Description="{gallery:ModalShowCaseLangResource LoadingDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="viewModels:ModalViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
-                <Panel>
-                    <atom:Button ButtonType="Primary" Name="LoadingDialogOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
-                    <atom:Dialog Name="LoadingDialog"
-                                 IsOpen="{Binding IsLoadingMsgBoxOpened, Mode=TwoWay}"
-                                 Title="{gallery:ModalShowCaseLangResource P2TitleLoadingModal}"
-                                 IsModal="True"
-                                 IsLoading="True"
-                                 IsDragMovable="True"
-                                 IsResizable="False"
-                                 IsMaximizable="False"
-                                 StandardButtons="Reload"
-                                 HorizontalStartupLocation="Center"
-                                 VerticalStartupLocation="Center"
-                                 DefaultStandardButton="Reload"
-                                 Opened="HandleLoadingDialogOpened"
-                                 ButtonClicked="HandleLoadingDialogButtonClicked"
-                                 HostMinWidth="400">
-                        <StackPanel>
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                        </StackPanel>
-                    </atom:Dialog>
-                </Panel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ModalShowCaseLangResource CustomFooterButtonsTitle}"
-            Description="{gallery:ModalShowCaseLangResource CustomFooterButtonsDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="viewModels:ModalViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
-                <Panel>
-                    <atom:Button ButtonType="Primary" Name="CustomFooterDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
-                    <atom:Dialog Name="CustomFooterDialog"
-                                 IsOpen="{Binding IsCustomFooterDialogOpened, Mode=TwoWay}"
-                                 Title="{gallery:ModalShowCaseLangResource P2TitleTitle}"
-                                 IsModal="True"
-                                 DialogHostType="Window"
-                                 StandardButtons="Ok, Cancel"
-                                 HorizontalStartupLocation="Center"
-                                 VerticalStartupLocation="Center"
-                                 DefaultStandardButton="Ok"
-                                 HostMinWidth="400">
-                        <atom:Dialog.CustomButtons>
-                            <atom:DialogButton Role="ActionRole" Content="{gallery:ModalShowCaseLangResource P2ContentCustomButton}" />
-                        </atom:Dialog.CustomButtons>
-                        <StackPanel Spacing="5">
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                        </StackPanel>
-                    </atom:Dialog>
-                </Panel>
-
-                <Panel>
-                    <atom:Button ButtonType="Primary" Name="CustomFooterMsgBoxOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
-                    <atom:MessageBox Name="CustomFooterMsgBox"
-                                     IsOpen="{Binding IsCustomFooterMsgBoxOpened, Mode=TwoWay}"
-                                     Title="{gallery:ModalShowCaseLangResource P2TitleConfirm}"
-                                     IsModal="True"
-                                     Style="Confirm"
-                                     HostMinWidth="400">
-                        <atom:MessageBox.CustomButtons>
-                            <atom:DialogButton Role="ActionRole" Content="{gallery:ModalShowCaseLangResource P2ContentCustomButton}" />
-                        </atom:MessageBox.CustomButtons>
-                        <StackPanel Spacing="5">
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextBlaBla}" />
-                        </StackPanel>
-                    </atom:MessageBox>
-                </Panel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ModalShowCaseLangResource OpenDraggableModalTitle}"
-            Description="{gallery:ModalShowCaseLangResource OpenDraggableModalDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="viewModels:ModalViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
-                <Panel>
-                    <atom:Button ButtonType="Primary" Name="DraggableDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
-                    <atom:Dialog Name="DraggableDialog"
-                                 IsOpen="{Binding IsDraggableMsgBoxOpened, Mode=TwoWay}"
-                                 Title="{gallery:ModalShowCaseLangResource P2TitleDraggableModal}"
-                                 IsModal="True"
-                                 IsDragMovable="True"
-                                 StandardButtons="Ok, Cancel"
-                                 HorizontalStartupLocation="Center"
-                                 VerticalStartupLocation="Center"
-                                 DefaultStandardButton="Ok"
-                                 HostWidth="400">
-                        <StackPanel Spacing="10">
-                            <TextBlock TextWrapping="Wrap" Text="{gallery:ModalShowCaseLangResource P2TextJustDonTLearnPhysicsAtSchoolAnd}" />
-                            <TextBlock TextWrapping="Wrap" Text="{gallery:ModalShowCaseLangResource P2TextDayBeforeYesterdayISawARabbitAnd}" />
-                        </StackPanel>
-                    </atom:Dialog>
-                </Panel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ModalShowCaseLangResource ManualUpdateDestroyTitle}"
-            Description="{gallery:ModalShowCaseLangResource ManualUpdateDestroyDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="viewModels:ModalViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
-                <Panel>
-                    <atom:Button Name="DelayedCloseMsgBoxOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalToCloseInN5s}" />
-                    <atom:MessageBox Name="DelayedCloseMsgBox"
-                                     IsOpen="{Binding IsDelayedCloseMsgBoxOpened, Mode=TwoWay}"
-                                     Title="{gallery:ModalShowCaseLangResource P2TitleThisIsANotificationMessage}"
-                                     IsModal="True"
-                                     IsDragMovable="False"
-                                     IsCenterOnStartup="True"
-                                     Style="Success"
-                                     Opened="HandleDelayedCloseMsgBoxOpened"
-                                     HostWidth="400">
-                        <StackPanel Spacing="10">
-                            <TextBlock TextWrapping="Wrap">
-                                <Run Text="{gallery:ModalShowCaseLangResource P2RunThisModalWillBeDestroyedAfter}" />
-                                <Run Text="{Binding CountdownSeconds}" />
-                                <Run Text="{gallery:ModalShowCaseLangResource P2RunSecond}" />
-                            </TextBlock>
-                        </StackPanel>
-                    </atom:MessageBox>
-                </Panel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ModalShowCaseLangResource CustomizeFooterButtonPropsTitle}"
-            Description="{gallery:ModalShowCaseLangResource CustomizeFooterButtonPropsDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="viewModels:ModalViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
-                <Panel>
-                    <atom:Button ButtonType="Primary" Name="ConfigureButtonsDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalWithCustomizedButtonProps}" />
-                    <atom:Dialog Name="ConfigureButtonPropertiesDialog"
-                                 IsOpen="{Binding IsConfigureButtonsDialogOpened, Mode=TwoWay}"
-                                 Title="{gallery:ModalShowCaseLangResource P2TitleBasicModal}"
-                                 IsModal="True"
-                                 IsDragMovable="True"
-                                 StandardButtons="Ok, Cancel"
-                                 HorizontalStartupLocation="Center"
-                                 VerticalStartupLocation="Center"
-                                 DefaultStandardButton="Ok"
-                                 HostWidth="400">
-                        <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
-                        </StackPanel>
-                    </atom:Dialog>
-                </Panel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:ModalShowCaseLangResource StaticDialogApiTitle}"
-            Description="{gallery:ModalShowCaseLangResource StaticDialogApiDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="viewModels:ModalViewModel">
+            <atom:Separator Title="{gallery:ModalShowCaseLangResource P2TitleNormal}"/>
             <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
-                <atom:Button Name="OpenOverlayDialogAPIButton" ButtonType="Primary" Click="HandleOpenOverlayDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenOverlayDialog}" />
-
-                <atom:Button ButtonType="Primary" Click="HandleOpenWindowDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenWindowDialog}" />
-
-                <atom:Button ButtonType="Primary" Click="HandleOpenCustomViewDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenCustomviewDialog}" />
-
-                <atom:Button ButtonType="Primary" Click="HandleOpenBeforeCloseDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenBeforeCloseDialog}" />
+                <Panel>
+                    <atom:MessageBox Name="ConfirmMsgBox"
+                                     Title="{gallery:ModalShowCaseLangResource P2TitleDoYouWantToDeleteTheseItems}"
+                                     IsOpen="{Binding IsConfirmMsgBoxOpened, Mode=TwoWay}"
+                                     Style="Confirm"
+                                     DialogHostType="{Binding MessageBoxStyleCaseHostType}">
+                        <StackPanel Orientation="Vertical" Spacing="5">
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeDescriptions}" />
+                        </StackPanel>
+                    </atom:MessageBox>
+                    <atom:Button Name="ConfirmMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentConfirm}" />
+                </Panel>
+                <Panel>
+                    <atom:MessageBox Name="InformationMsgBox"
+                                     Title="{gallery:ModalShowCaseLangResource P2TitleThisIsANotificationMessage}"
+                                     IsOpen="{Binding IsInformationMsgBoxOpened, Mode=TwoWay}"
+                                     Style="Information"
+                                     DialogHostType="{Binding MessageBoxStyleCaseHostType}">
+                        <StackPanel Orientation="Vertical" Spacing="5">
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                        </StackPanel>
+                    </atom:MessageBox>
+                    <atom:Button Name="InformationMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentInformation}" />
+                </Panel>
+                <Panel>
+                    <atom:MessageBox Name="SuccessMsgBox"
+                                     Title="{gallery:ModalShowCaseLangResource P2TitleOperationSuccessful}"
+                                     Style="Success"
+                                     DialogHostType="{Binding MessageBoxStyleCaseHostType}"
+                                     IsOpen="{Binding IsSuccessMsgBoxOpened, Mode=TwoWay}">
+                        <StackPanel Orientation="Vertical" Spacing="5">
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                        </StackPanel>
+                    </atom:MessageBox>
+                    <atom:Button Name="SuccessMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentSuccess}" />
+                </Panel>
+                <Panel>
+                    <atom:MessageBox Name="ErrorMsgBox"
+                                     Title="{gallery:ModalShowCaseLangResource P2TitleThisIsAnErrorMessage}"
+                                     Style="Error"
+                                     DialogHostType="{Binding MessageBoxStyleCaseHostType}"
+                                     IsOpen="{Binding IsErrorMsgBoxOpened, Mode=TwoWay}">
+                        <StackPanel Orientation="Vertical" Spacing="5">
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                        </StackPanel>
+                    </atom:MessageBox>
+                    <atom:Button Name="ErrorMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentError}" />
+                </Panel>
+                <Panel>
+                    <atom:MessageBox Name="WarningMsgBox"
+                                     Title="{gallery:ModalShowCaseLangResource P2TitleThisIsAWarningMessage}"
+                                     Style="Warning"
+                                     DialogHostType="{Binding MessageBoxStyleCaseHostType}"
+                                     IsOpen="{Binding IsWarningMsgBoxOpened, Mode=TwoWay}">
+                        <StackPanel Orientation="Vertical" Spacing="5">
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                            <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeMessagesSomeMessages}" />
+                        </StackPanel>
+                    </atom:MessageBox>
+                    <atom:Button Name="WarningMsgBoxBtn" Content="{gallery:ModalShowCaseLangResource P2ContentWarning}" />
+                </Panel>
             </WrapPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
 
-                </gallery:ShowCasePanel>
-            </ContentControl>
+            <atom:Separator Title="{gallery:ModalShowCaseLangResource P2TitleStaticApi}" />
+            <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
+                <atom:Button Click="HandleCreateConfirmMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentConfirm}" />
+                <atom:Button Click="HandleCreateInformationMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentInformation}" />
+                <atom:Button Click="HandleCreateSuccessMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentSuccess}" />
+                <atom:Button Click="HandleCreateErrorMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentError}" />
+                <atom:Button Click="HandleCreateWarningMessageBox" Content="{gallery:ModalShowCaseLangResource P2ContentWarning}" />
+            </WrapPanel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ModalShowCaseLangResource LoadingTitle}"
+        Description="{gallery:ModalShowCaseLangResource LoadingDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:ModalViewModel">
+        <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
+            <Panel>
+                <atom:Button ButtonType="Primary" Name="LoadingDialogOpenModalButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
+                <atom:Dialog Name="LoadingDialog"
+                             IsOpen="{Binding IsLoadingMsgBoxOpened, Mode=TwoWay}"
+                             Title="{gallery:ModalShowCaseLangResource P2TitleLoadingModal}"
+                             IsModal="True"
+                             IsLoading="True"
+                             IsDragMovable="True"
+                             IsResizable="False"
+                             IsMaximizable="False"
+                             StandardButtons="Reload"
+                             HorizontalStartupLocation="Center"
+                             VerticalStartupLocation="Center"
+                             DefaultStandardButton="Reload"
+                             Opened="HandleLoadingDialogOpened"
+                             ButtonClicked="HandleLoadingDialogButtonClicked"
+                             HostMinWidth="400">
+                    <StackPanel>
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                    </StackPanel>
+                </atom:Dialog>
+            </Panel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ModalShowCaseLangResource CustomFooterButtonsTitle}"
+        Description="{gallery:ModalShowCaseLangResource CustomFooterButtonsDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:ModalViewModel">
+        <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
+            <Panel>
+                <atom:Button ButtonType="Primary" Name="CustomFooterDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
+                <atom:Dialog Name="CustomFooterDialog"
+                             IsOpen="{Binding IsCustomFooterDialogOpened, Mode=TwoWay}"
+                             Title="{gallery:ModalShowCaseLangResource P2TitleTitle}"
+                             IsModal="True"
+                             DialogHostType="Window"
+                             StandardButtons="Ok, Cancel"
+                             HorizontalStartupLocation="Center"
+                             VerticalStartupLocation="Center"
+                             DefaultStandardButton="Ok"
+                             HostMinWidth="400">
+                    <atom:Dialog.CustomButtons>
+                        <atom:DialogButton Role="ActionRole" Content="{gallery:ModalShowCaseLangResource P2ContentCustomButton}" />
+                    </atom:Dialog.CustomButtons>
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                    </StackPanel>
+                </atom:Dialog>
+            </Panel>
+
+            <Panel>
+                <atom:Button ButtonType="Primary" Name="CustomFooterMsgBoxOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
+                <atom:MessageBox Name="CustomFooterMsgBox"
+                                 IsOpen="{Binding IsCustomFooterMsgBoxOpened, Mode=TwoWay}"
+                                 Title="{gallery:ModalShowCaseLangResource P2TitleConfirm}"
+                                 IsModal="True"
+                                 Style="Confirm"
+                                 HostMinWidth="400">
+                    <atom:MessageBox.CustomButtons>
+                        <atom:DialogButton Role="ActionRole" Content="{gallery:ModalShowCaseLangResource P2ContentCustomButton}" />
+                    </atom:MessageBox.CustomButtons>
+                    <StackPanel Spacing="5">
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextBlaBla}" />
+                    </StackPanel>
+                </atom:MessageBox>
+            </Panel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ModalShowCaseLangResource OpenDraggableModalTitle}"
+        Description="{gallery:ModalShowCaseLangResource OpenDraggableModalDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:ModalViewModel">
+        <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
+            <Panel>
+                <atom:Button ButtonType="Primary" Name="DraggableDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModal}" />
+                <atom:Dialog Name="DraggableDialog"
+                             IsOpen="{Binding IsDraggableMsgBoxOpened, Mode=TwoWay}"
+                             Title="{gallery:ModalShowCaseLangResource P2TitleDraggableModal}"
+                             IsModal="True"
+                             IsDragMovable="True"
+                             StandardButtons="Ok, Cancel"
+                             HorizontalStartupLocation="Center"
+                             VerticalStartupLocation="Center"
+                             DefaultStandardButton="Ok"
+                             HostWidth="400">
+                    <StackPanel Spacing="10">
+                        <TextBlock TextWrapping="Wrap" Text="{gallery:ModalShowCaseLangResource P2TextJustDonTLearnPhysicsAtSchoolAnd}" />
+                        <TextBlock TextWrapping="Wrap" Text="{gallery:ModalShowCaseLangResource P2TextDayBeforeYesterdayISawARabbitAnd}" />
+                    </StackPanel>
+                </atom:Dialog>
+            </Panel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ModalShowCaseLangResource ManualUpdateDestroyTitle}"
+        Description="{gallery:ModalShowCaseLangResource ManualUpdateDestroyDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:ModalViewModel">
+        <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
+            <Panel>
+                <atom:Button Name="DelayedCloseMsgBoxOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalToCloseInN5s}" />
+                <atom:MessageBox Name="DelayedCloseMsgBox"
+                                 IsOpen="{Binding IsDelayedCloseMsgBoxOpened, Mode=TwoWay}"
+                                 Title="{gallery:ModalShowCaseLangResource P2TitleThisIsANotificationMessage}"
+                                 IsModal="True"
+                                 IsDragMovable="False"
+                                 IsCenterOnStartup="True"
+                                 Style="Success"
+                                 Opened="HandleDelayedCloseMsgBoxOpened"
+                                 HostWidth="400">
+                    <StackPanel Spacing="10">
+                        <TextBlock TextWrapping="Wrap">
+                            <Run Text="{gallery:ModalShowCaseLangResource P2RunThisModalWillBeDestroyedAfter}" />
+                            <Run Text="{Binding CountdownSeconds}" />
+                            <Run Text="{gallery:ModalShowCaseLangResource P2RunSecond}" />
+                        </TextBlock>
+                    </StackPanel>
+                </atom:MessageBox>
+            </Panel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ModalShowCaseLangResource CustomizeFooterButtonPropsTitle}"
+        Description="{gallery:ModalShowCaseLangResource CustomizeFooterButtonPropsDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:ModalViewModel">
+        <StackPanel Orientation="Horizontal" Spacing="10" Loaded="HandleDialogExampleLoaded">
+            <Panel>
+                <atom:Button ButtonType="Primary" Name="ConfigureButtonsDialogOpenButton" Content="{gallery:ModalShowCaseLangResource P2ContentOpenModalWithCustomizedButtonProps}" />
+                <atom:Dialog Name="ConfigureButtonPropertiesDialog"
+                             IsOpen="{Binding IsConfigureButtonsDialogOpened, Mode=TwoWay}"
+                             Title="{gallery:ModalShowCaseLangResource P2TitleBasicModal}"
+                             IsModal="True"
+                             IsDragMovable="True"
+                             StandardButtons="Ok, Cancel"
+                             HorizontalStartupLocation="Center"
+                             VerticalStartupLocation="Center"
+                             DefaultStandardButton="Ok"
+                             HostWidth="400">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                        <TextBlock Text="{gallery:ModalShowCaseLangResource P2TextSomeContents}" />
+                    </StackPanel>
+                </atom:Dialog>
+            </Panel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ModalShowCaseLangResource StaticDialogApiTitle}"
+        Description="{gallery:ModalShowCaseLangResource StaticDialogApiDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="viewModels:ModalViewModel">
+        <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="10">
+            <atom:Button Name="OpenOverlayDialogAPIButton" ButtonType="Primary" Click="HandleOpenOverlayDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenOverlayDialog}" />
+
+            <atom:Button ButtonType="Primary" Click="HandleOpenWindowDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenWindowDialog}" />
+
+            <atom:Button ButtonType="Primary" Click="HandleOpenCustomViewDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenCustomviewDialog}" />
+
+            <atom:Button ButtonType="Primary" Click="HandleOpenBeforeCloseDialogButtonClick" Content="{gallery:ModalShowCaseLangResource P2ContentOpenBeforeCloseDialog}" />
+        </WrapPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

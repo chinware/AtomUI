@@ -7,29 +7,23 @@ namespace AtomUIGallery.ShowCases.ImagePreviewer;
 public partial class ImagePreviewerShowCase : GalleryReactiveUserControl<ImagePreviewerViewModel>
 {
     public const string LanguageId = nameof(ImagePreviewerShowCase);
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
 
-    private readonly GalleryShowCaseScenarioController _scenarioController;
     private ImagePreviewerViewModel? _activeViewModel;
 
     public ImagePreviewerShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
         EnsurePreviewAssets();
-        _scenarioController.Attach(DataContext);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
         ClearPreviewAssets();
     }
 
@@ -38,17 +32,6 @@ public partial class ImagePreviewerShowCase : GalleryReactiveUserControl<ImagePr
         base.OnDataContextChanged(e);
 
         EnsurePreviewAssets();
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new ImagePreviewerApiDataGrid(),
-            DesignTokenScenario => new ImagePreviewerDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown ImagePreviewer scenario: {scenario}")
-        };
     }
 
     private void EnsurePreviewAssets()
