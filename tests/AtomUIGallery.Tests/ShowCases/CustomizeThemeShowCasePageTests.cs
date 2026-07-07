@@ -23,16 +23,16 @@ public class CustomizeThemeShowCasePageTests
         source.ShouldNotContain("CustomizeThemeShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("CustomizeThemeShowCaseLangResource ComponentCategory");
         source.ShouldContain("CustomizeThemeShowCaseLangResource ComponentStatusStable");
-        source.ShouldContain("CustomizeThemeShowCaseLangResource ScenarioExamples");
-        source.ShouldContain("CustomizeThemeShowCaseLangResource ScenarioApi");
-        source.ShouldContain("CustomizeThemeShowCaseLangResource ScenarioDesignToken");
-        source.ShouldContain("Tag=\"Examples\"");
-        source.ShouldContain("Tag=\"Api\"");
-        source.ShouldContain("Tag=\"DesignToken\"");
+        source.ShouldNotContain("CustomizeThemeShowCaseLangResource ScenarioExamples");
+        source.ShouldNotContain("CustomizeThemeShowCaseLangResource ScenarioApi");
+        source.ShouldNotContain("CustomizeThemeShowCaseLangResource ScenarioDesignToken");
+        source.ShouldNotContain("Tag=\"Examples\"");
+        source.ShouldNotContain("Tag=\"Api\"");
+        source.ShouldNotContain("Tag=\"DesignToken\"");
         source.ShouldContain("<gallery:GalleryStickyTabsHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
-        source.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
+        source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("IsDeferredLoadingEnabled=\"True\"");
@@ -69,19 +69,18 @@ public class CustomizeThemeShowCasePageTests
         var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Views/CustomizeThemeDesignTokenDataGrid.axaml");
         var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/CustomizeTheme/Views/CustomizeThemeDesignTokenDataGrid.axaml.cs");
 
-        pageSource.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldContain("Tag=\"Api\"");
-        pageSource.ShouldContain("Tag=\"DesignToken\"");
+        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
+        pageSource.ShouldNotContain("Tag=\"Api\"");
+        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
 
-        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldContain("ExamplesContent");
-        codeBehindSource.ShouldContain("new CustomizeThemeApiDataGrid()");
-        codeBehindSource.ShouldContain("new CustomizeThemeDesignTokenDataGrid()");
+        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
+        codeBehindSource.ShouldNotContain("new CustomizeThemeApiDataGrid()");
+        codeBehindSource.ShouldNotContain("new CustomizeThemeDesignTokenDataGrid()");
 
         apiSource.ShouldContain("<atom:DataGrid");
         apiSource.ShouldContain("x:DataType=\"viewModels:CustomizeThemeApiRow\"");

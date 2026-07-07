@@ -21,138 +21,218 @@
                     BaseClass="BaseTabStrip" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripBasicTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripBasicDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:TabStrip>
-                    <atom:TabStripItem IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                    <atom:TabStripItem IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                </atom:TabStrip>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripBasicTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripBasicDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:TabStrip>
+                <atom:TabStripItem IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+            </atom:TabStrip>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripItemsSourceTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripItemsSourceDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:TabStrip ItemsSource="{Binding TabStripItemDataSource}">
+                <atom:TabStrip.ItemTemplate>
+                    <DataTemplate x:DataType="atom:TabItemData">
+                        <TextBlock Text="{Binding Header}" />
+                    </DataTemplate>
+                </atom:TabStrip.ItemTemplate>
+            </atom:TabStrip>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripDisabledTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripDisabledDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:CardTabStrip>
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem IsEnabled="False" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+            </atom:CardTabStrip>
+
+            <atom:TabStrip>
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem IsEnabled="False" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+            </atom:TabStrip>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripCenteredTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripCenteredDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:TabStrip TabAlignmentCenter="True">
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+            </atom:TabStrip>
+
+            <atom:CardTabStrip TabAlignmentCenter="True">
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+            </atom:CardTabStrip>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripIconTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripIconDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:TabStrip>
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+            </atom:TabStrip>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripSlideTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripSlideDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:TabStrip>
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN5}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN6}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN7}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN8}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN9}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN10}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN11}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN12}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN13}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN14}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN15}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN16}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN17}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN18}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN19}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN20}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN21}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN22}" />
+                <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN23}" />
+            </atom:TabStrip>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripCardTypeTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripCardTypeDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:CardTabStrip>
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
+            </atom:CardTabStrip>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripClosableTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripClosableDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:CardTabStrip IsTabClosable="True"
+                               IsTabAutoHideCloseButton="True">
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" IsClosable="False" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+            </atom:CardTabStrip>
+
+            <atom:TabStrip IsTabClosable="True"
+                           IsTabAutoHideCloseButton="True">
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" IsClosable="False" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+            </atom:TabStrip>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripPositionTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripPositionDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabPosition}" />
+                <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionTabStripOptionGroup"
+                                        OptionCheckedChanged="HandleTabStripPlacementOptionCheckedChanged">
+                    <atom:OptionButton IsChecked="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTop}" />
+                    <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentBottom}" />
+                    <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentLeft}" />
+                    <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentRight}" />
+                </atom:OptionButtonGroup>
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripItemsSourceTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripItemsSourceDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:TabStrip ItemsSource="{Binding TabStripItemDataSource}">
-                    <atom:TabStrip.ItemTemplate>
-                        <DataTemplate x:DataType="atom:TabItemData">
-                            <TextBlock Text="{Binding Header}" />
-                        </DataTemplate>
-                    </atom:TabStrip.ItemTemplate>
-                </atom:TabStrip>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripDisabledTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripDisabledDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:CardTabStrip>
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                    <atom:TabStripItem IsEnabled="False" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                </atom:CardTabStrip>
-
-                <atom:TabStrip>
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                    <atom:TabStripItem IsEnabled="False" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                </atom:TabStrip>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripCenteredTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripCenteredDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:TabStrip TabAlignmentCenter="True">
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                </atom:TabStrip>
-
-                <atom:CardTabStrip TabAlignmentCenter="True">
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                </atom:CardTabStrip>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripIconTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripIconDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:TabStrip>
+            <DockPanel Height="300">
+                <atom:TabStrip Name="PositionTabStrip"
+                               DockPanel.Dock="{Binding PositionTabStripPlacement}"
+                               TabStripPlacement="{Binding PositionTabStripPlacement}">
                     <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
                     <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                </atom:TabStrip>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripSlideTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripSlideDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:TabStrip>
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
                     <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
+                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
                     <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN5}" />
                     <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN6}" />
                     <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN7}" />
@@ -163,207 +243,112 @@
                     <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN12}" />
                     <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN13}" />
                     <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN14}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN15}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN16}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN17}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN18}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN19}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN20}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN21}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN22}" />
-                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN23}" />
                 </atom:TabStrip>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                        Background="{atom:SharedTokenResource ColorBgElevated}">
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabContent}" />
+                </Border>
+            </DockPanel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripCardTypeTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripCardTypeDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:CardTabStrip>
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripCardShapePositionTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripCardShapePositionDescription}"
+        Margin="0, 0, 10, 0"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <TextBlock VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabPosition}" />
+                <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionCardTabStripOptionGroup"
+                                        OptionCheckedChanged="HandleCardTabStripPlacementOptionCheckedChanged">
+                    <atom:OptionButton IsChecked="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTop}" />
+                    <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentBottom}" />
+                    <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentLeft}" />
+                    <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentRight}" />
+                </atom:OptionButtonGroup>
+            </StackPanel>
+
+            <DockPanel Height="300">
+                <atom:CardTabStrip Name="PositionCardTabStrip"
+                                   DockPanel.Dock="{Binding PositionCardTabStripPlacement}"
+                                   TabStripPlacement="{Binding PositionCardTabStripPlacement}"
+                                   IsShowAddTabButton="True">
                     <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
                     <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+                    <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
                     <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
                 </atom:CardTabStrip>
+                <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                        Background="{atom:SharedTokenResource ColorBgElevated}">
+                    <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabContent}" />
+                </Border>
+            </DockPanel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripSizeTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripSizeDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <StackPanel Orientation="Horizontal" Spacing="5">
+                <TextBlock VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabPosition}" />
+                <atom:OptionButtonGroup ButtonStyle="Outline" Name="SizeTypeTabStripOptionGroup"
+                                        OptionCheckedChanged="HandleTabStripSizeTypeOptionCheckedChanged">
+                    <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentSmall}" />
+                    <atom:OptionButton IsChecked="True" Content="{gallery:TabStripShowCaseLangResource P2ContentMiddle}" />
+                    <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentLarge}" />
+                </atom:OptionButtonGroup>
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripClosableTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripClosableDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:CardTabStrip IsTabClosable="True"
-                                   IsTabAutoHideCloseButton="True">
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" IsClosable="False" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                </atom:CardTabStrip>
+            <atom:TabStrip SizeType="{Binding SizeTypeTabStrip}">
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
+            </atom:TabStrip>
 
-                <atom:TabStrip IsTabClosable="True"
-                               IsTabAutoHideCloseButton="True">
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" IsClosable="False" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                </atom:TabStrip>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            <atom:CardTabStrip SizeType="{Binding SizeTypeTabStrip}">
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
+            </atom:CardTabStrip>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripPositionTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripPositionDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <StackPanel Orientation="Horizontal" Spacing="5">
-                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabPosition}" />
-                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionTabStripOptionGroup"
-                                            OptionCheckedChanged="HandleTabStripPlacementOptionCheckedChanged">
-                        <atom:OptionButton IsChecked="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTop}" />
-                        <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentBottom}" />
-                        <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentLeft}" />
-                        <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentRight}" />
-                    </atom:OptionButtonGroup>
-                </StackPanel>
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripAddCloseTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripAddCloseDescription}"
+        Margin="0, 0, 30, 0"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <atom:CardTabStrip IsShowAddTabButton="True" Name="AddTabDemoStrip"
+                                   AddTabRequest="HandleTabStripAddTabRequest">
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+                <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
+            </atom:CardTabStrip>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-                <DockPanel Height="300">
-                    <atom:TabStrip Name="PositionTabStrip"
-                                   DockPanel.Dock="{Binding PositionTabStripPlacement}"
-                                   TabStripPlacement="{Binding PositionTabStripPlacement}">
-                        <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                        <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                        <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN5}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN6}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN7}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN8}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN9}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN10}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN11}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN12}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN13}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN14}" />
-                    </atom:TabStrip>
-                    <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                            Background="{atom:SharedTokenResource ColorBgElevated}">
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabContent}" />
-                    </Border>
-                </DockPanel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripCardShapePositionTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripCardShapePositionDescription}"
-            Margin="0, 0, 10, 0"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <StackPanel Orientation="Horizontal" Spacing="5">
-                    <TextBlock VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabPosition}" />
-                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="PositionCardTabStripOptionGroup"
-                                            OptionCheckedChanged="HandleCardTabStripPlacementOptionCheckedChanged">
-                        <atom:OptionButton IsChecked="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTop}" />
-                        <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentBottom}" />
-                        <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentLeft}" />
-                        <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentRight}" />
-                    </atom:OptionButtonGroup>
-                </StackPanel>
-
-                <DockPanel Height="300">
-                    <atom:CardTabStrip Name="PositionCardTabStrip"
-                                       DockPanel.Dock="{Binding PositionCardTabStripPlacement}"
-                                       TabStripPlacement="{Binding PositionCardTabStripPlacement}"
-                                       IsShowAddTabButton="True">
-                        <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                        <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                        <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                        <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
-                    </atom:CardTabStrip>
-                    <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                            Background="{atom:SharedTokenResource ColorBgElevated}">
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabContent}" />
-                    </Border>
-                </DockPanel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripSizeTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripSizeDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <StackPanel Orientation="Horizontal" Spacing="5">
-                    <TextBlock VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabPosition}" />
-                    <atom:OptionButtonGroup ButtonStyle="Outline" Name="SizeTypeTabStripOptionGroup"
-                                            OptionCheckedChanged="HandleTabStripSizeTypeOptionCheckedChanged">
-                        <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentSmall}" />
-                        <atom:OptionButton IsChecked="True" Content="{gallery:TabStripShowCaseLangResource P2ContentMiddle}" />
-                        <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentLarge}" />
-                    </atom:OptionButtonGroup>
-                </StackPanel>
-
-                <atom:TabStrip SizeType="{Binding SizeTypeTabStrip}">
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
-                </atom:TabStrip>
-
-                <atom:CardTabStrip SizeType="{Binding SizeTypeTabStrip}">
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
-                </atom:CardTabStrip>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:TabStripShowCaseLangResource TabStripAddCloseTitle}"
-            Description="{gallery:TabStripShowCaseLangResource TabStripAddCloseDescription}"
-            Margin="0, 0, 30, 0"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:TabStripViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <atom:CardTabStrip IsShowAddTabButton="True" Name="AddTabDemoStrip"
-                                       AddTabRequest="HandleTabStripAddTabRequest">
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
-                    <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" IsClosable="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
-                </atom:CardTabStrip>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-                </gallery:ShowCasePanel>
-            </ContentControl>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

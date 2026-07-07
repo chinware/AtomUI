@@ -21,11 +21,6 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
     public static readonly StyledProperty<double[]> DashedArrayProperty =
         AvaloniaProperty.Register<StepsShowCase, double[]>(nameof(DashedArray));
 
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
-    private readonly GalleryShowCaseScenarioController _scenarioController;
-
     public double[] DashedArray
     {
         get => GetValue(DashedArrayProperty);
@@ -36,7 +31,6 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
     {
         InitializeComponent();
         DashedArray = [4d, 3d];
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
 
         this.WhenActivated(disposables =>
         {
@@ -53,24 +47,11 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
         });
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
-    }
-
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
 
         ResetInteractiveState();
-        _scenarioController.UpdateDataContext(DataContext);
     }
 
     public void HandleNextButtonClick(object? sender, RoutedEventArgs args)
@@ -105,16 +86,6 @@ public partial class StepsShowCase : GalleryReactiveUserControl<StepsViewModel>
 
         presenter[!ContentPresenter.ContentProperty] = steps[!AtomUISteps.CurrentContentProperty];
         presenter[!ContentPresenter.ContentTemplateProperty] = steps[!AtomUISteps.CurrentContentTemplateProperty];
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new StepsApiDataGrid(),
-            DesignTokenScenario => new StepsDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Steps scenario: {scenario}")
-        };
     }
 
     private void ResetInteractiveState()

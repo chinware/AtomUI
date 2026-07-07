@@ -24,6 +24,7 @@
                                 Background="{TemplateBinding StickyBackground}"
                                 BorderBrush="{TemplateBinding StickyBorderBrush}"
                                 BorderThickness="0,0,0,1"
+                                IsVisible="{TemplateBinding HasStickyContent}"
                                 Padding="{TemplateBinding StickyContentPadding}"
                                 ZIndex="1">
                             <ContentPresenter Content="{TemplateBinding StickyContent}" />

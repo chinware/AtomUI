@@ -20,15 +20,9 @@ public partial class SpaceShowCase : GalleryReactiveUserControl<SpaceViewModel>
 {
     public const string LanguageId = nameof(SpaceShowCase);
 
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
-    private readonly GalleryShowCaseScenarioController _scenarioController;
-
     public SpaceShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
 
         this.WhenActivated(disposables =>
         {
@@ -43,18 +37,6 @@ public partial class SpaceShowCase : GalleryReactiveUserControl<SpaceViewModel>
         });
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
-    }
-
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
@@ -65,7 +47,6 @@ public partial class SpaceShowCase : GalleryReactiveUserControl<SpaceViewModel>
             RefreshLocalizedOptionData(viewModel);
         }
 
-        _scenarioController.UpdateDataContext(DataContext);
     }
 
     public void HandleSizeTypeChanged(object? sender, RoutedEventArgs e)
@@ -88,16 +69,6 @@ public partial class SpaceShowCase : GalleryReactiveUserControl<SpaceViewModel>
         }
 
         customSizeSlider.IsVisible = sizeType == CustomizableSizeType.Custom;
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new SpaceApiDataGrid(),
-            DesignTokenScenario => new SpaceDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Space scenario: {scenario}")
-        };
     }
 
     private void RefreshCurrentViewModelData()

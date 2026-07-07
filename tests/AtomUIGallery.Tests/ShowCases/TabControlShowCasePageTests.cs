@@ -23,16 +23,16 @@ public class TabControlShowCasePageTests
         source.ShouldNotContain("TabControlShowCaseLangResource InfoBaseClassLabel");
         source.ShouldContain("TabControlShowCaseLangResource ComponentCategory");
         source.ShouldContain("TabControlShowCaseLangResource ComponentStatusStable");
-        source.ShouldContain("TabControlShowCaseLangResource ScenarioExamples");
-        source.ShouldContain("TabControlShowCaseLangResource ScenarioApi");
-        source.ShouldContain("TabControlShowCaseLangResource ScenarioDesignToken");
-        source.ShouldContain("Tag=\"Examples\"");
-        source.ShouldContain("Tag=\"Api\"");
-        source.ShouldContain("Tag=\"DesignToken\"");
+        source.ShouldNotContain("TabControlShowCaseLangResource ScenarioExamples");
+        source.ShouldNotContain("TabControlShowCaseLangResource ScenarioApi");
+        source.ShouldNotContain("TabControlShowCaseLangResource ScenarioDesignToken");
+        source.ShouldNotContain("Tag=\"Examples\"");
+        source.ShouldNotContain("Tag=\"Api\"");
+        source.ShouldNotContain("Tag=\"DesignToken\"");
         source.ShouldContain("<gallery:GalleryStickyTabsHost");
         source.ShouldContain("StickyContentPadding=\"28,0,28,0\"");
-        source.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        source.ShouldContain("<ContentControl Name=\"ScenarioContentHost\">");
+        source.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        source.ShouldNotContain("<ContentControl Name=\"ScenarioContentHost\">");
         source.ShouldContain("Name=\"ExamplesContent\"");
         source.ShouldContain("IsScrollEnabled=\"False\"");
         source.ShouldContain("IsDeferredLoadingEnabled=\"True\"");
@@ -66,10 +66,10 @@ public class TabControlShowCasePageTests
         var tokenSource      = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Views/TabControlDesignTokenDataGrid.axaml");
         var tokenCodeSource  = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Navigation/TabControl/Views/TabControlDesignTokenDataGrid.axaml.cs");
 
-        pageSource.ShouldContain("<atom:TabStrip Name=\"ScenarioTabs\"");
-        pageSource.ShouldContain("Name=\"ScenarioContentHost\"");
-        pageSource.ShouldContain("Tag=\"Api\"");
-        pageSource.ShouldContain("Tag=\"DesignToken\"");
+        pageSource.ShouldNotContain("<atom:TabStrip Name=\"ScenarioTabs\"");
+        pageSource.ShouldNotContain("Name=\"ScenarioContentHost\"");
+        pageSource.ShouldNotContain("Tag=\"Api\"");
+        pageSource.ShouldNotContain("Tag=\"DesignToken\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding ApiRows}\"");
         pageSource.ShouldNotContain("ItemsSource=\"{Binding DesignTokenRows}\"");
 
@@ -78,12 +78,11 @@ public class TabControlShowCasePageTests
         pageSource.ShouldContain("OptionCheckedChanged=\"HandleTabControlSizeTypeOptionCheckedChanged\"");
         pageSource.ShouldContain("AddTabRequest=\"HandleTabControlAddTabRequest\"");
 
-        codeBehindSource.ShouldContain("new GalleryShowCaseScenarioController");
-        codeBehindSource.ShouldContain("_scenarioController.Attach(DataContext)");
-        codeBehindSource.ShouldContain("_scenarioController.UpdateDataContext(DataContext)");
-        codeBehindSource.ShouldContain("ExamplesContent");
-        codeBehindSource.ShouldContain("new TabControlApiDataGrid()");
-        codeBehindSource.ShouldContain("new TabControlDesignTokenDataGrid()");
+        codeBehindSource.ShouldNotContain("new GalleryShowCaseScenarioController");
+        codeBehindSource.ShouldNotContain("_scenarioController.Attach(DataContext)");
+        codeBehindSource.ShouldNotContain("_scenarioController.UpdateDataContext(DataContext)");
+        codeBehindSource.ShouldNotContain("new TabControlApiDataGrid()");
+        codeBehindSource.ShouldNotContain("new TabControlDesignTokenDataGrid()");
         codeBehindSource.ShouldNotContain("PositionTabControlOptionGroup");
         codeBehindSource.ShouldNotContain("PositionCardTabControlOptionGroup");
         codeBehindSource.ShouldNotContain("SizeTypeTabControlOptionGroup");

@@ -20,159 +20,144 @@
                     BaseClass="AbstractSkeleton" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:SkeletonShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:SkeletonShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:SkeletonShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-        <gallery:ShowCaseItem
-            Title="{gallery:SkeletonShowCaseLangResource BasicTitle}"
-            Description="{gallery:SkeletonShowCaseLangResource BasicDescription}"
-            IsOccupyEntireRow="True"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:SkeletonViewModel">
-            <atom:Skeleton IsLoading="True"/>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+    <gallery:ShowCaseItem
+        Title="{gallery:SkeletonShowCaseLangResource BasicTitle}"
+        Description="{gallery:SkeletonShowCaseLangResource BasicDescription}"
+        IsOccupyEntireRow="True"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:SkeletonViewModel">
+        <atom:Skeleton IsLoading="True"/>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:SkeletonShowCaseLangResource ComplexCombinationTitle}"
-            Description="{gallery:SkeletonShowCaseLangResource ComplexCombinationDescription}"
-            IsOccupyEntireRow="True"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:SkeletonViewModel">
-            <atom:Skeleton IsShowAvatar="True" ParagraphRows="4" IsLoading="True"/>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+    <gallery:ShowCaseItem
+        Title="{gallery:SkeletonShowCaseLangResource ComplexCombinationTitle}"
+        Description="{gallery:SkeletonShowCaseLangResource ComplexCombinationDescription}"
+        IsOccupyEntireRow="True"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:SkeletonViewModel">
+        <atom:Skeleton IsShowAvatar="True" ParagraphRows="4" IsLoading="True"/>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:SkeletonShowCaseLangResource ActiveAnimationTitle}"
-            Description="{gallery:SkeletonShowCaseLangResource ActiveAnimationDescription}"
-            IsOccupyEntireRow="True"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:SkeletonViewModel">
-            <atom:Skeleton IsActive="True" IsLoading="True"/>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+    <gallery:ShowCaseItem
+        Title="{gallery:SkeletonShowCaseLangResource ActiveAnimationTitle}"
+        Description="{gallery:SkeletonShowCaseLangResource ActiveAnimationDescription}"
+        IsOccupyEntireRow="True"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:SkeletonViewModel">
+        <atom:Skeleton IsActive="True" IsLoading="True"/>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:SkeletonShowCaseLangResource ButtonAvatarInputImageNodeTitle}"
-            Description="{gallery:SkeletonShowCaseLangResource ButtonAvatarInputImageNodeDescription}"
-            IsOccupyEntireRow="True"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:SkeletonViewModel">
-            <StackPanel Orientation="Vertical" Spacing="20">
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:SkeletonButton IsActive="{Binding IsSkeletonActive}" IsBlock="{Binding IsSkeletonBlock}"
-                                         SizeType="{Binding SkeletonButtonAndInputSizeType}"
-                                         Shape="{Binding SkeletonButtonShape}"/>
-                    <atom:SkeletonAvatar IsActive="{Binding IsSkeletonActive}"
-                                         SizeType="{Binding SkeletonButtonAndInputSizeType}"
-                                         Shape="{Binding SkeletonAvatarShape}"/>
-                    <atom:SkeletonInput IsActive="{Binding IsSkeletonActive}"
-                                        SizeType="{Binding SkeletonButtonAndInputSizeType}"/>
-                </StackPanel>
+    <gallery:ShowCaseItem
+        Title="{gallery:SkeletonShowCaseLangResource ButtonAvatarInputImageNodeTitle}"
+        Description="{gallery:SkeletonShowCaseLangResource ButtonAvatarInputImageNodeDescription}"
+        IsOccupyEntireRow="True"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:SkeletonViewModel">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <StackPanel Orientation="Horizontal" Spacing="10">
                 <atom:SkeletonButton IsActive="{Binding IsSkeletonActive}" IsBlock="{Binding IsSkeletonBlock}"
                                      SizeType="{Binding SkeletonButtonAndInputSizeType}"
                                      Shape="{Binding SkeletonButtonShape}"/>
-                <atom:SkeletonInput IsActive="{Binding IsSkeletonActive}" IsBlock="{Binding IsSkeletonBlock}"
+                <atom:SkeletonAvatar IsActive="{Binding IsSkeletonActive}"
+                                     SizeType="{Binding SkeletonButtonAndInputSizeType}"
+                                     Shape="{Binding SkeletonAvatarShape}"/>
+                <atom:SkeletonInput IsActive="{Binding IsSkeletonActive}"
                                     SizeType="{Binding SkeletonButtonAndInputSizeType}"/>
+            </StackPanel>
+            <atom:SkeletonButton IsActive="{Binding IsSkeletonActive}" IsBlock="{Binding IsSkeletonBlock}"
+                                 SizeType="{Binding SkeletonButtonAndInputSizeType}"
+                                 Shape="{Binding SkeletonButtonShape}"/>
+            <atom:SkeletonInput IsActive="{Binding IsSkeletonActive}" IsBlock="{Binding IsSkeletonBlock}"
+                                SizeType="{Binding SkeletonButtonAndInputSizeType}"/>
 
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:SkeletonImage IsActive="{Binding IsSkeletonActive}"/>
-                    <atom:SkeletonNode IsActive="{Binding IsSkeletonActive}" Width="160"/>
-                    <atom:SkeletonNode IsActive="{Binding IsSkeletonActive}">
-                        <antdicons:DotChartOutlined StrokeBrush="#bfbfbf" Width="40" Height="40"/>
-                    </atom:SkeletonNode>
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:SkeletonImage IsActive="{Binding IsSkeletonActive}"/>
+                <atom:SkeletonNode IsActive="{Binding IsSkeletonActive}" Width="160"/>
+                <atom:SkeletonNode IsActive="{Binding IsSkeletonActive}">
+                    <antdicons:DotChartOutlined StrokeBrush="#bfbfbf" Width="40" Height="40"/>
+                </atom:SkeletonNode>
+            </StackPanel>
+
+            <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="20">
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextActive}" />
+                    <atom:ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding IsSkeletonActive, Mode=TwoWay}"/>
                 </StackPanel>
 
-                <WrapPanel Orientation="Horizontal" ItemSpacing="10" LineSpacing="20">
-                    <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextActive}" />
-                        <atom:ToggleSwitch VerticalAlignment="Center" IsChecked="{Binding IsSkeletonActive, Mode=TwoWay}"/>
-                    </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextButtonAndInputBlock}" />
+                    <atom:ToggleSwitch IsChecked="{Binding IsSkeletonBlock, Mode=TwoWay}" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextButtonAndInputBlock}" />
-                        <atom:ToggleSwitch IsChecked="{Binding IsSkeletonBlock, Mode=TwoWay}" VerticalAlignment="Center"/>
-                    </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextSize}" />
+                    <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleSizeTypeChanged">
+                        <atom:OptionButton IsChecked="True" Content="{gallery:SkeletonShowCaseLangResource P2ContentDefault}" />
+                        <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentLarge}" />
+                        <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentSmall}" />
+                    </atom:OptionButtonGroup>
+                </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextSize}" />
-                        <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleSizeTypeChanged">
-                            <atom:OptionButton IsChecked="True" Content="{gallery:SkeletonShowCaseLangResource P2ContentDefault}" />
-                            <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentLarge}" />
-                            <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentSmall}" />
-                        </atom:OptionButtonGroup>
-                    </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextButtonShape}" />
+                    <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleButtonShapeChanged">
+                        <atom:OptionButton IsChecked="True" Content="{gallery:SkeletonShowCaseLangResource P2ContentSquare}" />
+                        <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentRound}" />
+                        <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentCircle}" />
+                    </atom:OptionButtonGroup>
+                </StackPanel>
 
-                    <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextButtonShape}" />
-                        <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleButtonShapeChanged">
-                            <atom:OptionButton IsChecked="True" Content="{gallery:SkeletonShowCaseLangResource P2ContentSquare}" />
-                            <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentRound}" />
-                            <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentCircle}" />
-                        </atom:OptionButtonGroup>
-                    </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="5">
+                    <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextAvatarShape}" />
+                    <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleButtonAvatarChanged">
+                        <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentSquare}" />
+                        <atom:OptionButton IsChecked="True" Content="{gallery:SkeletonShowCaseLangResource P2ContentCircle}" />
+                    </atom:OptionButtonGroup>
+                </StackPanel>
+            </WrapPanel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-                    <StackPanel Orientation="Horizontal" Spacing="5">
-                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:SkeletonShowCaseLangResource P2TextAvatarShape}" />
-                        <atom:OptionButtonGroup ButtonStyle="Outline" OptionCheckedChanged="HandleButtonAvatarChanged">
-                            <atom:OptionButton Content="{gallery:SkeletonShowCaseLangResource P2ContentSquare}" />
-                            <atom:OptionButton IsChecked="True" Content="{gallery:SkeletonShowCaseLangResource P2ContentCircle}" />
-                        </atom:OptionButtonGroup>
-                    </StackPanel>
-                </WrapPanel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-
-        <gallery:ShowCaseItem
-            Title="{gallery:SkeletonShowCaseLangResource ContainsSubComponentTitle}"
-            Description="{gallery:SkeletonShowCaseLangResource ContainsSubComponentDescription}"
-            IsOccupyEntireRow="True"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:SkeletonViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:Skeleton IsLoading="{Binding SkeletonLoading}">
-                    <StackPanel Orientation="Vertical" Spacing="20">
-                        <atom:TextBlock FontWeight="Bold" Text="{gallery:SkeletonShowCaseLangResource P2TextAntDesignADesignLanguage}" />
-                        <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SkeletonShowCaseLangResource P2TextWeSupplyASeriesOfDesignPrinciplesPractical}" />
-                    </StackPanel>
-                </atom:Skeleton>
-                <atom:Button IsEnabled="{Binding SkeletonLoading, Converter={x:Static BoolConverters.Not}}"
-                             Click="HandleLoadingButtonClicked" Content="{gallery:SkeletonShowCaseLangResource P2ContentShowSkeleton}" />
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+    <gallery:ShowCaseItem
+        Title="{gallery:SkeletonShowCaseLangResource ContainsSubComponentTitle}"
+        Description="{gallery:SkeletonShowCaseLangResource ContainsSubComponentDescription}"
+        IsOccupyEntireRow="True"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:SkeletonViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:Skeleton IsLoading="{Binding SkeletonLoading}">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <atom:TextBlock FontWeight="Bold" Text="{gallery:SkeletonShowCaseLangResource P2TextAntDesignADesignLanguage}" />
+                    <atom:TextBlock TextWrapping="Wrap" Text="{gallery:SkeletonShowCaseLangResource P2TextWeSupplyASeriesOfDesignPrinciplesPractical}" />
+                </StackPanel>
+            </atom:Skeleton>
+            <atom:Button IsEnabled="{Binding SkeletonLoading, Converter={x:Static BoolConverters.Not}}"
+                         Click="HandleLoadingButtonClicked" Content="{gallery:SkeletonShowCaseLangResource P2ContentShowSkeleton}" />
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

@@ -21,12 +21,8 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
 {
     public const string LanguageId = nameof(FormShowCase);
 
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
     private static int s_formGid = 3;
 
-    private readonly GalleryShowCaseScenarioController _scenarioController;
     private WindowMessageManager? _messageManager;
 
     public FormShowCase()
@@ -47,37 +43,13 @@ public partial class FormShowCase : GalleryReactiveUserControl<FormViewModel>
         });
 
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
         _messageManager?.Dispose();
         _messageManager = null;
-    }
-
-    protected override void OnDataContextChanged(EventArgs e)
-    {
-        base.OnDataContextChanged(e);
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new FormApiDataGrid(),
-            DesignTokenScenario => new FormDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Form scenario: {scenario}")
-        };
     }
 
     private void HandleBasicFormAttached(object? sender, VisualTreeAttachmentEventArgs args)

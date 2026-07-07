@@ -22,196 +22,181 @@
                     MetadataValueWidth="220" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:MasonryShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:MasonryShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:MasonryShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
 
-                    <!-- Basic: 4-column masonry with varying-height cards, mirroring the Ant Design basic demo. -->
-                    <gallery:ShowCaseItem
-                        Title="{gallery:MasonryShowCaseLangResource BasicTitle}"
-                        Description="{gallery:MasonryShowCaseLangResource BasicDescription}"
-                        IsDeferredContentEnabled="True"
-                        IsOccupyEntireRow="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:MasonryViewModel">
-                                <atom:Masonry ItemsSource="{Binding BasicItems}"
+                <!-- Basic: 4-column masonry with varying-height cards, mirroring the Ant Design basic demo. -->
+                <gallery:ShowCaseItem
+                    Title="{gallery:MasonryShowCaseLangResource BasicTitle}"
+                    Description="{gallery:MasonryShowCaseLangResource BasicDescription}"
+                    IsDeferredContentEnabled="True"
+                    IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:MasonryViewModel">
+                            <atom:Masonry ItemsSource="{Binding BasicItems}"
+                                          ColumnCount="4"
+                                          ColumnGap="16"
+                                          RowGap="16"
+                                          HorizontalAlignment="Stretch">
+                                <atom:Masonry.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:MasonryBasicItem">
+                                        <Panel>
+                                            <atom:Card SizeType="Small"
+                                                       Height="{Binding Height}"
+                                                       HorizontalAlignment="Stretch"
+                                                       IsVisible="{Binding !IsSpecial}">
+                                                <atom:TextBlock Text="{Binding Index}" />
+                                            </atom:Card>
+                                            <atom:Card SizeType="Small"
+                                                       ClipToBounds="True"
+                                                       HorizontalAlignment="Stretch"
+                                                       IsVisible="{Binding IsSpecial}">
+                                                <atom:Card.Cover>
+                                                    <Panel MinHeight="210"
+                                                           Loaded="HandleImageSkeletonLoaded"
+                                                           ClipToBounds="True">
+                                                        <Image Name="SpecialCoverImage"
+                                                               asyncImageLoader:ImageLoader.Source="{Binding CoverSource}"
+                                                               Stretch="UniformToFill" />
+                                                        <Border Name="SpecialCoverSkeleton"
+                                                                Padding="16,16">
+                                                            <atom:Skeleton IsLoading="True"
+                                                                           IsActive="True"
+                                                                           IsShowAvatar="False"
+                                                                           IsShowTitle="True"
+                                                                           ParagraphRows="3"
+                                                                           IsRound="True" />
+                                                        </Border>
+                                                    </Panel>
+                                                </atom:Card.Cover>
+                                                <atom:CardMetaContent Header="{Binding Title}"
+                                                                      Content="{Binding Description}" />
+                                            </atom:Card>
+                                        </Panel>
+                                    </DataTemplate>
+                                </atom:Masonry.ItemTemplate>
+                            </atom:Masonry>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <!-- Responsive: mirrors the Ant Design responsive demo with breakpoint columns and gutter. -->
+                <gallery:ShowCaseItem
+                    Title="{gallery:MasonryShowCaseLangResource ResponsiveTitle}"
+                    Description="{gallery:MasonryShowCaseLangResource ResponsiveDescription}"
+                    IsDeferredContentEnabled="True"
+                    IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:MasonryViewModel">
+                            <atom:Masonry ItemsSource="{Binding ResponsiveItems}"
+                                          ColumnInfo="xs: 1, sm: 2, md: 3, lg: 4"
+                                          Gutter="xs: 8, sm: 12, md: 16; xs: 8, sm: 12, md: 16"
+                                          HorizontalAlignment="Stretch">
+                                <atom:Masonry.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:MasonryBasicItem">
+                                        <atom:Card SizeType="Small"
+                                                   Height="{Binding Height}"
+                                                   HorizontalAlignment="Stretch">
+                                            <atom:TextBlock Text="{Binding Index}" />
+                                        </atom:Card>
+                                    </DataTemplate>
+                                </atom:Masonry.ItemTemplate>
+                            </atom:Masonry>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <!-- Image: mirrors the Ant Design image demo with natural image heights. -->
+                <gallery:ShowCaseItem
+                    Title="{gallery:MasonryShowCaseLangResource ImageTitle}"
+                    Description="{gallery:MasonryShowCaseLangResource ImageDescription}"
+                    IsDeferredContentEnabled="True"
+                    IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:MasonryViewModel">
+                            <atom:Masonry ItemsSource="{Binding ImageItems}"
+                                          ColumnCount="4"
+                                          ColumnGap="16"
+                                          RowGap="16"
+                                          HorizontalAlignment="Stretch">
+                                <atom:Masonry.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:MasonryImageItem">
+                                        <Panel ClipToBounds="True"
+                                               Loaded="HandleImageSkeletonLoaded">
+                                            <Image Name="MasonryImage"
+                                                   asyncImageLoader:ImageLoader.Source="{Binding ImageSource}"
+                                                   Stretch="Uniform"
+                                                   HorizontalAlignment="Stretch" />
+                                            <Border Name="MasonryImageSkeleton"
+                                                    MinHeight="210"
+                                                    Padding="16,16">
+                                                <atom:Skeleton IsLoading="True"
+                                                               IsActive="True"
+                                                               IsShowAvatar="False"
+                                                               IsShowTitle="True"
+                                                               ParagraphRows="3"
+                                                               IsRound="True" />
+                                            </Border>
+                                        </Panel>
+                                    </DataTemplate>
+                                </atom:Masonry.ItemTemplate>
+                            </atom:Masonry>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <!-- Dynamic: mirrors the Ant Design dynamic demo and persists effective item columns. -->
+                <gallery:ShowCaseItem
+                    Title="{gallery:MasonryShowCaseLangResource DynamicTitle}"
+                    Description="{gallery:MasonryShowCaseLangResource DynamicDescription}"
+                    IsDeferredContentEnabled="True"
+                    IsOccupyEntireRow="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:MasonryViewModel">
+                            <StackPanel Spacing="16">
+                                <atom:Masonry ItemsSource="{Binding DynamicItems}"
                                               ColumnCount="4"
                                               ColumnGap="16"
                                               RowGap="16"
-                                              HorizontalAlignment="Stretch">
+                                              HorizontalAlignment="Stretch"
+                                              LayoutChanged="HandleDynamicMasonryLayoutChanged">
+                                    <atom:Masonry.ItemContainerTheme>
+                                        <ControlTheme TargetType="ContentPresenter"
+                                                      x:DataType="vm:MasonryDynamicItem">
+                                            <Setter Property="atom:Masonry.Column"
+                                                    Value="{CompiledBinding Column}" />
+                                        </ControlTheme>
+                                    </atom:Masonry.ItemContainerTheme>
                                     <atom:Masonry.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:MasonryBasicItem">
-                                            <Panel>
-                                                <atom:Card SizeType="Small"
-                                                           Height="{Binding Height}"
-                                                           HorizontalAlignment="Stretch"
-                                                           IsVisible="{Binding !IsSpecial}">
-                                                    <atom:TextBlock Text="{Binding Index}" />
-                                                </atom:Card>
-                                                <atom:Card SizeType="Small"
-                                                           ClipToBounds="True"
-                                                           HorizontalAlignment="Stretch"
-                                                           IsVisible="{Binding IsSpecial}">
-                                                    <atom:Card.Cover>
-                                                        <Panel MinHeight="210"
-                                                               Loaded="HandleImageSkeletonLoaded"
-                                                               ClipToBounds="True">
-                                                            <Image Name="SpecialCoverImage"
-                                                                   asyncImageLoader:ImageLoader.Source="{Binding CoverSource}"
-                                                                   Stretch="UniformToFill" />
-                                                            <Border Name="SpecialCoverSkeleton"
-                                                                    Padding="16,16">
-                                                                <atom:Skeleton IsLoading="True"
-                                                                               IsActive="True"
-                                                                               IsShowAvatar="False"
-                                                                               IsShowTitle="True"
-                                                                               ParagraphRows="3"
-                                                                               IsRound="True" />
-                                                            </Border>
-                                                        </Panel>
-                                                    </atom:Card.Cover>
-                                                    <atom:CardMetaContent Header="{Binding Title}"
-                                                                          Content="{Binding Description}" />
-                                                </atom:Card>
-                                            </Panel>
-                                        </DataTemplate>
-                                    </atom:Masonry.ItemTemplate>
-                                </atom:Masonry>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <!-- Responsive: mirrors the Ant Design responsive demo with breakpoint columns and gutter. -->
-                    <gallery:ShowCaseItem
-                        Title="{gallery:MasonryShowCaseLangResource ResponsiveTitle}"
-                        Description="{gallery:MasonryShowCaseLangResource ResponsiveDescription}"
-                        IsDeferredContentEnabled="True"
-                        IsOccupyEntireRow="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:MasonryViewModel">
-                                <atom:Masonry ItemsSource="{Binding ResponsiveItems}"
-                                              ColumnInfo="xs: 1, sm: 2, md: 3, lg: 4"
-                                              Gutter="xs: 8, sm: 12, md: 16; xs: 8, sm: 12, md: 16"
-                                              HorizontalAlignment="Stretch">
-                                    <atom:Masonry.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:MasonryBasicItem">
+                                        <DataTemplate x:DataType="vm:MasonryDynamicItem">
                                             <atom:Card SizeType="Small"
                                                        Height="{Binding Height}"
                                                        HorizontalAlignment="Stretch">
-                                                <atom:TextBlock Text="{Binding Index}" />
+                                                <Grid>
+                                                    <atom:TextBlock Text="{Binding DisplayText}" />
+                                                    <atom:Button SizeType="Small"
+                                                                 HorizontalAlignment="Right"
+                                                                 VerticalAlignment="Top"
+                                                                 Icon="{antdicons:AntDesignIconProvider Kind=CloseOutlined}"
+                                                                 Click="HandleRemoveDynamicMasonryItemClick" />
+                                                </Grid>
                                             </atom:Card>
                                         </DataTemplate>
                                     </atom:Masonry.ItemTemplate>
                                 </atom:Masonry>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <!-- Image: mirrors the Ant Design image demo with natural image heights. -->
-                    <gallery:ShowCaseItem
-                        Title="{gallery:MasonryShowCaseLangResource ImageTitle}"
-                        Description="{gallery:MasonryShowCaseLangResource ImageDescription}"
-                        IsDeferredContentEnabled="True"
-                        IsOccupyEntireRow="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:MasonryViewModel">
-                                <atom:Masonry ItemsSource="{Binding ImageItems}"
-                                              ColumnCount="4"
-                                              ColumnGap="16"
-                                              RowGap="16"
-                                              HorizontalAlignment="Stretch">
-                                    <atom:Masonry.ItemTemplate>
-                                        <DataTemplate x:DataType="vm:MasonryImageItem">
-                                            <Panel ClipToBounds="True"
-                                                   Loaded="HandleImageSkeletonLoaded">
-                                                <Image Name="MasonryImage"
-                                                       asyncImageLoader:ImageLoader.Source="{Binding ImageSource}"
-                                                       Stretch="Uniform"
-                                                       HorizontalAlignment="Stretch" />
-                                                <Border Name="MasonryImageSkeleton"
-                                                        MinHeight="210"
-                                                        Padding="16,16">
-                                                    <atom:Skeleton IsLoading="True"
-                                                                   IsActive="True"
-                                                                   IsShowAvatar="False"
-                                                                   IsShowTitle="True"
-                                                                   ParagraphRows="3"
-                                                                   IsRound="True" />
-                                                </Border>
-                                            </Panel>
-                                        </DataTemplate>
-                                    </atom:Masonry.ItemTemplate>
-                                </atom:Masonry>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <!-- Dynamic: mirrors the Ant Design dynamic demo and persists effective item columns. -->
-                    <gallery:ShowCaseItem
-                        Title="{gallery:MasonryShowCaseLangResource DynamicTitle}"
-                        Description="{gallery:MasonryShowCaseLangResource DynamicDescription}"
-                        IsDeferredContentEnabled="True"
-                        IsOccupyEntireRow="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:MasonryViewModel">
-                                <StackPanel Spacing="16">
-                                    <atom:Masonry ItemsSource="{Binding DynamicItems}"
-                                                  ColumnCount="4"
-                                                  ColumnGap="16"
-                                                  RowGap="16"
-                                                  HorizontalAlignment="Stretch"
-                                                  LayoutChanged="HandleDynamicMasonryLayoutChanged">
-                                        <atom:Masonry.ItemContainerTheme>
-                                            <ControlTheme TargetType="ContentPresenter"
-                                                          x:DataType="vm:MasonryDynamicItem">
-                                                <Setter Property="atom:Masonry.Column"
-                                                        Value="{CompiledBinding Column}" />
-                                            </ControlTheme>
-                                        </atom:Masonry.ItemContainerTheme>
-                                        <atom:Masonry.ItemTemplate>
-                                            <DataTemplate x:DataType="vm:MasonryDynamicItem">
-                                                <atom:Card SizeType="Small"
-                                                           Height="{Binding Height}"
-                                                           HorizontalAlignment="Stretch">
-                                                    <Grid>
-                                                        <atom:TextBlock Text="{Binding DisplayText}" />
-                                                        <atom:Button SizeType="Small"
-                                                                     HorizontalAlignment="Right"
-                                                                     VerticalAlignment="Top"
-                                                                     Icon="{antdicons:AntDesignIconProvider Kind=CloseOutlined}"
-                                                                     Click="HandleRemoveDynamicMasonryItemClick" />
-                                                    </Grid>
-                                                </atom:Card>
-                                            </DataTemplate>
-                                        </atom:Masonry.ItemTemplate>
-                                    </atom:Masonry>
-                                    <atom:Button HorizontalAlignment="Stretch"
-                                                 Command="{Binding AddDynamicMasonryItemCommand}"
-                                                 Content="{gallery:MasonryShowCaseLangResource DynamicAddItemLabel}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+                                <atom:Button HorizontalAlignment="Stretch"
+                                             Command="{Binding AddDynamicMasonryItemCommand}"
+                                             Content="{gallery:MasonryShowCaseLangResource DynamicAddItemLabel}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

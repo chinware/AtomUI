@@ -19,242 +19,227 @@
                     BaseClass="ItemsControl" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:ListShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:ListShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:ListShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource BasicUsageTitle}"
-                        Description="{gallery:ListShowCaseLangResource BasicUsageDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <atom:ListView ItemsSource="{Binding ListItems}" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource BasicUsageTitle}"
+                    Description="{gallery:ListShowCaseLangResource BasicUsageDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <atom:ListView ItemsSource="{Binding ListItems}" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource SelectionTitle}"
-                        Description="{gallery:ListShowCaseLangResource SelectionDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <StackPanel Spacing="20">
-                            <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
-                                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:ListShowCaseLangResource P2TextSelectionMode}" />
-                                <atom:OptionButtonGroup ButtonStyle="Solid" OptionCheckedChanged="HandleSelectionModeOptionCheckedChanged">
-                                    <atom:OptionButton IsChecked="True" Tag="{x:Static SelectionMode.Single}" Content="{gallery:ListShowCaseLangResource P2ContentSingle}" />
-                                    <atom:OptionButton Tag="{x:Static SelectionMode.Multiple}" Content="{gallery:ListShowCaseLangResource P2ContentMultiple}" />
-                                    <atom:OptionButton Tag="{x:Static SelectionMode.Toggle}" Content="{gallery:ListShowCaseLangResource P2ContentToggle}" />
-                                </atom:OptionButtonGroup>
-                            </StackPanel>
-                            <atom:ListView SelectionMode="{Binding SelectionMode}"
-                                           ItemsSource="{Binding SelectionListItems}"
-                                           IsShowSelectedIndicator="True" />
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource SelectionTitle}"
+                    Description="{gallery:ListShowCaseLangResource SelectionDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <StackPanel Spacing="20">
+                        <StackPanel Orientation="Horizontal" Spacing="5" DockPanel.Dock="Top">
+                            <atom:TextBlock VerticalAlignment="Center" Text="{gallery:ListShowCaseLangResource P2TextSelectionMode}" />
+                            <atom:OptionButtonGroup ButtonStyle="Solid" OptionCheckedChanged="HandleSelectionModeOptionCheckedChanged">
+                                <atom:OptionButton IsChecked="True" Tag="{x:Static SelectionMode.Single}" Content="{gallery:ListShowCaseLangResource P2ContentSingle}" />
+                                <atom:OptionButton Tag="{x:Static SelectionMode.Multiple}" Content="{gallery:ListShowCaseLangResource P2ContentMultiple}" />
+                                <atom:OptionButton Tag="{x:Static SelectionMode.Toggle}" Content="{gallery:ListShowCaseLangResource P2ContentToggle}" />
+                            </atom:OptionButtonGroup>
                         </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                        <atom:ListView SelectionMode="{Binding SelectionMode}"
+                                       ItemsSource="{Binding SelectionListItems}"
+                                       IsShowSelectedIndicator="True" />
+                    </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource SelectedItemsBindingTitle}"
-                        Description="{gallery:ListShowCaseLangResource SelectedItemsBindingDescription}"
-                        BadgeText="v6.0.8"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <StackPanel Spacing="12">
-                            <atom:ListView Width="240"
-                                           Height="180"
-                                           SelectionMode="Multiple"
-                                           ItemsSource="{Binding SelectionListItems}"
-                                           SelectedItems="{Binding BoundSelectedItems}"
-                                           IsShowSelectedIndicator="True" />
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <atom:TextBlock VerticalAlignment="Center"
-                                                Text="{gallery:ListShowCaseLangResource P2TextSelectedItems}" />
-                                <atom:TextBlock VerticalAlignment="Center"
-                                                Text="{Binding BoundSelectedItemsText}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal" Spacing="10">
-                                <atom:Button SizeType="Small"
-                                             Command="{Binding SelectBoundSelectedItemsCommand}"
-                                             Content="{gallery:ListShowCaseLangResource P2ContentSelectColors}" />
-                                <atom:Button SizeType="Small"
-                                             Command="{Binding ClearBoundSelectedItemsCommand}"
-                                             Content="{gallery:ListShowCaseLangResource P2ContentClearSelection}" />
-                            </StackPanel>
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource SelectedItemsBindingTitle}"
+                    Description="{gallery:ListShowCaseLangResource SelectedItemsBindingDescription}"
+                    BadgeText="v6.0.8"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <StackPanel Spacing="12">
+                        <atom:ListView Width="240"
+                                       Height="180"
+                                       SelectionMode="Multiple"
+                                       ItemsSource="{Binding SelectionListItems}"
+                                       SelectedItems="{Binding BoundSelectedItems}"
+                                       IsShowSelectedIndicator="True" />
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <atom:TextBlock VerticalAlignment="Center"
+                                            Text="{gallery:ListShowCaseLangResource P2TextSelectedItems}" />
+                            <atom:TextBlock VerticalAlignment="Center"
+                                            Text="{Binding BoundSelectedItemsText}" />
                         </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource GroupTitle}"
-                        Description="{gallery:ListShowCaseLangResource GroupDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <atom:ListView ItemsSource="{Binding GroupListItems}"
-                                       IsGroupEnabled="True"
-                                       Height="300" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource ItemDisabledTitle}"
-                        Description="{gallery:ListShowCaseLangResource ItemDisabledDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <atom:ListView ItemsSource="{Binding ListItemsWidthDisabled}" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource EmptyTitle}"
-                        Description="{gallery:ListShowCaseLangResource EmptyDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <StackPanel Spacing="12">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <atom:Button Content="{gallery:ListShowCaseLangResource P2ContentAddItem}"
-                                             Click="HandleAddEmptyItemClicked" />
-                                <atom:Button Content="{gallery:ListShowCaseLangResource P2ContentRemoveItem}"
-                                             Click="HandleRemoveEmptyItemClicked" />
-                            </StackPanel>
-                            <atom:ListView
-                                ItemsSource="{Binding EmptyDemoItems}"
-                                IsShowEmptyIndicator="True"
-                                IsGroupEnabled="False" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <atom:Button SizeType="Small"
+                                         Command="{Binding SelectBoundSelectedItemsCommand}"
+                                         Content="{gallery:ListShowCaseLangResource P2ContentSelectColors}" />
+                            <atom:Button SizeType="Small"
+                                         Command="{Binding ClearBoundSelectedItemsCommand}"
+                                         Content="{gallery:ListShowCaseLangResource P2ContentClearSelection}" />
                         </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                    </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource FilterTitle}"
-                        Description="{gallery:ListShowCaseLangResource FilterDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <atom:ListView Name="FilteredList"
-                                       ItemsSource="{Binding FilteredGroupListItems}"
-                                       IsGroupEnabled="False"
-                                       Filter="{atom:ValueFilterProvider Contains}"
-                                       FilterValue="{gallery:ListShowCaseLangResource P2FilterValue}"/>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource GroupTitle}"
+                    Description="{gallery:ListShowCaseLangResource GroupDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <atom:ListView ItemsSource="{Binding GroupListItems}"
+                                   IsGroupEnabled="True"
+                                   Height="300" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource OrderedTitle}"
-                        Description="{gallery:ListShowCaseLangResource OrderedDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <atom:ListView Name="OrderedList"
-                                       ItemsSource="{Binding OrderedGroupListItems}"
-                                       SortDescriptions="{Binding OrderedSortDescriptions}"
-                                       IsGroupEnabled="True" />
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource ItemDisabledTitle}"
+                    Description="{gallery:ListShowCaseLangResource ItemDisabledDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <atom:ListView ItemsSource="{Binding ListItemsWidthDisabled}" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource SimpleListBoxTitle}"
-                        Description="{gallery:ListShowCaseLangResource SimpleListBoxDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <atom:ListBox>
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource EmptyTitle}"
+                    Description="{gallery:ListShowCaseLangResource EmptyDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <StackPanel Spacing="12">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <atom:Button Content="{gallery:ListShowCaseLangResource P2ContentAddItem}"
+                                         Click="HandleAddEmptyItemClicked" />
+                            <atom:Button Content="{gallery:ListShowCaseLangResource P2ContentRemoveItem}"
+                                         Click="HandleRemoveEmptyItemClicked" />
+                        </StackPanel>
+                        <atom:ListView
+                            ItemsSource="{Binding EmptyDemoItems}"
+                            IsShowEmptyIndicator="True"
+                            IsGroupEnabled="False" />
+                    </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource FilterTitle}"
+                    Description="{gallery:ListShowCaseLangResource FilterDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <atom:ListView Name="FilteredList"
+                                   ItemsSource="{Binding FilteredGroupListItems}"
+                                   IsGroupEnabled="False"
+                                   Filter="{atom:ValueFilterProvider Contains}"
+                                   FilterValue="{gallery:ListShowCaseLangResource P2FilterValue}"/>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource OrderedTitle}"
+                    Description="{gallery:ListShowCaseLangResource OrderedDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <atom:ListView Name="OrderedList"
+                                   ItemsSource="{Binding OrderedGroupListItems}"
+                                   SortDescriptions="{Binding OrderedSortDescriptions}"
+                                   IsGroupEnabled="True" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource SimpleListBoxTitle}"
+                    Description="{gallery:ListShowCaseLangResource SimpleListBoxDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <atom:ListBox>
+                        <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentRacingCarSpraysBurningFuelIntoCrowd}" />
+                        <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentJapanesePrincessToWedCommoner}" />
+                        <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentAustralianWalksN100kmAfterOutbackCrash}" />
+                        <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentManChargedOverMissingWeddingGirl}" />
+                        <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentLosAngelesBattlesHugeWildfires}" />
+                    </atom:ListBox>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource SimpleListBoxItemsSourceTitle}"
+                    Description="{gallery:ListShowCaseLangResource SimpleListBoxItemsSourceDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <atom:ListBox ItemsSource="{Binding BasicListBoxItems}"
+                                  IsShowSelectedIndicator="True"/>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource SearchableTitle}"
+                    Description="{gallery:ListShowCaseLangResource SearchableDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <StackPanel Orientation="Vertical" Spacing="10">
+                        <atom:SearchEdit PlaceholderText="{gallery:ListShowCaseLangResource P2PlaceholderTextSearch}"
+                                         SearchButtonClick="HandleFilterListBoxClicked"/>
+                        <atom:ListBox Name="SearchListBox"
+                                      Filter="{atom:ValueFilterProvider Contains}"
+                                      FilterValue="{Binding SearchFilterValue}">
                             <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentRacingCarSpraysBurningFuelIntoCrowd}" />
                             <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentJapanesePrincessToWedCommoner}" />
                             <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentAustralianWalksN100kmAfterOutbackCrash}" />
                             <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentManChargedOverMissingWeddingGirl}" />
                             <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentLosAngelesBattlesHugeWildfires}" />
                         </atom:ListBox>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
+                    </StackPanel>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
 
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource SimpleListBoxItemsSourceTitle}"
-                        Description="{gallery:ListShowCaseLangResource SimpleListBoxItemsSourceDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <atom:ListBox ItemsSource="{Binding BasicListBoxItems}"
-                                      IsShowSelectedIndicator="True"/>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource SearchableTitle}"
-                        Description="{gallery:ListShowCaseLangResource SearchableDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <StackPanel Orientation="Vertical" Spacing="10">
-                            <atom:SearchEdit PlaceholderText="{gallery:ListShowCaseLangResource P2PlaceholderTextSearch}"
-                                             SearchButtonClick="HandleFilterListBoxClicked"/>
-                            <atom:ListBox Name="SearchListBox"
-                                          Filter="{atom:ValueFilterProvider Contains}"
-                                          FilterValue="{Binding SearchFilterValue}">
-                                <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentRacingCarSpraysBurningFuelIntoCrowd}" />
-                                <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentJapanesePrincessToWedCommoner}" />
-                                <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentAustralianWalksN100kmAfterOutbackCrash}" />
-                                <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentManChargedOverMissingWeddingGirl}" />
-                                <atom:ListBoxItem Content="{gallery:ListShowCaseLangResource P2ContentLosAngelesBattlesHugeWildfires}" />
-                            </atom:ListBox>
-                        </StackPanel>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-
-                    <gallery:ShowCaseItem
-                        Title="{gallery:ListShowCaseLangResource PaginationListTitle}"
-                        Description="{gallery:ListShowCaseLangResource PaginationListDescription}"
-                        IsDeferredContentEnabled="True">
-                        <gallery:ShowCaseItem.DeferredContentTemplate>
-                            <DataTemplate x:DataType="vm:ListViewModel">
-                        <atom:ListView
-                            ItemsSource="{Binding PaginationListItems}"
-                            PaginationVisibility="Bottom"
-                            SelectionMode="Multiple"
-                            Height="400"
-                            PageSize="100">
-                            <atom:ListView.BottomPagination>
-                                <atom:Pagination />
-                            </atom:ListView.BottomPagination>
-                        </atom:ListView>
-                            </DataTemplate>
-                        </gallery:ShowCaseItem.DeferredContentTemplate>
-                    </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+                <gallery:ShowCaseItem
+                    Title="{gallery:ListShowCaseLangResource PaginationListTitle}"
+                    Description="{gallery:ListShowCaseLangResource PaginationListDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ListViewModel">
+                    <atom:ListView
+                        ItemsSource="{Binding PaginationListItems}"
+                        PaginationVisibility="Bottom"
+                        SelectionMode="Multiple"
+                        Height="400"
+                        PageSize="100">
+                        <atom:ListView.BottomPagination>
+                            <atom:Pagination />
+                        </atom:ListView.BottomPagination>
+                    </atom:ListView>
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

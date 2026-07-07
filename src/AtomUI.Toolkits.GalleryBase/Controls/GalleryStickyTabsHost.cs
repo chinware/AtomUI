@@ -42,6 +42,12 @@ public class GalleryStickyTabsHost : TemplatedControl
     public static readonly StyledProperty<bool> IsStickyMirrorEnabledProperty =
         AvaloniaProperty.Register<GalleryStickyTabsHost, bool>(nameof(IsStickyMirrorEnabled), true);
 
+    internal static readonly DirectProperty<GalleryStickyTabsHost, bool> HasStickyContentProperty =
+        AvaloniaProperty.RegisterDirect<GalleryStickyTabsHost, bool>(
+            nameof(HasStickyContent),
+            host => host.HasStickyContent,
+            (host, value) => host.HasStickyContent = value);
+
     public object? Header
     {
         get => GetValue(HeaderProperty);
@@ -83,6 +89,14 @@ public class GalleryStickyTabsHost : TemplatedControl
     {
         get => GetValue(IsStickyMirrorEnabledProperty);
         set => SetValue(IsStickyMirrorEnabledProperty, value);
+    }
+
+    private bool _hasStickyContent;
+
+    internal bool HasStickyContent
+    {
+        get => _hasStickyContent;
+        set => SetAndRaise(HasStickyContentProperty, ref _hasStickyContent, value);
     }
 
     private ScrollViewer? _scrollViewer;
@@ -127,6 +141,11 @@ public class GalleryStickyTabsHost : TemplatedControl
         if (change.Property == StickyContentProperty ||
             change.Property == IsStickyMirrorEnabledProperty)
         {
+            if (change.Property == StickyContentProperty)
+            {
+                HasStickyContent = StickyContent is not null;
+            }
+
             QueueStickyMirrorUpdate();
         }
         else if (change.Property == StickyBackgroundProperty ||
@@ -203,7 +222,8 @@ public class GalleryStickyTabsHost : TemplatedControl
             return;
         }
 
-        if (_stickyPanel?.IsStickyPinned == true &&
+        if (HasStickyContent &&
+            _stickyPanel?.IsStickyPinned == true &&
             _inlineStickyContentHost is not null)
         {
             EnsureStickyMirror();

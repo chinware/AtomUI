@@ -11,10 +11,7 @@ namespace AtomUIGallery.ShowCases.Button;
 public partial class ButtonShowCase : GalleryReactiveUserControl<ButtonViewModel>
 {
     public const string LanguageId = nameof(ButtonShowCase);
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
 
-    private readonly GalleryShowCaseScenarioController _scenarioController;
     private ButtonViewModel? _viewModel;
     public ButtonShowCase()
     {
@@ -23,26 +20,12 @@ public partial class ButtonShowCase : GalleryReactiveUserControl<ButtonViewModel
             _viewModel = DataContext as ButtonViewModel;
         });
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
         _viewModel                   = DataContext as ButtonViewModel;
-        _scenarioController.UpdateDataContext(DataContext);
     }
 
     public void HandleButtonSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
@@ -86,15 +69,5 @@ public partial class ButtonShowCase : GalleryReactiveUserControl<ButtonViewModel
                 button.IsLoading = false;
             });
         }
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new ButtonApiDataGrid(),
-            DesignTokenScenario => new ButtonDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Button scenario: {scenario}")
-        };
     }
 }

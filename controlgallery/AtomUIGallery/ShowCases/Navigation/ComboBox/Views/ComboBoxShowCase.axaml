@@ -21,407 +21,392 @@
                     BaseClass="ComboBox" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:ComboBoxShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:ComboBoxShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:ComboBoxShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-        <gallery:ShowCaseItem
-            Title="{gallery:ComboBoxShowCaseLangResource BasicTitle}"
-            Description="{gallery:ComboBoxShowCaseLangResource BasicDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ComboBoxViewModel">
-            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-            </atom:ComboBox>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+    <gallery:ShowCaseItem
+        Title="{gallery:ComboBoxShowCaseLangResource BasicTitle}"
+        Description="{gallery:ComboBoxShowCaseLangResource BasicDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ComboBoxViewModel">
+        <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+        </atom:ComboBox>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ComboBoxShowCaseLangResource ItemsSourceTitle}"
+        Description="{gallery:ComboBoxShowCaseLangResource ItemsSourceDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ComboBoxViewModel">
+        <atom:ComboBox Name="TplComboBox"
+                       PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                       ItemsSource="{Binding ComboBoxItems}">
+            <atom:ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <atom:TextBlock Text="{Binding Text}" VerticalAlignment="Center"/>
                 </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            </atom:ComboBox.ItemTemplate>
+        </atom:ComboBox>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ComboBoxShowCaseLangResource ItemsSourceTitle}"
-            Description="{gallery:ComboBoxShowCaseLangResource ItemsSourceDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ComboBoxViewModel">
-            <atom:ComboBox Name="TplComboBox"
-                           PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                           ItemsSource="{Binding ComboBoxItems}">
+    <gallery:ShowCaseItem
+        Title="{gallery:ComboBoxShowCaseLangResource BindingTitle}"
+        Description="{gallery:ComboBoxShowCaseLangResource BindingDescription}"
+        BadgeText="v6.0.8"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ComboBoxViewModel">
+        <StackPanel Spacing="8" MinWidth="320">
+            <TextBlock Text="{gallery:ComboBoxShowCaseLangResource BindingSelectedItemLabel}"
+                       FontWeight="SemiBold" />
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                           Width="300"
+                           IsAllowClear="True"
+                           ItemsSource="{Binding ComboBoxItems}"
+                           SelectedItem="{Binding BoundSelectedItem}">
                 <atom:ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <atom:TextBlock Text="{Binding Text}" VerticalAlignment="Center"/>
+                        <atom:TextBlock Text="{Binding Text}" VerticalAlignment="Center" />
                     </DataTemplate>
                 </atom:ComboBox.ItemTemplate>
             </atom:ComboBox>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            <WrapPanel ItemSpacing="8">
+                <atom:Button SizeType="Small"
+                             Command="{Binding SetBoundSelectedItemCommand}"
+                             Content="{gallery:ComboBoxShowCaseLangResource BindingSetButton}" />
+                <atom:Button SizeType="Small"
+                             Command="{Binding ClearBoundSelectedItemCommand}"
+                             Content="{gallery:ComboBoxShowCaseLangResource BindingClearButton}" />
+            </WrapPanel>
+            <TextBlock Text="{gallery:ComboBoxShowCaseLangResource BindingViewModelValueLabel}" />
+            <TextBlock Text="{Binding BoundSelectedItemText}" />
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ComboBoxShowCaseLangResource BindingTitle}"
-            Description="{gallery:ComboBoxShowCaseLangResource BindingDescription}"
-            BadgeText="v6.0.8"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ComboBoxViewModel">
-            <StackPanel Spacing="8" MinWidth="320">
-                <TextBlock Text="{gallery:ComboBoxShowCaseLangResource BindingSelectedItemLabel}"
-                           FontWeight="SemiBold" />
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                               Width="300"
-                               IsAllowClear="True"
-                               ItemsSource="{Binding ComboBoxItems}"
-                               SelectedItem="{Binding BoundSelectedItem}">
-                    <atom:ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <atom:TextBlock Text="{Binding Text}" VerticalAlignment="Center" />
-                        </DataTemplate>
-                    </atom:ComboBox.ItemTemplate>
-                </atom:ComboBox>
-                <WrapPanel ItemSpacing="8">
-                    <atom:Button SizeType="Small"
-                                 Command="{Binding SetBoundSelectedItemCommand}"
-                                 Content="{gallery:ComboBoxShowCaseLangResource BindingSetButton}" />
-                    <atom:Button SizeType="Small"
-                                 Command="{Binding ClearBoundSelectedItemCommand}"
-                                 Content="{gallery:ComboBoxShowCaseLangResource BindingClearButton}" />
-                </WrapPanel>
-                <TextBlock Text="{gallery:ComboBoxShowCaseLangResource BindingViewModelValueLabel}" />
-                <TextBlock Text="{Binding BoundSelectedItemText}" />
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+    <gallery:ShowCaseItem
+        Title="{gallery:ComboBoxShowCaseLangResource EditableFilterTitle}"
+        Description="{gallery:ComboBoxShowCaseLangResource EditableFilterDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ComboBoxViewModel">
+        <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextTypeToFilter}"
+                       Width="300"
+                       IsEditable="True"
+                       IsFilterEnabled="True">
+            <atom:ComboBoxItem Content="Alpha" />
+            <atom:ComboBoxItem Content="Alpine" />
+            <atom:ComboBoxItem Content="Beta" />
+            <atom:ComboBoxItem Content="Gamma" />
+            <atom:ComboBoxItem Content="Delta" />
+        </atom:ComboBox>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ComboBoxShowCaseLangResource EditableFilterTitle}"
-            Description="{gallery:ComboBoxShowCaseLangResource EditableFilterDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ComboBoxViewModel">
-            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextTypeToFilter}"
-                           Width="300"
-                           IsEditable="True"
-                           IsFilterEnabled="True">
-                <atom:ComboBoxItem Content="Alpha" />
-                <atom:ComboBoxItem Content="Alpine" />
-                <atom:ComboBoxItem Content="Beta" />
-                <atom:ComboBoxItem Content="Gamma" />
-                <atom:ComboBoxItem Content="Delta" />
-            </atom:ComboBox>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+    <gallery:ShowCaseItem
+        Title="{gallery:ComboBoxShowCaseLangResource DisabledTitle}"
+        Description="{gallery:ComboBoxShowCaseLangResource DisabledDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ComboBoxViewModel">
+        <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300" IsEnabled="False">
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+            <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+        </atom:ComboBox>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ComboBoxShowCaseLangResource DisabledTitle}"
-            Description="{gallery:ComboBoxShowCaseLangResource DisabledDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ComboBoxViewModel">
-            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300" IsEnabled="False">
+    <gallery:ShowCaseItem
+        Title="{gallery:ComboBoxShowCaseLangResource ThreeSizesTitle}"
+        Description="{gallery:ComboBoxShowCaseLangResource ThreeSizesDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ComboBoxViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+            <atom:ComboBox SizeType="Large" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeLarge}">
                 <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
                 <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
                 <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
                 <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
             </atom:ComboBox>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            <atom:ComboBox SizeType="Middle" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeMiddle}">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
+            <atom:ComboBox SizeType="Small" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeSmall}">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
+            <atom:ComboBox SizeType="Custom"
+                           Height="36"
+                           FontSize="15"
+                           PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeCustom}">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ComboBoxShowCaseLangResource ThreeSizesTitle}"
-            Description="{gallery:ComboBoxShowCaseLangResource ThreeSizesDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ComboBoxViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <atom:ComboBox SizeType="Large" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeLarge}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
-                <atom:ComboBox SizeType="Middle" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeMiddle}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
-                <atom:ComboBox SizeType="Small" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeSmall}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
-                <atom:ComboBox SizeType="Custom"
-                               Height="36"
-                               FontSize="15"
-                               PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderSizeTypeCustom}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+    <gallery:ShowCaseItem
+        Title="{gallery:ComboBoxShowCaseLangResource VariantsTitle}"
+        Description="{gallery:ComboBoxShowCaseLangResource VariantsDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ComboBoxViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ComboBox StyleVariant="Outlined" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ComboBoxShowCaseLangResource VariantsTitle}"
-            Description="{gallery:ComboBoxShowCaseLangResource VariantsDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ComboBoxViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ComboBox StyleVariant="Outlined" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox StyleVariant="Filled" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox StyleVariant="Filled" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox StyleVariant="Borderless" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-                <atom:ComboBox StyleVariant="Borderless" PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+    <gallery:ShowCaseItem
+        Title="{gallery:ComboBoxShowCaseLangResource PrePostTabTitle}"
+        Description="{gallery:ComboBoxShowCaseLangResource PrePostTabDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ComboBoxViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           LeftAddOn="http://"
+                           RightAddOn=".com">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ComboBoxShowCaseLangResource PrePostTabTitle}"
-            Description="{gallery:ComboBoxShowCaseLangResource PrePostTabDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ComboBoxViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               LeftAddOn="http://"
-                               RightAddOn=".com">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           RightAddOn="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               RightAddOn="{antdicons:AntDesignIconProvider Kind=SettingOutlined}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           LeftAddOn="http://"
+                           ContentRightAddOn=".com">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               LeftAddOn="http://"
-                               ContentRightAddOn=".com">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
-
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ComboBoxShowCaseLangResource PrefixSuffixTitle}"
-            Description="{gallery:ComboBoxShowCaseLangResource PrefixSuffixDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ComboBoxViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
-                               ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, FillBrush=#8C8C8C}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+    <gallery:ShowCaseItem
+        Title="{gallery:ComboBoxShowCaseLangResource PrefixSuffixTitle}"
+        Description="{gallery:ComboBoxShowCaseLangResource PrefixSuffixDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ComboBoxViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=UserOutlined, FillBrush=#D7D7D7}"
+                           ContentRightAddOn="{antdicons:AntDesignIconProvider Kind=InfoCircleOutlined, FillBrush=#8C8C8C}">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               ContentLeftAddOn="￥"
-                               ContentRightAddOn="RMB">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           ContentLeftAddOn="￥"
+                           ContentRightAddOn="RMB">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               ContentLeftAddOn="￥"
-                               ContentRightAddOn="RMB" IsEnabled="False">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           ContentLeftAddOn="￥"
+                           ContentRightAddOn="RMB" IsEnabled="False">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ComboBoxShowCaseLangResource StatusTitle}"
-            Description="{gallery:ComboBoxShowCaseLangResource StatusDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ComboBoxViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               Status="Error">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+    <gallery:ShowCaseItem
+        Title="{gallery:ComboBoxShowCaseLangResource StatusTitle}"
+        Description="{gallery:ComboBoxShowCaseLangResource StatusDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ComboBoxViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10" Margin="0, 0, 20, 0">
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           Status="Error">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               Status="Warning">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           Status="Warning">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               Status="Error"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           Status="Error"
+                           ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               Status="Warning"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           Status="Warning"
+                           ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               Status="Error"
-                               StyleVariant="Filled"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           Status="Error"
+                           StyleVariant="Filled"
+                           ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               Status="Warning"
-                               StyleVariant="Filled"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           Status="Warning"
+                           StyleVariant="Filled"
+                           ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               Status="Error"
-                               StyleVariant="Borderless"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           Status="Error"
+                           StyleVariant="Borderless"
+                           ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-                <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
-                               Status="Warning"
-                               StyleVariant="Borderless"
-                               ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
-                    <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
-                </atom:ComboBox>
+            <atom:ComboBox PlaceholderText="{gallery:ComboBoxShowCaseLangResource P2PlaceholderTextPleaseSelect}" Width="300"
+                           Status="Warning"
+                           StyleVariant="Borderless"
+                           ContentLeftAddOn="{antdicons:AntDesignIconProvider Kind=ClockCircleOutlined}">
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine1}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine2}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine3}" />
+                <atom:ComboBoxItem Content="{gallery:ComboBoxShowCaseLangResource P2ContentPoemLine4}" />
+            </atom:ComboBox>
 
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-                </gallery:ShowCasePanel>
-            </ContentControl>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

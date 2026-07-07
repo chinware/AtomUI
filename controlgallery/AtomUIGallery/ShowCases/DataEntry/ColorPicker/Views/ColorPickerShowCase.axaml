@@ -19,296 +19,281 @@
                     BaseClass="AbstractColorPicker" />
             </gallery:GalleryStickyTabsHost.Header>
 
-            <gallery:GalleryStickyTabsHost.StickyContent>
-                <atom:TabStrip Name="ScenarioTabs"
-                               SizeType="Large"
-                               SelectedIndex="0">
-                    <atom:TabStripItem Content="{gallery:ColorPickerShowCaseLangResource ScenarioExamples}"
-                                       Tag="Examples"
-                                       IsSelected="True" />
-                    <atom:TabStripItem Content="{gallery:ColorPickerShowCaseLangResource ScenarioApi}"
-                                       Tag="Api" />
-                    <atom:TabStripItem Content="{gallery:ColorPickerShowCaseLangResource ScenarioDesignToken}"
-                                       Tag="DesignToken" />
-                </atom:TabStrip>
-            </gallery:GalleryStickyTabsHost.StickyContent>
 
-            <ContentControl Name="ScenarioContentHost">
-                <gallery:ShowCasePanel Name="ExamplesContent"
-                                       IsScrollEnabled="False"
-                                       IsDeferredLoadingEnabled="True"
-                                       InitialDeferredLoadItemCount="4"
-                                       DeferredLoadBatchSize="2"
-                                       ContentMargin="28,10,28,28">
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource BasicTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource BasicDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <atom:ColorPicker DefaultValue="#1677ff"/>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
+            <gallery:ShowCasePanel Name="ExamplesContent"
+                                   IsScrollEnabled="False"
+                                   IsDeferredLoadingEnabled="True"
+                                   InitialDeferredLoadItemCount="4"
+                                   DeferredLoadBatchSize="2"
+                                   ContentMargin="28,10,28,28">
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource BasicTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource BasicDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <atom:ColorPicker DefaultValue="#1677ff"/>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
 
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource ValueBindingTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource ValueBindingDescription}"
-            BadgeText="v6.0.8"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="12">
-                <StackPanel Orientation="Horizontal" Spacing="10">
-                    <atom:ColorPicker Value="{Binding BoundColorValue}"
-                                      IsTextVisible="True"
-                                      IsClearEnabled="True" />
-                    <atom:GradientColorPicker Value="{Binding BoundGradientValue}"
-                                              IsTextVisible="True"
-                                              IsClearEnabled="True" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <atom:TextBlock VerticalAlignment="Center"
-                                    Text="{gallery:ColorPickerShowCaseLangResource P2TextColorValue}" />
-                    <atom:TextBlock VerticalAlignment="Center"
-                                    Text="{Binding BoundColorValueText}" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Spacing="8">
-                    <atom:TextBlock VerticalAlignment="Center"
-                                    Text="{gallery:ColorPickerShowCaseLangResource P2TextGradientValue}" />
-                    <atom:TextBlock VerticalAlignment="Center"
-                                    Text="{Binding BoundGradientValueText}" />
-                </StackPanel>
-                <WrapPanel ItemSpacing="10" LineSpacing="8">
-                    <atom:Button SizeType="Small"
-                                 Command="{Binding SetBoundColorValueCommand}"
-                                 Content="{gallery:ColorPickerShowCaseLangResource P2ContentSetColor}" />
-                    <atom:Button SizeType="Small"
-                                 Command="{Binding SetBoundGradientValueCommand}"
-                                 Content="{gallery:ColorPickerShowCaseLangResource P2ContentSetGradient}" />
-                    <atom:Button SizeType="Small"
-                                 Command="{Binding ClearBoundColorValueCommand}"
-                                 Content="{gallery:ColorPickerShowCaseLangResource P2ContentClearColor}" />
-                    <atom:Button SizeType="Small"
-                                 Command="{Binding ClearBoundGradientValueCommand}"
-                                 Content="{gallery:ColorPickerShowCaseLangResource P2ContentClearGradient}" />
-                </WrapPanel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-        
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource TriggerSizeTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource TriggerSizeDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <atom:TextBlock Width="64"
-                                    VerticalAlignment="Center"
-                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                    Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeSmall}" />
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small"/>
-                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small" IsTextVisible="True"/>
-                    </StackPanel>
-                </StackPanel>
-        
-                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <atom:TextBlock Width="64"
-                                    VerticalAlignment="Center"
-                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                    Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeMiddle}" />
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle"/>
-                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle" IsTextVisible="True"/>
-                    </StackPanel>
-                </StackPanel>
-        
-                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <atom:TextBlock Width="64"
-                                    VerticalAlignment="Center"
-                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                    Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeLarge}" />
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large"/>
-                        <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large" IsTextVisible="True"/>
-                    </StackPanel>
-                </StackPanel>
-
-                <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
-                    <atom:TextBlock Width="64"
-                                    VerticalAlignment="Center"
-                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}"
-                                    Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeCustom}" />
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <atom:ColorPicker DefaultValue="#1677ff"
-                                          SizeType="Custom"
-                                          Width="48"
-                                          Height="48" />
-                        <atom:ColorPicker DefaultValue="#1677ff"
-                                          SizeType="Custom"
-                                          IsTextVisible="True"
-                                          Height="48"
-                                          FontSize="18" />
-                    </StackPanel>
-                </StackPanel>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-        
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource LineGradientTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource LineGradientDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:GradientColorPicker IsTextVisible="True">
-                    <atom:GradientColorPicker.DefaultValue>
-                        <LinearGradientBrush>
-                            <GradientStop Color="#108ee9" Offset="0"/>
-                            <GradientStop Color="#87d068" Offset="1"/>
-                        </LinearGradientBrush>
-                    </atom:GradientColorPicker.DefaultValue>
-                </atom:GradientColorPicker>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-        
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource RenderingTriggerTextTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource RenderingTriggerTextDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsClearEnabled="True"/>
-                <atom:ColorPicker Name="CustomRenderText"
-                                  DefaultValue="#1677ff"
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource ValueBindingTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource ValueBindingDescription}"
+        BadgeText="v6.0.8"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="12">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <atom:ColorPicker Value="{Binding BoundColorValue}"
                                   IsTextVisible="True"
-                                  AttachedToVisualTree="HandleCustomRenderTextAttached" />
+                                  IsClearEnabled="True" />
+                <atom:GradientColorPicker Value="{Binding BoundGradientValue}"
+                                          IsTextVisible="True"
+                                          IsClearEnabled="True" />
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-        
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource DisabledTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource DisabledDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsEnabled="False"/>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <atom:TextBlock VerticalAlignment="Center"
+                                Text="{gallery:ColorPickerShowCaseLangResource P2TextColorValue}" />
+                <atom:TextBlock VerticalAlignment="Center"
+                                Text="{Binding BoundColorValueText}" />
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource DisabledAlphaTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource DisabledAlphaDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" IsAlphaEnabled="False"/>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <atom:TextBlock VerticalAlignment="Center"
+                                Text="{gallery:ColorPickerShowCaseLangResource P2TextGradientValue}" />
+                <atom:TextBlock VerticalAlignment="Center"
+                                Text="{Binding BoundGradientValueText}" />
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-        
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource ClearColorTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource ClearColorDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsClearEnabled="True"/>
-                <atom:GradientColorPicker IsTextVisible="True" IsClearEnabled="True">
-                    <atom:GradientColorPicker.DefaultValue>
-                        <LinearGradientBrush>
-                            <GradientStop Color="#108ee9" Offset="0"/>
-                            <GradientStop Color="#87d068" Offset="1"/>
-                        </LinearGradientBrush>
-                    </atom:GradientColorPicker.DefaultValue>
-                </atom:GradientColorPicker>
+            <WrapPanel ItemSpacing="10" LineSpacing="8">
+                <atom:Button SizeType="Small"
+                             Command="{Binding SetBoundColorValueCommand}"
+                             Content="{gallery:ColorPickerShowCaseLangResource P2ContentSetColor}" />
+                <atom:Button SizeType="Small"
+                             Command="{Binding SetBoundGradientValueCommand}"
+                             Content="{gallery:ColorPickerShowCaseLangResource P2ContentSetGradient}" />
+                <atom:Button SizeType="Small"
+                             Command="{Binding ClearBoundColorValueCommand}"
+                             Content="{gallery:ColorPickerShowCaseLangResource P2ContentClearColor}" />
+                <atom:Button SizeType="Small"
+                             Command="{Binding ClearBoundGradientValueCommand}"
+                             Content="{gallery:ColorPickerShowCaseLangResource P2ContentClearGradient}" />
+            </WrapPanel>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource TriggerSizeTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource TriggerSizeDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <atom:TextBlock Width="64"
+                                VerticalAlignment="Center"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeSmall}" />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small"/>
+                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Small" IsTextVisible="True"/>
+                </StackPanel>
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-        
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource ControlledModeTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource ControlledModeDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff"/>
-                <atom:ColorPicker DefaultValue="#1677ff" ValueSyncStrategy="OnCompleted"/>
+
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <atom:TextBlock Width="64"
+                                VerticalAlignment="Center"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeMiddle}" />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle"/>
+                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Middle" IsTextVisible="True"/>
+                </StackPanel>
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-        
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource CustomTriggerEventTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource CustomTriggerEventDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <StackPanel Orientation="Horizontal" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" TriggerType="Click"/>
-                <atom:ColorPicker DefaultValue="#1677ff" TriggerType="Hover"/>
+
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <atom:TextBlock Width="64"
+                                VerticalAlignment="Center"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeLarge}" />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large"/>
+                    <atom:ColorPicker DefaultValue="#1677ff" SizeType="Large" IsTextVisible="True"/>
+                </StackPanel>
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-        
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource ColorFormatTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource ColorFormatDescription}"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <StackPanel Orientation="Vertical" Spacing="10">
-                <atom:ColorPicker DefaultValue="#1677ff" Format="Hex" IsTextVisible="True"/>
-                <atom:ColorPicker DefaultValue="#1677ff" Format="Hsva" IsTextVisible="True"/>
-                <atom:ColorPicker DefaultValue="#1677ff" Format="Rgba" IsTextVisible="True"/>
+
+            <StackPanel Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                <atom:TextBlock Width="64"
+                                VerticalAlignment="Center"
+                                Foreground="{atom:SharedTokenResource ColorTextSecondary}"
+                                Text="{gallery:ColorPickerShowCaseLangResource P2LabelSizeTypeCustom}" />
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <atom:ColorPicker DefaultValue="#1677ff"
+                                      SizeType="Custom"
+                                      Width="48"
+                                      Height="48" />
+                    <atom:ColorPicker DefaultValue="#1677ff"
+                                      SizeType="Custom"
+                                      IsTextVisible="True"
+                                      Height="48"
+                                      FontSize="18" />
+                </StackPanel>
             </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-        
-        <gallery:ShowCaseItem
-            Title="{gallery:ColorPickerShowCaseLangResource PresetColorsTitle}"
-            Description="{gallery:ColorPickerShowCaseLangResource PresetColorsDescription}"
-            IsOccupyEntireRow="True"
-            IsDeferredContentEnabled="True">
-            <gallery:ShowCaseItem.DeferredContentTemplate>
-                <DataTemplate x:DataType="vm:ColorPickerViewModel">
-            <StackPanel Spacing="10" Orientation="Horizontal">
-                <atom:ColorPicker DefaultValue="#1677ff" IsPaletteGroupEnabled="True"/>
-                <atom:GradientColorPicker IsPaletteGroupEnabled="True" >
-                    <atom:GradientColorPicker.DefaultValue>
-                        <LinearGradientBrush>
-                            <GradientStop Color="#108ee9" Offset="0"/>
-                            <GradientStop Color="#87d068" Offset="1"/>
-                        </LinearGradientBrush>
-                    </atom:GradientColorPicker.DefaultValue>
-                </atom:GradientColorPicker>
-            </StackPanel>
-                </DataTemplate>
-            </gallery:ShowCaseItem.DeferredContentTemplate>
-        </gallery:ShowCaseItem>
-                </gallery:ShowCasePanel>
-            </ContentControl>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource LineGradientTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource LineGradientDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:GradientColorPicker IsTextVisible="True">
+                <atom:GradientColorPicker.DefaultValue>
+                    <LinearGradientBrush>
+                        <GradientStop Color="#108ee9" Offset="0"/>
+                        <GradientStop Color="#87d068" Offset="1"/>
+                    </LinearGradientBrush>
+                </atom:GradientColorPicker.DefaultValue>
+            </atom:GradientColorPicker>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource RenderingTriggerTextTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource RenderingTriggerTextDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsClearEnabled="True"/>
+            <atom:ColorPicker Name="CustomRenderText"
+                              DefaultValue="#1677ff"
+                              IsTextVisible="True"
+                              AttachedToVisualTree="HandleCustomRenderTextAttached" />
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource DisabledTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource DisabledDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsEnabled="False"/>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource DisabledAlphaTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource DisabledAlphaDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ColorPicker DefaultValue="#1677ff" IsAlphaEnabled="False"/>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource ClearColorTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource ClearColorDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ColorPicker DefaultValue="#1677ff" IsTextVisible="True" IsClearEnabled="True"/>
+            <atom:GradientColorPicker IsTextVisible="True" IsClearEnabled="True">
+                <atom:GradientColorPicker.DefaultValue>
+                    <LinearGradientBrush>
+                        <GradientStop Color="#108ee9" Offset="0"/>
+                        <GradientStop Color="#87d068" Offset="1"/>
+                    </LinearGradientBrush>
+                </atom:GradientColorPicker.DefaultValue>
+            </atom:GradientColorPicker>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource ControlledModeTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource ControlledModeDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <atom:ColorPicker DefaultValue="#1677ff"/>
+            <atom:ColorPicker DefaultValue="#1677ff" ValueSyncStrategy="OnCompleted"/>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource CustomTriggerEventTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource CustomTriggerEventDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <atom:ColorPicker DefaultValue="#1677ff" TriggerType="Click"/>
+            <atom:ColorPicker DefaultValue="#1677ff" TriggerType="Hover"/>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource ColorFormatTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource ColorFormatDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <StackPanel Orientation="Vertical" Spacing="10">
+            <atom:ColorPicker DefaultValue="#1677ff" Format="Hex" IsTextVisible="True"/>
+            <atom:ColorPicker DefaultValue="#1677ff" Format="Hsva" IsTextVisible="True"/>
+            <atom:ColorPicker DefaultValue="#1677ff" Format="Rgba" IsTextVisible="True"/>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:ColorPickerShowCaseLangResource PresetColorsTitle}"
+        Description="{gallery:ColorPickerShowCaseLangResource PresetColorsDescription}"
+        IsOccupyEntireRow="True"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:ColorPickerViewModel">
+        <StackPanel Spacing="10" Orientation="Horizontal">
+            <atom:ColorPicker DefaultValue="#1677ff" IsPaletteGroupEnabled="True"/>
+            <atom:GradientColorPicker IsPaletteGroupEnabled="True" >
+                <atom:GradientColorPicker.DefaultValue>
+                    <LinearGradientBrush>
+                        <GradientStop Color="#108ee9" Offset="0"/>
+                        <GradientStop Color="#87d068" Offset="1"/>
+                    </LinearGradientBrush>
+                </atom:GradientColorPicker.DefaultValue>
+            </atom:GradientColorPicker>
+        </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+            </gallery:ShowCasePanel>
         </gallery:GalleryStickyTabsHost>
     </Grid>
 </UserControl>

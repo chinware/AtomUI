@@ -18,9 +18,6 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
 {
     public const string LanguageId = nameof(SplashShowCase);
 
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
     private const double WindowSplashWidth = 560;
     private const double WindowSplashMinHeight = 360;
 
@@ -43,45 +40,11 @@ public partial class SplashShowCase : GalleryReactiveUserControl<SplashViewModel
         (SplashShowCaseLangResourceKind.P2WindowSplashMessageFinalizing, en_US.P2WindowSplashMessageFinalizing)
     ];
 
-    private readonly GalleryShowCaseScenarioController _scenarioController;
     private bool _isWindowSplashRunning;
 
     public SplashShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(
-            ScenarioTabs,
-            ScenarioContentHost,
-            CreateScenarioContent,
-            ExamplesContent);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        _scenarioController.Detach();
-        base.OnDetachedFromVisualTree(e);
-    }
-
-    protected override void OnDataContextChanged(EventArgs e)
-    {
-        base.OnDataContextChanged(e);
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new SplashApiDataGrid(),
-            DesignTokenScenario => new SplashDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Splash scenario: {scenario}")
-        };
     }
 
     private async void HandleShowWindowSplashButtonClick(object? sender, RoutedEventArgs e)

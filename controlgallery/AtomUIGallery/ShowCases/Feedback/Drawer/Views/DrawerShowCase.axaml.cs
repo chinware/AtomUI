@@ -17,44 +17,15 @@ public partial class DrawerShowCase : GalleryReactiveUserControl<DrawerViewModel
 {
     public const string LanguageId = nameof(DrawerShowCase);
 
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
-    private readonly GalleryShowCaseScenarioController _scenarioController;
-
     public DrawerShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
 
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new DrawerApiDataGrid(),
-            DesignTokenScenario => new DrawerDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Drawer scenario: {scenario}")
-        };
     }
 
     private void HandleOpenLargeSizeDrawer(object? sender, RoutedEventArgs e)

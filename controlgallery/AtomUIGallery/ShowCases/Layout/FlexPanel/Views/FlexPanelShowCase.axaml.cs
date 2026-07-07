@@ -19,8 +19,6 @@ public partial class FlexPanelShowCase : GalleryReactiveUserControl<FlexPanelVie
 {
     public const string LanguageId = nameof(FlexPanelShowCase);
 
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
     private const double GapSmallValue       = 8;
     private const double GapMiddleValue      = 16;
     private const double GapLargeValue       = 24;
@@ -28,41 +26,15 @@ public partial class FlexPanelShowCase : GalleryReactiveUserControl<FlexPanelVie
 
     private static readonly object DeferredTemplateInitialized = new();
 
-    private readonly GalleryShowCaseScenarioController _scenarioController;
-
     public FlexPanelShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
-    }
-
-    protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
     }
 
     protected override void OnDataContextChanged(EventArgs e)
     {
         base.OnDataContextChanged(e);
 
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new FlexPanelApiDataGrid(),
-            DesignTokenScenario => new FlexPanelDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown FlexPanel scenario: {scenario}")
-        };
     }
 
     private void InitializeBasicExample(object? sender, VisualTreeAttachmentEventArgs e)

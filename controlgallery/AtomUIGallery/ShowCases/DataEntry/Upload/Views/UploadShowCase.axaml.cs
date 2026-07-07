@@ -17,16 +17,11 @@ public partial class UploadShowCase : GalleryReactiveUserControl<UploadViewModel
 {
     public const string LanguageId = nameof(UploadShowCase);
 
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
-    private readonly GalleryShowCaseScenarioController _scenarioController;
     private WindowMessageManager? _messageManager;
 
     public UploadShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
 
         this.WhenActivated(disposables =>
         {
@@ -55,34 +50,11 @@ public partial class UploadShowCase : GalleryReactiveUserControl<UploadViewModel
         });
     }
 
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
-    }
-
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
         _messageManager?.Dispose();
         _messageManager = null;
-    }
-
-    protected override void OnDataContextChanged(EventArgs e)
-    {
-        base.OnDataContextChanged(e);
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new UploadApiDataGrid(),
-            DesignTokenScenario => new UploadDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Upload scenario: {scenario}")
-        };
     }
 
     private void RefreshLocalizedFiles(UploadViewModel viewModel)

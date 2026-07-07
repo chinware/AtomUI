@@ -16,10 +16,6 @@ public partial class NotificationShowCase : GalleryReactiveUserControl<Notificat
 {
     public const string LanguageId = nameof(NotificationShowCase);
 
-    private const string ApiScenario         = "Api";
-    private const string DesignTokenScenario = "DesignToken";
-
-    private readonly GalleryShowCaseScenarioController _scenarioController;
     private WindowNotificationManager? _basicManager;
     private WindowNotificationManager? _topLeftManager;
     private WindowNotificationManager? _topManager;
@@ -32,14 +28,7 @@ public partial class NotificationShowCase : GalleryReactiveUserControl<Notificat
     public NotificationShowCase()
     {
         InitializeComponent();
-        _scenarioController = new GalleryShowCaseScenarioController(ScenarioTabs, ScenarioContentHost, CreateScenarioContent, ExamplesContent);
         AddHandler(AbstractOptionButtonGroup.OptionCheckedChangedEvent, HandleHoverOptionGroupCheckedChanged);
-    }
-
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-        _scenarioController.Attach(DataContext);
     }
 
     private void HandleHoverOptionGroupCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
@@ -54,7 +43,6 @@ public partial class NotificationShowCase : GalleryReactiveUserControl<Notificat
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        _scenarioController.Detach();
         DisposeManager(ref _basicManager);
         DisposeManager(ref _topLeftManager);
         DisposeManager(ref _topManager);
@@ -68,17 +56,6 @@ public partial class NotificationShowCase : GalleryReactiveUserControl<Notificat
     {
         base.OnDataContextChanged(e);
 
-        _scenarioController.UpdateDataContext(DataContext);
-    }
-
-    private static Control CreateScenarioContent(string scenario)
-    {
-        return scenario switch
-        {
-            ApiScenario         => new NotificationApiDataGrid(),
-            DesignTokenScenario => new NotificationDesignTokenDataGrid(),
-            _                   => throw new InvalidOperationException($"Unknown Notification scenario: {scenario}")
-        };
     }
 
     private WindowNotificationManager? GetBasicManager()
