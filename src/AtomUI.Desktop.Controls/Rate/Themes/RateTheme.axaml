@@ -11,7 +11,7 @@
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding CornerRadius}"
                         BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderBrush}">
+                        BorderThickness="{TemplateBinding BorderThickness}">
                     <atomc:RateItemsControl Name="PART_RateItems"
                                             Character="{TemplateBinding Character}"
                                             StarColor="{TemplateBinding StarColor}"

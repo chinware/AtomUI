@@ -1,5 +1,6 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -373,7 +374,7 @@ internal class AddOnDecoratedBox : ContentControl,
     private bool _borderThicknessDirty;
     private bool _layoutUpdatePosted;
 
-    internal Border? ContentFrame;
+    internal AddOnDecoratedBoxContentFrame? ContentFrame;
     
     static AddOnDecoratedBox()
     {
@@ -721,7 +722,7 @@ internal class AddOnDecoratedBox : ContentControl,
             newRightAddOn.PropertyChanged += HandleContentPresenterChildChanged;
         }
         
-        ContentFrame = e.NameScope.Find<Border>("PART_ContentFrame");
+        ContentFrame = e.NameScope.Find<AddOnDecoratedBoxContentFrame>("PART_ContentFrame");
 
         ConfigureInnerBoxCornerRadius();
         ConfigureAddOnBorderInfo();
@@ -963,9 +964,9 @@ internal class AddOnDecoratedBox : ContentControl,
     }
 }
 
-internal class AddOnDecoratedBoxContentFrame : Border
+internal class AddOnDecoratedBoxContentFrame : PixelAlignedBorder
 {
-    protected override System.Type StyleKeyOverride => typeof(Border);
+    protected override Type StyleKeyOverride => typeof(Border);
 
     protected override void OnPointerEntered(PointerEventArgs e)
     {

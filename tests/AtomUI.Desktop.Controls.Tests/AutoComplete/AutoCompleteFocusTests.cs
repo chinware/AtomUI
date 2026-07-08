@@ -47,7 +47,7 @@ public class AutoCompleteFocusTests
                                       .OfType<AvaloniaTextBox>()
                                       .Single();
             var contentFrame = autoComplete.GetVisualDescendants()
-                                           .OfType<Border>()
+                                           .OfType<global::AtomUI.Desktop.Controls.AddOnDecoratedBoxContentFrame>()
                                            .Single(x => x.Name == "PART_ContentFrame");
             var clickPoint = textBox.TranslatePoint(
                 new Point(textBox.Bounds.Width / 2, textBox.Bounds.Height / 2),

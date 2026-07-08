@@ -88,6 +88,26 @@ public class DashedBorderLayoutRoundingTests
     }
 
     [Fact]
+    public void PixelAlignedBorder_Render_Uses_Layout_Rounded_BorderThickness()
+    {
+        var target = new PixelAlignedBorder
+        {
+            Width           = 80,
+            Height          = 32,
+            BorderBrush     = Brushes.Black,
+            BorderThickness = new Thickness(1)
+        };
+
+        ShowInWindow(target, window =>
+        {
+            window.SetRenderScaling(1.5);
+            Dispatcher.UIThread.RunJobs();
+
+            GetRenderedPenThickness(target).ShouldBe(4d / 3d, 0.0001);
+        });
+    }
+
+    [Fact]
     public void OptionButton_Render_Uses_Layout_Rounded_BorderThickness()
     {
         var target = new AtomUIOptionButton
@@ -160,6 +180,16 @@ public class DashedBorderLayoutRoundingTests
     }
 
     private static double GetRenderedPenThickness(DashedBorder border)
+    {
+        return GetRenderedPenThickness((Control)border);
+    }
+
+    private static double GetRenderedPenThickness(PixelAlignedBorder border)
+    {
+        return GetRenderedPenThickness((Control)border);
+    }
+
+    private static double GetRenderedPenThickness(Control border)
     {
         var drawingGroup = new DrawingGroup();
         using (var context = drawingGroup.Open())

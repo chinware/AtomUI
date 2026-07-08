@@ -1,7 +1,11 @@
 using System.ComponentModel;
+using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Media;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 using AvaloniaWindow = Avalonia.Controls.Window;
@@ -47,6 +51,25 @@ public class RateBindingTests
             Dispatcher.UIThread.RunJobs();
 
             viewModel.Value.ShouldBe(4.0);
+        });
+    }
+
+    [Fact]
+    public void Template_Frame_Binds_To_BorderThickness()
+    {
+        var rate = new Desktop.Controls.Rate
+        {
+            BorderBrush     = Brushes.Red,
+            BorderThickness = new Thickness(2)
+        };
+
+        ShowInWindow(rate, () =>
+        {
+            var frame = rate.GetVisualDescendants()
+                            .OfType<Border>()
+                            .Single(item => item.Name == "Frame");
+
+            frame.BorderThickness.ShouldBe(new Thickness(2));
         });
     }
 

@@ -38,12 +38,12 @@
                         IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
 
                     <Panel>
-                        <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
-                                BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
-                                CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                Background="{TemplateBinding Background}"
-                                BackgroundSizing="InnerBorderEdge">
+                        <atom:AddOnDecoratedBoxContentFrame Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
+                                                            BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
+                                                            CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
+                                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                                            Background="{TemplateBinding Background}"
+                                                            BackgroundSizing="InnerBorderEdge">
                             <atom:ButtonSpinnerContentPanel Name="ContentLayout"
                                                             LastChildFill="True"
                                                             HandleLocation="{TemplateBinding ButtonSpinnerLocation}"
@@ -89,7 +89,7 @@
                                     Content="{TemplateBinding Content}"
                                     ContentTemplate="{TemplateBinding ContentTemplate}" />
                             </atom:ButtonSpinnerContentPanel>
-                        </Border>
+                        </atom:AddOnDecoratedBoxContentFrame>
 
                         <ContentPresenter
                             Name="PART_SpinnerHandle"

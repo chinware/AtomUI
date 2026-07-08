@@ -6,7 +6,7 @@ namespace AtomUI.Desktop.Controls;
 
 internal class SearchEditPanel : Panel
 {
-    private Border? _contentFrame;
+    private Control? _contentFrame;
     private SearchButton? _searchButton;
     private ContentPresenter? _leftAddOn;
 
@@ -25,7 +25,7 @@ internal class SearchEditPanel : Panel
             }
             else if (child.Name == "PART_ContentFrame")
             {
-                _contentFrame = child as Border;
+                _contentFrame = child;
             }
         }
     }

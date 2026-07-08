@@ -11,13 +11,13 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
-                        BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
-                        CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        Background="{TemplateBinding Background}"
-                        BoxShadow="{TemplateBinding BoxShadow}"
-                        BackgroundSizing="InnerBorderEdge">
+                <atom:AddOnDecoratedBoxContentFrame Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
+                                                    BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
+                                                    CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    Background="{TemplateBinding Background}"
+                                                    BoxShadow="{TemplateBinding BoxShadow}"
+                                                    BackgroundSizing="InnerBorderEdge">
                     <Border Name="TextAreaContentFrame"
                             Padding="{TemplateBinding TextAreaFramePadding, Converter={StaticResource TextAreaFramePaddingConverter}}">
                         <DockPanel Name="ContentLayout" LastChildFill="True">
@@ -56,7 +56,7 @@
                             </Panel>
                         </DockPanel>
                     </Border>
-                </Border>
+                </atom:AddOnDecoratedBoxContentFrame>
             </ControlTemplate>
         </Setter>
 

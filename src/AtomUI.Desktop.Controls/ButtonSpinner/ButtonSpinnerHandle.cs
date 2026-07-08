@@ -1,6 +1,7 @@
 using AtomUI.Controls;
 using AtomUI.Controls.Utils;
 using AtomUI.Media;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -60,7 +61,13 @@ internal class ButtonSpinnerHandle : TemplatedControl
 
     static ButtonSpinnerHandle()
     {
-        AffectsRender<ButtonSpinnerHandle>(ButtonSpinnerLocationProperty, CornerRadiusProperty, BackgroundProperty, BorderBrushProperty);
+        AffectsRender<ButtonSpinnerHandle>(
+            ButtonSpinnerLocationProperty,
+            CornerRadiusProperty,
+            BackgroundProperty,
+            BorderBrushProperty,
+            SpinnerBorderThicknessProperty,
+            UseLayoutRoundingProperty);
     }
     
     public ButtonSpinnerHandle()
@@ -78,7 +85,8 @@ internal class ButtonSpinnerHandle : TemplatedControl
     
     public override void Render(DrawingContext context)
     {
-        var          lineWidth = SpinnerBorderThickness.Left;
+        var          spinnerBorderThickness = BorderUtils.BuildLayoutRoundedThickness(this, SpinnerBorderThickness);
+        var          lineWidth = spinnerBorderThickness.Left;
         CornerRadius cornerRadius;
         if (ButtonSpinnerLocation == ButtonSpinnerLocation.Left)
         {

@@ -148,6 +148,32 @@ public class TextAreaResizeTests
         }
     }
 
+    [Fact]
+    public void Content_Frame_Uses_AddOnDecoratedBox_Rendering_Frame()
+    {
+        var textArea = new AtomUI.Desktop.Controls.TextArea
+        {
+            Width           = 240,
+            Height          = 80,
+            Text            = "content",
+            IsMotionEnabled = false
+        };
+        var window = CreateWindow(textArea);
+
+        try
+        {
+            var contentFrame = FindTemplatePart<AtomUI.Desktop.Controls.AddOnDecoratedBoxContentFrame>(
+                textArea,
+                "PART_ContentFrame");
+
+            contentFrame.UseLayoutRounding.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static AvaloniaWindow CreateWindow(Control content)
     {
         var window = new AvaloniaWindow
