@@ -19,6 +19,8 @@ TreeView 内部实现较多，按功能拆分 partial 文件。拆分边界服�
 - `src/AtomUI.Desktop.Controls/TreeView/TreeView.Filter.cs`：过滤、高亮、隐藏未命中、展开路径、filter context 备份和恢复。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeView.AsyncItemDataLoad.cs`：异步加载、加载合并、超时、取消和 `TreeItemLoaded` 派发。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeView.DragAndDrop.cs`：拖拽命中测试、drag preview、drop indicator、drop 操作和拖拽事件。
+- `src/AtomUI.Desktop.Controls/TreeView/TreeView.DataController.cs`：内部数据控制器、drop request / result、root / children 集合移动和 parent node 同步。
+- `src/AtomUI.Desktop.Controls/TreeView/TreeView.NodeIndex.cs`：节点索引、节点父级、所在集合、兄弟索引和 collection changed 增量维护。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeViewItem.cs`：节点容器、展开收起、line 渲染、check/radio 状态、drag bounds 和数据节点承载。
 - `src/AtomUI.Desktop.Controls/TreeView/TreeViewItemHeader.cs`：header 视觉状态、pointer 状态、switcher mode、filter highlight runs 和 template part 订阅。
 - `src/AtomUI.Desktop.Controls/TreeView/NodeSwitcherButton.cs`：switcher 当前图标选择、默认图标、loading load request 和 rotation 动效。
@@ -38,6 +40,10 @@ TreeView 内部实现较多，按功能拆分 partial 文件。拆分边界服�
 `NodeSwitcherButton` 是展开、收起、loading 和 leaf 图标切换入口。它在未加载节点上触发 `NodeLoadRequestEvent`，由 TreeView 接管异步加载。
 
 `DefaultTreeViewInteractionHandler` 处理 TreeView 级 pointer、右键上下文菜单、radio group、checked changed 和浮层关闭逻辑，使节点容器不直接持有全局输入订阅。
+
+`TreeDataController` 是 TreeView 结构修改的唯一内部入口。它把拖拽、异步加载和可变节点集合操作归一到数据层，负责校验移动合法性、选择权威集合、计算插入索引、执行 remove / insert 和同步 parent node。
+
+`TreeNodeIndex` 是 TreeView 内部的轻量节点索引。它记录节点所属父级、兄弟集合和索引，用于 drop 时快速定位 source / target 上下文。索引随 root 数据源、节点 `Children` 和异步加载结果增量更新，不参与每帧拖拽命中渲染。
 
 `TreeItemNode` 是轻量数据驱动节点模型，维护 `Children` 与 `ParentNode` 的一致性。它不继承 `AvaloniaObject`，不承载 `DynamicResource` 或 Avalonia binding target 语义。
 
@@ -145,6 +151,28 @@ append result.Data to ITreeItemNode.Children
 TreeItemLoaded + expand target node
 ```
 
+拖拽 drop 数据流：
+
+```text
+Pointer drag over realized TreeViewItem
+      ↓
+DropTargetInfo from header bounds
+      ↓
+TreeDropRequest
+  SourceNode + SourceParent + SourceIndex
+  TargetParent + TargetIndex + DropPosition
+      ↓
+TreeDataController.CanMove
+      ↓
+TreeDataController.Move
+      ↓
+mutate authoritative root collection / ITreeItemNode.Children
+      ↓
+TreeNodeIndex incremental update
+      ↓
+NodeDropped / ItemDropped event projection
+```
+
 ## 5. 生命周期与模板接入
 
 `TreeView` 静态构造注册 drag/drop、TreeViewItem routed event class handler、filter class handler 和 Form value changed class handler。
@@ -227,13 +255,26 @@ detached 时必须调用 `CancelAll`，避免已离开视觉树的 TreeView 继�
 
 ### 7.6 拖拽和 drop
 
-拖拽命中包含三类查询：
+拖拽命中包含三类 UI 查询：
 
 - self-first 查询用于确认拖拽发起节点。
 - child-first 查询用于当前 drag-over 节点。
 - offset-y 查询用于计算最终 drop 位置。
 
-drop indicator 根据目标 header 上半区、中间区域和下半区决定插入到前、插入到内部或插入到后。执行 drop 前必须检查目标不是被拖拽节点自身或其后代。
+drop indicator 根据目标 header 上半区、中间区域和下半区决定插入到前、插入到内部或插入到后。UI 查询只产出 `DropTargetInfo`，不直接修改节点结构。
+
+结构修改由 `TreeDataController` 执行：
+
+- 从 `TreeNodeIndex` 读取 source 节点所在父级、兄弟集合和原始索引。
+- 根据 drop position 解析目标父级、目标兄弟集合和目标插入索引。
+- 拒绝把节点移动到自身或自身后代。
+- 拒绝不可变 root 集合或不可变 `Children` 集合，不通过捕获异常隐藏能力不支持。
+- 同一集合内移动时，只有 `sourceIndex < targetIndex` 才修正目标索引，避免向前移动被错误偏移。
+- 跨集合移动时先从源集合移除，再插入目标集合，并同步移动节点的 parent node。
+- 移动完成后通过 collection changed 或控制器显式通知更新 `TreeNodeIndex`。
+- 事件投射发生在数据结构移动成功之后；移动失败不派发 drop 完成事件。
+
+拖拽结构重排不应触发删除式状态清理。`SelectedItem`、`SelectedItems`、`CheckedItems` 和展开状态以节点身份为准；只有节点不再属于当前 TreeView 数据树时，状态集合才清理该节点。
 
 ### 7.7 绑定型节点同步
 
@@ -259,6 +300,14 @@ TreeView / TreeViewItem 对绑定型节点的 attach/release 是资源生命周�
 
 拖拽 preview 使用 `AdornerLayer`，完成或取消拖拽时必须从 adorner layer 移除。drag indicator Pen 和 tree line Pen 均按 brush / width 缓存，避免每帧重复创建。
 
+拖拽性能边界：
+
+- pointer move 期间只查询已实现容器和 header bounds，不访问整棵数据树。
+- drop 阶段通过 `TreeNodeIndex` 读取节点上下文，避免按节点引用全树扫描。
+- `TreeNodeIndex` 只在 root 数据源替换、节点集合增删移和异步加载结果进入时增量维护。
+- 移动的主要成本限制在源 / 目标兄弟集合的 remove / insert；不能引入与整棵树节点数线性相关的 drop 热路径。
+- 索引订阅必须随 root source 替换、节点移除、TreeView detach 和节点 collection 替换释放，避免保留旧节点树。
+
 异步加载必须支持取消、超时和 detach 清理。加载结果回到 UI 线程后才能修改节点集合和容器状态。
 
 Filter highlight runs 是 header 状态，不应写入 Token 或节点数据模型。Token 只提供默认颜色、尺寸和间距。
@@ -279,6 +328,10 @@ Filter highlight runs 是 header 状态，不应写入 Token 或节点数据模�
 - `DefaultTreeViewInteractionHandler.Detach` 必须释放 pointer、input manager、root handler 和 radio group 关系。
 - `NodeSwitcherButton.Toggle` 在节点加载中不重复触发展开。
 - drag preview、drag-over、drop target 和 indicator 状态必须在拖拽完成或取消时清理。
+- 拖拽结构修改只能通过 `TreeDataController` 执行，不能直接写生成容器 `Items`。
+- `TreeNodeIndex` 是 drop 定位的权威索引；drag pointer move 不得触发全树数据遍历。
+- 节点 move 不能被当成 remove 清理选中、勾选或展开状态。
+- root 数据源、节点 `Children`、parent node 和索引必须在移动后保持一致。
 - `TreeItemNode` 保持轻量数据节点定位，不承载 Avalonia 属性系统。
 - `BindableTreeItemNode` 的 resource host attach、属性订阅和容器同步必须与容器生命周期成对释放。
 - 绑定型节点不能永久保存当前 `TreeViewItem`、header、template part 或 visual container。
@@ -293,7 +346,7 @@ Filter highlight runs 是 header 状态，不应写入 Token 或节点数据模�
 - 勾选：checkbox 级联、strict、半选父级、radio group、`CheckedItemsChanged` added / removed。
 - 过滤：匹配、高亮、加粗、隐藏未命中、展开路径、清除过滤和空状态。
 - 异步加载：加载成功、超时、取消、重复请求合并、detach 取消。
-- 拖拽：drag preview、drop indicator、根插入、子节点插入、自身后代保护和事件顺序。
+- 拖拽：drag preview、drop indicator、数据源 root 插入、子节点插入、同集合索引修正、跨父级 parent node 同步、不可变集合取消、自身后代保护、状态保留和事件顺序。
 - Theme：template part、hover mode、selected / disabled、line rendering、switcher icons、drag indicator 和 filter highlighter。
 - 绑定型节点：节点属性变化同步当前容器、容器交互回写节点、DynamicResource 不 root 已移除节点、owner resource 优先于 Application resource。
 - 文档改动运行 `git diff --check`。
