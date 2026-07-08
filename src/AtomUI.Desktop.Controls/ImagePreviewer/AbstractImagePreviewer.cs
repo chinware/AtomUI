@@ -405,13 +405,98 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     {
         var cancellation = new CancellationTokenSource();
         _imageLoadCancellation = cancellation;
-        foreach (var item in items)
+        _ = LoadItemsAsync(items, allowFallback, cancellation);
+    }
+
+    private async Task LoadItemsAsync(IList<ImagePreviewItem> items,
+                                      bool allowFallback,
+                                      CancellationTokenSource cancellation)
+    {
+        var cancellationToken = cancellation.Token;
+        var loadTasks = new Task[items.Count];
+        for (var i = 0; i < items.Count; i++)
         {
-            _ = LoadItemAsync(item, allowFallback, cancellation.Token);
+            loadTasks[i] = LoadItemAsync(items[i], cancellationToken);
+        }
+
+        await Task.WhenAll(loadTasks).ConfigureAwait(false);
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return;
+        }
+
+        void CompleteBatch()
+        {
+            if (!ReferenceEquals(_imageLoadCancellation, cancellation) ||
+                cancellationToken.IsCancellationRequested ||
+                !ReferenceEquals(EffectiveItems, items))
+            {
+                return;
+            }
+
+            CompleteCurrentLoadBatch(items, allowFallback, cancellation);
+        }
+
+        if (Dispatcher.UIThread.CheckAccess())
+        {
+            CompleteBatch();
+        }
+        else
+        {
+            await Dispatcher.UIThread.InvokeAsync(CompleteBatch);
         }
     }
 
-    private protected async Task LoadItemAsync(ImagePreviewItem item, bool allowFallback, CancellationToken cancellationToken)
+    private void CompleteCurrentLoadBatch(IList<ImagePreviewItem> items,
+                                          bool allowFallback,
+                                          CancellationTokenSource cancellation)
+    {
+        var loadedItems = items.Where(item => item.IsLoaded).ToList();
+        if (loadedItems.Count == 0)
+        {
+            if (allowFallback && FallbackSourceUri is not null)
+            {
+                MaterializeFallbackEffectiveSource();
+            }
+            else
+            {
+                ReleaseImageLoadCancellation(cancellation);
+            }
+            return;
+        }
+
+        if (loadedItems.Count == items.Count)
+        {
+            ReleaseImageLoadCancellation(cancellation);
+            return;
+        }
+
+        ReleaseImageLoadCancellation(cancellation);
+        SetCurrentValue(EffectiveItemsProperty, loadedItems);
+        DisposeItemsExcept(items, loadedItems);
+    }
+
+    private void ReleaseImageLoadCancellation(CancellationTokenSource cancellation)
+    {
+        if (ReferenceEquals(_imageLoadCancellation, cancellation))
+        {
+            _imageLoadCancellation.Dispose();
+            _imageLoadCancellation = null;
+        }
+    }
+
+    private static void DisposeItemsExcept(IList<ImagePreviewItem> items, IList<ImagePreviewItem> preservedItems)
+    {
+        foreach (var item in items)
+        {
+            if (!preservedItems.Contains(item))
+            {
+                item.Dispose();
+            }
+        }
+    }
+
+    private protected async Task LoadItemAsync(ImagePreviewItem item, CancellationToken cancellationToken)
     {
         var version = item.BeginLoading();
         try
@@ -451,10 +536,6 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
                 }
 
                 item.FailLoading(version, ex);
-                if (allowFallback && FallbackSourceUri is not null)
-                {
-                    MaterializeFallbackEffectiveSource();
-                }
             }
 
             if (Dispatcher.UIThread.CheckAccess())

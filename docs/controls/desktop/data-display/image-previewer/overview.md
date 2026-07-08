@@ -244,6 +244,8 @@ ImagePreviewer 使用 `ImageSourceUri` 作为图片来源公共契约。`ImageSo
 
 `SourceUri` 表达单图来源，`SourceUris` 表达多图来源，`CoverSourceUri` 覆盖封面来源，`FallbackSourceUri` 表达加载失败后的兜底来源。`CoverSourceUri` 为空时，封面使用 `CurrentIndex` 在当前 effective source 中选中的图片项。
 
+`SourceUri` / `SourceUris` 必须按一次来源集合加载批次处理 fallback，而不是由单个图片项直接抢占整组结果。批次中某一项加载失败时，该项只进入 `Failed` 状态；只有当前批次全部来源都加载失败时，才允许使用 `FallbackSourceUri` 替换 effective items。若批次中至少有一项加载成功，失败项最终应从可预览集合中跳过，不能触发整组 fallback。`CoverSourceUri` 是单独封面来源，失败时可以按单源语义直接进入 fallback，不反向改写 `CurrentIndex`。
+
 ### 8.5 加载、失败与 fallback 模型
 
 每个图片项由 `ImagePreviewItemState` 表达状态：`Pending`、`Loading`、`Loaded`、`Failed`。状态属于图片项，不属于 renderer 局部视觉状态。
@@ -252,7 +254,9 @@ ImagePreviewer 使用 `ImageSourceUri` 作为图片来源公共契约。`ImageSo
 
 - 封面区域在 loading 时显示图片 Skeleton 占位，并保持封面尺寸稳定。
 - 预览层在 loading 时显示居中 Spin，禁用依赖真实图片尺寸的缩放、旋转、拖拽和 fit-to-window。
-- 加载失败时先尝试 `FallbackSourceUri`；没有 fallback 或 fallback 失败时显示 `ErrorContent` / `ErrorContentTemplate` 或默认失败占位。默认失败占位必须使用控件本地化资源，不允许硬编码英文。
+- `SourceUri` / `SourceUris` 的 fallback 判断属于当前加载批次：单项失败不触发整组 fallback；当前批次全部失败且存在 `FallbackSourceUri` 时才加载 fallback；没有 fallback 或 fallback 失败时显示 `ErrorContent` / `ErrorContentTemplate` 或默认失败占位。默认失败占位必须使用控件本地化资源，不允许硬编码英文。
+- 批次完成后若存在成功项，effective items 应保留成功项并跳过失败项；替换 effective items 时只能释放被剔除的失败项或旧批次项，不能释放仍被保留的成功项。
+- 来源替换、清空、控件 detach 或重新打开触发新批次时，旧批次必须取消；旧批次完成结果不能回写新的 `EffectiveItems`、`CurrentIndex` 展示项或 fallback 状态。
 - 本地或资源图片快速加载完成时可以延迟显示 loading 视觉以避免闪烁，但状态机仍必须进入 `Loading` 并接受取消。
 - 单图 `ImagePreviewer` 和 `ImageGroupPreviewer` 必须一致消费 `CoverWidth` / `CoverHeight`。封面尺寸契约不能只在多图模板生效，否则远程图片失败或尚未加载时会失去稳定高度。
 
