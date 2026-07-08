@@ -17,14 +17,14 @@ internal sealed class ImagePreviewItem : INotifyPropertyChanged, IDisposable
     private LoadedImageSource? _loadedSource;
     private Exception? _error;
 
-    public ImagePreviewItem(ImageSourceUri sourceUri)
+    public ImagePreviewItem(IImagePreviewSource source)
     {
-        SourceUri = sourceUri;
+        Source = source ?? throw new ArgumentNullException(nameof(source));
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    public ImageSourceUri SourceUri { get; }
+    public IImagePreviewSource Source { get; private set; }
 
     public ImagePreviewItemState State
     {
@@ -73,6 +73,12 @@ internal sealed class ImagePreviewItem : INotifyPropertyChanged, IDisposable
     public bool IsLoaded => State == ImagePreviewItemState.Loaded;
 
     public bool IsFailed => State == ImagePreviewItemState.Failed;
+
+    public void UpdateSource(IImagePreviewSource source)
+    {
+        Source = source ?? throw new ArgumentNullException(nameof(source));
+        RaisePropertyChanged(nameof(Source));
+    }
 
     public long BeginLoading()
     {

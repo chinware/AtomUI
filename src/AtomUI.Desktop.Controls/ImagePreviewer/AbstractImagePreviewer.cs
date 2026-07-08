@@ -21,14 +21,14 @@ namespace AtomUI.Desktop.Controls;
 public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareControl
 {
     #region 公共属性定义
-    public static readonly StyledProperty<ImageSourceUri?> SourceUriProperty =
-        AvaloniaProperty.Register<AbstractImagePreviewer, ImageSourceUri?>(nameof(SourceUri));
+    public static readonly StyledProperty<IImagePreviewSource?> SourceProperty =
+        AvaloniaProperty.Register<AbstractImagePreviewer, IImagePreviewSource?>(nameof(Source));
 
-    public static readonly StyledProperty<IList<ImageSourceUri>?> SourceUrisProperty =
-        AvaloniaProperty.Register<AbstractImagePreviewer, IList<ImageSourceUri>?>(nameof(SourceUris));
+    public static readonly StyledProperty<IList<IImagePreviewSource>?> SourcesProperty =
+        AvaloniaProperty.Register<AbstractImagePreviewer, IList<IImagePreviewSource>?>(nameof(Sources));
 
-    public static readonly StyledProperty<ImageSourceUri?> FallbackSourceUriProperty =
-        AvaloniaProperty.Register<AbstractImagePreviewer, ImageSourceUri?>(nameof(FallbackSourceUri));
+    public static readonly StyledProperty<IImagePreviewSource?> FallbackSourceProperty =
+        AvaloniaProperty.Register<AbstractImagePreviewer, IImagePreviewSource?>(nameof(FallbackSource));
 
     public static readonly StyledProperty<string?> PreviewTitleProperty =
         AvaloniaProperty.Register<AbstractImagePreviewer, string?>(nameof(PreviewTitle));
@@ -91,22 +91,22 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             1,
             coerce: CoerceNonNegativeValue);
 
-    public ImageSourceUri? SourceUri
+    public IImagePreviewSource? Source
     {
-        get => GetValue(SourceUriProperty);
-        set => SetValue(SourceUriProperty, value);
+        get => GetValue(SourceProperty);
+        set => SetValue(SourceProperty, value);
     }
 
-    public IList<ImageSourceUri>? SourceUris
+    public IList<IImagePreviewSource>? Sources
     {
-        get => GetValue(SourceUrisProperty);
-        set => SetValue(SourceUrisProperty, value);
+        get => GetValue(SourcesProperty);
+        set => SetValue(SourcesProperty, value);
     }
 
-    public ImageSourceUri? FallbackSourceUri
+    public IImagePreviewSource? FallbackSource
     {
-        get => GetValue(FallbackSourceUriProperty);
-        set => SetValue(FallbackSourceUriProperty, value);
+        get => GetValue(FallbackSourceProperty);
+        set => SetValue(FallbackSourceProperty, value);
     }
 
     public string? PreviewTitle
@@ -331,14 +331,14 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == SourceUriProperty ||
-            change.Property == SourceUrisProperty)
+        if (change.Property == SourceProperty ||
+            change.Property == SourcesProperty)
         {
             HandleSourceChanged();
         }
-        else if (change.Property == FallbackSourceUriProperty)
+        else if (change.Property == FallbackSourceProperty)
         {
-            HandleFallbackSourceChanged((ImageSourceUri?)change.OldValue);
+            HandleFallbackSourceChanged();
         }
         else if (change.Property == CurrentIndexProperty ||
                  change.Property == PreloadCountProperty ||
@@ -353,27 +353,27 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
 
     private protected virtual void HandleSourceChanged()
     {
-        MaterializeEffectiveItemsFromSourceUris();
+        MaterializeEffectiveItemsFromSources();
     }
 
-    private protected virtual void HandleFallbackSourceChanged(ImageSourceUri? oldFallbackSourceUri)
+    private protected virtual void HandleFallbackSourceChanged()
     {
-        if (ShouldMaterializeFallbackEffectiveSource(oldFallbackSourceUri))
+        if (ShouldMaterializeFallbackEffectiveSource())
         {
             MaterializeFallbackEffectiveSource();
         }
     }
 
-    private protected void MaterializeEffectiveItemsFromSourceUris()
+    private protected void MaterializeEffectiveItemsFromSources()
     {
-        var sourceUris = ResolveSourceUris();
-        if (sourceUris.Count == 0)
+        var sources = ResolveSources();
+        if (sources.Count == 0)
         {
             ClearEffectiveItems();
             return;
         }
 
-        var items = CreateEffectiveItems(sourceUris);
+        var items = CreateEffectiveItems(sources);
         if (HasSameItems(EffectiveItems, items))
         {
             return;
@@ -384,9 +384,10 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
 
     private protected void MaterializeFallbackEffectiveSource()
     {
-        if (FallbackSourceUri != null)
+        var fallbackSource = ResolveFallbackSource();
+        if (fallbackSource != null)
         {
-            var item = new ImagePreviewItem(FallbackSourceUri);
+            var item = new ImagePreviewItem(fallbackSource);
             SetEffectiveItems(new[] { item });
             RequestItemLoad(item, ImagePreviewLoadPriority.Cover);
         }
@@ -401,21 +402,21 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         SetEffectiveItems(Array.Empty<ImagePreviewItem>());
     }
 
-    private List<ImagePreviewItem> CreateEffectiveItems(IReadOnlyList<ImageSourceUri> sourceUris)
+    private List<ImagePreviewItem> CreateEffectiveItems(IReadOnlyList<IImagePreviewSource> sources)
     {
         var reusableItems = CreateReusableItemMap(EffectiveItems);
-        var items         = new List<ImagePreviewItem>(sourceUris.Count);
-        foreach (var sourceUri in sourceUris)
+        var items         = new List<ImagePreviewItem>(sources.Count);
+        foreach (var source in sources)
         {
-            items.Add(TryTakeReusableItem(reusableItems, sourceUri) ?? new ImagePreviewItem(sourceUri));
+            items.Add(TryTakeReusableItem(reusableItems, source) ?? new ImagePreviewItem(source));
         }
 
         return items;
     }
 
-    private static Dictionary<string, Queue<ImagePreviewItem>> CreateReusableItemMap(IList<ImagePreviewItem>? items)
+    private static Dictionary<object, Queue<ImagePreviewItem>> CreateReusableItemMap(IList<ImagePreviewItem>? items)
     {
-        var reusableItems = new Dictionary<string, Queue<ImagePreviewItem>>();
+        var reusableItems = new Dictionary<object, Queue<ImagePreviewItem>>();
         if (items is null)
         {
             return reusableItems;
@@ -423,10 +424,11 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
 
         foreach (var item in items)
         {
-            if (!reusableItems.TryGetValue(item.SourceUri.CacheKey, out var queue))
+            var identity = ResolveSourceIdentity(item.Source);
+            if (!reusableItems.TryGetValue(identity, out var queue))
             {
                 queue = new Queue<ImagePreviewItem>();
-                reusableItems.Add(item.SourceUri.CacheKey, queue);
+                reusableItems.Add(identity, queue);
             }
 
             queue.Enqueue(item);
@@ -435,12 +437,33 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         return reusableItems;
     }
 
-    private static ImagePreviewItem? TryTakeReusableItem(Dictionary<string, Queue<ImagePreviewItem>> reusableItems,
-                                                        ImageSourceUri sourceUri)
+    private static ImagePreviewItem? TryTakeReusableItem(Dictionary<object, Queue<ImagePreviewItem>> reusableItems,
+                                                        IImagePreviewSource source)
     {
-        return reusableItems.TryGetValue(sourceUri.CacheKey, out var queue) && queue.Count > 0
-            ? queue.Dequeue()
-            : null;
+        if (reusableItems.TryGetValue(ResolveSourceIdentity(source), out var queue) && queue.Count > 0)
+        {
+            var item = queue.Dequeue();
+            item.UpdateSource(source);
+            return item;
+        }
+
+        return null;
+    }
+
+    private static object ResolveSourceIdentity(IImagePreviewSource source)
+    {
+        if (source is IImagePreviewSourceIdentity identitySource &&
+            identitySource.Identity is { } identity)
+        {
+            return identity;
+        }
+
+        return source;
+    }
+
+    private static bool HasSameSourceIdentity(IImagePreviewSource first, IImagePreviewSource second)
+    {
+        return Equals(ResolveSourceIdentity(first), ResolveSourceIdentity(second));
     }
 
     private static bool HasSameItems(IList<ImagePreviewItem>? oldItems, IList<ImagePreviewItem> newItems)
@@ -495,25 +518,31 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         }
     }
 
-    private IReadOnlyList<ImageSourceUri> ResolveSourceUris()
+    private IReadOnlyList<IImagePreviewSource> ResolveSources()
     {
-        if (SourceUris is { Count: > 0 })
+        if (Sources is { Count: > 0 })
         {
-            return SourceUris.Where(uri => uri is not null).ToList();
+            return Sources.Where(source => source is not null).ToList();
         }
 
-        return SourceUri is null ? [] : [SourceUri];
+        return Source is null ? [] : [Source];
     }
 
-    private bool ShouldMaterializeFallbackEffectiveSource(ImageSourceUri? oldFallbackSourceUri)
+    private IImagePreviewSource? ResolveFallbackSource()
     {
-        var sourceUris = ResolveSourceUris();
-        if (sourceUris.Count == 0)
+        return FallbackSource;
+    }
+
+    private bool ShouldMaterializeFallbackEffectiveSource()
+    {
+        var sources = ResolveSources();
+        if (sources.Count == 0)
         {
             return true;
         }
 
-        if (FallbackSourceUri is null)
+        var fallbackSource = ResolveFallbackSource();
+        if (fallbackSource is null)
         {
             return false;
         }
@@ -523,9 +552,8 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             return false;
         }
 
-        if (oldFallbackSourceUri is not null &&
-            items.Count == 1 &&
-            items[0].SourceUri.CacheKey == oldFallbackSourceUri.CacheKey)
+        if (items.Count == 1 &&
+            sources.All(source => !HasSameSourceIdentity(source, items[0].Source)))
         {
             return true;
         }
@@ -641,8 +669,9 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         var loadedItems = items.Where(item => item.IsLoaded).ToList();
         if (loadedItems.Count == 0)
         {
-            if (FallbackSourceUri is not null &&
-                items.Any(item => item.SourceUri.CacheKey != FallbackSourceUri.CacheKey))
+            var fallbackSource = ResolveFallbackSource();
+            if (fallbackSource is not null &&
+                items.Any(item => !HasSameSourceIdentity(item.Source, fallbackSource)))
             {
                 MaterializeFallbackEffectiveSource();
             }
@@ -931,9 +960,9 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
 
     private protected virtual void PrepareDialogOpen()
     {
-        if (SourceUris is { Count: > 0 } || SourceUri is not null)
+        if (ResolveSources().Count > 0)
         {
-            MaterializeEffectiveItemsFromSourceUris();
+            MaterializeEffectiveItemsFromSources();
         }
         else
         {

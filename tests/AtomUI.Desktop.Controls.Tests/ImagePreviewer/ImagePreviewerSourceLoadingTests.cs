@@ -13,12 +13,12 @@ public class ImagePreviewerSourceLoadingTests
     }
 
     [Fact]
-    public void SourceUri_Loads_Local_Image_Item()
+    public void Source_Loads_Local_Image_Item()
     {
         var path = CreatePngFile();
         var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
         {
-            SourceUri = ImageSourceUri.Parse(path)
+            Source = new UriImagePreviewSource(path)
         };
 
         WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }])
@@ -30,25 +30,113 @@ public class ImagePreviewerSourceLoadingTests
     }
 
     [Fact]
-    public void SourceUri_Uses_FallbackSourceUri_When_Load_Fails()
+    public void Source_Uses_FallbackSource_When_Load_Fails()
     {
         var fallbackPath = CreatePngFile();
         var missingPath  = Path.Combine(Path.GetTempPath(), $"atomui-missing-{Guid.NewGuid():N}.png");
         var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
         {
-            SourceUri          = ImageSourceUri.Parse(missingPath),
-            FallbackSourceUri  = ImageSourceUri.Parse(fallbackPath)
+            Source         = new UriImagePreviewSource(missingPath),
+            FallbackSource = new UriImagePreviewSource(fallbackPath)
         };
 
         WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }])
             .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
 
         previewer.EffectiveItems.ShouldNotBeNull();
-        previewer.EffectiveItems[0].SourceUri.CacheKey.ShouldBe(Path.GetFullPath(fallbackPath));
+        previewer.EffectiveItems[0].Source.ShouldBeSameAs(previewer.FallbackSource);
     }
 
     [Fact]
-    public void SourceUris_Closed_State_Loads_Only_CoverIndex_Item()
+    public void Sources_Closed_State_Loads_Only_CoverIndex_Stream_Source()
+    {
+        var openCounts = new int[3];
+        var sources = Enumerable.Range(0, openCounts.Length)
+                                .Select(index => CreateStreamSource($"stream-{index}", openCounts, index))
+                                .ToList<IImagePreviewSource>();
+        var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+        {
+            CoverIndex = 1,
+            Sources    = sources
+        };
+
+        WaitUntil(() => previewer.EffectiveItems is { Count: 3 } items &&
+                        items[1].State == ImagePreviewItemState.Loaded)
+            .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
+
+        openCounts.ShouldBe([0, 1, 0]);
+        previewer.EffectiveItems.ShouldNotBeNull();
+        previewer.EffectiveItems[0].State.ShouldBe(ImagePreviewItemState.Pending);
+        previewer.EffectiveItems[1].Source.ShouldBeSameAs(sources[1]);
+        previewer.EffectiveItems[2].State.ShouldBe(ImagePreviewItemState.Pending);
+    }
+
+    [Fact]
+    public void Sources_Wins_When_Source_Is_Also_Set()
+    {
+        var sourceOpenCount  = 0;
+        var sourcesOpenCount = 0;
+        var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+        {
+            Sources =
+            [
+                new StreamImagePreviewSource(_ =>
+                {
+                    sourcesOpenCount++;
+                    return new ValueTask<Stream>(new MemoryStream(CreatePngBytes(), writable: false));
+                }, displayName: "collection.png", contentType: "image/png")
+            ],
+            Source = new StreamImagePreviewSource(_ =>
+            {
+                sourceOpenCount++;
+                return new ValueTask<Stream>(new MemoryStream(CreatePngBytes(), writable: false));
+            }, displayName: "single.png", contentType: "image/png")
+        };
+
+        WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }])
+            .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
+
+        sourceOpenCount.ShouldBe(0);
+        sourcesOpenCount.ShouldBe(1);
+        previewer.EffectiveItems.ShouldNotBeNull();
+        previewer.EffectiveItems[0].Source.ShouldBeSameAs(previewer.Sources![0]);
+    }
+
+    [Fact]
+    public void FallbackSource_Loads_When_All_Stream_Sources_Fail()
+    {
+        var fallbackOpenCount = 0;
+        var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+        {
+            Sources =
+            [
+                CreateFailingStreamSource("failed-0"),
+                CreateFailingStreamSource("failed-1")
+            ],
+            FallbackSource = new StreamImagePreviewSource(_ =>
+            {
+                fallbackOpenCount++;
+                return new ValueTask<Stream>(new MemoryStream(CreatePngBytes(), writable: false));
+            }, displayName: "fallback.png", contentType: "image/png")
+        };
+
+        WaitUntil(() => previewer.EffectiveItems is { Count: 2 } items &&
+                        items[0].State == ImagePreviewItemState.Failed)
+            .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
+
+        previewer.CurrentIndex = 1;
+        previewer.RequestPreviewLoads();
+
+        WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }])
+            .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
+
+        fallbackOpenCount.ShouldBe(1);
+        previewer.EffectiveItems.ShouldNotBeNull();
+        previewer.EffectiveItems[0].Source.ShouldBeSameAs(previewer.FallbackSource);
+    }
+
+    [Fact]
+    public void Sources_Closed_State_Loads_Only_CoverIndex_Item()
     {
         var firstPath  = CreatePngFile();
         var secondPath = CreatePngFile();
@@ -56,11 +144,11 @@ public class ImagePreviewerSourceLoadingTests
         var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
         {
             CoverIndex = 1,
-            SourceUris =
+            Sources =
             [
-                ImageSourceUri.Parse(firstPath),
-                ImageSourceUri.Parse(secondPath),
-                ImageSourceUri.Parse(thirdPath)
+                new UriImagePreviewSource(firstPath),
+                new UriImagePreviewSource(secondPath),
+                new UriImagePreviewSource(thirdPath)
             ]
         };
 
@@ -71,23 +159,23 @@ public class ImagePreviewerSourceLoadingTests
 
         previewer.EffectiveItems.ShouldNotBeNull();
         previewer.EffectiveItems[0].State.ShouldBe(ImagePreviewItemState.Pending);
-        previewer.EffectiveItems[1].SourceUri.CacheKey.ShouldBe(Path.GetFullPath(secondPath));
+        previewer.EffectiveItems[1].Source.ShouldBeSameAs(previewer.Sources![1]);
         previewer.EffectiveItems[1].LoadedSource.ShouldBeSameAs(previewer.EffectiveCoverImage);
         previewer.EffectiveItems[2].State.ShouldBe(ImagePreviewItemState.Pending);
     }
 
     [Fact]
-    public void SourceUris_Keep_Pending_Items_When_Only_CoverIndex_Loads()
+    public void Sources_Keep_Pending_Items_When_Only_CoverIndex_Loads()
     {
         var loadedPath  = CreatePngFile();
         var pendingPath = CreatePngFile();
         var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
         {
             CoverIndex = 0,
-            SourceUris =
+            Sources =
             [
-                ImageSourceUri.Parse(loadedPath),
-                ImageSourceUri.Parse(pendingPath)
+                new UriImagePreviewSource(loadedPath),
+                new UriImagePreviewSource(pendingPath)
             ]
         };
 
@@ -97,23 +185,23 @@ public class ImagePreviewerSourceLoadingTests
 
         previewer.EffectiveItems.ShouldNotBeNull();
         previewer.EffectiveItems.Count.ShouldBe(2);
-        previewer.EffectiveItems[0].SourceUri.CacheKey.ShouldBe(Path.GetFullPath(loadedPath));
+        previewer.EffectiveItems[0].Source.ShouldBeSameAs(previewer.Sources![0]);
         previewer.EffectiveItems[1].State.ShouldBe(ImagePreviewItemState.Pending);
     }
 
     [Fact]
-    public void SourceUris_Do_Not_Use_Fallback_When_Cover_Fails_But_Other_Sources_Are_Pending()
+    public void Sources_Do_Not_Use_Fallback_When_Cover_Fails_But_Other_Sources_Are_Pending()
     {
         var pendingPath  = CreatePngFile();
         var fallbackPath = CreatePngFile();
         var missingPath  = Path.Combine(Path.GetTempPath(), $"atomui-missing-{Guid.NewGuid():N}.png");
         var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
         {
-            FallbackSourceUri = ImageSourceUri.Parse(fallbackPath),
-            SourceUris =
+            FallbackSource = new UriImagePreviewSource(fallbackPath),
+            Sources =
             [
-                ImageSourceUri.Parse(missingPath),
-                ImageSourceUri.Parse(pendingPath)
+                new UriImagePreviewSource(missingPath),
+                new UriImagePreviewSource(pendingPath)
             ]
         };
 
@@ -125,23 +213,22 @@ public class ImagePreviewerSourceLoadingTests
         previewer.EffectiveItems.Count.ShouldBe(2);
         previewer.EffectiveItems[0].State.ShouldBe(ImagePreviewItemState.Failed);
         previewer.EffectiveItems[1].State.ShouldBe(ImagePreviewItemState.Pending);
-        previewer.EffectiveItems.Select(item => item.SourceUri.CacheKey)
-                 .ShouldNotContain(Path.GetFullPath(fallbackPath));
+        previewer.EffectiveItems.Any(item => ReferenceEquals(item.Source, previewer.FallbackSource)).ShouldBeFalse();
     }
 
     [Fact]
-    public void SourceUris_Keep_Loaded_Items_Instead_Of_Fallback_When_Only_Some_Items_Fail()
+    public void Sources_Keep_Loaded_Items_Instead_Of_Fallback_When_Only_Some_Items_Fail()
     {
         var loadedPath   = CreatePngFile();
         var fallbackPath = CreatePngFile();
         var missingPath  = Path.Combine(Path.GetTempPath(), $"atomui-missing-{Guid.NewGuid():N}.png");
         var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
         {
-            FallbackSourceUri = ImageSourceUri.Parse(fallbackPath),
-            SourceUris =
+            FallbackSource = new UriImagePreviewSource(fallbackPath),
+            Sources =
             [
-                ImageSourceUri.Parse(missingPath),
-                ImageSourceUri.Parse(loadedPath)
+                new UriImagePreviewSource(missingPath),
+                new UriImagePreviewSource(loadedPath)
             ]
         };
 
@@ -157,22 +244,22 @@ public class ImagePreviewerSourceLoadingTests
 
         previewer.EffectiveItems.ShouldNotBeNull();
         previewer.EffectiveItems.Count.ShouldBe(1);
-        previewer.EffectiveItems[0].SourceUri.CacheKey.ShouldBe(Path.GetFullPath(loadedPath));
+        previewer.EffectiveItems[0].Source.ShouldBeSameAs(previewer.Sources![1]);
     }
 
     [Fact]
-    public void SourceUris_Use_FallbackSourceUri_When_All_Source_Items_Fail()
+    public void Sources_Use_FallbackSource_When_All_Source_Items_Fail()
     {
         var fallbackPath      = CreatePngFile();
         var firstMissingPath  = Path.Combine(Path.GetTempPath(), $"atomui-missing-{Guid.NewGuid():N}.png");
         var secondMissingPath = Path.Combine(Path.GetTempPath(), $"atomui-missing-{Guid.NewGuid():N}.png");
         var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
         {
-            FallbackSourceUri = ImageSourceUri.Parse(fallbackPath),
-            SourceUris =
+            FallbackSource = new UriImagePreviewSource(fallbackPath),
+            Sources =
             [
-                ImageSourceUri.Parse(firstMissingPath),
-                ImageSourceUri.Parse(secondMissingPath)
+                new UriImagePreviewSource(firstMissingPath),
+                new UriImagePreviewSource(secondMissingPath)
             ]
         };
 
@@ -188,7 +275,7 @@ public class ImagePreviewerSourceLoadingTests
 
         previewer.EffectiveItems.ShouldNotBeNull();
         previewer.EffectiveItems.Count.ShouldBe(1);
-        previewer.EffectiveItems[0].SourceUri.CacheKey.ShouldBe(Path.GetFullPath(fallbackPath));
+        previewer.EffectiveItems[0].Source.ShouldBeSameAs(previewer.FallbackSource);
     }
 
     [Fact]
@@ -200,10 +287,10 @@ public class ImagePreviewerSourceLoadingTests
         {
             CurrentIndex = 1,
             CoverIndex   = 0,
-            SourceUris =
+            Sources =
             [
-                ImageSourceUri.Parse(firstPath),
-                ImageSourceUri.Parse(secondPath)
+                new UriImagePreviewSource(firstPath),
+                new UriImagePreviewSource(secondPath)
             ]
         };
 
@@ -232,7 +319,7 @@ public class ImagePreviewerSourceLoadingTests
     }
 
     [Fact]
-    public void PrepareDialogOpen_Keeps_Loaded_Cover_When_SourceUris_Are_Unchanged()
+    public void PrepareDialogOpen_Keeps_Loaded_Cover_When_Sources_Are_Unchanged()
     {
         var loader = new TrackingImageSourceLoader();
         var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer(loader)
@@ -240,16 +327,16 @@ public class ImagePreviewerSourceLoadingTests
             CoverIndex   = 0,
             CurrentIndex = 5,
             PreloadCount = 1,
-            SourceUris =
+            Sources =
             [
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/0.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/1.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/2.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/3.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/4.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/5.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/6.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/7.png")
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/0.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/1.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/2.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/3.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/4.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/5.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/6.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/7.png")
             ]
         };
 
@@ -271,13 +358,87 @@ public class ImagePreviewerSourceLoadingTests
     }
 
     [Fact]
-    public void FallbackSourceUri_Change_Does_Not_Reload_Primary_Source()
+    public void StreamSource_Stable_Identity_Reuses_Loaded_Item_And_Updates_Source()
+    {
+        var firstOpenCount  = 0;
+        var secondOpenCount = 0;
+        var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+        {
+            Source = new StreamImagePreviewSource(_ =>
+            {
+                firstOpenCount++;
+                return new ValueTask<Stream>(new MemoryStream(CreatePngBytes(), writable: false));
+            }, displayName: "avatar.png", contentType: "image/png", identity: "avatar:42")
+        };
+
+        WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }])
+            .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
+
+        var item         = previewer.EffectiveItems![0];
+        var loadedSource = item.LoadedSource;
+        var secondSource = new StreamImagePreviewSource(_ =>
+        {
+            secondOpenCount++;
+            return new ValueTask<Stream>(new MemoryStream(CreatePngBytes(), writable: false));
+        }, displayName: "avatar.png", contentType: "image/png", identity: "avatar:42");
+
+        previewer.Source = secondSource;
+        Dispatcher.UIThread.RunJobs();
+
+        previewer.EffectiveItems.ShouldNotBeNull();
+        previewer.EffectiveItems[0].ShouldBeSameAs(item);
+        previewer.EffectiveItems[0].Source.ShouldBeSameAs(secondSource);
+        previewer.EffectiveItems[0].LoadedSource.ShouldBeSameAs(loadedSource);
+        firstOpenCount.ShouldBe(1);
+        secondOpenCount.ShouldBe(0);
+    }
+
+    [Fact]
+    public void StreamSource_Without_Identity_Uses_Source_Object_As_Identity()
+    {
+        var firstOpenCount  = 0;
+        var secondOpenCount = 0;
+        var firstSource = new StreamImagePreviewSource(_ =>
+        {
+            firstOpenCount++;
+            return new ValueTask<Stream>(new MemoryStream(CreatePngBytes(), writable: false));
+        }, displayName: "avatar.png", contentType: "image/png");
+        var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+        {
+            Source = firstSource
+        };
+
+        WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }])
+            .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
+
+        var firstItem = previewer.EffectiveItems![0];
+        var secondSource = new StreamImagePreviewSource(_ =>
+        {
+            secondOpenCount++;
+            return new ValueTask<Stream>(new MemoryStream(CreatePngBytes(), writable: false));
+        }, displayName: "avatar.png", contentType: "image/png");
+
+        previewer.Source = secondSource;
+
+        WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }] items &&
+                        ReferenceEquals(items[0].Source, secondSource))
+            .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
+
+        previewer.EffectiveItems.ShouldNotBeNull();
+        previewer.EffectiveItems[0].ShouldNotBeSameAs(firstItem);
+        previewer.EffectiveItems[0].Source.ShouldBeSameAs(secondSource);
+        firstOpenCount.ShouldBe(1);
+        secondOpenCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public void FallbackSource_Change_Does_Not_Reload_Primary_Source()
     {
         var sourcePath   = CreatePngFile();
         var fallbackPath = CreatePngFile();
         var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
         {
-            SourceUri = ImageSourceUri.Parse(sourcePath)
+            Source = new UriImagePreviewSource(sourcePath)
         };
 
         WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }])
@@ -287,28 +448,28 @@ public class ImagePreviewerSourceLoadingTests
         var primaryItem    = effectiveItems![0];
         var loadedSource   = primaryItem.LoadedSource;
 
-        previewer.FallbackSourceUri = ImageSourceUri.Parse(fallbackPath);
+        previewer.FallbackSource = new UriImagePreviewSource(fallbackPath);
         Dispatcher.UIThread.RunJobs();
 
         previewer.EffectiveItems.ShouldBeSameAs(effectiveItems);
         previewer.EffectiveItems![0].ShouldBeSameAs(primaryItem);
         previewer.EffectiveItems[0].LoadedSource.ShouldBeSameAs(loadedSource);
-        previewer.EffectiveItems[0].SourceUri.CacheKey.ShouldBe(Path.GetFullPath(sourcePath));
+        previewer.EffectiveItems[0].Source.ShouldBeSameAs(previewer.Source);
     }
 
     [Fact]
-    public void FallbackSourceUri_Loads_When_No_Main_Source()
+    public void FallbackSource_Loads_When_No_Main_Source()
     {
         var fallbackPath = CreatePngFile();
         var previewer    = new global::AtomUI.Desktop.Controls.ImagePreviewer();
 
-        previewer.FallbackSourceUri = ImageSourceUri.Parse(fallbackPath);
+        previewer.FallbackSource = new UriImagePreviewSource(fallbackPath);
 
         WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }])
             .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
 
         previewer.EffectiveItems.ShouldNotBeNull();
-        previewer.EffectiveItems[0].SourceUri.CacheKey.ShouldBe(Path.GetFullPath(fallbackPath));
+        previewer.EffectiveItems[0].Source.ShouldBeSameAs(previewer.FallbackSource);
     }
 
     [Fact]
@@ -319,13 +480,13 @@ public class ImagePreviewerSourceLoadingTests
         {
             MaxConcurrentLoads = 2,
             PreloadCount       = 4,
-            SourceUris =
+            Sources =
             [
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/0.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/1.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/2.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/3.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/4.png")
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/0.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/1.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/2.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/3.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/4.png")
             ]
         };
 
@@ -344,17 +505,17 @@ public class ImagePreviewerSourceLoadingTests
     }
 
     [Fact]
-    public void ImageGroupPreviewer_SourceUris_Loads_Default_Cover_Items()
+    public void ImageGroupPreviewer_Sources_Loads_Default_Cover_Items()
     {
         var loader = new TrackingImageSourceLoader();
         var previewer = new ImageGroupPreviewer(loader)
         {
             MaxConcurrentLoads = 2,
-            SourceUris =
+            Sources =
             [
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/group-0.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/group-1.png"),
-                ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/group-2.png")
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/group-0.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/group-1.png"),
+                new UriImagePreviewSource("avares://AtomUI.Tests/Assets/group-2.png")
             ]
         };
 
@@ -410,18 +571,47 @@ public class ImagePreviewerSourceLoadingTests
         }
 
         return string.Join(", ", items.Select(item =>
-            $"{item.SourceUri.OriginalString}:{item.State}:{item.Error?.GetType().Name}:{item.Error?.Message}"));
+            $"{DescribeSource(item.Source)}:{item.State}:{item.Error?.GetType().Name}:{item.Error?.Message}"));
+    }
+
+    private static string DescribeSource(IImagePreviewSource source)
+    {
+        return source switch
+        {
+            UriImagePreviewSource uriSource => uriSource.SourceUri.CacheKey,
+            IImagePreviewSourceIdentity identitySource => identitySource.Identity.ToString() ?? source.GetType().Name,
+            _ => source.DisplayName ?? source.GetType().Name
+        };
     }
 
     private static string CreatePngFile()
     {
-        const string base64 =
-            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=";
         var directory = Path.Combine(Path.GetTempPath(), $"atomui-image-previewer-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
         var path = Path.Combine(directory, "sample.png");
-        File.WriteAllBytes(path, Convert.FromBase64String(base64));
+        File.WriteAllBytes(path, CreatePngBytes());
         return path;
+    }
+
+    private static byte[] CreatePngBytes()
+    {
+        const string base64 =
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=";
+        return Convert.FromBase64String(base64);
+    }
+
+    private static IImagePreviewSource CreateStreamSource(string key, int[] openCounts, int index)
+    {
+        return new StreamImagePreviewSource(_ =>
+        {
+            openCounts[index]++;
+            return new ValueTask<Stream>(new MemoryStream(CreatePngBytes(), writable: false));
+        }, displayName: $"{key}.png", contentType: "image/png", identity: key);
+    }
+
+    private static IImagePreviewSource CreateFailingStreamSource(string key)
+    {
+        return new StreamImagePreviewSource(_ => throw new IOException(key), displayName: $"{key}.png", identity: key);
     }
 
     private static void CompleteLoaderUntilIdle(TrackingImageSourceLoader loader, int expectedStartedCount)
@@ -462,7 +652,7 @@ public class ImagePreviewerSourceLoadingTests
 
         public int MaxObservedActiveCount { get; private set; }
 
-        public Task<LoadedImageSource> LoadAsync(ImageSourceUri sourceUri, CancellationToken cancellationToken)
+        public Task<LoadedImageSource> LoadAsync(IImagePreviewSource source, CancellationToken cancellationToken)
         {
             lock (_syncRoot)
             {

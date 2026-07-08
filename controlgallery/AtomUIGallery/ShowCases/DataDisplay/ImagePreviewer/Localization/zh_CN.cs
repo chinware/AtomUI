@@ -31,9 +31,9 @@ internal partial class zh_CN
     public const string ApiColumnDescription = "说明";
     public const string ApiColumnType = "类型";
     public const string ApiColumnDefault = "默认值";
-    public const string ApiPropertySourceUri = "ImagePreviewer 使用的单张图片源 URI。";
-    public const string ApiPropertySourceUris = "ImagePreviewer 和 ImageGroupPreviewer 使用的图片源 URI 列表。";
-    public const string ApiPropertyFallbackSourceUri = "配置图片加载失败时显示的容错图片源 URI。";
+    public const string ApiPropertySource = "ImagePreviewer 使用的主图片来源，支持 URI 和按需数据流。";
+    public const string ApiPropertySources = "ImagePreviewer 和 ImageGroupPreviewer 使用的主图片来源列表。";
+    public const string ApiPropertyFallbackSource = "所有配置图片来源都加载失败时显示的容错图片来源。";
     public const string ApiPropertyIsOpen = "控制预览覆盖层或预览窗口是否打开，默认支持双向绑定。";
     public const string ApiPropertyCoverWidth = "图片封面的宽度。";
     public const string ApiPropertyCoverHeight = "图片封面的高度。";

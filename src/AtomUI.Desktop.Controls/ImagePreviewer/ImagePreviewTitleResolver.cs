@@ -6,7 +6,7 @@ public interface IImagePreviewTitleResolver
 }
 
 public readonly record struct ImagePreviewTitleResolveContext(
-    ImageSourceUri SourceUri,
+    IImagePreviewSource Source,
     int CurrentIndex,
     int Count);
 
@@ -16,7 +16,13 @@ public sealed class DefaultImagePreviewTitleResolver : IImagePreviewTitleResolve
 
     public string? ResolveTitle(ImagePreviewTitleResolveContext context)
     {
-        var sourceUri = context.SourceUri;
+        return context.Source is UriImagePreviewSource uriSource
+            ? ResolveUriSourceTitle(uriSource.SourceUri)
+            : ResolveDisplayNameSourceTitle(context.Source);
+    }
+
+    private static string? ResolveUriSourceTitle(ImageSourceUri sourceUri)
+    {
         return sourceUri.Kind switch
         {
             ImageSourceUriKind.LocalFile        => ResolveLocalFileName(sourceUri),
@@ -24,6 +30,11 @@ public sealed class DefaultImagePreviewTitleResolver : IImagePreviewTitleResolve
             ImageSourceUriKind.AvaloniaResource => ResolveUriFileName(sourceUri.Uri),
             _                                   => null
         };
+    }
+
+    private static string? ResolveDisplayNameSourceTitle(IImagePreviewSource source)
+    {
+        return NormalizeFileName(source.DisplayName);
     }
 
     private static string? ResolveLocalFileName(ImageSourceUri sourceUri)

@@ -17,49 +17,49 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
 
     public string UrlPathSegment { get; } = ID.ToString();
 
-    private ImageSourceUri? _remoteImage;
+    private IImagePreviewSource? _remoteImage;
 
-    public ImageSourceUri? RemoteImage
+    public IImagePreviewSource? RemoteImage
     {
         get => _remoteImage;
         set => this.RaiseAndSetIfChanged(ref _remoteImage, value);
     }
 
-    private IList<ImageSourceUri>? _defaultImages;
+    private IList<IImagePreviewSource>? _defaultImages;
 
-    public IList<ImageSourceUri>? DefaultImages
+    public IList<IImagePreviewSource>? DefaultImages
     {
         get => _defaultImages;
         set => this.RaiseAndSetIfChanged(ref _defaultImages, value);
     }
 
-    private IList<ImageSourceUri>? _twoImages;
+    private IList<IImagePreviewSource>? _twoImages;
 
-    public IList<ImageSourceUri>? TwoImages
+    public IList<IImagePreviewSource>? TwoImages
     {
         get => _twoImages;
         set => this.RaiseAndSetIfChanged(ref _twoImages, value);
     }
 
-    private IList<ImageSourceUri>? _threeImages;
+    private IList<IImagePreviewSource>? _threeImages;
 
-    public IList<ImageSourceUri>? ThreeImages
+    public IList<IImagePreviewSource>? ThreeImages
     {
         get => _threeImages;
         set => this.RaiseAndSetIfChanged(ref _threeImages, value);
     }
 
-    private IList<ImageSourceUri>? _twentyRemoteImages;
+    private IList<IImagePreviewSource>? _twentyRemoteImages;
 
-    public IList<ImageSourceUri>? TwentyRemoteImages
+    public IList<IImagePreviewSource>? TwentyRemoteImages
     {
         get => _twentyRemoteImages;
         set => this.RaiseAndSetIfChanged(ref _twentyRemoteImages, value);
     }
 
-    private ImageSourceUri? _fallbackImage;
+    private IImagePreviewSource? _fallbackImage;
 
-    public ImageSourceUri? FallbackImage
+    public IImagePreviewSource? FallbackImage
     {
         get => _fallbackImage;
         set => this.RaiseAndSetIfChanged(ref _fallbackImage, value);
@@ -87,46 +87,46 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
 
     public void EnsurePreviewAssets()
     {
-        RemoteImage = "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png";
+        RemoteImage = new UriImagePreviewSource("https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png");
         DefaultImages =
         [
-            "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/1.png"
+            new UriImagePreviewSource("avares://AtomUIGallery/Assets/ImagePreviewerShowCase/1.png")
         ];
         ThreeImages =
         [
-            "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/4.webp",
-            "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/5.webp",
-            "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/6.webp"
+            new UriImagePreviewSource("avares://AtomUIGallery/Assets/ImagePreviewerShowCase/4.webp"),
+            new UriImagePreviewSource("avares://AtomUIGallery/Assets/ImagePreviewerShowCase/5.webp"),
+            new UriImagePreviewSource("avares://AtomUIGallery/Assets/ImagePreviewerShowCase/6.webp")
         ];
         TwoImages =
         [
-            "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/2.svg",
-            "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/3.svg",
+            new UriImagePreviewSource("avares://AtomUIGallery/Assets/ImagePreviewerShowCase/2.svg"),
+            new UriImagePreviewSource("avares://AtomUIGallery/Assets/ImagePreviewerShowCase/3.svg"),
         ];
         TwentyRemoteImages =
         [
-            "https://picsum.photos/id/20/600/400",
-            "https://picsum.photos/id/21/600/400",
-            "https://picsum.photos/id/22/600/400",
-            "https://picsum.photos/id/23/600/400",
-            "https://picsum.photos/id/24/600/400",
-            "https://picsum.photos/id/25/600/400",
-            "https://picsum.photos/id/26/600/400",
-            "https://picsum.photos/id/27/600/400",
-            "https://picsum.photos/id/28/600/400",
-            "https://picsum.photos/id/29/600/400",
-            "https://picsum.photos/id/30/600/400",
-            "https://picsum.photos/id/31/600/400",
-            "https://picsum.photos/id/32/600/400",
-            "https://picsum.photos/id/33/600/400",
-            "https://picsum.photos/id/34/600/400",
-            "https://picsum.photos/id/35/600/400",
-            "https://picsum.photos/id/36/600/400",
-            "https://picsum.photos/id/37/600/400",
-            "https://picsum.photos/id/38/600/400",
-            "https://picsum.photos/id/39/600/400"
+            new UriImagePreviewSource("https://picsum.photos/id/20/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/21/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/22/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/23/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/24/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/25/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/26/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/27/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/28/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/29/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/30/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/31/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/32/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/33/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/34/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/35/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/36/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/37/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/38/600/400"),
+            new UriImagePreviewSource("https://picsum.photos/id/39/600/400")
         ];
-        FallbackImage = "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/Fallback.png";
+        FallbackImage = new UriImagePreviewSource("avares://AtomUIGallery/Assets/ImagePreviewerShowCase/Fallback.png");
     }
 
     public void ClearPreviewAssets()
@@ -148,9 +148,9 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
 
         ApiRows =
         [
-            new ImagePreviewerApiRow("SourceUri", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUri), "ImageSourceUri?", "cyan", "null"),
-            new ImagePreviewerApiRow("SourceUris", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUris), "IList<ImageSourceUri>?", "cyan", "null"),
-            new ImagePreviewerApiRow("FallbackSourceUri", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyFallbackSourceUri), "ImageSourceUri?", "cyan", "null"),
+            new ImagePreviewerApiRow("Source", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertySource), "IImagePreviewSource?", "cyan", "null"),
+            new ImagePreviewerApiRow("Sources", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertySources), "IList<IImagePreviewSource>?", "cyan", "null"),
+            new ImagePreviewerApiRow("FallbackSource", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyFallbackSource), "IImagePreviewSource?", "cyan", "null"),
             new ImagePreviewerApiRow("IsOpen", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyIsOpen), "bool", "green", "false"),
             new ImagePreviewerApiRow("CoverWidth", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverWidth), "double", "green", "NaN"),
             new ImagePreviewerApiRow("CoverHeight", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverHeight), "double", "green", "NaN"),
@@ -211,9 +211,9 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
         {
             ImagePreviewerShowCaseLangResourceKind.RemoteImageLoadingTitle              => en_US.RemoteImageLoadingTitle,
             ImagePreviewerShowCaseLangResourceKind.RemoteImageLoadingDescription        => en_US.RemoteImageLoadingDescription,
-            ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUri                   => en_US.ApiPropertySourceUri,
-            ImagePreviewerShowCaseLangResourceKind.ApiPropertySourceUris                  => en_US.ApiPropertySourceUris,
-            ImagePreviewerShowCaseLangResourceKind.ApiPropertyFallbackSourceUri           => en_US.ApiPropertyFallbackSourceUri,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertySource                    => en_US.ApiPropertySource,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertySources                   => en_US.ApiPropertySources,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertyFallbackSource            => en_US.ApiPropertyFallbackSource,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyIsOpen                      => en_US.ApiPropertyIsOpen,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverWidth                  => en_US.ApiPropertyCoverWidth,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverHeight                 => en_US.ApiPropertyCoverHeight,

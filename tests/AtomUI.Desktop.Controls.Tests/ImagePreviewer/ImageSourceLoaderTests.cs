@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using AtomUI.Desktop.Controls;
+using Avalonia.Threading;
 using Shouldly;
 using Xunit;
 
@@ -15,12 +16,12 @@ public class ImageSourceLoaderTests
     }
 
     [Fact]
-    public async Task LoadAsync_Loads_Local_Bitmap_Path()
+    public void LoadAsync_Loads_Local_Bitmap_Path()
     {
         var path   = CreatePngFile();
         var loader = new DefaultImageSourceLoader();
 
-        using var image = await loader.LoadAsync(ImageSourceUri.Parse(path), CancellationToken.None);
+        using var image = WaitForLoad(loader.LoadAsync(new UriImagePreviewSource(path), CancellationToken.None));
 
         image.IsBitmap.ShouldBeTrue();
         image.SourceSize.Width.ShouldBeGreaterThan(0);
@@ -28,26 +29,26 @@ public class ImageSourceLoaderTests
     }
 
     [Fact]
-    public async Task LoadAsync_Loads_Local_Svg_Path()
+    public void LoadAsync_Loads_Local_Svg_Path()
     {
         var path   = CreateSvgFile();
         var loader = new DefaultImageSourceLoader();
 
-        using var image = await loader.LoadAsync(ImageSourceUri.Parse(path), CancellationToken.None);
+        using var image = WaitForLoad(loader.LoadAsync(new UriImagePreviewSource(path), CancellationToken.None));
 
         image.IsSvg.ShouldBeTrue();
         image.SvgContent.ShouldNotBeNull().ShouldContain("<svg");
     }
 
     [Fact]
-    public async Task LoadAsync_Loads_Remote_Bitmap_Uri()
+    public void LoadAsync_Loads_Remote_Bitmap_Uri()
     {
         var bytes      = CreatePngBytes();
         var httpClient = new HttpClient(new TestImageMessageHandler(bytes, "image/png"));
         var loader     = new DefaultImageSourceLoader(httpClient);
 
         using (httpClient)
-        using (var image = await loader.LoadAsync(ImageSourceUri.Parse("https://example.com/sample.png"), CancellationToken.None))
+        using (var image = WaitForLoad(loader.LoadAsync(new UriImagePreviewSource("https://example.com/sample.png"), CancellationToken.None)))
         {
             image.IsBitmap.ShouldBeTrue();
             image.SourceSize.Width.ShouldBeGreaterThan(0);
@@ -56,14 +57,14 @@ public class ImageSourceLoaderTests
     }
 
     [Fact]
-    public async Task LoadAsync_Loads_Remote_Svg_From_Content_Type()
+    public void LoadAsync_Loads_Remote_Svg_From_Content_Type()
     {
         var bytes      = Encoding.UTF8.GetBytes("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1\" height=\"1\" />");
         var httpClient = new HttpClient(new TestImageMessageHandler(bytes, "image/svg+xml"));
         var loader     = new DefaultImageSourceLoader(httpClient);
 
         using (httpClient)
-        using (var image = await loader.LoadAsync(ImageSourceUri.Parse("https://example.com/render?id=1"), CancellationToken.None))
+        using (var image = WaitForLoad(loader.LoadAsync(new UriImagePreviewSource("https://example.com/render?id=1"), CancellationToken.None)))
         {
             image.IsSvg.ShouldBeTrue();
             image.SvgContent.ShouldNotBeNull().ShouldContain("<svg");
@@ -71,14 +72,49 @@ public class ImageSourceLoaderTests
     }
 
     [Fact]
-    public async Task LoadAsync_Honors_Cancellation()
+    public void LoadAsync_Loads_Stream_Source_And_Disposes_Input_Stream()
+    {
+        DisposeTrackingStream? openedStream = null;
+        var source = new StreamImagePreviewSource(_ =>
+        {
+            openedStream = new DisposeTrackingStream(CreatePngBytes());
+            return new ValueTask<Stream>(openedStream);
+        }, displayName: "stream-source.png", contentType: "image/png");
+        var loader = new DefaultImageSourceLoader();
+
+        using var image = WaitForLoad(loader.LoadAsync(source, CancellationToken.None));
+
+        image.IsBitmap.ShouldBeTrue();
+        openedStream.ShouldNotBeNull();
+        openedStream.IsDisposed.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void LoadAsync_Honors_Cancellation()
     {
         var loader = new DefaultImageSourceLoader();
         using var cts = new CancellationTokenSource();
-        await cts.CancelAsync();
+        cts.Cancel();
 
-        await Should.ThrowAsync<OperationCanceledException>(() =>
-            loader.LoadAsync(ImageSourceUri.Parse("https://example.com/image.png"), cts.Token));
+        Should.Throw<OperationCanceledException>(() =>
+            WaitForLoad(loader.LoadAsync(new UriImagePreviewSource("https://example.com/image.png"), cts.Token)));
+    }
+
+    private static LoadedImageSource WaitForLoad(Task<LoadedImageSource> task)
+    {
+        for (var i = 0; i < 250; i++)
+        {
+            if (task.IsCompleted)
+            {
+                break;
+            }
+
+            Dispatcher.UIThread.RunJobs();
+            Thread.Sleep(20);
+        }
+
+        task.IsCompleted.ShouldBeTrue("image load task did not complete");
+        return task.GetAwaiter().GetResult();
     }
 
     private static string CreatePngFile()
@@ -189,6 +225,28 @@ public class ImageSourceLoaderTests
                 _inner.Dispose();
             }
             base.Dispose(disposing);
+        }
+    }
+
+    private sealed class DisposeTrackingStream : MemoryStream
+    {
+        public DisposeTrackingStream(byte[] buffer)
+            : base(buffer, writable: false)
+        {
+        }
+
+        public bool IsDisposed { get; private set; }
+
+        protected override void Dispose(bool disposing)
+        {
+            IsDisposed = true;
+            base.Dispose(disposing);
+        }
+
+        public override ValueTask DisposeAsync()
+        {
+            IsDisposed = true;
+            return base.DisposeAsync();
         }
     }
 }

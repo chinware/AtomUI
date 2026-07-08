@@ -31,9 +31,9 @@ internal partial class en_US
     public const string ApiColumnDescription = "Description";
     public const string ApiColumnType = "Type";
     public const string ApiColumnDefault = "Default";
-    public const string ApiPropertySourceUri = "Single image source URI used by ImagePreviewer.";
-    public const string ApiPropertySourceUris = "Image source URI list used by ImagePreviewer and ImageGroupPreviewer.";
-    public const string ApiPropertyFallbackSourceUri = "Fallback image source URI shown when the configured image cannot be loaded.";
+    public const string ApiPropertySource = "Primary image source used by ImagePreviewer. Supports URI and lazy stream sources.";
+    public const string ApiPropertySources = "Primary image source list used by ImagePreviewer and ImageGroupPreviewer.";
+    public const string ApiPropertyFallbackSource = "Fallback image source shown when all configured source items fail.";
     public const string ApiPropertyIsOpen = "Controls whether the preview overlay or dialog is open. Two-way binding is enabled by default.";
     public const string ApiPropertyCoverWidth = "Width of the image cover.";
     public const string ApiPropertyCoverHeight = "Height of the image cover.";

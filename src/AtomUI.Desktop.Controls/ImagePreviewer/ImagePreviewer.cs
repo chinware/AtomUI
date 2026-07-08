@@ -105,13 +105,13 @@ public class ImagePreviewer : AbstractImagePreviewer
 
     private protected override void HandleSourceChanged()
     {
-        MaterializeEffectiveItemsFromSourceUris();
+        MaterializeEffectiveItemsFromSources();
         ConfigureEffectiveCoverItem();
     }
 
-    private protected override void HandleFallbackSourceChanged(ImageSourceUri? oldFallbackSourceUri)
+    private protected override void HandleFallbackSourceChanged()
     {
-        base.HandleFallbackSourceChanged(oldFallbackSourceUri);
+        base.HandleFallbackSourceChanged();
         ConfigureEffectiveCoverItem();
     }
 

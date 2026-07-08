@@ -2,5 +2,5 @@ namespace AtomUI.Desktop.Controls;
 
 internal interface IImageSourceLoader
 {
-    Task<LoadedImageSource> LoadAsync(ImageSourceUri sourceUri, CancellationToken cancellationToken);
+    Task<LoadedImageSource> LoadAsync(IImagePreviewSource source, CancellationToken cancellationToken);
 }
