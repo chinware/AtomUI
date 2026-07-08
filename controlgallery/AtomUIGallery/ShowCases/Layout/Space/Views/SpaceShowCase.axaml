@@ -117,10 +117,11 @@
             <atom:Slider Name="CustomSizeSlider"
                          Minimum="0" Maximum="100"
                          Value="{Binding CustomSpacingValue, Mode=TwoWay}"
+                         ValueChanged="HandleCustomSpacingValueChanged"
                          IsVisible="False"/>
-            <atom:Space Orientation="Horizontal" SizeType="{Binding SizeType}"
-                        LineSpacing="{Binding CustomSpacingValue, Priority=Template}"
-                        ItemSpacing="{Binding CustomSpacingValue, Priority=Template}">
+            <atom:Space Name="SizeDemoSpace"
+                        Orientation="Horizontal"
+                        SizeType="{Binding SizeType}">
                 <atom:Button ButtonType="Primary" Content="{gallery:SpaceShowCaseLangResource P2ContentPrimary}" />
                 <atom:Button Content="{gallery:SpaceShowCaseLangResource P2ContentDefault}" />
                 <atom:Button ButtonType="Dashed" Content="{gallery:SpaceShowCaseLangResource P2ContentDashed}" />

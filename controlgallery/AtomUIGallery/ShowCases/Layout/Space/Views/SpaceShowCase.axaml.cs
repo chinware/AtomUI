@@ -12,7 +12,7 @@ using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using AtomUIGallery.Localization;
 using AtomUISlider = AtomUI.Desktop.Controls.Slider;
-using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
+using Avalonia.Controls.Primitives;
 
 namespace AtomUIGallery.ShowCases.Space;
 
@@ -69,6 +69,40 @@ public partial class SpaceShowCase : GalleryReactiveUserControl<SpaceViewModel>
         }
 
         customSizeSlider.IsVisible = sizeType == CustomizableSizeType.Custom;
+        if (TryFindTemplateControl<AtomUI.Desktop.Controls.Space>(radioButton, "SizeDemoSpace", out var sizeDemoSpace))
+        {
+            ApplySizeDemoSpacing(sizeDemoSpace, sizeType, customSizeSlider.Value);
+        }
+    }
+
+    public void HandleCustomSpacingValueChanged(object? sender, RangeBaseValueChangedEventArgs e)
+    {
+        if (sender is not AtomUISlider slider ||
+            DataContext is not SpaceViewModel { SizeType: CustomizableSizeType.Custom })
+        {
+            return;
+        }
+
+        if (TryFindTemplateControl<AtomUI.Desktop.Controls.Space>(slider, "SizeDemoSpace", out var sizeDemoSpace))
+        {
+            ApplySizeDemoSpacing(sizeDemoSpace, CustomizableSizeType.Custom, slider.Value);
+        }
+    }
+
+    private static void ApplySizeDemoSpacing(AtomUI.Desktop.Controls.Space space,
+                                             CustomizableSizeType sizeType,
+                                             double customSpacing)
+    {
+        if (sizeType == CustomizableSizeType.Custom)
+        {
+            var spacing = Math.Max(0, customSpacing);
+            space.ItemSpacing = spacing;
+            space.LineSpacing = spacing;
+            return;
+        }
+
+        space.ClearValue(AtomUI.Desktop.Controls.Space.ItemSpacingProperty);
+        space.ClearValue(AtomUI.Desktop.Controls.Space.LineSpacingProperty);
     }
 
     private void RefreshCurrentViewModelData()
