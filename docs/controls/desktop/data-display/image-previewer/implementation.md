@@ -125,16 +125,20 @@ PreviewTitleIcon
 图片加载状态流：
 
 ```text
+SourceUri / SourceUris
+  -> source load batch
 ImageSourceUri
   -> ImagePreviewItem(Pending)
   -> IImageSourceLoader.LoadAsync(...)
   -> ImagePreviewItem(Loading)
   -> LoadedImageSource / Failed
+source load batch
+  -> keep loaded items / skip failed items / fallback when all failed
   -> ImagePreviewRenderer
   -> ImageViewer measure / arrange / fit-to-window
 ```
 
-`ImagePreviewItemState` 只能由 item owner 写入。加载任务返回时必须校验版本号和取消状态；过期结果必须释放后丢弃，不能覆盖新来源。
+`ImagePreviewItemState` 只能由 item owner 写入。加载任务返回时必须校验版本号和取消状态；过期结果必须释放后丢弃，不能覆盖新来源。`SourceUri` / `SourceUris` 的 fallback 决策必须由当前来源集合加载批次统一完成，单个 `ImagePreviewItem` 失败只能更新自身状态，不能直接替换整组 `EffectiveItems`。
 
 ## 5. 组合结构模型
 
@@ -198,6 +202,7 @@ ImagePreviewerOverlayHost (ImagePreviewerThemes.axaml + runtime host)
 | `ImagePreviewRenderer` | renderer control | `ImageViewerTheme.axaml`、`ImagePreviewerCoverTheme.axaml` | cover / viewer template | `Stretch`、`Transform`、loaded image result | template-stable | 只消费 `LoadedImageSource`；不得在 renderer 内发起来源加载。 |
 | `ImagePreviewToolbar` / `ImagePreviewFloatToolbar` | toolbar controls | `ImagePreviewToolbarTheme.axaml`、`ImagePreviewFloatToolbarTheme.axaml` | viewer / overlay host | request events、`CurrentIndex`、`Count` | template-stable | 动作按钮 part 可用于主题维护；事件顺序属于兼容边界。 |
 | `ImagePreviewItem` | state object | C# runtime model | `AbstractImagePreviewer` / effective items | `SourceUri`、`SourceUris`、`FallbackSourceUri`、loading/error 状态 | internal-observable | 是图片加载状态 owner，不应反向持有视觉对象。 |
+| source load batch | runtime algorithm | `AbstractImagePreviewer` loading path | `AbstractImagePreviewer` 当前加载轮次 | `SourceUri`、`SourceUris`、`FallbackSourceUri`、`EffectiveItems` | internal-observable | 是集合加载结果归并 owner；负责判断成功项保留、失败项跳过、全部失败 fallback 和旧批次防回写。 |
 | `IImageSourceLoader` | service contract | C# loading model | 控件或注入服务 owner | 图片来源加载、取消、fallback | internal-observable | 统一本地、资源和远程加载；不得同步等待网络 I/O。 |
 
 标题图标组合只允许通过 `PreviewTitleIcon -> ImagePreviewerDialog.TitleIcon -> ImagePreviewerTitleBar.Icon -> PART_IconPresenter` 这条路径进入标题栏。`PART_IconPresenter` 的位置是标题区域视觉契约，图标来源是 ImagePreviewer 自有 `PathIcon?` 契约；未设置时必须保持无图标状态，不能从应用图标、主窗口图标、`Window.Icon` 或 `Window.Logo` fallback。
@@ -213,6 +218,8 @@ ImagePreviewerOverlayHost (ImagePreviewerThemes.axaml + runtime host)
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - 图片加载任务由图片项或控件 owner 创建取消令牌。`SourceUri` 变更、`SourceUris` 替换、弹层关闭、控件 detach 和 owner dispose 时必须取消仍在运行的加载。
+- `SourceUri` / `SourceUris` 每次物化都必须形成当前来源集合加载批次。批次完成前，单项失败不得触发 `FallbackSourceUri` 替换整组结果；批次完成后若存在成功项，effective items 保留成功项并跳过失败项；批次全部失败时才进入 fallback。
+- effective items 替换必须区分“保留项”和“废弃项”。保留的成功 `ImagePreviewItem` 及其 `LoadedImageSource` 不能在同次替换中被 dispose；旧批次项、被跳过的失败项和被取消项必须释放。
 - 加载完成后需要通知 `ImagePreviewRenderer` 和 `ImageViewer` 重新 measure/arrange，保证居中、fit-to-window、缩放按钮状态和拖拽边界基于真实图片尺寸计算。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
 - 预览 dialog 的 title bar 不直接恢复通用 `Window.Title` 绑定；`Window.Title` 只作为显式标题输入参与 effective preview title 算法，最终由 `ImagePreviewerTitleBar` 显示算法结果。
@@ -226,7 +233,7 @@ ImagePreviewerOverlayHost (ImagePreviewerThemes.axaml + runtime host)
 - `PART_ImageRenderer`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_ImageViewerScene`：稳定模板协作入口，重命名前必须同步主题和实现。
 - `PART_LoadingPresenter`：承载图片加载状态内容。默认封面使用图片 Skeleton 占位，预览层使用居中 Spin；`LoadingContent` / `LoadingContentTemplate` 只替换 presenter 内容，不拥有加载状态。
-- `PART_ErrorPresenter`：承载图片加载失败内容；存在 `FallbackSourceUri` 时优先展示 fallback 结果。没有可用 fallback 时显示 `ErrorContent` / `ErrorContentTemplate` 或默认本地化失败占位。
+- `PART_ErrorPresenter`：承载图片加载失败内容；当前加载批次全部失败且存在 `FallbackSourceUri` 时优先展示 fallback 结果。没有可用 fallback 时显示 `ErrorContent` / `ErrorContentTemplate` 或默认本地化失败占位。
 - `PART_IconPresenter`：预览窗口标题图标展示入口，内容来自 `ImagePreviewer.PreviewTitleIcon`，位于 `PART_TitleLayout` 内的标题文字左侧。
 - `PART_TitleLayout`：标题图标和标题文字的水平布局，使用 `WindowTitleBarToken.LogoAndTitleSpacing` 作为二者间距。
 - `PART_NextButton`：承载用户触发入口、导航或关闭动作。
@@ -257,7 +264,8 @@ ImagePreviewer 的交互事件应从输入源收敛到控件级语义事件：
 - Template part 重新应用时的状态回放。
 - `ImageSourceUri` 规范化、来源身份 key 生成和来源类型判定。
 - `IImageSourceLoader` 对 `avares://`、本地路径、`file://`、相对路径和 `http(s)://` 的统一异步加载。
-- `ImagePreviewItemState` 的 pending、loading、loaded、failed 迁移，以及 fallback 加载路径。
+- `ImagePreviewItemState` 的 pending、loading、loaded、failed 迁移，以及批次级 fallback 加载路径。
+- `SourceUri` / `SourceUris` 加载批次归并：单项失败只更新 item 状态；批次至少一个成功时保留成功项并跳过失败项；批次全部失败且存在 `FallbackSourceUri` 时才替换为 fallback；旧批次完成时必须通过取消状态和当前 effective items 身份校验避免回写新状态。
 - 快速切换图片来源时的取消、版本校验和过期结果释放。
 - 封面 loading/error 占位尺寸解析：优先使用显式 `CoverWidth` / `CoverHeight`，其次使用模板布局传入的有效约束，最后使用 `ImagePreviewerToken.CoverImageWidth`。没有 `LoadedImageSource` 时不得让 loading 或 error 内容本身决定封面高度。
 - current effective item resolver：从 effective items 和 `CurrentIndex` 计算展示项，显示层对越界索引进行 clamp，并保持 public `CurrentIndex` 原值不被静默改写。

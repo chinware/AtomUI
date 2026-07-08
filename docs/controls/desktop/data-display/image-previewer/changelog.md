@@ -2,6 +2,12 @@
 
 本文档记录 ImagePreviewer 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-08
+
+- Docs
+  - Define source collection fallback as a batch-level decision: individual failed items must not replace the whole preview list with `FallbackSourceUri`; fallback is used only when the current `SourceUri` / `SourceUris` batch fully fails.
+  - Document that mixed success/failure batches keep loaded items, skip failed items, and prevent stale batches from writing back after source replacement or cancellation.
+
 ## 2026-07-06
 
 - API

@@ -48,6 +48,76 @@ public class ImagePreviewerSourceLoadingTests
     }
 
     [Fact]
+    public void SourceUris_Keep_Loaded_Items_Instead_Of_Fallback_When_Only_Some_Items_Fail()
+    {
+        var loadedPath   = CreatePngFile();
+        var fallbackPath = CreatePngFile();
+        var missingPath  = Path.Combine(Path.GetTempPath(), $"atomui-missing-{Guid.NewGuid():N}.png");
+        var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+        {
+            FallbackSourceUri = ImageSourceUri.Parse(fallbackPath),
+            SourceUris =
+            [
+                ImageSourceUri.Parse(missingPath),
+                ImageSourceUri.Parse(loadedPath)
+            ]
+        };
+
+        WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }])
+            .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
+
+        previewer.EffectiveItems.ShouldNotBeNull();
+        previewer.EffectiveItems.Count.ShouldBe(1);
+        previewer.EffectiveItems[0].SourceUri.CacheKey.ShouldBe(Path.GetFullPath(loadedPath));
+    }
+
+    [Fact]
+    public void SourceUris_Use_FallbackSourceUri_When_All_Items_Fail()
+    {
+        var fallbackPath      = CreatePngFile();
+        var firstMissingPath  = Path.Combine(Path.GetTempPath(), $"atomui-missing-{Guid.NewGuid():N}.png");
+        var secondMissingPath = Path.Combine(Path.GetTempPath(), $"atomui-missing-{Guid.NewGuid():N}.png");
+        var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+        {
+            FallbackSourceUri = ImageSourceUri.Parse(fallbackPath),
+            SourceUris =
+            [
+                ImageSourceUri.Parse(firstMissingPath),
+                ImageSourceUri.Parse(secondMissingPath)
+            ]
+        };
+
+        WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }])
+            .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
+
+        previewer.EffectiveItems.ShouldNotBeNull();
+        previewer.EffectiveItems.Count.ShouldBe(1);
+        previewer.EffectiveItems[0].SourceUri.CacheKey.ShouldBe(Path.GetFullPath(fallbackPath));
+    }
+
+    [Fact]
+    public void SourceUris_Keep_Loaded_Items_When_Some_Items_Fail_Without_Fallback()
+    {
+        var loadedPath  = CreatePngFile();
+        var missingPath = Path.Combine(Path.GetTempPath(), $"atomui-missing-{Guid.NewGuid():N}.png");
+        var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer
+        {
+            SourceUris =
+            [
+                ImageSourceUri.Parse(missingPath),
+                ImageSourceUri.Parse(loadedPath)
+            ]
+        };
+
+        WaitUntil(() => previewer.EffectiveItems is [{ State: ImagePreviewItemState.Loaded }])
+            .ShouldBeTrue(DescribeItems(previewer.EffectiveItems));
+
+        previewer.EffectiveItems.ShouldNotBeNull();
+        previewer.EffectiveItems.Count.ShouldBe(1);
+        previewer.EffectiveItems[0].SourceUri.CacheKey.ShouldBe(Path.GetFullPath(loadedPath));
+    }
+
+    [Fact]
     public void FallbackSourceUri_Change_Does_Not_Reload_Primary_Source()
     {
         var sourcePath   = CreatePngFile();
