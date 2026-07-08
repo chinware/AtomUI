@@ -44,16 +44,16 @@
 
 ## 3. 核心类职责
 
-- `AbstractBackTopFloatButton`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
-- `AbstractBackTopFloatButtonHost`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
-- `AbstractFloatButton`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
-- `AbstractFloatButtonHost`：跨平台或共享基类，承载公共 API、状态归一和模板生命周期。
+- `AbstractBackTopFloatButton`：回到顶部按钮共享基类，负责滚动目标、显示阈值、动效和点击后委托 Avalonia Button 命令语义。
+- `AbstractBackTopFloatButtonHost`：回到顶部 host 共享基类，负责公开 host API 并把属性投影到 overlay 中的真实 `BackTopFloatButton`。
+- `AbstractFloatButton`：`FloatButton` 交互基类，继承 Avalonia `Button`，是点击、命令、`CanExecute`、禁用状态和按钮伪类的真实 owner。
+- `AbstractFloatButtonHost`：普通 host 共享基类，管理 scoped overlay 生命周期，并统一把 host 公共属性投影给运行时创建的真实按钮。
 - `AbstractFloatButtonTheme`：ControlTheme 类型入口，连接主题资源和控件类型。
 - `BackTopFloatButton`：动作触发类型，负责点击、导航或局部操作状态。
 - `BackTopFloatButtonHost`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `FloatButton`：动作触发类型，负责点击、导航或局部操作状态。
 - `FloatButtonGroup`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
-- `FloatButtonGroupHost`：模板协作类型，承载内容展示、宿主或视觉边界。
+- `FloatButtonGroupHost`：overlay group host，负责把 group 公共属性、打开状态和 `DataContext` 投影给运行时创建的 `FloatButtonGroup`。
 - `FloatButtonHost`：模板协作类型，承载内容展示、宿主或视觉边界。
 - `FloatButtonItemsControl`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
 - `FloatButtonSeparatorLayer`：控件核心或内部协作类型，维护 public surface 与主题可观察行为。
@@ -62,6 +62,7 @@
 核心协作规则：
 
 - 控件实例是 public API 和运行时状态 owner。
+- `AbstractFloatButton` 是命令语义 owner；host 类型不能绕过它手动执行 `ICommand`。
 - Template part 是视觉协作对象，生命周期必须受 `OnApplyTemplate` 或模板加载流程管理。
 - 数据对象、选项对象、任务对象或节点对象只保存业务数据，不应反向持有不可释放的视觉对象。
 - 弹层、窗口、计时器、异步 loader 和全局管理器必须有明确关闭、解绑或释放路径。
@@ -83,17 +84,41 @@ Public API / ItemsSource / Command / Event
 - 内容与数据：`CloseIcon`、`Description`、`DescriptionTemplate`、`Icon`。
 - 选择与集合：`BadgeCount`、`BadgeOverflowCount`、`IsTriggerMode`。
 - 交互与状态：`IsBadgeEnabled`、`IsDotBadge`、`IsMotionEnabled`、`IsOpen`。`FloatButtonGroup.IsOpen` 与 `FloatButtonGroupHost.IsOpen` 默认双向绑定。
+- 命令与动作：`Command`、`CommandParameter`、`Href`。普通按钮直接继承 Avalonia Button 语义；host 类型只把命令投影给 overlay 中的真实按钮。
 - 视觉与布局：`BadgeColor`、`BadgeOffset`、`BoxShadow`、`FloatOffsetX`、`FloatOffsetY`、`MenuPlacement`、`Orientation`、`Placement`、`SeparatorBrush`、`Shape` 等 12 项。
 - 动效与异步：`MenuMotionDuration`、`MotionDuration`、`ToTopDuration`。
-- 其他稳定入口：`ButtonType`、`Href`、`Target`、`Tooltip`、`Trigger`。
+- 其他稳定入口：`ButtonType`、`Target`、`Tooltip`、`Trigger`。
 
 维护要求：
 
 - 外部设置的 Avalonia 属性必须在模板应用前后保持一致。
 - 集合、选择、展开、过滤、分页、上传任务或异步 loader 必须能处理 reset、replace 和 clear。
 - `IsOpen` 由 group 与 host 共享为受控打开状态；hover/click、open request 和 close request 应使用 current value 语义回写，不得以 style priority 覆盖绑定或本地值。
+- `Command`、`CommandParameter` 和 `CanExecute` 不建立 host 私有状态机；`FloatButtonHost`、`BackTopFloatButtonHost` 创建的真实按钮通过属性投影接收命令契约。
+- `BackTopFloatButton` 点击时先检查有效可用状态；当命令不可执行导致按钮不可用时，不应触发滚动动作。
+- `FloatButtonGroupHost` 创建 overlay group 后必须把 host `DataContext` 传递给 group，使未设置本地 `DataContext` 的子 `FloatButton` 可继续解析 `Command="{Binding ...}"`。
+- 子按钮显式设置的本地 `DataContext` 优先级高于 host 继承数据上下文，group host 不应强制覆盖。
 - 伪类和 internal state 必须从单一 owner 推导，避免双向同步导致循环更新。
 - Gallery API 表中的状态说明应与源码实际状态流一致。
+
+命令投影流：
+
+```text
+FloatButtonHost / BackTopFloatButtonHost
+  -> CreateFloatButton(...)
+  -> host Command / CommandParameter / DataContext property projection
+  -> real FloatButton / BackTopFloatButton
+  -> Avalonia Button click + CanExecute + disabled semantics
+```
+
+Group 子项绑定流：
+
+```text
+FloatButtonGroupHost.DataContext
+  -> runtime FloatButtonGroup.DataContext
+  -> FloatButtonItemsControl / logical children
+  -> child FloatButton.Command Binding
+```
 
 ## 5. 生命周期与模板接入
 
@@ -104,6 +129,9 @@ Public API / ItemsSource / Command / Event
 - 控件卸载、弹层关闭、窗口关闭、集合替换或 container recycle 时释放事件订阅和资源宿主。
 - DynamicResource、TokenResourceBinder 或 C# binding 必须有明确 owner 和释放点。
 - Browser 和 Desktop 宿主下的主题加载顺序不得影响 public API 语义。
+- Host 到 overlay 真实按钮或 group 的属性投影属于运行时动态目标绑定，AXAML 无法通过 `TemplateBinding` 表达；允许使用 C# binding 或 `BindUtils.RelayBind`，但必须挂到当前 overlay 生命周期的 `CompositeDisposable`。
+- `PrepareScopedOverlayLayer` 创建 overlay 目标时建立属性投影；`CleanupScopedOverlayLayer` 移除 overlay 目标并释放同一批投影绑定。
+- Group host 搬移 `Children` 到 overlay group 时必须保持逻辑继承路径；释放 overlay group 前应先解除子项挂载，避免同一 child 被旧 group 保留。
 
 稳定 template part 接入点：
 
@@ -118,6 +146,8 @@ FloatButton 的交互事件应从输入源收敛到控件级语义事件：
 - 弹层、窗口或 overlay 类路径必须稳定处理打开、关闭、取消、重复打开和宿主失活。
 - 非集合控件不应通过隐藏集合状态模拟业务数据。
 - 值提交或命令触发必须保持继承控件的事件顺序。
+- `FloatButtonGroupHost` trigger 点击只处理展开/收起，不默认触发业务 `Command`；业务命令应挂在 group 内部子 `FloatButton`。
+- `FloatButtonHost` 与 `BackTopFloatButtonHost` 对外表现为可绑定命令的 host，但命令执行仍发生在 overlay 内真实按钮的 Avalonia Button 点击路径中。
 
 稳定事件路径包括 `Clicked`、`Closed`、`Opened`。事件参数和触发时机属于兼容边界。
 
@@ -129,6 +159,8 @@ FloatButton 的交互事件应从输入源收敛到控件级语义事件：
 - Template part 重新应用时的状态回放。
 - 主题资源、Token 和 SharedToken 计算后的视觉更新。
 - 内容、命令和视觉状态在模板节点之间的同步。
+- Host 公共属性到 overlay 真实按钮的投影，以及 detach 时的投影释放。
+- Group host `DataContext` 到 overlay group 和子按钮命令绑定的继承链。
 - 动效启停、初始加载阶段 transition 抑制和卸载取消。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
@@ -146,6 +178,8 @@ FloatButton 的交互事件应从输入源收敛到控件级语义事件：
 性能边界：
 
 - 控件应优先复用 Avalonia 原生虚拟化、模板绑定和资源系统。
+- 命令执行、`CanExecute` 和禁用状态优先复用 Avalonia Button 原生实现，不维护重复命令缓存。
+- Host 动态投影绑定数量应保持为公共属性映射所需的最小集合，生命周期绑定到 overlay target，避免 detach 后保留 host 或 child。
 - 避免为每次状态变化创建不必要的视觉对象、订阅或动画对象。
 - 大集合控件必须保证 container recycle 后不会泄漏旧 item 状态。
 
@@ -155,6 +189,9 @@ FloatButton 的交互事件应从输入源收敛到控件级语义事件：
 
 - Public API、默认值、事件顺序和 Gallery 可观察行为。
 - Template part 名称、ControlTheme key、伪类和资源 key。
+- Avalonia Button 命令语义：`CanExecute`、禁用状态、点击事件和命令执行顺序不得被 host 手动调用路径绕开。
+- Host overlay 投影的 acquire/release 必须成对；不能留下命令绑定、数据上下文绑定或 child 逻辑父级保留。
+- Group 子按钮的命令绑定必须能继承 host `DataContext`，同时保留子项本地 `DataContext` 的优先级。
 - 旧 template part、事件订阅、Popup/Flyout/Window host 和 collection view 的释放路径。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。
@@ -165,6 +202,7 @@ FloatButton 的交互事件应从输入源收敛到控件级语义事件：
 
 - 纯文档改动运行 `git diff --check` 并检查相对链接。
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
+- FloatButton 命令支持变更需覆盖 host 命令执行、`CommandParameter` 转发、`CanExecute=false` 禁用、BackTop 命令路径、group child 继承 host `DataContext`、child 本地 `DataContext` 不被覆盖、attach 后新增 child 的命令绑定。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例、API 表或 Token 表变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

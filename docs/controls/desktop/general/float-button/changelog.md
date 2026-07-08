@@ -2,6 +2,17 @@
 
 本文档记录 FloatButton 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-09
+
+- Docs
+  - Document the FloatButton host command projection model based on Avalonia Button command semantics.
+  - Clarify that `FloatButtonGroupHost` trigger controls open/close while child `FloatButton` items own business commands.
+  - Define group child `DataContext` inheritance requirements for command bindings inside overlay-hosted groups.
+- API
+  - Establish `Command` and `CommandParameter` as host-level projected command contracts for `FloatButtonHost` and `BackTopFloatButtonHost`.
+- Implementation
+  - Define lifecycle and test requirements for host-to-overlay command projection, `CanExecute` behavior and group child command binding.
+
 ## 2026-07-06
 
 - API
