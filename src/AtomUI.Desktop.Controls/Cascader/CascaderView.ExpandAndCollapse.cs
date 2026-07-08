@@ -60,19 +60,7 @@ public partial class CascaderView
         try
         {
             ++_ignoreExpandAndCollapseLevel;
-            var pathCount  = CountPathDepth(cascaderViewOption);
-            var pathNodes  = new List<object>(pathCount);
-            for (var i = 0; i < pathCount; i++)
-            {
-                pathNodes.Add(null!);
-            }
-
-            var current = cascaderViewOption;
-            for (var i = pathCount - 1; current != null; i--)
-            {
-                pathNodes[i] = current;
-                current      = current.ParentNode as ICascaderOption;
-            }
+            var pathNodes = BuildOptionPath(cascaderViewOption);
             
             Debug.Assert(pathNodes.Count > 0);
             // 检查是否是野数据
@@ -96,44 +84,40 @@ public partial class CascaderView
             CascaderViewItem?      currentCascaderItem = null;
             for (var i = 0; i < pathNodes.Count; i++)
             {
-                currentLevelList = _itemsPanel.Children[i] as CascaderViewLevelList;
-                Debug.Assert(currentLevelList != null);
-                if (currentLevelList.Presenter?.Panel == null)
+                currentLevelList = GetLevelList(i);
+                if (currentLevelList == null)
                 {
-                    var topLevel = TopLevel.GetTopLevel(this);
-                    topLevel?.GetLayoutManager()?.ExecuteLayoutPass();
+                    return currentCascaderItem;
                 }
                 
                 var currentNode = pathNodes[i];
-                currentCascaderItem = currentLevelList.ContainerFromItem(currentNode) as CascaderViewItem;
-                if (currentCascaderItem == null)
+                currentCascaderItem = TryGetRealizedCascaderViewItem(currentLevelList, currentNode);
+                CollapseSiblingOptionsAtLevel(currentLevelList, currentNode);
+
+                if (currentCascaderItem != null)
                 {
-                    var indexOf = currentLevelList.Items.IndexOf(currentNode);
-                    if (currentLevelList.Presenter?.Panel is AtomUI.Controls.Primitives.VirtualizingStackPanel virtualizingStackPanel)
+                    if (!IsReallyExpanded(currentCascaderItem))
                     {
-                        virtualizingStackPanel.ScrollItemIntoView(indexOf);
-                        currentCascaderItem = currentLevelList.ContainerFromItem(currentNode) as CascaderViewItem;
+                        await DoExpandItemAsync(currentCascaderItem);
+                    }
+                    else
+                    {
+                        currentNode.IsExpanded = true;
                     }
                 }
-                Debug.Assert(currentCascaderItem != null);
-                for (var j = 0; j < currentLevelList.ItemCount; j++)
+                else
                 {
-                    if (currentLevelList.ContainerFromIndex(j) is CascaderViewItem levelItem)
-                    {
-                        if (currentNode != levelItem.AttachedOption && levelItem.IsExpanded && levelItem.AttachedOption != null)
-                        {
-                            DoCollapseItem(levelItem.AttachedOption);
-                        }
-                    }
-                }
-            
-                if (!IsReallyExpanded(currentCascaderItem))
-                {
-                    await DoExpandItemAsync(currentCascaderItem);
+                    ExpandOptionWithoutContainer(currentNode);
                 }
             }
-            Debug.Assert(currentCascaderItem != null);
-            ItemExpanded?.Invoke(this, new CascaderItemExpandedEventArgs(currentCascaderItem));
+            if (!cascaderViewOption.HasChildren())
+            {
+                RemoveLevelListsFrom(pathNodes.Count);
+            }
+            if (currentCascaderItem != null)
+            {
+                ItemExpanded?.Invoke(this, new CascaderItemExpandedEventArgs(currentCascaderItem));
+            }
             return currentCascaderItem;
         }
         finally
@@ -160,7 +144,20 @@ public partial class CascaderView
             return false;
         }
 
-        return levelList.ParentCascaderViewItem == cascaderViewItem;
+        if (levelList.ParentCascaderViewItem == cascaderViewItem)
+        {
+            return true;
+        }
+
+        if (levelList.ParentCascaderViewItem == null &&
+            cascaderViewItem.AttachedOption is { } attachedOption &&
+            ReferenceEquals(levelList.ItemsSource, attachedOption.Children))
+        {
+            levelList.ParentCascaderViewItem = cascaderViewItem;
+            return true;
+        }
+
+        return false;
     }
     
     // 这个方法默认判断 cascaderViewItem 的父亲都已经正常展开了，从而可以正常的展开自己
@@ -192,19 +189,151 @@ public partial class CascaderView
 
         if (attachedOption.HasChildren())
         {
-            var childLevelList = new CascaderViewLevelList()
-            {
-                OwnerView              = this,
-                ItemsSource            = attachedOption.Children,
-                ParentCascaderViewItem = cascaderViewItem
-            };
-            childLevelList[!CascaderViewLevelList.ItemTemplateProperty]        = this[!OptionTemplateProperty];
-            childLevelList[!CascaderViewLevelList.IsAllowSelectParentProperty] = this[!IsAllowSelectParentProperty];
-            childLevelList[!CascaderViewLevelList.ExpandTriggerProperty]       = this[!ExpandTriggerProperty];
-            
-            _itemsPanel.Children.Add(childLevelList);
+            EnsureChildLevelList(attachedOption, cascaderViewItem);
         }
+        attachedOption.IsExpanded = true;
         cascaderViewItem.SetCurrentValue(CascaderViewItem.IsExpandedProperty, true);
+    }
+
+    private List<ICascaderOption> BuildOptionPath(ICascaderOption cascaderViewOption)
+    {
+        var pathCount = CountPathDepth(cascaderViewOption);
+        var pathNodes = new List<ICascaderOption>(pathCount);
+        for (var i = 0; i < pathCount; i++)
+        {
+            pathNodes.Add(null!);
+        }
+
+        var current = cascaderViewOption;
+        for (var i = pathCount - 1; current != null; i--)
+        {
+            pathNodes[i] = current;
+            current      = current.ParentNode as ICascaderOption;
+        }
+
+        return pathNodes;
+    }
+
+    private CascaderViewLevelList? GetLevelList(int index)
+    {
+        if (_itemsPanel == null || index < 0 || index >= _itemsPanel.Children.Count)
+        {
+            return null;
+        }
+
+        return _itemsPanel.Children[index] as CascaderViewLevelList;
+    }
+
+    private CascaderViewLevelList? GetLevelListForOption(ICascaderOption option)
+    {
+        return GetLevelList(GetViewOptionLevel(option) - 1);
+    }
+
+    private CascaderViewItem? TryGetRealizedCascaderViewItem(
+        CascaderViewLevelList levelList,
+        ICascaderOption option)
+    {
+        ExecuteLayoutPass();
+        var cascaderViewItem = levelList.ContainerFromItem(option) as CascaderViewItem;
+        if (cascaderViewItem != null)
+        {
+            return cascaderViewItem;
+        }
+
+        var indexOf = levelList.Items.IndexOf(option);
+        if (indexOf >= 0 &&
+            levelList.Presenter?.Panel is AtomUI.Controls.Primitives.VirtualizingStackPanel virtualizingStackPanel)
+        {
+            virtualizingStackPanel.ScrollItemIntoView(indexOf);
+            ExecuteLayoutPass();
+            cascaderViewItem = levelList.ContainerFromItem(option) as CascaderViewItem;
+        }
+
+        return cascaderViewItem;
+    }
+
+    private void ExecuteLayoutPass()
+    {
+        var topLevel = TopLevel.GetTopLevel(this);
+        topLevel?.GetLayoutManager()?.ExecuteLayoutPass();
+    }
+
+    private void CollapseSiblingOptionsAtLevel(CascaderViewLevelList levelList, ICascaderOption currentNode)
+    {
+        for (var i = 0; i < levelList.ItemCount; i++)
+        {
+            if (levelList.Items[i] is not ICascaderOption option ||
+                ReferenceEquals(option, currentNode))
+            {
+                continue;
+            }
+
+            option.IsExpanded = false;
+            if (levelList.ContainerFromItem(option) is CascaderViewItem item)
+            {
+                item.SetCurrentValue(CascaderViewItem.IsExpandedProperty, false);
+            }
+        }
+    }
+
+    private void ExpandOptionWithoutContainer(ICascaderOption option)
+    {
+        option.IsExpanded = true;
+        if (option.HasChildren())
+        {
+            EnsureChildLevelList(option, null);
+        }
+    }
+
+    private void EnsureChildLevelList(ICascaderOption option, CascaderViewItem? parentItem)
+    {
+        if (_itemsPanel == null || !option.HasChildren())
+        {
+            return;
+        }
+
+        var childLevelIndex = GetViewOptionLevel(option);
+        if (_itemsPanel.Children.Count > childLevelIndex &&
+            _itemsPanel.Children[childLevelIndex] is CascaderViewLevelList existingLevelList &&
+            ReferenceEquals(existingLevelList.ItemsSource, option.Children))
+        {
+            existingLevelList.ParentCascaderViewItem = parentItem;
+            return;
+        }
+
+        RemoveLevelListsFrom(childLevelIndex);
+        var childLevelList = new CascaderViewLevelList
+        {
+            OwnerView              = this,
+            ItemsSource            = option.Children,
+            ParentCascaderViewItem = parentItem
+        };
+        childLevelList[!CascaderViewLevelList.ItemTemplateProperty]        = this[!OptionTemplateProperty];
+        childLevelList[!CascaderViewLevelList.IsAllowSelectParentProperty] = this[!IsAllowSelectParentProperty];
+        childLevelList[!CascaderViewLevelList.ExpandTriggerProperty]       = this[!ExpandTriggerProperty];
+
+        _itemsPanel.Children.Add(childLevelList);
+    }
+
+    private void RemoveLevelListsFrom(int startIndex)
+    {
+        if (_itemsPanel == null)
+        {
+            return;
+        }
+
+        var count = _itemsPanel.Children.Count;
+        while (count > startIndex)
+        {
+            --count;
+            if (_itemsPanel.Children[count] is CascaderViewLevelList levelList)
+            {
+                levelList.ItemsSource = null;
+                levelList.Items.Clear();
+            }
+
+            _itemsPanel.Children.RemoveAt(count);
+        }
     }
     
     private void CollapseItem(CascaderViewItem cascaderViewItem)
