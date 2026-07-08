@@ -34,7 +34,7 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImagePreviewer Width="200"
-                                                 SourceUris="{Binding DefaultImages}" />
+                                                 Sources="{Binding DefaultImages}" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -48,7 +48,7 @@
                             <StackPanel Orientation="Horizontal"
                                         Spacing="{atom:SharedTokenResource SpacingLG}">
                                 <atom:ImagePreviewer Width="200"
-                                                     SourceUri="{Binding RemoteImage}" />
+                                                     Source="{Binding RemoteImage}" />
                                 <Border Width="200"
                                         Height="200"
                                         Background="{atom:SharedTokenResource ColorFillTertiary}">
@@ -69,7 +69,7 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImagePreviewer Width="200"
-                                                 FallbackSourceUri="{Binding FallbackImage}" />
+                                                 FallbackSource="{Binding FallbackImage}" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -81,7 +81,7 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImagePreviewer Width="200"
-                                                 SourceUris="{Binding TwentyRemoteImages}"
+                                                 Sources="{Binding TwentyRemoteImages}"
                                                  MaxConcurrentLoads="4"
                                                  PreloadCount="1" />
                         </DataTemplate>
@@ -95,7 +95,7 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImagePreviewer Width="200"
-                                                 SourceUris="{Binding ThreeImages}" />
+                                                 Sources="{Binding ThreeImages}" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>
@@ -107,7 +107,7 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImagePreviewer Width="200"
-                                                 SourceUris="{Binding ThreeImages}"
+                                                 Sources="{Binding ThreeImages}"
                                                  CoverIndex="1" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
@@ -122,7 +122,7 @@
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImageGroupPreviewer CoverWidth="200"
                                                       CoverHeight="200"
-                                                      SourceUris="{Binding TwoImages}" />
+                                                      Sources="{Binding TwoImages}" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>

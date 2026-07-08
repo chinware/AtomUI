@@ -125,7 +125,7 @@ ImagePreviewer
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 图片来源 | `SourceUri`、`SourceUris`、`FallbackSourceUri` | 统一表达单图、多图和失败兜底图片来源。 |
+| 图片来源 | `Source`、`Sources`、`FallbackSource`、`IImagePreviewSource` | 统一表达单图、多图和失败兜底图片来源；URI 场景通过 `UriImagePreviewSource` 显式进入。 |
 | 内容与数据 | `CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`LoadingContent`、`LoadingContentTemplate`、`ErrorContent`、`ErrorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageTranslateX`、`ImageTranslateY` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
 | 选择与集合 | `Count`、`CurrentIndex`、`CoverIndex` | 维护预览当前项、封面展示索引和集合状态。 |
 | 加载调度 | `MaxConcurrentLoads`、`PreloadCount` | 限制图片加载并发，并控制打开预览时当前项、封面项和当前项附近的预加载窗口。 |

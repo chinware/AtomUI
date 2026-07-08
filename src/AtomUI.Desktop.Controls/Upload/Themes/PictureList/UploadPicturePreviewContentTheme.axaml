@@ -20,7 +20,7 @@
                         <atom:UploadImagePreviewer Name="PART_ImagePreviewer"
                                                    IsShowCoverMask="False"
                                                    DockPanel.Dock="Left"
-                                                   SourceUris="{TemplateBinding Sources}"
+                                                   Sources="{TemplateBinding Sources}"
                                                    VerticalAlignment="Stretch" />
                         <atom:IconButton Icon="{antdicons:AntDesignIconProvider DeleteOutlined}"
                                          DockPanel.Dock="Right"

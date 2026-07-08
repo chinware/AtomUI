@@ -26,6 +26,18 @@ public class ImagePreviewerTitleTests
     }
 
     [Fact]
+    public void DefaultImagePreviewTitleResolver_Uses_DisplayName_From_Stream_Source()
+    {
+        var source = new StreamImagePreviewSource(
+            _ => new ValueTask<Stream>(Stream.Null),
+            displayName: "stream image.png",
+            contentType: "image/png");
+        var context = new ImagePreviewTitleResolveContext(source, 0, 1);
+
+        DefaultImagePreviewTitleResolver.Instance.ResolveTitle(context).ShouldBe("stream image.png");
+    }
+
+    [Fact]
     public void ImagePreviewerDialog_Title_Uses_Window_Title_Before_Resolver()
     {
         Dispatcher.UIThread.Invoke(() =>
@@ -91,8 +103,8 @@ public class ImagePreviewerTitleTests
                 CurrentIndex = 1,
                 ItemsSource =
                 [
-                    new ImagePreviewItem(ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/first.png")),
-                    new ImagePreviewItem(ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/second.png"))
+                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/first.png")),
+                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/second.png"))
                 ]
             };
 
@@ -114,8 +126,8 @@ public class ImagePreviewerTitleTests
                 CurrentIndex = 1,
                 ItemsSource =
                 [
-                    new ImagePreviewItem(ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/first.png")),
-                    new ImagePreviewItem(ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/second.png"))
+                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/first.png")),
+                    new ImagePreviewItem(new UriImagePreviewSource("avares://AtomUI.Tests/Assets/second.png"))
                 ]
             };
 
@@ -156,7 +168,7 @@ public class ImagePreviewerTitleTests
 
     private static string? Resolve(string source)
     {
-        var sourceUri = ImageSourceUri.Parse(source);
+        var sourceUri = new UriImagePreviewSource(source);
         var context   = new ImagePreviewTitleResolveContext(sourceUri, 0, 1);
         return DefaultImagePreviewTitleResolver.Instance.ResolveTitle(context);
     }
@@ -166,7 +178,7 @@ public class ImagePreviewerTitleTests
         var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer();
         var dialog = new ImagePreviewerDialog(new Avalonia.Controls.Window(), previewer)
         {
-            ItemsSource = sources.Select(source => new ImagePreviewItem(ImageSourceUri.Parse(source))).ToList()
+            ItemsSource = sources.Select(source => new ImagePreviewItem(new UriImagePreviewSource(source))).ToList()
         };
         return dialog;
     }

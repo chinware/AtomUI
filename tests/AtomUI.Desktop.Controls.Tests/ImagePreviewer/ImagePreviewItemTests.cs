@@ -9,7 +9,7 @@ public class ImagePreviewItemTests
     [Fact]
     public void CompleteLoading_Ignores_Stale_Result_And_Disposes_It()
     {
-        var item          = new ImagePreviewItem(ImageSourceUri.Parse("a.png"));
+        var item          = new ImagePreviewItem(new UriImagePreviewSource("a.png"));
         var firstVersion  = item.BeginLoading();
         var secondVersion = item.BeginLoading();
         using var stale   = LoadedImageSource.CreateSvg("<svg />", new Avalonia.Size(1, 1));
@@ -29,7 +29,7 @@ public class ImagePreviewItemTests
     [Fact]
     public void FailLoading_Ignores_Stale_Failure()
     {
-        var item          = new ImagePreviewItem(ImageSourceUri.Parse("a.png"));
+        var item          = new ImagePreviewItem(new UriImagePreviewSource("a.png"));
         var firstVersion  = item.BeginLoading();
         var secondVersion = item.BeginLoading();
 

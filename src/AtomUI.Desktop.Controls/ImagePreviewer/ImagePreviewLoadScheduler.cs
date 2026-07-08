@@ -145,7 +145,7 @@ internal sealed class ImagePreviewLoadScheduler : IDisposable
         RegisterRunningLoad(runningLoad);
         try
         {
-            var loadedSource = await _imageSourceLoader.LoadAsync(item.SourceUri, cancellationToken).ConfigureAwait(false);
+            var loadedSource = await _imageSourceLoader.LoadAsync(item.Source, cancellationToken).ConfigureAwait(false);
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 if (IsCurrent(request.Generation) && !cancellationToken.IsCancellationRequested)

@@ -659,7 +659,7 @@ internal class ImagePreviewerDialog : Window,
         }
 
         var currentIndex = ResolveDisplayCurrentIndex(items.Count);
-        var context      = new ImagePreviewTitleResolveContext(items[currentIndex].SourceUri, currentIndex, items.Count);
+        var context      = new ImagePreviewTitleResolveContext(items[currentIndex].Source, currentIndex, items.Count);
         var title        = PreviewTitleResolver.ResolveTitle(context);
         return string.IsNullOrWhiteSpace(title) ? null : title;
     }
