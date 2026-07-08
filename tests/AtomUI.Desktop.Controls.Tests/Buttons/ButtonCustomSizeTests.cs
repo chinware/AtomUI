@@ -256,9 +256,9 @@ public class ButtonCustomSizeTests
         return (CustomizableSizeType)value!;
     }
 
-    private static Border FindFrame(Control control)
+    private static Control FindFrame(Control control)
     {
-        return FindTemplatePart<Border>(control, "Frame");
+        return FindTemplatePart<Control>(control, "Frame");
     }
 
     private static T FindTemplatePart<T>(Control control, string name)

@@ -34,7 +34,7 @@ public class SearchEditLayoutTests
         {
             var contentFrame = FindTemplatePart<Border>(searchEdit, "PART_ContentFrame");
             var searchButton = FindTemplatePart<global::AtomUI.Desktop.Controls.Button>(searchEdit, "PART_RightAddOn");
-            var buttonFrame  = FindTemplatePart<Border>(searchButton, "Frame");
+            var buttonFrame  = FindTemplatePart<Control>(searchButton, "Frame");
 
             contentFrame.Bounds.Height.ShouldBe(38, 0.5);
             buttonFrame.Bounds.Height.ShouldBe(contentFrame.Bounds.Height, 0.5);
@@ -64,7 +64,7 @@ public class SearchEditLayoutTests
             {
                 var contentFrame = FindTemplatePart<Border>(searchEdit, "PART_ContentFrame");
                 var searchButton = FindTemplatePart<global::AtomUI.Desktop.Controls.Button>(searchEdit, "PART_RightAddOn");
-                var buttonFrame  = FindTemplatePart<Border>(searchButton, "Frame");
+                var buttonFrame  = FindTemplatePart<Control>(searchButton, "Frame");
 
                 contentFrame.Bounds.Height.ShouldBeGreaterThan(0);
                 searchButton.Bounds.Height.ShouldBe(contentFrame.Bounds.Height, 0.5);

@@ -2,9 +2,11 @@ using System;
 using System.Linq;
 using System.Reflection;
 using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Headless;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -410,7 +412,7 @@ public class ButtonBehaviorTests
 
         ShowInWindow(button, () =>
         {
-            var frame                 = FindTemplateBorder(button, "Frame");
+            var frame                 = FindTemplateDashedBorder(button, "Frame");
             var customBackgroundLayer = FindTemplateBorder(button, "CustomBackgroundLayer");
             var rootPanel             = frame.GetVisualParent<Panel>();
             rootPanel.ShouldNotBeNull();
@@ -422,6 +424,29 @@ public class ButtonBehaviorTests
             frameIndex.ShouldBeGreaterThanOrEqualTo(0);
             customBackgroundLayerIndex.ShouldBeGreaterThan(frameIndex);
             BrushShouldHaveSameColor(frame.Background, GetInternalPropertyValue<IBrush?>(button, "VariantBackgroundBrush"));
+        });
+    }
+
+    [Fact]
+    public void Button_Default_Frame_Uses_AtomUI_Border_Rendering()
+    {
+        var button = new AtomUIButton
+        {
+            ButtonType      = ButtonType.Default,
+            BorderThickness = new Thickness(1),
+            BorderBrush     = Brushes.Black,
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(button, window =>
+        {
+            window.SetRenderScaling(1.5);
+            Dispatcher.UIThread.RunJobs();
+
+            var frame = FindTemplateDashedBorder(button, "Frame");
+            RenderToDrawingGroup(frame);
+
+            GetBorderRenderHelperThickness(frame).ShouldBe(new Thickness(4d / 3d));
         });
     }
 
@@ -553,6 +578,44 @@ public class ButtonBehaviorTests
         return border;
     }
 
+    private static DashedBorder FindTemplateDashedBorder(Control control, string name)
+    {
+        var border = control.GetVisualDescendants()
+                            .OfType<DashedBorder>()
+                            .SingleOrDefault(item => item.Name == name);
+        border.ShouldNotBeNull();
+        return border!;
+    }
+
+    private static DrawingGroup RenderToDrawingGroup(Control control)
+    {
+        var drawingGroup = new DrawingGroup();
+        using (var context = drawingGroup.Open())
+        {
+            control.Render(context);
+        }
+
+        return drawingGroup;
+    }
+
+    private static Thickness GetBorderRenderHelperThickness(DashedBorder border)
+    {
+        var helperField = typeof(DashedBorder).GetField(
+            "_borderRenderHelper",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        helperField.ShouldNotBeNull();
+
+        var helper = helperField!.GetValue(border);
+        helper.ShouldNotBeNull();
+
+        var thicknessField = helper!.GetType().GetField(
+            "_borderThickness",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        thicknessField.ShouldNotBeNull();
+
+        return (Thickness)thicknessField!.GetValue(helper)!;
+    }
+
     private static IconPresenter FindTemplateIcon(Control control)
     {
         var icon = control.GetVisualDescendants()
@@ -591,6 +654,11 @@ public class ButtonBehaviorTests
 
     private static void ShowInWindow(Control content, Action assertion)
     {
+        ShowInWindow(content, _ => assertion());
+    }
+
+    private static void ShowInWindow(Control content, Action<AvaloniaWindow> assertion)
+    {
         var window = new AvaloniaWindow
         {
             Width   = 240,
@@ -602,7 +670,7 @@ public class ButtonBehaviorTests
         {
             window.Show();
             Dispatcher.UIThread.RunJobs();
-            assertion();
+            assertion(window);
         }
         finally
         {
