@@ -495,6 +495,7 @@ public partial class TreeView : AvaloniaTreeView,
         TreeViewItem.CollapsedEvent.AddClassHandler<TreeView>((treeView, args) => treeView.HandleTreeItemCollapsed(args));
         TreeViewItem.ContextMenuRequestEvent.AddClassHandler<TreeView>((treeView, args) => treeView.HandleTreeItemContextMenuRequest(args));
         TreeViewItem.ClickEvent.AddClassHandler<TreeView>((treeView, args) => treeView.HandleTreeItemClicked(args));
+        RequestBringIntoViewEvent.AddClassHandler<TreeView>((treeView, args) => treeView.HandleDescendantRequestBringIntoView(args));
         ConfigureFilter();
 
         SelectedItemProperty.Changed.AddClassHandler<TreeView>((treeView, args) => treeView.NotifyFormValueChanged(args.NewValue));
@@ -524,6 +525,14 @@ public partial class TreeView : AvaloniaTreeView,
 
         var item = TreeItemFromContainer(treeViewItem);
         return item != null && _syncingSelectedItemsTarget.Contains(item);
+    }
+
+    private void HandleDescendantRequestBringIntoView(RequestBringIntoViewEventArgs args)
+    {
+        if (!ReferenceEquals(args.Source, this))
+        {
+            args.Handled = true;
+        }
     }
 
     protected override void OnInitialized()
