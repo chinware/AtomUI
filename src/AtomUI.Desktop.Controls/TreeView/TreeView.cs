@@ -480,6 +480,8 @@ public partial class TreeView : AvaloniaTreeView,
     private static readonly IList Empty = Array.Empty<object>();
     private IList? _checkedItems;
     private IList? _syncingSelectedItemsTarget;
+    private readonly TreeDataController _treeDataController;
+    private bool _isTreeDataControllerAttached;
     internal bool SyncingSelectedItems;
     internal bool SyncingCheckedItems;
     
@@ -507,6 +509,7 @@ public partial class TreeView : AvaloniaTreeView,
     protected TreeView(ITreeViewInteractionHandler interactionHandler)
     {
         InteractionHandler = interactionHandler ?? throw new ArgumentNullException(nameof(interactionHandler));
+        _treeDataController = new TreeDataController(this);
         this.RegisterTokenResourceScope(TreeViewToken.ScopeProvider);
         Items.CollectionChanged           += HandleCollectionChanged;
     }
@@ -558,7 +561,10 @@ public partial class TreeView : AvaloniaTreeView,
                 var oldItems = e.OldItems!;
                 for (var i = 0; i < oldItems.Count; i++)
                 {
-                    CheckedItems.Remove(oldItems[i]);
+                    if (!ShouldPreserveRemovedTreeItem(oldItems[i]))
+                    {
+                        CheckedItems.Remove(oldItems[i]);
+                    }
                 }
                 break;
             case NotifyCollectionChangedAction.Reset:
@@ -751,6 +757,8 @@ public partial class TreeView : AvaloniaTreeView,
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
+        _isTreeDataControllerAttached = true;
+        _treeDataController.SetRootSource(ItemsSource);
         InteractionHandler.Attach(this);
         UpdatePseudoClasses();
     }
@@ -762,6 +770,8 @@ public partial class TreeView : AvaloniaTreeView,
         
         // 清理所有待处理的异步加载操作
         _asyncLoadCoordinator.CancelAll();
+        _treeDataController.ClearRootSource();
+        _isTreeDataControllerAttached = false;
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -827,8 +837,25 @@ public partial class TreeView : AvaloniaTreeView,
 
         if (change.Property == ItemsSourceProperty)
         {
+            if (_isTreeDataControllerAttached)
+            {
+                _treeDataController.SetRootSource(ItemsSource);
+            }
             Dispatcher.Post(ConfigureStateAfterItemsSourceChanged);
         }
+    }
+
+    internal ITreeItemNode? ResolveTreeItemNode(TreeViewItem treeViewItem)
+    {
+        return TreeItemFromContainer(treeViewItem) as ITreeItemNode ??
+               treeViewItem.Header as ITreeItemNode ??
+               treeViewItem;
+    }
+
+    internal bool ShouldPreserveRemovedTreeItem(object? item)
+    {
+        return item is ITreeItemNode node &&
+               _treeDataController.IsMovingNode(node);
     }
 
     protected void HandleSwitcherRotationIconChanged()

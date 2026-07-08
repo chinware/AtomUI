@@ -2,8 +2,6 @@ using System.Diagnostics;
 using AtomUI.Controls;
 using AtomUI.Controls.AsyncLoad;
 using Avalonia;
-using Avalonia.Threading;
-using DynamicData;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -81,12 +79,10 @@ public partial class TreeView
 
                 if (result.IsSuccess && result.Data?.Count > 0)
                 {
-                    foreach (var child in result.Data)
+                    if (_treeDataController.TryAppendChildren(treeItemData, result.Data))
                     {
-                        child.UpdateParentNode(treeItemData);
+                        viewItem.IsExpanded = true;
                     }
-                    ((IList<ITreeItemNode>)treeItemData.Children).AddRange(result.Data);
-                    viewItem.IsExpanded = true;
                 }
                 return;
             }

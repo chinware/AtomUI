@@ -498,6 +498,26 @@ public partial class TreeView
         {
             return;
         }
+
+        if (ItemsSource is not null)
+        {
+            if (_treeDataController.TryMove(_beingDraggedTreeItem, _dropTargetInfo, out var dropResult))
+            {
+                ItemDropped?.Invoke(this, new TreeViewDroppedEventArgs(
+                    dropResult.DraggedViewItem,
+                    dropResult.DroppedItem,
+                    dropResult.DropIndex));
+            }
+            return;
+        }
+
+        PerformContainerDropOperation();
+    }
+
+    private void PerformContainerDropOperation()
+    {
+        Debug.Assert(_dropTargetInfo is not null);
+        Debug.Assert(_beingDraggedTreeItem is not null);
         
         object? sourceItem                 = default;
         var     beingDraggedTreeItemParent = _beingDraggedTreeItem.Parent;

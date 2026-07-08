@@ -483,7 +483,10 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
                 var oldItems = e.OldItems!;
                 for (var i = 0; i < oldItems.Count; i++)
                 {
-                    OwnerTreeView.CheckedItems.Remove(oldItems[i]);
+                    if (!OwnerTreeView.ShouldPreserveRemovedTreeItem(oldItems[i]))
+                    {
+                        OwnerTreeView.CheckedItems.Remove(oldItems[i]);
+                    }
                 }
                 break;
             case NotifyCollectionChangedAction.Reset:
