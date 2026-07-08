@@ -10,7 +10,6 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.Media;
-using Avalonia.Threading;
 
 namespace AtomUI.Controls.Commons;
 
@@ -90,7 +89,13 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
     static AbstractOptionButton()
     {
         AffectsMeasure<AbstractOptionButton>(SizeTypeProperty, ButtonStyleProperty);
-        AffectsRender<AbstractOptionButton>(IsCheckedProperty, CornerRadiusProperty, ForegroundProperty, BackgroundProperty);
+        AffectsRender<AbstractOptionButton>(IsCheckedProperty,
+            CornerRadiusProperty,
+            ForegroundProperty,
+            BackgroundProperty,
+            BorderBrushProperty,
+            BorderThicknessProperty,
+            UseLayoutRoundingProperty);
     }
 
     public AbstractOptionButton()
@@ -218,7 +223,7 @@ public abstract class AbstractOptionButton : AvaloniaRadioButton
     {
         _borderRenderHelper.Render(context,
             Bounds.Size,
-            BorderUtils.BuildRenderScaleAwareThickness(BorderThickness, TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0),
+            BorderUtils.BuildLayoutRoundedThickness(this, BorderThickness),
             CornerRadius,
             BackgroundSizing.InnerBorderEdge,
             Background,

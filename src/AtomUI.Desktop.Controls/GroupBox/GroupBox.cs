@@ -1,5 +1,6 @@
 ﻿using AtomUI.Controls.Utils;
 using AtomUI.Theme;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -102,7 +103,8 @@ public class GroupBox : ContentControl
             BackgroundProperty,
             BorderBrushProperty,
             BorderThicknessProperty,
-            CornerRadiusProperty);
+            CornerRadiusProperty,
+            UseLayoutRoundingProperty);
     }
 
     public GroupBox()
@@ -166,10 +168,11 @@ public class GroupBox : ContentControl
 
     private void EnsureRenderGeometryCache(Rect headerGapBounds)
     {
+        var layoutBorderThickness = BorderUtils.BuildLayoutRoundedThickness(this, BorderThickness);
         if (_geometryCacheInitialized &&
             _cachedBorderBounds == _borderBounds &&
             _cachedHeaderGapBounds == headerGapBounds &&
-            _cachedBorderThickness == BorderThickness &&
+            _cachedBorderThickness == layoutBorderThickness &&
             _cachedCornerRadius == CornerRadius)
         {
             return;
@@ -177,35 +180,35 @@ public class GroupBox : ContentControl
 
         _cachedBorderBounds       = _borderBounds;
         _cachedHeaderGapBounds    = headerGapBounds;
-        _cachedBorderThickness    = BorderThickness;
+        _cachedBorderThickness    = layoutBorderThickness;
         _cachedCornerRadius       = CornerRadius;
         _geometryCacheInitialized = true;
 
         _backgroundGeometryCache = CreateRoundedRectGeometry(
             _borderBounds,
-            BorderThickness,
+            layoutBorderThickness,
             CornerRadius,
             BackgroundSizing.InnerBorderEdge);
-        _borderGeometryCache = CreateBorderGeometry(_borderBounds, headerGapBounds);
+        _borderGeometryCache = CreateBorderGeometry(_borderBounds, headerGapBounds, layoutBorderThickness);
     }
 
-    private Geometry? CreateBorderGeometry(Rect borderBounds, Rect headerGapBounds)
+    private Geometry? CreateBorderGeometry(Rect borderBounds, Rect headerGapBounds, Thickness borderThickness)
     {
         if (borderBounds.Width <= 0 ||
             borderBounds.Height <= 0 ||
-            !HasVisibleBorder(BorderThickness))
+            !HasVisibleBorder(borderThickness))
         {
             return null;
         }
 
         var borderInnerGeometry = CreateRoundedRectGeometry(
             borderBounds,
-            BorderThickness,
+            borderThickness,
             CornerRadius,
             BackgroundSizing.InnerBorderEdge);
         var borderOuterGeometry = CreateRoundedRectGeometry(
             borderBounds,
-            BorderThickness,
+            borderThickness,
             CornerRadius,
             BackgroundSizing.OuterBorderEdge);
 

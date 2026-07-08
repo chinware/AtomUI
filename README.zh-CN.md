@@ -70,7 +70,7 @@ Avalonia 12.0.x<br>
 #### 感谢通明湖中心孵化 AtomUI OSS
 
 <div style="margin-top: 50px">
-  <img src="./resources/images/readme/TLAIC.png" width="400"/>
+  <img src="./resources/images/readme/TLAIC.svg" width="400"/>
 </div>
 
 #### 感谢 Gitee 对 AtomUI 的认可

@@ -1,0 +1,45 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:OtpTextBox}" TargetType="atom:OtpTextBox">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ScrollViewer Name="PART_ScrollViewer"
+                              Cursor="{TemplateBinding Cursor}"
+                              HorizontalScrollBarVisibility="Disabled"
+                              VerticalScrollBarVisibility="Disabled">
+                    <Panel>
+                        <atom:TextBlock
+                            Name="PART_Placeholder"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Text="{TemplateBinding PlaceholderText}"
+                            Foreground="{TemplateBinding PlaceholderForeground}"
+                            FontSize="{TemplateBinding FontSize}"
+                            TextAlignment="{TemplateBinding TextAlignment}"
+                            IsVisible="{TemplateBinding Text, Converter={x:Static StringConverters.IsNullOrEmpty}}" />
+                        <atom:InputTextPresenter
+                            Name="PART_TextPresenter"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                            CaretBrush="{TemplateBinding CaretBrush}"
+                            CaretIndex="{TemplateBinding CaretIndex}"
+                            SelectionBrush="{TemplateBinding SelectionBrush}"
+                            SelectionStart="{TemplateBinding SelectionStart}"
+                            SelectionEnd="{TemplateBinding SelectionEnd}"
+                            SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                            Text="{TemplateBinding Text, Mode=TwoWay}"
+                            TextAlignment="Left" />
+                    </Panel>
+                </ScrollViewer>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[IsCellActive=True] /template/ atom|TextBlock#PART_Placeholder">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

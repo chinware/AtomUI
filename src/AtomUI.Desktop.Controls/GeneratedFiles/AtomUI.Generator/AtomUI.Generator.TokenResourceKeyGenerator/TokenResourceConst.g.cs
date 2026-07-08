@@ -729,6 +729,19 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         PaddingSM
     }
 
+    public enum OtpLineEditTokenKind
+    {
+        CellGap,
+        CellGapLG,
+        CellGapSM,
+        CellWidth,
+        CellWidthLG,
+        CellWidthSM,
+        SeparatorMarginInline,
+        SeparatorMarginInlineLG,
+        SeparatorMarginInlineSM
+    }
+
     public enum PaginationTokenKind
     {
         InputOutlineOffset,
@@ -1745,6 +1758,17 @@ namespace AtomUI.Desktop.Controls.DesignTokens
         }
 
         public OptionButtonTokenResourceExtension(OptionButtonTokenKind kind) : base(kind)
+        {
+        }
+    }
+
+    public class OtpLineEditTokenResourceExtension : TokenResourceExtension<OtpLineEditTokenKind>
+    {
+        public OtpLineEditTokenResourceExtension()
+        {
+        }
+
+        public OtpLineEditTokenResourceExtension(OtpLineEditTokenKind kind) : base(kind)
         {
         }
     }

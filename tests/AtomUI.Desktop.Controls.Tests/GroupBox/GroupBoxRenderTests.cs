@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Headless;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -105,6 +107,39 @@ public class GroupBoxRenderTests
         });
     }
 
+    [Fact]
+    public void Render_Uses_Layout_Rounded_BorderThickness_For_Geometry()
+    {
+        var groupBox = new AtomUI.Desktop.Controls.GroupBox
+        {
+            Width           = 180,
+            Height          = 100,
+            HeaderTitle     = "Title",
+            Background      = Brushes.Transparent,
+            BorderBrush     = Brushes.Black,
+            BorderThickness = new Thickness(1),
+            CornerRadius    = new CornerRadius(6),
+            Content         = new Border { Height = 48 }
+        };
+        var root = new Border
+        {
+            Width   = 240,
+            Height  = 140,
+            Padding = new Thickness(24),
+            Child   = groupBox
+        };
+
+        ShowInWindow(root, window =>
+        {
+            window.SetRenderScaling(1.5);
+            Dispatcher.UIThread.RunJobs();
+
+            RenderToDrawingGroup(groupBox);
+
+            GetCachedBorderThickness(groupBox).ShouldBe(new Thickness(4d / 3d));
+        });
+    }
+
     private static void ShowInWindow(Control content, Action<AvaloniaWindow> assertion)
     {
         var window = new AvaloniaWindow
@@ -132,6 +167,16 @@ public class GroupBoxRenderTests
         using var context = drawingGroup.Open();
         groupBox.Render(context);
         return drawingGroup;
+    }
+
+    private static Thickness GetCachedBorderThickness(AtomUI.Desktop.Controls.GroupBox groupBox)
+    {
+        var field = typeof(AtomUI.Desktop.Controls.GroupBox).GetField(
+            "_cachedBorderThickness",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        field.ShouldNotBeNull();
+
+        return (Thickness)field!.GetValue(groupBox)!;
     }
 
     private static bool HasTransparentHeaderMaskDrawing(DrawingGroup drawingGroup, Rect headerBounds)

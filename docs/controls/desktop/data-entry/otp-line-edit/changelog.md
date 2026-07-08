@@ -1,0 +1,15 @@
+# OtpLineEdit Changelog
+
+本文档记录 OtpLineEdit 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
+
+## 2026-07-07
+
+- Docs
+  - 新增 OtpLineEdit 控件级架构设计、实现原理、Token 设计和 changelog 文档。
+- API
+  - 定义 `Text`、`Length`、`InputMode`、`Formatter`、`IsMasked`、`Separator`、`Completed` 和 Form 集成契约。
+- Theme
+  - 定义根模板、cell host、cell、clear button 和 Form feedback 的稳定职责边界。
+  - 补齐 `StyleVariant` 的 `Outlined`、`Filled`、`Borderless`、`Underlined` 四种 cell 输入表面契约。
+- Token
+  - 定义 `OtpLineEditToken` 的 cell 宽度、cell 间距和 separator 间距语义。

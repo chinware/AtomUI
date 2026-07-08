@@ -47,6 +47,7 @@ namespace AtomUI.Theme
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.NotificationToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.NumericUpDownToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.OptionButtonToken))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.OtpLineEditToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.PaginationToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.PopupConfirmToken))]
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.PopupHostToken))]
@@ -86,7 +87,7 @@ namespace AtomUI.Theme
         [DynamicDependency(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.NonPublicProperties, typeof(AtomUI.Desktop.Controls.WindowToken))]
         internal static IList<ControlTokenRegistration> GetTokenTypes()
         {
-            List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>(78);
+            List<ControlTokenRegistration> tokenTypes = new List<ControlTokenRegistration>(79);
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.AddOnDecoratedBoxToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.AdornerLayerToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.AlertToken)));
@@ -128,6 +129,7 @@ namespace AtomUI.Theme
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.NotificationToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.NumericUpDownToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.OptionButtonToken)));
+            tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.OtpLineEditToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.PaginationToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.PopupConfirmToken)));
             tokenTypes.Add(new ControlTokenRegistration(typeof(AtomUI.Desktop.Controls.PopupHostToken)));

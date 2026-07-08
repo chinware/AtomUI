@@ -1,19 +1,18 @@
 ﻿using Avalonia;
+using Avalonia.Layout;
 
 namespace AtomUI.Utils;
 
 internal static class BorderUtils
 {
-    public static Thickness BuildRenderScaleAwareThickness(in Thickness borderThickness, double renderScaling)
+    public static Thickness BuildLayoutRoundedThickness(Layoutable owner, Thickness borderThickness)
     {
-        if (MathUtils.AreClose(renderScaling, Math.Floor(renderScaling)))
+        if (!owner.UseLayoutRounding)
         {
-            renderScaling = 1.0d; // 这种情况很清晰
+            return borderThickness;
         }
 
-        return new Thickness(borderThickness.Left / renderScaling,
-            borderThickness.Top / renderScaling,
-            borderThickness.Right / renderScaling,
-            borderThickness.Bottom / renderScaling);
+        var scale = LayoutHelper.GetLayoutScale(owner);
+        return LayoutHelper.RoundLayoutThickness(borderThickness, scale);
     }
 }

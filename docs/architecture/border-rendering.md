@@ -1,0 +1,291 @@
+# AtomUI 边框渲染架构
+
+本文档定义 AtomUI 在不同 DPI、不同 render scale 和不同显示器下绘制边框的架构原则。目标是在普通屏、3.5K、4K 和跨屏窗口移动场景中，让控件边框保持稳定、自然、符合 Ant Design 视觉语义，同时不向使用者暴露额外配置。
+
+## 1. 设计目标
+
+- 用户无感知：业务代码、AXAML 使用方式、控件 API 和 Design Token 语义不改变。
+- 保留设计语义：`LineWidth = 1` 仍表示设计系统中的 1 DIP 基础线宽，不被改写成屏幕相关值。
+- 对齐 Avalonia：普通边框和自绘边框都应遵循 Avalonia `Border` 的 layout rounding 机制。
+- 复用成熟圆角算法：圆角绘制必须继续使用 AtomUI 已引入的 Avalonia / WinUI 派生算法，不手写新的圆角合成逻辑。
+- 架构集中：屏幕 scale、layout rounding、hairline 等规则必须集中在共享 helper 或明确语义中，不能散落在各控件渲染代码里。
+
+## 2. 背景结论
+
+Ant Design 本地引用源码中，基础线宽仍是普通设计 token：
+
+- `.referenceprojects/ant-design/components/theme/themes/seed.ts`：`lineWidth: 1`
+- `.referenceprojects/ant-design/components/theme/util/alias.ts`：alias token 保留 `lineWidth`
+- `.referenceprojects/ant-design/components/button/style/variant.ts`：Button 将 `lineWidth` 写入 CSS 变量，并生成普通 `border: var(--border-width) var(--border-style) var(--border-color)`
+
+Ant Design 并没有在 token 层按 4K 或普通屏动态改变边框宽度。它把 CSS `1px` 交给浏览器布局和渲染管线映射到物理像素。
+
+AtomUI 是 Avalonia/.NET 桌面控件库，不能直接复用浏览器 CSS 管线。AtomUI 应把同样的职责放在 Avalonia 的 layout rounding 和绘制层：设计层仍表达 1 DIP，渲染层负责把它变成当前显示器 scale 下稳定的实际绘制厚度。
+
+## 3. 分层模型
+
+边框渲染分为三层。
+
+### 3.1 设计语义层
+
+设计语义层只关心设计系统值：
+
+```text
+DesignToken.LineWidth = 1
+DesignToken.BorderThickness = new Thickness(LineWidth)
+ControlToken / SharedTokenResource
+```
+
+这一层不读取显示器 DPI，不读取 `TopLevel.RenderScaling`，不做 `1 / scale` 计算。Token 是主题级语义，而 DPI scale 是 visual root / monitor 级运行时状态。窗口跨屏移动时，scale 可能变化；把运行时 scale 写进 token 会破坏主题语义，也会让不同窗口和不同显示器之间出现错误共享。
+
+### 3.2 布局取整层
+
+布局取整层负责把设计厚度转换为当前 layout scale 下适合绘制的厚度。它应对齐 Avalonia `Border` 的做法：
+
+```text
+if UseLayoutRounding:
+    LayoutThickness = LayoutHelper.RoundLayoutThickness(BorderThickness, LayoutHelper.GetLayoutScale(owner))
+else:
+    LayoutThickness = BorderThickness
+```
+
+Avalonia `Layoutable.UseLayoutRounding` 默认启用并可继承。AtomUI 自绘控件应尊重该属性，不应绕过它。
+
+该逻辑应集中在内部 helper 中，例如：
+
+```text
+LayoutRoundedThicknessHelper.GetLayoutThickness(Layoutable owner, Thickness thickness)
+```
+
+helper 的职责只限于 layout rounding，不承担 hairline、不承担 token 读取、不承担业务控件状态判断。
+
+### 3.3 绘制层
+
+绘制层只接收已经确定的渲染输入：
+
+```text
+Bounds.Size
+LayoutThickness
+CornerRadius
+BackgroundSizing
+Background
+BorderBrush
+DashStyle / BoxShadow
+```
+
+普通 `Border` 由 Avalonia 自身完成该链路。AtomUI 自绘边框控件必须在调用 `BorderRenderHelper` 或构建几何之前，把 `BorderThickness` 转换为 `LayoutThickness`。
+
+## 4. Button 的绘制链路
+
+Button 是边框策略的基准控件。它必须保持用户无感知。
+
+### 4.1 普通 Button
+
+普通 Button 模板使用 Avalonia 原生 `Border`：
+
+```text
+SharedToken.BorderThickness
+    ↓
+Button.BorderThickness
+    ↓
+Button.EffectiveBorderThickness
+    ↓
+ButtonTheme.axaml: Border#Frame.BorderThickness
+    ↓
+Avalonia Border.LayoutThickness
+    ↓
+Avalonia BorderRenderHelper.Render(...)
+```
+
+普通 Button 不需要替换为 AtomUI 自定义 Border，也不需要在 `Button` 类里手动计算 scale。它的合理边框来自 Avalonia `Border` 内部的 `LayoutThickness`。
+
+维护要求：
+
+- 不把普通 Button 的 `Border#Frame` 改成自绘控件。
+- 不在 `Button.ConfigureEffectiveBorderThickness()` 中做 DPI 或 scale 计算。
+- `EffectiveBorderThickness` 继续表达控件状态后的设计厚度，例如 bordered / borderless。
+
+### 4.2 Dashed Button
+
+虚线 Button 模板使用 AtomUI `DashedBorder`。因此它是必须补齐的重点：
+
+```text
+SharedToken.BorderThickness
+    ↓
+Button.BorderThickness
+    ↓
+Button.EffectiveBorderThickness
+    ↓
+ButtonTheme.axaml: DashedBorder#Frame.BorderThickness
+    ↓
+DashedBorder.LayoutThickness
+    ↓
+BorderRenderHelper.Render(... LayoutThickness, StrokeDashArray ...)
+```
+
+`DashedBorder` 应具备与 Avalonia `Border` 等价的内部 layout thickness 缓存：
+
+- `BorderThickness` 或 `UseLayoutRounding` 改变时使缓存失效。
+- 当前 `LayoutHelper.GetLayoutScale(this)` 改变时使缓存失效。
+- `Render()` 使用 `LayoutThickness`。
+- `MeasureOverride()` / `ArrangeOverride()` 继续使用 Avalonia `LayoutHelper.MeasureChild` / `ArrangeChild`，由 Avalonia helper 根据父级 layout rounding 处理 padding 和 border。
+
+这样普通 Button 和 Dashed Button 在同一 scale 下得到一致的视觉厚度。
+
+## 5. 圆角算法边界
+
+圆角是边框绘制中最容易出错的部分。AtomUI 已有成熟实现：
+
+- `src/AtomUI.Controls.Shared/Utils/BorderRenderHelper.cs`
+- `src/AtomUI.Controls.Shared/Utils/RoundRectGeometryBuilder.cs`
+
+这些代码已经按 Avalonia / WinUI 思路处理圆角：
+
+- `CornerRadius` 定义在 border stroke 中线。
+- `BackgroundSizing.InnerBorderEdge` 使用内边界。
+- `BackgroundSizing.OuterBorderEdge` 使用外边界。
+- `BackgroundSizing.CenterBorder` 使用 stroke 中线。
+- 复杂边框通过 outer rounded geometry 排除 inner rounded geometry 得到真实边框区域。
+
+新的边框一致性机制不得替换该算法。正确做法是只改变传入算法的 `borderThickness`：
+
+```text
+旧输入：RoundRectGeometryBuilder(..., BorderThickness, CornerRadius, ...)
+新输入：RoundRectGeometryBuilder(..., LayoutThickness, CornerRadius, ...)
+```
+
+禁止做法：
+
+- 手动 snap 圆角 arc 的点。
+- 为每个控件单独手写 `ArcTo` 圆角。
+- 把圆角半径按 scale 简单除法处理。
+- 对不同控件采用不同的内外圆角合成规则。
+
+## 6. 自绘控件接入规则
+
+凡是控件自己绘制边框、自己创建 `Pen`、自己调用 `BorderRenderHelper` 或自己构建圆角几何，都必须先判断它绘制的是哪一种线。
+
+### 6.1 普通控件边框
+
+普通控件边框包括 Button、Input、GroupBox、OptionButton、TreeView item hover 背景边框、Badge ribbon 背景边框等。这类边框表达控件轮廓，应使用 `LayoutRounded` 语义：
+
+```text
+BorderThickness
+    ↓
+LayoutRoundedThicknessHelper
+    ↓
+BorderRenderHelper / RoundRectGeometryBuilder / Pen
+```
+
+### 6.2 发丝线和分割线
+
+Separator、MenuSeparator、DataGrid grid line、TreeView node line、Card action separator 等需要逐个分类。它们不一定是控件轮廓，有些更接近 CSS hairline 或视觉分割线。
+
+这类线不能混用普通边框 helper。应显式选择一种语义：
+
+| 语义 | 使用场景 | 厚度规则 |
+|---|---|---|
+| `LayoutRounded` | 控件轮廓、参与布局或与 Avalonia `Border` 对齐的线 | `RoundLayoutThickness` / `RoundLayoutValue` |
+| `Hairline` | 视觉分割线，希望在高 DPI 下保持 1 个物理像素 | 内部 helper 明确计算，不伪装成 token `BorderThickness` |
+
+`BorderUtils.BuildRenderScaleAwareThickness()` 这类直接除以 render scale 的方法不应继续作为普通控件边框方案。它表达的是另一类渲染意图，容易让自绘控件和 Avalonia 原生 `Border` 产生视觉分歧。
+
+## 7. 缓存与失效
+
+自绘边框控件如果缓存 layout thickness 或 geometry，必须包含以下失效条件：
+
+- `BorderThickness` 改变。
+- `UseLayoutRounding` 改变。
+- `LayoutHelper.GetLayoutScale(owner)` 改变。
+- `CornerRadius` 改变。
+- `BackgroundSizing` 改变。
+- `Bounds.Size` 或参与几何的 bounds 改变。
+
+推荐缓存结构：
+
+```text
+_layoutThickness
+_layoutScale
+_geometryCacheInitialized
+_cachedSize
+_cachedLayoutThickness
+_cachedCornerRadius
+_cachedBackgroundSizing
+```
+
+控件在 `Render()` 中读取 layout scale 时，必须检测 scale 是否变化。窗口跨显示器移动后，即使 `BorderThickness` 未改变，缓存也应失效。
+
+## 8. 实施分期
+
+### 8.1 第一阶段：补齐核心路径
+
+- 新增内部 layout rounded thickness helper。
+- 让 `DashedBorder` 使用 `LayoutThickness` 渲染。
+- 确认普通 Button 继续走 Avalonia `Border`。
+- 增加 Dashed Button 与普通 Button 在不同 scale 下的视觉或单元验证。
+
+### 8.2 第二阶段：统一 BorderRenderHelper 调用者
+
+审计直接使用 `BorderRenderHelper` 的控件，包括但不限于：
+
+- `DashedBorder`
+- `AbstractOptionButton`
+- `AbstractRibbonBadgeAdorner`
+- `TreeViewItem`
+- `NodeSwitcherButton`
+- `ButtonSpinnerHandle`
+
+如果绘制的是普通边框或背景圆角，改为传入 layout rounded thickness。如果绘制厚度恒为 0，则只需确认不受影响。
+
+### 8.3 第三阶段：统一自建圆角几何调用者
+
+审计直接使用 `RoundRectGeometryBuilder.CalculateRoundedCornersRectangleWinUI` 的控件，包括但不限于：
+
+- `GroupBox`
+- `BorderBeamPresenter`
+- 其他构建圆角路径或 border geometry 的控件
+
+如果 geometry 代表普通边框，必须使用 layout rounded thickness 作为几何输入。如果 geometry 代表动画路径或纯装饰路径，需要在代码旁明确其非边框语义。
+
+### 8.4 第四阶段：分类分割线和 hairline
+
+审计所有 `DrawLine`、`Pen` 和 `LineWidth` 使用点，按 `LayoutRounded` 与 `Hairline` 分类。发丝线 helper 必须是显式语义，不能混入普通 `BorderThickness`。
+
+## 9. 测试与验证
+
+验证 scale 至少覆盖：
+
+```text
+1.0
+1.25
+1.5
+1.75
+2.0
+```
+
+重点场景：
+
+- 普通 Button 和 Dashed Button 在同一 scale 下边框粗细一致。
+- 普通屏、3.5K、4K 下同一控件没有明显忽粗忽细。
+- 圆角处无断裂、无角部厚薄突变、无背景漏线。
+- 窗口跨屏移动后，自绘边框缓存失效并按新 scale 绘制。
+- `UseLayoutRounding = false` 时，自绘控件尊重原始 `BorderThickness`。
+- GroupBox 这类复杂边框在 Header gap、透明背景和不同圆角下仍稳定。
+
+自动化测试优先级：
+
+- helper 单元测试：验证 `RoundLayoutThickness` 封装行为。
+- `DashedBorder` 渲染输入测试：确认传入 helper 的 thickness 与 Avalonia `Border` 一致。
+- 控件视觉回归：Button、Dashed Button、GroupBox、OptionButton。
+- `git diff --check` 作为文档和代码改动的收尾检查。
+
+## 10. 维护不变量
+
+- Design Token 不读取 DPI / scale。
+- `LineWidth = 1` 不表示固定 1 个物理像素，而表示 1 DIP 设计线宽。
+- 普通 Button 使用 Avalonia `Border`，不做额外 DPI 特判。
+- 自绘普通边框必须对齐 Avalonia `Border.LayoutThickness`。
+- 圆角绘制继续使用 `RoundRectGeometryBuilder`，不新增平行算法。
+- 普通边框与 hairline 必须语义分离。
+- scale 变化必须使自绘边框缓存失效。
+- 新增自绘边框控件时，必须在实现文档或代码结构中说明其边框语义。
