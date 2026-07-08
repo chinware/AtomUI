@@ -38,13 +38,13 @@
                         BorderThickness="{Binding RightAddOnBorderThickness, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"
                         CornerRadius="{Binding RightAddOnCornerRadius, RelativeSource={RelativeSource TemplatedParent}, Priority=LocalValue}"/>
 
-                    <Border Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
-                            BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
-                            CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            Background="{TemplateBinding Background}"
-                            BoxShadow="{TemplateBinding BoxShadow}"
-                            BackgroundSizing="OuterBorderEdge">
+                    <atom:AddOnDecoratedBoxContentFrame Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
+                                                        BorderThickness="{TemplateBinding InnerBoxBorderThickness}"
+                                                        CornerRadius="{TemplateBinding InnerBoxCornerRadius}"
+                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                        Background="{TemplateBinding Background}"
+                                                        BoxShadow="{TemplateBinding BoxShadow}"
+                                                        BackgroundSizing="OuterBorderEdge">
                         <DockPanel Name="ContentLayout" LastChildFill="True">
                             <ContentPresenter
                                 Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentLeftAddOnPart}"
@@ -73,7 +73,7 @@
                                 Content="{TemplateBinding Content}"
                                 ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </DockPanel>
-                    </Border>
+                    </atom:AddOnDecoratedBoxContentFrame>
                 </atom:SearchEditPanel>
             </ControlTemplate>
         </Setter>

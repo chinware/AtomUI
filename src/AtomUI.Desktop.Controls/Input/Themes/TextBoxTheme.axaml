@@ -6,7 +6,7 @@
               TargetType="atom:TextBox">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:TextBox">
-            <Border
+            <atom:PixelAlignedBorder
                 Name="InnerBoxDecorator"
                 Padding="{TemplateBinding Padding}"
                 BorderThickness="{TemplateBinding BorderThickness}"
@@ -103,7 +103,7 @@
                         </Panel>
                     </atom:ScrollViewer>
                 </DockPanel>
-            </Border>
+            </atom:PixelAlignedBorder>
         </ControlTemplate>
     </Setter>
 

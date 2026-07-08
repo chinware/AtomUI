@@ -32,7 +32,9 @@ public class SearchEditLayoutTests
 
         ShowInWindow(searchEdit, () =>
         {
-            var contentFrame = FindTemplatePart<Border>(searchEdit, "PART_ContentFrame");
+            var contentFrame = FindTemplatePart<global::AtomUI.Desktop.Controls.AddOnDecoratedBoxContentFrame>(
+                searchEdit,
+                "PART_ContentFrame");
             var searchButton = FindTemplatePart<global::AtomUI.Desktop.Controls.Button>(searchEdit, "PART_RightAddOn");
             var buttonFrame  = FindTemplatePart<Control>(searchButton, "Frame");
 
@@ -62,7 +64,9 @@ public class SearchEditLayoutTests
 
             ShowInWindow(searchEdit, () =>
             {
-                var contentFrame = FindTemplatePart<Border>(searchEdit, "PART_ContentFrame");
+                var contentFrame = FindTemplatePart<global::AtomUI.Desktop.Controls.AddOnDecoratedBoxContentFrame>(
+                    searchEdit,
+                    "PART_ContentFrame");
                 var searchButton = FindTemplatePart<global::AtomUI.Desktop.Controls.Button>(searchEdit, "PART_RightAddOn");
                 var buttonFrame  = FindTemplatePart<Control>(searchButton, "Frame");
 
@@ -71,6 +75,25 @@ public class SearchEditLayoutTests
                 buttonFrame.Bounds.Height.ShouldBe(contentFrame.Bounds.Height, 0.5);
             });
         }
+    }
+
+    [Fact]
+    public void Content_Frame_Uses_AddOnDecoratedBox_Rendering_Frame()
+    {
+        var searchEdit = new AtomUISearchEdit
+        {
+            Width            = 360,
+            SearchButtonText = "Search"
+        };
+
+        ShowInWindow(searchEdit, () =>
+        {
+            var contentFrame = FindTemplatePart<global::AtomUI.Desktop.Controls.AddOnDecoratedBoxContentFrame>(
+                searchEdit,
+                "PART_ContentFrame");
+
+            contentFrame.UseLayoutRounding.ShouldBeTrue();
+        });
     }
 
     private static T FindTemplatePart<T>(Control control, string name)

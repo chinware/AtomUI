@@ -372,7 +372,7 @@ public abstract class InfoPickerInput : TemplatedControl,
     private protected Popup? PickerPopup;
     protected bool CurrentValidSelected;
     protected TextBox? InfoInputBox;
-    protected Border? PickerInnerBox;
+    protected Control? PickerInnerBox;
 
     private protected bool IsChoosing;
     private AddOnDecoratedBox? _addOnDecoratedBox;

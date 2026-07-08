@@ -149,7 +149,8 @@ internal class BorderBeamPresenter : Control
             MaxVisibleStopPercentProperty,
             DefaultStartColorProperty,
             DefaultEndColorProperty,
-            ProgressProperty);
+            ProgressProperty,
+            UseLayoutRoundingProperty);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -197,7 +198,7 @@ internal class BorderBeamPresenter : Control
             return;
         }
 
-        var borderThickness = BorderBeamGeometry.BorderThickness;
+        var borderThickness = BorderUtils.BuildLayoutRoundedThickness(this, BorderBeamGeometry.BorderThickness);
         var renderBounds    = GetRenderBounds(borderThickness);
         var borderGeometry  = CreateBorderGeometry(renderBounds, borderThickness, BorderBeamGeometry.CornerRadius);
         if (borderGeometry is null)
@@ -299,7 +300,9 @@ internal class BorderBeamPresenter : Control
     private Rect GetRenderBounds(Thickness borderThickness)
     {
         var renderBounds = new Rect(Bounds.Size);
-        var outset       = Outset ?? borderThickness;
+        var outset = Outset.HasValue
+            ? BorderUtils.BuildLayoutRoundedThickness(this, Outset.Value)
+            : borderThickness;
         return renderBounds.Inflate(outset);
     }
 

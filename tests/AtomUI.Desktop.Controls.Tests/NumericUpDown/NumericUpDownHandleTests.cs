@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme.Styling;
@@ -6,6 +7,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Headless;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -353,7 +355,7 @@ public class NumericUpDownHandleTests
                                               .OfType<IconButton>()
                                               .Single(item => item.Name == "PART_IncreaseButton");
             var contentFrame = numericUpDown.GetVisualDescendants()
-                                            .OfType<Border>()
+                                            .OfType<global::AtomUI.Desktop.Controls.AddOnDecoratedBoxContentFrame>()
                                             .Single(item => item.Name == "PART_ContentFrame");
             var iconPresenter = increaseButton.GetVisualDescendants()
                                               .OfType<IconPresenter>()
@@ -505,6 +507,35 @@ public class NumericUpDownHandleTests
         });
     }
 
+    [Fact]
+    public void Floating_Handle_Render_Uses_Layout_Rounded_BorderThickness()
+    {
+        var numericUpDown = new AtomUINumericUpDown
+        {
+            Width           = 160,
+            Value           = 3,
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(numericUpDown, window =>
+        {
+            window.SetRenderScaling(1.5);
+            Dispatcher.UIThread.RunJobs();
+
+            var spinnerHandle = numericUpDown.GetVisualDescendants()
+                                             .OfType<TemplatedControl>()
+                                             .Single(item => item.GetType().Name == "ButtonSpinnerHandle");
+            var drawingGroup = RenderToDrawingGroup(spinnerHandle);
+            var penThicknesses = EnumerateGeometryDrawings(drawingGroup)
+                .Select(drawing => drawing.Pen?.Thickness)
+                .Where(thickness => thickness is not null)
+                .Select(thickness => thickness!.Value)
+                .ToArray();
+
+            penThicknesses.ShouldContain(thickness => Math.Abs(thickness - 4d / 3d) < 0.0001);
+        });
+    }
+
     private static T GetThemeResource<T>(object key)
     {
         var application = Application.Current;
@@ -528,6 +559,11 @@ public class NumericUpDownHandleTests
 
     private static void ShowInWindow(Control content, Action assertion)
     {
+        ShowInWindow(content, _ => assertion());
+    }
+
+    private static void ShowInWindow(Control content, Action<AvaloniaWindow> assertion)
+    {
         var window = new AvaloniaWindow
         {
             Width   = 240,
@@ -539,11 +575,37 @@ public class NumericUpDownHandleTests
         {
             window.Show();
             Dispatcher.UIThread.RunJobs();
-            assertion();
+            assertion(window);
         }
         finally
         {
             window.Close();
+        }
+    }
+
+    private static DrawingGroup RenderToDrawingGroup(Control control)
+    {
+        var drawingGroup = new DrawingGroup();
+        using (var context = drawingGroup.Open())
+        {
+            control.Render(context);
+        }
+
+        return drawingGroup;
+    }
+
+    private static IEnumerable<GeometryDrawing> EnumerateGeometryDrawings(Drawing drawing)
+    {
+        if (drawing is GeometryDrawing geometryDrawing)
+        {
+            yield return geometryDrawing;
+        }
+        else if (drawing is DrawingGroup drawingGroup)
+        {
+            foreach (var child in drawingGroup.Children.SelectMany(EnumerateGeometryDrawings))
+            {
+                yield return child;
+            }
         }
     }
 }
