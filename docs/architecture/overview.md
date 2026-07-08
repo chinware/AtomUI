@@ -71,5 +71,6 @@ AtomUI 应用通常分两步接入：
 - 本地化：控件包声明 `LanguageProvider`，源生成器生成 `LanguageProviderPool`，注册时统一交给 `ThemeManager`。
 - 平台适配：`RuntimePlatform.Features.SupportsNativeWindow` 决定桌面/浏览器主题 Provider 和部分 Token 注册。
 - 控件资源：每个控件通常由 C# 控件类、Token 类、AXAML 主题、主题聚合 Provider 和可选本地化 Provider 构成。
+- 边框渲染：控件边框必须遵守 [AtomUI 边框渲染架构](border-rendering.md)，保持 token 设计语义、Avalonia layout rounding 和自绘圆角算法一致。
 - 视觉层与覆盖层：跨普通视觉树绘制时必须遵守 [AtomUI 视觉层规范](visual-layer-guidelines.md)，按局部装饰、作用域覆盖、窗口级反馈、Popup overlay 和窗口模板专用层选择宿主。
 - AOT 兼容：新增绑定、反射、动态数据、ReactiveUI、source generator 和 NativeAOT 发布相关代码前，应遵守 [AOT 编程规范](../engineering/aot-programming-guidelines.md)。

@@ -12,6 +12,7 @@
         <ResourceInclude Source="SearchEditTheme.axaml" />
         <ResourceInclude Source="TextAreaTheme.axaml" />
         <ResourceInclude Source="ResizeHandleTheme.axaml" />
+        <ResourceInclude Source="../../OtpLineEdit/Themes/OtpLineEditThemes.axaml" />
     </ResourceDictionary.MergedDictionaries>
     <themes:TextBoxTheme x:Key="{x:Type atom:TextBox}" TargetType="atom:TextBox"/>
     <themes:SearchButtonTheme x:Key="{x:Type atom:SearchButton}" TargetType="atom:SearchButton"/>

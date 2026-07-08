@@ -45,8 +45,8 @@ public class LineEditShowCasePageTests
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:LineEditShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(17);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(17);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(20);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(20);
         source.ShouldContain("LineEditShowCaseLangResource BasicUsageTitle");
         source.ShouldContain("LineEditShowCaseLangResource InputSizesTitle");
         source.ShouldContain("LineEditShowCaseLangResource P2PlaceholderTextCustom");
@@ -59,6 +59,15 @@ public class LineEditShowCasePageTests
         source.ShouldContain("LineEditShowCaseLangResource SearchEditSizeTypeDescription");
         source.ShouldContain("Name=\"CustomSizeTypeSearchEdit\"");
         source.ShouldContain("LineEditShowCaseLangResource TextAreaTitle");
+        source.ShouldContain("LineEditShowCaseLangResource OtpLineEditTwoWayBindingTitle");
+        source.ShouldContain("LineEditShowCaseLangResource OtpLineEditFormTitle");
+        source.ShouldContain("LineEditShowCaseLangResource OtpLineEditAntDesignTitle");
+        source.ShouldNotContain("SourceKey=\"line-edit-otp-basic\"");
+        source.ShouldContain("SourceKey=\"line-edit-otp-two-way\"");
+        source.ShouldContain("SourceKey=\"line-edit-otp-form\"");
+        source.ShouldContain("SourceKey=\"line-edit-otp-ant-design\"");
+        CountOccurrences(source, "BadgeText=\"v6.0.8\"").ShouldBe(3);
+        CountOccurrences(source, "BadgeText=\"5.16.0\"").ShouldBe(0);
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
@@ -145,9 +154,79 @@ public class LineEditShowCasePageTests
             source.ShouldContain("SearchEditSizeTypeTitle");
             source.ShouldContain("SearchEditSizeTypeDescription");
             source.ShouldContain("P2PlaceholderTextCustom");
+            source.ShouldNotContain("OtpLineEditBasicTitle");
+            source.ShouldContain("OtpLineEditTwoWayBindingTitle");
+            source.ShouldContain("OtpLineEditFormTitle");
+            source.ShouldContain("OtpLineEditAntDesignTitle");
+            source.ShouldContain("OtpLineEditAntDesignDescription");
+            source.ShouldContain("OtpLineEditFormValidationMessage");
             source.ShouldContain("TokenNameInputFontSize");
             source.ShouldContain("TokenNameRightAddOnPadding");
         }
+    }
+
+    [Fact]
+    public void LineEdit_ShowCase_Embeds_OtpLineEdit_Without_Standalone_Page()
+    {
+        var source           = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
+        var moduleSource     = ReadRepoFile("controlgallery/AtomUIGallery/AtomUIGalleryModule.cs");
+        var otpTwoWayDemo    = ExtractShowCaseItem(source, "LineEditShowCaseLangResource OtpLineEditTwoWayBindingTitle");
+        var otpFormDemo      = ExtractShowCaseItem(source, "LineEditShowCaseLangResource OtpLineEditFormTitle");
+        var standalonePage      = GetRepoPath("controlgallery/AtomUIGallery/ShowCases/DataEntry/OtpLineEdit/Views/OtpLineEditShowCase.axaml");
+        var standaloneViewModel = GetRepoPath("controlgallery/AtomUIGallery/ShowCases/DataEntry/OtpLineEdit/ViewModels/OtpLineEditViewModel.cs");
+
+        File.Exists(standalonePage).ShouldBeFalse("OtpLineEdit should be demonstrated inside LineEdit instead of owning a standalone Gallery page.");
+        File.Exists(standaloneViewModel).ShouldBeFalse("OtpLineEdit should not own a standalone Gallery ViewModel.");
+        moduleSource.ShouldNotContain("using AtomUIGallery.ShowCases.OtpLineEdit;");
+        moduleSource.ShouldNotContain("OtpLineEditViewModel.ID");
+        moduleSource.ShouldNotContain("DataEntry_OtpLineEdit");
+
+        otpTwoWayDemo.ShouldContain("Text=\"{Binding OtpLineEditBoundValue, Mode=TwoWay}\"");
+        otpTwoWayDemo.ShouldContain("Command=\"{Binding SetOtpLineEditBoundValueCommand}\"");
+        otpTwoWayDemo.ShouldContain("Command=\"{Binding ClearOtpLineEditBoundValueCommand}\"");
+        otpTwoWayDemo.ShouldContain("Text=\"{Binding OtpLineEditBoundValueSummary}\"");
+        otpTwoWayDemo.ShouldContain("BadgeText=\"v6.0.8\"");
+        otpTwoWayDemo.ShouldNotContain("IsAllowClear=\"True\"");
+
+        otpFormDemo.ShouldContain("<atom:FormItem.Validators>");
+        otpFormDemo.ShouldContain("<atom:FormValidatorProvider>");
+        otpFormDemo.ShouldContain("<atom:FormStringNotEmptyValidator Message=\"{gallery:LineEditShowCaseLangResource OtpLineEditFormValidationMessage}\" />");
+        otpFormDemo.ShouldContain("</atom:FormValidatorProvider>");
+        otpFormDemo.ShouldContain("BadgeText=\"v6.0.8\"");
+        otpFormDemo.ShouldNotContain("IsAllowClear=\"True\"");
+    }
+
+    [Fact]
+    public void LineEdit_ShowCase_Includes_AntDesign_Otp_Demo()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/LineEdit/Views/LineEditShowCase.axaml");
+        var demo   = ExtractShowCaseItem(source, "LineEditShowCaseLangResource OtpLineEditAntDesignTitle");
+
+        demo.ShouldContain("SourceKey=\"line-edit-otp-ant-design\"");
+        demo.ShouldContain("BadgeText=\"v6.0.8\"");
+        demo.ShouldNotContain("Span=\"Full\"");
+        CountOccurrences(demo, "<atom:OtpLineEdit ").ShouldBe(7);
+        demo.ShouldContain("With formatter (Upcase)");
+        demo.ShouldContain("With Disabled");
+        demo.ShouldContain("With Length (8)");
+        demo.ShouldContain("With variant");
+        demo.ShouldContain("With custom display character");
+        demo.ShouldContain("With custom separator");
+        demo.ShouldContain("With custom function separator");
+        demo.ShouldContain("Formatter=\"{Binding OtpLineEditUppercaseFormatter}\"");
+        demo.ShouldContain("IsEnabled=\"False\"");
+        demo.ShouldContain("Length=\"8\"");
+        demo.ShouldContain("StyleVariant=\"Filled\"");
+        demo.ShouldNotContain("StyleVariant=\"Outlined\"");
+        demo.ShouldNotContain("StyleVariant=\"Borderless\"");
+        demo.ShouldNotContain("StyleVariant=\"Underlined\"");
+        demo.ShouldContain("IsMasked=\"True\"");
+        demo.ShouldContain("Separator=\"/\"");
+        demo.ShouldContain("Separator=\"—\"");
+        demo.ShouldContain("SeparatorInterval=\"1\"");
+        demo.ShouldContain("SeparatorTemplate");
+        demo.ShouldContain("OtpLineEditSeparatorBrushConverter");
+        demo.ShouldContain("CellIndex");
     }
 
     [Fact]
@@ -268,11 +347,19 @@ public class LineEditShowCasePageTests
 
     private static string GetRepoFile(string relativePath)
     {
+        var path = GetRepoPath(relativePath);
+        return File.Exists(path)
+            ? path
+            : Path.Combine(AppContext.BaseDirectory, relativePath);
+    }
+
+    private static string GetRepoPath(string relativePath)
+    {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
         while (directory is not null)
         {
             var candidate = Path.Combine(directory.FullName, relativePath);
-            if (File.Exists(candidate))
+            if (File.Exists(candidate) || Directory.Exists(candidate))
             {
                 return candidate;
             }

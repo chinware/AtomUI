@@ -1,0 +1,250 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:OtpLineEditCell}" TargetType="atom:OtpLineEditCell">
+        <Setter Property="Width" Value="{atom:OtpLineEditTokenResource CellWidth}" />
+        <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeight}" />
+        <Setter Property="FontSize" Value="{atom:LineEditTokenResource InputFontSize}" />
+        <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+        <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
+        <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Frame"
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                    <atom:OtpTextBox
+                        Name="PART_TextBox"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        TextAlignment="Center"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Padding="0"
+                        Focusable="False"
+                        IsReadOnly="True"
+                        IsTabStop="False"
+                        Foreground="{TemplateBinding Foreground}"
+                        FontSize="{TemplateBinding FontSize}"
+                        CaretBrush="{atom:SharedTokenResource ColorText}"
+                        SelectionBrush="{atom:SharedTokenResource SelectionBackground}"
+                        SelectionForegroundBrush="{atom:SharedTokenResource SelectionForeground}"
+                        SourcePlaceholderText="{TemplateBinding PlaceholderText}"
+                        PlaceholderForeground="{atom:SharedTokenResource ColorTextPlaceholder}"
+                        IsCellActive="{TemplateBinding IsActive}"
+                        Text="{TemplateBinding DisplayText}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^[IsMotionEnabled=True]">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:SolidColorBrushTransition Property="BorderBrush" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                    <atom:SolidColorBrushTransition Property="Background" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="^[IsMotionEnabled=True] /template/ Border#PART_Frame">
+            <Setter Property="Transitions">
+                <Transitions>
+                    <atom:BoxShadowsTransition Property="BoxShadow" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
+                </Transitions>
+            </Setter>
+        </Style>
+
+        <Style Selector="^ /template/ atom|OtpTextBox#PART_TextBox">
+            <Setter Property="Cursor" Value="Arrow" />
+        </Style>
+
+        <Style Selector="^:input-target /template/ atom|OtpTextBox#PART_TextBox">
+            <Setter Property="Cursor" Value="Ibeam" />
+        </Style>
+
+        <Style Selector="^:disabled /template/ atom|OtpTextBox#PART_TextBox">
+            <Setter Property="Cursor" Value="Arrow" />
+        </Style>
+
+        <Style Selector="^[SizeType=Large]">
+            <Setter Property="Width" Value="{atom:OtpLineEditTokenResource CellWidthLG}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightLG}" />
+            <Setter Property="FontSize" Value="{atom:LineEditTokenResource InputFontSizeLG}" />
+        </Style>
+
+        <Style Selector="^[SizeType=Small]">
+            <Setter Property="Width" Value="{atom:OtpLineEditTokenResource CellWidthSM}" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource ControlHeightSM}" />
+            <Setter Property="FontSize" Value="{atom:LineEditTokenResource InputFontSizeSM}" />
+        </Style>
+
+        <!-- Variant surface -->
+        <Style Selector="^[EffectiveStatus=Default][StyleVariant=Filled]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillTertiary}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <Style Selector="^[StyleVariant=Borderless]">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <Style Selector="^[StyleVariant=Underlined]">
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="CornerRadius" Value="0" />
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        </Style>
+
+        <!-- Variant interactive surface -->
+        <Style Selector="^:pointerover[StyleVariant=Outlined],
+                         ^:pointerover[StyleVariant=Underlined]">
+            <Setter Property="BorderBrush" Value="{atom:AddOnDecoratedBoxTokenResource HoverBorderColor}" />
+        </Style>
+
+        <Style Selector="^:pointerover[EffectiveStatus=Default][StyleVariant=Filled]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillSecondary}" />
+        </Style>
+
+        <Style Selector="^:pressed[StyleVariant=Outlined],
+                         ^:pressed[StyleVariant=Filled],
+                         ^:pressed[StyleVariant=Underlined],
+                         ^[IsActive=True][StyleVariant=Outlined],
+                         ^[IsActive=True][StyleVariant=Filled],
+                         ^[IsActive=True][StyleVariant=Underlined]">
+            <Setter Property="BorderBrush" Value="{atom:AddOnDecoratedBoxTokenResource ActiveBorderColor}" />
+        </Style>
+
+        <Style Selector="^[IsActive=True][EffectiveStatus=Default][StyleVariant=Filled]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+        </Style>
+
+        <Style Selector="^:pressed[StyleVariant=Outlined] /template/ Border#PART_Frame,
+                         ^:pressed[StyleVariant=Filled] /template/ Border#PART_Frame,
+                         ^:pressed[StyleVariant=Underlined] /template/ Border#PART_Frame,
+                         ^[IsActive=True][StyleVariant=Outlined] /template/ Border#PART_Frame,
+                         ^[IsActive=True][StyleVariant=Filled] /template/ Border#PART_Frame,
+                         ^[IsActive=True][StyleVariant=Underlined] /template/ Border#PART_Frame">
+            <Setter Property="BoxShadow" Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
+        </Style>
+
+        <!-- Error status -->
+        <Style Selector="^[EffectiveStatus=Error][StyleVariant=Outlined],
+                         ^[EffectiveStatus=Error][StyleVariant=Underlined]">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorError}" />
+        </Style>
+
+        <Style Selector="^[EffectiveStatus=Error][StyleVariant=Filled]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorErrorBg}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <Style Selector="^[EffectiveStatus=Error][StyleVariant=Filled],
+                         ^[EffectiveStatus=Error][StyleVariant=Borderless]">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorErrorText}" />
+        </Style>
+
+        <Style Selector="^:pointerover[EffectiveStatus=Error][StyleVariant=Outlined],
+                         ^:pointerover[EffectiveStatus=Error][StyleVariant=Underlined]">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorErrorBorderHover}" />
+        </Style>
+
+        <Style Selector="^:pointerover[EffectiveStatus=Error][StyleVariant=Filled]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorErrorBgHover}" />
+        </Style>
+
+        <Style Selector="^:pressed[EffectiveStatus=Error][StyleVariant=Outlined],
+                         ^:pressed[EffectiveStatus=Error][StyleVariant=Underlined],
+                         ^:pressed[EffectiveStatus=Error][StyleVariant=Filled],
+                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Outlined],
+                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Filled],
+                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Underlined]">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorError}" />
+        </Style>
+
+        <Style Selector="^[IsActive=True][EffectiveStatus=Error][StyleVariant=Filled]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+        </Style>
+
+        <Style Selector="^:pressed[EffectiveStatus=Error][StyleVariant=Outlined] /template/ Border#PART_Frame,
+                         ^:pressed[EffectiveStatus=Error][StyleVariant=Filled] /template/ Border#PART_Frame,
+                         ^:pressed[EffectiveStatus=Error][StyleVariant=Underlined] /template/ Border#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Outlined] /template/ Border#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Filled] /template/ Border#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Underlined] /template/ Border#PART_Frame">
+            <Setter Property="BoxShadow" Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
+        </Style>
+
+        <!-- Warning status -->
+        <Style Selector="^[EffectiveStatus=Warning][StyleVariant=Outlined],
+                         ^[EffectiveStatus=Warning][StyleVariant=Underlined]">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorWarning}" />
+        </Style>
+
+        <Style Selector="^[EffectiveStatus=Warning][StyleVariant=Filled]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorWarningBg}" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+        <Style Selector="^[EffectiveStatus=Warning][StyleVariant=Filled],
+                         ^[EffectiveStatus=Warning][StyleVariant=Borderless]">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorWarningText}" />
+        </Style>
+
+        <Style Selector="^:pointerover[EffectiveStatus=Warning][StyleVariant=Outlined],
+                         ^:pointerover[EffectiveStatus=Warning][StyleVariant=Underlined]">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorWarningBorderHover}" />
+        </Style>
+
+        <Style Selector="^:pointerover[EffectiveStatus=Warning][StyleVariant=Filled]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorWarningBgHover}" />
+        </Style>
+
+        <Style Selector="^:pressed[EffectiveStatus=Warning][StyleVariant=Outlined],
+                         ^:pressed[EffectiveStatus=Warning][StyleVariant=Underlined],
+                         ^:pressed[EffectiveStatus=Warning][StyleVariant=Filled],
+                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Outlined],
+                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Filled],
+                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Underlined]">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorWarning}" />
+        </Style>
+
+        <Style Selector="^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Filled]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+        </Style>
+
+        <Style Selector="^:pressed[EffectiveStatus=Warning][StyleVariant=Outlined] /template/ Border#PART_Frame,
+                         ^:pressed[EffectiveStatus=Warning][StyleVariant=Filled] /template/ Border#PART_Frame,
+                         ^:pressed[EffectiveStatus=Warning][StyleVariant=Underlined] /template/ Border#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Outlined] /template/ Border#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Filled] /template/ Border#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Underlined] /template/ Border#PART_Frame">
+            <Setter Property="BoxShadow" Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
+        </Style>
+
+        <!-- Disabled status -->
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
+        </Style>
+
+        <Style Selector="^:disabled[StyleVariant=Borderless]">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+
+    </ControlTheme>
+</ResourceDictionary>

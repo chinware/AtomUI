@@ -1,4 +1,5 @@
 using AtomUI.Controls.Utils;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -104,17 +105,31 @@ public class DashedBorder : Decorator
     #endregion
     
     private readonly BorderRenderHelper _borderRenderHelper = new BorderRenderHelper();
-        
+    private Thickness? _layoutThickness;
+    private double _layoutScale;
+
+    private Thickness LayoutThickness
+    {
+        get
+        {
+            VerifyLayoutScale();
+            _layoutThickness ??= BorderUtils.BuildLayoutRoundedThickness(this, BorderThickness);
+            return _layoutThickness.Value;
+        }
+    }
+
     static DashedBorder()
     {
         AffectsRender<DashedBorder>(
             BackgroundProperty,
             BackgroundSizingProperty,
             BorderBrushProperty,
+            BorderThicknessProperty,
             CornerRadiusProperty,
             BoxShadowProperty,
             StrokeDashArrayProperty,
-            StrokeDaskOffsetProperty);
+            StrokeDaskOffsetProperty,
+            UseLayoutRoundingProperty);
         AffectsMeasure<DashedBorder>(BorderThicknessProperty);
     }
 
@@ -123,7 +138,7 @@ public class DashedBorder : Decorator
         _borderRenderHelper.Render(
             context,
             Bounds.Size,
-            BorderThickness,
+            LayoutThickness,
             CornerRadius,
             BackgroundSizing,
             Background,
@@ -132,14 +147,36 @@ public class DashedBorder : Decorator
             StrokeDaskOffset,
             BoxShadow);
     }
-    
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == BorderThicknessProperty ||
+            change.Property == UseLayoutRoundingProperty)
+        {
+            _layoutThickness = null;
+        }
+    }
+
     protected override Size MeasureOverride(Size availableSize)
     {
         return LayoutHelper.MeasureChild(Child, availableSize, Padding, BorderThickness);
     }
-    
+
     protected override Size ArrangeOverride(Size finalSize)
     {
         return LayoutHelper.ArrangeChild(Child, finalSize, Padding, BorderThickness);
+    }
+
+    private void VerifyLayoutScale()
+    {
+        var currentScale = LayoutHelper.GetLayoutScale(this);
+        if (MathUtils.AreClose(currentScale, _layoutScale))
+        {
+            return;
+        }
+
+        _layoutScale     = currentScale;
+        _layoutThickness = null;
     }
 }

@@ -78,7 +78,7 @@ Windows, macOS and Linux<br>
 Thanks to Tongming Lake Center for their incubation support of AtomUI OSS
 
 <div style="margin-top: 50px">
-  <img src="./resources/images/readme/TLAIC.png" width="400"/>
+  <img src="./resources/images/readme/TLAIC.svg" width="400"/>
 </div>
 
 #### Community

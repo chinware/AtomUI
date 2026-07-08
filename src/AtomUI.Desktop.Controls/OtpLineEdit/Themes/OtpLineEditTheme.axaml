@@ -1,0 +1,68 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
+    x:ClassModifier="internal">
+    <ControlTheme x:Key="{x:Type atom:OtpLineEdit}" TargetType="atom:OtpLineEdit">
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid Name="PART_RootPanel">
+                    <StackPanel Orientation="Horizontal"
+                                VerticalAlignment="Center"
+                                Spacing="{atom:SharedTokenResource UniformlyPaddingXXS}">
+                        <ItemsControl
+                            Name="PART_CellsHost"
+                            ItemsSource="{TemplateBinding CellItems}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"
+                                                Spacing="{atom:OtpLineEditTokenResource CellGap}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="atom:OtpLineEditCellInfo">
+                                    <StackPanel Orientation="Horizontal"
+                                                VerticalAlignment="Center">
+                                        <atom:OtpLineEditCell
+                                            DisplayText="{Binding DisplayText}"
+                                            PlaceholderText="{Binding PlaceholderText}"
+                                            IsActive="{Binding IsActive}"
+                                            IsInputTarget="{Binding IsInputTarget}"
+                                            IsMotionEnabled="{Binding IsMotionEnabled}"
+                                            EffectiveStatus="{Binding EffectiveStatus}"
+                                            SizeType="{Binding SizeType}"
+                                            StyleVariant="{Binding StyleVariant}" />
+                                        <ContentControl
+                                            Name="PART_SeparatorPresenter"
+                                            Margin="4,0"
+                                            VerticalAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Content="{Binding Separator}"
+                                            ContentTemplate="{Binding SeparatorTemplate}"
+                                            IsVisible="{Binding IsSeparatorVisible}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <atom:InputClearIconButton
+                            Name="PART_ClearButton"
+                            Icon="{TemplateBinding ClearIcon}"
+                            IsVisible="{TemplateBinding IsEffectiveShowClearButton}"
+                            IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
+                        <ContentPresenter
+                            Name="PART_FormFeedBack"
+                            VerticalAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Content="{TemplateBinding FormFeedback}"
+                            IsVisible="{TemplateBinding IsFormFeedbackVisible}" />
+                    </StackPanel>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="IsMotionEnabled" Value="{atom:SharedTokenResource EnableMotion}" />
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+    </ControlTheme>
+</ResourceDictionary>
