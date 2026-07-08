@@ -54,7 +54,11 @@ public class SpaceShowCasePageTests
         source.ShouldContain("SpaceShowCaseLangResource AlignTitle");
         source.ShouldContain("SpaceShowCaseLangResource CompactFormTitle");
         source.ShouldContain("SpaceShowCaseLangResource CompactButtonTitle");
+        source.ShouldContain("Name=\"SizeDemoSpace\"");
+        source.ShouldContain("ValueChanged=\"HandleCustomSpacingValueChanged\"");
         source.ShouldNotContain("{Binding #CustomSizeSlider.Value");
+        source.ShouldNotContain("ItemSpacing=\"{Binding CustomSpacingValue, Priority=Template}\"");
+        source.ShouldNotContain("LineSpacing=\"{Binding CustomSpacingValue, Priority=Template}\"");
         source.ShouldNotContain("<atom:TabControl");
         source.ShouldNotContain("<atom:TabItem");
         source.ShouldNotContain(">Gallery<");
@@ -83,6 +87,9 @@ public class SpaceShowCasePageTests
         codeBehindSource.ShouldNotContain("new SpaceApiDataGrid()");
         codeBehindSource.ShouldNotContain("new SpaceDesignTokenDataGrid()");
         codeBehindSource.ShouldContain("HandleSizeTypeChanged");
+        codeBehindSource.ShouldContain("HandleCustomSpacingValueChanged");
+        codeBehindSource.ShouldContain("ClearValue(AtomUI.Desktop.Controls.Space.ItemSpacingProperty)");
+        codeBehindSource.ShouldContain("ClearValue(AtomUI.Desktop.Controls.Space.LineSpacingProperty)");
         codeBehindSource.ShouldContain("TryFindTemplateControl<AtomUISlider>(radioButton, \"CustomSizeSlider\", out var customSizeSlider)");
         codeBehindSource.ShouldNotContain("FindRequired<AtomUISlider>");
         codeBehindSource.ShouldNotContain("new SpaceBasicShowCase()");
