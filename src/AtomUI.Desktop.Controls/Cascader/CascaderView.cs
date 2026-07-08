@@ -310,7 +310,7 @@ public partial class CascaderView : TemplatedControl,
     private StackPanel? _itemsPanel;
     private int _ignoreExpandAndCollapseLevel;
     private bool _defaultExpandPathApplied;
-    private bool _ignoreSelectedPropertyChanged;
+    private bool _isSynchronizingSelectedOptionToView;
     private CascaderViewLevelList? _rootLevelList;
     
     static CascaderView()
@@ -531,11 +531,6 @@ public partial class CascaderView : TemplatedControl,
         }
         else if (change.Property == SelectedOptionProperty)
         {
-            if (_ignoreSelectedPropertyChanged)
-            {
-                _ignoreSelectedPropertyChanged = false;
-                return;
-            }
             if (SelectedOption != null)
             {
                 if (IsLoaded)
@@ -561,14 +556,27 @@ public partial class CascaderView : TemplatedControl,
     
         Dispatcher.InvokeAsync(async () =>
         {
-            var expandedItem = await ExpandItemAsync(option);
-            if (expandedItem != null)
+            await ExpandItemAsync(option);
+            var targetLevelList = GetLevelListForOption(option);
+            if (targetLevelList != null)
             {
-                var targetLevelList = ItemsControl.ItemsControlFromItemContainer(expandedItem) as CascaderViewLevelList;
-                Debug.Assert(targetLevelList != null);
-                targetLevelList.SelectedItem = expandedItem;
+                try
+                {
+                    _isSynchronizingSelectedOptionToView = true;
+                    targetLevelList.SelectedItem          = option;
+                }
+                finally
+                {
+                    _isSynchronizingSelectedOptionToView = false;
+                }
             }
         });
+    }
+
+    private void SelectOptionFromInteraction(ICascaderOption option)
+    {
+        SetCurrentValue(SelectedOptionProperty, option);
+        OptionSelected?.Invoke(this, new CascaderOptionSelectedEventArgs(option));
     }
     
     private void HandleCascaderItemClicked(RoutedEventArgs args)
@@ -598,12 +606,14 @@ public partial class CascaderView : TemplatedControl,
     {
         if (args.Source is CascaderViewItem item)
         {
+            if (_isSynchronizingSelectedOptionToView)
+            {
+                return;
+            }
             if (item.IsSelected)
             {
                 var option = item.AttachedOption!;
-                _ignoreSelectedPropertyChanged = true;
-                SetCurrentValue(SelectedOptionProperty, option);
-                OptionSelected?.Invoke(this, new CascaderOptionSelectedEventArgs(option));
+                SelectOptionFromInteraction(option);
             }
         }
     }

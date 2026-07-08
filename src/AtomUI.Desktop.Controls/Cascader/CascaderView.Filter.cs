@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.LogicalTree;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -142,19 +141,13 @@ public partial class CascaderView
         {
             paths = itemData.ExpandItems;
         }
-        var popup = this.FindLogicalAncestorOfType<Popup>();
-        if (popup == null)
-        {
-            ClearFilter(); 
-        }
         if (paths?.Count > 0)
         {
             var targetNode = paths[^1];
             if (!IsCheckable)
             {
-                _ignoreSelectedPropertyChanged = true;
-                SelectedOption                 = targetNode;
-                OptionSelected?.Invoke(this, new CascaderOptionSelectedEventArgs(targetNode));
+                ClearFilter();
+                SelectOptionFromInteraction(targetNode);
             }
         }
     }
