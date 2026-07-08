@@ -9,11 +9,11 @@
             <ControlTemplate>
                 <StackPanel Orientation="Horizontal" Name="RootLayout">
                     <atom:IconButton Name="PART_PreviousButton"
-                                     Icon="{antdicons:AntDesignIconProvider ArrowLeftOutlined}"
+                                     Icon="{antdicons:AntDesignIconProvider LeftOutlined}"
                                      IsVisible="{TemplateBinding IsMultiImages}"
                                      IsEnabled="{TemplateBinding IsFirstImage, Converter={x:Static BoolConverters.Not}}"/>
                     <atom:IconButton Name="PART_NextButton"
-                                     Icon="{antdicons:AntDesignIconProvider ArrowRightOutlined}"
+                                     Icon="{antdicons:AntDesignIconProvider RightOutlined}"
                                      IsVisible="{TemplateBinding IsMultiImages}"
                                      IsEnabled="{TemplateBinding IsLastImage, Converter={x:Static BoolConverters.Not}}"/>
                     <atom:IconButton Name="PART_ScaleDownButton"

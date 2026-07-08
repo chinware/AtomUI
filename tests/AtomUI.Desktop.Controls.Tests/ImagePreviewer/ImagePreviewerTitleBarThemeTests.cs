@@ -78,6 +78,19 @@ public class ImagePreviewerTitleBarThemeTests
         document.ToString().ShouldNotContain("IsEffectiveLogoVisible");
     }
 
+    [Fact]
+    public void ImagePreviewer_TitleBar_Toolbar_Uses_Same_Navigation_Icons_As_Side_Nav()
+    {
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewToolbarTheme.axaml"));
+
+        var previousButton = FindTemplatePart(document.Root!, "PART_PreviousButton");
+        var nextButton     = FindTemplatePart(document.Root!, "PART_NextButton");
+
+        previousButton.Attribute("Icon")?.Value.ShouldBe("{antdicons:AntDesignIconProvider LeftOutlined}");
+        nextButton.Attribute("Icon")?.Value.ShouldBe("{antdicons:AntDesignIconProvider RightOutlined}");
+    }
+
     private static XElement FindTemplatePart(XElement root, string partName)
     {
         var part = root.Descendants()

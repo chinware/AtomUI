@@ -113,6 +113,19 @@ internal sealed class ImagePreviewItem : INotifyPropertyChanged, IDisposable
         return true;
     }
 
+    public bool CancelLoading(long version)
+    {
+        if (version != _loadVersion)
+        {
+            return false;
+        }
+
+        LoadedSource = null;
+        Error        = null;
+        State        = ImagePreviewItemState.Pending;
+        return true;
+    }
+
     public void Dispose()
     {
         LoadedSource?.Dispose();

@@ -3265,7 +3265,7 @@ namespace AtomUIGallery.Localization
         ApiEventDialogClosing,
         ApiEventDialogOpened,
         ApiPropertyCoverHeight,
-        ApiPropertyCoverSourceUri,
+        ApiPropertyCoverIndex,
         ApiPropertyCoverWidth,
         ApiPropertyCurrentIndex,
         ApiPropertyErrorContent,
@@ -3278,6 +3278,8 @@ namespace AtomUIGallery.Localization
         ApiPropertyIsShowCoverMask,
         ApiPropertyLoadingContent,
         ApiPropertyLoadingContentTemplate,
+        ApiPropertyMaxConcurrentLoads,
+        ApiPropertyPreloadCount,
         ApiPropertyPreviewTitle,
         ApiPropertyPreviewTitleIcon,
         ApiPropertyPreviewTitleResolver,
@@ -3315,7 +3317,9 @@ namespace AtomUIGallery.Localization
         TokenNamePreviewOperationHoverColor,
         TokenNamePreviewOperationSize,
         TokenScopeComponent,
-        TokenStatusStable
+        TokenStatusStable,
+        TwentyRemoteImagesDescription,
+        TwentyRemoteImagesTitle
     }
 
     public class ImagePreviewerShowCaseLangResourceExtension : LanguageResourceExtension<ImagePreviewerShowCaseLangResourceKind>

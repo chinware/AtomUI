@@ -508,10 +508,6 @@ internal class ImagePreviewerOverlayHost : ContentControl,
         }
         else if (change.Property == ItemsSourceProperty)
         {
-            if (ItemsSource?.Count > 0)
-            {
-                SetCurrentValue(CurrentIndexProperty, 0);
-            }
             SetCurrentValue(IsMultiImagesProperty, ItemsSource?.Count > 1);
             Count = ItemsSource?.Count ?? 0;
             HandleCurrentIndexChanged();
@@ -537,11 +533,12 @@ internal class ImagePreviewerOverlayHost : ContentControl,
 
     private void HandleCurrentIndexChanged()
     {
-        if (ItemsSource?.Count > 0 && CurrentIndex >= 0 && CurrentIndex < ItemsSource.Count)
+        if (ItemsSource is { Count: > 0 } items)
         {
-            SetCurrentItem(ItemsSource[CurrentIndex]);
-            SetCurrentValue(IsFirstImageProperty, CurrentIndex == 0);
-            SetCurrentValue(IsLastImageProperty, CurrentIndex == ItemsSource.Count - 1);
+            var currentIndex = ResolveDisplayCurrentIndex(items.Count);
+            SetCurrentItem(items[currentIndex]);
+            SetCurrentValue(IsFirstImageProperty, currentIndex == 0);
+            SetCurrentValue(IsLastImageProperty, currentIndex == items.Count - 1);
         }
         else if (ItemsSource == null || ItemsSource?.Count == 0)
         {
@@ -549,6 +546,21 @@ internal class ImagePreviewerOverlayHost : ContentControl,
             SetCurrentValue(IsLastImageProperty, false);
             SetCurrentValue(IsFirstImageProperty, false);
         }
+    }
+
+    private int ResolveDisplayCurrentIndex(int count)
+    {
+        if (CurrentIndex < 0)
+        {
+            return 0;
+        }
+
+        if (CurrentIndex >= count)
+        {
+            return count - 1;
+        }
+
+        return CurrentIndex;
     }
 
     private void SetCurrentItem(ImagePreviewItem? item)

@@ -21,6 +21,7 @@ public class ImagePreviewerTitleTests
         Resolve(localPath).ShouldBe("local image.png");
         Resolve(new Uri(localPath).AbsoluteUri).ShouldBe("local image.png");
         Resolve("https://example.com/assets/remote-image.jpg?size=large#preview").ShouldBe("remote-image.jpg");
+        Resolve("https://picsum.photos/id/25/600/400").ShouldBe("25");
         Resolve("avares://AtomUI.Tests/Assets/resource-icon.svg").ShouldBe("resource-icon.svg");
     }
 
@@ -76,6 +77,51 @@ public class ImagePreviewerTitleTests
             dialog.PreviewTitleResolver = new PrefixTitleResolver("custom");
 
             dialog.EffectivePreviewTitle.ShouldBe("custom:source.png:1/1");
+        });
+    }
+
+    [Fact]
+    public void ImagePreviewerDialog_ItemsSource_Change_Preserves_CurrentIndex()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer();
+            var dialog = new ImagePreviewerDialog(new Avalonia.Controls.Window(), previewer)
+            {
+                CurrentIndex = 1,
+                ItemsSource =
+                [
+                    new ImagePreviewItem(ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/first.png")),
+                    new ImagePreviewItem(ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/second.png"))
+                ]
+            };
+
+            dialog.CurrentIndex.ShouldBe(1);
+            dialog.EffectivePreviewTitle.ShouldBe("second.png");
+            dialog.IsFirstImage.ShouldBeFalse();
+            dialog.IsLastImage.ShouldBeTrue();
+        });
+    }
+
+    [Fact]
+    public void ImagePreviewerOverlayHost_ItemsSource_Change_Preserves_CurrentIndex()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var previewer = new global::AtomUI.Desktop.Controls.ImagePreviewer();
+            var host = new ImagePreviewerOverlayHost(new Avalonia.Controls.Window(), previewer)
+            {
+                CurrentIndex = 1,
+                ItemsSource =
+                [
+                    new ImagePreviewItem(ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/first.png")),
+                    new ImagePreviewItem(ImageSourceUri.Parse("avares://AtomUI.Tests/Assets/second.png"))
+                ]
+            };
+
+            host.CurrentIndex.ShouldBe(1);
+            host.IsFirstImage.ShouldBeFalse();
+            host.IsLastImage.ShouldBeTrue();
         });
     }
 

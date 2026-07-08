@@ -6,7 +6,6 @@ using System.Reactive.Linq;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUI.Theme;
-using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -16,7 +15,6 @@ using Avalonia.Data;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Metadata;
-using Avalonia.Threading;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -74,6 +72,24 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             nameof(CurrentIndex),
             0,
             defaultBindingMode: BindingMode.TwoWay);
+
+    public static readonly StyledProperty<int> CoverIndexProperty =
+        AvaloniaProperty.Register<AbstractImagePreviewer, int>(
+            nameof(CoverIndex),
+            0,
+            coerce: CoerceNonNegativeValue);
+
+    public static readonly StyledProperty<int> MaxConcurrentLoadsProperty =
+        AvaloniaProperty.Register<AbstractImagePreviewer, int>(
+            nameof(MaxConcurrentLoads),
+            4,
+            coerce: CoercePositiveValue);
+
+    public static readonly StyledProperty<int> PreloadCountProperty =
+        AvaloniaProperty.Register<AbstractImagePreviewer, int>(
+            nameof(PreloadCount),
+            1,
+            coerce: CoerceNonNegativeValue);
 
     public ImageSourceUri? SourceUri
     {
@@ -167,6 +183,24 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         set => SetValue(CurrentIndexProperty, value);
     }
 
+    public int CoverIndex
+    {
+        get => GetValue(CoverIndexProperty);
+        set => SetValue(CoverIndexProperty, value);
+    }
+
+    public int MaxConcurrentLoads
+    {
+        get => GetValue(MaxConcurrentLoadsProperty);
+        set => SetValue(MaxConcurrentLoadsProperty, value);
+    }
+
+    public int PreloadCount
+    {
+        get => GetValue(PreloadCountProperty);
+        set => SetValue(PreloadCountProperty, value);
+    }
+
     #endregion
 
     #region 预览窗口相关属性设置
@@ -258,8 +292,8 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
     private IDisposable? _modalSubscription;
     private bool _dialogOpening;
     private bool _dialogClosing;
-    private readonly IImageSourceLoader _imageSourceLoader = new DefaultImageSourceLoader();
-    private CancellationTokenSource? _imageLoadCancellation;
+    private readonly IImageSourceLoader _imageSourceLoader;
+    private readonly ImagePreviewLoadScheduler _imageLoadScheduler;
 
     private protected IImageSourceLoader ImageSourceLoader => _imageSourceLoader;
 
@@ -269,8 +303,28 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         IsOpenProperty.Changed.AddClassHandler<AbstractImagePreviewer>((x, e) => x.HandleIsOpenChanged(e));
     }
 
-    public AbstractImagePreviewer()
+    private static int CoercePositiveValue(AvaloniaObject sender, int value)
     {
+        return Math.Max(1, value);
+    }
+
+    private static int CoerceNonNegativeValue(AvaloniaObject sender, int value)
+    {
+        return Math.Max(0, value);
+    }
+
+    public AbstractImagePreviewer()
+        : this(new DefaultImageSourceLoader())
+    {
+    }
+
+    internal AbstractImagePreviewer(IImageSourceLoader imageSourceLoader)
+    {
+        _imageSourceLoader   = imageSourceLoader;
+        _imageLoadScheduler  = new ImagePreviewLoadScheduler(
+            imageSourceLoader,
+            () => MaxConcurrentLoads,
+            HandleItemLoadSettled);
         this.RegisterTokenResourceScope(ImagePreviewerToken.ScopeProvider);
     }
 
@@ -285,6 +339,15 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         else if (change.Property == FallbackSourceUriProperty)
         {
             HandleFallbackSourceChanged((ImageSourceUri?)change.OldValue);
+        }
+        else if (change.Property == CurrentIndexProperty ||
+                 change.Property == PreloadCountProperty ||
+                 change.Property == MaxConcurrentLoadsProperty)
+        {
+            if (IsOpen)
+            {
+                RequestPreviewLoads();
+            }
         }
     }
 
@@ -310,14 +373,13 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
             return;
         }
 
-        var items = new List<ImagePreviewItem>(sourceUris.Count);
-        foreach (var sourceUri in sourceUris)
+        var items = CreateEffectiveItems(sourceUris);
+        if (HasSameItems(EffectiveItems, items))
         {
-            items.Add(new ImagePreviewItem(sourceUri));
+            return;
         }
 
-        SetEffectiveItems(items);
-        BeginLoadingItems(items);
+        SetEffectiveItems(items, items);
     }
 
     private protected void MaterializeFallbackEffectiveSource()
@@ -326,7 +388,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         {
             var item = new ImagePreviewItem(FallbackSourceUri);
             SetEffectiveItems(new[] { item });
-            BeginLoadingItems(new[] { item }, allowFallback: false);
+            RequestItemLoad(item, ImagePreviewLoadPriority.Cover);
         }
         else
         {
@@ -339,7 +401,68 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         SetEffectiveItems(Array.Empty<ImagePreviewItem>());
     }
 
-    private void SetEffectiveItems(IList<ImagePreviewItem> effectiveItems)
+    private List<ImagePreviewItem> CreateEffectiveItems(IReadOnlyList<ImageSourceUri> sourceUris)
+    {
+        var reusableItems = CreateReusableItemMap(EffectiveItems);
+        var items         = new List<ImagePreviewItem>(sourceUris.Count);
+        foreach (var sourceUri in sourceUris)
+        {
+            items.Add(TryTakeReusableItem(reusableItems, sourceUri) ?? new ImagePreviewItem(sourceUri));
+        }
+
+        return items;
+    }
+
+    private static Dictionary<string, Queue<ImagePreviewItem>> CreateReusableItemMap(IList<ImagePreviewItem>? items)
+    {
+        var reusableItems = new Dictionary<string, Queue<ImagePreviewItem>>();
+        if (items is null)
+        {
+            return reusableItems;
+        }
+
+        foreach (var item in items)
+        {
+            if (!reusableItems.TryGetValue(item.SourceUri.CacheKey, out var queue))
+            {
+                queue = new Queue<ImagePreviewItem>();
+                reusableItems.Add(item.SourceUri.CacheKey, queue);
+            }
+
+            queue.Enqueue(item);
+        }
+
+        return reusableItems;
+    }
+
+    private static ImagePreviewItem? TryTakeReusableItem(Dictionary<string, Queue<ImagePreviewItem>> reusableItems,
+                                                        ImageSourceUri sourceUri)
+    {
+        return reusableItems.TryGetValue(sourceUri.CacheKey, out var queue) && queue.Count > 0
+            ? queue.Dequeue()
+            : null;
+    }
+
+    private static bool HasSameItems(IList<ImagePreviewItem>? oldItems, IList<ImagePreviewItem> newItems)
+    {
+        if (oldItems is null || oldItems.Count != newItems.Count)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < oldItems.Count; i++)
+        {
+            if (!ReferenceEquals(oldItems[i], newItems[i]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private void SetEffectiveItems(IList<ImagePreviewItem> effectiveItems,
+                                   IReadOnlyCollection<ImagePreviewItem>? preservedItems = null)
     {
         var oldItems = EffectiveItems;
         if (ReferenceEquals(oldItems, effectiveItems))
@@ -348,8 +471,17 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         }
 
         CancelImageLoads();
+        UnsubscribeItems(oldItems);
         SetCurrentValue(EffectiveItemsProperty, effectiveItems);
-        DisposeItems(oldItems);
+        SubscribeItems(effectiveItems);
+        if (preservedItems is null)
+        {
+            DisposeItems(oldItems);
+        }
+        else
+        {
+            DisposeItemsExcept(oldItems, preservedItems);
+        }
     }
 
     private static void DisposeItems(IList<ImagePreviewItem>? items)
@@ -401,92 +533,141 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         return items.All(item => item.IsFailed);
     }
 
-    private void BeginLoadingItems(IList<ImagePreviewItem> items, bool allowFallback = true)
+    private void CancelImageLoads()
     {
-        var cancellation = new CancellationTokenSource();
-        _imageLoadCancellation = cancellation;
-        _ = LoadItemsAsync(items, allowFallback, cancellation);
+        _imageLoadScheduler.Reset();
     }
 
-    private async Task LoadItemsAsync(IList<ImagePreviewItem> items,
-                                      bool allowFallback,
-                                      CancellationTokenSource cancellation)
+    internal void RequestPreviewLoads()
     {
-        var cancellationToken = cancellation.Token;
-        var loadTasks = new Task[items.Count];
-        for (var i = 0; i < items.Count; i++)
-        {
-            loadTasks[i] = LoadItemAsync(items[i], cancellationToken);
-        }
-
-        await Task.WhenAll(loadTasks).ConfigureAwait(false);
-        if (cancellationToken.IsCancellationRequested)
+        CancelImageLoads();
+        if (EffectiveItems is not { Count: > 0 } effectiveItems)
         {
             return;
         }
 
-        void CompleteBatch()
+        var currentIndex = ClampIndex(CurrentIndex, effectiveItems.Count);
+        RequestItemLoad(effectiveItems[currentIndex], ImagePreviewLoadPriority.Current);
+        RequestItemLoad(effectiveItems[ClampIndex(CoverIndex, effectiveItems.Count)], ImagePreviewLoadPriority.Cover);
+
+        var preloadCount = PreloadCount;
+        for (var offset = 1; offset <= preloadCount; offset++)
         {
-            if (!ReferenceEquals(_imageLoadCancellation, cancellation) ||
-                cancellationToken.IsCancellationRequested ||
-                !ReferenceEquals(EffectiveItems, items))
+            var previousIndex = currentIndex - offset;
+            if (previousIndex >= 0)
             {
-                return;
+                RequestItemLoad(effectiveItems[previousIndex], ImagePreviewLoadPriority.Preload);
             }
 
-            CompleteCurrentLoadBatch(items, allowFallback, cancellation);
-        }
-
-        if (Dispatcher.UIThread.CheckAccess())
-        {
-            CompleteBatch();
-        }
-        else
-        {
-            await Dispatcher.UIThread.InvokeAsync(CompleteBatch);
+            var nextIndex = currentIndex + offset;
+            if (nextIndex < effectiveItems.Count)
+            {
+                RequestItemLoad(effectiveItems[nextIndex], ImagePreviewLoadPriority.Preload);
+            }
         }
     }
 
-    private void CompleteCurrentLoadBatch(IList<ImagePreviewItem> items,
-                                          bool allowFallback,
-                                          CancellationTokenSource cancellation)
+    private protected void RequestItemLoad(ImagePreviewItem item, ImagePreviewLoadPriority priority)
     {
+        _imageLoadScheduler.Enqueue(item, priority);
+    }
+
+    private protected virtual void RequestClosedStateLoads()
+    {
+    }
+
+    private protected static int ClampIndex(int index, int count)
+    {
+        if (count <= 0)
+        {
+            return 0;
+        }
+
+        if (index < 0)
+        {
+            return 0;
+        }
+
+        return index >= count ? count - 1 : index;
+    }
+
+    private void SubscribeItems(IList<ImagePreviewItem>? items)
+    {
+        if (items == null)
+        {
+            return;
+        }
+
+        foreach (var item in items)
+        {
+            item.PropertyChanged += HandleEffectiveItemPropertyChanged;
+        }
+    }
+
+    private void UnsubscribeItems(IList<ImagePreviewItem>? items)
+    {
+        if (items == null)
+        {
+            return;
+        }
+
+        foreach (var item in items)
+        {
+            item.PropertyChanged -= HandleEffectiveItemPropertyChanged;
+        }
+    }
+
+    private void HandleEffectiveItemPropertyChanged(object? sender, PropertyChangedEventArgs args)
+    {
+        if (args.PropertyName == nameof(ImagePreviewItem.State))
+        {
+            CompleteCurrentLoadBatchIfReady();
+        }
+    }
+
+    private void HandleItemLoadSettled(ImagePreviewItem item)
+    {
+        CompleteCurrentLoadBatchIfReady();
+    }
+
+    private void CompleteCurrentLoadBatchIfReady()
+    {
+        if (EffectiveItems is not { Count: > 0 } items ||
+            items.Any(item => item.IsLoading || item.State == ImagePreviewItemState.Pending))
+        {
+            return;
+        }
+
         var loadedItems = items.Where(item => item.IsLoaded).ToList();
         if (loadedItems.Count == 0)
         {
-            if (allowFallback && FallbackSourceUri is not null)
+            if (FallbackSourceUri is not null &&
+                items.Any(item => item.SourceUri.CacheKey != FallbackSourceUri.CacheKey))
             {
                 MaterializeFallbackEffectiveSource();
-            }
-            else
-            {
-                ReleaseImageLoadCancellation(cancellation);
             }
             return;
         }
 
         if (loadedItems.Count == items.Count)
         {
-            ReleaseImageLoadCancellation(cancellation);
             return;
         }
 
-        ReleaseImageLoadCancellation(cancellation);
+        UnsubscribeItems(items);
         SetCurrentValue(EffectiveItemsProperty, loadedItems);
+        SubscribeItems(loadedItems);
         DisposeItemsExcept(items, loadedItems);
     }
 
-    private void ReleaseImageLoadCancellation(CancellationTokenSource cancellation)
+    private static void DisposeItemsExcept(IList<ImagePreviewItem>? items,
+                                           IReadOnlyCollection<ImagePreviewItem> preservedItems)
     {
-        if (ReferenceEquals(_imageLoadCancellation, cancellation))
+        if (items is null)
         {
-            _imageLoadCancellation.Dispose();
-            _imageLoadCancellation = null;
+            return;
         }
-    }
 
-    private static void DisposeItemsExcept(IList<ImagePreviewItem> items, IList<ImagePreviewItem> preservedItems)
-    {
         foreach (var item in items)
         {
             if (!preservedItems.Contains(item))
@@ -494,66 +675,6 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
                 item.Dispose();
             }
         }
-    }
-
-    private protected async Task LoadItemAsync(ImagePreviewItem item, CancellationToken cancellationToken)
-    {
-        var version = item.BeginLoading();
-        try
-        {
-            var loadedSource = await _imageSourceLoader.LoadAsync(item.SourceUri, cancellationToken);
-            void CompleteLoading()
-            {
-                if (!cancellationToken.IsCancellationRequested)
-                {
-                    item.CompleteLoading(version, loadedSource);
-                }
-                else
-                {
-                    loadedSource.Dispose();
-                }
-            }
-
-            if (Dispatcher.UIThread.CheckAccess())
-            {
-                CompleteLoading();
-            }
-            else
-            {
-                await Dispatcher.UIThread.InvokeAsync(CompleteLoading);
-            }
-        }
-        catch (OperationCanceledException)
-        {
-        }
-        catch (Exception ex)
-        {
-            void FailLoading()
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return;
-                }
-
-                item.FailLoading(version, ex);
-            }
-
-            if (Dispatcher.UIThread.CheckAccess())
-            {
-                FailLoading();
-            }
-            else
-            {
-                await Dispatcher.UIThread.InvokeAsync(FailLoading);
-            }
-        }
-    }
-
-    private void CancelImageLoads()
-    {
-        _imageLoadCancellation?.Cancel();
-        _imageLoadCancellation?.Dispose();
-        _imageLoadCancellation = null;
     }
 
     protected override void OnLoaded(RoutedEventArgs args)
@@ -611,6 +732,7 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
         {
             return;
         }
+        RequestPreviewLoads();
 
         _dialogOpening = true;
         var placementTarget = this;
@@ -848,6 +970,8 @@ public abstract class AbstractImagePreviewer : TemplatedControl, IMotionAwareCon
 
         _modalSubscription?.Dispose();
         _modalSubscription = null;
+        CancelImageLoads();
+        RequestClosedStateLoads();
         using (BeginIgnoringIsOpen())
         {
             SetCurrentValue(IsOpenProperty, false);
