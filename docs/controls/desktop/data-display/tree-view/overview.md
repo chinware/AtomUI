@@ -82,7 +82,7 @@ TreeViewItem 节点 API：
 | `IsIndicatorEnabled` | 当前节点 checkbox / radio 是否可用。 |
 | `ItemKey` | 路径匹配和节点身份标识。 |
 
-`ITreeItemNode` 是数据驱动树的节点契约，提供 `Header`、`Icon`、`ItemKey`、`Children`、`IsEnabled`、`IsChecked`、`IsSelected`、`IsExpanded`、`IsIndicatorEnabled`、`GroupName`、`IsLeaf`、`Value` 和 parent node 更新能力。
+`ITreeItemNode` 是数据驱动树的节点契约，提供 `Header`、`Icon`、`ItemKey`、`Children`、`IsEnabled`、`IsChecked`、`IsSelected`、`IsExpanded`、`IsIndicatorEnabled`、`GroupName`、`IsLeaf`、`Value` 和 parent node 更新能力。数据驱动场景下 `Children` 是节点结构的权威子集合；TreeViewItem 只投射节点状态和视觉交互，不作为结构数据源。
 
 节点数据类型边界：
 
@@ -164,6 +164,9 @@ TreeView 的状态模型由节点状态、选择状态、勾选状态、展开�
 - TreeView 创建拖拽预览和 drop indicator。
 - drop 目标支持插入到根、插入到兄弟前后、插入到目标节点内部。
 - 不允许把节点 drop 到自身或自身后代内。
+- 拖拽命中以已实现的 `TreeViewItem` 容器计算，结构修改以数据源为权威。
+- drop 操作通过 TreeView 内部数据控制器移动 root 集合或节点 `Children`，不直接修改生成容器的 `Items`。
+- 节点移动是结构重排，不是业务删除；选中、勾选和展开状态按节点身份保留。
 
 异步加载行为：
 
@@ -257,6 +260,9 @@ TreeView 不实现 CompactSpace、Button 家族或 Popup 菜单导航模型。
 - 异步加载只在数据节点模型下写入 `ITreeItemNode.Children`，不修改普通手写 `TreeViewItem` 子树。
 - 非 Visual `AvaloniaObject` 节点只要承载 `DynamicResource` 或 token-resource binding，就必须使用 scoped resource host，并有明确 attach/release 路径。
 - 拖拽不得允许节点 drop 到自身或自身后代。
+- 拖拽结构修改必须通过内部数据控制器执行，不能在 `ItemsSource` 场景直接写 `TreeView.Items` 或 `TreeViewItem.Items`。
+- TreeView 维护节点到父级、兄弟集合和索引的内部索引；拖拽过程中不能为每次 drop 全树扫描定位节点。
+- 跨父级移动后，节点 `ParentNode`、root / child 集合、选中集合、勾选集合和展开状态必须保持一致。
 - Template part 名称和职责不擅自修改。
 - Token 名称和语义不擅自重命名或迁移为实例状态。
 
@@ -286,7 +292,15 @@ TreeView 同时支持 checkbox 和 radio。checkbox 可以按 `IsCheckStrictly` 
 
 ### 8.6 拖拽模型
 
-拖拽模型以 TreeViewItem header bounds 和树层级关系计算 drop 目标。drop 结果直接调整 Items / child Items 顺序，并通过 `ItemDropped` 暴露目标父节点和插入位置。
+拖拽模型分为 UI 命中层和数据结构层：
+
+- UI 命中层使用 `TreeViewItem` header bounds、层级关系和 viewport 可见性计算拖拽发起节点、drag-over 节点和 drop indicator。
+- 数据结构层使用内部数据控制器把 drop 结果转换为节点移动请求，统一处理插入到 root、兄弟前后和目标节点内部。
+- 数据控制器只修改权威集合：root `ItemsSource` 对应的可变集合，或目标 `ITreeItemNode.Children`。手写 `TreeViewItem` 子树只作为静态 / 少量直接子元素模型，不作为数据驱动拖拽的权威路径。
+- TreeView 维护轻量节点索引，记录节点、父节点、所在集合和兄弟索引。索引在 root 数据源变化、节点 `Children` 变化和异步加载结果进入时增量更新，drop 时不全树扫描。
+- 同集合移动按 source index 和 target index 统一修正插入位置；跨集合移动先从源集合移除，再插入目标集合，并同步 parent node。
+- 节点移动保留节点身份，因此选中、勾选和展开状态不得按删除清理。只有节点真正离开整棵树时，状态集合才进行边界清理。
+- drop 事件语义应以数据节点、源父级、目标父级、插入位置和 drop position 为核心，容器只作为可观察 UI 上下文。
 
 ### 8.7 绑定型节点模型
 
