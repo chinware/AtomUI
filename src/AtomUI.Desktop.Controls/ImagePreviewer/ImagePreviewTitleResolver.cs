@@ -38,14 +38,51 @@ public sealed class DefaultImagePreviewTitleResolver : IImagePreviewTitleResolve
             return null;
         }
 
-        var path = uri.AbsolutePath;
-        if (string.IsNullOrWhiteSpace(path))
+        var segments = uri.AbsolutePath
+                          .Split('/', StringSplitOptions.RemoveEmptyEntries)
+                          .Select(Uri.UnescapeDataString)
+                          .ToArray();
+        if (segments.Length == 0)
         {
             return null;
         }
 
-        var segment = path.Split('/', StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
-        return NormalizeFileName(segment is null ? null : Uri.UnescapeDataString(segment));
+        return NormalizeFileName(ResolveMeaningfulUriSegment(segments));
+    }
+
+    private static string? ResolveMeaningfulUriSegment(string[] segments)
+    {
+        if (HasTrailingDimensionPair(segments))
+        {
+            return segments[^3];
+        }
+
+        return segments[^1];
+    }
+
+    private static bool HasTrailingDimensionPair(string[] segments)
+    {
+        return segments.Length >= 3 &&
+               IsPositiveIntegerSegment(segments[^1]) &&
+               IsPositiveIntegerSegment(segments[^2]);
+    }
+
+    private static bool IsPositiveIntegerSegment(string segment)
+    {
+        if (string.IsNullOrWhiteSpace(segment))
+        {
+            return false;
+        }
+
+        foreach (var character in segment)
+        {
+            if (!char.IsDigit(character))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static string? NormalizeFileName(string? fileName)

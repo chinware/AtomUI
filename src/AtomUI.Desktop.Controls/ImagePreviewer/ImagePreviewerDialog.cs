@@ -562,15 +562,8 @@ internal class ImagePreviewerDialog : Window,
         }
         else if (change.Property == ItemsSourceProperty)
         {
-            if (ItemsSource?.Count > 0)
-            {
-                SetCurrentValue(CurrentIndexProperty, 0);
-            }
             SetCurrentValue(IsMultiImagesProperty, ItemsSource?.Count > 1);
             Count = ItemsSource?.Count ?? 0;
-            // SetCurrentValue(CurrentIndexProperty, 0) 在 CurrentIndex 已经是 0(默认值)时不会
-            // 触发 PropertyChanged,HandleCurrentIndexChanged 永远不被调用 → 首次 layout 时
-            // CurrentImage 仍为 null,图片无法居中。这里直接再调一次保证 CurrentImage 被设上。
             HandleCurrentIndexChanged();
         }
         else if (change.Property == TitleProperty ||

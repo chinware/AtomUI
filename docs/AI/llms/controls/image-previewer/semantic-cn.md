@@ -125,9 +125,10 @@ ImagePreviewer
 
 | 契约组 | 代表成员 | 维护含义 |
 | --- | --- | --- |
-| 图片来源 | `SourceUri`、`SourceUris`、`CoverSourceUri`、`FallbackSourceUri` | 统一表达单图、多图、封面和失败兜底图片来源。 |
+| 图片来源 | `SourceUri`、`SourceUris`、`FallbackSourceUri` | 统一表达单图、多图和失败兜底图片来源。 |
 | 内容与数据 | `CoverIndicatorContent`、`CoverIndicatorContentTemplate`、`LoadingContent`、`LoadingContentTemplate`、`ErrorContent`、`ErrorContentTemplate`、`ImageMaxScale`、`ImageMinScale`、`ImageScaleStep`、`ImageTranslateX`、`ImageTranslateY` | 定义控件展示内容、输入数据、模板或业务对象入口。 |
-| 选择与集合 | `Count`、`CurrentIndex` | 维护选择、展开、过滤、分页、分组或集合状态。 |
+| 选择与集合 | `Count`、`CurrentIndex`、`CoverIndex` | 维护预览当前项、封面展示索引和集合状态。 |
+| 加载调度 | `MaxConcurrentLoads`、`PreloadCount` | 限制图片加载并发，并控制打开预览时当前项、封面项和当前项附近的预加载窗口。 |
 | 交互与状态 | `IsDialogModal`、`IsDialogTopmost`、`IsModal`、`IsMotionEnabled`、`IsOpen`、`IsShowCoverMask` | 表达用户可观察状态、可用性、清除、加载或反馈语义。 |
 | 视觉与布局 | `CoverHeight`、`CoverWidth` | 影响尺寸、位置、颜色、形状、密度和模板视觉变量。 |
 | 其他稳定入口 | `MaxScale`、`MinScale`、`ScaleStep`、`Stretch`、`Transform` | 保留为 public surface，变更前需确认 Gallery 和用户 XAML 依赖。 |

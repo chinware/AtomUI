@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls.Templates;
 using Avalonia.Metadata;
-using Avalonia.Threading;
 using System.ComponentModel;
 
 namespace AtomUI.Desktop.Controls;
@@ -15,17 +14,8 @@ public class ImagePreviewer : AbstractImagePreviewer
     public static readonly StyledProperty<IDataTemplate?> CoverIndicatorContentTemplateProperty =
         AvaloniaProperty.Register<ImagePreviewer, IDataTemplate?>(nameof(CoverIndicatorContentTemplate));
     
-    public static readonly StyledProperty<ImageSourceUri?> CoverSourceUriProperty =
-        AvaloniaProperty.Register<ImagePreviewer, ImageSourceUri?>(nameof(CoverSourceUri));
-    
     public static readonly StyledProperty<bool> IsShowCoverMaskProperty =
         AvaloniaProperty.Register<ImagePreviewer, bool>(nameof(IsShowCoverMask), true);
-    
-    public ImageSourceUri? CoverSourceUri
-    {
-        get => GetValue(CoverSourceUriProperty);
-        set => SetValue(CoverSourceUriProperty, value);
-    }
     
     [DependsOn(nameof(CoverIndicatorContentTemplate))]
     public object? CoverIndicatorContent
@@ -93,26 +83,21 @@ public class ImagePreviewer : AbstractImagePreviewer
     #endregion
 
     private ImagePreviewItem? _coverItem;
-    private bool _ownsCoverItem;
-    private string? _failedCoverSourceKey;
-    private CancellationTokenSource? _coverLoadCancellation;
-    
-    static ImagePreviewer()
+
+    public ImagePreviewer()
     {
-        AffectsRender<ImagePreviewer>(CoverSourceUriProperty);
+    }
+
+    internal ImagePreviewer(IImageSourceLoader imageSourceLoader)
+        : base(imageSourceLoader)
+    {
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == CoverSourceUriProperty)
-        {
-            _failedCoverSourceKey = null;
-            ConfigureEffectiveCoverItem();
-        }
-        
-        else if (change.Property == EffectiveItemsProperty ||
-                 change.Property == CurrentIndexProperty)
+        if (change.Property == EffectiveItemsProperty ||
+            change.Property == CoverIndexProperty)
         {
             ConfigureEffectiveCoverItem();
         }
@@ -132,7 +117,7 @@ public class ImagePreviewer : AbstractImagePreviewer
 
     private protected override void HandleLoadedFallbackSource()
     {
-        if (EffectiveCoverImage == null && CoverSourceUri is null)
+        if (EffectiveCoverImage == null)
         {
             ConfigureEffectiveCoverItem();
         }
@@ -140,33 +125,14 @@ public class ImagePreviewer : AbstractImagePreviewer
 
     private void ConfigureEffectiveCoverItem()
     {
-        if (CoverSourceUri is not null)
-        {
-            if (_failedCoverSourceKey == CoverSourceUri.CacheKey && FallbackSourceUri is not null)
-            {
-                SetOwnedCoverItem(new ImagePreviewItem(FallbackSourceUri), allowFallback: false);
-                return;
-            }
-
-            SetOwnedCoverItem(new ImagePreviewItem(CoverSourceUri), allowFallback: true);
-            return;
-        }
-
         var currentCoverItem = ResolveCurrentCoverItem();
         if (currentCoverItem is not null)
         {
-            SetCoverItem(currentCoverItem, ownsItem: false);
+            SetCoverItem(currentCoverItem);
             return;
         }
 
-        if (FallbackSourceUri is not null)
-        {
-            SetOwnedCoverItem(new ImagePreviewItem(FallbackSourceUri), allowFallback: false);
-        }
-        else
-        {
-            SetCoverItem(null, ownsItem: false);
-        }
+        SetCoverItem(null);
     }
 
     private ImagePreviewItem? ResolveCurrentCoverItem()
@@ -176,129 +142,45 @@ public class ImagePreviewer : AbstractImagePreviewer
             return null;
         }
 
-        var currentIndex = CurrentIndex;
-        if (currentIndex < 0)
-        {
-            currentIndex = 0;
-        }
-        else if (currentIndex >= effectiveItems.Count)
-        {
-            currentIndex = effectiveItems.Count - 1;
-        }
-
-        return effectiveItems[currentIndex];
+        return effectiveItems[ClampIndex(CoverIndex, effectiveItems.Count)];
     }
 
-    private void SetOwnedCoverItem(ImagePreviewItem item, bool allowFallback)
-    {
-        if (_ownsCoverItem && _coverItem?.SourceUri.CacheKey == item.SourceUri.CacheKey)
-        {
-            item.Dispose();
-            return;
-        }
-
-        SetCoverItem(item, ownsItem: true);
-        BeginLoadingCoverItem(item, allowFallback);
-    }
-
-    private void SetCoverItem(ImagePreviewItem? item, bool ownsItem)
+    private void SetCoverItem(ImagePreviewItem? item)
     {
         if (ReferenceEquals(_coverItem, item))
         {
+            UpdateCoverImageState();
+            RequestCoverItemLoadIfNeeded();
             return;
         }
 
-        var oldCoverItem   = _coverItem;
-        var disposeOldItem = _ownsCoverItem && oldCoverItem != null;
+        var oldCoverItem = _coverItem;
         if (oldCoverItem != null)
         {
             oldCoverItem.PropertyChanged -= HandleCoverItemPropertyChanged;
         }
 
-        CancelCoverImageLoad();
-        _coverItem     = item;
-        _ownsCoverItem = ownsItem;
+        _coverItem = item;
         if (item != null)
         {
             item.PropertyChanged += HandleCoverItemPropertyChanged;
         }
         UpdateCoverImageState();
 
-        if (disposeOldItem)
+        RequestCoverItemLoadIfNeeded();
+    }
+
+    private void RequestCoverItemLoadIfNeeded()
+    {
+        if (_coverItem is { State: ImagePreviewItemState.Pending })
         {
-            oldCoverItem?.Dispose();
+            RequestItemLoad(_coverItem, ImagePreviewLoadPriority.Cover);
         }
     }
 
-    private void BeginLoadingCoverItem(ImagePreviewItem item, bool allowFallback)
+    private protected override void RequestClosedStateLoads()
     {
-        var cancellation = new CancellationTokenSource();
-        _coverLoadCancellation = cancellation;
-        _ = LoadCoverItemAsync(item, allowFallback, cancellation.Token);
-    }
-
-    private async Task LoadCoverItemAsync(ImagePreviewItem item, bool allowFallback, CancellationToken cancellationToken)
-    {
-        var version = item.BeginLoading();
-        try
-        {
-            var loadedSource = await ImageSourceLoader.LoadAsync(item.SourceUri, cancellationToken);
-            void CompleteLoading()
-            {
-                if (!cancellationToken.IsCancellationRequested)
-                {
-                    if (item.CompleteLoading(version, loadedSource) &&
-                        CoverSourceUri?.CacheKey == item.SourceUri.CacheKey)
-                    {
-                        _failedCoverSourceKey = null;
-                    }
-                }
-                else
-                {
-                    loadedSource.Dispose();
-                }
-            }
-
-            if (Dispatcher.UIThread.CheckAccess())
-            {
-                CompleteLoading();
-            }
-            else
-            {
-                await Dispatcher.UIThread.InvokeAsync(CompleteLoading);
-            }
-        }
-        catch (OperationCanceledException)
-        {
-        }
-        catch (Exception ex)
-        {
-            void FailLoading()
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return;
-                }
-
-                if (item.FailLoading(version, ex) && allowFallback)
-                {
-                    _failedCoverSourceKey = item.SourceUri.CacheKey;
-                    if (FallbackSourceUri is not null)
-                    {
-                        SetOwnedCoverItem(new ImagePreviewItem(FallbackSourceUri), allowFallback: false);
-                    }
-                }
-            }
-
-            if (Dispatcher.UIThread.CheckAccess())
-            {
-                FailLoading();
-            }
-            else
-            {
-                await Dispatcher.UIThread.InvokeAsync(FailLoading);
-            }
-        }
+        ConfigureEffectiveCoverItem();
     }
 
     private void HandleCoverItemPropertyChanged(object? sender, PropertyChangedEventArgs args)
@@ -319,16 +201,9 @@ public class ImagePreviewer : AbstractImagePreviewer
         SetCurrentValue(IsCoverImageFailedProperty, _coverItem?.IsFailed == true);
     }
 
-    private void CancelCoverImageLoad()
-    {
-        _coverLoadCancellation?.Cancel();
-        _coverLoadCancellation?.Dispose();
-        _coverLoadCancellation = null;
-    }
-
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnDetachedFromVisualTree(e);
-        CancelCoverImageLoad();
+        SetCoverItem(null);
     }
 }

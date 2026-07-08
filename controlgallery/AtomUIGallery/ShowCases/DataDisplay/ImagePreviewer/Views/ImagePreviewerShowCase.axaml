@@ -75,6 +75,20 @@
                 </gallery:ShowCaseItem>
 
                 <gallery:ShowCaseItem
+                    Title="{gallery:ImagePreviewerShowCaseLangResource TwentyRemoteImagesTitle}"
+                    Description="{gallery:ImagePreviewerShowCaseLangResource TwentyRemoteImagesDescription}"
+                    IsDeferredContentEnabled="True">
+                    <gallery:ShowCaseItem.DeferredContentTemplate>
+                        <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
+                            <atom:ImagePreviewer Width="200"
+                                                 SourceUris="{Binding TwentyRemoteImages}"
+                                                 MaxConcurrentLoads="4"
+                                                 PreloadCount="1" />
+                        </DataTemplate>
+                    </gallery:ShowCaseItem.DeferredContentTemplate>
+                </gallery:ShowCaseItem>
+
+                <gallery:ShowCaseItem
                     Title="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageTitle}"
                     Description="{gallery:ImagePreviewerShowCaseLangResource PreviewFromOneImageDescription}"
                     IsDeferredContentEnabled="True">
@@ -93,8 +107,8 @@
                     <gallery:ShowCaseItem.DeferredContentTemplate>
                         <DataTemplate x:DataType="vm:ImagePreviewerViewModel">
                             <atom:ImagePreviewer Width="200"
-                                                 SourceUris="{Binding DefaultImages}"
-                                                 CoverSourceUri="{Binding BlurImage}" />
+                                                 SourceUris="{Binding ThreeImages}"
+                                                 CoverIndex="1" />
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>
                 </gallery:ShowCaseItem>

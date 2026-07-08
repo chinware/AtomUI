@@ -29,10 +29,32 @@ public class ImageGroupPreviewer : AbstractImagePreviewer
     
     private ItemsControl? _itemsControl;
 
+    public ImageGroupPreviewer()
+    {
+    }
+
+    internal ImageGroupPreviewer(IImageSourceLoader imageSourceLoader)
+        : base(imageSourceLoader)
+    {
+    }
+
+    protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
+    {
+        base.OnPropertyChanged(change);
+        if (change.Property == EffectiveItemsProperty && !IsOpen)
+        {
+            RequestClosedStateLoads();
+        }
+    }
+
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _itemsControl = e.NameScope.Find<ItemsControl>("PART_CoverItemsControl");
+        if (!IsOpen)
+        {
+            RequestClosedStateLoads();
+        }
     }
 
     protected override void OnPointerReleased(PointerReleasedEventArgs e)
@@ -57,6 +79,19 @@ public class ImageGroupPreviewer : AbstractImagePreviewer
             }
             SetCurrentValue(CurrentIndexProperty, currentIndex);
             OpenDialog();
+        }
+    }
+
+    private protected override void RequestClosedStateLoads()
+    {
+        if (EffectiveItems is not { Count: > 0 } effectiveItems)
+        {
+            return;
+        }
+
+        foreach (var item in effectiveItems)
+        {
+            RequestItemLoad(item, ImagePreviewLoadPriority.Cover);
         }
     }
 }

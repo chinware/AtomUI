@@ -49,20 +49,20 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _threeImages, value);
     }
 
+    private IList<ImageSourceUri>? _twentyRemoteImages;
+
+    public IList<ImageSourceUri>? TwentyRemoteImages
+    {
+        get => _twentyRemoteImages;
+        set => this.RaiseAndSetIfChanged(ref _twentyRemoteImages, value);
+    }
+
     private ImageSourceUri? _fallbackImage;
 
     public ImageSourceUri? FallbackImage
     {
         get => _fallbackImage;
         set => this.RaiseAndSetIfChanged(ref _fallbackImage, value);
-    }
-
-    private ImageSourceUri? _blurImage;
-
-    public ImageSourceUri? BlurImage
-    {
-        get => _blurImage;
-        set => this.RaiseAndSetIfChanged(ref _blurImage, value);
     }
 
     private ObservableCollection<ImagePreviewerApiRow>? _apiRows;
@@ -103,18 +103,40 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
             "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/2.svg",
             "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/3.svg",
         ];
+        TwentyRemoteImages =
+        [
+            "https://picsum.photos/id/20/600/400",
+            "https://picsum.photos/id/21/600/400",
+            "https://picsum.photos/id/22/600/400",
+            "https://picsum.photos/id/23/600/400",
+            "https://picsum.photos/id/24/600/400",
+            "https://picsum.photos/id/25/600/400",
+            "https://picsum.photos/id/26/600/400",
+            "https://picsum.photos/id/27/600/400",
+            "https://picsum.photos/id/28/600/400",
+            "https://picsum.photos/id/29/600/400",
+            "https://picsum.photos/id/30/600/400",
+            "https://picsum.photos/id/31/600/400",
+            "https://picsum.photos/id/32/600/400",
+            "https://picsum.photos/id/33/600/400",
+            "https://picsum.photos/id/34/600/400",
+            "https://picsum.photos/id/35/600/400",
+            "https://picsum.photos/id/36/600/400",
+            "https://picsum.photos/id/37/600/400",
+            "https://picsum.photos/id/38/600/400",
+            "https://picsum.photos/id/39/600/400"
+        ];
         FallbackImage = "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/Fallback.png";
-        BlurImage     = "avares://AtomUIGallery/Assets/ImagePreviewerShowCase/Blur.png";
     }
 
     public void ClearPreviewAssets()
     {
-        RemoteImage   = null;
-        DefaultImages = null;
-        ThreeImages   = null;
-        TwoImages     = null;
-        FallbackImage = null;
-        BlurImage     = null;
+        RemoteImage        = null;
+        DefaultImages      = null;
+        ThreeImages        = null;
+        TwoImages          = null;
+        TwentyRemoteImages = null;
+        FallbackImage      = null;
     }
 
     public void EnsureApiRows()
@@ -133,10 +155,12 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
             new ImagePreviewerApiRow("CoverWidth", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverWidth), "double", "green", "NaN"),
             new ImagePreviewerApiRow("CoverHeight", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverHeight), "double", "green", "NaN"),
             new ImagePreviewerApiRow("CurrentIndex", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCurrentIndex), "int", "green", "0"),
+            new ImagePreviewerApiRow("CoverIndex", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverIndex), "int", "green", "0"),
+            new ImagePreviewerApiRow("MaxConcurrentLoads", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyMaxConcurrentLoads), "int", "green", "4"),
+            new ImagePreviewerApiRow("PreloadCount", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreloadCount), "int", "green", "1"),
             new ImagePreviewerApiRow("PreviewTitle", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitle), "string?", "cyan", "null"),
             new ImagePreviewerApiRow("PreviewTitleIcon", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitleIcon), "PathIcon?", "cyan", "null"),
             new ImagePreviewerApiRow("PreviewTitleResolver", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitleResolver), "IImagePreviewTitleResolver?", "cyan", "DefaultImagePreviewTitleResolver.Instance"),
-            new ImagePreviewerApiRow("CoverSourceUri", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverSourceUri), "ImageSourceUri?", "cyan", "null"),
             new ImagePreviewerApiRow("LoadingContent", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContent), "object?", "cyan", "null"),
             new ImagePreviewerApiRow("LoadingContentTemplate", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContentTemplate), "IDataTemplate?", "cyan", "null"),
             new ImagePreviewerApiRow("ErrorContent", Lang(ImagePreviewerShowCaseLangResourceKind.ApiPropertyErrorContent), "object?", "cyan", "null"),
@@ -194,10 +218,12 @@ public class ImagePreviewerViewModel : ReactiveObject, IRoutableViewModel
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverWidth                  => en_US.ApiPropertyCoverWidth,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverHeight                 => en_US.ApiPropertyCoverHeight,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyCurrentIndex                => en_US.ApiPropertyCurrentIndex,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverIndex                  => en_US.ApiPropertyCoverIndex,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertyMaxConcurrentLoads          => en_US.ApiPropertyMaxConcurrentLoads,
+            ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreloadCount                => en_US.ApiPropertyPreloadCount,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitle                => en_US.ApiPropertyPreviewTitle,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitleIcon            => en_US.ApiPropertyPreviewTitleIcon,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyPreviewTitleResolver        => en_US.ApiPropertyPreviewTitleResolver,
-            ImagePreviewerShowCaseLangResourceKind.ApiPropertyCoverSourceUri              => en_US.ApiPropertyCoverSourceUri,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContent              => en_US.ApiPropertyLoadingContent,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyLoadingContentTemplate      => en_US.ApiPropertyLoadingContentTemplate,
             ImagePreviewerShowCaseLangResourceKind.ApiPropertyErrorContent                => en_US.ApiPropertyErrorContent,

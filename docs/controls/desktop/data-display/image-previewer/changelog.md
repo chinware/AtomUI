@@ -4,7 +4,23 @@
 
 ## 2026-07-08
 
+- API
+  - Replace the independent `CoverSourceUri` cover model with `CoverIndex`, keeping cover selection inside the same `SourceUri` / `SourceUris` source set.
+  - Add `MaxConcurrentLoads` and `PreloadCount` as the public loading scheduler contract.
+- Behavior
+  - Load only the closed-state cover for single `ImagePreviewer`, load default `ImageGroupPreviewer` cover items through the shared scheduler, and load only `CurrentIndex`, `CoverIndex` and the `PreloadCount` neighbor window while preview is open.
+  - Preserve loaded cover items when opening preview from an unchanged `SourceUris` collection, and keep the cover item in the open-state scheduler window so non-modal preview navigation does not blank the page cover.
+  - Keep `CoverIndex` display-only: changing cover, loading cover, failing cover or opening preview no longer writes `CurrentIndex`.
+  - Preserve `CurrentIndex` when dialog or overlay `ItemsSource` changes; hosts clamp only for display and do not write the public/bound value back to `0`.
+  - Treat fallback as a source batch result: single item failure stays local, mixed batches keep loaded items and skip failed items, and `FallbackSourceUri` is used only after all source items in the batch have failed.
+- Implementation
+  - Route cover, current image, neighbor preload and fallback loads through `ImagePreviewLoadScheduler`, including priority, generation checks, bounded concurrency and cancellation.
+  - Keep canceled running loads counted until the loader actually settles, so `MaxConcurrentLoads` is not exceeded during rapid current-window changes.
 - Docs
+  - Define the lazy loading redesign for large image sets: closed preview loads only the `CoverIndex` cover, open preview loads `CurrentIndex`, `CoverIndex` and the `PreloadCount` neighbor window, and all load paths share `MaxConcurrentLoads`.
+  - Document `CoverIndex` as a display-only cover selector that is decoupled from `CurrentIndex`; clicking the cover opens preview without synchronizing the current preview index.
+  - Keep the public source model lightweight by using `SourceUri` / `SourceUris` / `FallbackSourceUri` plus index and scheduler properties instead of introducing a composite `ImagePreviewSource` public object.
+  - Add the internal `ImagePreviewLoadScheduler` responsibility for priority, bounded concurrency, generation checks, cancellation, stale result disposal and lazy result writeback.
   - Define source collection fallback as a batch-level decision: individual failed items must not replace the whole preview list with `FallbackSourceUri`; fallback is used only when the current `SourceUri` / `SourceUris` batch fully fails.
   - Document that mixed success/failure batches keep loaded items, skip failed items, and prevent stale batches from writing back after source replacement or cancellation.
 
