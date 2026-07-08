@@ -81,7 +81,7 @@ Button 是边框策略的基准控件。它必须保持用户无感知。
 
 ### 4.1 普通 Button
 
-普通 Button 模板使用 Avalonia 原生 `Border`：
+普通 Button 模板使用 AtomUI 自绘边框 primitive。该 primitive 在未设置 `StrokeDashArray` 时绘制实线边框，内部通过 layout rounded thickness 对齐 Avalonia `Border` 的取整规则：
 
 ```text
 SharedToken.BorderThickness
@@ -90,24 +90,24 @@ Button.BorderThickness
     ↓
 Button.EffectiveBorderThickness
     ↓
-ButtonTheme.axaml: Border#Frame.BorderThickness
+ButtonTheme.axaml: DashedBorder#Frame.BorderThickness
     ↓
-Avalonia Border.LayoutThickness
+DashedBorder.LayoutThickness
     ↓
-Avalonia BorderRenderHelper.Render(...)
+BorderRenderHelper.Render(... LayoutThickness ...)
 ```
 
-普通 Button 不需要替换为 AtomUI 自定义 Border，也不需要在 `Button` 类里手动计算 scale。它的合理边框来自 Avalonia `Border` 内部的 `LayoutThickness`。
+普通 Button 不在 `Button` 类里手动计算 scale。它的合理边框来自 AtomUI 边框 primitive 内部的 `LayoutThickness`，该值由 `BorderUtils.BuildLayoutRoundedThickness()` 统一计算。
 
 维护要求：
 
-- 不把普通 Button 的 `Border#Frame` 改成自绘控件。
 - 不在 `Button.ConfigureEffectiveBorderThickness()` 中做 DPI 或 scale 计算。
 - `EffectiveBorderThickness` 继续表达控件状态后的设计厚度，例如 bordered / borderless。
+- 普通 Button、DropdownButton 以及 Browser Button 备用主题中的普通 Frame 都应使用同一自绘边框 primitive，避免不同主题下边框厚度策略分裂。
 
 ### 4.2 Dashed Button
 
-虚线 Button 模板使用 AtomUI `DashedBorder`。因此它是必须补齐的重点：
+虚线 Button 模板使用同一个 AtomUI 边框 primitive，并设置 `StrokeDashArray`：
 
 ```text
 SharedToken.BorderThickness
@@ -123,14 +123,14 @@ DashedBorder.LayoutThickness
 BorderRenderHelper.Render(... LayoutThickness, StrokeDashArray ...)
 ```
 
-`DashedBorder` 应具备与 Avalonia `Border` 等价的内部 layout thickness 缓存：
+该 primitive 应具备与 Avalonia `Border` 等价的内部 layout thickness 缓存：
 
 - `BorderThickness` 或 `UseLayoutRounding` 改变时使缓存失效。
 - 当前 `LayoutHelper.GetLayoutScale(this)` 改变时使缓存失效。
 - `Render()` 使用 `LayoutThickness`。
 - `MeasureOverride()` / `ArrangeOverride()` 继续使用 Avalonia `LayoutHelper.MeasureChild` / `ArrangeChild`，由 Avalonia helper 根据父级 layout rounding 处理 padding 和 border。
 
-这样普通 Button 和 Dashed Button 在同一 scale 下得到一致的视觉厚度。
+这样普通 Button 和 Dashed Button 在同一 scale 下得到一致的视觉厚度，只在 stroke dash 样式上不同。
 
 ## 5. 圆角算法边界
 
@@ -221,7 +221,7 @@ _cachedBackgroundSizing
 
 - 新增内部 layout rounded thickness helper。
 - 让 `DashedBorder` 使用 `LayoutThickness` 渲染。
-- 确认普通 Button 继续走 Avalonia `Border`。
+- 让普通 Button、DropdownButton 和 Browser Button 普通 Frame 使用 AtomUI 自绘边框 primitive。
 - 增加 Dashed Button 与普通 Button 在不同 scale 下的视觉或单元验证。
 
 ### 8.2 第二阶段：统一 BorderRenderHelper 调用者
@@ -283,7 +283,7 @@ _cachedBackgroundSizing
 
 - Design Token 不读取 DPI / scale。
 - `LineWidth = 1` 不表示固定 1 个物理像素，而表示 1 DIP 设计线宽。
-- 普通 Button 使用 Avalonia `Border`，不做额外 DPI 特判。
+- 普通 Button 使用 AtomUI 自绘边框 primitive，不做额外 DPI 特判。
 - 自绘普通边框必须对齐 Avalonia `Border.LayoutThickness`。
 - 圆角绘制继续使用 `RoundRectGeometryBuilder`，不新增平行算法。
 - 普通边框与 hairline 必须语义分离。
