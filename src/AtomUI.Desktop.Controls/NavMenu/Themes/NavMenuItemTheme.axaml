@@ -36,8 +36,8 @@
                                     <Binding Path="HasSubMenu" RelativeSource="{RelativeSource TemplatedParent}" />
                                 </MultiBinding>
                             </atom:Popup.IsOpen>
-                            <Border Name="PART_PopupFrame"
-                                    MinWidth="{TemplateBinding EffectivePopupMinWidth}">
+                            <atom:NavMenuPopupFrame Name="PART_PopupFrame"
+                                                     MinWidth="{TemplateBinding EffectivePopupMinWidth}">
                                 <atom:ScrollViewer IsScrollChainingEnabled="False"
                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                    IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
@@ -48,7 +48,7 @@
                                         Grid.IsSharedSizeScope="True"
                                         KeyboardNavigation.TabNavigation="Continue" />
                                 </atom:ScrollViewer>
-                            </Border>
+                            </atom:NavMenuPopupFrame>
                         </atom:Popup>
                     </Panel>
                 </ControlTemplate>
@@ -85,7 +85,7 @@
                                 </MultiBinding>
                             </atom:Popup.IsOpen>
 
-                            <Border Name="PART_PopupFrame">
+                            <atom:NavMenuPopupFrame Name="PART_PopupFrame">
                                 <atom:ScrollViewer IsScrollChainingEnabled="False"
                                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                                    IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
@@ -94,7 +94,7 @@
                                                     ItemsPanel="{TemplateBinding ItemsPanel}"
                                                     Grid.IsSharedSizeScope="True" />
                                 </atom:ScrollViewer>
-                            </Border>
+                            </atom:NavMenuPopupFrame>
                         </atom:Popup>
                     </Panel>
                 </ControlTemplate>
@@ -143,16 +143,16 @@
             <Setter Property="PopupMinWidth"
                     Value="{atom:NavMenuTokenResource MenuPopupMinWidth}" />
 
-            <Style Selector="^ /template/ Border#PART_PopupFrame">
+            <Style Selector="^ /template/ atom|NavMenuPopupFrame#PART_PopupFrame">
                 <Setter Property="Background"
                         Value="{atom:NavMenuTokenResource MenuPopupBg}" />
                 <Setter Property="CornerRadius"
                         Value="{atom:PopupHostTokenResource BorderRadius}" />
                 <Setter Property="MinWidth"
                         Value="{atom:NavMenuTokenResource MenuPopupMinWidth}" />
-                <Setter Property="MaxWidth"
+                <Setter Property="PopupMaxWidth"
                         Value="{atom:NavMenuTokenResource MenuPopupMaxWidth}" />
-                <Setter Property="MaxHeight"
+                <Setter Property="PopupMaxHeight"
                         Value="{atom:NavMenuTokenResource MenuPopupMaxHeight}" />
                 <Setter Property="Padding"
                         Value="{atom:NavMenuTokenResource MenuPopupContentPadding}" />
@@ -160,7 +160,7 @@
         </Style>
 
         <Style Selector="^[IsDarkStyle=True]">
-            <Style Selector="^ /template/ Border#PART_PopupFrame">
+            <Style Selector="^ /template/ atom|NavMenuPopupFrame#PART_PopupFrame">
                 <Setter Property="Background"
                         Value="{atom:NavMenuTokenResource DarkMenuPopupBg}" />
             </Style>

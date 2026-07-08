@@ -1,8 +1,11 @@
 using System.Reflection;
+using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Headless;
+using Avalonia.Layout;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -374,6 +377,68 @@ public class NavMenuLayoutTests
         }
     }
 
+    [Fact]
+    public void InlineCollapsed_Popup_With_Stretch_HeaderTemplate_Uses_Content_Sized_Width()
+    {
+        var menu = new AtomUI.Desktop.Controls.NavMenu
+        {
+            Mode              = NavMenuMode.Inline,
+            IsInlineCollapsed = true,
+            IsDarkStyle       = true,
+            IsMotionEnabled   = false,
+            Width             = 300
+        };
+        var customTemplateChild = new NavMenuNode
+        {
+            Header         = "Option5",
+            ItemKey        = "option-5",
+            HeaderTemplate = CreateStretchTagHeaderTemplate()
+        };
+        var parent = new NavMenuNode
+        {
+            Header  = "Navigation",
+            ItemKey = "navigation"
+        };
+        parent.Children.Add(customTemplateChild);
+        parent.Children.Add(new NavMenuNode
+        {
+            Header  = "Option 6",
+            ItemKey = "option-6"
+        });
+        parent.Children.Add(new NavMenuNode
+        {
+            Header  = "Option 7",
+            ItemKey = "option-7"
+        });
+        menu.Items.Add(parent);
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 1200,
+            Height  = 760,
+            Content = CreatePopupOverlayHost(menu)
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var parentContainer = (Control)menu.ContainerFromItem(parent)!;
+            ((INavMenuItem)parentContainer).Open();
+            Dispatcher.UIThread.RunJobs();
+
+            var popupFrame = FindPopupFrame(window);
+
+            popupFrame.Bounds.Width.ShouldBeLessThan(320,
+                "A popup menu must size from child content; a stretchable HeaderTemplate must not receive the popup max width as its desired width.");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static BaseNavMenuItemHeader GetItemHeader(Control container)
     {
         var field = container.GetType().GetField(
@@ -440,5 +505,41 @@ public class NavMenuLayoutTests
 
         property.ShouldNotBeNull();
         property.SetValue(visualLayerManager, true);
+    }
+
+    private static IDataTemplate CreateStretchTagHeaderTemplate()
+    {
+        return new FuncDataTemplate<object?>((_, _) =>
+        {
+            var textBlock = new TextBlock
+            {
+                Text              = "Option5",
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            Flex.SetGrow(textBlock, 1);
+
+            var tag = new AtomUI.Desktop.Controls.Tag
+            {
+                TagColor          = "cyan",
+                IsBordered        = false,
+                Padding           = new Thickness(4, 0),
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin            = new Thickness(8, 0, 0, 0),
+                Text              = "测试Tag"
+            };
+
+            return new FlexPanel
+            {
+                Direction           = FlexDirection.Row,
+                AlignItems          = AlignItems.Center,
+                JustifyContent      = JustifyContent.FlexStart,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Children =
+                {
+                    textBlock,
+                    tag
+                }
+            };
+        });
     }
 }
