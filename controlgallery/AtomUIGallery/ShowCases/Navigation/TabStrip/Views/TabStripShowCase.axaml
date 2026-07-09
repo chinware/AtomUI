@@ -65,6 +65,38 @@
     </gallery:ShowCaseItem>
 
     <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripReorderTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripReorderDescription}"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <DockPanel Height="110">
+                        <atom:TabStrip DockPanel.Dock="Top"
+                                       IsTabReorderEnabled="True"
+                                       SelectedIndex="1">
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
+                        </atom:TabStrip>
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Background="{atom:SharedTokenResource ColorBgElevated}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabContent}" />
+                        </Border>
+                    </DockPanel>
+
+                    <atom:CardTabStrip IsTabReorderEnabled="True">
+                        <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                        <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                        <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+                    </atom:CardTabStrip>
+                </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
         Title="{gallery:TabStripShowCaseLangResource TabStripDisabledTitle}"
         Description="{gallery:TabStripShowCaseLangResource TabStripDisabledDescription}"
         IsDeferredContentEnabled="True">

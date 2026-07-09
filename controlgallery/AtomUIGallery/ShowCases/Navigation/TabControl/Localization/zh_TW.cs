@@ -10,6 +10,8 @@ internal partial class zh_TW
     public const string TabControlBasicDescription = "默認激活第一個標籤頁。";
     public const string TabControlItemsSourceTitle = "通過 ItemSource 生成標籤項";
     public const string TabControlItemsSourceDescription = "基於數據源和項目模板添加 TabItem。";
+    public const string TabControlReorderTitle = "拖曳排序";
+    public const string TabControlReorderDescription = "透過 IsTabReorderEnabled 開啟拖曳排序。排序後選中狀態會跟隨同一個邏輯標籤項。";
     public const string TabControlDisabledTitle = "禁用標籤";
     public const string TabControlDisabledDescription = "禁用某個標籤頁。";
     public const string TabControlCenteredTitle = "居中顯示";
@@ -49,6 +51,8 @@ internal partial class zh_TW
     public const string ApiPropertyItemTemplate = "定義透過資料來源呈現標籤內容的模板。";
     public const string ApiPropertyTabStripPlacement = "控制標籤列位於頂部、底部、左側或右側。";
     public const string ApiPropertyTabAlignmentCenter = "讓標籤頭在標籤列內置中。";
+    public const string ApiPropertyIsTabReorderEnabled = "啟用標籤項拖曳排序。";
+    public const string ApiPropertyTabActivationTrigger = "控制標籤在滑鼠按下時啟用，或在同一標籤上放開時啟用。";
     public const string ApiPropertySizeType = "控制小號、中號或大號標籤尺寸。";
     public const string ApiPropertyIsTabClosable = "為允許關閉的標籤啟用關閉按鈕。";
     public const string ApiPropertyIsTabAutoHideCloseButton = "僅在標籤懸浮或聚焦時顯示關閉按鈕。";
@@ -56,6 +60,8 @@ internal partial class zh_TW
     public const string ApiPropertyHeaderEndExtraContent = "在標籤頭之後加入額外內容。";
     public const string ApiPropertyIsShowAddTabButton = "在卡片式標籤控制項上顯示新增標籤按鈕。";
     public const string ApiPropertyAddTabRequest = "點擊卡片式標籤新增按鈕請求建立新標籤時觸發。";
+    public const string ApiEventTabReordering = "拖曳排序提交前觸發。將 Cancel 設為 true 可保留原順序。";
+    public const string ApiEventTabReordered = "拖曳排序提交到邏輯集合後觸發。";
     public const string TokenColumnToken = "變數";
     public const string TokenColumnDescription = "說明";
     public const string TokenColumnScope = "範圍";

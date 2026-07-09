@@ -112,13 +112,17 @@ public class TabStripViewModel : ReactiveObject, IRoutableViewModel
             new TabStripApiRow("ItemTemplate", Lang(TabStripShowCaseLangResourceKind.ApiPropertyItemTemplate), "IDataTemplate?", "blue", "null"),
             new TabStripApiRow("TabStripPlacement", Lang(TabStripShowCaseLangResourceKind.ApiPropertyTabStripPlacement), "Dock", "blue", "Top"),
             new TabStripApiRow("TabAlignmentCenter", Lang(TabStripShowCaseLangResourceKind.ApiPropertyTabAlignmentCenter), "bool", "purple", "false"),
+            new TabStripApiRow("IsTabReorderEnabled", Lang(TabStripShowCaseLangResourceKind.ApiPropertyIsTabReorderEnabled), "bool", "purple", "false"),
+            new TabStripApiRow("TabActivationTrigger", Lang(TabStripShowCaseLangResourceKind.ApiPropertyTabActivationTrigger), "TabActivationTrigger", "blue", "PointerReleased"),
             new TabStripApiRow("SizeType", Lang(TabStripShowCaseLangResourceKind.ApiPropertySizeType), "SizeType", "blue", "Middle"),
             new TabStripApiRow("IsTabClosable", Lang(TabStripShowCaseLangResourceKind.ApiPropertyIsTabClosable), "bool", "purple", "false"),
             new TabStripApiRow("IsTabAutoHideCloseButton", Lang(TabStripShowCaseLangResourceKind.ApiPropertyIsTabAutoHideCloseButton), "bool", "purple", "false"),
             new TabStripApiRow("HeaderStartExtraContent", Lang(TabStripShowCaseLangResourceKind.ApiPropertyHeaderStartExtraContent), "object?", "cyan", "null"),
             new TabStripApiRow("HeaderEndExtraContent", Lang(TabStripShowCaseLangResourceKind.ApiPropertyHeaderEndExtraContent), "object?", "cyan", "null"),
             new TabStripApiRow("IsShowAddTabButton", Lang(TabStripShowCaseLangResourceKind.ApiPropertyIsShowAddTabButton), "bool", "purple", "false"),
-            new TabStripApiRow("AddTabRequest", Lang(TabStripShowCaseLangResourceKind.ApiPropertyAddTabRequest), "event", "default", "null")
+            new TabStripApiRow("AddTabRequest", Lang(TabStripShowCaseLangResourceKind.ApiPropertyAddTabRequest), "event", "default", "null"),
+            new TabStripApiRow("TabReordering", Lang(TabStripShowCaseLangResourceKind.ApiEventTabReordering), "event EventHandler<TabReorderingEventArgs>?", "default", "null"),
+            new TabStripApiRow("TabReordered", Lang(TabStripShowCaseLangResourceKind.ApiEventTabReordered), "event EventHandler<TabReorderedEventArgs>?", "default", "null")
         ];
     }
 
@@ -168,6 +172,8 @@ public class TabStripViewModel : ReactiveObject, IRoutableViewModel
             TabStripShowCaseLangResourceKind.ApiPropertyItemTemplate               => en_US.ApiPropertyItemTemplate,
             TabStripShowCaseLangResourceKind.ApiPropertyTabStripPlacement          => en_US.ApiPropertyTabStripPlacement,
             TabStripShowCaseLangResourceKind.ApiPropertyTabAlignmentCenter         => en_US.ApiPropertyTabAlignmentCenter,
+            TabStripShowCaseLangResourceKind.ApiPropertyIsTabReorderEnabled        => en_US.ApiPropertyIsTabReorderEnabled,
+            TabStripShowCaseLangResourceKind.ApiPropertyTabActivationTrigger       => en_US.ApiPropertyTabActivationTrigger,
             TabStripShowCaseLangResourceKind.ApiPropertySizeType                   => en_US.ApiPropertySizeType,
             TabStripShowCaseLangResourceKind.ApiPropertyIsTabClosable              => en_US.ApiPropertyIsTabClosable,
             TabStripShowCaseLangResourceKind.ApiPropertyIsTabAutoHideCloseButton   => en_US.ApiPropertyIsTabAutoHideCloseButton,
@@ -175,6 +181,8 @@ public class TabStripViewModel : ReactiveObject, IRoutableViewModel
             TabStripShowCaseLangResourceKind.ApiPropertyHeaderEndExtraContent      => en_US.ApiPropertyHeaderEndExtraContent,
             TabStripShowCaseLangResourceKind.ApiPropertyIsShowAddTabButton         => en_US.ApiPropertyIsShowAddTabButton,
             TabStripShowCaseLangResourceKind.ApiPropertyAddTabRequest              => en_US.ApiPropertyAddTabRequest,
+            TabStripShowCaseLangResourceKind.ApiEventTabReordering                 => en_US.ApiEventTabReordering,
+            TabStripShowCaseLangResourceKind.ApiEventTabReordered                  => en_US.ApiEventTabReordered,
             TabStripShowCaseLangResourceKind.TokenNameCardBg                       => en_US.TokenNameCardBg,
             TabStripShowCaseLangResourceKind.TokenNameCardSize                     => en_US.TokenNameCardSize,
             TabStripShowCaseLangResourceKind.TokenNameCardPadding                  => en_US.TokenNameCardPadding,

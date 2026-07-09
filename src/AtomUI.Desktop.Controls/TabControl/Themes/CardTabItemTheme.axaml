@@ -118,6 +118,10 @@
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
         </Style>
 
+        <Style Selector="^[IsTabReorderDragging=True]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+        </Style>
+
         <Style Selector="^[TabStripPlacement=Top], ^[TabStripPlacement=Bottom]">
 
             <Setter Property="Margin" Value="{atom:TabControlTokenResource HorizontalItemMargin}" />

@@ -102,6 +102,14 @@
             <Setter Property="Foreground" Value="{atom:TabControlTokenResource ItemHoverColor}" />
         </Style>
 
+        <Style Selector="^:pressed">
+            <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorPrimaryActive}" />
+        </Style>
+
+        <Style Selector="^[IsTabReorderDragging=True]">
+            <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+        </Style>
+
         <Style Selector="^:selected">
             <Setter Property="Foreground" Value="{atom:TabControlTokenResource ItemSelectedColor}" />
         </Style>

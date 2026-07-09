@@ -2,6 +2,15 @@
 
 本文档记录 TabStrip 控件级设计、API、主题契约、Token 和实现结构的变化。它不替代仓库根目录 `CHANGELOG.md`，也不作为正式版本发布说明。
 
+## 2026-07-09
+
+- Docs
+  - Define `TabActivationTrigger` for `TabStrip`, with `PointerReleased` as the default pointer activation mode and `PointerPressed` as the opt-in immediate activation mode.
+  - Document press/release same-Tab activation semantics, cancellation paths, reorder precedence and verification requirements.
+  - Define Tab drag reorder API, events, axis model, collection commit semantics, lifecycle cleanup and verification boundaries for `TabStrip`.
+  - Document that reorder must mutate logical `ItemsSource` / `Items` order instead of visual container order, and selection state must follow the same logical item after reorder.
+  - Refine the reorder preview as a Chrome-style track-constrained model: dragged tabs move only on the placement main axis, overlapping siblings displace proportionally to avoid empty old slots, half-overlap switches the target index, sibling displacement is animated, the selected indicator follows preview transforms, and the dragged surface remains opaque.
+
 ## 2026-06-26
 
 - Docs

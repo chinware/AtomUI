@@ -69,6 +69,11 @@ public class TabStrip : BaseTabStrip
     
     private void SetupSelectedIndicator()
     {
+        if (IsTabReorderIndicatorRefreshDeferred)
+        {
+            return;
+        }
+
         if (Items.Count == 0)
         {
             _selectedIndicator?.SetCurrentValue(IsVisibleProperty, false);
@@ -82,35 +87,41 @@ public class TabStrip : BaseTabStrip
                 var builder        = new TransformOperations.Builder(1);
                 var offset         = _itemsPresenter?.Bounds.Position ?? default;
                 var selectedSize   = selectedBounds.Size;
+                var previewOffset  = GetTabReorderPreviewPrimaryOffset(tabStripItem);
 
                 if (TabStripPlacement == Dock.Top)
                 {
                     _selectedIndicator.SetCurrentValue(WidthProperty, selectedSize.Width);
                     _selectedIndicator.SetCurrentValue(HeightProperty, SelectedIndicatorThickness);
-                    builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
+                    builder.AppendTranslate(offset.X + selectedBounds.Left + previewOffset, 0);
                 }
                 else if (TabStripPlacement == Dock.Right)
                 {
                     _selectedIndicator.SetCurrentValue(HeightProperty, selectedSize.Height);
                     _selectedIndicator.SetCurrentValue(WidthProperty, SelectedIndicatorThickness);
-                    builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
+                    builder.AppendTranslate(0, offset.Y + selectedBounds.Y + previewOffset);
                 }
                 else if (TabStripPlacement == Dock.Bottom)
                 {
                     _selectedIndicator.SetCurrentValue(WidthProperty, selectedSize.Width);
                     _selectedIndicator.SetCurrentValue(HeightProperty, SelectedIndicatorThickness);
-                    builder.AppendTranslate(offset.X + selectedBounds.Left, 0);
+                    builder.AppendTranslate(offset.X + selectedBounds.Left + previewOffset, 0);
                 }
                 else
                 {
                     _selectedIndicator.SetCurrentValue(HeightProperty, selectedSize.Height);
                     _selectedIndicator.SetCurrentValue(WidthProperty, SelectedIndicatorThickness);
-                    builder.AppendTranslate(0, offset.Y + selectedBounds.Y);
+                    builder.AppendTranslate(0, offset.Y + selectedBounds.Y + previewOffset);
                 }
 
                 SelectedIndicatorRenderTransform = builder.Build();
             }
         }
+    }
+
+    internal void NotifyTabReorderPreviewChanged()
+    {
+        SetupSelectedIndicator();
     }
 
     protected override Size ArrangeOverride(Size finalSize)
