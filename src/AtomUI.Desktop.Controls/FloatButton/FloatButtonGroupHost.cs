@@ -192,6 +192,7 @@ public class FloatButtonGroupHost : TemplatedControl, IMotionAwareControl
     protected virtual FloatButtonGroup NotifyCreateFloatButtonGroup(CompositeDisposable disposables)
     {
         var floatButtonGroup = new FloatButtonGroup();
+        disposables.Add(BindUtils.RelayBind(this, DataContextProperty, floatButtonGroup, DataContextProperty));
         disposables.Add(BindUtils.RelayBind(this, IsMotionEnabledProperty, floatButtonGroup, IsMotionEnabledProperty));
         disposables.Add(BindUtils.RelayBind(this, PlacementProperty, floatButtonGroup, PlacementProperty));
         disposables.Add(BindUtils.RelayBind(this, FloatOffsetXProperty, floatButtonGroup, FloatOffsetXProperty));

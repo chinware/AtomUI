@@ -6,49 +6,54 @@
     <ControlTheme x:Key="{x:Type atom:ScrollViewer}" TargetType="atom:ScrollViewer">
         <Setter Property="Template">
             <ControlTemplate>
-                <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
-                    <atom:ScopeAwareOverlayLayerPanel Name="PART_ContentHost"
-                                                      Grid.Row="0"
-                                                      Grid.Column="0"
-                                                      ClipToBounds="False">
-                        <ScrollContentPresenter Name="PART_ContentPresenter"
-                                                Background="{TemplateBinding Background}"
-                                                HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
-                                                VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}"
-                                                HorizontalSnapPointsAlignment="{TemplateBinding HorizontalSnapPointsAlignment}"
-                                                VerticalSnapPointsAlignment="{TemplateBinding VerticalSnapPointsAlignment}"
-                                                Padding="{TemplateBinding Padding}"
-                                                ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}">
-                            <ScrollContentPresenter.GestureRecognizers>
-                                <ScrollGestureRecognizer
-                                    CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=PART_ContentPresenter}"
-                                    CanVerticallyScroll="{Binding CanVerticallyScroll, ElementName=PART_ContentPresenter}"
-                                    IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
-                            </ScrollContentPresenter.GestureRecognizers>
-                        </ScrollContentPresenter>
-                    </atom:ScopeAwareOverlayLayerPanel>
-                    <atom:ScrollBar Name="PART_HorizontalScrollBar"
-                                    Orientation="Horizontal"
-                                    Grid.Row="1"
-                                    Grid.Column="0" 
-                                    IsLiteMode="{TemplateBinding IsLiteMode}"
-                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                    AllowAutoHide="{TemplateBinding AllowAutoHide}"
-                                    Opacity="{TemplateBinding ScrollBarOpacity}"/>
-                    <atom:ScrollBar Name="PART_VerticalScrollBar"
-                                    Orientation="Vertical"
-                                    IsLiteMode="{TemplateBinding IsLiteMode}"
-                                    AllowAutoHide="{TemplateBinding AllowAutoHide}"
-                                    IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
-                                    Opacity="{TemplateBinding ScrollBarOpacity}"
-                                    Grid.Row="0"
-                                    Grid.Column="1" />
-                    <Panel Name="ScrollBarsSeparator"
-                           Grid.Row="1"
-                           Grid.Column="1"
-                           Background="{atom:SharedTokenResource ColorBgContainer}"
-                           Opacity="{TemplateBinding ScrollBarsSeparatorOpacity}" />
-                </Grid>
+                <atom:ScopeAwareOverlayLayerPanel Name="PART_ContentHost"
+                                                  ClipToBounds="False">
+                    <Grid Name="PART_ScrollLayout"
+                          ColumnDefinitions="*,Auto"
+                          RowDefinitions="*,Auto">
+                        <Panel Name="PART_ScrollContentHost"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               ClipToBounds="False">
+                            <ScrollContentPresenter Name="PART_ContentPresenter"
+                                                    Background="{TemplateBinding Background}"
+                                                    HorizontalSnapPointsType="{TemplateBinding HorizontalSnapPointsType}"
+                                                    VerticalSnapPointsType="{TemplateBinding VerticalSnapPointsType}"
+                                                    HorizontalSnapPointsAlignment="{TemplateBinding HorizontalSnapPointsAlignment}"
+                                                    VerticalSnapPointsAlignment="{TemplateBinding VerticalSnapPointsAlignment}"
+                                                    Padding="{TemplateBinding Padding}"
+                                                    ScrollViewer.IsScrollInertiaEnabled="{TemplateBinding IsScrollInertiaEnabled}">
+                                <ScrollContentPresenter.GestureRecognizers>
+                                    <ScrollGestureRecognizer
+                                        CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=PART_ContentPresenter}"
+                                        CanVerticallyScroll="{Binding CanVerticallyScroll, ElementName=PART_ContentPresenter}"
+                                        IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
+                                </ScrollContentPresenter.GestureRecognizers>
+                            </ScrollContentPresenter>
+                        </Panel>
+                        <atom:ScrollBar Name="PART_HorizontalScrollBar"
+                                        Orientation="Horizontal"
+                                        Grid.Row="1"
+                                        Grid.Column="0"
+                                        IsLiteMode="{TemplateBinding IsLiteMode}"
+                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                        AllowAutoHide="{TemplateBinding AllowAutoHide}"
+                                        Opacity="{TemplateBinding ScrollBarOpacity}"/>
+                        <atom:ScrollBar Name="PART_VerticalScrollBar"
+                                        Orientation="Vertical"
+                                        IsLiteMode="{TemplateBinding IsLiteMode}"
+                                        AllowAutoHide="{TemplateBinding AllowAutoHide}"
+                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
+                                        Opacity="{TemplateBinding ScrollBarOpacity}"
+                                        Grid.Row="0"
+                                        Grid.Column="1" />
+                        <Panel Name="ScrollBarsSeparator"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               Background="{atom:SharedTokenResource ColorBgContainer}"
+                               Opacity="{TemplateBinding ScrollBarsSeparatorOpacity}" />
+                    </Grid>
+                </atom:ScopeAwareOverlayLayerPanel>
             </ControlTemplate>
         </Setter>
         <Setter Property="ClipToBounds" Value="False" />
@@ -70,12 +75,12 @@
             <Setter Property="ScrollBarsSeparatorOpacity" Value="1" />
         </Style>
 
-        <Style Selector="^[AllowAutoHide=True] /template/ atom|ScopeAwareOverlayLayerPanel#PART_ContentHost">
+        <Style Selector="^[AllowAutoHide=True] /template/ Panel#PART_ScrollContentHost">
             <Setter Property="Grid.ColumnSpan" Value="2" />
             <Setter Property="Grid.RowSpan" Value="2" />
         </Style>
         
-        <Style Selector="^[IsLiteMode=True] /template/ atom|ScopeAwareOverlayLayerPanel#PART_ContentHost">
+        <Style Selector="^[IsLiteMode=True] /template/ Panel#PART_ScrollContentHost">
             <Setter Property="Grid.ColumnSpan" Value="2" />
             <Setter Property="Grid.RowSpan" Value="2" />
         </Style>

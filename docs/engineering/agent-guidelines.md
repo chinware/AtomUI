@@ -31,6 +31,23 @@
 - 加延时、重试或强制刷新来掩盖状态同步问题。
 - 用 `UnconditionalSuppressMessage` 或条件编译隐藏 AOT/trim warning，但没有改变运行时动态行为。
 
+## Public API 变更约束
+
+修复 bug 时，默认不得引入新的 Public API，除非已经得到用户明确允许。
+
+Public API 包括但不限于 `public` / `protected` 类型、成员、构造函数、Avalonia 属性、事件、公开接口、可被 XAML 引用的公开控件类型、主题资源 key、`ControlTheme` key、`TemplatePart`、伪类等对外契约。
+
+修复应优先复用现有公开契约、`private` / `internal` 实现、模板内部结构或已有共享基础设施。不得为了当前 bug 修复方便，新增空的 `public` 类型、包装类、属性、事件或临时公开扩展点。
+
+如果判断根因修复确实需要新增或调整 Public API，必须先停止实现，并向用户说明：
+
+1. 为什么不改 Public API 无法从源头修复。
+2. 具体会新增或变更哪些 API。
+3. 对兼容性、文档、测试和示例的影响。
+4. 是否存在不改 Public API 的替代方案及代价。
+
+如果不确定某个类型、成员或 XAML 契约是否属于 Public API，应先询问用户，不要自行决定。
+
 ## AOT 与动态行为
 
 新增功能和修复 bug 默认都要做一次 AOT 兼容判断。具体规则以 [aot-programming-guidelines.md](aot-programming-guidelines.md) 为准，不在本文档重复展开。

@@ -10,6 +10,8 @@ internal partial class en_US
     public const string BasicDescription = "The most basic usage.";
     public const string TypeTitle = "Type";
     public const string TypeDescription = "Change the type of the FloatButton with the type property.";
+    public const string CommandTitle = "Command";
+    public const string CommandDescription = "FloatButtonHost forwards commands to the hosted button, and FloatButton items inside a group inherit the host data context for command binding.";
     public const string ShapeTitle = "Shape";
     public const string ShapeDescription = "Change the shape of the FloatButton with the shape property.";
     public const string TooltipTitle = "FloatButton with tooltip";
@@ -32,6 +34,10 @@ internal partial class en_US
     public const string P2TooltipDocuments = "Documents";
     public const string P2DescriptionHelpInfo = "HELP INFO";
     public const string P2TextScrollToBottom = "Scroll to bottom";
+    public const string P2CommandCount = "Executed";
+    public const string P2CommandSource = "Source";
+    public const string P2CommandHost = "Host";
+    public const string P2CommandGroupChild = "Group child";
     public const string PageSubtitle = "Floating actions that stay available inside a scrollable region.";
     public const string PageDescription = "FloatButton provides quick access to important actions, grouped menus, badges, and back-to-top behavior while keeping controls anchored to the active content area.";
     public const string ComponentCategory = "General";
@@ -53,6 +59,8 @@ internal partial class en_US
     public const string ApiPropertyButtonType = "Visual button type.";
     public const string ApiPropertyShape = "Button shape.";
     public const string ApiPropertyHref = "Optional URI associated with the button.";
+    public const string ApiPropertyCommand = "Command executed when the hosted FloatButton is clicked.";
+    public const string ApiPropertyCommandParameter = "Parameter passed to the command.";
     public const string ApiPropertyIsMotionEnabled = "Controls whether open, close, and visibility animations are enabled.";
     public const string ApiPropertyIsBadgeEnabled = "Shows a badge on the floating button.";
     public const string ApiPropertyIsDotBadge = "Uses a dot badge instead of a count badge.";

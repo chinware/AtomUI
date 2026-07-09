@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls.Commons;
+using AtomUI.Data;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -8,21 +9,12 @@ public class BackTopFloatButtonHost : AbstractBackTopFloatButtonHost
     protected override AbstractFloatButton CreateFloatButton(CompositeDisposable disposables)
     {
         var floatButton = new BackTopFloatButton();
-        
-        floatButton[!BackTopFloatButton.IconProperty]             = this[!IconProperty];
-        floatButton[!BackTopFloatButton.TooltipProperty]          = this[!TooltipProperty];
-        floatButton[!BackTopFloatButton.TooltipColorProperty]     = this[!TooltipColorProperty];
-        floatButton[!BackTopFloatButton.ButtonTypeProperty]       = this[!ButtonTypeProperty];
-        floatButton[!BackTopFloatButton.ShapeProperty]            = this[!ShapeProperty];
-        floatButton[!BackTopFloatButton.HrefProperty]             = this[!HrefProperty];
-        floatButton[!BackTopFloatButton.IsMotionEnabledProperty]  = this[!IsMotionEnabledProperty];
-        floatButton[!BackTopFloatButton.PlacementProperty]        = this[!PlacementProperty];
-        floatButton[!BackTopFloatButton.FloatOffsetXProperty]     = this[!FloatOffsetXProperty];
-        floatButton[!BackTopFloatButton.FloatOffsetYProperty]     = this[!FloatOffsetYProperty];
-        floatButton[!BackTopFloatButton.ToTopDurationProperty]    = this[!ToTopDurationProperty];
-        floatButton[!BackTopFloatButton.TargetProperty]           = this[!TargetProperty];
-        floatButton[!BackTopFloatButton.VisibilityHeightProperty] = this[!VisibilityHeightProperty];
-        floatButton[!BackTopFloatButton.MotionDurationProperty]   = this[!MotionDurationProperty];
+
+        BindFloatButtonProperties(floatButton, disposables);
+        disposables.Add(BindUtils.RelayBind(this, ToTopDurationProperty, floatButton, BackTopFloatButton.ToTopDurationProperty));
+        disposables.Add(BindUtils.RelayBind(this, TargetProperty, floatButton, BackTopFloatButton.TargetProperty));
+        disposables.Add(BindUtils.RelayBind(this, VisibilityHeightProperty, floatButton, BackTopFloatButton.VisibilityHeightProperty));
+        disposables.Add(BindUtils.RelayBind(this, MotionDurationProperty, floatButton, BackTopFloatButton.MotionDurationProperty));
         
         return floatButton;
     }
