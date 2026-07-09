@@ -11,76 +11,19 @@
                     Padding="{TemplateBinding Padding}"
                     Margin="{TemplateBinding Margin}">
                 <StackPanel Name="ContentLayout" Orientation="Horizontal">
+                    <atom:IconPresenter Name="ItemIconPresenter"
+                                        Icon="{TemplateBinding Icon}" />
                     <ContentPresenter Name="ContentPresenter"
                                       Content="{TemplateBinding Content}"
                                       ContentTemplate="{TemplateBinding ContentTemplate, Converter={x:Static atom:BaseTabStripItemTheme.StringToTextBlockConverter}}" />
+                    <atom:IconButton Name="PART_ItemCloseButton"
+                                     Icon="{TemplateBinding CloseIcon}"
+                                     Opacity="{TemplateBinding CloseButtonOpacity}"
+                                     VerticalAlignment="Center" />
                 </StackPanel>
             </Border>
         </ControlTemplate>
     </Setter>
-
-    <Style Selector="^[HasIcon=True][IsClosable=False]">
-        <Setter Property="Template">
-            <ControlTemplate TargetType="atom:TabStripItem">
-                <Border Name="Frame"
-                        Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}"
-                        Margin="{TemplateBinding Margin}">
-                    <StackPanel Name="ContentLayout" Orientation="Horizontal">
-                        <atom:IconPresenter Name="ItemIconPresenter"
-                                            Icon="{TemplateBinding Icon}" />
-                        <ContentPresenter Name="ContentPresenter"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate, Converter={x:Static atom:BaseTabStripItemTheme.StringToTextBlockConverter}}" />
-                    </StackPanel>
-                </Border>
-            </ControlTemplate>
-        </Setter>
-    </Style>
-
-    <Style Selector="^[HasIcon=False][IsClosable=True]">
-        <Setter Property="Template">
-            <ControlTemplate TargetType="atom:TabStripItem">
-                <Border Name="Frame"
-                        Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}"
-                        Margin="{TemplateBinding Margin}">
-                    <StackPanel Name="ContentLayout" Orientation="Horizontal">
-                        <ContentPresenter Name="ContentPresenter"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate, Converter={x:Static atom:BaseTabStripItemTheme.StringToTextBlockConverter}}" />
-                        <atom:IconButton Name="PART_ItemCloseButton"
-                                         Icon="{TemplateBinding CloseIcon}"
-                                         Opacity="{TemplateBinding CloseButtonOpacity}"
-                                         VerticalAlignment="Center" />
-                    </StackPanel>
-                </Border>
-            </ControlTemplate>
-        </Setter>
-    </Style>
-
-    <Style Selector="^[HasIcon=True][IsClosable=True]">
-        <Setter Property="Template">
-            <ControlTemplate TargetType="atom:TabStripItem">
-                <Border Name="Frame"
-                        Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}"
-                        Margin="{TemplateBinding Margin}">
-                    <StackPanel Name="ContentLayout" Orientation="Horizontal">
-                        <atom:IconPresenter Name="ItemIconPresenter"
-                                            Icon="{TemplateBinding Icon}" />
-                        <ContentPresenter Name="ContentPresenter"
-                                          Content="{TemplateBinding Content}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate, Converter={x:Static atom:BaseTabStripItemTheme.StringToTextBlockConverter}}" />
-                        <atom:IconButton Name="PART_ItemCloseButton"
-                                         Icon="{TemplateBinding CloseIcon}"
-                                         Opacity="{TemplateBinding CloseButtonOpacity}"
-                                         VerticalAlignment="Center" />
-                    </StackPanel>
-                </Border>
-            </ControlTemplate>
-        </Setter>
-    </Style>
 
     <Style Selector="^:is(atom|TabStripItem)">
         <Setter Property="Cursor" Value="Hand" />
@@ -94,8 +37,21 @@
         </Style>
 
         <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
+            <Setter Property="IsVisible" Value="False" />
             <Setter Property="Margin" Value="{atom:TabControlTokenResource ItemIconMargin}" />
             <Setter Property="IconBrush" Value="{TemplateBinding Foreground}" />
+        </Style>
+
+        <Style Selector="^[HasIcon=True]">
+            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[IsIconSlotReserved=True]">
+            <Style Selector="^ /template/ atom|IconPresenter#ItemIconPresenter">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
         </Style>
 
         <Style Selector="^:pointerover">

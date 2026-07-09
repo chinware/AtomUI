@@ -863,9 +863,15 @@ public class TabReorderTests
         double secondaryAxisOffset = 0)
     {
         var start = TranslateToWindow(source, new Point(source.Bounds.Width / 2, source.Bounds.Height / 2), window);
-        var end = placement is Dock.Top or Dock.Bottom
-            ? TranslateToWindow(target, new Point(target.Bounds.Width + 12, target.Bounds.Height / 2 + secondaryAxisOffset), window)
-            : TranslateToWindow(target, new Point(target.Bounds.Width / 2 + secondaryAxisOffset, target.Bounds.Height + 12), window);
+        var end = GetNearTargetHalfPoint(window, placement, source, target, crossesHalf: true);
+        if (placement is Dock.Top or Dock.Bottom)
+        {
+            end = new Point(end.X, end.Y + secondaryAxisOffset);
+        }
+        else
+        {
+            end = new Point(end.X + secondaryAxisOffset, end.Y);
+        }
 
         window.MouseMove(start);
         window.MouseDown(start, MouseButton.Left);

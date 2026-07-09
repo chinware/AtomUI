@@ -29,18 +29,15 @@
 
         <Style Selector="^[TabStripPlacement=Left], ^[TabStripPlacement=Right]">
             <Style Selector="^[SizeType=Large]">
-                <Setter Property="Padding"
-                        Value="{atom:TabControlTokenResource VerticalItemPadding}" />
+                <Setter Property="Padding" Value="8,4" />
             </Style>
 
             <Style Selector="^[SizeType=Middle]">
-                <Setter Property="Padding"
-                        Value="{atom:TabControlTokenResource VerticalItemPadding}" />
+                <Setter Property="Padding" Value="8,4" />
             </Style>
 
             <Style Selector="^[SizeType=Small]">
-                <Setter Property="Padding"
-                        Value="{atom:TabControlTokenResource VerticalItemPadding}" />
+                <Setter Property="Padding" Value="8,4" />
             </Style>
         </Style>
     </ControlTheme>
