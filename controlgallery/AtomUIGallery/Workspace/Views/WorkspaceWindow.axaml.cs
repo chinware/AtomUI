@@ -1,7 +1,6 @@
 using System.Reactive;
 using AtomUI.Desktop.Controls;
 using AtomUI.Toolkits.GalleryBase.Shell;
-using AtomUIGallery;
 using AtomUIGallery.Workspace.ViewModels;
 using Avalonia;
 using Avalonia.Controls;

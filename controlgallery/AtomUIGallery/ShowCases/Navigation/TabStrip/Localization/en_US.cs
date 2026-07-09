@@ -10,6 +10,8 @@ internal partial class en_US
     public const string TabStripBasicDescription = "Default activate first tab.";
     public const string TabStripItemsSourceTitle = "Items from ItemSource datasource";
     public const string TabStripItemsSourceDescription = "Add TabStripItem based on data source and item template.";
+    public const string TabStripReorderTitle = "Draggable tabs";
+    public const string TabStripReorderDescription = "Enable drag sorting with IsTabReorderEnabled. The selected item follows the same logical tab after sorting.";
     public const string TabStripDisabledTitle = "Disabled";
     public const string TabStripDisabledDescription = "Disabled a tab.";
     public const string TabStripCenteredTitle = "Centered";
@@ -47,6 +49,8 @@ internal partial class en_US
     public const string ApiPropertyItemTemplate = "Defines the template used to render item-source tab headers.";
     public const string ApiPropertyTabStripPlacement = "Controls whether the tab strip is placed on the top, bottom, left, or right.";
     public const string ApiPropertyTabAlignmentCenter = "Centers the tab headers within the available strip area.";
+    public const string ApiPropertyIsTabReorderEnabled = "Enables drag sorting for tab strip items.";
+    public const string ApiPropertyTabActivationTrigger = "Controls whether a tab strip item activates on pointer press or on release over the same item.";
     public const string ApiPropertySizeType = "Controls the small, middle, or large tab size.";
     public const string ApiPropertyIsTabClosable = "Enables close buttons for tabs that allow closing.";
     public const string ApiPropertyIsTabAutoHideCloseButton = "Shows the close button only during tab hover or focus.";
@@ -54,6 +58,8 @@ internal partial class en_US
     public const string ApiPropertyHeaderEndExtraContent = "Adds extra content after the tab headers.";
     public const string ApiPropertyIsShowAddTabButton = "Shows the add-tab button on card tab strips.";
     public const string ApiPropertyAddTabRequest = "Raised when the card tab strip add button requests a new tab.";
+    public const string ApiEventTabReordering = "Raised before a drag sort is committed. Set Cancel to true to keep the original order.";
+    public const string ApiEventTabReordered = "Raised after a drag sort commits to the logical item collection.";
     public const string TokenColumnToken = "Token";
     public const string TokenColumnDescription = "Description";
     public const string TokenColumnScope = "Scope";
