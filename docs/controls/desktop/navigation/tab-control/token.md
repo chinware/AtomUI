@@ -31,6 +31,8 @@ TabControl 的控件专项模型通过 Theme 消费 Token：
 - AXAML/ControlTheme 负责把 Token 映射到背景、前景、边框、padding、尺寸和动效。
 - Token 默认值从 SharedToken 派生，不直接读取控件实例状态。
 - Gallery Token 表应显式维护，不依赖运行时反射扫描。
+- `VerticalItemGutter` 表达默认 Line Tab 在 `Left` / `Right` placement 下的紧凑相邻间距；Card Tab 不消费该 Token，而继续使用 `CardGutter` 维持独立卡片节奏。
+- `VerticalItemPadding` 保留给 Card Tab 的垂直 placement padding 语义；默认 Line Tab 的 `Left` / `Right` padding 由默认 Line theme 内部保持紧凑，不新增公开 Token。
 
 ## 4. 控件家族影响
 

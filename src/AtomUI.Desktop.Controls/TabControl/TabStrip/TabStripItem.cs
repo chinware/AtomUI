@@ -97,6 +97,9 @@ public class TabStripItem : AvaloniaTabStripItem
     internal static readonly StyledProperty<bool> HasIconProperty =
         AvaloniaProperty.Register<TabStripItem, bool>(nameof(HasIcon));
 
+    internal static readonly StyledProperty<bool> IsIconSlotReservedProperty =
+        AvaloniaProperty.Register<TabStripItem, bool>(nameof(IsIconSlotReserved));
+
     public SizeType SizeType
     {
         get => GetValue(SizeTypeProperty);
@@ -132,13 +135,34 @@ public class TabStripItem : AvaloniaTabStripItem
         get => GetValue(HasIconProperty);
         set => SetValue(HasIconProperty, value);
     }
+
+    internal bool IsIconSlotReserved
+    {
+        get => GetValue(IsIconSlotReservedProperty);
+        set => SetValue(IsIconSlotReservedProperty, value);
+    }
+
     #endregion
 
     private IconButton? _closeButton;
 
     private void ConfigureHasIcon()
     {
-        HasIcon = Icon is not null;
+        var hasIcon = Icon is not null;
+        if (HasIcon == hasIcon)
+        {
+            return;
+        }
+
+        HasIcon = hasIcon;
+        NotifyIconSlotOwner();
+    }
+
+    private void NotifyIconSlotOwner()
+    {
+        var tabStrip = ItemsControl.ItemsControlFromItemContainer(this) as BaseTabStrip ??
+                       Parent as BaseTabStrip;
+        tabStrip?.NotifyTabStripItemIconStateChanged();
     }
 
     private void SetupDefaultCloseIcon()
@@ -169,6 +193,8 @@ public class TabStripItem : AvaloniaTabStripItem
     {
         base.OnAttachedToLogicalTree(e);
         SetupShapeThemeBindings(false);
+        ConfigureHasIcon();
+        NotifyIconSlotOwner();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

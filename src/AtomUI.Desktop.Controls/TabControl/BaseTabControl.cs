@@ -605,6 +605,11 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
             ClearTabReorder(releasePointer: false);
         }
     }
+
+    internal void NotifyTabItemIconStateChanged()
+    {
+        UpdateIconSlotReservation();
+    }
     
     private void UpdateTabStripPlacement()
     {
@@ -621,6 +626,8 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
                 tabItem.TabStripPlacement = TabStripPlacement;
             }
         }
+
+        UpdateIconSlotReservation();
     }
     
     protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
@@ -696,6 +703,15 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         }
     }
 
+    protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
+    {
+        base.ContainerForItemPreparedOverride(container, item, index);
+        if (container is TabItem)
+        {
+            UpdateIconSlotReservation();
+        }
+    }
+
     protected virtual void PrepareTabItem(TabItem tabItem, object? item, int index)
     {
     }
@@ -715,6 +731,11 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     protected override void ClearContainerForItemOverride(Control element)
     {
         base.ClearContainerForItemOverride(element);
+        if (element is TabItem tabItem)
+        {
+            tabItem.IsIconSlotReserved = false;
+        }
+        UpdateIconSlotReservation();
         UpdateSelectedContent();
     }
     
@@ -767,7 +788,7 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         base.OnPropertyChanged(change);
         if (change.Property == TabStripPlacementProperty)
         {
-            RefreshContainers();
+            UpdateTabStripPlacement();
         }
         else if (change.Property == ContentTemplateProperty)
         {
@@ -929,6 +950,44 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     {
         tabItem.SetValue(TabItem.IsClosableProperty, IsTabClosable, BindingPriority.Template);
         tabItem.SetValue(TabItem.IsAutoHideCloseButtonProperty, IsTabAutoHideCloseButton, BindingPriority.Template);
+    }
+
+    private void UpdateIconSlotReservation()
+    {
+        var shouldReserve = IsVerticalTabStripPlacement() && HasAnyTabItemIcon();
+
+        for (var i = 0; i < ItemCount; i++)
+        {
+            if (ContainerFromIndex(i) is TabItem tabItem)
+            {
+                tabItem.IsIconSlotReserved = shouldReserve;
+            }
+        }
+    }
+
+    private bool HasAnyTabItemIcon()
+    {
+        for (var i = 0; i < ItemCount; i++)
+        {
+            if (ContainerFromIndex(i) is TabItem { HasIcon: true })
+            {
+                return true;
+            }
+
+            var item = Items[i];
+            if (item is TabItem { Icon: not null } ||
+                item is ITabItemData { Icon: not null })
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsVerticalTabStripPlacement()
+    {
+        return TabStripPlacement is Dock.Left or Dock.Right;
     }
 
     private bool CanStartTabReorder(TabItem tabItem, PointerPressedEventArgs args)

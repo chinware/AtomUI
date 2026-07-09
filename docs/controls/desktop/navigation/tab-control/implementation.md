@@ -21,6 +21,8 @@
 - Token 文件只提供组件视觉变量，不保存实例状态。
 - Gallery 文件只展示用法、API 表和 Token 表，不作为运行时逻辑 owner。
 - Tab 拖动排序属于 TabControl 家族的集合与选择协作路径；实现应落在 `BaseTabControl`、Tab item 容器、滚动视口和内部拖动协作对象之间，不能把排序状态散落到 Gallery、theme 或业务数据对象中。
+- 垂直页签图标对齐属于 TabControl 家族的 owner 级布局状态；`Left` / `Right` placement 下由 owner 统一判断同组是否存在图标，再把内部保留图标槽状态投射到 item container，不能通过 Gallery 手工补空图标或新增 public API。
+- 默认 Line Tab 的 `Left` / `Right` placement 应保持紧凑的垂直节奏，减少无意义高度浪费；相邻间距和 item 自身垂直 padding 都应按 Line 紧凑模型处理。Card Tab 使用独立 `CardGutter` 和 Card padding 视觉节奏，本规则不得改变 Card 外观。
 
 ## 3. 核心类职责
 
@@ -86,6 +88,10 @@ Public API / ItemsSource / Command / Event
 - 拖动排序状态流必须按 `IsTabReorderEnabled` -> pointer threshold -> Chrome-like live reorder preview -> `TabReordering` -> 逻辑集合 move -> selection/content/overflow recompute -> `TabReordered` 收敛。
 - 拖动过程中只能更新被拖 Tab 和兄弟 Tab 的临时 `RenderTransform`、候选目标 index 与自动滚动请求；被拖 Tab 必须被限制在当前 Tab 轨道主轴内移动，释放前不得实时移动 `ItemsSource`、`Items` 或 visual children，避免集合通知、选择状态和 container recycle 多次抖动。
 - 排序提交后选中状态按逻辑 item 重新计算，`SelectedContent`、content presenter、选中指示条、close button 可见性和 overflow 菜单都从同一个集合顺序派生。
+- 垂直图标槽状态必须从 `TabStripPlacement`、同组 item 的 `HasIcon` 和容器生成状态单向推导：`Top` / `Bottom` 保持紧凑布局，不默认保留图标槽；`Left` / `Right` 中只要同一 owner 下任一 Tab 有图标，全部 Tab item 都保留同宽图标槽，未配置图标的 item 渲染空槽而不是伪造图标。
+- 图标槽保留状态是内部模板状态，不属于 public API、业务数据或 Token。它应随 item icon 变化、placement 变化、ItemsSource reset/replace/clear、container prepare/clear 和 template reapply 重新计算。
+- `TabStripPlacement` 变化是纯布局变化，必须保留当前 `SelectedItem` / `SelectedIndex` 语义，不得为了更新方向重建 item containers；否则直接作为 `TabItem` 的容器会把旧 `IsSelected` 容器状态反向写回 owner selection。
+- 默认 Line Tab 垂直 spacing 和垂直 item padding 只由默认 `TabControl` / `TabStrip` theme 消费，Card theme 继续使用 `CardGutter` 与 `VerticalItemPadding`；不要通过全局修改 Card token 或 Card theme 来修正 Line 布局。
 
 ## 5. 生命周期与模板接入
 
@@ -99,6 +105,7 @@ Public API / ItemsSource / Command / Event
 - `PointerReleased` 激活候选项不依赖 template part；模板重套用、detach 或 container recycle 时必须清理候选 Tab 和 pointer，避免旧容器在下一次释放事件中被错误激活。
 - 拖动排序获得 pointer capture、应用临时 transform、订阅 pointer move/release 或启动边缘自动滚动时，必须在 pointer released、capture lost、cancel、collection reset、template reapply、detach 中走同一释放路径。
 - 模板重套用后不得复用旧 `TabItem`、旧 scroll viewer、旧 transform、旧 z-index 或旧拖动会话状态；新的模板只从 public state 和当前集合重新生成可观察状态。
+- 图标槽对齐状态必须由 owner 在模板接入和容器生命周期中统一同步。`TabItem` 只消费内部保留图标槽状态；容器回收或重新准备时必须清理旧 item 的图标槽状态，避免上一组带图标页签影响下一组无图标页签。
 
 稳定 template part 接入点：
 
@@ -148,6 +155,8 @@ TabControl 的交互事件应从输入源收敛到控件级语义事件：
 - 集合提交：`ItemsSource` 可写且实现 `IList` 时移动 source list；未设置 `ItemsSource` 时移动 `Items`；只读、固定大小或不可写 source 不提交 reorder，并清理临时视觉状态。
 - 事件顺序：释放时先触发可取消的 `TabReordering`；未取消且集合 move 成功后重新计算选择与内容，再触发 `TabReordered`。
 - 异常边界：拖动期间集合 reset、item 被删除、控件禁用或模板失效时取消当前排序，不吞异常、不延迟强刷，也不把旧 index 当作可靠状态。
+- 垂直图标槽计算：owner 只扫描当前有效 Tab item 容器或对应逻辑 item 的图标状态，得到同组 `HasAnyIconInVerticalPlacement` 语义后下发内部状态；主题结构应统一为稳定的 `IconSlot` + `ContentPresenter` + `CloseButton` 顺序。图标槽宽度沿用现有 `IconSize` / `IconSizeSM` 和 `ItemIconMargin` 语义，不新增 Token；无图标 item 的 `IconSlot` 保持占位但不显示内容。
+- Placement 切换流程：owner 更新 pseudo-class、header padding、现有 container 的 `TabStripPlacement` 和内部布局状态即可；不得调用 `RefreshContainers()` 作为布局刷新手段。
 
 实现文档不逐行解释私有方法。若某个私有算法成为稳定维护入口，应在本节补充算法不变量，而不是把代码复述为说明书。
 
@@ -169,6 +178,7 @@ TabControl 的交互事件应从输入源收敛到控件级语义事件：
 - 拖动 move 帧内只更新轻量 transform、目标 index 和自动滚动请求；主轴约束和目标 index 计算必须是纯几何计算，不得在 pointer move 中反复移动集合、重建 item 容器或重新应用模板。
 - 拖动预览 transform、绘制层级、计时器和订阅应按交互会话缓存并在会话结束释放；不得因一次拖动永久保留视觉对象或数据 item。
 - 拖动排序不得引入运行时反射、动态类型扫描或 AOT 不友好的事件发现路径。
+- 图标槽对齐不得为无图标 Tab 创建额外图标控件、动态占位对象或 C# 运行时模板分支；应复用静态 AXAML 槽位、现有资源绑定和内部布尔状态，避免增加模板实例化和 container recycle 成本。
 
 ## 9. 维护不变量
 
@@ -182,6 +192,9 @@ TabControl 的交互事件应从输入源收敛到控件级语义事件：
 - `TabActivationTrigger` 只能改变 pointer 激活提交时机，不能改变键盘选择、access key、关闭后选择、程序化选择或拖动排序后的选中项回放语义。
 - `PointerReleased` 候选激活状态必须由控件 owner 持有并按 pointer 会话释放，不能让旧 `TabItem` 或旧 pointer 引用跨 template reapply / detach 存活。
 - 所有拖动临时状态必须在提交、取消、capture lost、template reapply 和 detach 时释放，不能保留旧容器或旧 adorner。
+- 垂直图标槽对齐不能改变 `Top` / `Bottom` 的紧凑布局；不能新增 public API、Token 或 Gallery-only workaround；`TabControl`、`TabStrip`、`CardTabControl` 和 `CardTabStrip` 的同组混合有图标/无图标布局必须使用同一套 owner 推导规则。
+- 默认 Line Tab 的 `Left` / `Right` spacing / padding 调整不得影响 Card Tab、拖动排序阈值、选中指示条定位或 overflow 计算；选中指示条高度必须继续跟随 Line item 的真实 bounds。
+- 切换 `TabStripPlacement` 后当前选中项必须继续跟随同一个逻辑 item，不能因 container 重新准备或旧 `IsSelected` 状态回流而改变。
 - Light/Dark、Browser/Desktop 和不同 SizeType 下的主题一致性。
 - 文档、Gallery API 表、Token 表与源码契约的一致性。
 
@@ -193,6 +206,9 @@ TabControl 的交互事件应从输入源收敛到控件级语义事件：
 - 控件 API 或行为变更运行对应 `tests/AtomUI.Desktop.Controls.Tests` 或专用包测试。
 - Tab 激活触发变更需覆盖默认 `PointerReleased`、`PointerPressed`、press/release 同 Tab 激活、press 后移出不激活、press A release B 不激活、键盘选择不受影响，以及拖动排序释放不触发额外激活。
 - Tab 拖动排序变更需覆盖 Top/Bottom 横向排序、Left/Right 纵向排序、选中 item 跟随、可写 `ItemsSource`、未设置 `ItemsSource`、只读 source 不提交、`TabReordering` 取消、overflow 边缘自动滚动、关闭/添加/extra 区域排除、template reapply 与 detach 释放。
+- 垂直图标槽对齐变更需覆盖 `Left` / `Right` 下同组混合图标与无图标 Tab 的文本起点一致、全部无图标时不额外占位、`Top` / `Bottom` 保持紧凑、Line/Card 两类主题一致，以及 icon/placement/items 变化和 container recycle 后状态不串组。
+- 默认 Line 垂直 spacing / padding 变更需覆盖 `TabControl` / `TabStrip` 在 `Left` / `Right` 下的相邻 container 主轴间距和 item 高度，并明确 Card theme 不被本规则修改。
+- `TabStripPlacement` 行为变更需覆盖直接 `TabItem` 与数据 item 场景，确保切换 `Top` / `Right` / `Bottom` / `Left` 后 `SelectedItem` 不变。
 - DataGrid 相关变更运行 `tests/AtomUI.Desktop.Controls.DataGrid.Tests`。
 - Gallery 示例、API 表或 Token 表变更运行 `tests/AtomUIGallery.Tests`。
 - AOT、生成器或动态数据路径变更按 Gallery NativeAOT 发布流程验证。

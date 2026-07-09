@@ -100,6 +100,9 @@ public class TabItem : HeaderedContentControl, ISelectable
     internal static readonly StyledProperty<bool> HasIconProperty =
         AvaloniaProperty.Register<TabItem, bool>(nameof(HasIcon));
 
+    internal static readonly StyledProperty<bool> IsIconSlotReservedProperty =
+        AvaloniaProperty.Register<TabItem, bool>(nameof(IsIconSlotReserved));
+
     internal static readonly DirectProperty<TabItem, Thickness> LineMaskMarginProperty =
         AvaloniaProperty.RegisterDirect<TabItem, Thickness>(
             nameof(LineMaskMargin),
@@ -142,6 +145,12 @@ public class TabItem : HeaderedContentControl, ISelectable
         set => SetValue(HasIconProperty, value);
     }
 
+    internal bool IsIconSlotReserved
+    {
+        get => GetValue(IsIconSlotReservedProperty);
+        set => SetValue(IsIconSlotReservedProperty, value);
+    }
+
     // Card only
     private Thickness _lineMaskMargin;
 
@@ -167,7 +176,21 @@ public class TabItem : HeaderedContentControl, ISelectable
 
     private void ConfigureHasIcon()
     {
-        HasIcon = Icon is not null;
+        var hasIcon = Icon is not null;
+        if (HasIcon == hasIcon)
+        {
+            return;
+        }
+
+        HasIcon = hasIcon;
+        NotifyIconSlotOwner();
+    }
+
+    private void NotifyIconSlotOwner()
+    {
+        var tabControl = ItemsControl.ItemsControlFromItemContainer(this) as BaseTabControl ??
+                         Parent as BaseTabControl;
+        tabControl?.NotifyTabItemIconStateChanged();
     }
 
     private void SetupDefaultCloseIcon()
@@ -198,6 +221,8 @@ public class TabItem : HeaderedContentControl, ISelectable
     {
         base.OnAttachedToLogicalTree(e);
         SetupShapeThemeBindings(false);
+        ConfigureHasIcon();
+        NotifyIconSlotOwner();
     }
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)

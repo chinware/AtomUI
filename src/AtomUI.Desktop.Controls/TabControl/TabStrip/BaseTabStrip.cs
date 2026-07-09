@@ -406,6 +406,11 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
             ClearTabReorder(releasePointer: false);
         }
     }
+
+    internal void NotifyTabStripItemIconStateChanged()
+    {
+        UpdateIconSlotReservation();
+    }
     
 
     protected override void PrepareContainerForItemOverride(Control container, object? item, int index)
@@ -468,6 +473,25 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         }
     }
 
+    protected override void ClearContainerForItemOverride(Control element)
+    {
+        base.ClearContainerForItemOverride(element);
+        if (element is TabStripItem tabStripItem)
+        {
+            tabStripItem.IsIconSlotReserved = false;
+        }
+        UpdateIconSlotReservation();
+    }
+
+    protected override void ContainerForItemPreparedOverride(Control container, object? item, int index)
+    {
+        base.ContainerForItemPreparedOverride(container, item, index);
+        if (container is TabStripItem)
+        {
+            UpdateIconSlotReservation();
+        }
+    }
+
     protected virtual void PrepareTabStripItem(TabStripItem tabStripItem, object? item, int index)
     {
     }
@@ -488,6 +512,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
             }
 
             ConfigureEffectiveHeaderPadding();
+            UpdateIconSlotReservation();
         }
         else if (change.Property == HeaderStartEdgePaddingProperty || change.Property == HeaderEndEdgePaddingProperty)
         {
@@ -596,6 +621,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         base.OnApplyTemplate(e);
         _tabReorderScrollViewer = TabReorderHelper.FindTabScrollViewer(e.NameScope);
         ConfigureEffectiveHeaderPadding();
+        UpdateIconSlotReservation();
     }
 
     protected override void OnDetachedFromVisualTree(VisualTreeAttachmentEventArgs e)
@@ -625,6 +651,44 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     {
         tabItem.SetValue(TabStripItem.IsClosableProperty, IsTabClosable, BindingPriority.Template);
         tabItem.SetValue(TabStripItem.IsAutoHideCloseButtonProperty, IsTabAutoHideCloseButton, BindingPriority.Template);
+    }
+
+    private void UpdateIconSlotReservation()
+    {
+        var shouldReserve = IsVerticalTabStripPlacement() && HasAnyTabStripItemIcon();
+
+        for (var i = 0; i < ItemCount; i++)
+        {
+            if (ContainerFromIndex(i) is TabStripItem tabStripItem)
+            {
+                tabStripItem.IsIconSlotReserved = shouldReserve;
+            }
+        }
+    }
+
+    private bool HasAnyTabStripItemIcon()
+    {
+        for (var i = 0; i < ItemCount; i++)
+        {
+            if (ContainerFromIndex(i) is TabStripItem { HasIcon: true })
+            {
+                return true;
+            }
+
+            var item = Items[i];
+            if (item is TabStripItem { Icon: not null } ||
+                item is ITabItemData { Icon: not null })
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsVerticalTabStripPlacement()
+    {
+        return TabStripPlacement is Dock.Left or Dock.Right;
     }
 
     private bool CanStartTabReorder(TabStripItem tabStripItem, PointerPressedEventArgs args)
