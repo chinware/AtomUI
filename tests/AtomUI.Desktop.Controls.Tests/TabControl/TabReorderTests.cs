@@ -116,6 +116,48 @@ public class TabReorderTests
     }
 
     [Fact]
+    public void TabControl_Drag_Keeps_Dragged_Tab_Anchored_When_Header_Viewport_Scrolls()
+    {
+        var tabControl = new AtomTabControl
+        {
+            Width               = 180,
+            Height              = 140,
+            IsTabReorderEnabled = true
+        };
+        for (var i = 0; i < 12; i++)
+        {
+            tabControl.Items.Add(new AtomTabItem
+            {
+                Header  = $"Tab {i + 1}",
+                Content = $"Content {i + 1}"
+            });
+        }
+
+        ShowInWindow(tabControl, window =>
+        {
+            var scrollViewer = GetVisualDescendant<BaseTabScrollViewer>(tabControl);
+            RunJobsUntil(() => scrollViewer.Extent.Width > scrollViewer.Viewport.Width);
+
+            var dragged = GetContainer<AtomTabItem>(tabControl, 0);
+            var dragPoint = BeginDragOnTrack(window, tabControl.TabStripPlacement, dragged);
+            var beforeOffset = scrollViewer.Offset.X;
+            var beforeTranslate = GetTranslateX(dragged);
+
+            scrollViewer.Offset = new Vector(beforeOffset + 24, scrollViewer.Offset.Y);
+            Dispatcher.UIThread.RunJobs();
+            var offsetDelta = scrollViewer.Offset.X - beforeOffset;
+            offsetDelta.ShouldBeGreaterThan(0);
+
+            GetTranslateX(dragged).ShouldBe(
+                beforeTranslate + offsetDelta,
+                1.0,
+                "dragged tab preview must compensate header viewport scroll without waiting for another pointer move");
+
+            ReleasePointer(window, dragPoint);
+        });
+    }
+
+    [Fact]
     public void TabControl_Drag_Applies_Chrome_Like_Live_Reorder_Preview_Before_Release()
     {
         var first  = new TabItemData { Header = "first" };
@@ -720,6 +762,45 @@ public class TabReorderTests
     }
 
     [Fact]
+    public void TabStrip_Left_Placement_Drag_Keeps_Dragged_Tab_Anchored_When_Header_Viewport_Scrolls()
+    {
+        var tabStrip = new AtomTabStrip
+        {
+            Width               = 160,
+            Height              = 140,
+            IsTabReorderEnabled = true,
+            TabStripPlacement   = Dock.Left
+        };
+        for (var i = 0; i < 12; i++)
+        {
+            tabStrip.Items.Add(new AtomTabStripItem { Content = $"Tab {i + 1}" });
+        }
+
+        ShowInWindow(tabStrip, window =>
+        {
+            var scrollViewer = GetVisualDescendant<BaseTabScrollViewer>(tabStrip);
+            RunJobsUntil(() => scrollViewer.Extent.Height > scrollViewer.Viewport.Height);
+
+            var dragged = GetContainer<AtomTabStripItem>(tabStrip, 0);
+            var dragPoint = BeginDragOnTrack(window, tabStrip.TabStripPlacement, dragged);
+            var beforeOffset = scrollViewer.Offset.Y;
+            var beforeTranslate = GetTranslateY(dragged);
+
+            scrollViewer.Offset = new Vector(scrollViewer.Offset.X, beforeOffset + 24);
+            Dispatcher.UIThread.RunJobs();
+            var offsetDelta = scrollViewer.Offset.Y - beforeOffset;
+            offsetDelta.ShouldBeGreaterThan(0);
+
+            GetTranslateY(dragged).ShouldBe(
+                beforeTranslate + offsetDelta,
+                1.0,
+                "dragged tab preview must compensate header viewport scroll without waiting for another pointer move");
+
+            ReleasePointer(window, dragPoint);
+        });
+    }
+
+    [Fact]
     public void CardTabStrip_Template_Applies_When_Reorder_Is_Enabled()
     {
         var tabStrip = new AtomCardTabStrip
@@ -793,6 +874,22 @@ public class TabReorderTests
         Dispatcher.UIThread.RunJobs();
 
         return end;
+    }
+
+    private static Point BeginDragOnTrack(AvaloniaWindow window, Dock placement, Control source)
+    {
+        var start = TranslateToWindow(source, new Point(source.Bounds.Width / 2, source.Bounds.Height / 2), window);
+        var dragPoint = placement is Dock.Top or Dock.Bottom
+            ? new Point(start.X + 24, start.Y)
+            : new Point(start.X, start.Y + 24);
+
+        window.MouseMove(start);
+        window.MouseDown(start, MouseButton.Left);
+        Dispatcher.UIThread.RunJobs();
+        window.MouseMove(dragPoint);
+        Dispatcher.UIThread.RunJobs();
+
+        return dragPoint;
     }
 
     private static Point DragContainerToPreviewNearTargetHalf(
