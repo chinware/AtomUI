@@ -36,6 +36,14 @@ public class TabStripViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _positionCardTabStripPlacement, value);
     }
 
+    private Dock _reorderTabStripPlacement = Dock.Top;
+
+    public Dock ReorderTabStripPlacement
+    {
+        get => _reorderTabStripPlacement;
+        set => this.RaiseAndSetIfChanged(ref _reorderTabStripPlacement, value);
+    }
+
     private SizeType _sizeTypeTabStrip = SizeType.Middle;
     private ObservableCollection<TabStripApiRow>? _apiRows;
     private ObservableCollection<TabStripDesignTokenRow>? _designTokenRows;
@@ -79,6 +87,17 @@ public class TabStripViewModel : ReactiveObject, IRoutableViewModel
     public void HandleCardTabStripPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         PositionCardTabStripPlacement = args.Index switch
+        {
+            0 => Dock.Top,
+            1 => Dock.Bottom,
+            2 => Dock.Left,
+            _ => Dock.Right
+        };
+    }
+
+    public void HandleTabStripReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        ReorderTabStripPlacement = args.Index switch
         {
             0 => Dock.Top,
             1 => Dock.Bottom,

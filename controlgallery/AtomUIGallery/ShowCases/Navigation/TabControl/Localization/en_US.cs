@@ -12,6 +12,8 @@ internal partial class en_US
     public const string TabControlItemsSourceDescription = "Add TabItem based on data source and item template.";
     public const string TabControlReorderTitle = "Draggable tabs";
     public const string TabControlReorderDescription = "Enable drag sorting with IsTabReorderEnabled. The selected item follows the same logical tab after sorting.";
+    public const string TabControlReorderPlacementTitle = "Draggable tabs with placement";
+    public const string TabControlReorderPlacementDescription = "Switch TabStripPlacement to verify drag sorting on horizontal and vertical tab tracks.";
     public const string TabControlDisabledTitle = "Disabled";
     public const string TabControlDisabledDescription = "Disabled a tab.";
     public const string TabControlCenteredTitle = "Centered";

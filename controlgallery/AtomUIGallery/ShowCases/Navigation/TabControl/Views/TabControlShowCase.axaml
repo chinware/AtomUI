@@ -70,6 +70,7 @@
             <gallery:ShowCaseItem
                 Title="{gallery:TabControlShowCaseLangResource TabControlReorderTitle}"
                 Description="{gallery:TabControlShowCaseLangResource TabControlReorderDescription}"
+                BadgeText="v6.0.8"
                 IsDeferredContentEnabled="True">
                 <gallery:ShowCaseItem.DeferredContentTemplate>
                     <DataTemplate x:DataType="vm:TabControlViewModel">
@@ -86,6 +87,51 @@
                                 <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
                                 <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
                                 <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                            </atom:CardTabControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </gallery:ShowCaseItem.DeferredContentTemplate>
+            </gallery:ShowCaseItem>
+
+            <gallery:ShowCaseItem
+                Title="{gallery:TabControlShowCaseLangResource TabControlReorderPlacementTitle}"
+                Description="{gallery:TabControlShowCaseLangResource TabControlReorderPlacementDescription}"
+                BadgeText="v6.0.8"
+                IsDeferredContentEnabled="True">
+                <gallery:ShowCaseItem.DeferredContentTemplate>
+                    <DataTemplate x:DataType="vm:TabControlViewModel">
+                        <StackPanel Orientation="Vertical" Spacing="20">
+                            <StackPanel Orientation="Horizontal" Spacing="5">
+                                <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabControlShowCaseLangResource P2TextTabPosition}" />
+                                <atom:OptionButtonGroup ButtonStyle="Outline" Name="ReorderPlacementTabControlOptionGroup"
+                                                        OptionCheckedChanged="HandleTabControlReorderPlacementOptionCheckedChanged">
+                                    <atom:OptionButton IsChecked="True" Content="{gallery:TabControlShowCaseLangResource P2ContentTop}" />
+                                    <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentBottom}" />
+                                    <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentLeft}" />
+                                    <atom:OptionButton Content="{gallery:TabControlShowCaseLangResource P2ContentRight}" />
+                                </atom:OptionButtonGroup>
+                            </StackPanel>
+
+                            <atom:TabControl Height="220"
+                                             IsTabReorderEnabled="True"
+                                             SelectedIndex="1"
+                                             TabStripPlacement="{Binding ReorderTabControlPlacement}">
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN5}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN5}" />
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN6}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN6}" />
+                            </atom:TabControl>
+
+                            <atom:CardTabControl Height="180"
+                                                 IsTabReorderEnabled="True"
+                                                 SelectedIndex="1"
+                                                 TabStripPlacement="{Binding ReorderTabControlPlacement}">
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN1}" Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN1}" />
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN2}" Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN2}" />
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN3}" Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN3}" />
+                                <atom:TabItem Header="{gallery:TabControlShowCaseLangResource P2HeaderTabN4}" Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" Content="{gallery:TabControlShowCaseLangResource P2ContentContentOfTabPaneN4}" />
                             </atom:CardTabControl>
                         </StackPanel>
                     </DataTemplate>

@@ -12,6 +12,8 @@ internal partial class zh_CN
     public const string TabControlItemsSourceDescription = "基于数据源和项目模板添加 TabItem。";
     public const string TabControlReorderTitle = "拖拽排序";
     public const string TabControlReorderDescription = "通过 IsTabReorderEnabled 开启拖拽排序。排序后选中状态会跟随同一个逻辑标签项。";
+    public const string TabControlReorderPlacementTitle = "不同位置的拖拽排序";
+    public const string TabControlReorderPlacementDescription = "切换 TabStripPlacement，验证水平和垂直标签轨道下的拖拽排序效果。";
     public const string TabControlDisabledTitle = "禁用标签";
     public const string TabControlDisabledDescription = "禁用某个标签页。";
     public const string TabControlCenteredTitle = "居中显示";

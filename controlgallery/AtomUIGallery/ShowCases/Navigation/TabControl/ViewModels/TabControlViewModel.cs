@@ -36,6 +36,14 @@ public class TabControlViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _positionCardTabControlPlacement, value);
     }
 
+    private Dock _reorderTabControlPlacement = Dock.Top;
+
+    public Dock ReorderTabControlPlacement
+    {
+        get => _reorderTabControlPlacement;
+        set => this.RaiseAndSetIfChanged(ref _reorderTabControlPlacement, value);
+    }
+
     private SizeType _sizeTypeControl = SizeType.Middle;
     private ObservableCollection<TabControlApiRow>? _apiRows;
     private ObservableCollection<TabControlDesignTokenRow>? _designTokenRows;
@@ -79,6 +87,17 @@ public class TabControlViewModel : ReactiveObject, IRoutableViewModel
     public void HandleCardTabControlPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         PositionCardTabControlPlacement = args.Index switch
+        {
+            0 => Dock.Top,
+            1 => Dock.Bottom,
+            2 => Dock.Left,
+            _ => Dock.Right
+        };
+    }
+
+    public void HandleTabControlReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        ReorderTabControlPlacement = args.Index switch
         {
             0 => Dock.Top,
             1 => Dock.Bottom,

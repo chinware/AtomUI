@@ -12,6 +12,8 @@ internal partial class zh_TW
     public const string TabStripItemsSourceDescription = "基於數據源和項目模板添加 TabStripItem。";
     public const string TabStripReorderTitle = "拖曳排序";
     public const string TabStripReorderDescription = "透過 IsTabReorderEnabled 開啟拖曳排序。排序後選中狀態會跟隨同一個邏輯標籤項。";
+    public const string TabStripReorderPlacementTitle = "不同位置的拖曳排序";
+    public const string TabStripReorderPlacementDescription = "切換 TabStripPlacement，驗證水平與垂直標籤軌道下的拖曳排序效果。";
     public const string TabStripDisabledTitle = "禁用標籤";
     public const string TabStripDisabledDescription = "禁用某個標籤項。";
     public const string TabStripCenteredTitle = "居中顯示";

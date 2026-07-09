@@ -67,6 +67,7 @@
     <gallery:ShowCaseItem
         Title="{gallery:TabStripShowCaseLangResource TabStripReorderTitle}"
         Description="{gallery:TabStripShowCaseLangResource TabStripReorderDescription}"
+        BadgeText="v6.0.8"
         IsDeferredContentEnabled="True">
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:TabStripViewModel">
@@ -91,6 +92,63 @@
                         <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
                         <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
                     </atom:CardTabStrip>
+                </StackPanel>
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
+    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:TabStripShowCaseLangResource TabStripReorderPlacementTitle}"
+        Description="{gallery:TabStripShowCaseLangResource TabStripReorderPlacementDescription}"
+        BadgeText="v6.0.8"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:TabStripViewModel">
+                <StackPanel Orientation="Vertical" Spacing="20">
+                    <StackPanel Orientation="Horizontal" Spacing="5">
+                        <atom:TextBlock VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabPosition}" />
+                        <atom:OptionButtonGroup ButtonStyle="Outline" Name="ReorderPlacementTabStripOptionGroup"
+                                                OptionCheckedChanged="HandleTabStripReorderPlacementOptionCheckedChanged">
+                            <atom:OptionButton IsChecked="True" Content="{gallery:TabStripShowCaseLangResource P2ContentTop}" />
+                            <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentBottom}" />
+                            <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentLeft}" />
+                            <atom:OptionButton Content="{gallery:TabStripShowCaseLangResource P2ContentRight}" />
+                        </atom:OptionButtonGroup>
+                    </StackPanel>
+
+                    <DockPanel Height="220">
+                        <atom:TabStrip DockPanel.Dock="{Binding ReorderTabStripPlacement}"
+                                       TabStripPlacement="{Binding ReorderTabStripPlacement}"
+                                       IsTabReorderEnabled="True"
+                                       SelectedIndex="1">
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
+                            <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN5}" />
+                            <atom:TabStripItem Content="{gallery:TabStripShowCaseLangResource P2ContentTabN6}" />
+                        </atom:TabStrip>
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Background="{atom:SharedTokenResource ColorBgElevated}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabContent}" />
+                        </Border>
+                    </DockPanel>
+
+                    <DockPanel Height="180">
+                        <atom:CardTabStrip DockPanel.Dock="{Binding ReorderTabStripPlacement}"
+                                           TabStripPlacement="{Binding ReorderTabStripPlacement}"
+                                           IsTabReorderEnabled="True"
+                                           SelectedIndex="1">
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AppleOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN1}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=AndroidOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN2}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=WechatOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN3}" />
+                            <atom:TabStripItem Icon="{antdicons:AntDesignIconProvider Kind=GithubOutlined}" Content="{gallery:TabStripShowCaseLangResource P2ContentTabN4}" />
+                        </atom:CardTabStrip>
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                Background="{atom:SharedTokenResource ColorBgElevated}">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{gallery:TabStripShowCaseLangResource P2TextTabContent}" />
+                        </Border>
+                    </DockPanel>
                 </StackPanel>
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>

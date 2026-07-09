@@ -66,6 +66,14 @@ public partial class TabControlShowCase : GalleryReactiveUserControl<TabControlV
         }
     }
 
+    private void HandleTabControlReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is TabControlViewModel viewModel)
+        {
+            viewModel.HandleTabControlReorderPlacementOptionCheckedChanged(sender, args);
+        }
+    }
+
     private void HandleTabControlSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (DataContext is TabControlViewModel viewModel)

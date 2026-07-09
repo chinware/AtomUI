@@ -45,13 +45,15 @@ public class TabControlShowCasePageTests
         CountOccurrences(source, "Classes=\"info-value\"").ShouldBe(0);
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:TabControlShowCaseLangResource PageDescription}\"");
-        CountShowCaseItemElements(source).ShouldBe(14);
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(14);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(14);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TabControlViewModel\"").ShouldBe(14);
+        CountShowCaseItemElements(source).ShouldBe(15);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(15);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(15);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:TabControlViewModel\"").ShouldBe(15);
+        CountOccurrences(source, "BadgeText=\"v6.0.8\"").ShouldBe(2);
         source.ShouldContain("TabControlShowCaseLangResource TabControlBasicTitle");
         source.ShouldContain("TabControlShowCaseLangResource TabControlItemsSourceTitle");
         source.ShouldContain("TabControlShowCaseLangResource TabControlReorderTitle");
+        source.ShouldContain("TabControlShowCaseLangResource TabControlReorderPlacementTitle");
         source.ShouldContain("TabControlShowCaseLangResource TabControlAddCloseTitle");
         source.ShouldNotContain("<atom:DataGrid");
         source.ShouldNotContain(">Gallery<");
@@ -76,6 +78,7 @@ public class TabControlShowCasePageTests
 
         pageSource.ShouldContain("OptionCheckedChanged=\"HandleTabControlPlacementOptionCheckedChanged\"");
         pageSource.ShouldContain("OptionCheckedChanged=\"HandleCardTabControlPlacementOptionCheckedChanged\"");
+        pageSource.ShouldContain("OptionCheckedChanged=\"HandleTabControlReorderPlacementOptionCheckedChanged\"");
         pageSource.ShouldContain("OptionCheckedChanged=\"HandleTabControlSizeTypeOptionCheckedChanged\"");
         pageSource.ShouldContain("AddTabRequest=\"HandleTabControlAddTabRequest\"");
 
@@ -140,6 +143,8 @@ public class TabControlShowCasePageTests
             source.ShouldContain("ScenarioDesignToken");
             source.ShouldContain("PageSubtitle");
             source.ShouldNotContain("InfoNamespaceLabel");
+            source.ShouldContain("TabControlReorderPlacementTitle");
+            source.ShouldContain("TabControlReorderPlacementDescription");
             source.ShouldContain("ApiPropertySelectedIndex");
             source.ShouldContain("ApiPropertyTabStripPlacement");
             source.ShouldContain("ApiPropertyIsTabReorderEnabled");
@@ -191,7 +196,7 @@ public class TabControlShowCasePageTests
     {
         var normalized = Regex.Replace(
             source,
-            "\\s*OptionCheckedChanged=\"Handle(?:Card)?TabControl(?:Placement|SizeType)OptionCheckedChanged\"",
+            "\\s*OptionCheckedChanged=\"Handle(?:Card)?TabControl(?:ReorderPlacement|Placement|SizeType)OptionCheckedChanged\"",
             string.Empty,
             RegexOptions.CultureInvariant);
 
