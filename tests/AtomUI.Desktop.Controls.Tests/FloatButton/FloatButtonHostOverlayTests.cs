@@ -1,10 +1,12 @@
 using System.Threading;
 using System.ComponentModel;
+using System.Windows.Input;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Headless;
 using Avalonia.Input;
@@ -199,6 +201,218 @@ public class FloatButtonHostOverlayTests
         }
     }
 
+    [Fact]
+    public void FloatButtonHost_Forwards_Command_To_Overlay_Button()
+    {
+        var parameter = new object();
+        var command   = new RecordingCommand();
+        var host = new AtomUI.Desktop.Controls.FloatButtonHost
+        {
+            Command          = command,
+            CommandParameter = parameter
+        };
+        var window = CreateWindow(host, out var overlayPanel);
+
+        try
+        {
+            var overlayButton = GetOverlayFloatButton<AtomUI.Desktop.Controls.FloatButton>(overlayPanel);
+
+            Click(overlayButton, window);
+            Dispatcher.UIThread.RunJobs();
+
+            command.ExecuteCount.ShouldBe(1);
+            command.LastParameter.ShouldBeSameAs(parameter);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void FloatButtonHost_Disables_Overlay_Button_When_Command_Cannot_Execute()
+    {
+        var command = new RecordingCommand
+        {
+            CanExecuteValue = false
+        };
+        var host = new AtomUI.Desktop.Controls.FloatButtonHost
+        {
+            Command = command
+        };
+        var window = CreateWindow(host, out var overlayPanel);
+
+        try
+        {
+            var overlayButton = GetOverlayFloatButton<AtomUI.Desktop.Controls.FloatButton>(overlayPanel);
+
+            overlayButton.IsEffectivelyEnabled.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void BackTopFloatButtonHost_Forwards_Command_To_Overlay_Button()
+    {
+        var parameter = new object();
+        var command   = new RecordingCommand();
+        var host = new BackTopFloatButtonHost
+        {
+            Command          = command,
+            CommandParameter = parameter
+        };
+        var window = CreateWindow(host, out var overlayPanel);
+
+        try
+        {
+            var overlayButton = GetOverlayFloatButton<BackTopFloatButton>(overlayPanel);
+
+            Click(overlayButton, window);
+            Dispatcher.UIThread.RunJobs();
+
+            command.ExecuteCount.ShouldBe(1);
+            command.LastParameter.ShouldBeSameAs(parameter);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void FloatButtonHost_In_LiteScrollViewer_Renders_Overlay_Above_ScrollBars()
+    {
+        var host = new AtomUI.Desktop.Controls.FloatButtonHost
+        {
+            IsBadgeEnabled = true,
+            BadgeCount     = 99
+        };
+        var content = new Panel
+        {
+            Height = 500
+        };
+        content.Children.Add(host);
+        var scrollViewer = new AtomUI.Desktop.Controls.ScrollViewer
+        {
+            Width                       = 320,
+            Height                      = 240,
+            IsLiteMode                  = true,
+            VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+            Content                     = content
+        };
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 320,
+            Height  = 240,
+            Content = scrollViewer
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var overlayLayer = scrollViewer.GetVisualDescendants()
+                                           .OfType<ScopeAwareOverlayLayer>()
+                                           .Single(layer => layer.Children.OfType<AtomUI.Desktop.Controls.FloatButton>().Any());
+            var verticalScrollBar = scrollViewer.GetVisualDescendants()
+                                                .OfType<AtomUI.Desktop.Controls.ScrollBar>()
+                                                .Single(scrollBar => scrollBar.Name == "PART_VerticalScrollBar");
+            var scrollLayout = verticalScrollBar.GetVisualParent() as Avalonia.Controls.Grid;
+            scrollLayout.ShouldNotBeNull();
+
+            overlayLayer.GetVisualParent().ShouldBeSameAs(scrollLayout.GetVisualParent());
+            overlayLayer.ZIndex.ShouldBeGreaterThan(scrollLayout.ZIndex);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void FloatButtonGroupHost_Child_CommandBinding_Uses_Host_DataContext()
+    {
+        var viewModel = new CommandBindingViewModel();
+        var child     = CreateBoundChildButton();
+        var host = new FloatButtonGroupHost
+        {
+            DataContext = viewModel
+        };
+        host.Children.Add(child);
+
+        var window = CreateWindow(host, out _);
+
+        try
+        {
+            Dispatcher.UIThread.RunJobs();
+
+            child.Command.ShouldBeSameAs(viewModel.ChildCommand);
+            child.CommandParameter.ShouldBeSameAs(viewModel.Parameter);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void FloatButtonGroupHost_Does_Not_Overwrite_Child_Local_DataContext()
+    {
+        var hostViewModel  = new CommandBindingViewModel();
+        var childViewModel = new CommandBindingViewModel();
+        var child = CreateBoundChildButton();
+        child.DataContext = childViewModel;
+        var host = new FloatButtonGroupHost
+        {
+            DataContext = hostViewModel
+        };
+        host.Children.Add(child);
+
+        var window = CreateWindow(host, out _);
+
+        try
+        {
+            Dispatcher.UIThread.RunJobs();
+
+            child.Command.ShouldBeSameAs(childViewModel.ChildCommand);
+            child.CommandParameter.ShouldBeSameAs(childViewModel.Parameter);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void FloatButtonGroupHost_Child_Added_After_Attach_Uses_Host_DataContext()
+    {
+        var viewModel = new CommandBindingViewModel();
+        var host = new FloatButtonGroupHost
+        {
+            DataContext = viewModel
+        };
+        var window = CreateWindow(host, out _);
+
+        try
+        {
+            var child = CreateBoundChildButton();
+
+            host.Children.Add(child);
+            Dispatcher.UIThread.RunJobs();
+
+            child.Command.ShouldBeSameAs(viewModel.ChildCommand);
+            child.CommandParameter.ShouldBeSameAs(viewModel.Parameter);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static Avalonia.Controls.Window CreateWindow(Control host, out ScopeAwareOverlayLayerPanel overlayPanel)
     {
         overlayPanel = new ScopeAwareOverlayLayerPanel
@@ -218,6 +432,28 @@ public class FloatButtonHostOverlayTests
         window.Show();
         Dispatcher.UIThread.RunJobs();
         return window;
+    }
+
+    private static TFloatButton GetOverlayFloatButton<TFloatButton>(ScopeAwareOverlayLayerPanel overlayPanel)
+        where TFloatButton : AtomUI.Controls.Commons.AbstractFloatButton
+    {
+        var overlayLayer = ScopeAwareOverlayLayer.FindLayer(overlayPanel);
+        overlayLayer.ShouldNotBeNull();
+        return overlayLayer.GetVisualDescendants()
+                           .OfType<TFloatButton>()
+                           .Single();
+    }
+
+    private static AtomUI.Desktop.Controls.FloatButton CreateBoundChildButton()
+    {
+        var child = new AtomUI.Desktop.Controls.FloatButton();
+        child.Bind(
+            Avalonia.Controls.Button.CommandProperty,
+            new Binding(nameof(CommandBindingViewModel.ChildCommand)));
+        child.Bind(
+            Avalonia.Controls.Button.CommandParameterProperty,
+            new Binding(nameof(CommandBindingViewModel.Parameter)));
+        return child;
     }
 
     private static FloatButtonGroupHost CreateBoundGroupHost(
@@ -271,5 +507,39 @@ public class FloatButtonHostOverlayTests
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
+    }
+
+    private sealed class CommandBindingViewModel
+    {
+        public RecordingCommand ChildCommand { get; } = new();
+
+        public object Parameter { get; } = new();
+    }
+
+    private sealed class RecordingCommand : ICommand
+    {
+        public bool CanExecuteValue { get; set; } = true;
+
+        public int ExecuteCount { get; private set; }
+
+        public object? LastParameter { get; private set; }
+
+        public bool CanExecute(object? parameter)
+        {
+            return CanExecuteValue;
+        }
+
+        public void Execute(object? parameter)
+        {
+            ExecuteCount++;
+            LastParameter = parameter;
+        }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        public event EventHandler? CanExecuteChanged;
     }
 }

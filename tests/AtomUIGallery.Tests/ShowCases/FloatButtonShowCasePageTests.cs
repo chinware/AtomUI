@@ -45,10 +45,11 @@ public class FloatButtonShowCasePageTests
         source.ShouldNotContain("LineHeight=\"22\"");
         source.ShouldContain("Description=\"{gallery:FloatButtonShowCaseLangResource PageDescription}\"");
         source.ShouldContain("<gallery:ShowCaseItem");
-        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(11);
-        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(11);
-        CountOccurrences(source, "DataTemplate x:DataType=\"vm:FloatButtonViewModel\"").ShouldBe(11);
+        CountOccurrences(source, "IsDeferredContentEnabled=\"True\"").ShouldBe(12);
+        CountOccurrences(source, "<gallery:ShowCaseItem.DeferredContentTemplate>").ShouldBe(12);
+        CountOccurrences(source, "DataTemplate x:DataType=\"vm:FloatButtonViewModel\"").ShouldBe(12);
         source.ShouldContain("FloatButtonShowCaseLangResource BasicTitle");
+        source.ShouldContain("FloatButtonShowCaseLangResource CommandTitle");
         source.ShouldContain("FloatButtonShowCaseLangResource ControlledModeTitle");
         source.ShouldContain("FloatButtonShowCaseLangResource PlacementTitle");
         source.ShouldContain("FloatButtonShowCaseLangResource BackTopTitle");
@@ -136,12 +137,27 @@ public class FloatButtonShowCasePageTests
             source.ShouldNotContain("InfoNamespaceLabel");
             source.ShouldContain("ApiPropertyPlacement");
             source.ShouldContain("ApiPropertyButtonType");
+            source.ShouldContain("ApiPropertyCommand");
+            source.ShouldContain("ApiPropertyCommandParameter");
             source.ShouldContain("ApiPropertyTrigger");
             source.ShouldContain("ApiPropertyVisibilityHeight");
             source.ShouldContain("TokenNameFloatButtonSize");
             source.ShouldContain("TokenNameFloatButtonIconSize");
             source.ShouldContain("TokenNameFloatOffsetY");
         }
+    }
+
+    [Fact]
+    public void FloatButton_Command_ShowCase_Displays_Feedback_Near_Action_Buttons()
+    {
+        var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/General/FloatButton/Views/FloatButtonShowCase.axaml");
+
+        source.ShouldContain("Name=\"CommandFeedbackCard\"");
+        source.ShouldContain("HorizontalAlignment=\"Right\"");
+        source.ShouldContain("VerticalAlignment=\"Bottom\"");
+        source.ShouldContain("Margin=\"24,24,160,24\"");
+        source.ShouldContain("Text=\"{Binding CommandClickCount}\"");
+        source.ShouldContain("Text=\"{Binding LastCommandSource}\"");
     }
 
     [Fact]

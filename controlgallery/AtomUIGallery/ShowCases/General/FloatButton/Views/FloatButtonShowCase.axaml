@@ -65,6 +65,69 @@
 
             </DataTemplate>
         </gallery:ShowCaseItem.DeferredContentTemplate>
+	    </gallery:ShowCaseItem>
+
+    <gallery:ShowCaseItem
+        Title="{gallery:FloatButtonShowCaseLangResource CommandTitle}"
+        Description="{gallery:FloatButtonShowCaseLangResource CommandDescription}"
+        SourceKey="float-button-command"
+        BadgeText="v6.0.8"
+        IsDeferredContentEnabled="True">
+        <gallery:ShowCaseItem.DeferredContentTemplate>
+            <DataTemplate x:DataType="vm:FloatButtonViewModel">
+        <Grid Height="300">
+            <atom:ScrollViewer>
+                <Border Background="White">
+                    <Panel Height="500">
+                        <atom:FloatButtonHost ButtonType="Primary"
+                                              Icon="{antdicons:AntDesignIconProvider ThunderboltOutlined}"
+                                              Command="{Binding FloatButtonCommand}"
+                                              CommandParameter="{gallery:FloatButtonShowCaseLangResource P2CommandHost}"
+                                              FloatOffsetX="80" />
+                        <atom:FloatButtonGroupHost Shape="Circle"
+                                                   Trigger="Click">
+                            <atom:FloatButton Icon="{antdicons:AntDesignIconProvider QuestionCircleOutlined}"
+                                              Tooltip="{gallery:FloatButtonShowCaseLangResource P2CommandGroupChild}"
+                                              Command="{Binding FloatButtonCommand}"
+                                              CommandParameter="{gallery:FloatButtonShowCaseLangResource P2CommandGroupChild}" />
+                        </atom:FloatButtonGroupHost>
+                    </Panel>
+                </Border>
+            </atom:ScrollViewer>
+            <Border Name="CommandFeedbackCard"
+                    Width="220"
+                    Padding="14,12"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="24,24,160,24"
+                    Background="{atom:SharedTokenResource ColorBgContainer}"
+                    BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                    BorderThickness="1"
+                    CornerRadius="8">
+                <Grid ColumnDefinitions="Auto,*"
+                      RowDefinitions="Auto,Auto"
+                      ColumnSpacing="12"
+                      RowSpacing="8">
+                    <atom:TextBlock Text="{gallery:FloatButtonShowCaseLangResource P2CommandCount}"
+                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                    <atom:TextBlock Grid.Column="1"
+                                    Text="{Binding CommandClickCount}"
+                                    FontSize="18"
+                                    FontWeight="SemiBold"
+                                    Foreground="{atom:SharedTokenResource ColorPrimary}" />
+                    <atom:TextBlock Grid.Row="1"
+                                    Text="{gallery:FloatButtonShowCaseLangResource P2CommandSource}"
+                                    Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
+                    <atom:TextBlock Grid.Row="1"
+                                    Grid.Column="1"
+                                    Text="{Binding LastCommandSource}"
+                                    FontWeight="SemiBold" />
+                </Grid>
+            </Border>
+        </Grid>
+
+            </DataTemplate>
+        </gallery:ShowCaseItem.DeferredContentTemplate>
     </gallery:ShowCaseItem>
 
     <gallery:ShowCaseItem

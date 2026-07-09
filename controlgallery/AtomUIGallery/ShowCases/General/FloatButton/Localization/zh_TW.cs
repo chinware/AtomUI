@@ -10,6 +10,8 @@ internal partial class zh_TW
     public const string BasicDescription = "最基礎的用法。";
     public const string TypeTitle = "類型";
     public const string TypeDescription = "通過 type 屬性改變 FloatButton 的類型。";
+    public const string CommandTitle = "命令";
+    public const string CommandDescription = "FloatButtonHost 會將命令轉發給真實懸浮按鈕，組合內的 FloatButton 子項也能繼承宿主資料上下文進行命令繫結。";
     public const string ShapeTitle = "形狀";
     public const string ShapeDescription = "通過 shape 屬性改變 FloatButton 的形狀。";
     public const string TooltipTitle = "帶提示的 FloatButton";
@@ -32,6 +34,10 @@ internal partial class zh_TW
     public const string P2TooltipDocuments = "文檔";
     public const string P2DescriptionHelpInfo = "幫助信息";
     public const string P2TextScrollToBottom = "滾動到底部";
+    public const string P2CommandCount = "執行次數";
+    public const string P2CommandSource = "來源";
+    public const string P2CommandHost = "宿主按鈕";
+    public const string P2CommandGroupChild = "組合子按鈕";
     public const string PageSubtitle = "在滾動區域中持續可用的懸浮操作。";
     public const string PageDescription = "FloatButton 提供重要操作的快速入口，支持組合菜單、徽標和回到頂部行為，並將控件錨定在當前內容區域。";
     public const string ComponentCategory = "通用";
@@ -53,6 +59,8 @@ internal partial class zh_TW
     public const string ApiPropertyButtonType = "按鈕視覺類型。";
     public const string ApiPropertyShape = "按鈕形狀。";
     public const string ApiPropertyHref = "按鈕關聯的可選 URI。";
+    public const string ApiPropertyCommand = "點擊宿主懸浮按鈕時執行的命令。";
+    public const string ApiPropertyCommandParameter = "傳遞給命令的參數。";
     public const string ApiPropertyIsMotionEnabled = "控制打開、關閉和可見性動畫是否啟用。";
     public const string ApiPropertyIsBadgeEnabled = "在懸浮按鈕上顯示徽標。";
     public const string ApiPropertyIsDotBadge = "使用點狀徽標而不是數字徽標。";

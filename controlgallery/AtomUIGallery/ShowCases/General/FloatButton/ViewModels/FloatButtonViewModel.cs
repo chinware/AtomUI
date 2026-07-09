@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Reactive;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUIGallery.Localization;
@@ -18,6 +19,8 @@ public class FloatButtonViewModel : ReactiveObject, IRoutableViewModel
 
     private ObservableCollection<FloatButtonApiRow>? _apiRows;
     private ObservableCollection<FloatButtonDesignTokenRow>? _designTokenRows;
+    private int _commandClickCount;
+    private string _lastCommandSource = "-";
 
     public ObservableCollection<FloatButtonApiRow>? ApiRows
     {
@@ -30,6 +33,20 @@ public class FloatButtonViewModel : ReactiveObject, IRoutableViewModel
         get => _designTokenRows;
         private set => this.RaiseAndSetIfChanged(ref _designTokenRows, value);
     }
+
+    public int CommandClickCount
+    {
+        get => _commandClickCount;
+        private set => this.RaiseAndSetIfChanged(ref _commandClickCount, value);
+    }
+
+    public string LastCommandSource
+    {
+        get => _lastCommandSource;
+        private set => this.RaiseAndSetIfChanged(ref _lastCommandSource, value);
+    }
+
+    public ReactiveCommand<string, Unit> FloatButtonCommand { get; }
     
     private bool _isOpened;
 
@@ -41,7 +58,8 @@ public class FloatButtonViewModel : ReactiveObject, IRoutableViewModel
 
     public FloatButtonViewModel(IScreen screen)
     {
-        HostScreen = screen;
+        HostScreen         = screen;
+        FloatButtonCommand = ReactiveCommand.Create<string>(HandleFloatButtonCommand);
     }
 
     public void EnsureApiRows()
@@ -63,6 +81,8 @@ public class FloatButtonViewModel : ReactiveObject, IRoutableViewModel
             new FloatButtonApiRow("ButtonType", Lang(FloatButtonShowCaseLangResourceKind.ApiPropertyButtonType), "FloatButtonType", "blue", "Default"),
             new FloatButtonApiRow("Shape", Lang(FloatButtonShowCaseLangResourceKind.ApiPropertyShape), "FloatButtonShape", "blue", "Circle"),
             new FloatButtonApiRow("Href", Lang(FloatButtonShowCaseLangResourceKind.ApiPropertyHref), "Uri?", "cyan", "null"),
+            new FloatButtonApiRow("Command", Lang(FloatButtonShowCaseLangResourceKind.ApiPropertyCommand), "ICommand?", "cyan", "null"),
+            new FloatButtonApiRow("CommandParameter", Lang(FloatButtonShowCaseLangResourceKind.ApiPropertyCommandParameter), "object?", "cyan", "null"),
             new FloatButtonApiRow("IsMotionEnabled", Lang(FloatButtonShowCaseLangResourceKind.ApiPropertyIsMotionEnabled), "bool", "green", "true"),
             new FloatButtonApiRow("IsBadgeEnabled", Lang(FloatButtonShowCaseLangResourceKind.ApiPropertyIsBadgeEnabled), "bool", "green", "false"),
             new FloatButtonApiRow("IsDotBadge", Lang(FloatButtonShowCaseLangResourceKind.ApiPropertyIsDotBadge), "bool", "green", "false"),
@@ -122,6 +142,8 @@ public class FloatButtonViewModel : ReactiveObject, IRoutableViewModel
             FloatButtonShowCaseLangResourceKind.ApiPropertyButtonType            => en_US.ApiPropertyButtonType,
             FloatButtonShowCaseLangResourceKind.ApiPropertyShape                 => en_US.ApiPropertyShape,
             FloatButtonShowCaseLangResourceKind.ApiPropertyHref                  => en_US.ApiPropertyHref,
+            FloatButtonShowCaseLangResourceKind.ApiPropertyCommand               => en_US.ApiPropertyCommand,
+            FloatButtonShowCaseLangResourceKind.ApiPropertyCommandParameter      => en_US.ApiPropertyCommandParameter,
             FloatButtonShowCaseLangResourceKind.ApiPropertyIsMotionEnabled       => en_US.ApiPropertyIsMotionEnabled,
             FloatButtonShowCaseLangResourceKind.ApiPropertyIsBadgeEnabled        => en_US.ApiPropertyIsBadgeEnabled,
             FloatButtonShowCaseLangResourceKind.ApiPropertyIsDotBadge            => en_US.ApiPropertyIsDotBadge,
@@ -146,6 +168,12 @@ public class FloatButtonViewModel : ReactiveObject, IRoutableViewModel
             FloatButtonShowCaseLangResourceKind.TokenStatusStable                => en_US.TokenStatusStable,
             _                                                                    => kind.ToString()
         };
+    }
+
+    private void HandleFloatButtonCommand(string source)
+    {
+        LastCommandSource = source;
+        CommandClickCount++;
     }
 }
 
