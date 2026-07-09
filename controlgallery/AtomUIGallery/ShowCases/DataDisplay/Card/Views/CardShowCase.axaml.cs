@@ -1,11 +1,8 @@
 using System.Reactive.Disposables;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Media;
-using TabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.Card;
 

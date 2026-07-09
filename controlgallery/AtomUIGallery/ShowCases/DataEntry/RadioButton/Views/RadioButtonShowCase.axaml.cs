@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Desktop.Controls;
 using AtomUI.Theme.Language;
 using AtomUIGallery.Localization;
 using Avalonia;
-using Avalonia.Controls;
 
 namespace AtomUIGallery.ShowCases.RadioButton;
 

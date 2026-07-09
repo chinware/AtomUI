@@ -1,7 +1,6 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
-using AtomUI.Data;
 using AtomUI.Theme.Language;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,7 +8,6 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
-using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 using AtomUISteps = AtomUI.Desktop.Controls.Steps;
 
 namespace AtomUIGallery.ShowCases.Steps;

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Form;
 
 public partial class FormDesignTokenDataGrid : GalleryReactiveUserControl<FormViewModel>

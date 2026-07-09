@@ -1,5 +1,4 @@
 using AtomUI.Media.TextFormatting;
-using AtomUI.Theme.Styling;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;

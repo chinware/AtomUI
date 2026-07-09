@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
-using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Media;
 
 namespace AtomUIGallery.ShowCases.Slider;

@@ -5,10 +5,8 @@ using AtomUI.Desktop.Controls;
 using AtomUI.Theme.Language;
 using AtomUIGallery.Localization;
 using Avalonia;
-using Avalonia.Controls;
 using Avalonia.Interactivity;
 using AtomTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
-using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.TabStrip;
 

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.ToggleSwitch;
 
 public partial class ToggleSwitchDesignTokenDataGrid : GalleryReactiveUserControl<ToggleSwitchViewModel>

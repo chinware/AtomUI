@@ -11,7 +11,6 @@ using AtomScrollViewer = AtomUI.Desktop.Controls.ScrollViewer;
 using AtomTextBlock = AtomUI.Desktop.Controls.TextBlock;
 using AvaloniaSlider = Avalonia.Controls.Slider;
 using NumericUpDown = AtomUI.Desktop.Controls.NumericUpDown;
-using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.FlexPanel;
 

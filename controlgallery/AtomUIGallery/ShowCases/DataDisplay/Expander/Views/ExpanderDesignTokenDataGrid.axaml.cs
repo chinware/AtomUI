@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Expander;
 
 public partial class ExpanderDesignTokenDataGrid : GalleryReactiveUserControl<ExpanderViewModel>

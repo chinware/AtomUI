@@ -6,7 +6,6 @@
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using AtomUI.Controls.Data;
-using AtomUI.Utils;
 using Avalonia.Data.Converters;
 
 namespace AtomUI.Desktop.Controls.Data;

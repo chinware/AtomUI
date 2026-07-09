@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Tour;
 
 public partial class TourApiDataGrid : GalleryReactiveUserControl<TourViewModel>

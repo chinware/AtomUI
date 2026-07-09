@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.CheckBox;
 
 public partial class CheckBoxDesignTokenDataGrid : GalleryReactiveUserControl<CheckBoxViewModel>

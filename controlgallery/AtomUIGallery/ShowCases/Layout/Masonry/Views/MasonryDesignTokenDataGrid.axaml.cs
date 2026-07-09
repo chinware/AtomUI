@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Masonry;
 
 public partial class MasonryDesignTokenDataGrid : GalleryReactiveUserControl<MasonryViewModel>

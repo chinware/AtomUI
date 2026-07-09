@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Modal;
 
 public partial class ModalApiDataGrid : GalleryReactiveUserControl<ModalViewModel>

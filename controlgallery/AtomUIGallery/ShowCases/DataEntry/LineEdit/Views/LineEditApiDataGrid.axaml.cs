@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.LineEdit;
 
 public partial class LineEditApiDataGrid : GalleryReactiveUserControl<LineEditViewModel>

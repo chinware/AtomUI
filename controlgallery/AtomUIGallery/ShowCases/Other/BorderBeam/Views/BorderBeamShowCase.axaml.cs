@@ -1,6 +1,3 @@
-using Avalonia;
-using Avalonia.Controls;
-
 namespace AtomUIGallery.ShowCases.BorderBeam;
 
 public partial class BorderBeamShowCase : GalleryReactiveUserControl<BorderBeamViewModel>

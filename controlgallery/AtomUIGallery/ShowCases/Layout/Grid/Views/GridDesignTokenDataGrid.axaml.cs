@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Grid;
 
 public partial class GridDesignTokenDataGrid : GalleryReactiveUserControl<GridViewModel>

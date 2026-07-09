@@ -1,5 +1,4 @@
 global using AtomUIButton = AtomUI.Desktop.Controls.Button;
-global using AtomUIButtonSpinner = AtomUI.Desktop.Controls.ButtonSpinner;
 global using AtomUICheckBox = AtomUI.Desktop.Controls.CheckBox;
 global using AtomUIColorPicker = AtomUI.Desktop.Controls.ColorPicker;
 global using AtomUIForm = AtomUI.Desktop.Controls.Form;

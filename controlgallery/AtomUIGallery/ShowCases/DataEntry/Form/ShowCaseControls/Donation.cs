@@ -5,7 +5,6 @@ using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
-using NumericUpDown = AtomUI.Desktop.Controls.NumericUpDown;
 
 namespace AtomUIGallery.ShowCases.Form;
 

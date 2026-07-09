@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.QRCode;
 
 public partial class QRCodeDesignTokenDataGrid : GalleryReactiveUserControl<QRCodeViewModel>

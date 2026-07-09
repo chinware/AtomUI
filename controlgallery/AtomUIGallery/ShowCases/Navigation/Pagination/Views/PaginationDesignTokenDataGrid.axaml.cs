@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Pagination;
 
 public partial class PaginationDesignTokenDataGrid : GalleryReactiveUserControl<PaginationViewModel>

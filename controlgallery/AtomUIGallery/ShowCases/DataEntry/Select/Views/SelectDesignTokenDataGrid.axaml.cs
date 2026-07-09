@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Select;
 
 public partial class SelectDesignTokenDataGrid : GalleryReactiveUserControl<SelectViewModel>

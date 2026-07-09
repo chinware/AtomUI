@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.CustomizeTheme;
 
 public partial class CustomizeThemeApiDataGrid : GalleryReactiveUserControl<CustomizeThemeViewModel>

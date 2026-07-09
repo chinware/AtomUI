@@ -1,7 +1,4 @@
-using System.Threading;
-using AtomUI;
 using AtomUI.Desktop.Controls;
-using AtomUI.Toolkits.GalleryBase;
 using Avalonia;
 using Avalonia.Headless;
 using Xunit;

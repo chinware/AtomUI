@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Tooltip;
 
 public partial class TooltipApiDataGrid : GalleryReactiveUserControl<TooltipViewModel>

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.TabStrip;
 
 public partial class TabStripDesignTokenDataGrid : GalleryReactiveUserControl<TabStripViewModel>

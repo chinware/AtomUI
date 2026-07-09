@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Tag;
 
 public partial class TagApiDataGrid : GalleryReactiveUserControl<TagViewModel>

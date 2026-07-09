@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
-using RadioButton = AtomUI.Desktop.Controls.RadioButton;
 
 namespace AtomUIGallery.ShowCases.Splitter;
 

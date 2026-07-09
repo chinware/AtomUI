@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Message;
 
 public partial class MessageDesignTokenDataGrid : GalleryReactiveUserControl<MessageViewModel>

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.ComboBox;
 
 public partial class ComboBoxApiDataGrid : GalleryReactiveUserControl<ComboBoxViewModel>

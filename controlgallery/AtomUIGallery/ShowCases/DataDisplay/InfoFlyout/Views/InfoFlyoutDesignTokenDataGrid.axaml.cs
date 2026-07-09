@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.InfoFlyout;
 
 public partial class InfoFlyoutDesignTokenDataGrid : GalleryReactiveUserControl<InfoFlyoutViewModel>

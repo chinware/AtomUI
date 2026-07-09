@@ -1,4 +1,3 @@
-using AtomUI;
 using AtomUI.Desktop.Controls;
 using AtomUI.Toolkits.GalleryBase.Configuration;
 using AtomUI.Toolkits.GalleryBase.SourceCode;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using AtomUI.Desktop.Controls;
-using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 
 namespace AtomUIGallery.ShowCases.ToggleSwitch;

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Empty;
 
 public partial class EmptyApiDataGrid : GalleryReactiveUserControl<EmptyViewModel>

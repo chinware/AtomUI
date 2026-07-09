@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.DatePicker;
 
 public partial class DatePickerApiDataGrid : GalleryReactiveUserControl<DatePickerViewModel>

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;

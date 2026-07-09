@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Splitter;
 
 public partial class SplitterApiDataGrid : GalleryReactiveUserControl<SplitterViewModel>

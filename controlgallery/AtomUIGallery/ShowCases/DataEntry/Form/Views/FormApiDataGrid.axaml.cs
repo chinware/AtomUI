@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Form;
 
 public partial class FormApiDataGrid : GalleryReactiveUserControl<FormViewModel>

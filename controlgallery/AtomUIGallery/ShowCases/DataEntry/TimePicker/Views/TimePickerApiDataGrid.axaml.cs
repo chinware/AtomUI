@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.TimePicker;
 
 public partial class TimePickerApiDataGrid : GalleryReactiveUserControl<TimePickerViewModel>

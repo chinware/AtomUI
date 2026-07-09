@@ -1,18 +1,14 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
-using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls;
-using AtomUI.Theme;
 using AtomUI.Theme.Language;
 using AtomUI.Toolkits.GalleryBase.Navigation;
-using AtomUIGallery;
 using AtomUIGallery.Workspace.ViewModels;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using ReactiveUI;
 using Window = Avalonia.Controls.Window;
 
 namespace AtomUIGallery.Workspace.Views;

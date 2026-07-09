@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.DataGrid;
 
 public partial class DataGridDesignTokenDataGrid : GalleryReactiveUserControl<DataGridViewModel>

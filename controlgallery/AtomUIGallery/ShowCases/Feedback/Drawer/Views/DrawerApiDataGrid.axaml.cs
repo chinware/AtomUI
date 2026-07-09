@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Drawer;
 
 public partial class DrawerApiDataGrid : GalleryReactiveUserControl<DrawerViewModel>

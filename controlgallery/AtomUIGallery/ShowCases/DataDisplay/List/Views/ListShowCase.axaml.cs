@@ -1,6 +1,5 @@
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
-using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Controls.Data;
 using AtomUI.Data;
@@ -12,7 +11,6 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using IListItemData = AtomUI.Controls.Data.IListItemData;
 using ListItemData = AtomUI.Controls.Data.ListItemData;
-using TabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.List;
 

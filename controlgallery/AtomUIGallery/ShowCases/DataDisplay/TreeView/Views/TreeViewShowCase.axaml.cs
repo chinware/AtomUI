@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
-using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
 using AtomUI.Data;
@@ -12,7 +11,6 @@ using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
-using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.TreeView;
 

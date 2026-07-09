@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Result;
 
 public partial class ResultApiDataGrid : GalleryReactiveUserControl<ResultViewModel>

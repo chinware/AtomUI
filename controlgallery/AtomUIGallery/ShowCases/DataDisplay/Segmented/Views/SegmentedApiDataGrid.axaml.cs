@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Segmented;
 
 public partial class SegmentedApiDataGrid : GalleryReactiveUserControl<SegmentedViewModel>

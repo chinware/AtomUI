@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Alert;
 
 public partial class AlertDesignTokenDataGrid : GalleryReactiveUserControl<AlertViewModel>

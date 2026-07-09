@@ -1,7 +1,3 @@
-using Avalonia;
-using Avalonia.Controls;
-using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
-
 namespace AtomUIGallery.ShowCases.Grid;
 
 public partial class GridShowCase : GalleryReactiveUserControl<GridViewModel>

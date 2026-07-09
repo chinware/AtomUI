@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Steps;
 
 public partial class StepsApiDataGrid : GalleryReactiveUserControl<StepsViewModel>

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.ColorPicker;
 
 public partial class ColorPickerApiDataGrid : GalleryReactiveUserControl<ColorPickerViewModel>

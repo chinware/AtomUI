@@ -8,7 +8,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 using VirtualizingStackPanel = Avalonia.Controls.VirtualizingStackPanel;
 
 namespace AtomUI.Desktop.Controls;

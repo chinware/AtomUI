@@ -3,7 +3,6 @@ using AtomUI;
 using AtomUI.Desktop.Controls;
 using AtomUI.Fonts.AlibabaPuHuiTi;
 using AtomUI.Theme;
-using AtomUIGallery;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Media;

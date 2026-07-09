@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Carousel;
 
 public partial class CarouselDesignTokenDataGrid : GalleryReactiveUserControl<CarouselViewModel>

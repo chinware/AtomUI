@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Space;
 
 public partial class SpaceDesignTokenDataGrid : GalleryReactiveUserControl<SpaceViewModel>

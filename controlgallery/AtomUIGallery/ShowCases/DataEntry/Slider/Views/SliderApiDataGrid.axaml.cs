@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Slider;
 
 public partial class SliderApiDataGrid : GalleryReactiveUserControl<SliderViewModel>

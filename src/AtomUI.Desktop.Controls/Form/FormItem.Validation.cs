@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using AtomUI.Controls;
-using Avalonia.Controls;
 using Avalonia.Controls.Documents;
 using Avalonia.Threading;
 

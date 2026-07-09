@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Card;
 
 public partial class CardDesignTokenDataGrid : GalleryReactiveUserControl<CardViewModel>

@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using AtomUI.Controls;
-using AtomUI.Controls.Commons;
 using AtomUI.Desktop.Controls;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
