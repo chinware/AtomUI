@@ -4,6 +4,45 @@ All notable changes to AtomUI are documented in this file.
 
 `AtomUI` follows Semantic Versioning 2.0.0.
 
+## 6.0.8
+
+`2026-07-10`
+
+- Breaking Changes
+  - ImagePreviewer: replace `SourceUri`, `SourceUris`, and `FallbackSourceUri` with `Source`, `Sources`, and `FallbackSource` based on `IImagePreviewSource`. Use `UriImagePreviewSource` for URI, local file and Avalonia resource images, and `StreamImagePreviewSource` for lazy stream sources. See [6.0.8 API change examples](docs/release-notes/6.0.8-api-changes.md).
+  - Upload: replace the old `IsUploadDirectoryEnabled`, `IsShowUploadTrigger`, and `DefaultTaskList` composition model with composable `UploadTrigger`, `UploadDropZone`, and `Files`. See [6.0.8 API change examples](docs/release-notes/6.0.8-api-changes.md).
+- Data Entry and Selection Controls
+  - Add OtpLineEdit for one-time password input, including `Text` two-way binding, `Length`, `InputMode`, `Formatter`, masking, separators, `Completed`, four `StyleVariant` surfaces, Form integration and `DataValidationErrors` support.
+  - Route Form validation through Avalonia `DataValidationErrors` and add `ValidateTrigger`; validation now defaults to value changes and can be configured to run on blur.
+  - Add or refine default two-way binding and data validation semantics for Select, Cascader, TreeSelect, ListView, CheckBoxGroup, RadioButtonGroup, Rate, DatePicker, TimePicker, Transfer, ColorPicker, Slider, Dialog, Tour and ImagePreviewer.
+  - Add overflow tooltip support for Select, ComboBox and Cascader through `IsShowOverflowTip`, `OverflowTipDelay` and `OverflowTipPlacement`.
+  - Add popup display anchor properties for DatePicker and TimePicker, and add range selection binding examples.
+- Upload
+  - Refactor Upload into a file-state coordinator and add `UploadFileItem`, `UploadTrigger`, `UploadDropZone`, `UploadFileValueMode`, `AutoUpload`, `ListMaxHeight`, `ListScrollBarVisibility`, `SuccessAutoRemoveDelay`, `PendingText` and `TriggerContent`.
+  - Improve file selection, directory selection, drag-and-drop upload, upload list scrolling, picture list preview, delete state and success auto-removal behavior.
+- ImagePreviewer
+  - Add the `IImagePreviewSource` URI and lazy-stream source model with `CoverIndex`, `MaxConcurrentLoads` and `PreloadCount`.
+  - Fix fallback behavior so a single failed item is skipped and `FallbackSource` is used only when the whole source batch fails.
+  - Improve group preview titles, cover loading, preview title-bar navigation icons and the 20-remote-image showcase.
+- DataGrid
+  - Add the column filter model with `Filters`, `SelectedFilterValues`, `FilterTextMemberPath`, `FilterValueMemberPath`, `FilterChildrenMemberPath`, `FilterPresenterMode`, `FilterSelectionMode` and `FilterApplyMode`.
+  - Improve filter selection, tree filters, selected filter value binding and Gallery examples.
+- TabControl and TabStrip
+  - Add drag reordering for tabs with `IsTabReorderEnabled`, `TabActivationTrigger`, `TabReordering` and `TabReordered`.
+  - Improve Chrome-style drag preview, scroll anchoring while dragging, selected indicator synchronization, no-icon layout for left/right placements and compact vertical spacing for default Line tabs.
+- TreeView, Cascader and NavMenu
+  - Fix TreeView `ItemsSource` drag-and-drop crashes and improve drag moves, selected item two-way binding, Form values and descendant bring-into-view behavior.
+  - Fix Cascader selection synchronization and expand-state crashes, and add `SelectedOption` / `SelectedOptions` two-way binding.
+  - Add NavMenu popup frame support for improved popup hosting, placement and dismissal behavior.
+- Dialog, FloatButton and Base Visuals
+  - Add `BeforeCloseAsync` for Dialog async close validation and unify close request handling.
+  - Add command support to FloatButton and improve scrollbar-safe floating overlays and controlled `IsOpen` behavior.
+  - Improve Avatar image clipping, layout-scaled control border rendering, Button border rendering and Space preset spacing.
+- Gallery, Documentation and Build
+  - Flatten standard Showcase examples and add examples for tab reordering, Upload, ImagePreviewer, OtpLineEdit, selection binding and range selection.
+  - Update control design documents, Window title bar customization guidance, feature request issue guidelines, README package versions and Gallery banners.
+  - Remove unused localization imports, remove the Labs package and update project documentation.
+
 ## 6.0.7
 
 `2026-07-03`
