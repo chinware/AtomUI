@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.FloatButton;
 
 public partial class FloatButtonApiDataGrid : GalleryReactiveUserControl<FloatButtonViewModel>

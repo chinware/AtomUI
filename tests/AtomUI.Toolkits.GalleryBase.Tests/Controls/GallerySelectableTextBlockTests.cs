@@ -1,7 +1,5 @@
 using AtomUI.Toolkits.GalleryBase.Controls;
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Headless;
 using Avalonia.Input;
 using Avalonia.Input.Platform;
 using Avalonia.Interactivity;

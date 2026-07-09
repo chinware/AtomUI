@@ -1,6 +1,4 @@
-using Avalonia;
 using Avalonia.Controls;
-using TabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.ButtonSpinner;
 

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Breadcrumb;
 
 public partial class BreadcrumbDesignTokenDataGrid : GalleryReactiveUserControl<BreadcrumbViewModel>

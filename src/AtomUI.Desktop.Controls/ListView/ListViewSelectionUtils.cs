@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace AtomUI.Desktop.Controls;
 
 internal static class ListViewSelectionUtils

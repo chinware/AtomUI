@@ -1,5 +1,4 @@
 using AtomUI.Theme.Language;
-using AtomUIGallery.Localization;
 
 namespace AtomUIGallery.ShowCases.Empty;
 

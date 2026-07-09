@@ -6,7 +6,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 
 namespace AtomUI.Desktop.Controls;
 

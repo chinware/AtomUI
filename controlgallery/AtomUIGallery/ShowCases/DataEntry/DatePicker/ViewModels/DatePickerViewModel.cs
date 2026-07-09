@@ -3,7 +3,6 @@ using System.Globalization;
 using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;

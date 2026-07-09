@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Spin;
 
 public partial class SpinDesignTokenDataGrid : GalleryReactiveUserControl<SpinViewModel>

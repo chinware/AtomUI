@@ -1,5 +1,4 @@
 using AtomUI.Theme.Language;
-using AtomUIGallery.Localization;
 using AtomUIGallery.Workspace.Views;
 
 namespace AtomUIGallery.Workspace.Localization.CaseNavigationLang;

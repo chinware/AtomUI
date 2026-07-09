@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Cascader;
 
 public partial class CascaderDesignTokenDataGrid : GalleryReactiveUserControl<CascaderViewModel>

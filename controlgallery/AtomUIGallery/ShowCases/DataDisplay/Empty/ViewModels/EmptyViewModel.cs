@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using AtomUI;
 using AtomUI.Controls;
 using AtomUI.Data;
 using AtomUIGallery.Localization;

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Collapse;
 
 public partial class CollapseDesignTokenDataGrid : GalleryReactiveUserControl<CollapseViewModel>

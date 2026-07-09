@@ -1,5 +1,4 @@
-﻿using AtomUI.Desktop.Controls.Localization;
-using AtomUI.Theme.Language;
+﻿using AtomUI.Theme.Language;
 
 namespace AtomUI.Desktop.Controls.UploadLang;
 

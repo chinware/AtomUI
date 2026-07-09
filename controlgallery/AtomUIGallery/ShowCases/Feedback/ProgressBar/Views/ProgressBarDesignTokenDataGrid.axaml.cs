@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.ProgressBar;
 
 public partial class ProgressBarDesignTokenDataGrid : GalleryReactiveUserControl<ProgressBarViewModel>

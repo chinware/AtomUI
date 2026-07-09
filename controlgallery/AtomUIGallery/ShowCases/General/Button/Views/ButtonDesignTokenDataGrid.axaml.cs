@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Button;
 
 public partial class ButtonDesignTokenDataGrid : GalleryReactiveUserControl<ButtonViewModel>

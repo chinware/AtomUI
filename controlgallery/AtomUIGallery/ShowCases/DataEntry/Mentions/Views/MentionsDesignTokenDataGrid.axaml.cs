@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Mentions;
 
 public partial class MentionsDesignTokenDataGrid : GalleryReactiveUserControl<MentionsViewModel>

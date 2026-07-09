@@ -1,15 +1,11 @@
 using AtomUI;
 using AtomUI.Controls;
-using AtomUI.Data;
-using AtomUI.Desktop.Controls;
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.LogicalTree;
 using Avalonia.VisualTree;
 using AtomDrawer = AtomUI.Desktop.Controls.Drawer;
 using AtomDrawerPlacement = AtomUI.Desktop.Controls.DrawerPlacement;
-using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.Drawer;
 

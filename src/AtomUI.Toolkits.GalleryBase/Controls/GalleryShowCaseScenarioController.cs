@@ -1,4 +1,3 @@
-using AtomUI.Desktop.Controls;
 using Avalonia.Controls;
 using AvaloniaContentControl = Avalonia.Controls.ContentControl;
 using AtomUITabStrip = AtomUI.Desktop.Controls.TabStrip;

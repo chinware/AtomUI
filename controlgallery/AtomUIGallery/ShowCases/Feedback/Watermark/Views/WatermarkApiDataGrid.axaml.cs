@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Watermark;
 
 public partial class WatermarkApiDataGrid : GalleryReactiveUserControl<WatermarkViewModel>

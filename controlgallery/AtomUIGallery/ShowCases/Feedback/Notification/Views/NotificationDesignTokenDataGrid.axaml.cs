@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Notification;
 
 public partial class NotificationDesignTokenDataGrid : GalleryReactiveUserControl<NotificationViewModel>

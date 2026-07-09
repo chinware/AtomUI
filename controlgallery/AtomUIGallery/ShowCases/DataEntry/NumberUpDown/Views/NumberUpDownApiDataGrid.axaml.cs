@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.NumberUpDown;
 
 public partial class NumberUpDownApiDataGrid : GalleryReactiveUserControl<NumberUpDownViewModel>

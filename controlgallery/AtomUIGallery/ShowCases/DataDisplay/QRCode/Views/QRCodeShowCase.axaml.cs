@@ -1,9 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using AtomUI.Controls;
-using AtomUI.Desktop.Controls;
-using Avalonia;
-using Avalonia.Controls;
 
 namespace AtomUIGallery.ShowCases.QRCode;
 

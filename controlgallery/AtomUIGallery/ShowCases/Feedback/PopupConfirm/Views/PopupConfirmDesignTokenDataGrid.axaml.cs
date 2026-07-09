@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.PopupConfirm;
 
 public partial class PopupConfirmDesignTokenDataGrid : GalleryReactiveUserControl<PopupConfirmViewModel>

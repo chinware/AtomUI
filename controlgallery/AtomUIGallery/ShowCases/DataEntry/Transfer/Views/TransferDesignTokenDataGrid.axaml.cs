@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Transfer;
 
 public partial class TransferDesignTokenDataGrid : GalleryReactiveUserControl<TransferViewModel>

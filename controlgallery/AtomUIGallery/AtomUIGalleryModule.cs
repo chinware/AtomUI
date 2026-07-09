@@ -1,4 +1,3 @@
-using AtomUI.Controls;
 using AtomUI.Icons.AntDesign;
 using AtomUI.Toolkits.GalleryBase.Configuration;
 using AtomUI.Toolkits.GalleryBase.Localization;

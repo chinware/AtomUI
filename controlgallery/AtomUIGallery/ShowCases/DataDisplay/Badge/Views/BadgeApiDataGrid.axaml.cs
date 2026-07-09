@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Badge;
 
 public partial class BadgeApiDataGrid : GalleryReactiveUserControl<BadgeViewModel>

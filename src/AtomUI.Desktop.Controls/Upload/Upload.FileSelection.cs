@@ -1,5 +1,4 @@
 using AtomUI.Controls;
-using AtomUI.Theme;
 using Avalonia.Controls;
 using Avalonia.Platform.Storage;
 

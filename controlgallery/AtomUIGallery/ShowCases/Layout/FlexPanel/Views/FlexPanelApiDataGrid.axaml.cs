@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.FlexPanel;
 
 public partial class FlexPanelApiDataGrid : GalleryReactiveUserControl<FlexPanelViewModel>

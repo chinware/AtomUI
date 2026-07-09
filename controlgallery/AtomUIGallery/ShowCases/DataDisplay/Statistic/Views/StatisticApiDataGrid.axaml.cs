@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Statistic;
 
 public partial class StatisticApiDataGrid : GalleryReactiveUserControl<StatisticViewModel>

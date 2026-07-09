@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Upload;
 
 public partial class UploadApiDataGrid : GalleryReactiveUserControl<UploadViewModel>

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.DropdownButton;
 
 public partial class DropdownButtonDesignTokenDataGrid : GalleryReactiveUserControl<DropdownButtonViewModel>

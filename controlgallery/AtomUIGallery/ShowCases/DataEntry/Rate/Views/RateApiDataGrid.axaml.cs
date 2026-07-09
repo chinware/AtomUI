@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Rate;
 
 public partial class RateApiDataGrid : GalleryReactiveUserControl<RateViewModel>

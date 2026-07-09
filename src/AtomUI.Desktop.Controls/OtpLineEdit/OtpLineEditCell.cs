@@ -6,7 +6,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Mixins;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
-using Avalonia.VisualTree;
 
 using AvaloniaTextBox = Avalonia.Controls.TextBox;
 

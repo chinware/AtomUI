@@ -10,7 +10,6 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
 using Avalonia.Data;
-using Avalonia.Interactivity;
 using Avalonia.Metadata;
 
 namespace AtomUI.Desktop.Controls;

@@ -3,12 +3,10 @@ using AtomUI.Controls.Commons;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Icons.AntDesign;
-using AtomUI.Theme.Language;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.Notification;
 

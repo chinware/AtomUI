@@ -5,8 +5,6 @@ using AtomUI.Controls.Primitives;
 using AtomUI.Data;
 using AtomUI.Desktop.Controls;
 using AtomUI.Desktop.Controls.DataLoad;
-using AtomUI.Theme;
-using AtomUI.Theme.Language;
 using AtomUIGallery.Localization;
 using Avalonia;
 using Avalonia.Threading;

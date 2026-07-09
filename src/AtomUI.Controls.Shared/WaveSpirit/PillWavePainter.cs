@@ -1,6 +1,5 @@
 using Avalonia;
 using Avalonia.Animation;
-using Avalonia.Animation.Easings;
 using Avalonia.Media;
 using Avalonia.Styling;
 

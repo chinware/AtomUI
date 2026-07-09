@@ -1,7 +1,6 @@
 ﻿using Avalonia;
 using Avalonia.Interactivity;
 using ReactiveUI;
-using System;
 
 namespace AtomUI.Desktop.Controls;
 

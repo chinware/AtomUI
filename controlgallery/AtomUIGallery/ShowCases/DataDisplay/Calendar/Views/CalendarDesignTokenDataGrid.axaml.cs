@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Calendar;
 
 public partial class CalendarDesignTokenDataGrid : GalleryReactiveUserControl<CalendarViewModel>

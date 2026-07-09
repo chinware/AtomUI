@@ -1,7 +1,6 @@
 using System.Runtime.Versioning;
 using Avalonia;
 using Avalonia.Browser;
-using AtomUIGallery;
 using ReactiveUI.Avalonia;
 
 [assembly: SupportedOSPlatform("browser")]

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Skeleton;
 
 public partial class SkeletonDesignTokenDataGrid : GalleryReactiveUserControl<SkeletonViewModel>

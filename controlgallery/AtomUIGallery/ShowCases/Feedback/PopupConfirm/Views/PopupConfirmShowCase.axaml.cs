@@ -1,9 +1,3 @@
-
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Interactivity;
-using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
-
 namespace AtomUIGallery.ShowCases.PopupConfirm;
 
 public partial class PopupConfirmShowCase : GalleryReactiveUserControl<PopupConfirmViewModel>

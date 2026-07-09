@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.TabControl;
 
 public partial class TabControlApiDataGrid : GalleryReactiveUserControl<TabControlViewModel>

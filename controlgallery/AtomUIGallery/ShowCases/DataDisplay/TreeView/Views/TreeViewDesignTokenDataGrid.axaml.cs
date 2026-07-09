@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.TreeView;
 
 public partial class TreeViewDesignTokenDataGrid : GalleryReactiveUserControl<TreeViewViewModel>

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.ImagePreviewer;
 
 public partial class ImagePreviewerApiDataGrid : GalleryReactiveUserControl<ImagePreviewerViewModel>

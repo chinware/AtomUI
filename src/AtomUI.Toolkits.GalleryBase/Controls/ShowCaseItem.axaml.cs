@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using AtomUI.Toolkits.GalleryBase.Configuration;
 using AtomUI.Toolkits.GalleryBase.SourceCode;
 using Avalonia;

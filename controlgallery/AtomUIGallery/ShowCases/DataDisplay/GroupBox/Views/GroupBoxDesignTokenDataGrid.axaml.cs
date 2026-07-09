@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.GroupBox;
 
 public partial class GroupBoxDesignTokenDataGrid : GalleryReactiveUserControl<GroupBoxViewModel>

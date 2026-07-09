@@ -1,6 +1,5 @@
 using AtomUI;
 using Avalonia;
-using AtomUIGallery;
 using ReactiveUI.Avalonia;
 
 namespace AtomUIGallery.Desktop;

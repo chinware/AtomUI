@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.ButtonSpinner;
 
 public partial class ButtonSpinnerDesignTokenDataGrid : GalleryReactiveUserControl<ButtonSpinnerViewModel>

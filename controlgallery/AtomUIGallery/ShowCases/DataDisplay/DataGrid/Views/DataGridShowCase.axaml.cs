@@ -2,14 +2,12 @@ using System.Collections;
 using System.ComponentModel;
 using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
-using AtomUI.Toolkits.GalleryBase.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.VisualTree;
 using DynamicData;
 using AtomDataGrid = AtomUI.Desktop.Controls.DataGrid;
-using ScenarioTabStripItem = AtomUI.Desktop.Controls.TabStripItem;
 
 namespace AtomUIGallery.ShowCases.DataGrid;
 

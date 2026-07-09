@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Separator;
 
 public partial class SeparatorApiDataGrid : GalleryReactiveUserControl<SeparatorViewModel>

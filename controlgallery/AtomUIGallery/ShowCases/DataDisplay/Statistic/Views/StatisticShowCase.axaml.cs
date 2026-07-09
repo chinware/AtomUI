@@ -1,8 +1,3 @@
-
-using AtomUI.Desktop.Controls;
-using Avalonia;
-using Avalonia.Controls;
-
 namespace AtomUIGallery.ShowCases.Statistic;
 
 public partial class StatisticShowCase : GalleryReactiveUserControl<StatisticViewModel>

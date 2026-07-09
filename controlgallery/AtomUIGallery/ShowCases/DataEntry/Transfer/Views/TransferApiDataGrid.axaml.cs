@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Transfer;
 
 public partial class TransferApiDataGrid : GalleryReactiveUserControl<TransferViewModel>

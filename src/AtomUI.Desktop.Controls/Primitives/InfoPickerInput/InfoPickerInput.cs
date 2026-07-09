@@ -1,7 +1,6 @@
 ﻿using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Data;
-using AtomUI.Desktop.Controls.Primitives.Themes;
 using AtomUI.Theme;
 using Avalonia;
 using Avalonia.Controls;
@@ -9,8 +8,6 @@ using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Templates;
-using Avalonia.Data;
-using Avalonia.Data.Converters;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.LogicalTree;

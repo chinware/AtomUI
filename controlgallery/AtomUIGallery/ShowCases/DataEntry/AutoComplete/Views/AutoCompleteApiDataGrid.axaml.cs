@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.AutoComplete;
 
 public partial class AutoCompleteApiDataGrid : GalleryReactiveUserControl<AutoCompleteViewModel>

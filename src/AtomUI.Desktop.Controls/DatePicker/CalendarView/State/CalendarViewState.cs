@@ -1,5 +1,4 @@
 using System.Globalization;
-using AtomUI.Desktop.Controls;
 
 namespace AtomUI.Desktop.Controls.CalendarView.State;
 

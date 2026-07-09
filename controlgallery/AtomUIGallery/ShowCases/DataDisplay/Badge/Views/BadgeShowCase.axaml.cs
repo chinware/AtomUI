@@ -1,8 +1,3 @@
-using AtomUI.Controls;
-using AtomUI.Desktop.Controls;
-using Avalonia;
-using Avalonia.Controls;
-
 namespace AtomUIGallery.ShowCases.Badge;
 
 public partial class BadgeShowCase : GalleryReactiveUserControl<BadgeViewModel>

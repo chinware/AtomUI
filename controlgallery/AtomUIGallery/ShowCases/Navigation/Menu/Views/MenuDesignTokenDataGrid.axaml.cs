@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Menu;
 
 public partial class MenuDesignTokenDataGrid : GalleryReactiveUserControl<MenuViewModel>

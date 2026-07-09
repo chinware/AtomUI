@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.Timeline;
 
 public partial class TimelineDesignTokenDataGrid : GalleryReactiveUserControl<TimelineViewModel>

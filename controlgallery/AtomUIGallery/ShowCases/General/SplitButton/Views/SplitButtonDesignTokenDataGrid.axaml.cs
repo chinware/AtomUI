@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.SplitButton;
 
 public partial class SplitButtonDesignTokenDataGrid : GalleryReactiveUserControl<SplitButtonViewModel>

@@ -1,5 +1,3 @@
-using System;
-
 namespace AtomUIGallery.ShowCases.RadioButton;
 
 public partial class RadioButtonDesignTokenDataGrid : GalleryReactiveUserControl<RadioButtonViewModel>
