@@ -6,6 +6,45 @@ AtomUI 的重要变更记录在此文件中。
 
 英文版本见 [CHANGELOG.md](CHANGELOG.md)。
 
+## 6.0.8
+
+`2026-07-10`
+
+- 破坏性变更
+  - ImagePreviewer：将 `SourceUri`、`SourceUris`、`FallbackSourceUri` 统一替换为基于 `IImagePreviewSource` 的 `Source`、`Sources`、`FallbackSource`；URI、本地文件和 Avalonia 资源请使用 `UriImagePreviewSource`，按需数据流请使用 `StreamImagePreviewSource`。迁移示例见 [6.0.8 API 变更示例](docs/release-notes/6.0.8-api-changes.md)。
+  - Upload：移除旧的 `IsUploadDirectoryEnabled`、`IsShowUploadTrigger` 和 `DefaultTaskList` 组合方式，改为由 `UploadTrigger`、`UploadDropZone` 和 `Files` 组成可组合上传入口。迁移示例见 [6.0.8 API 变更示例](docs/release-notes/6.0.8-api-changes.md)。
+- 数据录入和选择控件
+  - 新增 OtpLineEdit 一次性验证码输入控件，支持 `Text` 双向绑定、`Length`、`InputMode`、`Formatter`、遮罩、分隔符、`Completed` 事件、四种 `StyleVariant`、Form 和 `DataValidationErrors` 集成。
+  - 将 Form 验证统一接入 Avalonia `DataValidationErrors`，并新增 `ValidateTrigger`；默认改为值变更时验证，也可配置为失焦触发。
+  - 为 Select、Cascader、TreeSelect、ListView、CheckBoxGroup、RadioButtonGroup、Rate、DatePicker、TimePicker、Transfer、ColorPicker、Slider、Dialog、Tour、ImagePreviewer 等控件补齐或调整默认双向绑定与数据验证语义。
+  - 为 Select、ComboBox 和 Cascader 新增溢出内容提示能力，支持 `IsShowOverflowTip`、`OverflowTipDelay` 和 `OverflowTipPlacement`。
+  - 为 DatePicker 和 TimePicker 新增弹层展示锚点属性，并补充范围选择绑定示例。
+- Upload
+  - 重构 Upload 为文件状态协调器，新增 `UploadFileItem`、`UploadTrigger`、`UploadDropZone`、`UploadFileValueMode`、`AutoUpload`、`ListMaxHeight`、`ListScrollBarVisibility`、`SuccessAutoRemoveDelay`、`PendingText` 和 `TriggerContent` 等能力。
+  - 优化文件选择、目录选择、拖拽上传、上传列表滚动、图片列表预览、删除状态和成功自动移除行为。
+- ImagePreviewer
+  - 新增基于 `IImagePreviewSource` 的 URI 与懒加载数据流图片源模型，支持 `CoverIndex`、`MaxConcurrentLoads` 和 `PreloadCount`。
+  - 修复多图加载中单张失败会过早切换 fallback 的问题；现在只有整组图片全部失败时才使用 `FallbackSource`。
+  - 优化多图预览标题、封面加载、预览窗口导航图标和 20 张远程图片示例。
+- DataGrid
+  - 新增列过滤数据模型，支持 `Filters`、`SelectedFilterValues`、`FilterTextMemberPath`、`FilterValueMemberPath`、`FilterChildrenMemberPath`、`FilterPresenterMode`、`FilterSelectionMode` 和 `FilterApplyMode`。
+  - 优化过滤选择、树形过滤、筛选值绑定和 Gallery 示例。
+- TabControl 和 TabStrip
+  - 新增 Tab 拖动排序能力，支持 `IsTabReorderEnabled`、`TabActivationTrigger`、`TabReordering` 和 `TabReordered`。
+  - 优化 Chrome 风格拖动预览、滚动时锚点保持、选中指示条同步、左右 placement 下无图标 Tab 的布局和默认 Line Tab 垂直紧凑间距。
+- TreeView、Cascader 和 NavMenu
+  - 修复 TreeView `ItemsSource` 拖拽移动崩溃，并改进拖拽、选中项双向绑定、表单值和 descendants bring-into-view 行为。
+  - 修复 Cascader 选择同步和展开状态崩溃问题，并补齐 `SelectedOption` / `SelectedOptions` 双向绑定。
+  - 新增 NavMenu popup frame，改进弹出层宿主、定位和关闭行为。
+- Dialog、FloatButton 和基础视觉
+  - 为 Dialog 新增 `BeforeCloseAsync`，支持异步关闭校验，并统一关闭请求处理。
+  - 为 FloatButton 新增命令支持，并优化滚动容器场景下的浮动层定位和 controlled `IsOpen` 行为。
+  - 优化 Avatar 图片裁剪、控件边框按布局缩放渲染、Button 边框渲染和 Space 预设间距。
+- Gallery、文档和构建
+  - 扁平化标准 Showcase 示例结构，补充 Tab 拖动、Upload、ImagePreviewer、OtpLineEdit、选择绑定和范围选择示例。
+  - 更新控件设计文档、Window 标题栏定制说明、Feature Request issue 规范、README 包版本和 Gallery banner。
+  - 清理多处未使用 localization using，移除 Labs 包并更新工程文档。
+
 ## 6.0.7
 
 `2026-07-03`
