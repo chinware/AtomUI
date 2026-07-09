@@ -60,6 +60,14 @@ public partial class TabStripShowCase : GalleryReactiveUserControl<TabStripViewM
         }
     }
 
+    private void HandleTabStripReorderPlacementOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
+    {
+        if (DataContext is TabStripViewModel viewModel)
+        {
+            viewModel.HandleTabStripReorderPlacementOptionCheckedChanged(sender, args);
+        }
+    }
+
     private void HandleTabStripSizeTypeOptionCheckedChanged(object? sender, OptionCheckedChangedEventArgs args)
     {
         if (DataContext is TabStripViewModel viewModel)
