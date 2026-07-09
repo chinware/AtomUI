@@ -3,7 +3,9 @@ using AtomUI.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.LogicalTree;
+using Avalonia.Media.Imaging;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
 using Shouldly;
 using Xunit;
 
@@ -210,6 +212,37 @@ public class AvatarGroupFoldInfoTests
         avatar.Size = double.NaN;
 
         avatar.SizeType.ShouldBe(CustomizableSizeType.Large);
+    }
+
+    [Fact]
+    public void Avatar_BitmapSrc_Content_Is_Clipped_By_Circle_Shape()
+    {
+        using var bitmap = new RenderTargetBitmap(new PixelSize(4, 4), new Vector(96, 96));
+        var avatar = new DesktopAvatar
+        {
+            Size      = 64,
+            Shape     = AvatarShape.Circle,
+            BitmapSrc = bitmap
+        };
+
+        ShowInWindow(avatar, () =>
+        {
+            var imagePresenter = avatar.GetVisualDescendants()
+                                       .OfType<Image>()
+                                       .Single(image => image.Name == "ImagePresenter");
+
+            imagePresenter.IsVisible.ShouldBeTrue();
+
+            var clippingFrame = imagePresenter.GetVisualAncestors()
+                                              .OfType<Border>()
+                                              .FirstOrDefault(border => border.ClipToBounds);
+
+            clippingFrame.ShouldNotBeNull();
+            clippingFrame.CornerRadius.TopLeft.ShouldBe(32);
+            clippingFrame.CornerRadius.TopRight.ShouldBe(32);
+            clippingFrame.CornerRadius.BottomRight.ShouldBe(32);
+            clippingFrame.CornerRadius.BottomLeft.ShouldBe(32);
+        });
     }
 
     private static AvatarGroup CreateFoldedGroup()
