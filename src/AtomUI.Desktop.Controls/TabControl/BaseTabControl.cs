@@ -313,7 +313,8 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     private object? _tabReorderSelectedItem;
     private int _tabReorderOldIndex = TabReorderHelper.InvalidIndex;
     private int _tabReorderTargetIndex = TabReorderHelper.InvalidIndex;
-    private Point _tabReorderStartPoint;
+    private Point _tabReorderStartPointerRootPosition;
+    private double _tabReorderPointerAnchorPrimary;
     private bool _isTabReorderDragging;
     private bool _isTabReorderSelectedIndicatorTransitionSuppressed;
     private bool _isTabReorderIndicatorRefreshDeferred;
@@ -322,7 +323,7 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
     private readonly Dictionary<Control, int> _tabReorderOriginalZIndexes = new();
     private readonly Dictionary<Control, Vector> _tabReorderPreviewOffsets = new();
     private int _tabReorderAutoScrollDirection;
-    private Point _tabReorderLastPointerPosition;
+    private Point _tabReorderLastPointerRootPosition;
     private const double TabReorderAutoScrollEdgeThickness = 24;
     private const double TabReorderAutoScrollStep = 16;
     private static readonly TimeSpan TabReorderAutoScrollInterval = TimeSpan.FromMilliseconds(16);
@@ -542,13 +543,26 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
 
         CancelTabReorder();
 
+        var pointerRootPosition = TabReorderHelper.GetPointerRootPosition(this, args);
+        if (!TabReorderHelper.TryGetPointerAnchorPrimary(
+                this,
+                TabStripPlacement,
+                tabItem,
+                pointerRootPosition,
+                out var pointerAnchorPrimary))
+        {
+            return false;
+        }
+
         _tabReorderContainer   = tabItem;
         _tabReorderPointer     = args.Pointer;
         _tabReorderItem        = list[oldIndex];
         _tabReorderSelectedItem = SelectedItem;
         _tabReorderOldIndex    = oldIndex;
         _tabReorderTargetIndex = oldIndex;
-        _tabReorderStartPoint  = args.GetPosition(this);
+        _tabReorderStartPointerRootPosition = pointerRootPosition;
+        _tabReorderLastPointerRootPosition  = pointerRootPosition;
+        _tabReorderPointerAnchorPrimary     = pointerAnchorPrimary;
 
         return true;
     }
@@ -959,14 +973,14 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         _pendingTabActivationPointer   = null;
     }
 
-    private void UpdateTabReorderTarget(Point pointerPosition)
+    private void UpdateTabReorderTarget(Point pointerRootPosition)
     {
-        _tabReorderLastPointerPosition = pointerPosition;
-        ResolveTabReorderTarget(pointerPosition);
-        UpdateTabReorderAutoScroll(pointerPosition);
+        _tabReorderLastPointerRootPosition = pointerRootPosition;
+        ResolveTabReorderTarget(pointerRootPosition);
+        UpdateTabReorderAutoScroll(pointerRootPosition);
     }
 
-    private void ResolveTabReorderTarget(Point pointerPosition)
+    private void ResolveTabReorderTarget(Point pointerRootPosition)
     {
         if (_tabReorderContainer is null)
         {
@@ -977,16 +991,16 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
             this,
             TabStripPlacement,
             _tabReorderContainer,
-            _tabReorderStartPoint,
-            pointerPosition,
+            pointerRootPosition,
+            _tabReorderPointerAnchorPrimary,
             _tabReorderOldIndex);
         UpdateTabReorderIndicatorTransitionSuppression();
         TabReorderHelper.ApplyLivePreview(
             this,
             TabStripPlacement,
             _tabReorderContainer,
-            _tabReorderStartPoint,
-            pointerPosition,
+            pointerRootPosition,
+            _tabReorderPointerAnchorPrimary,
             _tabReorderOldIndex,
             _tabReorderTargetIndex,
             _tabReorderOriginalTransforms,
@@ -1023,9 +1037,9 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         }
     }
 
-    private void UpdateTabReorderAutoScroll(Point pointerPosition)
+    private void UpdateTabReorderAutoScroll(Point pointerRootPosition)
     {
-        var direction = GetTabReorderAutoScrollDirection(pointerPosition);
+        var direction = GetTabReorderAutoScrollDirection(pointerRootPosition);
         if (direction == 0)
         {
             StopTabReorderAutoScroll();
@@ -1035,26 +1049,26 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         _tabReorderAutoScrollDirection = direction;
         if (ScrollTabReorderViewport())
         {
-            ResolveTabReorderTarget(pointerPosition);
+            ResolveTabReorderTarget(pointerRootPosition);
         }
         StartTabReorderAutoScroll();
     }
 
-    private int GetTabReorderAutoScrollDirection(Point pointerPosition)
+    private int GetTabReorderAutoScrollDirection(Point pointerRootPosition)
     {
         if (_tabReorderScrollViewer is null)
         {
             return 0;
         }
 
-        var scrollViewerOffset = _tabReorderScrollViewer.TranslatePoint(default, this);
+        var scrollViewerOffset = TabReorderHelper.TranslateToRoot(this, _tabReorderScrollViewer, default);
         if (scrollViewerOffset is null)
         {
             return 0;
         }
 
         var scrollViewerBounds = new Rect(scrollViewerOffset.Value, _tabReorderScrollViewer.Bounds.Size);
-        if (!scrollViewerBounds.Contains(pointerPosition))
+        if (!scrollViewerBounds.Contains(pointerRootPosition))
         {
             return 0;
         }
@@ -1071,24 +1085,24 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
 
         if (isHorizontal)
         {
-            if (pointerPosition.X <= scrollViewerBounds.Left + TabReorderAutoScrollEdgeThickness && offset > 0)
+            if (pointerRootPosition.X <= scrollViewerBounds.Left + TabReorderAutoScrollEdgeThickness && offset > 0)
             {
                 return -1;
             }
 
-            if (pointerPosition.X >= scrollViewerBounds.Right - TabReorderAutoScrollEdgeThickness && offset < maxOffset)
+            if (pointerRootPosition.X >= scrollViewerBounds.Right - TabReorderAutoScrollEdgeThickness && offset < maxOffset)
             {
                 return 1;
             }
         }
         else
         {
-            if (pointerPosition.Y <= scrollViewerBounds.Top + TabReorderAutoScrollEdgeThickness && offset > 0)
+            if (pointerRootPosition.Y <= scrollViewerBounds.Top + TabReorderAutoScrollEdgeThickness && offset > 0)
             {
                 return -1;
             }
 
-            if (pointerPosition.Y >= scrollViewerBounds.Bottom - TabReorderAutoScrollEdgeThickness && offset < maxOffset)
+            if (pointerRootPosition.Y >= scrollViewerBounds.Bottom - TabReorderAutoScrollEdgeThickness && offset < maxOffset)
             {
                 return 1;
             }
@@ -1134,7 +1148,7 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
 
         if (ScrollTabReorderViewport())
         {
-            ResolveTabReorderTarget(_tabReorderLastPointerPosition);
+            ResolveTabReorderTarget(_tabReorderLastPointerRootPosition);
         }
         else
         {
@@ -1170,11 +1184,11 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         return true;
     }
 
-    private bool UpdateTabReorderDrag(Point pointerPosition)
+    private bool UpdateTabReorderDrag(Point pointerRootPosition)
     {
         if (!_isTabReorderDragging)
         {
-            var delta             = pointerPosition - _tabReorderStartPoint;
+            var delta             = pointerRootPosition - _tabReorderStartPointerRootPosition;
             var manhattanDistance = Math.Abs(delta.X) + Math.Abs(delta.Y);
             if (manhattanDistance <= Constants.DragThreshold)
             {
@@ -1183,11 +1197,23 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
 
             _isTabReorderDragging = true;
             SetTabReorderContainerDragging(true);
+            LayoutUpdated -= HandleTabReorderLayoutUpdated;
+            LayoutUpdated += HandleTabReorderLayoutUpdated;
             ClearPendingTabActivation();
         }
 
-        UpdateTabReorderTarget(pointerPosition);
+        UpdateTabReorderTarget(pointerRootPosition);
         return true;
+    }
+
+    private void HandleTabReorderLayoutUpdated(object? sender, EventArgs args)
+    {
+        if (!_isTabReorderDragging || _tabReorderContainer is null)
+        {
+            return;
+        }
+
+        ResolveTabReorderTarget(_tabReorderLastPointerRootPosition);
     }
 
     private bool UpdateActiveTabReorder(PointerEventArgs args)
@@ -1197,7 +1223,7 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
             return false;
         }
 
-        return UpdateTabReorderDrag(args.GetPosition(this));
+        return UpdateTabReorderDrag(TabReorderHelper.GetPointerRootPosition(this, args));
     }
 
     private void HandleTabReorderPointerMoved(object? sender, PointerEventArgs args)
@@ -1237,7 +1263,7 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
             return false;
         }
 
-        UpdateTabReorderDrag(args.GetPosition(this));
+        UpdateTabReorderDrag(TabReorderHelper.GetPointerRootPosition(this, args));
 
         var shouldHandle = _isTabReorderDragging;
         var reorderCommitted = false;
@@ -1344,7 +1370,10 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         _tabReorderOldIndex    = TabReorderHelper.InvalidIndex;
         _tabReorderTargetIndex  = TabReorderHelper.InvalidIndex;
         _isTabReorderDragging   = false;
-        _tabReorderLastPointerPosition = default;
+        _tabReorderStartPointerRootPosition = default;
+        _tabReorderLastPointerRootPosition  = default;
+        _tabReorderPointerAnchorPrimary     = 0;
+        LayoutUpdated -= HandleTabReorderLayoutUpdated;
         ClearTabReorderLivePreview();
         if (deferIndicatorRefresh)
         {

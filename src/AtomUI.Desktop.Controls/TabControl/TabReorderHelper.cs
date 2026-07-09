@@ -1,11 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Animation;
 using Avalonia.Animation.Easings;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
+using Avalonia.Input;
 using Avalonia.Media;
 using Avalonia.VisualTree;
 
@@ -53,6 +52,40 @@ internal static class TabReorderHelper
         return index >= 0 && index < count;
     }
 
+    internal static Point GetPointerRootPosition(Control owner, PointerEventArgs args)
+    {
+        var root = TopLevel.GetTopLevel(owner);
+        return root is null ? args.GetPosition(owner) : args.GetPosition(root);
+    }
+
+    internal static Point? TranslateToRoot(Control owner, Visual visual, Point point)
+    {
+        var root = TopLevel.GetTopLevel(owner);
+        return root is null
+            ? visual.TranslatePoint(point, owner)
+            : visual.TranslatePoint(point, root);
+    }
+
+    internal static bool TryGetPointerAnchorPrimary(
+        ItemsControl owner,
+        Dock placement,
+        Control draggedContainer,
+        Point pointerRootPosition,
+        out double pointerAnchorPrimary)
+    {
+        var draggedBounds = GetContainerLayoutBounds(owner, draggedContainer);
+        if (draggedBounds is null)
+        {
+            pointerAnchorPrimary = 0;
+            return false;
+        }
+
+        var isHorizontal = IsHorizontal(placement);
+        pointerAnchorPrimary = GetPrimary(pointerRootPosition, isHorizontal) -
+                               GetPrimaryStart(draggedBounds.Value, isHorizontal);
+        return true;
+    }
+
     internal static int FindItemIndex(IList list, object? item, int preferredIndex)
     {
         if (IsValidIndex(preferredIndex, list.Count) && Equals(list[preferredIndex], item))
@@ -93,8 +126,8 @@ internal static class TabReorderHelper
         ItemsControl owner,
         Dock placement,
         Control draggedContainer,
-        Point startPoint,
-        Point pointerPosition,
+        Point pointerRootPosition,
+        double pointerAnchorPrimary,
         int oldIndex,
         int insertionIndex,
         IDictionary<Control, ITransform?> originalTransforms,
@@ -109,13 +142,23 @@ internal static class TabReorderHelper
         }
 
         var activeContainers = new HashSet<Control>();
-        var delta            = pointerPosition - startPoint;
         var isHorizontal     = IsHorizontal(placement);
-        var primaryDelta     = isHorizontal ? delta.X : delta.Y;
+        var primaryOffset    = GetDraggedPreviewPrimaryOffset(
+            owner,
+            placement,
+            draggedContainer,
+            pointerRootPosition,
+            pointerAnchorPrimary);
+        if (primaryOffset is null)
+        {
+            ClearLivePreview(originalTransforms, originalZIndexes, previewOffsets);
+            return;
+        }
+
         SetPreviewTransform(
             draggedContainer,
-            isHorizontal ? primaryDelta : 0,
-            isHorizontal ? 0 : primaryDelta,
+            isHorizontal ? primaryOffset.Value : 0,
+            isHorizontal ? 0 : primaryOffset.Value,
             GetTopZIndex(owner, originalZIndexes) + 1,
             activeContainers,
             originalTransforms,
@@ -192,8 +235,8 @@ internal static class TabReorderHelper
         ItemsControl owner,
         Dock placement,
         Control draggedContainer,
-        Point startPoint,
-        Point pointerPosition,
+        Point pointerRootPosition,
+        double pointerAnchorPrimary,
         int oldIndex)
     {
         var draggedBounds = GetContainerLayoutBounds(owner, draggedContainer);
@@ -203,18 +246,16 @@ internal static class TabReorderHelper
         }
 
         var isHorizontal = IsHorizontal(placement);
-        var delta        = pointerPosition - startPoint;
-        var primaryDelta = isHorizontal ? delta.X : delta.Y;
-        if (MathUtils.AreClose(primaryDelta, 0))
+        var draggedPrimaryStart = GetPrimary(pointerRootPosition, isHorizontal) - pointerAnchorPrimary;
+        var primaryOffset       = draggedPrimaryStart - GetPrimaryStart(draggedBounds.Value, isHorizontal);
+        if (MathUtils.AreClose(primaryOffset, 0))
         {
             return oldIndex;
         }
 
-        if (MathUtils.GreaterThan(primaryDelta, 0))
+        if (MathUtils.GreaterThan(primaryOffset, 0))
         {
-            var draggedTrailingEdge = isHorizontal
-                ? draggedBounds.Value.Right + primaryDelta
-                : draggedBounds.Value.Bottom + primaryDelta;
+            var draggedTrailingEdge = draggedPrimaryStart + GetPrimarySize(draggedBounds.Value, isHorizontal);
             var insertionIndex = oldIndex;
             for (var i = oldIndex + 1; i < owner.ItemCount; i++)
             {
@@ -244,9 +285,7 @@ internal static class TabReorderHelper
             return insertionIndex;
         }
 
-        var draggedLeadingEdge = isHorizontal
-            ? draggedBounds.Value.X + primaryDelta
-            : draggedBounds.Value.Y + primaryDelta;
+        var draggedLeadingEdge = draggedPrimaryStart;
         var targetIndex = oldIndex;
         for (var i = oldIndex - 1; i >= 0; i--)
         {
@@ -279,6 +318,24 @@ internal static class TabReorderHelper
     internal static bool IsHorizontal(Dock placement)
     {
         return placement is Dock.Top or Dock.Bottom;
+    }
+
+    private static double? GetDraggedPreviewPrimaryOffset(
+        ItemsControl owner,
+        Dock placement,
+        Control draggedContainer,
+        Point pointerRootPosition,
+        double pointerAnchorPrimary)
+    {
+        var draggedBounds = GetContainerLayoutBounds(owner, draggedContainer);
+        if (draggedBounds is null)
+        {
+            return null;
+        }
+
+        var isHorizontal = IsHorizontal(placement);
+        var draggedPrimaryStart = GetPrimary(pointerRootPosition, isHorizontal) - pointerAnchorPrimary;
+        return draggedPrimaryStart - GetPrimaryStart(draggedBounds.Value, isHorizontal);
     }
 
     private static void ApplySiblingPreview(
@@ -339,6 +396,16 @@ internal static class TabReorderHelper
     private static double GetPrimaryStart(Rect bounds, bool isHorizontal)
     {
         return isHorizontal ? bounds.X : bounds.Y;
+    }
+
+    private static double GetPrimarySize(Rect bounds, bool isHorizontal)
+    {
+        return isHorizontal ? bounds.Width : bounds.Height;
+    }
+
+    private static double GetPrimary(Point point, bool isHorizontal)
+    {
+        return isHorizontal ? point.X : point.Y;
     }
 
     private static void SetPreviewTransform(
@@ -520,7 +587,7 @@ internal static class TabReorderHelper
             return null;
         }
 
-        var parentOffset = parent.TranslatePoint(default, owner);
+        var parentOffset = TranslateToRoot(owner, parent, default);
         if (parentOffset is null)
         {
             return null;
