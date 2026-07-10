@@ -46,6 +46,9 @@
                             IsVisible="False"/>
                     <atom:PixelAlignedBorder
                         Grid.ColumnSpan="2"
+                        Width="{atom:CalendarTokenResource CellWidth}"
+                        Height="{atom:CalendarTokenResource CellHeight}"
+                        Margin="{atom:CalendarTokenResource CellMargin}"
                         Padding="{TemplateBinding Padding}"
                         Background="{TemplateBinding Background}"
                         CornerRadius="{TemplateBinding EffectiveCornerRadius}"
@@ -102,12 +105,6 @@
         
         <Style Selector="^ /template/ Border#RangeEndIndicator">
             <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
-        </Style>
-
-        <Style Selector="^ /template/ ContentPresenter#Content">
-            <Setter Property="Width" Value="{atom:CalendarTokenResource CellWidth}" />
-            <Setter Property="Height" Value="{atom:CalendarTokenResource CellHeight}" />
-            <Setter Property="Margin" Value="{atom:CalendarTokenResource CellMargin}" />
         </Style>
 
         <Style Selector="^:pointerover:not(:range-start):not(:range-middle):not(:range-end):not(:range-preview-start):not(:range-preview-middle):not(:range-preview-end):not(:week-range-start):not(:week-range-middle):not(:week-range-end):not(:week-hover-start):not(:week-hover-middle):not(:week-hover-end)">
