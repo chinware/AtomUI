@@ -4,31 +4,27 @@ AtomUI is an Ant Design 6 component system for Avalonia/.NET desktop application
 interaction patterns, visual language, design tokens and theme customization model to native cross-platform apps on
 Windows, macOS and Linux.
 
-### What It Includes
+### Highlights
 
-- Production-oriented Avalonia desktop controls for layout, navigation, data entry, feedback and data display.
-- Token-driven theming built on Avalonia's style and resource system.
-- Ant Design icon packages, font packages and native desktop integration.
-- Optional advanced packages such as `AtomUI.Desktop.Controls.DataGrid` and `AtomUI.Desktop.Controls.ColorPicker`.
-- A reusable Gallery toolkit package, `AtomUI.Toolkits.GalleryBase`, for product demos and documentation galleries.
-- Source generators for custom controls, theme tokens and localization infrastructure.
+- Ant Design 6 style desktop controls for layout, navigation, data entry, feedback and data display.
+- Token-driven themes built on Avalonia styles, resources and design-token generation.
+- Native desktop integration for window chrome, popups, overlays and platform-specific interaction details.
+- A production Gallery application for exploring controls, examples and documentation.
+- Source generators for theme tokens, localization and control infrastructure.
 
-### Install
+### Package Areas
 
-Install the main desktop controls package first, then add optional packages only when your application needs them.
-
-```bash
-dotnet add package AtomUI.Desktop.Controls --version 6.0.7
-dotnet add package AtomUI.Desktop.Controls.DataGrid --version 6.0.7
-dotnet add package AtomUI.Desktop.Controls.ColorPicker --version 6.0.7
-dotnet add package AtomUI.Toolkits.GalleryBase --version 6.0.7
-```
+- `AtomUI.Desktop.Controls`: the main desktop control library.
+- `AtomUI.Desktop.Controls.DataGrid`: advanced table, filtering, sorting and row-detail scenarios.
+- `AtomUI.Desktop.Controls.ColorPicker`: desktop color picking controls and supporting primitives.
+- `AtomUI.Desktop.Controls.Extras`: stable supplemental controls beyond the Ant Design core set.
+- `AtomUI.Icons.AntDesign`: Ant Design icon assets for AtomUI controls and applications.
 
 ### Requirements
 
-- .NET 8 or later
-- Avalonia 12.0.x
-- Windows, macOS or Linux
+- .NET 8 or later.
+- Avalonia 12.0.5 or compatible 12.0.x runtime.
+- Windows, macOS or Linux desktop applications.
 
 ### Links
 

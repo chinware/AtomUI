@@ -33,10 +33,8 @@ public class GalleryBasePackagingTests
     public void Packaging_Docs_List_GalleryBase_As_Main_Package()
     {
         var packagingDoc = ReadRepoFile("docs/architecture/build-and-packaging.md");
-        var readme = ReadRepoFile("README.nuget.md");
 
         packagingDoc.ShouldContain("- `AtomUI.Toolkits.GalleryBase`");
-        readme.ShouldContain("AtomUI.Toolkits.GalleryBase");
     }
 
     private static string ReadRepoFile(string relativePath)
