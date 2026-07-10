@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reactive.Disposables;
+using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -64,6 +65,27 @@ public class CardBehaviorTests
     }
 
     [Fact]
+    public void Card_Header_Frame_Keeps_Themed_Bottom_Separator()
+    {
+        var card = new Desktop.Controls.Card
+        {
+            Width   = 320,
+            Header  = "Title",
+            Content = new TextBlock { Text = "Plain content" }
+        };
+
+        ShowInWindow(card, () =>
+        {
+            var headerFrame = FindTemplatePixelAlignedBorder(card, "HeaderFrame");
+
+            headerFrame.BorderBrush.ShouldNotBeNull();
+            headerFrame.BorderThickness.Bottom.ShouldBeGreaterThan(0);
+            headerFrame.MinHeight.ShouldBeGreaterThan(0);
+            headerFrame.Padding.Left.ShouldBeGreaterThan(0);
+        });
+    }
+
+    [Fact]
     public void Card_Releases_SizeType_Binding_From_Replaced_Special_Content()
     {
         var oldGridContent = new Desktop.Controls.CardGridContent();
@@ -102,9 +124,21 @@ public class CardBehaviorTests
 
     private static Border FindCardContentBorder(Desktop.Controls.Card card)
     {
+        return FindTemplateBorder(card, "CardContent");
+    }
+
+    private static Border FindTemplateBorder(Desktop.Controls.Card card, string name)
+    {
         return card.GetVisualDescendants()
                    .OfType<Border>()
-                   .Single(border => border.Name == "CardContent");
+                   .Single(border => border.Name == name);
+    }
+
+    private static PixelAlignedBorder FindTemplatePixelAlignedBorder(Desktop.Controls.Card card, string name)
+    {
+        return card.GetVisualDescendants()
+                   .OfType<PixelAlignedBorder>()
+                   .Single(border => border.Name == name);
     }
 
     private static void ShowInWindow(Control content, Action assertion)

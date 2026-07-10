@@ -4,6 +4,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme.Styling;
 using AtomUI.Desktop.Controls.CalendarView.Models;
@@ -768,7 +769,7 @@ public class CalendarViewLifecycleTests
                 Dispatcher.UIThread.RunJobs();
 
                 var item        = calendar.CalendarItem.ShouldNotBeNull();
-                var headerFrame = FindTemplateBorder(item, "PART_HeaderFrame");
+                var headerFrame = FindTemplatePixelAlignedBorder(item, "PART_HeaderFrame");
                 var calendarHeaderMargin = GetThemeResource<Thickness>(CalendarTokenKind.HeaderMargin);
 
                 headerFrame.Padding.ShouldBe(new Thickness(0));
@@ -955,6 +956,30 @@ public class CalendarViewLifecycleTests
     }
 
     [Fact]
+    public void CalendarDayButton_Range_Edge_Selection_Frame_Does_Not_Include_Cell_Margin()
+    {
+        Dispatcher.UIThread.Invoke(() =>
+        {
+            var button = new PickerCalendarDayButton
+            {
+                Content             = "18",
+                IsRangePreviewStart = true
+            };
+
+            ShowInWindow(button, () =>
+            {
+                var frame   = FindTemplatePixelAlignedBorder(button);
+                var content = FindTemplateContentPresenter(button);
+
+                frame.Bounds.Width.ShouldBe(content.Bounds.Width, 0.5);
+                frame.Bounds.Height.ShouldBe(content.Bounds.Height, 0.5);
+                frame.Margin.Left.ShouldBeGreaterThan(0);
+                content.Margin.ShouldBe(new Thickness(0));
+            });
+        });
+    }
+
+    [Fact]
     public void CalendarDayButton_Week_Selection_Uses_Row_Indicator()
     {
         Dispatcher.UIThread.Invoke(() =>
@@ -1111,6 +1136,20 @@ public class CalendarViewLifecycleTests
         return control.GetVisualDescendants()
                       .OfType<ContentPresenter>()
                       .Single(presenter => presenter.Name == "Content");
+    }
+
+    private static PixelAlignedBorder FindTemplatePixelAlignedBorder(Control control)
+    {
+        return control.GetVisualDescendants()
+                      .OfType<PixelAlignedBorder>()
+                      .Single();
+    }
+
+    private static PixelAlignedBorder FindTemplatePixelAlignedBorder(Control control, string name)
+    {
+        return control.GetVisualDescendants()
+                      .OfType<PixelAlignedBorder>()
+                      .Single(border => border.Name == name);
     }
 
     private static PickerCalendarDayButton[] GetWeekRowButtons(
