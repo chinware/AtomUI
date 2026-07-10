@@ -13,7 +13,7 @@ namespace AtomUI.Toolkits.GalleryBase.Controls;
 
 [TemplatePart(ScrollViewerPart, typeof(ScrollViewer))]
 [TemplatePart(StickyPanelPart, typeof(GalleryStickyTabsPanel))]
-[TemplatePart(StickyContentHostPart, typeof(Border))]
+[TemplatePart(StickyContentHostPart, typeof(Control))]
 public class GalleryStickyTabsHost : TemplatedControl
 {
     private const string ScrollViewerPart      = "PART_ScrollViewer";
@@ -101,7 +101,7 @@ public class GalleryStickyTabsHost : TemplatedControl
 
     private ScrollViewer? _scrollViewer;
     private GalleryStickyTabsPanel? _stickyPanel;
-    private Border? _inlineStickyContentHost;
+    private Control? _inlineStickyContentHost;
     private ScopeAwareAdornerLayer? _stickyMirrorLayer;
     private Border? _stickyMirror;
     private VisualBrush? _stickyMirrorBrush;
@@ -120,7 +120,7 @@ public class GalleryStickyTabsHost : TemplatedControl
 
         _scrollViewer            = e.NameScope.Get<ScrollViewer>(ScrollViewerPart);
         _stickyPanel             = e.NameScope.Get<GalleryStickyTabsPanel>(StickyPanelPart);
-        _inlineStickyContentHost = e.NameScope.Get<Border>(StickyContentHostPart);
+        _inlineStickyContentHost = e.NameScope.Get<Control>(StickyContentHostPart);
 
         _stickyPanel.PropertyChanged += HandleStickyPanelPropertyChanged;
         _scrollViewer.ScrollChanged  += HandleScrollChanged;

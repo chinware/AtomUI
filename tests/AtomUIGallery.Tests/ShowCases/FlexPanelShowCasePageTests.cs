@@ -170,6 +170,20 @@ public class FlexPanelShowCasePageTests
     }
 
     [Fact]
+    public void FlexPanel_ShowCase_PixelAlignedBorder_Containers_Are_Not_Looked_Up_As_Border()
+    {
+        var pageSource       = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml");
+        var codeBehindSource = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml.cs");
+
+        foreach (var containerName in new[] { "ShrinkContainer", "PlaygroundContainer" })
+        {
+            pageSource.ShouldContain($"<atom:PixelAlignedBorder x:Name=\"{containerName}\"");
+            codeBehindSource.ShouldContain($"FindRequired<Control>(root, \"{containerName}\")");
+            codeBehindSource.ShouldNotContain($"FindRequired<Border>(root, \"{containerName}\")");
+        }
+    }
+
+    [Fact]
     public void FlexPanel_ShowCase_Blue_Demo_Tile_Text_Uses_White_Foreground()
     {
         var source = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/Layout/FlexPanel/Views/FlexPanelShowCase.axaml");

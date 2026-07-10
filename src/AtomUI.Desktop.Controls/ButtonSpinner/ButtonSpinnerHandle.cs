@@ -85,8 +85,9 @@ internal class ButtonSpinnerHandle : TemplatedControl
     
     public override void Render(DrawingContext context)
     {
-        var          spinnerBorderThickness = BorderUtils.BuildLayoutRoundedThickness(this, SpinnerBorderThickness);
+        var          spinnerBorderThickness = BorderUtils.BuildRenderScaleAwareThickness(this, SpinnerBorderThickness);
         var          lineWidth = spinnerBorderThickness.Left;
+        var          lineCenterOffset = lineWidth / 2;
         CornerRadius cornerRadius;
         if (ButtonSpinnerLocation == ButtonSpinnerLocation.Left)
         {
@@ -120,8 +121,8 @@ internal class ButtonSpinnerHandle : TemplatedControl
             
             {
                 // 画竖线
-                var startPoint = new Point(lineWidth, lineWidth);
-                var endPoint   = new Point(lineWidth, Bounds.Height - lineWidth);
+                var startPoint = new Point(lineCenterOffset, lineWidth);
+                var endPoint   = new Point(lineCenterOffset, Bounds.Height - lineWidth);
                 PenUtils.TryModifyOrCreate(ref _handlePen, BorderBrush, lineWidth);
                 if (_handlePen is not null)
                 {

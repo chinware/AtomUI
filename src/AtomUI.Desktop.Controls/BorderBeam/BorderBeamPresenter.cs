@@ -198,7 +198,7 @@ internal class BorderBeamPresenter : Control
             return;
         }
 
-        var borderThickness = BorderUtils.BuildLayoutRoundedThickness(this, BorderBeamGeometry.BorderThickness);
+        var borderThickness = BorderUtils.BuildRenderScaleAwareThickness(this, BorderBeamGeometry.BorderThickness);
         var renderBounds    = GetRenderBounds(borderThickness);
         var borderGeometry  = CreateBorderGeometry(renderBounds, borderThickness, BorderBeamGeometry.CornerRadius);
         if (borderGeometry is null)
@@ -301,7 +301,7 @@ internal class BorderBeamPresenter : Control
     {
         var renderBounds = new Rect(Bounds.Size);
         var outset = Outset.HasValue
-            ? BorderUtils.BuildLayoutRoundedThickness(this, Outset.Value)
+            ? BorderUtils.BuildRenderScaleAwareThickness(this, Outset.Value)
             : borderThickness;
         return renderBounds.Inflate(outset);
     }

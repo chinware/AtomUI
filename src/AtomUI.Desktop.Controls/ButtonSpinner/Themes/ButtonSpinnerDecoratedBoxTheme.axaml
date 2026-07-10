@@ -12,30 +12,40 @@
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:ButtonSpinnerDecoratedBox">
                 <DockPanel Name="RootLayout" LastChildFill="True"> 
-                    <ContentPresenter
+                    <atom:PixelAlignedBorder
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
                         VerticalAlignment="Stretch"
-                        VerticalContentAlignment="Center"
                         Focusable="False"
                         DockPanel.Dock="Left"
-                        Content="{TemplateBinding LeftAddOn}"
-                        ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
                         BackgroundSizing="InnerBorderEdge"
                         BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
                         CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
-                        IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                    <ContentPresenter
+                        IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <ContentPresenter
+                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart}"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            Focusable="False"
+                            Content="{TemplateBinding LeftAddOn}"
+                            ContentTemplate="{TemplateBinding LeftAddOnTemplate}" />
+                    </atom:PixelAlignedBorder>
+                    <atom:PixelAlignedBorder
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
                         VerticalAlignment="Stretch"
-                        VerticalContentAlignment="Center"
                         DockPanel.Dock="Right"
                         Focusable="False"
-                        Content="{TemplateBinding RightAddOn}"
-                        ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                         BorderThickness="{TemplateBinding RightAddOnBorderThickness}"
                         BackgroundSizing="InnerBorderEdge"
                         CornerRadius="{TemplateBinding RightAddOnCornerRadius}"
-                        IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <ContentPresenter
+                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPresenterPart}"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            Focusable="False"
+                            Content="{TemplateBinding RightAddOn}"
+                            ContentTemplate="{TemplateBinding RightAddOnTemplate}" />
+                    </atom:PixelAlignedBorder>
 
                     <Panel>
                         <atom:AddOnDecoratedBoxContentFrame Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"

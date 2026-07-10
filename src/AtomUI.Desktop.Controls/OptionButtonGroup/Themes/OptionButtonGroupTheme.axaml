@@ -6,13 +6,13 @@
     <ControlTheme x:Key="{x:Type atom:OptionButtonGroup}" TargetType="atom:OptionButtonGroup">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        BorderThickness="{TemplateBinding EffectiveBorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                <atom:PixelAlignedBorder Name="Frame"
+                                         BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         CornerRadius="{TemplateBinding CornerRadius}">
                     <ItemsPresenter Name="PART_ItemsPresenter"
                                     ItemsPanel="{TemplateBinding ItemsPanel}" />
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         

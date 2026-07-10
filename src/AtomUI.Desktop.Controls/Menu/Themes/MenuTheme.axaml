@@ -6,13 +6,13 @@
     <ControlTheme x:Key="{x:Type atom:Menu}" TargetType="atom:Menu">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border HorizontalAlignment="Stretch"
-                        Padding="{TemplateBinding Padding}"
-                        Background="{TemplateBinding Background}"
-                        BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                <atom:PixelAlignedBorder HorizontalAlignment="Stretch"
+                                         Padding="{TemplateBinding Padding}"
+                                         Background="{TemplateBinding Background}"
+                                         BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         CornerRadius="{TemplateBinding CornerRadius}">
                     <ItemsPresenter Name="PART_ItemsPresenter"
                                     HorizontalAlignment="Stretch"
                                     VerticalAlignment="Center"
@@ -23,7 +23,7 @@
                             </ItemsPanelTemplate>
                         </ItemsPresenter.ItemsPanel>
                     </ItemsPresenter>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 

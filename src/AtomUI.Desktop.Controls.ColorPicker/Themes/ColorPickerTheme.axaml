@@ -12,12 +12,12 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Name="PART_Frame"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                            Background="{TemplateBinding Background}"
-                            Padding="{TemplateBinding TriggerPadding}">
+                    <atom:PixelAlignedBorder Name="PART_Frame"
+                                             BorderThickness="{TemplateBinding BorderThickness}"
+                                             BorderBrush="{TemplateBinding BorderBrush}"
+                                             CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                                             Background="{TemplateBinding Background}"
+                                             Padding="{TemplateBinding TriggerPadding}">
                         <StackPanel Orientation="Horizontal"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center">
@@ -30,7 +30,7 @@
                                        Text="{TemplateBinding ColorText}"
                                        VerticalAlignment="Center" />
                         </StackPanel>
-                    </Border>
+                    </atom:PixelAlignedBorder>
                     <atom:Popup Name="PART_Popup"
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="{TemplateBinding IsLightDismissEnabled}"

@@ -32,7 +32,7 @@ internal class ColorSliderThumb : Thumb
 
     #endregion
 
-    private Border? _innerEllipse;
+    private Control? _innerEllipse;
 
     protected override void OnSizeChanged(SizeChangedEventArgs e)
     {
@@ -48,7 +48,7 @@ internal class ColorSliderThumb : Thumb
         {
             _innerEllipse.SizeChanged -= HandleInnerEllipseSizeChanged;
         }
-        _innerEllipse = e.NameScope.Find<Border>("PART_InnerEllipse");
+        _innerEllipse = e.NameScope.Find<Control>("PART_InnerEllipse");
         if (_innerEllipse != null)
         {
             _innerEllipse.SizeChanged += HandleInnerEllipseSizeChanged;

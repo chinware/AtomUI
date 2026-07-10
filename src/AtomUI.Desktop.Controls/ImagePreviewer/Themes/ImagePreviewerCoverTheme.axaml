@@ -7,11 +7,11 @@
     <ControlTheme x:Key="{x:Type atom:ImagePreviewerCover}" TargetType="atom:ImagePreviewerCover">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                <atom:PixelAlignedBorder Background="{TemplateBinding Background}"
+                                         Padding="{TemplateBinding Padding}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         CornerRadius="{TemplateBinding CornerRadius}">
                     <Panel>
                         <atom:ImagePreviewRenderer Source="{TemplateBinding ImageSource}"
                                                    Stretch="Uniform"
@@ -70,7 +70,7 @@
                                               ContentTemplate="{TemplateBinding ContentTemplate}" />
                         </Border>
                     </Panel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 

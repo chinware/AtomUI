@@ -10,13 +10,13 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}"
-                        Margin="{TemplateBinding Margin}">
+                <atom:PixelAlignedBorder Name="Frame"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         Background="{TemplateBinding Background}"
+                                         Padding="{TemplateBinding Padding}"
+                                         Margin="{TemplateBinding Margin}">
                     <StackPanel Name="ContentLayout" Orientation="Horizontal">
                         <atom:IconPresenter Name="ItemIconPresenter"
                                             Icon="{TemplateBinding Icon}" />
@@ -28,7 +28,7 @@
                                          Opacity="{TemplateBinding CloseButtonOpacity}"
                                          VerticalAlignment="Center" />
                     </StackPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 

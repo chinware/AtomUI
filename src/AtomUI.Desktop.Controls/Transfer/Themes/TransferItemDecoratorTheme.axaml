@@ -23,16 +23,16 @@
     <ControlTheme x:Key="{x:Type atom:TransferItemDecorator}" TargetType="atom:TransferItemDecorator">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        ClipToBounds="True">
+                <atom:PixelAlignedBorder Name="Frame"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         ClipToBounds="True">
                     <DockPanel LastChildFill="True" Name="RootLayout">
-                        <Border Name="HeaderFrame"
-                                DockPanel.Dock="Top"
-                                CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource HeaderCornerRadiusFilterConverter}}"
-                                BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource HeaderBorderThickness}}">
+                        <atom:PixelAlignedBorder Name="HeaderFrame"
+                                                 DockPanel.Dock="Top"
+                                                 CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource HeaderCornerRadiusFilterConverter}}"
+                                                 BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource HeaderBorderThickness}}">
                             <DockPanel Name="HeaderLayout" LastChildFill="True">
                                 <atom:CheckBox Name="SelectAllCheckBox"
                                                DockPanel.Dock="Left"
@@ -59,7 +59,7 @@
                                                   VerticalAlignment="Center"
                                                   TextTrimming="CharacterEllipsis" />
                             </DockPanel>
-                        </Border>
+                        </atom:PixelAlignedBorder>
                         <atom:LineEdit HorizontalAlignment="Stretch"
                                        DockPanel.Dock="Top"
                                        Name="FilterInput"
@@ -72,15 +72,15 @@
                                     StrokeBrush="{atom:SharedTokenResource ColorTextDescription}" />
                             </atom:LineEdit.InnerLeftContent>
                         </atom:LineEdit>
-                        <Border Name="FooterFrame"
-                                DockPanel.Dock="Bottom"
-                                IsVisible="{TemplateBinding Footer, Converter={x:Static ObjectConverters.IsNotNull}}"
-                                CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource FooterCornerRadiusFilterConverter}}"
-                                BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource FooterBorderThickness}}">
+                        <atom:PixelAlignedBorder Name="FooterFrame"
+                                                 DockPanel.Dock="Bottom"
+                                                 IsVisible="{TemplateBinding Footer, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                                 CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource FooterCornerRadiusFilterConverter}}"
+                                                 BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource FooterBorderThickness}}">
                             <ContentPresenter Name="FooterPresenter"
                                               Content="{TemplateBinding Footer}"
                                               ContentTemplate="{TemplateBinding FooterTemplate}" />
-                        </Border>
+                        </atom:PixelAlignedBorder>
                         <ContentPresenter Name="ContentPresenter"
                                           Content="{TemplateBinding Content}"
                                           ClipToBounds="True"
@@ -90,7 +90,7 @@
                                           HorizontalAlignment="Stretch"
                                           HorizontalContentAlignment="Stretch" />
                     </DockPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 

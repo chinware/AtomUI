@@ -4,8 +4,13 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using AtomUI.Controls;
+using AtomUI.Desktop.Controls;
+using Avalonia.Controls;
+using Avalonia.Threading;
 using Shouldly;
 using Xunit;
+using AtomUIForm = AtomUI.Desktop.Controls.Form;
 
 namespace AtomUIGallery.Tests.ShowCases;
 
@@ -199,6 +204,54 @@ public class FormShowCasePageTests
     }
 
     [Fact]
+    public void Donation_Form_Item_Does_Not_Validate_On_Initial_Default_Unit_Selection()
+    {
+        AvaloniaTestApp.EnsureInitialized();
+
+        var donation = new AtomUIGallery.ShowCases.Form.Donation();
+        var formItem = new FormItem
+        {
+            LabelText  = "Donation",
+            FieldName  = "donation",
+            IsRequired = true,
+            Content    = donation,
+            Validators = [new FormNotNullValidator { Message = "required" }]
+        };
+        var form = new AtomUIForm
+        {
+            Width = 420
+        };
+        form.Items.Add(formItem);
+
+        var valueChangedCount = 0;
+        ((IFormItemAware)donation).ValueChanged += (_, _) => valueChangedCount++;
+
+        var window = new Avalonia.Controls.Window
+        {
+            Width   = 520,
+            Height  = 240,
+            Content = form
+        };
+
+        try
+        {
+            window.Show();
+            RunLayoutJobs();
+
+            valueChangedCount.ShouldBe(0);
+            donation.Value.ShouldBeNull();
+            donation.Status.ShouldBe(InputControlStatus.Default);
+            DataValidationErrors.GetHasErrors(donation).ShouldBeFalse();
+            formItem.ValidateStatus.ShouldBe(FormValidateStatus.Default);
+            formItem.ValidateResult.ShouldBe(FormValidateResult.Success);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
     public void Form_ShowCase_Examples_Match_Approved_Control_Demo_Content()
     {
         var source   = ReadRepoFile("controlgallery/AtomUIGallery/ShowCases/DataEntry/Form/Views/FormShowCase.axaml");
@@ -296,6 +349,12 @@ public class FormShowCasePageTests
             count++;
             startIndex = matchIndex + value.Length;
         }
+    }
+
+    private static void RunLayoutJobs()
+    {
+        Dispatcher.UIThread.RunJobs();
+        Dispatcher.UIThread.RunJobs();
     }
 
     private static string ReadRepoFile(string relativePath)

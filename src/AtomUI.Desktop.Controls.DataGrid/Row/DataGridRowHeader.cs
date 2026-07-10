@@ -4,6 +4,7 @@
 // All other rights reserved.
 
 using AtomUI.Controls;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
@@ -147,7 +148,7 @@ public class DataGridRowHeader : ContentControl
 
         if (_horizontalSeparator != null)
         {
-            _horizontalSeparator.Height = owningGrid.BorderThickness.Left;
+            _horizontalSeparator.Height = BorderUtils.BuildRenderScaleAwareThickness(owningGrid, owningGrid.BorderThickness.Left);
         }
 
         ConfigureSeparatorVisible(owningGrid);

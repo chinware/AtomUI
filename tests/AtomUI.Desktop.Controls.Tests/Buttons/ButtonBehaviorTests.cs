@@ -446,7 +446,7 @@ public class ButtonBehaviorTests
             var frame = FindTemplateDashedBorder(button, "Frame");
             RenderToDrawingGroup(frame);
 
-            GetBorderRenderHelperThickness(frame).ShouldBe(new Thickness(4d / 3d));
+            GetBorderRenderHelperThickness(frame).ShouldBe(new Thickness(2d / 3d));
         });
     }
 

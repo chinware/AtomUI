@@ -118,7 +118,7 @@ public abstract class AbstractSeparator : AvaloniaSeparator, ISizeTypeAware
     }
     
     /// <summary>
-    /// 分割线的宽度，这里的宽度是 RenderScaling 中立的像素值
+    /// 分割线的设计宽度，实际绘制厚度会根据当前 render scale 调整
     /// </summary>
     public double LineWidth
     {
@@ -197,7 +197,8 @@ public abstract class AbstractSeparator : AvaloniaSeparator, ISizeTypeAware
         AffectsArrange<AbstractSeparator>(TitlePositionProperty);
         AffectsRender<AbstractSeparator>(TitleColorProperty,
             LineColorProperty,
-            IsPlainProperty);
+            IsPlainProperty,
+            UseLayoutRoundingProperty);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -404,7 +405,7 @@ public abstract class AbstractSeparator : AvaloniaSeparator, ISizeTypeAware
     {
         var variant = Variant;
         var lineColor = LineColor;
-        var lineWidth = LineWidth;
+        var lineWidth = BorderUtils.BuildRenderScaleAwareThickness(this, LineWidth);
         if (_cachedLinePen is not null &&
             _cachedVariant == variant &&
             ReferenceEquals(_cachedLineColor, lineColor) &&

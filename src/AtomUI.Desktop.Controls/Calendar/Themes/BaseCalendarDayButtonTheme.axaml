@@ -7,22 +7,25 @@
     <ControlTheme x:Key="{x:Type atom:BaseCalendarDayButton}" TargetType="atom:BaseCalendarDayButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter
-                    Name="PART_Content"
+                <atom:PixelAlignedBorder
                     Padding="{TemplateBinding Padding}"
-                    Foreground="{TemplateBinding Foreground}"
                     Background="{TemplateBinding Background}"
                     CornerRadius="{TemplateBinding CornerRadius}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
-                    FontSize="{TemplateBinding FontSize}"
-                    Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
-                    ContentTemplate="{TemplateBinding ContentTemplate}"
                     HorizontalAlignment="Stretch"
-                    VerticalAlignment="Stretch"
-                    HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
-                />
+                    VerticalAlignment="Stretch">
+                    <ContentPresenter
+                        Name="PART_Content"
+                        Foreground="{TemplateBinding Foreground}"
+                        FontSize="{TemplateBinding FontSize}"
+                        Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center" />
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         

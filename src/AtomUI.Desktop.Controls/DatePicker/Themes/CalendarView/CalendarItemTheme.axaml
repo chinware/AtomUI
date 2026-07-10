@@ -17,9 +17,9 @@
                 <DockPanel
                     Name="PART_ItemRootLayout"
                     LastChildFill="True">
-                    <Border Name="PART_HeaderFrame"
-                            DockPanel.Dock="Top"
-                            BorderThickness="{TemplateBinding HeaderBorderThickness, Converter={x:Static themes:CalendarItemTheme.BorderThicknessFilterConverter}}">
+                    <atom:PixelAlignedBorder Name="PART_HeaderFrame"
+                                             DockPanel.Dock="Top"
+                                             BorderThickness="{TemplateBinding HeaderBorderThickness, Converter={x:Static themes:CalendarItemTheme.BorderThicknessFilterConverter}}">
                         <Grid Name="PART_HeaderLayout"
                               MinWidth="{atom:DatePickerTokenResource MonthViewMinWidth}"
                               MinHeight="{atom:SharedTokenResource ControlHeight}">
@@ -54,7 +54,7 @@
                                     Icon="{antdicons:AntDesignIconProvider DoubleRightOutlined}" />
                             </StackPanel>
                         </Grid>
-                    </Border>
+                    </atom:PixelAlignedBorder>
 
                     <UniformGrid Name="PART_MonthViewLayout"
                                  Columns="1"

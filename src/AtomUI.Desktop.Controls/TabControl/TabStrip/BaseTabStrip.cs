@@ -2,6 +2,7 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Theme;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -247,7 +248,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
     {
         ItemsPanelProperty.OverrideDefaultValue<BaseTabStrip>(DefaultPanel);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabStrip>(false);
-        AffectsRender<BaseTabStrip>(TabStripPlacementProperty, BorderBrushProperty, BorderThicknessProperty);
+        AffectsRender<BaseTabStrip>(TabStripPlacementProperty, BorderBrushProperty, BorderThicknessProperty, UseLayoutRoundingProperty);
         AffectsMeasure<BaseTabStrip>(TabStripPlacementProperty);
     }
 
@@ -547,7 +548,7 @@ public abstract class BaseTabStrip : AvaloniaTabStrip,
         {
             Point startPoint      = default;
             Point endPoint        = default;
-            var   borderThickness = BorderThickness.Left;
+            var   borderThickness = BorderUtils.BuildRenderScaleAwareThickness(this, BorderThickness.Left);
             var   offsetDelta     = borderThickness / 2;
             if (TabStripPlacement == Dock.Top)
             {

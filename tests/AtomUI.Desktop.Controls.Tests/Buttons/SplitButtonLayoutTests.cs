@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Headless;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -60,6 +62,29 @@ public class SplitButtonLayoutTests
         });
     }
 
+    [Fact]
+    public void Primary_SplitButton_Separator_Uses_Render_Scale_Aware_Thickness()
+    {
+        var splitButton = new SplitButton
+        {
+            Content             = "Hover me",
+            IsPrimaryButtonType = true,
+            BorderThickness     = new Thickness(1)
+        };
+
+        ShowInWindow(splitButton, window =>
+        {
+            window.SetRenderScaling(1.5);
+            Dispatcher.UIThread.RunJobs();
+
+            var primaryButton   = FindButtonPart(splitButton, "PART_PrimaryButton");
+            var secondaryButton = FindButtonPart(splitButton, "PART_SecondaryButton");
+            var separatorGap    = secondaryButton.Bounds.Left - primaryButton.Bounds.Right;
+
+            separatorGap.ShouldBe(2d / 3d, 0.001);
+        });
+    }
+
     private static Button FindButtonPart(SplitButton splitButton, string name)
     {
         return splitButton.GetVisualDescendants()
@@ -68,6 +93,11 @@ public class SplitButtonLayoutTests
     }
 
     private static void ShowInWindow(Control content, Action assertion)
+    {
+        ShowInWindow(content, _ => assertion());
+    }
+
+    private static void ShowInWindow(Control content, Action<AvaloniaWindow> assertion)
     {
         var window = new AvaloniaWindow
         {
@@ -80,7 +110,7 @@ public class SplitButtonLayoutTests
         {
             window.Show();
             Dispatcher.UIThread.RunJobs();
-            assertion();
+            assertion(window);
         }
         finally
         {

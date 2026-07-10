@@ -6,11 +6,11 @@
     <ControlTheme x:Key="{x:Type atom:DataGridRowExpander}" TargetType="atom:DataGridRowExpander">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        Background="Transparent"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                <atom:PixelAlignedBorder Name="Frame"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         Background="Transparent"
+                                         CornerRadius="{TemplateBinding CornerRadius}">
                     <Canvas VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <Rectangle Name="{x:Static atom:DataGridRowExpanderThemeConstants.HorizontalIndicatorPart}"
                                    Height="1"
@@ -25,7 +25,7 @@
                                    Fill="{TemplateBinding IndicatorFill}"
                                    RenderTransform="{TemplateBinding VerticalIndicatorRenderTransform}"/>
                     </Canvas>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         

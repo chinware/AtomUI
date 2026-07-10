@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -446,6 +447,108 @@ public class FormBehaviorTests
         }
     }
 
+    [Fact]
+    public void FormItem_LabelWrap_Keeps_Label_Text_Inside_Label_Column()
+    {
+        var form = new global::AtomUI.Desktop.Controls.Form
+        {
+            FormLayout          = FormLayout.Horizontal,
+            LabelColInfo        = new MediaBreakGridLength(new GridLength(120)),
+            WrapperColInfo      = new MediaBreakGridLength(GridLength.Star),
+            LabelAlign          = FormLabelAlign.Left,
+            LabelWrapping       = TextWrapping.Wrap,
+            IsShowColon         = false,
+            Width               = 600,
+            HorizontalAlignment = HorizontalAlignment.Left
+        };
+        var formItem = new FormItem
+        {
+            LabelText  = "A super long label text",
+            FieldName  = "password",
+            IsRequired = true,
+            Content = new LineEdit
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            }
+        };
+        form.Items.Add(formItem);
+        var window = CreateWindow(form);
+
+        try
+        {
+            window.Width  = 720;
+            window.Height = 240;
+            window.Show();
+            RunLayoutJobs();
+
+            var bodyLayout     = FindVisualByName<Avalonia.Controls.Grid>(formItem, "PART_BodyLayout");
+            var labelLayout    = FindVisualByName<Panel>(formItem, "PART_LabelLayout");
+            var labelContent   = FindVisualByName<DockPanel>(formItem, "PART_LabelContentLayout");
+            var label          = FindVisualByName<Avalonia.Controls.TextBlock>(formItem, "PART_Label");
+            var contentLayout  = FindVisualByName<Panel>(formItem, "PART_ContentLayout");
+            var labelLayoutPos = labelLayout.TranslatePoint(default, bodyLayout).ShouldNotBeNull();
+            var labelPos       = label.TranslatePoint(default, bodyLayout).ShouldNotBeNull();
+            var contentPos     = contentLayout.TranslatePoint(default, bodyLayout).ShouldNotBeNull();
+
+            labelContent.HorizontalAlignment.ShouldBe(HorizontalAlignment.Left);
+            label.Bounds.Height.ShouldBeGreaterThan(24);
+            labelPos.X.ShouldBeGreaterThanOrEqualTo(labelLayoutPos.X);
+            (labelPos.X + label.Bounds.Width).ShouldBeLessThanOrEqualTo(
+                labelLayoutPos.X + labelLayout.Bounds.Width + 0.5);
+            contentPos.X.ShouldBeGreaterThanOrEqualTo(
+                labelLayoutPos.X + labelLayout.Bounds.Width - 0.5);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void FormItem_Default_LabelAlign_Keeps_Label_Content_Right_Aligned()
+    {
+        var form = new global::AtomUI.Desktop.Controls.Form
+        {
+            FormLayout          = FormLayout.Horizontal,
+            LabelColInfo        = new MediaBreakGridLength(new GridLength(120)),
+            WrapperColInfo      = new MediaBreakGridLength(GridLength.Star),
+            Width               = 600,
+            HorizontalAlignment = HorizontalAlignment.Left
+        };
+        var formItem = new FormItem
+        {
+            LabelText = "Name",
+            FieldName = "name",
+            Content = new LineEdit
+            {
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            }
+        };
+        form.Items.Add(formItem);
+        var window = CreateWindow(form);
+
+        try
+        {
+            window.Width  = 720;
+            window.Height = 200;
+            window.Show();
+            RunLayoutJobs();
+
+            var labelLayout       = FindVisualByName<Panel>(formItem, "PART_LabelLayout");
+            var labelContent      = FindVisualByName<DockPanel>(formItem, "PART_LabelContentLayout");
+            var labelContentRight = labelContent.TranslatePoint(
+                new Point(labelContent.Bounds.Width, 0),
+                labelLayout).ShouldNotBeNull();
+
+            labelContent.HorizontalAlignment.ShouldBe(HorizontalAlignment.Right);
+            labelContentRight.X.ShouldBe(labelLayout.Bounds.Width, 0.5);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static string ReadRepoFile(string relativePath)
     {
         return File.ReadAllText(Path.Combine(GetRepositoryRoot(), relativePath));
@@ -481,6 +584,14 @@ public class FormBehaviorTests
     {
         Dispatcher.UIThread.RunJobs();
         Dispatcher.UIThread.RunJobs();
+    }
+
+    private static T FindVisualByName<T>(Control root, string name)
+        where T : Control
+    {
+        return root.GetVisualDescendants()
+                   .OfType<T>()
+                   .Single(item => item.Name == name);
     }
 
     private sealed class FeedbackAwareFormControl : Control, IFormItemAware, IFormItemFeedbackAware

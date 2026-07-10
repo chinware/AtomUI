@@ -108,7 +108,7 @@ public class GroupBoxRenderTests
     }
 
     [Fact]
-    public void Render_Uses_Layout_Rounded_BorderThickness_For_Geometry()
+    public void Render_Uses_Render_Scale_Aware_BorderThickness_For_Geometry()
     {
         var groupBox = new AtomUI.Desktop.Controls.GroupBox
         {
@@ -136,7 +136,7 @@ public class GroupBoxRenderTests
 
             RenderToDrawingGroup(groupBox);
 
-            GetCachedBorderThickness(groupBox).ShouldBe(new Thickness(4d / 3d));
+            GetCachedBorderThickness(groupBox).ShouldBe(new Thickness(2d / 3d));
         });
     }
 

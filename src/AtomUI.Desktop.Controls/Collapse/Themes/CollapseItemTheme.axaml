@@ -10,10 +10,10 @@
             <ControlTemplate>
                 <DockPanel Name="PART_MainLayout"
                            LastChildFill="True">
-                    <Border Name="PART_HeaderDecorator"
-                            DockPanel.Dock="Top"
-                            BorderThickness="{TemplateBinding HeaderBorderThickness}"
-                            Padding="{TemplateBinding EffectiveHeaderPadding}">
+                    <atom:PixelAlignedBorder Name="PART_HeaderDecorator"
+                                             DockPanel.Dock="Top"
+                                             BorderThickness="{TemplateBinding HeaderBorderThickness}"
+                                             Padding="{TemplateBinding EffectiveHeaderPadding}">
                         <Grid ColumnDefinitions="Auto, *, Auto, Auto">
                             <atom:IconButton
                                 Name="PART_ExpandButton"
@@ -43,15 +43,17 @@
                                 ContentTemplate="{TemplateBinding AddOnContentTemplate}"
                                 Grid.Column="2" />
                         </Grid>
-                    </Border>
+                    </atom:PixelAlignedBorder>
                     <atom:LayoutAwareMotionActor
                         Name="PART_ContentMotionActor"
                         ClipToBounds="True">
-                        <ContentPresenter Name="PART_ContentPresenter"
-                                          Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
-                                          ContentTemplate="{TemplateBinding ContentTemplate}"
-                                          BorderThickness="{TemplateBinding ContentBorderThickness}"
-                                          Padding="{TemplateBinding EffectiveContentPadding}"/>
+                        <atom:PixelAlignedBorder Name="PART_ContentFrame"
+                                                 BorderThickness="{TemplateBinding ContentBorderThickness}"
+                                                 Padding="{TemplateBinding EffectiveContentPadding}">
+                            <ContentPresenter Name="PART_ContentPresenter"
+                                              Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                        </atom:PixelAlignedBorder>
                     </atom:LayoutAwareMotionActor>
                 </DockPanel>
             </ControlTemplate>
@@ -59,12 +61,12 @@
 
         <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationSlow}" />
         <Style Selector="^ /template/ Border#PART_HeaderDecorator">
-            <Setter Property="Background" Value="{atom:CollapseTokenResource HeaderBg}" />
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+            <Setter Property="atom:DashedBorder.Background" Value="{atom:CollapseTokenResource HeaderBg}" />
+            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
 
-        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        <Style Selector="^ /template/ Border#PART_ContentFrame">
+            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
@@ -189,14 +191,14 @@
         </Style>
 
         <Style Selector="^[IsBorderless=True]">
-            <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-                <Setter Property="Background" Value="{atom:CollapseTokenResource HeaderBg}" />
+            <Style Selector="^ /template/ Border#PART_ContentFrame">
+                <Setter Property="atom:DashedBorder.Background" Value="{atom:CollapseTokenResource HeaderBg}" />
             </Style>
         </Style>
 
         <Style Selector="^[IsGhostStyle=True]">
             <Style Selector="^ /template/ Border#PART_HeaderDecorator">
-                <Setter Property="Background" Value="{atom:CollapseTokenResource ContentBg}" />
+                <Setter Property="atom:DashedBorder.Background" Value="{atom:CollapseTokenResource ContentBg}" />
             </Style>
         </Style>
 

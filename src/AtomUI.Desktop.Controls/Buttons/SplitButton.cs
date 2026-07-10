@@ -310,6 +310,7 @@ public class SplitButton : ContentControl,
         HorizontalAlignmentProperty.OverrideDefaultValue<SplitButton>(HorizontalAlignment.Left);
         VerticalAlignmentProperty.OverrideDefaultValue<SplitButton>(VerticalAlignment.Top);
         AffectsMeasure<SplitButton>(SizeTypeProperty);
+        AffectsArrange<SplitButton>(IsPrimaryButtonTypeProperty, BorderThicknessProperty, UseLayoutRoundingProperty);
         AffectsRender<SplitButton>(IsPrimaryButtonTypeProperty, IsDangerProperty, SplitSeparatorBrushProperty);
     }
 
@@ -835,8 +836,9 @@ public class SplitButton : ContentControl,
             }
             else
             {
+                var separatorThickness = BorderUtils.BuildRenderScaleAwareThickness(this, BorderThickness.Left);
                 _secondaryButton.Arrange(
-                    originRect.Deflate(new Thickness(BorderThickness.Left, 0, 0, 0)));
+                    originRect.Deflate(new Thickness(separatorThickness, 0, 0, 0)));
             }
         }
 

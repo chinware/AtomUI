@@ -6,6 +6,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using AtomUI.Controls;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
@@ -405,7 +406,7 @@ public class DataGridCell : ContentControl
                 _rightGridLine.IsVisible = newVisibility;
             }
 
-            _rightGridLine.Width = OwningGrid.BorderThickness.Left;
+            _rightGridLine.Width = BorderUtils.BuildRenderScaleAwareThickness(OwningGrid, OwningGrid.BorderThickness.Left);
         }
     }
 

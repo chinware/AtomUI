@@ -9,10 +9,10 @@
             <ControlTemplate TargetType="atom:TimePickerPresenter">
                 <Border>
                     <DockPanel Name="PART_MainLayout" LastChildFill="True">
-                        <Border Name="PART_ButtonsFrame"
-                                BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource BorderThicknessFilterConverter}}"
-                                IsVisible="{TemplateBinding IsButtonsPanelVisible}"
-                                DockPanel.Dock="Bottom">
+                        <atom:PixelAlignedBorder Name="PART_ButtonsFrame"
+                                                 BorderThickness="{TemplateBinding BorderThickness, Converter={StaticResource BorderThicknessFilterConverter}}"
+                                                 IsVisible="{TemplateBinding IsButtonsPanelVisible}"
+                                                 DockPanel.Dock="Bottom">
                             <Panel Name="PART_ButtonsLayout">
                                 <atom:Button
                                     Name="PART_NowButton"
@@ -27,7 +27,7 @@
                                     SizeType="Small"
                                     Content="{atom:CommonLangResource Ok}" />
                             </Panel>
-                        </Border>
+                        </atom:PixelAlignedBorder>
                         <atom:TimeView Name="PART_TimeView"
                                        IsShowHeader="False"
                                        IsMotionEnabled="{TemplateBinding IsMotionEnabled}"

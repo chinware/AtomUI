@@ -6,7 +6,7 @@
               x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:ToggleIconButton">
-            <Border
+            <atom:PixelAlignedBorder
                 Name="Frame"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -35,7 +35,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center" />
                 </Panel>
-            </Border>
+            </atom:PixelAlignedBorder>
         </ControlTemplate>
     </Setter>
 

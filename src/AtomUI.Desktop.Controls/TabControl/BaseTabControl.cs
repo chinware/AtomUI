@@ -3,6 +3,7 @@ using System.Reactive.Disposables;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Theme;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -335,7 +336,7 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         SelectionModeProperty.OverrideDefaultValue<BaseTabControl>(SelectionMode.AlwaysSelected);
         AutoScrollToSelectedItemProperty.OverrideDefaultValue<BaseTabControl>(false);
         ItemsPanelProperty.OverrideDefaultValue<BaseTabControl>(DefaultPanel);
-        AffectsRender<BaseTabControl>(BorderBrushProperty, BorderThicknessProperty);
+        AffectsRender<BaseTabControl>(BorderBrushProperty, BorderThicknessProperty, UseLayoutRoundingProperty);
         AffectsMeasure<BaseTabControl>(TabStripMarginProperty, TabAndContentGutterProperty, TabStripPlacementProperty);
         SelectedItemProperty.Changed.AddClassHandler<BaseTabControl>((x, e) => x.UpdateSelectedContent());
     }
@@ -889,7 +890,7 @@ public class BaseTabControl : SelectingItemsControl, IMotionAwareControl
         {
             var offset          = _alignWrapper.TranslatePoint(new Point(0, 0), this) ?? default;
             var size            = _alignWrapper.Bounds.Size;
-            var borderThickness = BorderThickness.Left;
+            var borderThickness = BorderUtils.BuildRenderScaleAwareThickness(this, BorderThickness.Left);
             var offsetDelta     = borderThickness / 2;
             if (TabStripPlacement == Dock.Top)
             {

@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Media;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -28,7 +29,10 @@ internal class CardActionPanel : TemplatedControl
     
     static CardActionPanel()
     {
-        AffectsRender<CardActionPanel>();
+        AffectsRender<CardActionPanel>(
+            BorderBrushProperty,
+            BorderThicknessProperty,
+            UseLayoutRoundingProperty);
     }
 
     public CardActionPanel()
@@ -88,7 +92,7 @@ internal class CardActionPanel : TemplatedControl
 
     public override void Render(DrawingContext context)
     {
-        var lineWidth = BorderThickness.Left;
+        var lineWidth = BorderUtils.BuildRenderScaleAwareThickness(this, BorderThickness.Left);
         PenUtils.TryModifyOrCreate(ref _borderPen, BorderBrush, lineWidth);
         if (_borderPen is null)
         {

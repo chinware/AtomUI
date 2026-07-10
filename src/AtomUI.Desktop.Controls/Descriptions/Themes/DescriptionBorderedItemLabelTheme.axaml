@@ -6,15 +6,16 @@
     <ControlTheme x:Key="{x:Type atom:DescriptionBorderedItemLabel}" TargetType="atom:DescriptionBorderedItemLabel">
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter Name="ContentPresenter"
-                                  Content="{TemplateBinding Content}"
-                                  LineHeight="{TemplateBinding LineHeight}"
-                                  TextWrapping="Wrap"
-                                  VerticalContentAlignment="Center"
-                                  BorderThickness="{TemplateBinding EffectiveBorderThickness}"
-                                  BorderBrush="{TemplateBinding BorderBrush}"
-                                  Background="{TemplateBinding Background}"
-                                  Padding="{TemplateBinding Padding}"/>
+                <atom:PixelAlignedBorder BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         Background="{TemplateBinding Background}"
+                                         Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Name="ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      LineHeight="{TemplateBinding LineHeight}"
+                                      TextWrapping="Wrap"
+                                      VerticalContentAlignment="Center" />
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         

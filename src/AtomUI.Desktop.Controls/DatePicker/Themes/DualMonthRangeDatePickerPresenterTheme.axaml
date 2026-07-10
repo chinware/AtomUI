@@ -13,10 +13,10 @@
             <ControlTemplate TargetType="atom:DualMonthRangeDatePickerPresenter">
                 <DockPanel Name="RootLayout"
                            LastChildFill="True">
-                    <Border Name="ButtonsFrame"
-                            BorderThickness="{TemplateBinding BorderThickness, Converter={x:Static atom:DatePickerPresenterTheme.BorderThicknessFilterConverter}}"
-                            IsVisible="{TemplateBinding IsButtonsPanelVisible}"
-                            DockPanel.Dock="Bottom">
+                    <atom:PixelAlignedBorder Name="ButtonsFrame"
+                                             BorderThickness="{TemplateBinding BorderThickness, Converter={x:Static atom:DatePickerPresenterTheme.BorderThicknessFilterConverter}}"
+                                             IsVisible="{TemplateBinding IsButtonsPanelVisible}"
+                                             DockPanel.Dock="Bottom">
                         <Panel Name="ButtonsLayout">
                             <atom:Button
                                 Name="PART_NowButton"
@@ -37,7 +37,7 @@
                                 SizeType="Small"
                                 Content="{atom:CommonLangResource Ok}" />
                         </Panel>
-                    </Border>
+                    </atom:PixelAlignedBorder>
                     <StackPanel Orientation="Horizontal">
                         <calendarview:DualMonthRangeCalendar
                             Name="PART_CalendarView"

@@ -1,9 +1,12 @@
+using System;
 using System.Reflection;
+using AtomUI.Controls;
 using AtomUI.Desktop.Controls;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -97,7 +100,75 @@ public class CompactSpaceBehaviorTests
         }
     }
 
-    private static AvaloniaWindow ShowInWindow(Control content)
+    [Fact]
+    public void CompactSpace_Does_Not_Disable_Child_Layout_Rounding()
+    {
+        var firstAddOn = CreateCompactAddOn("First");
+        var secondAddOn = CreateCompactAddOn("Second");
+        var compactSpace = new CompactSpace
+        {
+            Children =
+            {
+                firstAddOn,
+                secondAddOn
+            }
+        };
+
+        var window = ShowInWindow(compactSpace);
+        try
+        {
+            firstAddOn.UseLayoutRounding.ShouldBeTrue();
+            secondAddOn.UseLayoutRounding.ShouldBeTrue();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Compact_Item_Overlap_Uses_Render_Scale_Aware_Border_Thickness()
+    {
+        var firstAddOn = CreateCompactAddOn("First");
+        var secondAddOn = CreateCompactAddOn("Second");
+        var compactSpace = new CompactSpace
+        {
+            Children =
+            {
+                firstAddOn,
+                secondAddOn
+            }
+        };
+
+        var window = ShowInWindow(compactSpace, window => window.SetRenderScaling(1.5));
+        try
+        {
+            var secondItem = GetCompactSpaceItem(secondAddOn);
+            var transform  = secondItem.RenderTransform as TranslateTransform;
+
+            transform.ShouldNotBeNull();
+            transform!.X.ShouldBe(-2d / 3d, 0.0001);
+            transform.Y.ShouldBe(0d, 0.0001);
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    private static CompactSpaceAddOn CreateCompactAddOn(string content)
+    {
+        return new CompactSpaceAddOn
+        {
+            Content         = content,
+            Width           = 80,
+            Height          = 32,
+            BorderThickness = new Thickness(1),
+            StyleVariant    = InputControlStyleVariant.Outlined
+        };
+    }
+
+    private static AvaloniaWindow ShowInWindow(Control content, Action<AvaloniaWindow>? configureWindow = null)
     {
         var window = new AvaloniaWindow
         {
@@ -105,6 +176,7 @@ public class CompactSpaceBehaviorTests
             Height  = 160,
             Content = content
         };
+        configureWindow?.Invoke(window);
         window.Show();
         Dispatcher.UIThread.RunJobs();
         return window;

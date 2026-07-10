@@ -7,21 +7,25 @@
     <ControlTheme x:Key="{x:Type atom:BaseCalendarButton}" TargetType="atom:BaseCalendarButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter
-                    Name="PART_Content"
+                <atom:PixelAlignedBorder
                     Padding="{TemplateBinding Padding}"
-                    Foreground="{TemplateBinding Foreground}"
                     Background="{TemplateBinding Background}"
                     CornerRadius="{TemplateBinding CornerRadius}"
                     BorderBrush="{TemplateBinding BorderBrush}"
                     BorderThickness="{TemplateBinding BorderThickness}"
-                    FontSize="{TemplateBinding FontSize}"
-                    Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
-                    ContentTemplate="{TemplateBinding ContentTemplate}"
                     HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                    VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                    <ContentPresenter
+                        Name="PART_Content"
+                        Foreground="{TemplateBinding Foreground}"
+                        FontSize="{TemplateBinding FontSize}"
+                        Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         

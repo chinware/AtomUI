@@ -10,12 +10,12 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                                   Background="{TemplateBinding Background}"
-                                   BorderBrush="{TemplateBinding BorderBrush}"
-                                   BorderThickness="{TemplateBinding BorderThickness}"
-                                   CornerRadius="{TemplateBinding CornerRadius}"
-                                   Padding="{TemplateBinding Padding}">
+                <atom:PixelAlignedBorder Name="Frame"
+                                         Background="{TemplateBinding Background}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         Padding="{TemplateBinding Padding}">
                     <DockPanel LastChildFill="True" Name="ContentLayout">
                         <antdicons:HistoryOutlined Name="Indicator" DockPanel.Dock="Left"/>
                         <atom:IconButton Icon="{antdicons:AntDesignIconProvider DeleteOutlined}"
@@ -25,7 +25,7 @@
                         <TextBlock Text="{atom:UploadLangResource Pending}"
                                    VerticalAlignment="Center" />
                     </DockPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         

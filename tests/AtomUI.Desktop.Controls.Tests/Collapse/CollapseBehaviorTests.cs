@@ -3,11 +3,11 @@ using System.Linq;
 using System.Threading;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using AtomUI.Controls.Primitives;
 using AtomUI.MotionScene;
 using Shouldly;
 using Xunit;
@@ -66,18 +66,18 @@ public class CollapseBehaviorTests
             Dispatcher.UIThread.RunJobs();
 
             GetHeaderDecorator(normalItem).Padding.ShouldBe(new Thickness(7));
-            GetContentPresenter(normalItem).Padding.ShouldBe(new Thickness(9));
+            GetContentFrame(normalItem).Padding.ShouldBe(new Thickness(9));
             GetHeaderDecorator(explicitItem).Padding.ShouldBe(new Thickness(3));
-            GetContentPresenter(explicitItem).Padding.ShouldBe(new Thickness(4));
+            GetContentFrame(explicitItem).Padding.ShouldBe(new Thickness(4));
 
             collapse.ItemHeaderPadding  = new Thickness(11);
             collapse.ItemContentPadding = new Thickness(13);
             Dispatcher.UIThread.RunJobs();
 
             GetHeaderDecorator(normalItem).Padding.ShouldBe(new Thickness(11));
-            GetContentPresenter(normalItem).Padding.ShouldBe(new Thickness(13));
+            GetContentFrame(normalItem).Padding.ShouldBe(new Thickness(13));
             GetHeaderDecorator(explicitItem).Padding.ShouldBe(new Thickness(3));
-            GetContentPresenter(explicitItem).Padding.ShouldBe(new Thickness(4));
+            GetContentFrame(explicitItem).Padding.ShouldBe(new Thickness(4));
         }
         finally
         {
@@ -112,7 +112,7 @@ public class CollapseBehaviorTests
             window.Show();
             Dispatcher.UIThread.RunJobs();
 
-            var frame = FindVisualByName<Border>(collapse, "PART_Frame");
+            var frame = FindVisualByName<PixelAlignedBorder>(collapse, "PART_Frame");
             frame.ShouldNotBeNull();
             frame!.BorderThickness.ShouldBe(new Thickness(5));
 
@@ -128,6 +128,63 @@ public class CollapseBehaviorTests
             collapse.IsBorderless = false;
             Dispatcher.UIThread.RunJobs();
             frame.BorderThickness.ShouldBe(new Thickness(5));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Collapsed_Items_Apply_Visible_Header_Separator_Brushes()
+    {
+        var firstItem = new AtomUICollapseItem
+        {
+            Header  = "First",
+            Content = "Content"
+        };
+        var middleItem = new AtomUICollapseItem
+        {
+            Header  = "Middle",
+            Content = "Content"
+        };
+        var lastItem = new AtomUICollapseItem
+        {
+            Header  = "Last",
+            Content = "Content"
+        };
+        var collapse = new AtomUICollapse
+        {
+            BorderThickness = new Thickness(1),
+            IsMotionEnabled = false,
+            Items =
+            {
+                firstItem,
+                middleItem,
+                lastItem
+            }
+        };
+        var window = new AvaloniaWindow
+        {
+            Width   = 360,
+            Height  = 260,
+            Content = collapse
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var firstHeader = GetHeaderDecorator(firstItem);
+            firstHeader.BorderThickness.ShouldBe(new Thickness(0, 0, 0, 1));
+            firstHeader.BorderBrush.ShouldNotBeNull();
+
+            var middleHeader = GetHeaderDecorator(middleItem);
+            middleHeader.BorderThickness.ShouldBe(new Thickness(0, 0, 0, 1));
+            middleHeader.BorderBrush.ShouldNotBeNull();
+
+            GetHeaderDecorator(lastItem).BorderThickness.ShouldBe(new Thickness(0));
         }
         finally
         {
@@ -179,13 +236,16 @@ public class CollapseBehaviorTests
             Dispatcher.UIThread.RunJobs();
 
             GetHeaderDecorator(firstItem).BorderThickness.ShouldBe(new Thickness(0, 0, 0, 1));
-            GetContentPresenter(firstItem).BorderThickness.ShouldBe(new Thickness(0));
+            GetHeaderDecorator(firstItem).BorderBrush.ShouldNotBeNull();
+            firstItem.ContentBorderThickness.ShouldBe(new Thickness(0));
 
             GetHeaderDecorator(middleItem).BorderThickness.ShouldBe(new Thickness(0));
-            GetContentPresenter(middleItem).BorderThickness.ShouldBe(new Thickness(0, 1, 0, 1));
+            GetContentFrame(middleItem).BorderThickness.ShouldBe(new Thickness(0, 1, 0, 1));
+            GetContentFrame(middleItem).BorderBrush.ShouldNotBeNull();
 
             GetHeaderDecorator(lastItem).BorderThickness.ShouldBe(new Thickness(0));
-            GetContentPresenter(lastItem).BorderThickness.ShouldBe(new Thickness(0, 1, 0, 0));
+            GetContentFrame(lastItem).BorderThickness.ShouldBe(new Thickness(0, 1, 0, 0));
+            GetContentFrame(lastItem).BorderBrush.ShouldNotBeNull();
         }
         finally
         {
@@ -232,7 +292,8 @@ public class CollapseBehaviorTests
             lastItem.IsSelected = false;
 
             GetHeaderDecorator(lastItem).BorderThickness.ShouldBe(new Thickness(0));
-            GetContentPresenter(lastItem).BorderThickness.ShouldBe(new Thickness(0, 1, 0, 0));
+            GetContentFrame(lastItem).BorderThickness.ShouldBe(new Thickness(0, 1, 0, 0));
+            GetContentFrame(lastItem).BorderBrush.ShouldNotBeNull();
 
             Dispatcher.UIThread.RunJobs();
 
@@ -607,23 +668,18 @@ public class CollapseBehaviorTests
         }
     }
 
-    private static Border GetHeaderDecorator(AtomUICollapseItem item)
+    private static PixelAlignedBorder GetHeaderDecorator(AtomUICollapseItem item)
     {
-        var header = FindVisualByName<Border>(item, "PART_HeaderDecorator");
+        var header = FindVisualByName<PixelAlignedBorder>(item, "PART_HeaderDecorator");
         header.ShouldNotBeNull();
         return header!;
     }
 
-    private static ContentPresenter GetContentPresenter(AtomUICollapseItem item)
+    private static PixelAlignedBorder GetContentFrame(AtomUICollapseItem item)
     {
-        var presenter = FindTemplatePart<ContentPresenter>(item, "PART_ContentPresenter");
-        if (presenter is null)
-        {
-            var motionActor = FindTemplatePart<ContentControl>(item, "PART_ContentMotionActor");
-            presenter = motionActor?.Content as ContentPresenter;
-        }
-        presenter.ShouldNotBeNull();
-        return presenter!;
+        var frame = FindVisualByName<PixelAlignedBorder>(item, "PART_ContentFrame");
+        frame.ShouldNotBeNull();
+        return frame!;
     }
 
     private static IconButton GetExpandButton(AtomUICollapseItem item)

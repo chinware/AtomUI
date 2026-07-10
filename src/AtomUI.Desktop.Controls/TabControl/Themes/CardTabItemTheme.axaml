@@ -11,13 +11,13 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Name="Frame"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            Margin="{TemplateBinding Margin}"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            Padding="{TemplateBinding Padding}">
+                    <atom:PixelAlignedBorder Name="Frame"
+                                             BorderThickness="{TemplateBinding BorderThickness}"
+                                             CornerRadius="{TemplateBinding CornerRadius}"
+                                             Margin="{TemplateBinding Margin}"
+                                             Background="{TemplateBinding Background}"
+                                             BorderBrush="{TemplateBinding BorderBrush}"
+                                             Padding="{TemplateBinding Padding}">
                         <StackPanel Orientation="Horizontal">
                             <atom:IconPresenter Name="ItemIconPresenter"
                                                 Icon="{TemplateBinding Icon}" />
@@ -29,8 +29,11 @@
                                              Opacity="{TemplateBinding CloseButtonOpacity}"
                                              VerticalAlignment="Center" />
                         </StackPanel>
-                    </Border>
-                    <Rectangle Name="LineMask" Fill="{TemplateBinding Background}" Margin="{TemplateBinding LineMaskMargin}"/>
+                    </atom:PixelAlignedBorder>
+                    <Rectangle Name="LineMask"
+                               Fill="{TemplateBinding Background}"
+                               IsVisible="False"
+                               Margin="{TemplateBinding LineMaskMargin}"/>
                 </Panel>
             </ControlTemplate>
         </Setter>
@@ -41,10 +44,16 @@
 
         <Style Selector="^:selected">
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+            <Style Selector="^ /template/ Rectangle#LineMask">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
         </Style>
 
         <Style Selector="^[IsTabReorderDragging=True]">
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
+            <Style Selector="^ /template/ Rectangle#LineMask">
+                <Setter Property="IsVisible" Value="True" />
+            </Style>
         </Style>
 
         <Style Selector="^[TabStripPlacement=Top], ^[TabStripPlacement=Bottom]">

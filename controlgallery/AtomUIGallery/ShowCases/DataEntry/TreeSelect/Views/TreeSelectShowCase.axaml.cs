@@ -48,7 +48,6 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
                     viewModel.CheckableTreeNodes      = null;
                     viewModel.AsyncLoadTreeNodes      = null;
                     viewModel.ShowTreeLineTreeNodes   = null;
-                    viewModel.LeftAddTreeNodes        = null;
                     viewModel.ContentLeftAddTreeNodes = null;
                     viewModel.PlacementTreeNodes      = null;
                     viewModel.MaxSelectedTreeNodes    = null;
@@ -95,7 +94,6 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
         InitCheckableTreeNodes(viewModel);
         InitAsyncLoadTreeNodes(viewModel);
         InitShowLineTreeNodes(viewModel);
-        InitLeftAddOnTreeNodes(viewModel);
         InitContentLeftAddOnTreeNodes(viewModel);
         InitPlacementTreeNodes(viewModel);
         InitMaxSelectedTreeNodes(viewModel);
@@ -124,11 +122,6 @@ public partial class TreeSelectShowCase : GalleryReactiveUserControl<TreeSelectV
         viewModel.BindingMultipleTreeNodes = CreatePersonalLeafTreeNodes();
         viewModel.BoundSelectedItem        = null;
         viewModel.BoundSelectedItems       = new ObservableCollection<ITreeItemNode>();
-    }
-
-    private void InitLeftAddOnTreeNodes(TreeSelectViewModel viewModel)
-    {
-        viewModel.LeftAddTreeNodes = CreatePersonalLeafTreeNodes();
     }
 
     private void InitContentLeftAddOnTreeNodes(TreeSelectViewModel viewModel)

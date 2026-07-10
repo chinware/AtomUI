@@ -1,6 +1,7 @@
 ﻿using AtomUI.Animations;
 using AtomUI.Controls.Primitives;
 using AtomUI.Media;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -141,7 +142,8 @@ internal class RadioIndicator : TemplatedControl
             RadioInnerBackgroundProperty,
             RadioBackgroundProperty,
             RadioBorderThicknessProperty,
-            RadioDotEffectSizeProperty);
+            RadioDotEffectSizeProperty,
+            UseLayoutRoundingProperty);
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -210,8 +212,9 @@ internal class RadioIndicator : TemplatedControl
 
     public sealed override void Render(DrawingContext context)
     {
-        var penWidth = RadioBorderThickness.Top;
-        PenUtils.TryModifyOrCreate(ref _cachedPen, RadioBorderBrush, RadioBorderThickness.Top);
+        var radioBorderThickness = BorderUtils.BuildRenderScaleAwareThickness(this, RadioBorderThickness);
+        var penWidth             = radioBorderThickness.Top;
+        PenUtils.TryModifyOrCreate(ref _cachedPen, RadioBorderBrush, penWidth);
         var targetRect = new Rect(0, 0, Bounds.Width, Bounds.Height);
         context.DrawEllipse(RadioBackground, _cachedPen, targetRect.Deflate(penWidth / 2));
         if (IsChecked.HasValue && IsChecked.Value)

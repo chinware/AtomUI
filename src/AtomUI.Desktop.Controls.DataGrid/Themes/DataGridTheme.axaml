@@ -6,12 +6,12 @@
 >
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:DataGrid">
-            <Border Name="Frame"
-                    Background="{TemplateBinding Background}"
-                    BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                    BorderThickness="{TemplateBinding FrameBorderThickness}"
-                    CornerRadius="{TemplateBinding FrameCornerRadius}"
-                    ClipToBounds="True">
+            <atom:PixelAlignedBorder Name="Frame"
+                                     Background="{TemplateBinding Background}"
+                                     BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                     BorderThickness="{TemplateBinding FrameBorderThickness}"
+                                     CornerRadius="{TemplateBinding FrameCornerRadius}"
+                                     ClipToBounds="True">
                 <Border Name="FrameContentClip"
                         CornerRadius="{TemplateBinding FrameCornerRadius}"
                         ClipToBounds="True">
@@ -31,14 +31,14 @@
                                          SizeType="{TemplateBinding SizeType}"
                                          IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                          IsVisible="{TemplateBinding EffectivePaginationVisibility, Converter={x:Static atom:DataGridTheme.TopPaginationVisibilityConvertor}}" />
-                        <Border Name="TitleFrame"
-                                DockPanel.Dock="Top"
-                                BorderThickness="{TemplateBinding BorderThickness, Converter={x:Static atom:DataGridTheme.TitleSeparatorThicknessConverter}}"
-                                IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <atom:PixelAlignedBorder Name="TitleFrame"
+                                                 DockPanel.Dock="Top"
+                                                 BorderThickness="{TemplateBinding BorderThickness, Converter={x:Static atom:DataGridTheme.TitleSeparatorThicknessConverter}}"
+                                                 IsVisible="{TemplateBinding Title, Converter={x:Static ObjectConverters.IsNotNull}}">
                             <ContentPresenter Name="Title"
                                               Content="{TemplateBinding Title}"
                                               ContentTemplate="{TemplateBinding TitleTemplate}" />
-                        </Border>
+                        </atom:PixelAlignedBorder>
                         <atom:Pagination DockPanel.Dock="Bottom"
                                          Name="{x:Static atom:DataGridThemeConstants.BottomPaginationPart}"
                                          Align="{TemplateBinding BottomPaginationAlign}"
@@ -79,12 +79,13 @@
                                 </Panel>
 
                             </Border>
-                            <Rectangle
+                            <atom:PixelAlignedBorder
                                 Name="ColumnHeadersAndRowsSeparator"
                                 VerticalAlignment="Bottom"
                                 Grid.Row="0"
                                 Grid.Column="0"
                                 Grid.ColumnSpan="3"
+                                BorderThickness="0,0,0,1"
                                 Height="{TemplateBinding BorderThickness, Converter={x:Static atom:DataGridTheme.UniformBorderThicknessToScalarConverter}}" />
 
                             <atom:DataGridRowsPresenter
@@ -155,7 +156,7 @@
                         </DockPanel>
                     </atom:Spin>
                 </Border>
-            </Border>
+            </atom:PixelAlignedBorder>
         </ControlTemplate>
     </Setter>
 
@@ -175,20 +176,20 @@
             <Setter Property="Background" Value="{atom:DataGridTokenResource TableHeaderBg}" />
         </Style>
 
-        <Style Selector="^ /template/ Rectangle#ColumnHeadersAndRowsSeparator">
-            <Setter Property="Fill" Value="{atom:DataGridTokenResource TableBorderColor}" />
+        <Style Selector="^ /template/ Border#ColumnHeadersAndRowsSeparator">
+            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
         </Style>
 
         <Style Selector="^ /template/ Border#Frame">
-            <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
+            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
         </Style>
 
         <Style Selector="^ /template/ Border#TitleFrame">
-            <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
+            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
         </Style>
 
         <Style Selector="^[IsFrameBorderVisible=False] /template/ Border#TitleFrame">
-            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="atom:DashedBorder.BorderThickness" Value="0" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#Footer">

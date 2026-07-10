@@ -421,6 +421,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
             IsDragOverProperty,
             BorderBrushProperty,
             BorderThicknessProperty,
+            UseLayoutRoundingProperty,
             NodeHoverModeProperty,
             BackgroundProperty);
         IsSelectedProperty.OverrideMetadata<TreeViewItem>(
@@ -721,7 +722,7 @@ public class TreeViewItem : AvaloniaTreeItem, IRadioButton, ITreeItemNode
             return;
         }
 
-        var penWidth = BorderThickness.Top;
+        var penWidth = BorderUtils.BuildRenderScaleAwareThickness(this, BorderThickness.Top);
         var linePen  = GetTreeNodeLinePen(penWidth);
         using var state = context.PushRenderOptions(new RenderOptions
         {

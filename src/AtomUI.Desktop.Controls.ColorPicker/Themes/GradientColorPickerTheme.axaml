@@ -12,12 +12,12 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Name="PART_Frame"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                            Padding="{TemplateBinding TriggerPadding}"
-                            Background="{TemplateBinding Background}">
+                    <atom:PixelAlignedBorder Name="PART_Frame"
+                                             BorderThickness="{TemplateBinding BorderThickness}"
+                                             BorderBrush="{TemplateBinding BorderBrush}"
+                                             CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                                             Padding="{TemplateBinding TriggerPadding}"
+                                             Background="{TemplateBinding Background}">
                         <DockPanel LastChildFill="True">
                             <atom:ColorBlock Name="PART_ColorIndicator"
                                              SizeType="{TemplateBinding SizeType}"
@@ -30,7 +30,7 @@
                                            IsVisible="{TemplateBinding IsTextVisible}" />
                             </Panel>
                         </DockPanel>
-                    </Border>
+                    </atom:PixelAlignedBorder>
                     <atom:Popup Name="PART_Popup"
                                 WindowManagerAddShadowHint="False"
                                 IsLightDismissEnabled="{TemplateBinding IsLightDismissEnabled}"

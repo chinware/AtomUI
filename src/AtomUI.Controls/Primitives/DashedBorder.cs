@@ -105,16 +105,16 @@ public class DashedBorder : Decorator
     #endregion
     
     private readonly BorderRenderHelper _borderRenderHelper = new BorderRenderHelper();
-    private Thickness? _layoutThickness;
+    private Thickness? _renderThickness;
     private double _layoutScale;
 
-    private Thickness LayoutThickness
+    private Thickness RenderThickness
     {
         get
         {
             VerifyLayoutScale();
-            _layoutThickness ??= BorderUtils.BuildLayoutRoundedThickness(this, BorderThickness);
-            return _layoutThickness.Value;
+            _renderThickness ??= BorderUtils.BuildRenderScaleAwareThickness(this, BorderThickness);
+            return _renderThickness.Value;
         }
     }
 
@@ -138,7 +138,7 @@ public class DashedBorder : Decorator
         _borderRenderHelper.Render(
             context,
             Bounds.Size,
-            LayoutThickness,
+            RenderThickness,
             CornerRadius,
             BackgroundSizing,
             Background,
@@ -154,7 +154,7 @@ public class DashedBorder : Decorator
         if (change.Property == BorderThicknessProperty ||
             change.Property == UseLayoutRoundingProperty)
         {
-            _layoutThickness = null;
+            _renderThickness = null;
         }
     }
 
@@ -177,6 +177,6 @@ public class DashedBorder : Decorator
         }
 
         _layoutScale     = currentScale;
-        _layoutThickness = null;
+        _renderThickness = null;
     }
 }

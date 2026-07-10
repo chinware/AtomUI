@@ -5,12 +5,12 @@
     <ControlTheme x:Key="{x:Type atom:FormItemDecorator}" TargetType="atom:FormItemDecorator">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Margin="{TemplateBinding Margin}"
-                        Padding="{TemplateBinding Padding}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                <atom:PixelAlignedBorder Margin="{TemplateBinding Margin}"
+                                         Padding="{TemplateBinding Padding}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         Background="{TemplateBinding Background}"
+                                         CornerRadius="{TemplateBinding CornerRadius}">
                     <StackPanel Orientation="Horizontal"
                                 Spacing="{TemplateBinding ItemSpacing}">
                         <ContentPresenter Name="Content"
@@ -20,7 +20,7 @@
                                           ContentTemplate="{TemplateBinding ExtraTemplate}"
                                           VerticalContentAlignment="Center"/>
                     </StackPanel>
-                </Border>        
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 

@@ -7,11 +7,11 @@
     <ControlTheme x:Key="{x:Type atom:Alert}" TargetType="atom:Alert">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        Padding="{TemplateBinding Padding}">
+                <atom:PixelAlignedBorder Background="{TemplateBinding Background}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         Padding="{TemplateBinding Padding}">
                     <DockPanel Name="RootLayout" LastChildFill="True">
                         <Panel IsVisible="{TemplateBinding IsShowIcon}"
                                DockPanel.Dock="Left">
@@ -64,7 +64,7 @@
                                    Content="{TemplateBinding Description}" />
                         </StackPanel>
                     </DockPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         

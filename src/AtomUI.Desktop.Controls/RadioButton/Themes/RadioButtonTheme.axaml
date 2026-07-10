@@ -7,12 +7,12 @@
     <ControlTheme x:Key="{x:Type atom:RadioButton}" TargetType="atom:RadioButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        Padding="0, 1, 0, 1"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                <atom:PixelAlignedBorder Name="Frame"
+                                         Padding="0, 1, 0, 1"
+                                         Background="{TemplateBinding Background}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}">
                     <DockPanel LastChildFill="True">
                         <atomc:RadioIndicator Name="Indicator"
                                               VerticalAlignment="Center"
@@ -27,7 +27,7 @@
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           IsVisible="{TemplateBinding Content, Converter={x:Static ObjectConverters.IsNotNull}}"/>
                     </DockPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 

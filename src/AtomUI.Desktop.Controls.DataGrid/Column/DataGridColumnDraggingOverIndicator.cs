@@ -1,3 +1,4 @@
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Documents;
@@ -38,13 +39,15 @@ internal class DataGridColumnDraggingOverIndicator : Control
         AffectsRender<DataGridColumnDraggingOverIndicator>(
             DraggingOverColumnProperty,
             DraggedColumnProperty,
-            TextElement.ForegroundProperty);
+            TextElement.ForegroundProperty,
+            UseLayoutRoundingProperty);
     }
 
     private double _indicatorOffsetX;
     private const double IndicatorLineWidth = 1.0;
     private Pen? _indicatorPen;
     private IBrush? _indicatorPenBrush;
+    private double _indicatorPenThickness;
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
@@ -98,10 +101,14 @@ internal class DataGridColumnDraggingOverIndicator : Control
     private Pen GetIndicatorPen()
     {
         var foreground = TextElement.GetForeground(this);
-        if (_indicatorPen == null || !ReferenceEquals(_indicatorPenBrush, foreground))
+        var thickness = BorderUtils.BuildRenderScaleAwareThickness(this, IndicatorLineWidth);
+        if (_indicatorPen == null ||
+            !ReferenceEquals(_indicatorPenBrush, foreground) ||
+            !_indicatorPenThickness.Equals(thickness))
         {
-            _indicatorPenBrush = foreground;
-            _indicatorPen      = new Pen(foreground, IndicatorLineWidth, DashStyle.Dash);
+            _indicatorPenBrush     = foreground;
+            _indicatorPenThickness = thickness;
+            _indicatorPen          = new Pen(foreground, thickness, DashStyle.Dash);
         }
         return _indicatorPen;
     }

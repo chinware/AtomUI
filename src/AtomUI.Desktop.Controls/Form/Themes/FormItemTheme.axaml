@@ -19,40 +19,49 @@
                                VerticalAlignment="Top"
                                IsVisible="{TemplateBinding LabelText, Converter={x:Static ObjectConverters.IsNotNull}}"
                                ClipToBounds="True">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <DockPanel Name="PART_LabelContentLayout"
+                                       LastChildFill="False"
+                                       HorizontalAlignment="Right">
+                                <TextBlock Text=":" Name="PART_Colon"
+                                           DockPanel.Dock="Right"
+                                           IsVisible="{TemplateBinding IsColonVisible}"
+                                           VerticalAlignment="Center" />
+                                <TextBlock Text="{atom:CommonLangResource Optional}"
+                                           Name="OptionalMark"
+                                           DockPanel.Dock="Right"
+                                           IsVisible="False"
+                                           VerticalAlignment="Center" />
+                                <atom:IconPresenter Name="TooltipIconPresenter"
+                                                    DockPanel.Dock="Right"
+                                                    Icon="{TemplateBinding TooltipIcon}"
+                                                    VerticalAlignment="Center"
+                                                    Cursor="Hand"
+                                                    atom:ToolTip.Tip="{TemplateBinding Tooltip}"
+                                                    IsVisible="{TemplateBinding Tooltip, Converter={x:Static ObjectConverters.IsNotNull}}" />
                                 <ContentPresenter Name="CustomRequiredMarkPresenter"
+                                                  DockPanel.Dock="Left"
                                                   Content="{TemplateBinding CustomRequireMark}"
                                                   ContentTemplate="{TemplateBinding CustomRequireMarkTemplate}"
                                                   IsVisible="False"
                                                   VerticalAlignment="Center" />
                                 <ContentPresenter Name="CustomOptionalMarkPresenter"
+                                                  DockPanel.Dock="Left"
                                                   Content="{TemplateBinding CustomOptionalMark}"
                                                   ContentTemplate="{TemplateBinding CustomOptionalMarkTemplate}"
                                                   IsVisible="False"
                                                   VerticalAlignment="Center" />
                                 <TextBlock Text="*"
                                            Name="PART_DefaultRequireMark"
+                                           DockPanel.Dock="Left"
                                            IsVisible="False"
                                            VerticalAlignment="Center" />
                                 <TextBlock Name="PART_Label"
+                                           DockPanel.Dock="Left"
                                            Text="{TemplateBinding LabelText}"
                                            VerticalAlignment="Center"
                                            TextWrapping="{TemplateBinding LabelWrapping}"
                                            MaxWidth="{TemplateBinding LabelMaxWidth}" />
-                                <atom:IconPresenter Name="TooltipIconPresenter"
-                                                    Icon="{TemplateBinding TooltipIcon}"
-                                                    VerticalAlignment="Center"
-                                                    Cursor="Hand"
-                                                    atom:ToolTip.Tip="{TemplateBinding Tooltip}"
-                                                    IsVisible="{TemplateBinding Tooltip, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                                <TextBlock Text="{atom:CommonLangResource Optional}"
-                                           Name="OptionalMark"
-                                           IsVisible="False"
-                                           VerticalAlignment="Center" />
-                                <TextBlock Text=":" Name="PART_Colon"
-                                           IsVisible="{TemplateBinding IsColonVisible}"
-                                           VerticalAlignment="Center" />
-                            </StackPanel>
+                            </DockPanel>
                         </Panel>
 
                         <StackPanel Name="PART_ContentLayout"
@@ -120,9 +129,27 @@
             <Setter Property="FontSize" Value="{atom:FormTokenResource LabelFontSize}" />
         </Style>
 
-        <Style Selector="^ /template/ Panel#PART_LabelLayout StackPanel">
-            <Setter Property="Spacing"
+        <Style Selector="^ /template/ DockPanel#PART_LabelContentLayout">
+            <Setter Property="HorizontalSpacing"
                     Value="{atom:SharedTokenResource SpacingXXS}" />
+        </Style>
+
+        <Style Selector="^[LabelAlign=Right]">
+            <Style Selector="^ /template/ DockPanel#PART_LabelContentLayout">
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>
+            <Style Selector="^ /template/ TextBlock#PART_Label">
+                <Setter Property="TextAlignment" Value="Right" />
+            </Style>
+        </Style>
+
+        <Style Selector="^[LabelAlign=Left], ^[Layout=Vertical]">
+            <Style Selector="^ /template/ DockPanel#PART_LabelContentLayout">
+                <Setter Property="HorizontalAlignment" Value="Left" />
+            </Style>
+            <Style Selector="^ /template/ TextBlock#PART_Label">
+                <Setter Property="TextAlignment" Value="Left" />
+            </Style>
         </Style>
 
         <Style Selector="^ /template/ Panel#ItemDeleteButtonLayout">

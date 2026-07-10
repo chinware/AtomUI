@@ -17,9 +17,9 @@
                                           Content="{TemplateBinding Header}"
                                           ContentTemplate="{TemplateBinding HeaderTemplate}" />
                     </DockPanel>
-                    <Border Name="ContentFrame">
+                    <atom:PixelAlignedBorder Name="ContentFrame">
                         <Grid Name="PART_GridLayout" />
-                    </Border>
+                    </atom:PixelAlignedBorder>
                 </StackPanel>
 
             </ControlTemplate>
@@ -27,10 +27,10 @@
 
         <Style Selector="^[IsBordered=True]">
             <Style Selector="^ /template/ Border#ContentFrame">
-                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
-                <Setter Property="BorderThickness"
+                <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
+                <Setter Property="atom:DashedBorder.BorderThickness"
                         Value="{atom:SharedTokenResource BorderThickness}" />
-                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+                <Setter Property="atom:DashedBorder.CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
                 <Setter Property="ClipToBounds" Value="True" />
             </Style>
         </Style>

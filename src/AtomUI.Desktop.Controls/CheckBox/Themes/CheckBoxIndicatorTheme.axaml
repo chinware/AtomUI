@@ -10,11 +10,11 @@
                 <Panel>
                     <atom:WaveSpiritDecorator Name="{x:Static atom:WaveSpiritDecorator.WaveSpiritPart}"
                                               CornerRadius="{TemplateBinding CornerRadius}"/>
-                    <Border Name="Frame"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}">
+                    <atom:PixelAlignedBorder Name="Frame"
+                                             BorderThickness="{TemplateBinding BorderThickness}"
+                                             BorderBrush="{TemplateBinding BorderBrush}"
+                                             Background="{TemplateBinding Background}"
+                                             CornerRadius="{TemplateBinding CornerRadius}">
                         <Panel>
                             <antdicons:CheckBoldOutlined Name="CheckedMark"
                                                          HorizontalAlignment="Center"
@@ -31,7 +31,7 @@
                                        Height="{TemplateBinding TristateMarkSize}"
                                        IsVisible="False"/>
                         </Panel>
-                    </Border>
+                    </atom:PixelAlignedBorder>
                 </Panel>
             </ControlTemplate>
         </Setter>

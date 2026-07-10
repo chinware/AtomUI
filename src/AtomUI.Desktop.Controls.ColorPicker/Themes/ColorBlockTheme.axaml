@@ -16,11 +16,11 @@
                                 CornerRadius="{TemplateBinding CornerRadius}"
                                 BoxShadow="{atom:ColorPickerTokenResource ColorBlockInnerShadows}"/>
                     </Border>
-                    <Border Name="PART_EmptyColorFrame"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            IsVisible="{TemplateBinding IsEmptyColorMode}"
-                            Background="Transparent"/>
+                    <atom:PixelAlignedBorder Name="PART_EmptyColorFrame"
+                                             CornerRadius="{TemplateBinding CornerRadius}"
+                                             BorderThickness="{TemplateBinding BorderThickness}"
+                                             IsVisible="{TemplateBinding IsEmptyColorMode}"
+                                             Background="Transparent"/>
                 </Panel>
                 
             </ControlTemplate>

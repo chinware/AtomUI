@@ -11,8 +11,8 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        BorderThickness="{TemplateBinding BorderThickness}">
+                <atom:PixelAlignedBorder Name="Frame"
+                                         BorderThickness="{TemplateBinding BorderThickness}">
                     <DockPanel>
                         <Panel Name="PART_AlignWrapper"
                                DockPanel.Dock="{TemplateBinding TabStripPlacement}"
@@ -58,7 +58,7 @@
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                     </DockPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         

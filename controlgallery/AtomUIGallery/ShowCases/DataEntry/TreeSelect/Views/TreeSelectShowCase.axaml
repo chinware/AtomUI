@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="AtomUIGallery.ShowCases.TreeSelect.TreeSelectShowCase"
              xmlns:atom="https://atomui.net"
+             xmlns:antdicons="https://atomui.net/icons/antdesign"
              xmlns:gallery="https://atomui.net/oss-controls/gallery"
              xmlns:vm="using:AtomUIGallery.ShowCases.TreeSelect"
              x:DataType="vm:TreeSelectViewModel">
@@ -350,17 +351,17 @@
         <gallery:ShowCaseItem.DeferredContentTemplate>
             <DataTemplate x:DataType="vm:TreeSelectViewModel">
         <StackPanel Orientation="Vertical" Spacing="10">
-            <atom:TreeSelect Name="LeftAddTreeSelect"
-                             HorizontalAlignment="Stretch"
-                             IsAllowClear="True"
-                             PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
-                             IsDefaultExpandAll="True"
-                             LeftAddOn="{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}"
-                             IsFilterEnabled="True"
-                             ItemsSource="{Binding LeftAddTreeNodes}" />
+            <atom:TreeSelect Name="SuffixIconTreeSelect"
+                              HorizontalAlignment="Stretch"
+                              IsAllowClear="True"
+                              PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
+                              IsDefaultExpandAll="True"
+                              SuffixIcon="{antdicons:AntDesignIconProvider SmileOutlined}"
+                              IsFilterEnabled="True"
+                              ItemsSource="{Binding ContentLeftAddTreeNodes}" />
             <atom:TreeSelect Name="ContentLeftAddTreeSelect"
-                             HorizontalAlignment="Stretch"
-                             IsAllowClear="True"
+                              HorizontalAlignment="Stretch"
+                              IsAllowClear="True"
                              PlaceholderText="{gallery:TreeSelectShowCaseLangResource P2PlaceholderTextPleaseSelect}"
                              IsDefaultExpandAll="True"
                              ContentLeftAddOn="{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}"
