@@ -167,7 +167,9 @@ public abstract class AbstractCheckBoxGroup: TemplatedControl,
 
     private void HandleItemsSelectedChanged(object? sender, SelectionChangedEventArgs change)
     {
-        var checkedItems = CopyCheckedItems(CheckedItems) ?? new AvaloniaList<object?>();
+        var checkedItems = _itemsControl?.BuildCurrentCheckedItems() ??
+                           CopyCheckedItems(CheckedItems) ??
+                           new AvaloniaList<object?>();
         foreach (var item in change.RemovedItems)
         {
             checkedItems.Remove(item);
@@ -328,7 +330,7 @@ public abstract class AbstractCheckBoxGroup: TemplatedControl,
 
     protected virtual IList? NotifyGetFormValue()
     {
-        return CheckedItems;
+        return CheckedItems ?? _itemsControl?.BuildCurrentCheckedItems();
     }
 
     protected virtual void NotifyClearFormValue()

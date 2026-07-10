@@ -1,5 +1,6 @@
 using System.Collections;
 using Avalonia;
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Interactivity;
@@ -155,6 +156,27 @@ internal abstract class AbstractCheckBoxItemsControl : SelectingItemsControl
     private bool IsItemSelected(object item)
     {
         return SelectedItems?.Contains(item) == true;
+    }
+
+    internal AvaloniaList<object?>? BuildCurrentCheckedItems()
+    {
+        var checkedItems = new AvaloniaList<object?>();
+        foreach (var item in Items)
+        {
+            if (item == null)
+            {
+                continue;
+            }
+
+            var checkBox = ContainerFromItem(item) as AbstractCheckBox ??
+                           item as AbstractCheckBox;
+            if (checkBox?.IsChecked == true)
+            {
+                checkedItems.Add(item);
+            }
+        }
+
+        return checkedItems.Count > 0 ? checkedItems : null;
     }
     
     internal IList? CheckedItems
