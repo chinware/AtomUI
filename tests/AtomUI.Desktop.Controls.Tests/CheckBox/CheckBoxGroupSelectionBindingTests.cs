@@ -110,6 +110,50 @@ public class CheckBoxGroupSelectionBindingTests
         });
     }
 
+    [Fact]
+    public void Direct_Checked_Disabled_Item_Remains_Checked_When_Another_Item_Is_Checked()
+    {
+        var apple = new AtomCheckBox
+        {
+            Content = "Apple"
+        };
+        var pear = new AtomCheckBox
+        {
+            Content   = "Pear",
+            IsChecked = true,
+            IsEnabled = false
+        };
+        var orange = new AtomCheckBox
+        {
+            Content = "Orange"
+        };
+        var group = new Desktop.Controls.CheckBoxGroup();
+        group.Items.Add(apple);
+        group.Items.Add(pear);
+        group.Items.Add(orange);
+
+        ShowInWindow(group, () =>
+        {
+            pear.IsChecked.ShouldBe(true);
+            var initialFormValue = ((IFormItemAware)group).GetFormValue().ShouldBeAssignableTo<IList>();
+            initialFormValue.ShouldNotBeNull();
+            initialFormValue.Contains(pear).ShouldBeTrue();
+
+            orange.IsChecked = true;
+            Dispatcher.UIThread.RunJobs();
+
+            pear.IsChecked.ShouldBe(true);
+            orange.IsChecked.ShouldBe(true);
+            group.CheckedItems.ShouldNotBeNull();
+            group.CheckedItems!.Contains(pear).ShouldBeTrue();
+            group.CheckedItems.Contains(orange).ShouldBeTrue();
+            var updatedFormValue = ((IFormItemAware)group).GetFormValue().ShouldBeAssignableTo<IList>();
+            updatedFormValue.ShouldNotBeNull();
+            updatedFormValue.Contains(pear).ShouldBeTrue();
+            updatedFormValue.Contains(orange).ShouldBeTrue();
+        });
+    }
+
     private static CheckBoxOption CreateOption(string content)
     {
         return new CheckBoxOption
