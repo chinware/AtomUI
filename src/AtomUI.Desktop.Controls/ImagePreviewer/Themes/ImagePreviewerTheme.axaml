@@ -7,11 +7,11 @@
     <ControlTheme x:Key="{x:Type atom:ImagePreviewer}" TargetType="atom:ImagePreviewer">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                <atom:PixelAlignedBorder Background="{TemplateBinding Background}"
+                                         Padding="{TemplateBinding Padding}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         CornerRadius="{TemplateBinding CornerRadius}">
                     <atom:ImagePreviewerCover ImageSource="{TemplateBinding EffectiveCoverImage}"
                                               IsLoading="{TemplateBinding IsCoverImageLoading}"
                                               IsFailed="{TemplateBinding IsCoverImageFailed}"
@@ -24,7 +24,7 @@
                                               Content="{TemplateBinding CoverIndicatorContent}"
                                               ContentTemplate="{TemplateBinding CoverIndicatorContentTemplate}"
                                               IsShowCoverMask="{TemplateBinding IsShowCoverMask}"/>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         

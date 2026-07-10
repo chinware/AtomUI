@@ -1,7 +1,9 @@
 using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml.MarkupExtensions;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
@@ -107,6 +109,44 @@ public class DescriptionsResponsiveLayoutTests
             CountVisuals<DescriptionDefaultItem>(descriptions).ShouldBe(2);
             CountVisuals<DescriptionBorderedItemLabel>(descriptions).ShouldBe(0);
             CountVisuals<DescriptionBorderedItemContent>(descriptions).ShouldBe(0);
+        });
+    }
+
+    [Fact]
+    public void Bordered_Descriptions_ContentFrame_Applies_Outer_Border()
+    {
+        var descriptions = new AtomUI.Desktop.Controls.Descriptions
+        {
+            IsBordered = true
+        };
+        descriptions.Items.Add(new DescriptionItem { Label = "Product", Content = "Cloud Database" });
+
+        ShowInWindow(descriptions, () =>
+        {
+            var contentFrame = FindVisualByName<PixelAlignedBorder>(descriptions, "ContentFrame");
+            contentFrame.ShouldNotBeNull();
+            contentFrame!.BorderBrush.ShouldNotBeNull();
+            contentFrame.BorderThickness.ShouldNotBe(new Thickness());
+            contentFrame.CornerRadius.ShouldNotBe(new CornerRadius());
+        });
+    }
+
+    [Fact]
+    public void Vertical_Bordered_Default_Item_Separator_Applies_Border_Brush()
+    {
+        var descriptions = new AtomUI.Desktop.Controls.Descriptions
+        {
+            IsBordered = true,
+            Layout     = Orientation.Vertical
+        };
+        descriptions.Items.Add(new DescriptionItem { Label = "Product", Content = "Cloud Database" });
+
+        ShowInWindow(descriptions, () =>
+        {
+            var separator = FindVisualByName<PixelAlignedBorder>(descriptions, "Separator");
+            separator.ShouldNotBeNull();
+            separator!.BorderBrush.ShouldNotBeNull();
+            separator.BorderThickness.ShouldBe(new Thickness(0, 1, 0, 0));
         });
     }
 
@@ -307,6 +347,14 @@ public class DescriptionsResponsiveLayoutTests
         where T : Control
     {
         return root.GetSelfAndVisualDescendants().OfType<T>().Count();
+    }
+
+    private static T? FindVisualByName<T>(Control root, string name)
+        where T : Control
+    {
+        return root.GetSelfAndVisualDescendants()
+                   .OfType<T>()
+                   .FirstOrDefault(control => control.Name == name);
     }
 
     [MethodImpl(MethodImplOptions.NoInlining)]

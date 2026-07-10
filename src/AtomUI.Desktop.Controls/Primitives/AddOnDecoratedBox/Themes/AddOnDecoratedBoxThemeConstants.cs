@@ -4,6 +4,8 @@ internal static class AddOnDecoratedBoxThemeConstants
 {
     public const string LeftAddOnPart = "PART_LeftAddOn";
     public const string RightAddOnPart = "PART_RightAddOn";
+    public const string LeftAddOnPresenterPart = "PART_LeftAddOnPresenter";
+    public const string RightAddOnPresenterPart = "PART_RightAddOnPresenter";
     public const string ContentLeftAddOnPart = "PART_ContentLeftAddOn";
     public const string ContentRightAddOnPart = "PART_ContentRightAddOn";
     public const string ContentFramePart = "PART_ContentFrame";

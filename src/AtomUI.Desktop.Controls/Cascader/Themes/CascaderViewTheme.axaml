@@ -7,14 +7,14 @@
               TargetType="atom:CascaderView">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:CascaderView">
-            <Border Name="Frame"
-                    Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius}"
-                    HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                    VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                    ClipToBounds="{TemplateBinding ClipToBounds}">
+            <atom:PixelAlignedBorder Name="Frame"
+                                     Background="{TemplateBinding Background}"
+                                     BorderBrush="{TemplateBinding BorderBrush}"
+                                     BorderThickness="{TemplateBinding BorderThickness}"
+                                     CornerRadius="{TemplateBinding CornerRadius}"
+                                     HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                                     VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                                     ClipToBounds="{TemplateBinding ClipToBounds}">
                 <Panel>
                     <Panel IsVisible="{TemplateBinding IsFiltering, Converter={x:Static BoolConverters.Not}}">
                         <atom:ScrollViewer
@@ -59,7 +59,7 @@
                         </atom:CascaderViewFilterList.ItemTemplate>
                     </atom:CascaderViewFilterList>
                 </Panel>
-            </Border>
+            </atom:PixelAlignedBorder>
         </ControlTemplate>
     </Setter>
 

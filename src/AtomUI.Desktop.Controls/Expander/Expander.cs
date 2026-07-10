@@ -206,7 +206,7 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
     private static readonly CubicEaseIn DefaultCollapseMotionEasing = new();
 
     private BaseMotionActor? _motionActor;
-    private Border? _headerDecorator;
+    private Control? _headerDecorator;
     private IconButton? _expandButton;
     private CancellationTokenSource? _contentMotionCancellation;
 
@@ -226,7 +226,7 @@ public class Expander : AvaloniaExpander, IMotionAwareControl
 
         CancelContentMotionAndClearValues();
         _motionActor     = e.NameScope.Find<BaseMotionActor>("PART_ContentMotionActor");
-        _headerDecorator = e.NameScope.Find<Border>("PART_HeaderDecorator");
+        _headerDecorator = e.NameScope.Find<Control>("PART_HeaderDecorator");
         _expandButton    = e.NameScope.Find<IconButton>("PART_ExpandButton");
 
         if (_motionActor is not null)

@@ -102,7 +102,7 @@ public partial class DataGridRow
             {
                 // Unfortunately, _bottomGridLine has no size yet so we can't get its actualheight
                 // TODO 需要审查这里不是常量可以吗？是不是会导致高度计算错误
-                return OwningGrid.BorderThickness.Left;
+                return BorderUtils.BuildRenderScaleAwareThickness(OwningGrid, OwningGrid.BorderThickness.Left);
             }
             return 0;
         }
@@ -657,7 +657,7 @@ public partial class DataGridRow
                 {
                     _bottomGridLine.IsVisible = newVisibility;
                 }
-                _bottomGridLine.Height = OwningGrid.BorderThickness.Left;
+                _bottomGridLine.Height = BorderUtils.BuildRenderScaleAwareThickness(OwningGrid, OwningGrid.BorderThickness.Left);
             }
 
             _headerElement?.EnsureGridLines();

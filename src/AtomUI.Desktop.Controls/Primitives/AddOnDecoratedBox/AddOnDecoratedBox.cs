@@ -1,6 +1,7 @@
 using AtomUI.Animations;
 using AtomUI.Controls;
 using AtomUI.Controls.Primitives;
+using AtomUI.Desktop.Controls.Primitives.Themes;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -367,6 +368,8 @@ internal class AddOnDecoratedBox : ContentControl,
     
     private protected Control? _leftAddOn;
     private protected Control? _rightAddOn;
+    private ContentPresenter? _leftAddOnPresenter;
+    private ContentPresenter? _rightAddOnPresenter;
     private ContentPresenter? _contentLeftAddOn;
     private ContentPresenter? _contentRightAddOn;
     private bool _borderInfoDirty;
@@ -686,18 +689,24 @@ internal class AddOnDecoratedBox : ContentControl,
             _contentRightAddOn.PropertyChanged -= HandleContentPresenterChildChanged;
         }
 
-        if (_leftAddOn is ContentPresenter oldLeftAddOn)
+        if (_leftAddOnPresenter != null)
         {
-            oldLeftAddOn.PropertyChanged -= HandleContentPresenterChildChanged;
+            _leftAddOnPresenter.PropertyChanged -= HandleContentPresenterChildChanged;
         }
 
-        if (_rightAddOn is ContentPresenter oldRightAddOn)
+        if (_rightAddOnPresenter != null)
         {
-            oldRightAddOn.PropertyChanged -= HandleContentPresenterChildChanged;
+            _rightAddOnPresenter.PropertyChanged -= HandleContentPresenterChildChanged;
         }
 
         _leftAddOn   = e.NameScope.Find<Control>("PART_LeftAddOn");
         _rightAddOn  = e.NameScope.Find<Control>("PART_RightAddOn");
+        _leftAddOnPresenter = e.NameScope.Find<ContentPresenter>(
+                                  AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart)
+                              ?? _leftAddOn as ContentPresenter;
+        _rightAddOnPresenter = e.NameScope.Find<ContentPresenter>(
+                                   AddOnDecoratedBoxThemeConstants.RightAddOnPresenterPart)
+                               ?? _rightAddOn as ContentPresenter;
         _contentLeftAddOn  = e.NameScope.Find<ContentPresenter>("PART_ContentLeftAddOn");
         _contentRightAddOn = e.NameScope.Find<ContentPresenter>("PART_ContentRightAddOn");
 
@@ -712,14 +721,14 @@ internal class AddOnDecoratedBox : ContentControl,
             _contentRightAddOn.PropertyChanged += HandleContentPresenterChildChanged;
         }
 
-        if (_leftAddOn is ContentPresenter newLeftAddOn)
+        if (_leftAddOnPresenter != null)
         {
-            newLeftAddOn.PropertyChanged += HandleContentPresenterChildChanged;
+            _leftAddOnPresenter.PropertyChanged += HandleContentPresenterChildChanged;
         }
 
-        if (_rightAddOn is ContentPresenter newRightAddOn)
+        if (_rightAddOnPresenter != null)
         {
-            newRightAddOn.PropertyChanged += HandleContentPresenterChildChanged;
+            _rightAddOnPresenter.PropertyChanged += HandleContentPresenterChildChanged;
         }
         
         ContentFrame = e.NameScope.Find<AddOnDecoratedBoxContentFrame>("PART_ContentFrame");
@@ -770,8 +779,8 @@ internal class AddOnDecoratedBox : ContentControl,
         // 应用 Foreground 到 addon 区域的 ContentPresenter
         ApplyAddOnForeground(_contentLeftAddOn, foreground);
         ApplyAddOnForeground(_contentRightAddOn, foreground);
-        ApplyAddOnForeground(_leftAddOn as ContentPresenter, foreground);
-        ApplyAddOnForeground(_rightAddOn as ContentPresenter, foreground);
+        ApplyAddOnForeground(_leftAddOnPresenter, foreground);
+        ApplyAddOnForeground(_rightAddOnPresenter, foreground);
 
         // 应用 Icon 染色
         ApplyIconBrush(_contentLeftAddOn, iconBrush);

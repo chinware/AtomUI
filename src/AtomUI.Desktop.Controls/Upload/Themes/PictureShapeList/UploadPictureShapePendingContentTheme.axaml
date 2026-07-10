@@ -9,12 +9,12 @@
         </ControlTheme.BasedOn>
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
+                <atom:PixelAlignedBorder Name="Frame"
+                                         Background="{TemplateBinding Background}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         Padding="{TemplateBinding Padding}">
                     <Border Name="ContentFrame"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             ClipToBounds="True">
@@ -25,7 +25,7 @@
                                        HorizontalAlignment="Center" />
                         </StackPanel>
                     </Border>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 

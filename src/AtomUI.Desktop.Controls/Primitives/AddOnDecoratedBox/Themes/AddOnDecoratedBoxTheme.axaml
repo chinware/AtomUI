@@ -7,30 +7,40 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:AddOnDecoratedBox">
             <DockPanel Name="RootLayout" LastChildFill="True">
-                <ContentPresenter
+                <atom:PixelAlignedBorder
                     Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
                     VerticalAlignment="Stretch"
-                    VerticalContentAlignment="Center"
                     Focusable="False"
                     DockPanel.Dock="Left"
                     BackgroundSizing="InnerBorderEdge"
-                    Content="{TemplateBinding LeftAddOn}"
-                    ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
                     BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
                     CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
-                    IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
-                <ContentPresenter
+                    IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <ContentPresenter
+                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart}"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        Focusable="False"
+                        Content="{TemplateBinding LeftAddOn}"
+                        ContentTemplate="{TemplateBinding LeftAddOnTemplate}" />
+                </atom:PixelAlignedBorder>
+                <atom:PixelAlignedBorder
                     Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"
                     VerticalAlignment="Stretch"
-                    VerticalContentAlignment="Center"
                     DockPanel.Dock="Right"
                     Focusable="False"
                     BackgroundSizing="InnerBorderEdge"
-                    Content="{TemplateBinding RightAddOn}"
-                    ContentTemplate="{TemplateBinding RightAddOnTemplate}"
                     BorderThickness="{TemplateBinding RightAddOnBorderThickness}"
                     CornerRadius="{TemplateBinding RightAddOnCornerRadius}"
-                    IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                    IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <ContentPresenter
+                        Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPresenterPart}"
+                        VerticalAlignment="Stretch"
+                        VerticalContentAlignment="Center"
+                        Focusable="False"
+                        Content="{TemplateBinding RightAddOn}"
+                        ContentTemplate="{TemplateBinding RightAddOnTemplate}" />
+                </atom:PixelAlignedBorder>
 
                 <atom:AddOnDecoratedBoxContentFrame
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.ContentFramePart}"
@@ -84,12 +94,12 @@
         <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
         <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         
-        <Style Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+        <Style Selector="^ /template/ Border#PART_LeftAddOn">
             <Setter Property="Background" Value="{atom:AddOnDecoratedBoxTokenResource AddonBg}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
 
-        <Style Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+        <Style Selector="^ /template/ Border#PART_RightAddOn">
             <Setter Property="Background" Value="{atom:AddOnDecoratedBoxTokenResource AddonBg}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
@@ -102,12 +112,12 @@
 
         <Style Selector="^[SizeType=Large]">
             <Style
-                Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                Selector="^ /template/ Border#PART_LeftAddOn">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
             </Style>
             <Style
-                Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                Selector="^ /template/ Border#PART_RightAddOn">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
             </Style>
@@ -115,11 +125,11 @@
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style
-                Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                Selector="^ /template/ Border#PART_LeftAddOn">
                 <Setter Property="Padding" Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
             </Style>
             <Style
-                Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                Selector="^ /template/ Border#PART_RightAddOn">
                 <Setter Property="Padding" Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
             </Style>
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
@@ -127,12 +137,12 @@
 
         <Style Selector="^[SizeType=Small]">
             <Style
-                Selector="^ /template/ ContentPresenter#PART_LeftAddOn">
+                Selector="^ /template/ Border#PART_LeftAddOn">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
             </Style>
             <Style
-                Selector="^ /template/ ContentPresenter#PART_RightAddOn">
+                Selector="^ /template/ Border#PART_RightAddOn">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
             </Style>
@@ -211,8 +221,8 @@
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
         </Style>
-        <Style Selector="^:outline[EffectiveStatus=Error] /template/ ContentPresenter#PART_LeftAddOn,
-                         ^:outline[EffectiveStatus=Error] /template/ ContentPresenter#PART_RightAddOn">
+        <Style Selector="^:outline[EffectiveStatus=Error] /template/ Border#PART_LeftAddOn,
+                         ^:outline[EffectiveStatus=Error] /template/ Border#PART_RightAddOn">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
         </Style>
@@ -238,8 +248,8 @@
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
         </Style>
-        <Style Selector="^:outline[EffectiveStatus=Warning] /template/ ContentPresenter#PART_LeftAddOn,
-                         ^:outline[EffectiveStatus=Warning] /template/ ContentPresenter#PART_RightAddOn">
+        <Style Selector="^:outline[EffectiveStatus=Warning] /template/ Border#PART_LeftAddOn,
+                         ^:outline[EffectiveStatus=Warning] /template/ Border#PART_RightAddOn">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
         </Style>
@@ -265,8 +275,8 @@
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillTertiary}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFillTertiary}" />
         </Style>
-        <Style Selector="^:filled /template/ ContentPresenter#PART_LeftAddOn,
-                         ^:filled /template/ ContentPresenter#PART_RightAddOn">
+        <Style Selector="^:filled /template/ Border#PART_LeftAddOn,
+                         ^:filled /template/ Border#PART_RightAddOn">
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorFillTertiary}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFillTertiary}" />
@@ -295,8 +305,8 @@
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorErrorBg}" />
         </Style>
-        <Style Selector="^:filled[EffectiveStatus=Error] /template/ ContentPresenter#PART_LeftAddOn,
-                         ^:filled[EffectiveStatus=Error] /template/ ContentPresenter#PART_RightAddOn">
+        <Style Selector="^:filled[EffectiveStatus=Error] /template/ Border#PART_LeftAddOn,
+                         ^:filled[EffectiveStatus=Error] /template/ Border#PART_RightAddOn">
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorErrorBg}" />
         </Style>
@@ -325,8 +335,8 @@
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorWarningBg}" />
         </Style>
-        <Style Selector="^:filled[EffectiveStatus=Warning] /template/ ContentPresenter#PART_LeftAddOn,
-                         ^:filled[EffectiveStatus=Warning] /template/ ContentPresenter#PART_RightAddOn">
+        <Style Selector="^:filled[EffectiveStatus=Warning] /template/ Border#PART_LeftAddOn,
+                         ^:filled[EffectiveStatus=Warning] /template/ Border#PART_RightAddOn">
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorWarningBg}" />
         </Style>
@@ -350,8 +360,8 @@
         </Style>
 
         <!-- Borderless -->
-        <Style Selector="^:borderless /template/ ContentPresenter#PART_LeftAddOn,
-                         ^:borderless /template/ ContentPresenter#PART_RightAddOn">
+        <Style Selector="^:borderless /template/ Border#PART_LeftAddOn,
+                         ^:borderless /template/ Border#PART_RightAddOn">
             <Setter Property="Background" Value="Transparent" />
         </Style>
 
@@ -359,8 +369,8 @@
         <Style Selector="^:underlined">
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
-        <Style Selector="^:underlined /template/ ContentPresenter#PART_LeftAddOn,
-                         ^:underlined /template/ ContentPresenter#PART_RightAddOn">
+        <Style Selector="^:underlined /template/ Border#PART_LeftAddOn,
+                         ^:underlined /template/ Border#PART_RightAddOn">
             <Setter Property="Background" Value="Transparent" />
         </Style>
         <Style Selector="^:underlined[IsInnerBoxHover=True]">
@@ -437,10 +447,10 @@
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
-        <Style Selector="^:disabled:outline /template/ ContentPresenter#PART_LeftAddOn,
-                         ^:disabled:outline /template/ ContentPresenter#PART_RightAddOn,
-                         ^:disabled:filled /template/ ContentPresenter#PART_LeftAddOn,
-                         ^:disabled:filled /template/ ContentPresenter#PART_RightAddOn">
+        <Style Selector="^:disabled:outline /template/ Border#PART_LeftAddOn,
+                         ^:disabled:outline /template/ Border#PART_RightAddOn,
+                         ^:disabled:filled /template/ Border#PART_LeftAddOn,
+                         ^:disabled:filled /template/ Border#PART_RightAddOn">
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
             <Setter Property="BorderBrush"

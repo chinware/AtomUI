@@ -168,11 +168,11 @@ public class GroupBox : ContentControl
 
     private void EnsureRenderGeometryCache(Rect headerGapBounds)
     {
-        var layoutBorderThickness = BorderUtils.BuildLayoutRoundedThickness(this, BorderThickness);
+        var renderBorderThickness = BorderUtils.BuildRenderScaleAwareThickness(this, BorderThickness);
         if (_geometryCacheInitialized &&
             _cachedBorderBounds == _borderBounds &&
             _cachedHeaderGapBounds == headerGapBounds &&
-            _cachedBorderThickness == layoutBorderThickness &&
+            _cachedBorderThickness == renderBorderThickness &&
             _cachedCornerRadius == CornerRadius)
         {
             return;
@@ -180,16 +180,16 @@ public class GroupBox : ContentControl
 
         _cachedBorderBounds       = _borderBounds;
         _cachedHeaderGapBounds    = headerGapBounds;
-        _cachedBorderThickness    = layoutBorderThickness;
+        _cachedBorderThickness    = renderBorderThickness;
         _cachedCornerRadius       = CornerRadius;
         _geometryCacheInitialized = true;
 
         _backgroundGeometryCache = CreateRoundedRectGeometry(
             _borderBounds,
-            layoutBorderThickness,
+            renderBorderThickness,
             CornerRadius,
             BackgroundSizing.InnerBorderEdge);
-        _borderGeometryCache = CreateBorderGeometry(_borderBounds, headerGapBounds, layoutBorderThickness);
+        _borderGeometryCache = CreateBorderGeometry(_borderBounds, headerGapBounds, renderBorderThickness);
     }
 
     private Geometry? CreateBorderGeometry(Rect borderBounds, Rect headerGapBounds, Thickness borderThickness)

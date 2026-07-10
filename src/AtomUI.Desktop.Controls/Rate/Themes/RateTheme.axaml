@@ -7,11 +7,11 @@
     <ControlTheme x:Key="{x:Type atom:Rate}" TargetType="atom:Rate">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}">
+                <atom:PixelAlignedBorder Name="Frame"
+                                         Background="{TemplateBinding Background}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}">
                     <atomc:RateItemsControl Name="PART_RateItems"
                                             Character="{TemplateBinding Character}"
                                             StarColor="{TemplateBinding StarColor}"
@@ -20,7 +20,7 @@
                                             IsAllowHalf="{TemplateBinding IsAllowHalf}"
                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                             FontSize="{TemplateBinding FontSize}" />
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         <Setter Property="Focusable" Value="True" />

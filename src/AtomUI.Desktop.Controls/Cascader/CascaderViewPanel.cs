@@ -1,4 +1,5 @@
 using AtomUI.Media;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -21,7 +22,7 @@ internal class CascaderViewFrame : Decorator
 
     static CascaderViewFrame()
     {
-        AffectsMeasure<CascaderViewFrame>(BorderBrushProperty);
+        AffectsRender<CascaderViewFrame>(BorderBrushProperty, UseLayoutRoundingProperty);
     }
 
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -55,7 +56,8 @@ internal class CascaderViewFrame : Decorator
                 {
                     var pointStart = new Point(offset.Value.X, 0);
                     var pointEnd   = new Point(offset.Value.X, height);
-                    PenUtils.TryModifyOrCreate(ref _borderPen, BorderBrush, 1.0);
+                    var lineWidth = BorderUtils.BuildRenderScaleAwareThickness(this, 1.0);
+                    PenUtils.TryModifyOrCreate(ref _borderPen, BorderBrush, lineWidth);
                     if (_borderPen is not null)
                     {
                         context.DrawLine(_borderPen, pointStart, pointEnd);

@@ -12,16 +12,22 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <atom:SearchEditPanel Name="RootLayout" ClipToBounds="False">
-                    <ContentPresenter
+                    <atom:PixelAlignedBorder
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPart}"
                         VerticalAlignment="Stretch"
-                        VerticalContentAlignment="Center"
                         Focusable="False"
-                        Content="{TemplateBinding LeftAddOn}"
-                        ContentTemplate="{TemplateBinding LeftAddOnTemplate}"
+                        BackgroundSizing="InnerBorderEdge"
                         BorderThickness="{TemplateBinding LeftAddOnBorderThickness}"
                         CornerRadius="{TemplateBinding LeftAddOnCornerRadius}"
-                        IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                        IsVisible="{TemplateBinding LeftAddOn, Converter={x:Static ObjectConverters.IsNotNull}}">
+                        <ContentPresenter
+                            Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.LeftAddOnPresenterPart}"
+                            VerticalAlignment="Stretch"
+                            VerticalContentAlignment="Center"
+                            Focusable="False"
+                            Content="{TemplateBinding LeftAddOn}"
+                            ContentTemplate="{TemplateBinding LeftAddOnTemplate}" />
+                    </atom:PixelAlignedBorder>
 
                     <atom:SearchButton
                         Name="{x:Static atom:AddOnDecoratedBoxThemeConstants.RightAddOnPart}"

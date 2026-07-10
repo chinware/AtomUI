@@ -233,7 +233,7 @@
                     Orientation="Vertical"
                     Spacing="20">
             <atom:RibbonBadge Text="{gallery:BadgeShowCaseLangResource P2TextPolishExperience}">
-                <Border
+                <atom:PixelAlignedBorder
                     Padding="10,0,10,0"
                     BorderBrush="#d9d9d9"
                     BorderThickness="1"
@@ -245,11 +245,11 @@
                         <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
                         <atom:TextBlock Margin="0,10,0,0" Text="{gallery:BadgeShowCaseLangResource P2TextAndRaisesTheSpyglass}" />
                     </StackPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </atom:RibbonBadge>
 
             <atom:RibbonBadge RibbonColor="Pink" Text="{gallery:BadgeShowCaseLangResource P2TextJiachenPlan}">
-                <Border
+                <atom:PixelAlignedBorder
                     Padding="10,0,10,0"
                     BorderBrush="#d9d9d9"
                     BorderThickness="1"
@@ -261,11 +261,11 @@
                         <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
                         <TextBlock Margin="0,10,0,0" Text="{gallery:BadgeShowCaseLangResource P2TextAndRaisesTheSpyglass}" />
                     </StackPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </atom:RibbonBadge>
 
             <atom:RibbonBadge RibbonColor="Cyan" Text="{gallery:BadgeShowCaseLangResource P2TextAvaloniaExcellent}">
-                <Border
+                <atom:PixelAlignedBorder
                     Padding="10,0,10,0"
                     BorderBrush="#d9d9d9"
                     BorderThickness="1"
@@ -277,11 +277,11 @@
                         <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
                         <TextBlock Margin="0,10,0,0" Text="{gallery:BadgeShowCaseLangResource P2TextAndRaisesTheSpyglass}" />
                     </StackPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </atom:RibbonBadge>
 
             <atom:RibbonBadge RibbonColor="Green" Text="{gallery:BadgeShowCaseLangResource P2TextHippies}">
-                <Border
+                <atom:PixelAlignedBorder
                     Padding="10,0,10,0"
                     BorderBrush="#d9d9d9"
                     BorderThickness="1"
@@ -293,12 +293,12 @@
                         <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
                         <TextBlock Margin="0,10,0,0" Text="{gallery:BadgeShowCaseLangResource P2TextAndRaisesTheSpyglass}" />
                     </StackPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </atom:RibbonBadge>
 
             <atom:RibbonBadge RibbonColor="purple"
                               Text="{gallery:BadgeShowCaseLangResource P2TextHippies}">
-                <Border
+                <atom:PixelAlignedBorder
                     Padding="10,0,10,0"
                     BorderBrush="#d9d9d9"
                     BorderThickness="1"
@@ -310,12 +310,12 @@
                         <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
                         <TextBlock Margin="0,10,0,0" Text="{gallery:BadgeShowCaseLangResource P2TextAndRaisesTheSpyglass}" />
                     </StackPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </atom:RibbonBadge>
 
             <atom:RibbonBadge RibbonColor="volcano"
                               Text="{gallery:BadgeShowCaseLangResource P2TextHippies}">
-                <Border
+                <atom:PixelAlignedBorder
                     Padding="10,0,10,0"
                     BorderBrush="#d9d9d9"
                     BorderThickness="1"
@@ -327,12 +327,12 @@
                         <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
                         <TextBlock Margin="0,10,0,0" Text="{gallery:BadgeShowCaseLangResource P2TextAndRaisesTheSpyglass}" />
                     </StackPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </atom:RibbonBadge>
 
             <atom:RibbonBadge RibbonColor="magenta"
                               Text="{gallery:BadgeShowCaseLangResource P2TextHippies}">
-                <Border
+                <atom:PixelAlignedBorder
                     Padding="10,0,10,0"
                     BorderBrush="#d9d9d9"
                     BorderThickness="1"
@@ -344,7 +344,7 @@
                         <atom:Separator LineColor="#d9d9d9" Orientation="Horizontal" />
                         <TextBlock Margin="0,10,0,0" Text="{gallery:BadgeShowCaseLangResource P2TextAndRaisesTheSpyglass}" />
                     </StackPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </atom:RibbonBadge>
 
         </StackPanel>

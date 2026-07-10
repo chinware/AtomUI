@@ -6,9 +6,9 @@
     <ControlTheme x:Key="{x:Type atom:DataGridColumnGroupHeader}" TargetType="atom:DataGridColumnGroupHeader">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="{x:Static atom:DataGridColumnGroupHeaderThemeConstants.FramePart}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        Background="{TemplateBinding Background}">
+                <atom:PixelAlignedBorder Name="{x:Static atom:DataGridColumnGroupHeaderThemeConstants.FramePart}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         Background="{TemplateBinding Background}">
                     <ContentPresenter
                         Name="{x:Static atom:DataGridColumnGroupHeaderThemeConstants.HeaderPresenterPart}"
                         HorizontalAlignment="Stretch"
@@ -17,7 +17,7 @@
                         VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                         Content="{TemplateBinding Header}"
                         ContentTemplate="{TemplateBinding HeaderTemplate}" />
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         <Setter Property="Foreground" Value="{atom:DataGridTokenResource TableHeaderTextColor}"/>
@@ -28,7 +28,7 @@
         </Style>
         
         <Style Selector="^ /template/ Border#PART_Frame">
-            <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}"/>
+            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}"/>
         </Style>
         
         <Style Selector="^[SizeType=Large]">

@@ -1,5 +1,6 @@
 using System.Reactive.Disposables;
 using AtomUI.Data;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -101,7 +102,7 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
             ClearOffsetTransform();
             return size;
         }
-        var borderThickness = (this as ICompactSpaceAware).GetBorderThickness();
+        var borderThickness = GetRenderScaleAwareBorderThickness((this as ICompactSpaceAware).GetBorderThickness());
         var delta           = borderThickness * PositionIndex;
         if (CompactSpaceOrientation == Orientation.Horizontal)
         {
@@ -194,6 +195,16 @@ internal class CompactSpaceItem : Decorator, ICompactSpaceAware
         {
             RenderTransform = null;
         }
+    }
+
+    private double GetRenderScaleAwareBorderThickness(double borderThickness)
+    {
+        if (Child is Layoutable child)
+        {
+            return BorderUtils.BuildRenderScaleAwareThickness(child, borderThickness);
+        }
+
+        return BorderUtils.BuildRenderScaleAwareThickness(this, borderThickness);
     }
     
     private void ConfigureItemSize(CompactSpaceSize size, bool isUsedInCompactSpace, Orientation compactSpaceOrientation) 

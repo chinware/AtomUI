@@ -63,7 +63,7 @@ public class GalleryShowCaseHeaderTests
             Find<Tag>(header, "PART_IntroducedVersionTag").IsVisible.ShouldBeFalse();
             Find<AtomUITextBlock>(header, "PART_SubtitleText").IsVisible.ShouldBeFalse();
             Find<AtomUITextBlock>(header, "PART_DescriptionText").IsVisible.ShouldBeFalse();
-            Find<Border>(header, "PART_MetadataCard").IsVisible.ShouldBeFalse();
+            Find<Control>(header, "PART_MetadataCard").IsVisible.ShouldBeFalse();
         });
     }
 

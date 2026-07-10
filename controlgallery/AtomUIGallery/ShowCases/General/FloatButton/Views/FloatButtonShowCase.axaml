@@ -94,16 +94,16 @@
                     </Panel>
                 </Border>
             </atom:ScrollViewer>
-            <Border Name="CommandFeedbackCard"
-                    Width="220"
-                    Padding="14,12"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Margin="24,24,160,24"
-                    Background="{atom:SharedTokenResource ColorBgContainer}"
-                    BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
-                    BorderThickness="1"
-                    CornerRadius="8">
+            <atom:PixelAlignedBorder Name="CommandFeedbackCard"
+                                     Width="220"
+                                     Padding="14,12"
+                                     HorizontalAlignment="Right"
+                                     VerticalAlignment="Bottom"
+                                     Margin="24,24,160,24"
+                                     Background="{atom:SharedTokenResource ColorBgContainer}"
+                                     BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                                     BorderThickness="1"
+                                     CornerRadius="8">
                 <Grid ColumnDefinitions="Auto,*"
                       RowDefinitions="Auto,Auto"
                       ColumnSpacing="12"
@@ -123,7 +123,7 @@
                                     Text="{Binding LastCommandSource}"
                                     FontWeight="SemiBold" />
                 </Grid>
-            </Border>
+            </atom:PixelAlignedBorder>
         </Grid>
 
             </DataTemplate>

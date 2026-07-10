@@ -9,17 +9,17 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Name="Frame"
-                            BorderThickness="{TemplateBinding EffectiveBorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                            Background="{TemplateBinding Background}"
-                            ClipToBounds="False"
-                            BoxShadow="{TemplateBinding BoxShadow}">
-                    </Border>
+                    <atom:PixelAlignedBorder Name="Frame"
+                                             BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                                             BorderBrush="{TemplateBinding BorderBrush}"
+                                             CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                                             Background="{TemplateBinding Background}"
+                                             ClipToBounds="False"
+                                             BoxShadow="{TemplateBinding BoxShadow}">
+                    </atom:PixelAlignedBorder>
                     <DockPanel LastChildFill="True">
-                        <Border Name="HeaderFrame" DockPanel.Dock="Top"
-                                BorderThickness="{TemplateBinding HeaderBorderThickness}">
+                        <atom:PixelAlignedBorder Name="HeaderFrame" DockPanel.Dock="Top"
+                                                 BorderThickness="{TemplateBinding HeaderBorderThickness}">
                             <DockPanel LastChildFill="True">
                                 <ContentPresenter Name="HeaderExtra" DockPanel.Dock="Right" VerticalAlignment="Center"
                                                   Content="{TemplateBinding Extra}"
@@ -29,7 +29,7 @@
                                                   ContentTemplate="{TemplateBinding HeaderTemplate}"
                                                   VerticalAlignment="Center" />
                             </DockPanel>
-                        </Border>
+                        </atom:PixelAlignedBorder>
                         <atom:CardActionPanel Name="PART_ActionPanel"
                                               DockPanel.Dock="Bottom"
                                               CornerRadius="{TemplateBinding CornerRadius}"

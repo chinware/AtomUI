@@ -7,11 +7,11 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel Name="RootLayout">
-                    <Border Name="Frame"
-                            Background="{TemplateBinding Background}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            BorderBrush="{TemplateBinding BorderBrush}" />
+                    <atom:PixelAlignedBorder Name="Frame"
+                                             Background="{TemplateBinding Background}"
+                                             CornerRadius="{TemplateBinding CornerRadius}"
+                                             BorderThickness="{TemplateBinding BorderThickness}"
+                                             BorderBrush="{TemplateBinding BorderBrush}" />
                     <atom:IconPresenter Name="IconPresenter"
                                         Width="{TemplateBinding EffectiveIconSize}"
                                         Height="{TemplateBinding EffectiveIconSize}"

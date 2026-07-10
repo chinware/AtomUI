@@ -6,15 +6,16 @@
     <ControlTheme x:Key="{x:Type atom:CompactSpaceAddOn}" TargetType="atom:CompactSpaceAddOn">
         <Setter Property="Template">
             <ControlTemplate>
-                <ContentPresenter Content="{TemplateBinding Content}"
-                                  ContentTemplate="{TemplateBinding ContentTemplate}"
-                                  HorizontalContentAlignment="Center"
-                                  VerticalContentAlignment="Center"
-                                  CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                  BorderBrush="{TemplateBinding BorderBrush}"
-                                  BorderThickness="{TemplateBinding BorderThickness}"
-                                  Background="{TemplateBinding Background}" 
-                                  Padding="{TemplateBinding Padding}"/>
+                <atom:PixelAlignedBorder CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         Background="{TemplateBinding Background}"
+                                         Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="Center"
+                                      VerticalContentAlignment="Center" />
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 

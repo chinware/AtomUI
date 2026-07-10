@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using AtomUI.Controls.Primitives;
+using AtomUI.Theme.Styling;
 using AtomUI.MotionScene;
 using Avalonia;
 using Avalonia.Controls;
@@ -8,6 +11,7 @@ using Avalonia.Controls.Presenters;
 using Avalonia.Headless;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -74,9 +78,10 @@ public class ExpanderBehaviorTests
         var window = ShowInWindow(expander);
         try
         {
-            var frame = FindVisualByName<Border>(expander, "PART_Frame");
+            var frame = FindVisualByName<PixelAlignedBorder>(expander, "PART_Frame");
             frame.ShouldNotBeNull();
             frame!.BorderThickness.ShouldBe(new Thickness(5));
+            frame.BorderBrush.ShouldNotBeNull();
 
             expander.IsGhostStyle = true;
             Dispatcher.UIThread.RunJobs();
@@ -90,6 +95,73 @@ public class ExpanderBehaviorTests
             expander.IsBorderless = false;
             Dispatcher.UIThread.RunJobs();
             frame.BorderThickness.ShouldBe(new Thickness(5));
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Pixel_Aligned_Frame_And_Header_Apply_Theme_Brushes()
+    {
+        var expander = new AtomUIExpander
+        {
+            Header          = "Header",
+            Content         = "Content",
+            IsExpanded      = true,
+            IsMotionEnabled = false,
+            BorderThickness = new Thickness(1)
+        };
+
+        var window = ShowInWindow(expander);
+        try
+        {
+            window.SetRenderScaling(1.5);
+            Dispatcher.UIThread.RunJobs();
+
+            var borderBrush = GetThemeResource<IBrush>(SharedTokenKind.ColorBorder);
+            var frame = FindVisualByName<PixelAlignedBorder>(expander, "PART_Frame");
+            frame.ShouldNotBeNull();
+            frame!.BorderBrush.ShouldNotBeNull();
+            BrushShouldHaveSameColor(frame.BorderBrush, borderBrush);
+            DrawingGroupHasPenWithBrush(RenderToDrawingGroup(frame), borderBrush)
+                .ShouldBeTrue("the expander frame must render a visible outer border");
+
+            var headerDecorator = GetHeaderDecorator(expander);
+            headerDecorator.Background.ShouldNotBeNull();
+            headerDecorator.BorderBrush.ShouldNotBeNull();
+            BrushShouldHaveSameColor(headerDecorator.BorderBrush, borderBrush);
+            headerDecorator.BorderThickness.ShouldBe(new Thickness(0, 0, 0, 1));
+            DrawingGroupHasFillWithBrush(RenderToDrawingGroup(headerDecorator), borderBrush)
+                .ShouldBeTrue("the expanded expander header must render the separator line");
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
+    [Fact]
+    public void Collapsed_Header_Keeps_Separator_Transparent_Until_Content_Is_Expanded()
+    {
+        var expander = new AtomUIExpander
+        {
+            Header          = "Header",
+            Content         = "Content",
+            IsMotionEnabled = false
+        };
+
+        var window = ShowInWindow(expander);
+        try
+        {
+            var headerDecorator = GetHeaderDecorator(expander);
+            BrushShouldBeTransparent(headerDecorator.BorderBrush);
+
+            expander.IsExpanded = true;
+            Dispatcher.UIThread.RunJobs();
+            BrushShouldHaveSameColor(headerDecorator.BorderBrush,
+                GetThemeResource<IBrush>(SharedTokenKind.ColorBorder));
         }
         finally
         {
@@ -183,9 +255,9 @@ public class ExpanderBehaviorTests
         Dispatcher.UIThread.RunJobs();
     }
 
-    private static Border GetHeaderDecorator(AtomUIExpander expander)
+    private static PixelAlignedBorder GetHeaderDecorator(AtomUIExpander expander)
     {
-        var header = FindVisualByName<Border>(expander, "PART_HeaderDecorator");
+        var header = FindVisualByName<PixelAlignedBorder>(expander, "PART_HeaderDecorator");
         header.ShouldNotBeNull();
         return header!;
     }
@@ -246,5 +318,78 @@ public class ExpanderBehaviorTests
         var origin = control.TranslatePoint(new Point(), relativeTo);
         origin.ShouldNotBeNull();
         return origin.Value;
+    }
+
+    private static DrawingGroup RenderToDrawingGroup(Control control)
+    {
+        var drawingGroup = new DrawingGroup();
+        using var context = drawingGroup.Open();
+        control.Render(context);
+        return drawingGroup;
+    }
+
+    private static bool DrawingGroupHasPenWithBrush(DrawingGroup drawingGroup, IBrush expectedBrush)
+    {
+        return EnumerateGeometryDrawings(drawingGroup)
+            .Any(drawing => drawing.Pen is { Brush: { } brush } &&
+                            BrushesHaveSameColor(brush, expectedBrush));
+    }
+
+    private static bool DrawingGroupHasFillWithBrush(DrawingGroup drawingGroup, IBrush expectedBrush)
+    {
+        return EnumerateGeometryDrawings(drawingGroup)
+            .Any(drawing => drawing.Brush is { } brush &&
+                            BrushesHaveSameColor(brush, expectedBrush));
+    }
+
+    private static IEnumerable<GeometryDrawing> EnumerateGeometryDrawings(Drawing drawing)
+    {
+        if (drawing is GeometryDrawing geometryDrawing)
+        {
+            yield return geometryDrawing;
+        }
+        else if (drawing is DrawingGroup drawingGroup)
+        {
+            foreach (var child in drawingGroup.Children.SelectMany(EnumerateGeometryDrawings))
+            {
+                yield return child;
+            }
+        }
+    }
+
+    private static T GetThemeResource<T>(object key)
+    {
+        var application = Application.Current;
+        application.ShouldNotBeNull();
+        application!.TryGetResource(key, application.ActualThemeVariant, out var value).ShouldBeTrue();
+        value.ShouldBeAssignableTo<T>();
+        return (T)value!;
+    }
+
+    private static void BrushShouldHaveSameColor(IBrush? actual, IBrush? expected)
+    {
+        BrushesHaveSameColor(actual, expected).ShouldBeTrue();
+    }
+
+    private static bool BrushesHaveSameColor(IBrush? actual, IBrush? expected)
+    {
+        return GetSolidBrushColor(actual) == GetSolidBrushColor(expected);
+    }
+
+    private static void BrushShouldBeTransparent(IBrush? brush)
+    {
+        if (brush is null)
+        {
+            return;
+        }
+
+        GetSolidBrushColor(brush).A.ShouldBe((byte)0);
+    }
+
+    private static Color GetSolidBrushColor(IBrush? brush)
+    {
+        brush.ShouldNotBeNull();
+        brush.ShouldBeAssignableTo<ISolidColorBrush>();
+        return ((ISolidColorBrush)brush!).Color;
     }
 }

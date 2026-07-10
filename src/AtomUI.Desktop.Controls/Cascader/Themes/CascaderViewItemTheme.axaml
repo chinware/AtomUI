@@ -6,11 +6,11 @@
               x:Class="AtomUI.Desktop.Controls.Themes.CascaderViewItemTheme">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:CascaderViewItem">
-            <Border Name="Frame"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius}"
-                    Background="{TemplateBinding Background}"
-                    Padding="{TemplateBinding Padding}">
+            <atom:PixelAlignedBorder Name="Frame"
+                                     BorderThickness="{TemplateBinding BorderThickness}"
+                                     CornerRadius="{TemplateBinding CornerRadius}"
+                                     Background="{TemplateBinding Background}"
+                                     Padding="{TemplateBinding Padding}">
                 <Grid Name="ItemsLayout">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Indicator" />
@@ -62,7 +62,7 @@
                                                 IsVisible="{TemplateBinding IsLoading}"
                                                 IconTemplate="{TemplateBinding LoadingIcon}" />
                 </Grid>
-            </Border>
+            </atom:PixelAlignedBorder>
         </ControlTemplate>
     </Setter>
 

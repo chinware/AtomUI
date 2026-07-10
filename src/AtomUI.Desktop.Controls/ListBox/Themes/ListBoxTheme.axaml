@@ -7,13 +7,13 @@
               TargetType="atom:ListBox">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:ListBox">
-            <Border Name="Frame"
-                    Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding EffectiveBorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius}"
-                    Padding="{TemplateBinding Padding}"
-                    Margin="{TemplateBinding Margin}">
+            <atom:PixelAlignedBorder Name="Frame"
+                                     Background="{TemplateBinding Background}"
+                                     BorderBrush="{TemplateBinding BorderBrush}"
+                                     BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                                     CornerRadius="{TemplateBinding CornerRadius}"
+                                     Padding="{TemplateBinding Padding}"
+                                     Margin="{TemplateBinding Margin}">
                 <Panel>
                     <atom:ScrollViewer Name="PART_ScrollViewer"
                                        IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
@@ -36,7 +36,7 @@
                         Content="{TemplateBinding EmptyIndicator}"
                         ContentTemplate="{TemplateBinding EmptyIndicatorTemplate}" />
                 </Panel>
-            </Border>
+            </atom:PixelAlignedBorder>
         </ControlTemplate>
     </Setter>
 

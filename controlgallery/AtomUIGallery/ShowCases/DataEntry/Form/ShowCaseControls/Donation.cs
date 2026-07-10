@@ -104,35 +104,32 @@ public class Donation: TemplatedControl,
 
     private void HandleInputValueChanged(object? sender, TextChangedEventArgs e)
     {
-        Debug.Assert(_valueInput != null);
-        Debug.Assert(_unitInput != null);
-        var value = _valueInput?.Text;
-        if (!string.IsNullOrWhiteSpace(value))
-        {
-            var unit  = _unitInput.SelectedOption?.Content?.ToString() ?? "CNY";
-            Value = new DonationInfo(value, unit);
-        }
-        else 
-        {
-            Value = null;
-        }
-        HandleValueChanged();
+        UpdateValueFromInputs();
     }
 
     private void HandleUnitSelectionChanged(object? sender, SelectSelectionChangedEventArgs e)
     {
+        UpdateValueFromInputs();
+    }
+
+    private void UpdateValueFromInputs()
+    {
         Debug.Assert(_valueInput != null);
         Debug.Assert(_unitInput != null);
         var value = _valueInput?.Text;
+        DonationInfo? newValue = null;
         if (!string.IsNullOrWhiteSpace(value))
         {
             var unit  = _unitInput.SelectedOption?.Content?.ToString() ?? "CNY";
-            Value = new DonationInfo(value, unit);
+            newValue = new DonationInfo(value, unit);
         }
-        else 
+
+        if (Equals(Value, newValue))
         {
-            Value = null;
+            return;
         }
+
+        Value = newValue;
         HandleValueChanged();
     }
 

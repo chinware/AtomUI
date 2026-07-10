@@ -7,13 +7,13 @@
               TargetType="atom:ListView">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:ListView">
-            <Border Name="Frame"
-                    Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding EffectiveBorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius}"
-                    Padding="{TemplateBinding Padding}"
-                    Margin="{TemplateBinding Margin}">
+            <atom:PixelAlignedBorder Name="Frame"
+                                     Background="{TemplateBinding Background}"
+                                     BorderBrush="{TemplateBinding BorderBrush}"
+                                     BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                                     CornerRadius="{TemplateBinding CornerRadius}"
+                                     Padding="{TemplateBinding Padding}"
+                                     Margin="{TemplateBinding Margin}">
                 <DockPanel LastChildFill="True">
                     <ContentPresenter Name="TopPaginationPresenter" DockPanel.Dock="Top" 
                                       IsVisible="{TemplateBinding TopPagination, Converter={x:Static ObjectConverters.IsNotNull}}" 
@@ -52,7 +52,7 @@
                         </Panel>
                     </atom:Spin>
                 </DockPanel>
-            </Border>
+            </atom:PixelAlignedBorder>
         </ControlTemplate>
     </Setter>
 

@@ -6,15 +6,15 @@
     <ControlTheme x:Key="{x:Type atom:Expander}" TargetType="atom:Expander">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="PART_Frame"
-                        ClipToBounds="True"
-                        BorderThickness="{TemplateBinding EffectiveBorderThickness}">
+                <atom:PixelAlignedBorder Name="PART_Frame"
+                                         ClipToBounds="True"
+                                         BorderThickness="{TemplateBinding EffectiveBorderThickness}">
                     <DockPanel Name="PART_MainLayout"
                                LastChildFill="True">
                         <LayoutTransformControl Name="PART_HeaderLayoutTransform">
-                            <Border Name="PART_HeaderDecorator"
-                                    BorderThickness="{TemplateBinding HeaderBorderThickness}"
-                                    Padding="{TemplateBinding HeaderPadding}">
+                            <atom:PixelAlignedBorder Name="PART_HeaderDecorator"
+                                                     BorderThickness="{TemplateBinding HeaderBorderThickness}"
+                                                     Padding="{TemplateBinding HeaderPadding}">
                                 <Grid Name="PART_HeaderLayout"
                                       ColumnDefinitions="Auto, *, Auto, Auto">
                                     <atom:IconButton
@@ -44,7 +44,7 @@
                                         ContentTemplate="{TemplateBinding AddOnContentTemplate}"
                                         Grid.Column="2" />
                                 </Grid>
-                            </Border>
+                            </atom:PixelAlignedBorder>
                         </LayoutTransformControl>
 
                         <atom:LayoutAwareMotionActor
@@ -57,7 +57,7 @@
                                               Padding="{TemplateBinding ContentPadding}"/>
                         </atom:LayoutAwareMotionActor>
                     </DockPanel>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 
@@ -66,14 +66,14 @@
         <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         
         <Style Selector="^ /template/ Border#PART_Frame">
-            <Setter Property="CornerRadius"
+            <Setter Property="atom:DashedBorder.CornerRadius"
                     Value="{atom:ExpanderTokenResource ExpanderBorderRadius}" />
-            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
 
         <Style Selector="^ /template/ Border#PART_HeaderDecorator">
-            <Setter Property="Background" Value="{atom:ExpanderTokenResource HeaderBg}" />
-            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="atom:DashedBorder.Background" Value="{atom:ExpanderTokenResource HeaderBg}" />
+            <Setter Property="atom:DashedBorder.BorderBrush" Value="Transparent" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
@@ -92,7 +92,7 @@
 
         <Style Selector="^[IsExpanded=True]">
             <Style Selector="^ /template/ Border#PART_HeaderDecorator">
-                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+                <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
             </Style>
         </Style>
 
@@ -273,7 +273,7 @@
 
         <Style Selector="^[IsGhostStyle=True]">
             <Style Selector="^ /template/ Border#PART_HeaderDecorator">
-                <Setter Property="Background" Value="{atom:ExpanderTokenResource ContentBg}" />
+                <Setter Property="atom:DashedBorder.Background" Value="{atom:ExpanderTokenResource ContentBg}" />
             </Style>
         </Style>
 

@@ -37,11 +37,12 @@
                                 Content="{atom:CommonLangResource Ok}" />
                         </StackPanel>
                         
-                        <Rectangle Name="ButtonLayoutSeparator"
-                                   Height="1.0"
-                                   VerticalAlignment="Center"
-                                   HorizontalAlignment="Stretch" 
-                                   DockPanel.Dock="Bottom"/>
+                        <atom:PixelAlignedBorder Name="ButtonLayoutSeparator"
+                                                 Height="1.0"
+                                                 BorderThickness="0,0,0,1"
+                                                 VerticalAlignment="Center"
+                                                 HorizontalAlignment="Stretch"
+                                                 DockPanel.Dock="Bottom"/>
                         
                         <atom:ScrollViewer IsMotionEnabled="{TemplateBinding IsMotionEnabled}"
                                            IsLiteMode="{TemplateBinding atom:ScrollViewer.IsLiteMode}"
@@ -66,8 +67,8 @@
                     Value="{atom:DataGridTokenResource TableFilterButtonContainerMargin}" /> 
         </Style>
         
-        <Style Selector="^ /template/ Rectangle#ButtonLayoutSeparator">
-            <Setter Property="Fill" Value="{atom:DataGridTokenResource TableBorderColor}" />
+        <Style Selector="^ /template/ Border#ButtonLayoutSeparator">
+            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
             <Setter Property="Margin"
                     Value="{atom:DataGridTokenResource TableFilterButtonLayoutSeparatorMargin}" /> 
         </Style>

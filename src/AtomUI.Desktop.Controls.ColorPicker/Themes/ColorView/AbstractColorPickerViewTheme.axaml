@@ -41,8 +41,9 @@
             </Style>
         </Style>
         
-        <Style Selector="^ /template/ Rectangle#Separator">
-            <Setter Property="Fill" Value="{atom:SharedTokenResource ColorBorderSecondary}"/>
+        <Style Selector="^ /template/ Border#Separator">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}"/>
+            <Setter Property="BorderThickness" Value="1,0,0,0"/>
         </Style>
         
         <Style Selector="^ /template/ StackPanel#PART_LayoutRoot">

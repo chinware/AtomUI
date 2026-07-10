@@ -20,15 +20,15 @@
                                    IsLiteMode="False">
                     <gallery:GalleryStickyTabsPanel Name="PART_StickyPanel">
                         <ContentPresenter Content="{TemplateBinding Header}" />
-                        <Border Name="PART_StickyContentHost"
-                                Background="{TemplateBinding StickyBackground}"
-                                BorderBrush="{TemplateBinding StickyBorderBrush}"
-                                BorderThickness="0,0,0,1"
-                                IsVisible="{TemplateBinding HasStickyContent}"
-                                Padding="{TemplateBinding StickyContentPadding}"
-                                ZIndex="1">
+                        <atom:PixelAlignedBorder Name="PART_StickyContentHost"
+                                                 Background="{TemplateBinding StickyBackground}"
+                                                 BorderBrush="{TemplateBinding StickyBorderBrush}"
+                                                 BorderThickness="0,0,0,1"
+                                                 IsVisible="{TemplateBinding HasStickyContent}"
+                                                 Padding="{TemplateBinding StickyContentPadding}"
+                                                 ZIndex="1">
                             <ContentPresenter Content="{TemplateBinding StickyContent}" />
-                        </Border>
+                        </atom:PixelAlignedBorder>
                         <ContentPresenter Content="{TemplateBinding Content}" />
                     </gallery:GalleryStickyTabsPanel>
                 </atom:ScrollViewer>

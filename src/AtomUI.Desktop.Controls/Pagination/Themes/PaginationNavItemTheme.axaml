@@ -8,11 +8,11 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Panel>
-                    <Border Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            CornerRadius="{TemplateBinding CornerRadius}"
-                            Padding="{TemplateBinding Padding}"
-                            BorderThickness="{TemplateBinding BorderThickness}" />
+                    <atom:PixelAlignedBorder Background="{TemplateBinding Background}"
+                                             BorderBrush="{TemplateBinding BorderBrush}"
+                                             CornerRadius="{TemplateBinding CornerRadius}"
+                                             Padding="{TemplateBinding Padding}"
+                                             BorderThickness="{TemplateBinding BorderThickness}" />
                     <atom:IconPresenter Name="IconPresenter"
                                          IsVisible="False"
                                          HorizontalAlignment="Center"

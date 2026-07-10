@@ -291,6 +291,8 @@
                    WrapperColInfo="*"
                    MinWidth="600"
                    HorizontalAlignment="Left"
+                   LabelAlign="Left"
+                   IsShowColon="False"
                    LabelWrapping="Wrap">
             <atom:FormItem LabelText="{gallery:FormShowCaseLangResource P2LabelTextNormalLabel}"
                            FieldName="username"

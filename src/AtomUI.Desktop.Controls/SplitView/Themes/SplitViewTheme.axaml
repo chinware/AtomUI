@@ -35,10 +35,11 @@
                             <ContentPresenter Name="PART_PanePresenter"
                                               Content="{TemplateBinding Pane}"
                                               ContentTemplate="{TemplateBinding PaneTemplate}" />
-                            <Rectangle Name="HCPaneBorder"
-                                       Fill="{atom:SharedTokenResource ColorBorder}"
-                                       Width="1"
-                                       HorizontalAlignment="Right" />
+                            <atom:PixelAlignedBorder Name="HCPaneBorder"
+                                                     BorderBrush="{atom:SharedTokenResource ColorBorder}"
+                                                     BorderThickness="0,0,1,0"
+                                                     Width="1"
+                                                     HorizontalAlignment="Right" />
                         </Panel>
 
                         <Panel Name="ContentRoot" Grid.Column="1">
@@ -124,9 +125,11 @@
                             <ContentPresenter Name="PART_PanePresenter"
                                               Content="{TemplateBinding Pane}"
                                               ContentTemplate="{TemplateBinding PaneTemplate}" />
-                            <Rectangle Name="HCPaneBorder"
-                                       Fill="{atom:SharedTokenResource ColorBorder}"
-                                       Width="1" HorizontalAlignment="Left" />
+                            <atom:PixelAlignedBorder Name="HCPaneBorder"
+                                                     BorderBrush="{atom:SharedTokenResource ColorBorder}"
+                                                     BorderThickness="1,0,0,0"
+                                                     Width="1"
+                                                     HorizontalAlignment="Left" />
                         </Panel>
 
                         <Panel Name="ContentRoot" Grid.Column="0">
@@ -212,10 +215,11 @@
                             <ContentPresenter Name="PART_PanePresenter"
                                               Content="{TemplateBinding Pane}"
                                               ContentTemplate="{TemplateBinding PaneTemplate}" />
-                            <Rectangle Name="HCPaneBorder"
-                                       Fill="{atom:SharedTokenResource ColorBorder}"
-                                       Height="1"
-                                       VerticalAlignment="Bottom" />
+                            <atom:PixelAlignedBorder Name="HCPaneBorder"
+                                                     BorderBrush="{atom:SharedTokenResource ColorBorder}"
+                                                     BorderThickness="0,0,0,1"
+                                                     Height="1"
+                                                     VerticalAlignment="Bottom" />
                         </Panel>
 
                         <Panel Name="ContentRoot" Grid.Row="1">
@@ -302,9 +306,11 @@
                             <ContentPresenter Name="PART_PanePresenter"
                                               Content="{TemplateBinding Pane}"
                                               ContentTemplate="{TemplateBinding PaneTemplate}" />
-                            <Rectangle Name="HCPaneBorder"
-                                       Fill="{atom:SharedTokenResource ColorBorder}"
-                                       Height="1" VerticalAlignment="Top" />
+                            <atom:PixelAlignedBorder Name="HCPaneBorder"
+                                                     BorderBrush="{atom:SharedTokenResource ColorBorder}"
+                                                     BorderThickness="0,1,0,0"
+                                                     Height="1"
+                                                     VerticalAlignment="Top" />
                         </Panel>
 
                         <Panel Name="ContentRoot" Grid.Row="0">

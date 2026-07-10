@@ -64,6 +64,13 @@ public class TreeSelectShowCasePageTests
         source.ShouldContain("Selector=\"atom|TreeSelect.size-demo-tree-select[SizeType=Custom]\"");
         source.ShouldContain("TreeSelectShowCaseLangResource VariantsTitle");
         source.ShouldContain("TreeSelectShowCaseLangResource PrefixAndSuffixTitle");
+        source.ShouldContain("SuffixIcon=\"{antdicons:AntDesignIconProvider SmileOutlined}\"");
+        source.ShouldContain("ContentLeftAddOn=\"{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix}\"");
+        Regex.IsMatch(
+                source,
+                "\\sLeftAddOn=\"\\{gallery:TreeSelectShowCaseLangResource P2AddOnPrefix\\}\"",
+                RegexOptions.CultureInvariant)
+            .ShouldBeFalse();
         source.ShouldContain("OptionCheckedChanged=\"HandlePlacementOptionCheckedChanged\"");
         source.ShouldNotContain("{Binding #");
         source.ShouldNotContain("<atom:TabControl");

@@ -164,14 +164,6 @@ public class TreeSelectViewModel : ReactiveObject, IRoutableViewModel
         set => this.RaiseAndSetIfChanged(ref _showTreeLineTreeNodes, value);
     }
 
-    private List<ITreeItemNode>? _leftAddTreeNodes = [];
-
-    public List<ITreeItemNode>? LeftAddTreeNodes
-    {
-        get => _leftAddTreeNodes;
-        set => this.RaiseAndSetIfChanged(ref _leftAddTreeNodes, value);
-    }
-
     private List<ITreeItemNode>? _contentLeftAddTreeNodes = [];
 
     public List<ITreeItemNode>? ContentLeftAddTreeNodes

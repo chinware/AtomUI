@@ -13,13 +13,13 @@
                                        VerticalScrollBarVisibility="{TemplateBinding atom:ScrollViewer.VerticalScrollBarVisibility}"
                                        IsScrollChainingEnabled="{TemplateBinding atom:ScrollViewer.IsScrollChainingEnabled}"
                                        IsDeferredScrollingEnabled="{TemplateBinding atom:ScrollViewer.IsDeferredScrollingEnabled}">
-                        <Border HorizontalAlignment="Stretch"
-                                Padding="{TemplateBinding Padding}"
-                                Background="{TemplateBinding Background}"
-                                BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                CornerRadius="{TemplateBinding CornerRadius}">
+                        <atom:PixelAlignedBorder HorizontalAlignment="Stretch"
+                                                 Padding="{TemplateBinding Padding}"
+                                                 Background="{TemplateBinding Background}"
+                                                 BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                                 BorderThickness="{TemplateBinding BorderThickness}"
+                                                 BorderBrush="{TemplateBinding BorderBrush}"
+                                                 CornerRadius="{TemplateBinding CornerRadius}">
                             <ItemsPresenter Name="PART_ItemsPresenter"
                                             KeyboardNavigation.TabNavigation="Continue">
                                 <ItemsPresenter.ItemsPanel>
@@ -28,7 +28,7 @@
                                     </ItemsPanelTemplate>
                                 </ItemsPresenter.ItemsPanel>
                             </ItemsPresenter>
-                        </Border>
+                        </atom:PixelAlignedBorder>
                     </atom:ScrollViewer>
                 </ControlTemplate>
             </Setter>
@@ -38,16 +38,17 @@
             <Setter Property="Template">
                 <ControlTemplate>
                     <DockPanel LastChildFill="True">
-                        <Rectangle Name="PART_HorizontalLine"
-                                   DockPanel.Dock="Bottom"
-                                   Height="{atom:SharedTokenResource LineWidth}" />
-                        <Border HorizontalAlignment="Stretch"
-                                Padding="{TemplateBinding Padding}"
-                                Background="{TemplateBinding Background}"
-                                BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                CornerRadius="{TemplateBinding CornerRadius}">
+                        <atom:PixelAlignedBorder Name="PART_HorizontalLine"
+                                                 DockPanel.Dock="Bottom"
+                                                 BorderThickness="0,0,0,1"
+                                                 Height="{atom:SharedTokenResource LineWidth}" />
+                        <atom:PixelAlignedBorder HorizontalAlignment="Stretch"
+                                                 Padding="{TemplateBinding Padding}"
+                                                 Background="{TemplateBinding Background}"
+                                                 BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                                 BorderThickness="{TemplateBinding BorderThickness}"
+                                                 BorderBrush="{TemplateBinding BorderBrush}"
+                                                 CornerRadius="{TemplateBinding CornerRadius}">
                             <ItemsPresenter Name="PART_ItemsPresenter"
                                             KeyboardNavigation.TabNavigation="Continue">
                                 <ItemsPresenter.ItemsPanel>
@@ -56,7 +57,7 @@
                                     </ItemsPanelTemplate>
                                 </ItemsPresenter.ItemsPanel>
                             </ItemsPresenter>
-                        </Border>
+                        </atom:PixelAlignedBorder>
                     </DockPanel>
                 </ControlTemplate>
             </Setter>
@@ -127,13 +128,13 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="Height" Value="{atom:NavMenuTokenResource MenuHorizontalHeight}" />
-            <Style Selector="^ /template/ Rectangle#PART_HorizontalLine">
-                <Setter Property="Fill" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
+            <Style Selector="^ /template/ Border#PART_HorizontalLine">
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
             </Style>
             
             <Style Selector="^[IsDarkStyle=True]">
                 <Setter Property="Background" Value="{atom:NavMenuTokenResource DarkMenuBg}" />
-                <Style Selector="^ /template/ Rectangle#PART_HorizontalLine">
+                <Style Selector="^ /template/ Border#PART_HorizontalLine">
                     <Setter Property="IsVisible" Value="False" />
                 </Style>
             </Style>

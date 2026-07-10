@@ -7,11 +7,11 @@
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:Tag">
             <Panel>
-                <Border Name="Frame"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        BorderThickness="{TemplateBinding BorderThickness}" />
+                <atom:PixelAlignedBorder Name="Frame"
+                                         Background="{TemplateBinding Background}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         BorderThickness="{TemplateBinding BorderThickness}" />
                 <DockPanel LastChildFill="True" 
                            Margin="{TemplateBinding Padding}">
                     <atom:IconPresenter Name="IconPresenter"

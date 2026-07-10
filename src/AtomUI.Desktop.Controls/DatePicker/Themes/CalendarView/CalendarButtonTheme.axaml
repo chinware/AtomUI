@@ -28,21 +28,25 @@
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Center"
                             IsVisible="False"/>
-                    <ContentPresenter Name="Content"
-                                      Grid.ColumnSpan="2"
-                                      Padding="{TemplateBinding Padding}"
-                                      Foreground="{TemplateBinding Foreground}"
-                                      Background="{TemplateBinding Background}"
-                                      CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                                      BorderBrush="{TemplateBinding BorderBrush}"
-                                      BorderThickness="{TemplateBinding BorderThickness}"
-                                      FontSize="{TemplateBinding FontSize}"
-                                      Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    <atom:PixelAlignedBorder
+                        Grid.ColumnSpan="2"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding EffectiveCornerRadius}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                        <ContentPresenter Name="Content"
+                                          Foreground="{TemplateBinding Foreground}"
+                                          FontSize="{TemplateBinding FontSize}"
+                                          Content="{TemplateBinding Content, Converter={StaticResource StringToTextBlockConverter}}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Stretch"
+                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                    </atom:PixelAlignedBorder>
                 </Grid>
             </ControlTemplate>
         </Setter>

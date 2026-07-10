@@ -1,15 +1,16 @@
 <ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:atom="https://atomui.net"
     x:ClassModifier="internal">
     <ControlTheme x:Key="{x:Type HeaderedContentControl}" TargetType="HeaderedContentControl">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}">
+                <atom:PixelAlignedBorder BorderBrush="{TemplateBinding BorderBrush}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         Background="{TemplateBinding Background}"
+                                         Padding="{TemplateBinding Padding}">
                     <Grid RowDefinitions="auto *">
                         <ContentPresenter Name="PART_HeaderPresenter"
                                           Content="{TemplateBinding Header}"
@@ -26,7 +27,7 @@
                                           HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           Grid.Row="1" />
                     </Grid>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
     </ControlTheme>

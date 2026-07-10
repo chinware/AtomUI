@@ -6,14 +6,14 @@
     <ControlTheme x:Key="{x:Type atom:Collapse}" TargetType="atom:Collapse">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="PART_Frame"
-                        BorderThickness="{TemplateBinding EffectiveBorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        ClipToBounds="True">
+                <atom:PixelAlignedBorder Name="PART_Frame"
+                                         BorderThickness="{TemplateBinding EffectiveBorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         ClipToBounds="True">
                     <ItemsPresenter Name="PART_ItemsPresenter"
                                     ItemsPanel="{TemplateBinding ItemsPanel}"/>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
         

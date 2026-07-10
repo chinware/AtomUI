@@ -124,7 +124,7 @@
                                     CompactSpaceOrientation="{TemplateBinding CompactSpaceOrientation}"
                                     IsUsedInCompactSpace="{TemplateBinding IsUsedInCompactSpace}">
                                     <DockPanel LastChildFill="True">
-                                        <Border
+                                        <atom:PixelAlignedBorder
                                             DockPanel.Dock="Left"
                                             BorderBrush="{atom:ButtonSpinnerTokenResource HandleBorderColor}"
                                             BorderThickness="0,0,1,0"
@@ -140,8 +140,8 @@
                                                 IconHeight="{atom:SharedTokenResource IconSize}"
                                                 HorizontalAlignment="Stretch"
                                                 VerticalAlignment="Stretch" />
-                                        </Border>
-                                        <Border
+                                        </atom:PixelAlignedBorder>
+                                        <atom:PixelAlignedBorder
                                             DockPanel.Dock="Right"
                                             BorderBrush="{atom:ButtonSpinnerTokenResource HandleBorderColor}"
                                             BorderThickness="1,0,0,0"
@@ -157,7 +157,7 @@
                                                 IconHeight="{atom:SharedTokenResource IconSize}"
                                                 HorizontalAlignment="Stretch"
                                                 VerticalAlignment="Stretch" />
-                                        </Border>
+                                        </atom:PixelAlignedBorder>
                                         <DockPanel LastChildFill="True">
                                             <ContentPresenter
                                                 DockPanel.Dock="Left"

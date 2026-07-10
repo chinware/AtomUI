@@ -1,4 +1,5 @@
 using System.Linq;
+using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
@@ -43,7 +44,7 @@ public class DataGridFrameCornerRadiusTests
             window.Show();
             Dispatcher.UIThread.RunJobs();
 
-            var frame = FindTemplateBorder(grid, "Frame");
+            var frame = FindTemplatePixelAlignedBorder(grid, "Frame");
             frame.CornerRadius.ShouldBe(GetTopOnlyCornerRadius(cornerRadius));
             frame.BorderThickness.ShouldBe(new Thickness(0));
 
@@ -84,9 +85,10 @@ public class DataGridFrameCornerRadiusTests
             window.Show();
             Dispatcher.UIThread.RunJobs();
 
-            var frame = FindTemplateBorder(grid, "Frame");
+            var frame = FindTemplatePixelAlignedBorder(grid, "Frame");
             frame.CornerRadius.ShouldBe(cornerRadius);
             frame.BorderThickness.ShouldBe(borderThickness);
+            frame.BorderBrush.ShouldNotBeNull();
 
             var contentClip = FindTemplateBorder(grid, "FrameContentClip");
             contentClip.CornerRadius.ShouldBe(cornerRadius);
@@ -129,7 +131,7 @@ public class DataGridFrameCornerRadiusTests
             window.Show();
             Dispatcher.UIThread.RunJobs();
 
-            var frame       = FindTemplateBorder(grid, "Frame");
+            var frame       = FindTemplatePixelAlignedBorder(grid, "Frame");
             var headerFrame = FindTemplateBorder(grid, "ColumnHeadersPresenterFrame");
             frame.CornerRadius.ShouldBe(GetTopOnlyCornerRadius(firstCornerRadius));
             frame.BorderThickness.ShouldBe(new Thickness(0));
@@ -154,6 +156,40 @@ public class DataGridFrameCornerRadiusTests
     }
 
     [Fact]
+    public void Header_Separator_And_Header_Cell_Separators_Apply_Border_Brushes()
+    {
+        var grid = CreateGridWithRows(isFrameBorderVisible: false);
+        var window = new Window
+        {
+            Width   = 420,
+            Height  = 260,
+            Content = grid
+        };
+
+        try
+        {
+            window.Show();
+            Dispatcher.UIThread.RunJobs();
+
+            var headerBottomSeparator = FindTemplatePixelAlignedBorder(grid, "ColumnHeadersAndRowsSeparator");
+            headerBottomSeparator.BorderThickness.ShouldBe(new Thickness(0, 0, 0, 1));
+            headerBottomSeparator.BorderBrush.ShouldNotBeNull();
+
+            var headerSeparators = grid.GetVisualDescendants()
+                                       .OfType<PixelAlignedBorder>()
+                                       .Where(border => border.Name == "PART_VerticalSeparator")
+                                       .ToList();
+            headerSeparators.ShouldNotBeEmpty();
+            headerSeparators.ShouldAllBe(separator => separator.BorderBrush != null);
+        }
+        finally
+        {
+            window.Close();
+            Dispatcher.UIThread.RunJobs();
+        }
+    }
+
+    [Fact]
     public void Last_Displayed_Row_Does_Not_Draw_Bottom_Grid_Line_When_Frame_Owns_Bottom_Border()
     {
         var grid = CreateGridWithRows(isFrameBorderVisible: true);
@@ -169,9 +205,10 @@ public class DataGridFrameCornerRadiusTests
             window.Show();
             Dispatcher.UIThread.RunJobs();
 
-            var frame = FindTemplateBorder(grid, "Frame");
+            var frame = FindTemplatePixelAlignedBorder(grid, "Frame");
             frame.CornerRadius.ShouldBe(grid.CornerRadius);
             frame.BorderThickness.ShouldBe(grid.BorderThickness);
+            frame.BorderBrush.ShouldNotBeNull();
 
             var rows = GetDisplayedRows(grid);
             rows.Length.ShouldBe(3);
@@ -220,6 +257,13 @@ public class DataGridFrameCornerRadiusTests
     {
         return owner.GetVisualDescendants()
                     .OfType<Border>()
+                    .Single(border => border.Name == name && ReferenceEquals(border.TemplatedParent, owner));
+    }
+
+    private static PixelAlignedBorder FindTemplatePixelAlignedBorder(Control owner, string name)
+    {
+        return owner.GetVisualDescendants()
+                    .OfType<PixelAlignedBorder>()
                     .Single(border => border.Name == name && ReferenceEquals(border.TemplatedParent, owner));
     }
 

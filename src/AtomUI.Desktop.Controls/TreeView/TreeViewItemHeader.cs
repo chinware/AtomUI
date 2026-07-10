@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using Avalonia.Threading;
 using AtomUI.Animations;
 using AtomUI.Controls;
 using Avalonia;
@@ -398,7 +397,7 @@ internal class TreeViewItemHeader : ContentControl
     }
     #endregion
     
-    private Border? _headerContentFrame;
+    private Control? _headerContentFrame;
     private NodeSwitcherButton? _nodeSwitcherButton;
     private IconPresenter? _iconPresenter;
 
@@ -464,13 +463,13 @@ internal class TreeViewItemHeader : ContentControl
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
-        SetHeaderContentFrame(e.NameScope.Find<Border>("PART_HeaderContentFrame"));
+        SetHeaderContentFrame(e.NameScope.Find<Control>("PART_HeaderContentFrame"));
         _iconPresenter = e.NameScope.Find<IconPresenter>("PART_IconPresenter");
         _nodeSwitcherButton = e.NameScope.Find<NodeSwitcherButton>("PART_NodeSwitcherButton");
         SetupSwitcherButtonIconMode();
     }
 
-    private void SetHeaderContentFrame(Border? headerContentFrame)
+    private void SetHeaderContentFrame(Control? headerContentFrame)
     {
         if (_headerContentFrame != null)
         {

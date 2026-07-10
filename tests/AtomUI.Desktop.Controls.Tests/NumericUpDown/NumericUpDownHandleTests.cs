@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme.Styling;
+using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Presenters;
@@ -223,8 +224,8 @@ public class NumericUpDownHandleTests
                                               .OfType<IconButton>()
                                               .Single(item => item.Name == "PART_IncreaseButton");
 
-            decreaseButton.GetVisualParent().ShouldBeAssignableTo<Border>();
-            increaseButton.GetVisualParent().ShouldBeAssignableTo<Border>();
+            decreaseButton.GetVisualParent().ShouldBeAssignableTo<PixelAlignedBorder>();
+            increaseButton.GetVisualParent().ShouldBeAssignableTo<PixelAlignedBorder>();
         });
     }
 
@@ -256,10 +257,10 @@ public class NumericUpDownHandleTests
             var decreaseSegment = decreaseButton.GetVisualParent();
             var increaseSegment = increaseButton.GetVisualParent();
 
-            decreaseSegment.ShouldBeAssignableTo<Border>();
-            increaseSegment.ShouldBeAssignableTo<Border>();
-            ((Border)decreaseSegment!).BorderThickness.ShouldBe(new Thickness(0, 0, 1, 0));
-            ((Border)increaseSegment!).BorderThickness.ShouldBe(new Thickness(1, 0, 0, 0));
+            decreaseSegment.ShouldBeAssignableTo<PixelAlignedBorder>();
+            increaseSegment.ShouldBeAssignableTo<PixelAlignedBorder>();
+            ((PixelAlignedBorder)decreaseSegment!).BorderThickness.ShouldBe(new Thickness(0, 0, 1, 0));
+            ((PixelAlignedBorder)increaseSegment!).BorderThickness.ShouldBe(new Thickness(1, 0, 0, 0));
         });
     }
 
@@ -508,7 +509,7 @@ public class NumericUpDownHandleTests
     }
 
     [Fact]
-    public void Floating_Handle_Render_Uses_Layout_Rounded_BorderThickness()
+    public void Floating_Handle_Render_Uses_Render_Scale_Aware_BorderThickness()
     {
         var numericUpDown = new AtomUINumericUpDown
         {
@@ -532,7 +533,35 @@ public class NumericUpDownHandleTests
                 .Select(thickness => thickness!.Value)
                 .ToArray();
 
-            penThicknesses.ShouldContain(thickness => Math.Abs(thickness - 4d / 3d) < 0.0001);
+            penThicknesses.ShouldContain(thickness => Math.Abs(thickness - 2d / 3d) < 0.0001);
+        });
+    }
+
+    [Fact]
+    public void Floating_Handle_Render_Aligns_Left_Separator_To_Physical_Pixel()
+    {
+        var numericUpDown = new AtomUINumericUpDown
+        {
+            Width           = 160,
+            Value           = 3,
+            IsMotionEnabled = false
+        };
+
+        ShowInWindow(numericUpDown, window =>
+        {
+            window.SetRenderScaling(1.5);
+            Dispatcher.UIThread.RunJobs();
+
+            var spinnerHandle = numericUpDown.GetVisualDescendants()
+                                             .OfType<TemplatedControl>()
+                                             .Single(item => item.GetType().Name == "ButtonSpinnerHandle");
+            var drawingGroup = RenderToDrawingGroup(spinnerHandle);
+            var verticalLine = EnumerateStrokeDrawings(drawingGroup)
+                .Single(drawing => drawing.Geometry?.Bounds is { Width: < 0.0001, Height: > 0 });
+
+            verticalLine.Pen.ShouldNotBeNull();
+            verticalLine.Pen!.Thickness.ShouldBe(2d / 3d, 0.0001);
+            verticalLine.Geometry!.Bounds.X.ShouldBe(1d / 3d, 0.0001);
         });
     }
 
@@ -607,5 +636,11 @@ public class NumericUpDownHandleTests
                 yield return child;
             }
         }
+    }
+
+    private static IEnumerable<GeometryDrawing> EnumerateStrokeDrawings(Drawing drawing)
+    {
+        return EnumerateGeometryDrawings(drawing)
+            .Where(drawing => drawing.Pen is not null);
     }
 }

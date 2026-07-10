@@ -22,10 +22,11 @@
                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                             Content="{TemplateBinding Content}"
                             ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        <Rectangle Name="VerticalSeparator"
-                                   Width="1.0"
-                                   HorizontalAlignment="Right"
-                                   IsVisible="{TemplateBinding IsSeparatorsVisible}" />
+                        <atom:PixelAlignedBorder Name="VerticalSeparator"
+                                                 Width="1.0"
+                                                 BorderThickness="0,0,1,0"
+                                                 HorizontalAlignment="Right"
+                                                 IsVisible="{TemplateBinding IsSeparatorsVisible}" />
                         <Panel Name="FocusVisual"
                                IsVisible="False"
                                IsHitTestVisible="False">
@@ -50,5 +51,16 @@
         <Setter Property="Background" Value="{atom:DataGridTokenResource TableHeaderBg}" />
         <Setter Property="CornerRadius"
                 Value="{atom:DataGridTokenResource TableTopLeftColumnCornerRadius}" />
+
+        <Style Selector="^ /template/ Border#VerticalSeparator">
+            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource HeaderSplitColor}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Height" Value="{atom:SharedTokenResource FontHeight}" />
+        </Style>
+
+        <Style Selector="^[IsSeparatorFullHeight=True] /template/ Border#VerticalSeparator">
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="Height" Value="NaN" />
+        </Style>
     </ControlTheme>
 </ResourceDictionary>

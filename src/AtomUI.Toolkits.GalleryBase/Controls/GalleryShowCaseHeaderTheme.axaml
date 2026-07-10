@@ -61,14 +61,14 @@
                                         IsVisible="{TemplateBinding IsDescriptionVisible}" />
                     </StackPanel>
 
-                    <Border Name="PART_MetadataCard"
-                            Background="{atom:SharedTokenResource ColorBgContainer}"
-                            BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
-                            BorderThickness="1"
-                            CornerRadius="{gallery:GalleryShowCaseHeaderTokenResource MetadataCornerRadius}"
-                            MinHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataMinHeight}"
-                            Padding="{gallery:GalleryShowCaseHeaderTokenResource MetadataPadding}"
-                            IsVisible="{TemplateBinding IsMetadataVisible}">
+                    <atom:PixelAlignedBorder Name="PART_MetadataCard"
+                                             Background="{atom:SharedTokenResource ColorBgContainer}"
+                                             BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                                             BorderThickness="1"
+                                             CornerRadius="{gallery:GalleryShowCaseHeaderTokenResource MetadataCornerRadius}"
+                                             MinHeight="{gallery:GalleryShowCaseHeaderTokenResource MetadataMinHeight}"
+                                             Padding="{gallery:GalleryShowCaseHeaderTokenResource MetadataPadding}"
+                                             IsVisible="{TemplateBinding IsMetadataVisible}">
                         <WrapPanel Name="PART_MetadataItems"
                                    Orientation="Horizontal"
                                    ItemSpacing="{gallery:GalleryShowCaseHeaderTokenResource MetadataItemSpacing}"
@@ -137,7 +137,7 @@
                                                 VerticalAlignment="Center" />
                             </StackPanel>
                         </WrapPanel>
-                    </Border>
+                    </atom:PixelAlignedBorder>
                 </StackPanel>
             </ControlTemplate>
         </Setter>

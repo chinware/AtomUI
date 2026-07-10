@@ -312,10 +312,10 @@ public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
 
     public override void Render(DrawingContext context)
     {
-        var layoutBorderThickness = BorderUtils.BuildLayoutRoundedThickness(this, BorderThickness);
+        var renderBorderThickness = BorderUtils.BuildRenderScaleAwareThickness(this, BorderThickness);
         _borderRenderHelper.Render(context,
             new Size(DesiredSize.Width, DesiredSize.Height),
-            layoutBorderThickness,
+            renderBorderThickness,
             CornerRadius,
             BackgroundSizing.CenterBorder,
             null,
@@ -338,14 +338,14 @@ public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
 
             if (i != ItemCount - 1)
             {
-                var offsetX    = optionButton.Bounds.Right - layoutBorderThickness.Left / 2;
+                var offsetX    = optionButton.Bounds.Right - renderBorderThickness.Left / 2;
                 var startPoint = new Point(offsetX, 0);
                 var endPoint   = new Point(offsetX, Bounds.Height);
                 using var optionState = context.PushRenderOptions(new RenderOptions
                 {
                     EdgeMode = EdgeMode.Aliased
                 });
-                PenUtils.TryModifyOrCreate(ref _separatorPen, BorderBrush, layoutBorderThickness.Left);
+                PenUtils.TryModifyOrCreate(ref _separatorPen, BorderBrush, renderBorderThickness.Left);
                 if (_separatorPen is not null)
                 {
                     context.DrawLine(_separatorPen, startPoint, endPoint);
@@ -361,8 +361,8 @@ public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
                     var width   = optionButton.DesiredSize.Width;
                     if (i > 0)
                     {
-                        offsetX -= layoutBorderThickness.Left;
-                        width   += layoutBorderThickness.Left;
+                        offsetX -= renderBorderThickness.Left;
+                        width   += renderBorderThickness.Left;
                     }
 
                     var       translationMatrix = Matrix.CreateTranslation(offsetX, 0);
@@ -379,7 +379,7 @@ public abstract class AbstractOptionButtonGroup : SelectingItemsControl,
 
                     _borderRenderHelper.Render(context,
                         new Size(width, DesiredSize.Height),
-                        layoutBorderThickness,
+                        renderBorderThickness,
                         cornerRadius,
                         BackgroundSizing.InnerBorderEdge,
                         null,

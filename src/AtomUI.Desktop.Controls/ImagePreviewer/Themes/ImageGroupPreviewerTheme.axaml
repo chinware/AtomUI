@@ -6,11 +6,11 @@
     <ControlTheme x:Key="{x:Type atom:ImageGroupPreviewer}" TargetType="atom:ImageGroupPreviewer">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        CornerRadius="{TemplateBinding CornerRadius}">
+                <atom:PixelAlignedBorder Background="{TemplateBinding Background}"
+                                         Padding="{TemplateBinding Padding}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         CornerRadius="{TemplateBinding CornerRadius}">
                     <ItemsControl Name="PART_CoverItemsControl"
                                   ItemsSource="{TemplateBinding EffectiveItems}"
                                   ItemsPanel="{TemplateBinding ItemsPanel}">
@@ -28,7 +28,7 @@
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 

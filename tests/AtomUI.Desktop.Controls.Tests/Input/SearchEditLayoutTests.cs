@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using AtomUI.Controls;
 using Avalonia.Controls;
+using Avalonia.Headless;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Shouldly;
@@ -96,6 +97,30 @@ public class SearchEditLayoutTests
         });
     }
 
+    [Fact]
+    public void Content_Frame_And_Search_Button_Overlap_Uses_Render_Scale_Aware_Thickness()
+    {
+        var searchEdit = new AtomUISearchEdit
+        {
+            Width            = 360,
+            SearchButtonText = "Search"
+        };
+
+        ShowInWindow(searchEdit, window =>
+        {
+            window.SetRenderScaling(1.5);
+            Dispatcher.UIThread.RunJobs();
+
+            var contentFrame = FindTemplatePart<global::AtomUI.Desktop.Controls.AddOnDecoratedBoxContentFrame>(
+                searchEdit,
+                "PART_ContentFrame");
+            var searchButton = FindTemplatePart<global::AtomUI.Desktop.Controls.Button>(searchEdit, "PART_RightAddOn");
+            var sharedBorderOverlap = contentFrame.Bounds.Right - searchButton.Bounds.Left;
+
+            sharedBorderOverlap.ShouldBe(2d / 3d, 0.001);
+        });
+    }
+
     private static T FindTemplatePart<T>(Control control, string name)
         where T : Control
     {
@@ -108,6 +133,11 @@ public class SearchEditLayoutTests
 
     private static void ShowInWindow(Control content, Action assertion)
     {
+        ShowInWindow(content, _ => assertion());
+    }
+
+    private static void ShowInWindow(Control content, Action<AvaloniaWindow> assertion)
+    {
         var window = new AvaloniaWindow
         {
             Width   = 480,
@@ -119,7 +149,7 @@ public class SearchEditLayoutTests
         {
             window.Show();
             Dispatcher.UIThread.RunJobs();
-            assertion();
+            assertion(window);
         }
         finally
         {

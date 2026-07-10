@@ -7,11 +7,11 @@
     <ControlTheme x:Key="{x:Type atom:PaletteColorItem}" TargetType="atom:PaletteColorItem">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="Frame"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        Padding="1">
+                <atom:PixelAlignedBorder Name="Frame"
+                                         CornerRadius="{TemplateBinding CornerRadius}"
+                                         BorderThickness="{TemplateBinding BorderThickness}"
+                                         BorderBrush="{TemplateBinding BorderBrush}"
+                                         Padding="1">
                     <Border Name="ColorPreview"
                             CornerRadius="{TemplateBinding CornerRadius}"
                             Background="{TemplateBinding Background}"
@@ -23,7 +23,7 @@
                                                      RenderTransform="{TemplateBinding CheckedMarkRenderTransform}"
                                                      RenderTransformOrigin="{x:Static RelativePoint.Center}"/>
                     </Border>
-                </Border>
+                </atom:PixelAlignedBorder>
             </ControlTemplate>
         </Setter>
 

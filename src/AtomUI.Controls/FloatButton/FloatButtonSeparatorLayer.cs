@@ -1,4 +1,5 @@
 using AtomUI.Media;
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
@@ -42,14 +43,19 @@ internal class FloatButtonSeparatorLayer : Control
     
     static FloatButtonSeparatorLayer()
     {
-        AffectsRender<FloatButtonSeparatorLayer>(LinesProperty, OrientationProperty, SeparatorBrushProperty);
+        AffectsRender<FloatButtonSeparatorLayer>(
+            LinesProperty,
+            OrientationProperty,
+            SeparatorBrushProperty,
+            UseLayoutRoundingProperty);
     }
     
     public override void Render(DrawingContext context)
     {
         if (SeparatorBrush != null && Lines != null)
         {
-            PenUtils.TryModifyOrCreate(ref _separatorPen, SeparatorBrush, 1.0);
+            var lineWidth = BorderUtils.BuildRenderScaleAwareThickness(this, 1.0);
+            PenUtils.TryModifyOrCreate(ref _separatorPen, SeparatorBrush, lineWidth);
             if (_separatorPen is null)
             {
                 return;

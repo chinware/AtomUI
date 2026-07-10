@@ -20,15 +20,15 @@ using AtomUIOptionButtonGroup = AtomUI.Desktop.Controls.OptionButtonGroup;
 
 namespace AtomUI.Desktop.Controls.Tests.Primitives;
 
-public class DashedBorderLayoutRoundingTests
+public class DashedBorderRenderScaleTests
 {
-    static DashedBorderLayoutRoundingTests()
+    static DashedBorderRenderScaleTests()
     {
         AvaloniaTestApp.EnsureInitialized();
     }
 
     [Fact]
-    public void Layout_Rounded_Thickness_Helper_Matches_Avalonia_Border_Rounding()
+    public void Render_Scale_Aware_Thickness_Helper_Uses_Physical_Hairline_For_Fractional_Scale()
     {
         var target = new Border();
 
@@ -37,14 +37,30 @@ public class DashedBorderLayoutRoundingTests
             window.SetRenderScaling(1.5);
             Dispatcher.UIThread.RunJobs();
 
-            var actual = InvokeLayoutRoundedThickness(target, new Thickness(1));
+            var actual = InvokeRenderScaleAwareThickness(target, new Thickness(1));
 
-            actual.ShouldBe(LayoutHelper.RoundLayoutThickness(new Thickness(1), 1.5));
+            actual.ShouldBe(new Thickness(2d / 3d));
         });
     }
 
     [Fact]
-    public void DashedBorder_Render_Uses_Layout_Rounded_BorderThickness()
+    public void Render_Scale_Aware_Thickness_Helper_Keeps_Design_Thickness_For_Integer_Scale()
+    {
+        var target = new Border();
+
+        ShowInWindow(target, window =>
+        {
+            window.SetRenderScaling(2.0);
+            Dispatcher.UIThread.RunJobs();
+
+            var actual = InvokeRenderScaleAwareThickness(target, new Thickness(1));
+
+            actual.ShouldBe(new Thickness(1));
+        });
+    }
+
+    [Fact]
+    public void DashedBorder_Render_Uses_Render_Scale_Aware_BorderThickness()
     {
         var target = new DashedBorder
         {
@@ -60,12 +76,12 @@ public class DashedBorderLayoutRoundingTests
             window.SetRenderScaling(1.5);
             Dispatcher.UIThread.RunJobs();
 
-            GetRenderedPenThickness(target).ShouldBe(4d / 3d, 0.0001);
+            GetRenderedPenThickness(target).ShouldBe(2d / 3d, 0.0001);
         });
     }
 
     [Fact]
-    public void DashedBorder_Render_Recomputes_Layout_Rounded_BorderThickness_When_Scale_Changes()
+    public void DashedBorder_Render_Recomputes_Render_Scale_Aware_BorderThickness_When_Scale_Changes()
     {
         var target = new DashedBorder
         {
@@ -83,12 +99,12 @@ public class DashedBorderLayoutRoundingTests
             window.SetRenderScaling(1.5);
             Dispatcher.UIThread.RunJobs();
 
-            GetRenderedPenThickness(target).ShouldBe(4d / 3d, 0.0001);
+            GetRenderedPenThickness(target).ShouldBe(2d / 3d, 0.0001);
         });
     }
 
     [Fact]
-    public void PixelAlignedBorder_Render_Uses_Layout_Rounded_BorderThickness()
+    public void PixelAlignedBorder_Render_Uses_Render_Scale_Aware_BorderThickness()
     {
         var target = new PixelAlignedBorder
         {
@@ -103,12 +119,12 @@ public class DashedBorderLayoutRoundingTests
             window.SetRenderScaling(1.5);
             Dispatcher.UIThread.RunJobs();
 
-            GetRenderedPenThickness(target).ShouldBe(4d / 3d, 0.0001);
+            GetRenderedPenThickness(target).ShouldBe(2d / 3d, 0.0001);
         });
     }
 
     [Fact]
-    public void OptionButton_Render_Uses_Layout_Rounded_BorderThickness()
+    public void OptionButton_Render_Uses_Render_Scale_Aware_BorderThickness()
     {
         var target = new AtomUIOptionButton
         {
@@ -131,12 +147,12 @@ public class DashedBorderLayoutRoundingTests
 
             RenderToDrawingGroup(target);
 
-            GetBorderRenderHelperThickness(target).ShouldBe(new Thickness(4d / 3d));
+            GetBorderRenderHelperThickness(target).ShouldBe(new Thickness(2d / 3d));
         });
     }
 
     [Fact]
-    public void OptionButtonGroup_Render_Uses_Layout_Rounded_BorderThickness()
+    public void OptionButtonGroup_Render_Uses_Render_Scale_Aware_BorderThickness()
     {
         var target = new AtomUIOptionButton
         {
@@ -162,18 +178,21 @@ public class DashedBorderLayoutRoundingTests
 
             RenderToDrawingGroup(group);
 
-            GetBorderRenderHelperThickness(group).ShouldBe(new Thickness(4d / 3d));
+            GetBorderRenderHelperThickness(group).ShouldBe(new Thickness(2d / 3d));
         });
     }
 
-    private static Thickness InvokeLayoutRoundedThickness(Layoutable target, Thickness thickness)
+    private static Thickness InvokeRenderScaleAwareThickness(Layoutable target, Thickness thickness)
     {
         var borderUtilsType = typeof(LineStyle).Assembly.GetType("AtomUI.Utils.BorderUtils");
         borderUtilsType.ShouldNotBeNull();
 
         var method = borderUtilsType!.GetMethod(
-            "BuildLayoutRoundedThickness",
-            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+            "BuildRenderScaleAwareThickness",
+            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
+            binder: null,
+            types: [typeof(Layoutable), typeof(Thickness)],
+            modifiers: null);
         method.ShouldNotBeNull();
 
         return (Thickness)method!.Invoke(null, new object[] { target, thickness })!;

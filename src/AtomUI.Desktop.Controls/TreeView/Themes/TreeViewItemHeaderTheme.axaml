@@ -6,10 +6,10 @@
               x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:TreeViewItemHeader">
-            <Border Name="Frame"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    CornerRadius="{TemplateBinding CornerRadius}"
-                    Background="{TemplateBinding Background}">
+            <atom:PixelAlignedBorder Name="Frame"
+                                     BorderThickness="{TemplateBinding BorderThickness}"
+                                     CornerRadius="{TemplateBinding CornerRadius}"
+                                     Background="{TemplateBinding Background}">
                 <Grid Name="ItemsLayout"
                       ColumnDefinitions="Auto, Auto, Auto, *"
                       Margin="{TemplateBinding Level, Mode=OneWay, Converter={x:Static atom:TreeViewItemTheme.MarginMultiplierConverter}}">
@@ -80,7 +80,7 @@
                         </Panel>
                     </Border>
                 </Grid>
-            </Border>
+            </atom:PixelAlignedBorder>
         </ControlTemplate>
     </Setter>
 

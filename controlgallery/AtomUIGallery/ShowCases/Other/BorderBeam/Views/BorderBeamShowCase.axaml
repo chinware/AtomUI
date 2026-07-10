@@ -83,12 +83,12 @@
                                              BorderThickness="1"
                                              CornerRadius="20,20,0,0"
                                              HorizontalAlignment="Left">
-                                <Border ClipToBounds="True"
-                                        CornerRadius="20,20,0,0"
-                                        BorderThickness="1"
-                                        BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
-                                        Background="{atom:SharedTokenResource ColorBgContainer}"
-                                        Padding="24">
+                                <atom:PixelAlignedBorder ClipToBounds="True"
+                                                         CornerRadius="20,20,0,0"
+                                                         BorderThickness="1"
+                                                         BorderBrush="{atom:SharedTokenResource ColorBorderSecondary}"
+                                                         Background="{atom:SharedTokenResource ColorBgContainer}"
+                                                         Padding="24">
                                     <StackPanel Spacing="8">
                                         <atom:TextBlock Text="Non-uniform radius"
                                                         FontWeight="Bold" />
@@ -96,7 +96,7 @@
                                                         TextWrapping="Wrap"
                                                         Foreground="{atom:SharedTokenResource ColorTextSecondary}" />
                                     </StackPanel>
-                                </Border>
+                                </atom:PixelAlignedBorder>
                             </atom:BorderBeam>
                         </DataTemplate>
                     </gallery:ShowCaseItem.DeferredContentTemplate>

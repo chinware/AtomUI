@@ -163,8 +163,8 @@ public class GalleryStickyTabsHostTests
             Dispatcher.UIThread.RunJobs();
 
             var stickyContentHost = host.GetVisualDescendants()
-                                        .OfType<Border>()
-                                        .Single(border => border.Name == "PART_StickyContentHost");
+                                        .OfType<Control>()
+                                        .Single(control => control.Name == "PART_StickyContentHost");
             stickyContentHost.IsVisible.ShouldBeFalse();
 
             host.StickyContent = new FixedSizeControl(320, 40);

@@ -6,7 +6,7 @@
               x:ClassModifier="internal">
     <Setter Property="Template">
         <ControlTemplate TargetType="atom:IconButton">
-            <Border
+            <atom:PixelAlignedBorder
                 Name="Frame"
                 BorderThickness="{TemplateBinding BorderThickness}"
                 BorderBrush="{TemplateBinding BorderBrush}"
@@ -23,7 +23,7 @@
                     IconBrush="{TemplateBinding IconBrush}"
                     Width="{TemplateBinding IconWidth}"
                     Height="{TemplateBinding IconHeight}" />
-            </Border>
+            </atom:PixelAlignedBorder>
         </ControlTemplate>
     </Setter>
 

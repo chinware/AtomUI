@@ -1,6 +1,6 @@
+using AtomUI.Utils;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
 
 namespace AtomUI.Desktop.Controls;
 
@@ -8,7 +8,7 @@ internal class SearchEditPanel : Panel
 {
     private Control? _contentFrame;
     private SearchButton? _searchButton;
-    private ContentPresenter? _leftAddOn;
+    private Control? _leftAddOn;
 
     protected override void OnInitialized()
     {
@@ -17,7 +17,7 @@ internal class SearchEditPanel : Panel
         {
             if (child.Name == "PART_LeftAddOn")
             {
-                _leftAddOn = child as ContentPresenter;
+                _leftAddOn = child;
             }
             else if (child.Name == "PART_RightAddOn")
             {
@@ -54,7 +54,7 @@ internal class SearchEditPanel : Panel
             var delta = 0.0d;
             if (_searchButton != null)
             {
-                delta = _searchButton.BorderThickness.Left;
+                delta = BorderUtils.BuildRenderScaleAwareThickness(_searchButton, _searchButton.BorderThickness.Left);
             }
             var width   =  finalSize.Width - rightAddOnWidth - leftAddOnWidth + delta;
             var offsetX = leftAddOnWidth;

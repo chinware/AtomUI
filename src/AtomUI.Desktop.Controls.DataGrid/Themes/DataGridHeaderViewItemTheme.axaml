@@ -7,17 +7,18 @@
         <Setter Property="Template">
             <ControlTemplate>
                 <Border Name="Frame">
-                    <ContentPresenter Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.ContentPresenterPart}"
-                                      Content="{TemplateBinding Content}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      BorderThickness="{TemplateBinding EffectiveBorderThickness}" />
+                    <atom:PixelAlignedBorder Name="{x:Static atom:DataGridHeaderViewItemThemeConstants.ContentPresenterPart}"
+                                             BorderThickness="{TemplateBinding EffectiveBorderThickness}">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </atom:PixelAlignedBorder>
                 </Border>
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^ /template/ ContentPresenter#PART_ContentPresenter">
-            <Setter Property="Background" Value="{atom:DataGridTokenResource TableHeaderBg}" />
-            <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
+        <Style Selector="^ /template/ Border#PART_ContentPresenter">
+            <Setter Property="atom:DashedBorder.Background" Value="{atom:DataGridTokenResource TableHeaderBg}" />
+            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
         </Style>
 
         <Setter Property="ClipToBounds" Value="False" />

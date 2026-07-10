@@ -440,7 +440,7 @@ public partial class FlexPanelShowCase : GalleryReactiveUserControl<FlexPanelVie
 
         var shrinkWidthSlider = FindRequired<AvaloniaSlider>(root, "ShrinkWidthSlider");
         var shrinkWidthText   = FindRequired<AtomTextBlock>(root, "ShrinkWidthText");
-        var shrinkContainer   = FindRequired<Border>(root, "ShrinkContainer");
+        var shrinkContainer   = FindRequired<Control>(root, "ShrinkContainer");
 
         shrinkWidthSlider.ValueChanged += (_, _) => UpdateShrinkWidth();
         UpdateShrinkWidth();
@@ -485,7 +485,7 @@ public partial class FlexPanelShowCase : GalleryReactiveUserControl<FlexPanelVie
         var playgroundGrowInput             = FindRequired<NumericUpDown>(root, "PlaygroundGrowInput");
         var playgroundShrinkInput           = FindRequired<NumericUpDown>(root, "PlaygroundShrinkInput");
         var playgroundOrderInput            = FindRequired<NumericUpDown>(root, "PlaygroundOrderInput");
-        var playgroundContainer             = FindRequired<Border>(root, "PlaygroundContainer");
+        var playgroundContainer             = FindRequired<Control>(root, "PlaygroundContainer");
         var playgroundFlexPanel             = FindRequired<AtomFlexPanel>(root, "PlaygroundFlexPanel");
         var playgroundItemA                 = FindRequired<Border>(root, "PlaygroundItemA");
         var playgroundItemB                 = FindRequired<Border>(root, "PlaygroundItemB");
