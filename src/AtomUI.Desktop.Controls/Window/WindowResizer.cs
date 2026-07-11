@@ -1,4 +1,5 @@
 using AtomUI.Controls;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
@@ -7,7 +8,17 @@ namespace AtomUI.Desktop.Controls;
 
 internal class WindowResizer : TemplatedControl
 {
+    public static readonly StyledProperty<Thickness> GripThicknessProperty =
+        AvaloniaProperty.Register<WindowResizer, Thickness>(nameof(GripThickness), new Thickness(6));
+
     public Window? TargetWindow { get; set; }
+
+    public Thickness GripThickness
+    {
+        get => GetValue(GripThicknessProperty);
+        set => SetValue(GripThicknessProperty, value);
+    }
+
     private Panel? _rootLayout;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
@@ -56,6 +67,7 @@ internal class WindowResizer : TemplatedControl
             _                              => throw new ArgumentOutOfRangeException()
         };
 
+        TargetWindow.NotifyResizeStarted(windowEdge);
         TargetWindow.BeginResizeDrag(windowEdge, e);
         e.Handled = true;
     }

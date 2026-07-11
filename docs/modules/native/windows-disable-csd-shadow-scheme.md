@@ -94,7 +94,7 @@ private void ConfigureCsdStatus()
     if (OperatingSystem.IsMacOS())
         IsCsdEnabled = false;
     else if (OperatingSystem.IsLinux())
-        IsCsdEnabled = AvaloniaLocator.Current.GetService<X11PlatformOptions>()?.EnableDrawnDecorations == true;
+        IsCsdEnabled = PlatformImpl?.NeedsManagedDecorations == true;
     else if (OperatingSystem.IsWindows())
         IsCsdEnabled = false;
 }

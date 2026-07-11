@@ -9,15 +9,19 @@ AtomUI 的启动链路分为平台默认配置和主题控件注册两部分。
 ```csharp
 AppBuilder.Configure<App>()
           .UseReactiveUI()
-          .UsePlatformDetect()
+          .UseAtomUIPlatformDetect()
           .WithAtomUIDefaultOptions()
           .StartWithClassicDesktopLifetime(args);
 ```
 
+`UseAtomUIPlatformDetect()` 位于 `AtomUI.Desktop.Controls`。Linux 下选择顺序为：显式
+`AtomUIWindowingPlatform`、`ATOMUI_WINDOWING_PLATFORM`、非空 `WAYLAND_DISPLAY`、X11/XWayland。
+不要只根据 `XDG_SESSION_TYPE` 选择 Wayland；headless/framebuffer 应用应直接配置自己的后端。
+
 `WithAtomUIDefaultOptions()` 当前设置：
 
 - macOS Avalonia Native 渲染优先级：OpenGL、Metal、Software。
-- X11 平台选项：`EnableDrawnDecorations = false`。
+- X11 平台选项：`EnableDrawnDecorations = true`。
 - 字体 fallback：`Microsoft YaHei`。
 
 这一步只配置 Avalonia 平台选项，不注册 AtomUI 控件主题。

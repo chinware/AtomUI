@@ -547,7 +547,7 @@ public class Drawer : Control,
         {
             if (OpenOn != null)
             {
-                var containerSize = OpenOn.Bounds.Size;
+                var containerSize = TopLevelMarginBinder.GetCsdContentSize(OpenOn);
                 if (Placement == DrawerPlacement.Top || Placement == DrawerPlacement.Bottom)
                 {
                     SetCurrentValue(EffectiveDialogSizeProperty, DialogSize.Resolve(containerSize.Height));

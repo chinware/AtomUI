@@ -34,7 +34,8 @@
                     </WindowDrawnDecorationsContent.Underlay>
 
                     <WindowDrawnDecorationsContent.Overlay>
-                        <Panel Name="PART_OverlayWrapper">
+                        <Panel Name="PART_OverlayWrapper"
+                               IsVisible="{Binding $parent[atom:Window].IsDrawnTitleBarOverlayVisible}">
                             <ContentPresenter Name="PART_TitleBarPresenter"
                                               VerticalAlignment="Top"
                                               Height="{TemplateBinding TitleBarHeight}"

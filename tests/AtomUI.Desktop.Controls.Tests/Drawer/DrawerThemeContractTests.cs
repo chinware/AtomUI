@@ -52,6 +52,28 @@ public class DrawerThemeContractTests
     }
 
     [Fact]
+    public void Wayland_Drawn_TitleBar_Overlay_Tracks_Drawer_Suppression_State()
+    {
+        var source = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowDrawnDecorationsTheme.axaml"));
+
+        source.ShouldContain("Name=\"PART_OverlayWrapper\"");
+        source.ShouldContain(
+            "IsVisible=\"{Binding $parent[atom:Window].IsDrawnTitleBarOverlayVisible}\"");
+    }
+
+    [Fact]
+    public void Drawer_Root_Clips_To_The_Effective_Host_CornerRadius()
+    {
+        var source = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Drawer/Themes/DrawerContainerTheme.axaml"));
+
+        source.ShouldContain("Name=\"PART_RootClip\"");
+        source.ShouldContain("ClipToBounds=\"True\"");
+        source.ShouldContain("CornerRadius=\"{TemplateBinding CornerRadius}\"");
+    }
+
+    [Fact]
     public void Drawer_ContentPadding_Propagates_To_Body_Presenter()
     {
         var expectedPadding = new Thickness(6, 7, 8, 9);

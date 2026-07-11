@@ -89,6 +89,8 @@ Underlay 在用户内容**底下**（画背景圆角/标题栏底色），Overla
           • X11    : NeedsManagedDecorations = UseManagedDecorations
                      ⚠ 取决于 X11PlatformOptions.EnableDrawnDecorations(实验性)
                      RequestedDrawnDecorations = TitleBar | Border | Shadow | ResizeGrips
+          • Wayland: NeedsManagedDecorations 由 xdg-decoration 协商结果决定
+                     CSD 时请求 TitleBar | Border | Shadow | ResizeGrips
           • macOS  : NeedsManagedDecorations 硬编码 = false  ❌ 永远不激活
           │
           ▼
@@ -110,20 +112,24 @@ Underlay 在用户内容**底下**（画背景圆角/标题栏底色），Overla
 **关键事实**：
 
 1. `ExtendClientAreaToDecorationsHint=true` 是激活开关。
-2. **X11 还要额外打开 `X11PlatformOptions.EnableDrawnDecorations=true`**，否则 `X11Window.SetExtendClientAreaToDecorationsHint` 会在 `X11Window.cs:1547-1548` 直接 `return`，原生标题栏不消失，自定义装饰也不生成。
-3. `EnableDrawnDecorations` 标了 `[Experimental("AVALONIA_X11_CSD")]`，编译期警告，需要在 `csproj` 里 `<NoWarn>AVALONIA_X11_CSD</NoWarn>`。
+2. **X11 还要额外打开 `X11PlatformOptions.EnableDrawnDecorations=true`**，否则 `X11Window.SetExtendClientAreaToDecorationsHint` 会在 `X11Window.cs:1569-1572` 直接 `return`，原生标题栏不消失，自定义装饰也不生成。
+3. Wayland 的 CSD/SSD 协商可在运行期变化，必须响应 `DrawnDecorationsRequestChanged`，不能只在 Window 构造时读取一次。
 4. macOS 永远走原生 NSWindow titlebar，自定义模板会被忽略。
 
-### 在 `Program.cs` 里启用 X11 CSD
+### 在 `Program.cs` 里选择 Linux 后端
 
 ```csharp
 public static AppBuilder BuildAvaloniaApp() =>
     AppBuilder.Configure<App>()
-        .UsePlatformDetect()
-        .With(new X11PlatformOptions { EnableDrawnDecorations = true })
+        .UseAtomUIPlatformDetect()
+        .WithAtomUIDefaultOptions()
         .WithInterFont()
         .LogToTrace();
 ```
+
+`UseAtomUIPlatformDetect()` 在 `WAYLAND_DISPLAY` 可用时优先原生 Wayland，否则使用 X11；
+`ATOMUI_WINDOWING_PLATFORM=wayland|x11` 或显式枚举参数可以覆盖自动选择。X11 CSD 开关由
+`WithAtomUIDefaultOptions()` 配置。
 
 ---
 
@@ -135,7 +141,7 @@ public static AppBuilder BuildAvaloniaApp() =>
 | **X11**（`EnableDrawnDecorations=true`） | `true` | `TitleBar \| Border \| Shadow \| ResizeGrips` | ✅ | ✅ | 完全 CSD，框架画一切。 |
 | **X11**（默认） | `false` | `default` (None) | — | — | WM 全权负责，自定义 hint 被忽略。 |
 | **macOS Native** | 硬编码 `false` | `default` (None) | — | — | 永远走 NSWindow，自定义无效。 |
-| **Wayland** | 取决于合成器 | … | — | — | 大多数合成器走 SSD。 |
+| **Wayland 12.1** | 取决于 xdg-decoration 协商 | CSD 时为 `TitleBar \| Border \| Shadow \| ResizeGrips` | CSD 时 ✅ | CSD 时 ✅ | GNOME 通常 CSD；支持 SSD 的合成器可能动态切换。 |
 
 ### 4.1 三句话结论（源码级，必读）
 
@@ -143,22 +149,22 @@ public static AppBuilder BuildAvaloniaApp() =>
 
 1. **macOS：永不启用 WindowDrawnDecorations**
    - `src/Avalonia.Native/WindowImpl.cs:223` —— `NeedsManagedDecorations => false`，**硬编码常量**，无任何条件分支。
-   - `Window.ComputeDecorationParts()`（`src/Avalonia.Controls/Window.cs:762`）首句 `if (!NeedsManagedDecorations) return null;` 直接短路。
+   - `Window.ComputeDecorationParts()`（`src/Avalonia.Controls/Window.cs:761-764`）首先检查 `NeedsManagedDecorations`，不需要 managed decorations 时直接返回 `null`。
    - **后果**：在 macOS 上写 `ControlTheme x:Key="{x:Type WindowDrawnDecorations}"` 是**死代码**，不会被实例化。需要自定义 macOS 标题栏请走 `ExtendClientAreaTitleBarHeightHint` + 系统红绿灯（与 CSD 完全是两套机制）。
 
-2. **Linux（X11）：唯一全功能平台**
-   - `src/Avalonia.X11/X11Window.cs:1642-1648` ——
+2. **Linux（X11）：保留 X11 专用几何和输入区处理**
+   - `src/Avalonia.X11/X11Window.cs:1670-1678` ——
      ```csharp
      RequestedDrawnDecorations =>
        UseManagedDecorations
          ? Border | ResizeGrips | TitleBar | Shadow
          : None;
      ```
-   - 激活双门：`X11PlatformOptions.EnableDrawnDecorations=true`（`X11Platform.cs:485`）+ `Window.ExtendClientAreaToDecorationsHint=true`（门见 `X11Window.cs:1547`）。
-   - **后果**：四件套（标题栏 / 边框 / 阴影 / resize 抓手）全部由 Avalonia 渲染；`:has-shadow` / `:has-border` / `:has-resize-grips` 伪类全部为 `true`。本文 §10/§11/§13 的所有"幽灵 resize 区""SHAPE 输入区裁剪""三层阴影"技巧**仅在此平台成立**。
+   - 激活双门：`X11PlatformOptions.EnableDrawnDecorations=true`（`X11Platform.cs:525-529`）+ `Window.ExtendClientAreaToDecorationsHint=true`（门见 `X11Window.cs:1569-1572`）。
+   - **后果**：四件套（标题栏 / 边框 / 阴影 / resize 抓手）全部由 Avalonia 渲染；`:has-shadow` / `:has-border` / `:has-resize-grips` 伪类全部为 `true`。本文 §11 的 X Shape 输入区裁剪、`_GTK_FRAME_EXTENTS` 和 Xlib 初始几何**仅在此平台成立**。
 
 3. **Windows（Win32）：仅标题栏可定制**
-   - `src/Windows/Avalonia.Win32/WindowImpl.cs:1618-1623` ——
+   - `src/Windows/Avalonia.Win32/WindowImpl.cs:1630-1635` ——
      ```csharp
      NeedsManagedDecorations => _isClientAreaExtended;
      RequestedDrawnDecorations =>
@@ -190,8 +196,9 @@ ResizeGrips                  —                ✅                 ❌ (DWM 提
 
 ## 5. 自定义 ControlTheme（手把手）
 
-> Avalonia 12.0.1 NuGet **没有暴露** `Window.WindowDecorationsTheme` 属性（只有 master 分支有）。
-> 所以**只能**通过覆盖 `{x:Type WindowDrawnDecorations}` 的默认 `ControlTheme` 来定制。
+> Avalonia 12.1 已公开 `Window.WindowDecorationsTheme`。AtomUI 同时保留
+> `{x:Type WindowDrawnDecorations}` 资源 key，并通过 `DynamicResource` 显式赋给该属性，确保合并字典
+> 完成后解析且能跟随主题切换。
 
 ### Step 1：创建主题资源字典 `Themes/CustomWindowDrawnDecorations.axaml`
 
@@ -363,8 +370,8 @@ ResizeGrips                  —                ✅                 ❌ (DWM 提
 | `:maximized` | `WindowState == Maximized` |
 | `:fullscreen` | `WindowState == FullScreen` |
 | `:has-titlebar` | RequestedParts 含 `TitleBar` |
-| `:has-shadow` | RequestedParts 含 `Shadow`（仅 X11 CSD 满足） |
-| `:has-border` | RequestedParts 含 `Border`（仅 X11 CSD 满足） |
+| `:has-shadow` | RequestedParts 含 `Shadow`（X11 CSD 和 Wayland CSD 满足） |
+| `:has-border` | RequestedParts 含 `Border`（X11 CSD 和 Wayland CSD 满足） |
 | `:has-minimize` | `Window.CanMinimize == true` |
 | `:has-maximize` | `Window.CanMaximize == true` |
 | `:has-fullscreen` | `Window.CanFullScreen == true` |
@@ -403,7 +410,7 @@ ResizeGrips                  —                ✅                 ❌ (DWM 提
 ### 在 `Window` 上
 
 ```csharp
-// Window.cs:127-131, 800-836
+// Window.cs:129-133, 801-840
 public static readonly DirectProperty<Window, Thickness> WindowDecorationMarginProperty;
 
 public Thickness WindowDecorationMargin { get; private set; }
@@ -472,6 +479,18 @@ _resizeGrips.GripThickness = new Thickness(
 **取舍**：
 - `ShadowThickness` 越大 → 阴影越好看 → resize 抓手区越大 → "幽灵区"越违和
 - 不加任何处理时建议 `ShadowThickness ≤ 16`
+
+AtomUI 保留共享 `BoxShadowsSecondary` 的完整 offset、blur、spread 和 surface shadow extents，
+不通过缩小或裁剪阴影来改变命中范围。当前 Wayland 适配通过反射把 Avalonia 内部
+`ResizeGripLayer` 的命中厚度归零，再由 AtomUI `WindowResizer` 使用
+`(FrameThickness + ShadowThickness) / 3` 的逐边命中带。反射成员使用 `DynamicDependency`
+保留元数据，这只解决 trimming/NativeAOT 的成员保留问题；它不会把 Avalonia 私有字段变成稳定 API，
+也不保证跨 Avalonia 小版本兼容。X11 仍通过 input region 把实际输入带限制在最多 10 DIP。
+
+Wayland 的横向/纵向 resize 由 AtomUI resizer 记录明确的 `WindowEdge`。在 Avalonia Wayland
+`IWindowImpl.Resized` 回调进入 `Window.HandleResized` 前，East/West 固定 resize 起点高度，
+North/South 固定 resize 起点宽度，避免 configure size、shadow extents 和布局回写形成正反馈；
+对角 resize 和非 Layout resize 保持原值。
 
 ---
 
@@ -657,7 +676,7 @@ internal static class ClickThroughShadow
     [SupportedOSPlatform("linux")]
     private static void Apply(Window window, double shadowThickness)
     {
-        // 仅 X11 后端的 PlatformHandle 是 "XID"；Wayland 后端将来是别的描述符
+        // 仅 X11 后端的 PlatformHandle 是 "XID"；Wayland 12.1 的 Handle 为 null
         var handle = window.TryGetPlatformHandle();
         if (handle is null || handle.HandleDescriptor != "XID") return;
         var xid = handle.Handle;
@@ -718,106 +737,48 @@ public MainWindow()
 
 ## 12. Wayland 上的对应方案
 
-Wayland 有**直接等价**的 API，而且比 X11 SHAPE 更干净——它就是核心协议的一部分：
+Avalonia 12.1 已发布 `Avalonia.Wayland`，支持 xdg-shell window/popup、CSD/SSD 协商、分数缩放、
+IME、剪贴板、拖放和 portal 文件对话框。AtomUI 的自动入口在 `WAYLAND_DISPLAY` 可用时选择该后端；
+Avalonia 自带的 `UsePlatformDetect()` 在 Linux 仍只选择 X11，不能代替 AtomUI 的入口。
 
-```c
-// 等价于 XShapeCombineRectangles(... ShapeInput ...)
-struct wl_region *r = wl_compositor_create_region(compositor);
-wl_region_add(r, x, y, w, h);              // 可叠加多个矩形
-wl_surface_set_input_region(surface, r);
-wl_surface_commit(surface);                // ⚠ 必须 commit 才生效
-wl_region_destroy(r);
-```
+### AtomUI 的处理边界
 
-| 维度 | X11 `XShapeCombineRectangles` | Wayland `wl_surface.set_input_region` |
-|---|---|---|
-| 协议层 | XShape 扩展（理论上可缺） | 核心协议（`wl_compositor` v1+，**必有**） |
-| 坐标单位 | 物理像素 | surface 本地坐标（合成器自动应用 buffer scale） |
-| 多矩形 | `XRectangle[]` + `nRectangles` | `wl_region_add()` 累加 |
-| `NULL`/重置 | 不支持（必须显式给矩形） | `set_input_region(NULL)` = 整个 surface（默认） |
-| 生效时机 | `XFlush` 后立刻 | 必须 `wl_surface.commit` 后下一帧 |
+1. Wayland 的 `IWindowImpl.Handle` 为 `null`，`Position` 没有全局语义，`Move(PixelPoint)` 是 no-op。
+   因此不得调用 Xlib 初始几何、读取 XID 或自行计算绝对居中位置。
+2. Avalonia 12.1 会把 `WindowDrawnDecorations.ShadowThickness` 通过
+   `IWindowImpl.SetShadowExtents` 转为 xdg surface window geometry。AtomUI 只需维护绘制装饰主题和阴影厚度，
+   不应复制这条协议路径。
+3. Wayland CSD/SSD 可动态协商。AtomUI 监听 `DrawnDecorationsRequestChanged`，并以
+   `NeedsManagedDecorations` 更新 `IsCsdEnabled`，不能继续用 X11 options 推断。
+4. `BeginMoveDrag` / `BeginResizeDrag` 保留。12.1 的输入事件 platform cookie 会把正确 serial 传给
+   Wayland 后端，调用方无需自行处理协议 serial。
+5. 标题栏中的 Popup 补偿仍保留。绘制装饰内容位于 `TopLevelHost` 的独立视觉根，普通
+   `TopLevel.GetTopLevel()` 和 light-dismiss root 仍不能覆盖所有标题栏 Popup 场景。
 
-GTK / Qt 在 Wayland 下画 CSD 阴影**就是用这个 API** 让阴影点击穿透——这是 Wayland CSD 的事实标准。
+### 当前限制
 
-### 但有个关键现实：Avalonia 12 没有原生 Wayland 后端
+Wayland 核心协议提供 `wl_surface.set_input_region`，但 Avalonia 12.1 没有公开 surface input-region API。
+更关键的是，Avalonia Wayland 后端把协议对象放在专用 `AvaloniaWayland` worker 线程：
 
-- Avalonia 12.0.1 Linux 端**只有 `Avalonia.X11`**，没有 `Avalonia.Wayland`（master 分支有 PR 在推进，未发布）。
-- Wayland 桌面上跑 Avalonia 应用 → 实际走 **XWayland 兼容层**（X11 协议被合成器翻译执行）。
-- 验证方式：
+- `WindowImpl` 位于 UI 线程，只持有生成的 `WXdgTopLevelProxy`。
+- `WaylandWorkerClient.Marshaller` 把普通协议状态写入 `PostWithCommit`，使请求与下一次 surface commit
+  在 worker 线程上按序执行。
+- 真实 `WSurface`、`WlSurface` 和 `WaylandGlobals` 是 worker-thread state；源码明确不允许 UI 线程
+  绕过 proxy 直接访问。
 
-  ```bash
-  echo $XDG_SESSION_TYPE   # wayland
-  echo $DISPLAY            # 仍有值（如 :1），说明 XWayland 在线
-  xdpyinfo | grep -i shape # SHAPE 扩展可用
-  ```
+当前 AtomUI 的 `WaylandWindowReflectionExtensions` 会从 proxy 取出真实 target，再由
+`WaylandWindowUtils` 直接调用 NWayland。该路径能表达协议请求，但不符合上述线程和重连契约，属于待修复的
+私有 API 技术债，不能在本文中描述为 Avalonia 支持的安全扩展点。正确方案必须把 input-region 状态放进
+Avalonia 的 persistent surface 模型，并通过 `PostWithCommit`/生成 proxy 下发；在上游提供公开 API 前，
+AtomUI 不能把当前反射路径视为稳定架构。
 
-- **结论**：上述 `X11InputShape` 助手在 XWayland 下**原样工作**，无需额外代码。Wayland 用户也享受点击穿透。
+另外，Wayland 的 CSD 选择具有 sticky 语义。`WindowImpl.SetWindowDecorations(None/TitleBar)` 会设置
+`_csdSticky=true`、销毁 `zxdg_toplevel_decoration_v1`，之后即使再设 `Full` 也不会恢复 SSD。因此不能把
+`IsCsdEnabled=False` 简单映射为 `WindowDecorations=None`：当合成器刚协商出 SSD 时，这个 Setter 会立即
+把窗口永久切回 CSD。若要尊重 CSD/SSD 协商，SSD 分支必须保留 `WindowDecorations=Full`。
 
-### 如果将来 Avalonia 出了原生 Wayland 后端
-
-要新增一个 `WaylandInputRegion.cs` 平行于 `X11InputShape.cs`，并在 `ClickThroughShadow.Apply` 里按 `HandleDescriptor` 分发。骨架（伪代码）：
-
-```csharp
-[SupportedOSPlatform("linux")]
-internal static class WaylandInputRegion
-{
-    [DllImport("libwayland-client.so.0")]
-    private static extern IntPtr wl_compositor_create_region(IntPtr compositor);
-    [DllImport("libwayland-client.so.0")]
-    private static extern void wl_region_add(IntPtr region, int x, int y, int w, int h);
-    [DllImport("libwayland-client.so.0")]
-    private static extern void wl_region_destroy(IntPtr region);
-    [DllImport("libwayland-client.so.0")]
-    private static extern void wl_proxy_marshal(IntPtr proxy, uint opcode, /* args */);
-    // wl_surface.set_input_region opcode = 2 (检 wayland.xml)
-    // wl_surface.commit         opcode = 6
-
-    public static void SetInputRectangle(
-        IntPtr wlSurface, IntPtr wlCompositor,
-        int x, int y, int w, int h)
-    {
-        var r = wl_compositor_create_region(wlCompositor);
-        wl_region_add(r, x, y, w, h);
-        wl_proxy_marshal(wlSurface, 2 /*set_input_region*/, r);
-        wl_proxy_marshal(wlSurface, 6 /*commit*/);
-        wl_region_destroy(r);
-    }
-}
-```
-
-### 落地难点（提前预判）
-
-1. **拿 `wl_surface*`**
-   Avalonia 需要在 `IPlatformHandle` 暴露 Wayland 描述符（X11 是 `"XID"`，Wayland 大概率是 `"wl_surface"` 或类似）。在分发时：
-
-   ```csharp
-   switch (handle.HandleDescriptor)
-   {
-       case "XID":        X11InputShape.SetInputRectangle(handle.Handle, …); break;
-       case "wl_surface": WaylandInputRegion.SetInputRectangle(handle.Handle, comp, …); break;
-   }
-   ```
-
-2. **拿 `wl_compositor*`**
-   Wayland 对象 ID 是**连接相关**的（不像 X11 的 XID 是 server-side 的全局 ID），所以**不能像 X11 那样自己 `wl_display_connect()` 开独立连接**——拿不到 Avalonia 创建的 surface。必须从 Avalonia 后端拿到主连接的 `wl_compositor*`。这要等 Avalonia 暴露相应 API。
-
-3. **Commit 时机**
-   Wayland 状态是双缓冲，`set_input_region` 必须等 `wl_surface.commit` 才生效；而 Avalonia 在 frame callback 里 commit，从外部插一刀 commit 会和合成器协议争抢——正确做法是把 `set_input_region` 调用排到主循环、跟 Avalonia 的下一次 commit 合并。需要 Avalonia 提供 hook（如"准备 commit 前"事件）。
-
-4. **Subsurface 问题**
-   如果 Avalonia 用 subsurface 实现弹窗/Popup，每个 subsurface 的 input region 是**独立**的，需要分别处理。X11 没有这个问题（一个窗口一个 XID）。
-
-5. **DPI / fractional scaling**
-   坐标单位是 surface local，合成器会按 `wl_surface.set_buffer_scale` / `wp_fractional_scale_v1` 自动缩放——通常**不需要**像 X11 那样自己乘 `RenderScaling`，反而要避免双重缩放。
-
-### 实操建议
-
-**现阶段**：什么都不用做。X11 + XWayland 的现有方案覆盖 100% Linux 桌面用户。
-
-**长期跟踪**：
-- 关注 Avalonia GitHub 上的 Wayland PR（搜索 issue/PR `Avalonia.Wayland`）；
-- 一旦发布原生 Wayland 后端，需要的不只是补个 `WaylandInputRegion.cs`，而是要 Avalonia 先暴露 `wl_compositor*` + commit hook，否则做不出来；
-- 在那之前，X11 路径就是 Linux 上的唯一答案。
+Wayland 还不支持应用控制绝对窗口位置、激活、置顶、窗口图标、任务栏显示以及最小化/最大化能力提示；
+`Screen.WorkingArea` 当前等同 `Bounds`。这些是后端能力限制，不应由 AtomUI Window hack 模拟。
 
 ---
 
@@ -881,6 +842,7 @@ internal static class WaylandInputRegion
 | macOS | **永远 `0`**（`NeedsManagedDecorations` 硬编码 false）| 没人替你画 → 你自己画 |
 | Win32（extend hint=on） | **= 标题栏高** > 0 | `WindowDrawnDecorations` 在画 |
 | X11（双门激活） | **= 标题栏高 + 阴影厚** > 0 | `WindowDrawnDecorations` 在画 |
+| Wayland（协商为 CSD） | **= 标题栏高 + 阴影厚** > 0 | `WindowDrawnDecorations` 在画 |
 | 任意平台关 extend hint | `0` | OS 原生标题栏 |
 
 **结论**：`WindowDecorationMargin.Top > 0 ⇔ "WindowDrawnDecorations 正在替我画标题栏"**。
@@ -888,7 +850,7 @@ internal static class WaylandInputRegion
 这个信号有三大优点：
 1. **天然跨平台**：不写 `#if MACOS`
 2. **运行时响应**：用户切 `ExtendClientAreaToDecorationsHint`、X11 关掉 `EnableDrawnDecorations`、最大化导致阴影变 0 → 全部自动适配
-3. **未来友好**：等 Avalonia 出原生 Wayland 后端，无需改一行代码
+3. **Wayland 友好**：CSD/SSD 协商变化时，布局随实际装饰状态更新
 
 ### 14.2 推荐方案：用 Style 替换 `Template`，而不是 `IsVisible`
 
@@ -1062,7 +1024,7 @@ var hasCsd = window.GetVisualDescendants<WindowDrawnDecorations>().Any();
 | 没设 `EnableDrawnDecorations=true` | X11 上原生标题栏还在 | `Program.cs` 加 `X11PlatformOptions { EnableDrawnDecorations = true }` |
 | `EnableDrawnDecorations` 编译警告 | `AVALONIA_X11_CSD` 实验性 | csproj `<NoWarn>AVALONIA_X11_CSD</NoWarn>` |
 | 引用 `Avalonia.Diagnostics 12.0.1` | NuGet 没有这个包 | 删掉，只到 11.3.x |
-| 用 `Window.WindowDecorationsTheme` | 12.0.1 NuGet 没暴露 | 改用覆盖 `{x:Type WindowDrawnDecorations}` 的 ControlTheme |
+| `WindowDecorationsTheme` 找不到主题 | `StaticResource` 在合并字典构造时过早解析 | 使用指向 `{x:Type WindowDrawnDecorations}` 的 `DynamicResource` |
 | 用户内容跟标题栏不对齐 | 内容铺满 OS 客户区 | `Margin="{Binding $parent[Window].WindowDecorationMargin}"` |
 | 阴影太假（青色光晕） | BoxShadow 带颜色 | 改纯黑 + 低 alpha + 双层 |
 | 阴影区变 resize 光标 | `ResizeGripLayer.GripThickness = frame+shadow` | (a) 缩小 ShadowThickness；(b) 用 X11 SHAPE 裁 input region |
@@ -1070,7 +1032,7 @@ var hasCsd = window.GetVisualDescendants<WindowDrawnDecorations>().Any();
 | Win32 没阴影/边框 | Win32 只 request `TitleBar` | 用无条件选择器（不带 `:has-shadow`）画 BoxShadow |
 | 模板里少 PART | 按钮无响应 / 启动 NRE | 7 个 `PART_*` 按钮 + `PART_TitleBar` 一个不能少 |
 | `GetVisualDescendants<WindowDrawnDecorations>()` 找不到 | 它是 `StyledElement` 不是 `Visual` | 别从可视树找，需要它的属性请用 `Window.WindowDecorationMargin` 间接读，或在调用方手动传 |
-| Wayland 上崩 | 没 X11 SHAPE | 实际走 XWayland，X11 SHAPE 仍可用；`ClickThroughShadow.Attach` 已 OS gating，原生 Wayland 后端发布前无需改动（详见 §12） |
+| Wayland 启动时空 handle/位置异常 | X11 几何 hack 在所有 Linux 后端执行 | 按后端拆分 chrome；Wayland 禁止读取 XID、设置绝对位置和调用 X Shape（详见 §12） |
 | Linux/Win32 出现双标题栏 | Window ControlTheme 自绘 + `WindowDrawnDecorations` 也画 | 用 Style 替换 Template 的双模板模式（详见 §14）|
 | 用 OS 嗅探切自绘标题栏 | `#if MACOS` / `OperatingSystem.IsMacOS()` | 改用 `:csd-active` 伪类 + `WindowDecorationMargin.Top > 0` 信号（§14.1）|
 | 用 `IsVisible=False` 隐藏自绘标题栏 | Border 实例残留，两份 caption 并存 | 改用 Style 替换 Template，让自绘标题栏从 visual tree 消失（§14.2）|
@@ -1079,7 +1041,8 @@ var hasCsd = window.GetVisualDescendants<WindowDrawnDecorations>().Any();
 
 ## 16. 核心源码索引
 
-参考路径：`AtomUIV6/.referenceprojects/Avalonia/`（团队克隆）
+事实源：`/workspace/projects/ReferenceProjects/Avalonia` 的 `12.1.0` tag
+（commit `a21b9f573172f705a944dcc8aad7f036b9986f39`）。下列行号以该版本为准。
 
 | 文件 | 关键行 | 内容 |
 |---|---|---|
@@ -1092,16 +1055,21 @@ var hasCsd = window.GetVisualDescendants<WindowDrawnDecorations>().Any();
 | `src/Avalonia.Controls/Chrome/DrawnWindowDecorationParts.cs` | 全 | `[Flags]` enum |
 | `src/Avalonia.Controls/Chrome/ResizeGripLayer.cs` | 12-91 | 8 抓手内部 Control |
 | `src/Avalonia.Controls/Chrome/WindowDecorationProperties.cs` | 全 | `ElementRole` 附加属性 |
-| `src/Avalonia.Controls/Window.cs` | 127-131, 360-362 | `WindowDecorationMargin` direct property |
-|  | 800-836 | `WindowDecorationMargin` 计算 |
-| `src/Avalonia.Controls/TopLevelHost.Decorations.cs` | 100-115 | `_decorations / _resizeGrips` 创建 |
+| `src/Avalonia.Controls/Window.cs` | 129-133, 360-363 | `WindowDecorationMargin` direct property |
+|  | 801-842 | `WindowDecorationMargin` 计算 |
+| `src/Avalonia.Controls/TopLevelHost.Decorations.cs` | 100-120 | `_decorations / _resizeGrips` 创建 |
 |  | 185-201 | `UpdateResizeGripThickness` |
 |  | 203-215 | 几何变化通知 Window |
-| `src/Avalonia.X11/X11Window.cs` | 191 | `Handle = new PlatformHandle(_handle, "XID")` |
-|  | 1547-1548 | `EnableDrawnDecorations` gating |
-|  | 1640-1648 | `RequestedDrawnDecorations = TitleBar\|Border\|Shadow\|ResizeGrips` |
+| `src/Avalonia.X11/X11Window.cs` | 201 | `Handle = new PlatformHandle(_handle, "XID")` |
+|  | 1569-1572 | `EnableDrawnDecorations` gating |
+|  | 1670-1678 | `RequestedDrawnDecorations = TitleBar\|Border\|Shadow\|ResizeGrips` |
 | `src/Avalonia.Themes.Fluent/Controls/WindowDrawnDecorations.xaml` | 全 | 默认 ControlTheme，自定义时的最佳参考 |
-| `src/Avalonia.Win32/WindowImpl.cs` | 1618 | `RequestedDrawnDecorations = TitleBar` |
+| `src/Windows/Avalonia.Win32/WindowImpl.cs` | 1630-1635 | `RequestedDrawnDecorations = TitleBar` |
 | `src/Avalonia.Native/WindowImpl.cs` | — | `NeedsManagedDecorations => false`（永不激活） |
+| `src/Avalonia.Wayland/WindowImpl.cs` | 245-253 | `WindowDecorations` 触发 sticky CSD |
+|  | 294-305 | `NeedsManagedDecorations` 与 Wayland 请求的四类装饰 |
+| `src/Avalonia.Wayland/Server/WaylandWorkerClient.cs` | 24-30 | UI 到 worker 的 `PostWithCommit`/`PostOob` 编排 |
+| `src/Avalonia.Wayland/Server/Persistent/WSurface.cs` | 215-236 | 下一次 buffer commit 前的 surface 状态批处理 |
 
-`dotnet run` 即可启动。Linux 下务必确认 `xprop` 能查到 X11 SHAPE 扩展（一般默认有）。
+`dotnet run` 即可启动。只有验证 X11/XWayland 路径时才需要确认 X server 提供 SHAPE 扩展；
+原生 Wayland 不使用 `xprop` 或 X11 SHAPE。
