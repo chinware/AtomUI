@@ -1,4 +1,5 @@
 using System.Runtime.Versioning;
+using System.Reactive.Disposables;
 using AtomUI.Controls;
 using AtomUI.Media;
 using AtomUI.Native;
@@ -248,6 +249,11 @@ public partial class Window : AvaloniaWindow,
             o => o.IsCustomResizerVisible,
             (o, v) => o.IsCustomResizerVisible = v);
 
+    internal static readonly DirectProperty<Window, bool> IsDrawnTitleBarOverlayVisibleProperty =
+        AvaloniaProperty.RegisterDirect<Window, bool>(
+            nameof(IsDrawnTitleBarOverlayVisible),
+            o => o.IsDrawnTitleBarOverlayVisible);
+
     internal static readonly DirectProperty<Window, bool> IsEffectiveFullscreenLogoVisibleProperty =
         AvaloniaProperty.RegisterDirect<Window, bool>(
             nameof(IsEffectiveFullscreenLogoVisible),
@@ -307,6 +313,17 @@ public partial class Window : AvaloniaWindow,
         set => SetAndRaise(IsCustomResizerVisibleProperty, ref _isCustomResizerVisible, value);
     }
 
+    private bool _isDrawnTitleBarOverlayVisible = true;
+
+    internal bool IsDrawnTitleBarOverlayVisible
+    {
+        get => _isDrawnTitleBarOverlayVisible;
+        private set => SetAndRaise(
+            IsDrawnTitleBarOverlayVisibleProperty,
+            ref _isDrawnTitleBarOverlayVisible,
+            value);
+    }
+
     private bool _isEffectiveFullscreenLogoVisible;
 
     internal bool IsEffectiveFullscreenLogoVisible
@@ -343,6 +360,7 @@ public partial class Window : AvaloniaWindow,
     private FullscreenPopoverLayer? _fullscreenPopoverLayer;
     private WindowResizer? _windowResizer;
     private MediaBreakPointIndicator? _mediaBreakPointIndicator;
+    private int _drawnTitleBarOverlaySuppressionCount;
 
     // macOS 下 ConfigureMacOsWindow 的输入缓存，用于在 live resize 时短路，避免重复 P/Invoke
     private double? _macOsCachedTitleBarHeight;
@@ -388,6 +406,52 @@ public partial class Window : AvaloniaWindow,
     internal void SetPlatformChromeClientSize(Size clientSize)
     {
         ClientSize = clientSize;
+    }
+
+    internal void NotifyResizeStarted(WindowEdge edge)
+    {
+        if (OperatingSystem.IsLinux() &&
+            _platformChromeManager is WaylandWindowChromeManager waylandManager)
+        {
+            waylandManager.NotifyResizeStarted(edge);
+        }
+    }
+
+    internal void ConfigureManagedResizeGrip(Thickness gripThickness)
+    {
+        if (_windowResizer is null)
+        {
+            return;
+        }
+
+        var shadow = FrameShadowThickness;
+        _windowResizer.GripThickness = gripThickness;
+        _windowResizer.Margin = new Thickness(
+            Math.Max(0, shadow.Left - gripThickness.Left),
+            Math.Max(0, shadow.Top - gripThickness.Top),
+            Math.Max(0, shadow.Right - gripThickness.Right),
+            Math.Max(0, shadow.Bottom - gripThickness.Bottom));
+    }
+
+    internal IDisposable SuppressDrawnTitleBarOverlay()
+    {
+        _drawnTitleBarOverlaySuppressionCount++;
+        IsDrawnTitleBarOverlayVisible = false;
+        return Disposable.Create(this, static window => window.ReleaseDrawnTitleBarOverlaySuppression());
+    }
+
+    private void ReleaseDrawnTitleBarOverlaySuppression()
+    {
+        if (_drawnTitleBarOverlaySuppressionCount == 0)
+        {
+            return;
+        }
+
+        _drawnTitleBarOverlaySuppressionCount--;
+        if (_drawnTitleBarOverlaySuppressionCount == 0)
+        {
+            IsDrawnTitleBarOverlayVisible = true;
+        }
     }
 
     private void HandleFrameShadowPropertyChanged(BoxShadows frameShadow)
@@ -788,6 +852,16 @@ public partial class Window : AvaloniaWindow,
         }
     }
 
+    protected override void OnPointerReleased(PointerReleasedEventArgs e)
+    {
+        base.OnPointerReleased(e);
+        if (OperatingSystem.IsLinux() &&
+            _platformChromeManager is WaylandWindowChromeManager waylandManager)
+        {
+            waylandManager.NotifyResizeFinished();
+        }
+    }
+
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
@@ -817,6 +891,10 @@ public partial class Window : AvaloniaWindow,
             }
         }
         _platformChromeManager?.HandlePropertyChanged(change.Property);
+        if (change.Property == IsExtendedIntoWindowDecorationsProperty)
+        {
+            RefreshPlatformCsdStatus();
+        }
         if (change.Property == CanResizeProperty || change.Property == WindowStateProperty)
         {
             ConfigureCustomResizerVisible();
@@ -859,7 +937,7 @@ public partial class Window : AvaloniaWindow,
         }
         else if (OperatingSystem.IsLinux())
         {
-            IsCsdEnabled = AvaloniaLocator.Current.GetService<X11PlatformOptions>()?.EnableDrawnDecorations == true;
+            IsCsdEnabled = PlatformImpl?.NeedsManagedDecorations == true;
         }
         else if (OperatingSystem.IsWindows())
         {
@@ -867,9 +945,16 @@ public partial class Window : AvaloniaWindow,
         }
     }
 
+    internal void RefreshPlatformCsdStatus()
+    {
+        ConfigureCsdStatus();
+        ConfigureCustomResizerVisible();
+    }
+
     private void ConfigureCustomResizerVisible()
     {
-        if (OsType != OsType.Linux || IsCsdEnabled)
+        if (OsType != OsType.Linux ||
+            IsCsdEnabled && _platformChromeManager is not WaylandWindowChromeManager)
         {
             IsCustomResizerVisible = false;
         }

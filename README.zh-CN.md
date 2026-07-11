@@ -178,7 +178,7 @@ internal class Program
     {
         return AppBuilder.Configure<App>()
                          .UseReactiveUI()
-                         .UsePlatformDetect()
+                         .UseAtomUIPlatformDetect()
                          .WithAtomUIDefaultOptions()
                          .WithDeveloperTools()
                          .LogToTrace();

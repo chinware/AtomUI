@@ -112,6 +112,6 @@ internal class WindowToken : AbstractControlDesignToken
         // Linux / 其他
         return new Thickness(24, 0);
     }
-    
+
     protected override Type GetTokenKindType() => typeof(WindowTokenKind);
 }

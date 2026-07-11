@@ -10,7 +10,9 @@
         <PackageVersion Include="Avalonia.Controls.ColorPicker" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Win32" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.X11" Version="$(AvaloniaVersion)"/>
+        <PackageVersion Include="Avalonia.Wayland" Version="$(AvaloniaVersion)"/>
         <PackageVersion Include="Avalonia.Native" Version="$(AvaloniaVersion)"/>
+        <PackageVersion Include="NWayland" Version="0.11.0"/>
         <PackageVersion Include="Avalonia.AvaloniaEdit" Version="12.0.0"/>
         <PackageVersion Include="AvaloniaEdit.TextMate" Version="12.0.0"/>
         <PackageVersion Include="TextMateSharp.Grammars" Version="2.0.3"/>

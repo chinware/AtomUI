@@ -40,4 +40,16 @@
         </ItemGroup>
     </Target>
 
+    <Target Name="ExcludeDesktopPlatformAssembliesFromBrowserWasm"
+            AfterTargets="_GetDefaultWasmAssembliesToBundle"
+            BeforeTargets="PrepareInputsForWasmBuild">
+        <ItemGroup>
+            <WasmAssembliesToBundle Remove="@(WasmAssembliesToBundle)"
+                                    Condition="'%(FileName)' == 'Avalonia.Wayland' or
+                                               '%(FileName)' == 'NWayland' or
+                                               '%(FileName)' == 'Avalonia.Win32' or
+                                               '%(FileName)' == 'Avalonia.Win32.Automation'" />
+        </ItemGroup>
+    </Target>
+
 </Project>

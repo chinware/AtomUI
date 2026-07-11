@@ -249,6 +249,8 @@
                                 </Border>
                             </Panel>
                         </VisualLayerManager>
+                        <atom:WindowResizer Name="PART_WindowResizer"
+                                            IsVisible="{Binding $parent[atom:Window].IsCustomResizerVisible}" />
                     </Panel>
                 </ControlTemplate>
             </Setter>
@@ -268,6 +270,8 @@
         <Setter Property="ExtendClientAreaTitleBarHeightHint" Value="-1" />
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
         <Setter Property="WindowDecorations" Value="Full" />
+        <Setter Property="WindowDecorationsTheme"
+                Value="{DynamicResource {x:Type WindowDrawnDecorations}}" />
         <Setter Property="TitleBarHeight" Value="{atom:WindowTokenResource TitleBarHeight}" />
 
         <Style Selector="^[OsType=macOS]">

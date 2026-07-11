@@ -7,25 +7,25 @@
 
 ## 目录
 
-1. [总览：四平台技术路径一图速记](#1-总览四平台技术路径一图速记)
+1. [总览：平台后端技术路径一图速记](#1-总览平台后端技术路径一图速记)
 2. [核心概念](#2-核心概念)
 3. [macOS](#3-macos)
 4. [Linux (X11)](#4-linux-x11)
-5. [Windows 11 (build ≥ 22000)](#5-windows-11-build--22000)
-6. [Windows 10 (build < 22000)](#6-windows-10-build--22000)
+5. [Windows（全版本统一方案）](#5-windows全版本统一方案)
 7. [AtomUI Window 架构：IsCsdEnabled 双模板机制](#7-atomui-window-架构iscsdenabled-双模板机制)
 8. [跨平台陷阱速查表](#8-跨平台陷阱速查表)
 9. [关键源码索引](#9-关键源码索引)
 
 ---
 
-## 1. 总览：四平台技术路径一图速记
+## 1. 总览：平台后端技术路径一图速记
 
 ```
 平台              CSD 模式    标题栏由谁画         阴影由谁画        Resize 由谁提供     圆角
 ─────────────────────────────────────────────────────────────────────────────────────────
 macOS             ❌ 关闭     AtomUI 自绘模板      OS 原生           OS 原生             OS 原生
-Linux (X11)       ✅ 开启     AtomUI 自绘模板      Avalonia BoxShadow Avalonia ResizeGrips AtomUI 自绘
+Linux (X11)       ✅ 开启     Avalonia CSD         Avalonia BoxShadow Avalonia ResizeGrips AtomUI 自绘
+Linux (Wayland)   由协商决定   Avalonia CSD / SSD   CSD: BoxShadow     CSD: ResizeGrips    CSD: AtomUI
 Windows 11        ❌ 关闭     AtomUI 自绘模板      DWM (手动启用)    WndProc Hook        DWM 原生 (DWMWCP_ROUND)
 Windows 10        ❌ 关闭     AtomUI 自绘模板      DWM (手动启用)    WndProc Hook        无 (DWM 不支持)
 ```
@@ -38,7 +38,8 @@ OperatingSystem.IsWindows()?
 OperatingSystem.IsMacOS()?
   └─ 永远 → IsCsdEnabled=false → 非 CSD 模板 + NSWindow 原生标题栏布局
 OperatingSystem.IsLinux()?
-  └─ EnableDrawnDecorations? → IsCsdEnabled=该值 → CSD 模板 + 自绘阴影 + SHAPE 点击穿透
+  ├─ X11 → EnableDrawnDecorations + extend hint 决定 managed decorations
+  └─ Wayland → xdg-decoration 协商决定 CSD/SSD，运行期可能变化
 ```
 
 对应代码（`Window.cs`）：
@@ -49,7 +50,7 @@ private void ConfigureCsdStatus()
     if (OperatingSystem.IsMacOS())
         IsCsdEnabled = false;
     else if (OperatingSystem.IsLinux())
-        IsCsdEnabled = AvaloniaLocator.Current.GetService<X11PlatformOptions>()?.EnableDrawnDecorations == true;
+        IsCsdEnabled = PlatformImpl?.NeedsManagedDecorations == true;
     else if (OperatingSystem.IsWindows())
         IsCsdEnabled = false;
 }
@@ -66,7 +67,8 @@ private void ConfigureCsdStatus()
 
 ### 2.2 IsCsdEnabled 属性
 
-AtomUI 自定义的 `DirectProperty<Window, bool>`，在构造函数中根据平台设置，驱动 `WindowTheme.axaml` 中的模板切换：
+AtomUI 自定义的 `DirectProperty<Window, bool>`。Linux 下它来自当前 `IWindowImpl.NeedsManagedDecorations`，
+并在 `DrawnDecorationsRequestChanged` 后重新读取，驱动 `WindowTheme.axaml` 中的模板切换：
 
 - `IsCsdEnabled=True` → CSD 模板（设置 `ExtendClientAreaToDecorationsHint=True`）
 - `IsCsdEnabled=False` → 非 CSD 模板（不设 `ExtendClientAreaToDecorationsHint`，自带标题栏区域）
@@ -186,8 +188,28 @@ if (OperatingSystem.IsLinux())
 | 没设 `EnableDrawnDecorations=true` | X11 上原生标题栏还在，自定义装饰不生效 |
 | `EnableDrawnDecorations` 编译警告 | 标了 `[Experimental("AVALONIA_X11_CSD")]`，需 `<NoWarn>AVALONIA_X11_CSD</NoWarn>` |
 | ShadowThickness 太大不做 SHAPE 裁剪 | 阴影区变 resize 光标，用户体验差 |
-| Wayland 担心兼容性 | 实际走 XWayland，X11 SHAPE 仍可用，无需额外处理 |
+| 把原生 Wayland 当成 XWayland | Wayland 的 `IWindowImpl.Handle` 为 `null`，不能调用 Xlib/XCB 或读取 XID |
 | 最大化/全屏时忘记重置 input region | 框架把 ShadowThickness 归零，需重置为整个客户区 |
+
+### 原生 Wayland（Avalonia 12.1）
+
+`Avalonia.Wayland` 是独立后端，不经过 XWayland。`UseAtomUIPlatformDetect()` 在
+`WAYLAND_DISPLAY` 非空时选择它；Avalonia 自带的 `UsePlatformDetect()` 在 Linux 仍只加载 X11。
+
+Wayland 后端的源码约束：
+
+- `WindowImplBase.Handle => null`，`Move(PixelPoint)` 和 `Activate()` 是 no-op。
+- `NeedsManagedDecorations` 来自 `zxdg_toplevel_decoration_v1` 协商；CSD 时请求
+  `TitleBar | Border | Shadow | ResizeGrips`。
+- `SetShadowExtents` 会进入 persistent `WSurface`，并在下一次 buffer commit 前更新
+  `xdg_surface.set_window_geometry`。
+- UI 线程只能调用 `WXdgTopLevelProxy`。真实 `WSurface/WlSurface` 属于 `AvaloniaWayland` worker；
+  协议状态通过 `WaylandWorkerClient.PostWithCommit` 排队。
+- `WindowDecorations=None/TitleBar` 会锁定 sticky CSD，不能用它表示合成器协商出的 SSD。
+
+因此，X11 SHAPE、`_GTK_FRAME_EXTENTS`、绝对窗口位置和 XID 初始化几何都只能留在 X11 manager。
+Wayland input region 在 12.1 没有公开 API；AtomUI 当前越过 proxy 的反射实现不符合上游线程契约，
+只能视为待替换的内部适配，不能作为通用 Native API 示例。
 
 ---
 
@@ -379,7 +401,7 @@ if (Environment.OSVersion.Version.Build >= 22000)
 ### 平台特定样式
 
 ```xml
-<!-- Linux 非 CSD：隐藏原生 WM 标题栏 -->
+<!-- 仅 X11 非 managed-decoration 场景：隐藏原生 WM 标题栏 -->
 <Style Selector="^[OsType=Linux][IsCsdEnabled=False]">
     <Setter Property="WindowDecorations" Value="None" />
 </Style>
@@ -402,6 +424,9 @@ if (Environment.OSVersion.Version.Build >= 22000)
 </Style>
 ```
 
+上面的 `WindowDecorations=None` 不能原样用于 Wayland SSD。Wayland 收到 `None` 后会设置 sticky CSD，
+销毁 decoration object，并永久回到 CSD；Wayland SSD 必须保持 `WindowDecorations=Full`。
+
 ---
 
 ## 8. 跨平台陷阱速查表
@@ -420,6 +445,8 @@ if (Environment.OSVersion.Version.Build >= 22000)
 | 10 | `GetVisualDescendants<WindowDrawnDecorations>()` | 全平台 | 永远找不到 | 它是 StyledElement 不是 Visual |
 | 11 | CSD 模板里也画标题栏 | Linux | 双标题栏 | CSD 模板不含标题栏，由 WindowDrawnDecorations 提供 |
 | 12 | Win10 上试图用 Post hack 修复 CSD 阴影 | Win10 | 时序竞争不可靠 | 完全绕过 CSD，用纯 Win32 方案 |
+| 13 | 从 UI 线程直接调用 Wayland `WlSurface` | Wayland | 破坏 worker 排序，重连或提交期间可能异常 | 通过 Avalonia worker proxy 与 `PostWithCommit` 下发 |
+| 14 | SSD 时设置 `WindowDecorations=None` | Wayland | 立即锁定 sticky CSD，SSD 无法恢复 | SSD 保持 `Full`，用协商结果选择模板 |
 
 ---
 
@@ -446,6 +473,9 @@ if (Environment.OSVersion.Version.Build >= 22000)
 | `Avalonia.Controls/Window.cs` | `ComputeDecorationParts()`、`WindowDecorationMargin` |
 | `Avalonia.X11/X11Window.cs` | `EnableDrawnDecorations` gating、`RequestedDrawnDecorations` 四件套 |
 | `Avalonia.Native/WindowImpl.cs` | `NeedsManagedDecorations => false`（macOS 硬编码） |
+| `Avalonia.Wayland/WindowImpl.cs` | CSD/SSD、sticky CSD、shadow extents、Wayland 能力限制 |
+| `Avalonia.Wayland/Server/WaylandWorkerClient.cs` | UI→Wayland worker proxy 与 commit 编排 |
+| `Avalonia.Wayland/Server/Persistent/WSurface.cs` | persistent surface、window geometry 与 commit 生命周期 |
 
 ### 相关文档
 

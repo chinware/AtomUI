@@ -224,6 +224,8 @@ internal class DrawerContainer : ContentControl
     private int _lifecycleVersion;
     private int _pushTransformVersion;
     private CompositeDisposable? _drawerBindingDisposables;
+    private IDisposable? _hostMarginSubscription;
+    private IDisposable? _drawnTitleBarOverlaySuppression;
 
     internal void BindToDrawer(Drawer drawer)
     {
@@ -257,6 +259,7 @@ internal class DrawerContainer : ContentControl
             _closeAnimating = false;
             PrepareOpenVisualState(drawer.IsMotionEnabled);
             ScopeAwareAdornerLayer.SetAdornedElement(this, drawer.OpenOn);
+            ConfigureHostMargin(drawer.OpenOn);
             AttachToLayer(layer);
             ApplyTemplate();
             PrepareOpenVisualState(drawer.IsMotionEnabled);
@@ -370,6 +373,7 @@ internal class DrawerContainer : ContentControl
         DetachFromLayer(null);
         _drawerBindingDisposables?.Dispose();
         _drawerBindingDisposables = null;
+        ClearHostMargin();
         ReleaseTemplateContent();
 
         if (_infoContainer != null)
@@ -447,6 +451,52 @@ internal class DrawerContainer : ContentControl
         }
 
         ScopeAwareAdornerLayer.SetAdornedElement(this, null);
+        ClearHostMargin();
+    }
+
+    private void ConfigureHostMargin(Control? host)
+    {
+        _hostMarginSubscription?.Dispose();
+        _hostMarginSubscription = host is null
+            ? null
+            : TopLevelMarginBinder.BindCsdHostGeometry(
+                host,
+                (isCsd, margin, cornerRadius) =>
+                    ApplyHostGeometry(host, isCsd, margin, cornerRadius));
+
+        if (host is null)
+        {
+            ApplyHostGeometry(null, false, default, default);
+        }
+    }
+
+    private void ApplyHostGeometry(
+        Control? host,
+        bool isCsd,
+        Thickness margin,
+        CornerRadius cornerRadius)
+    {
+        Margin       = margin;
+        CornerRadius = cornerRadius;
+        if (isCsd && host is Window window)
+        {
+            _drawnTitleBarOverlaySuppression ??= window.SuppressDrawnTitleBarOverlay();
+        }
+        else
+        {
+            _drawnTitleBarOverlaySuppression?.Dispose();
+            _drawnTitleBarOverlaySuppression = null;
+        }
+    }
+
+    private void ClearHostMargin()
+    {
+        _hostMarginSubscription?.Dispose();
+        _hostMarginSubscription = null;
+        _drawnTitleBarOverlaySuppression?.Dispose();
+        _drawnTitleBarOverlaySuppression = null;
+        Margin       = default;
+        CornerRadius = default;
     }
 
     private AbstractMotion BuildMotionByPlacement(DrawerPlacement placement, TimeSpan duration, bool isOpen)

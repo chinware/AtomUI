@@ -44,8 +44,8 @@ public static class AppBuilderExtensions
     /// <example>
     /// <code>
     /// BuildAvaloniaApp()
-    ///     .UseAtomUIDefaults()
-    ///     .UsePlatformDetect()
+    ///     .UseAtomUIPlatformDetect()
+    ///     .WithAtomUIDefaultOptions()
     ///     .StartWithClassicDesktopLifetime(args);
     /// </code>
     /// </example>

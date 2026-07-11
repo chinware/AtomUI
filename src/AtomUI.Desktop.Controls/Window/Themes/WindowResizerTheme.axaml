@@ -10,47 +10,47 @@
                     <Border Tag="{x:Static atom:ResizeHandleLocation.North}"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Top"
-                            Cursor="SizeNorthSouth"
-                            Height="6" />
+                            Cursor="TopSide"
+                            Height="{Binding GripThickness.Top, RelativeSource={RelativeSource TemplatedParent}}" />
                     <Border Tag="{x:Static atom:ResizeHandleLocation.South}"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Bottom"
-                            Cursor="SizeNorthSouth"
-                            Height="6" />
+                            Cursor="BottomSide"
+                            Height="{Binding GripThickness.Bottom, RelativeSource={RelativeSource TemplatedParent}}" />
                     <Border Tag="{x:Static atom:ResizeHandleLocation.West}"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Stretch"
-                            Cursor="SizeWestEast"
-                            Width="6" />
+                            Cursor="LeftSide"
+                            Width="{Binding GripThickness.Left, RelativeSource={RelativeSource TemplatedParent}}" />
                     <Border Tag="{x:Static atom:ResizeHandleLocation.East}"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Stretch"
-                            Cursor="SizeWestEast"
-                            Width="6" />
+                            Cursor="RightSide"
+                            Width="{Binding GripThickness.Right, RelativeSource={RelativeSource TemplatedParent}}" />
                     <Border Tag="{x:Static atom:ResizeHandleLocation.NorthWest}"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Top"
                             Cursor="TopLeftCorner"
-                            Width="6"
-                            Height="6" />
+                            Width="{Binding GripThickness.Left, RelativeSource={RelativeSource TemplatedParent}}"
+                            Height="{Binding GripThickness.Top, RelativeSource={RelativeSource TemplatedParent}}" />
                     <Border Tag="{x:Static atom:ResizeHandleLocation.NorthEast}"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Top"
                             Cursor="TopRightCorner"
-                            Width="6"
-                            Height="6" />
+                            Width="{Binding GripThickness.Right, RelativeSource={RelativeSource TemplatedParent}}"
+                            Height="{Binding GripThickness.Top, RelativeSource={RelativeSource TemplatedParent}}" />
                     <Border Tag="{x:Static atom:ResizeHandleLocation.SouthWest}"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Bottom"
                             Cursor="BottomLeftCorner"
-                            Width="6"
-                            Height="6" />
+                            Width="{Binding GripThickness.Left, RelativeSource={RelativeSource TemplatedParent}}"
+                            Height="{Binding GripThickness.Bottom, RelativeSource={RelativeSource TemplatedParent}}" />
                     <Border Tag="{x:Static atom:ResizeHandleLocation.SouthEast}"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
                             Cursor="BottomRightCorner"
-                            Width="6"
-                            Height="6" />
+                            Width="{Binding GripThickness.Right, RelativeSource={RelativeSource TemplatedParent}}"
+                            Height="{Binding GripThickness.Bottom, RelativeSource={RelativeSource TemplatedParent}}" />
                 </Panel>
             </ControlTemplate>
         </Setter>
