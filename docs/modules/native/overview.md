@@ -39,4 +39,4 @@ Native 模块专题文档已合并到本目录：
 - [linux.md](linux.md)
 - [atomui-window-cross-platform-guide.md](atomui-window-cross-platform-guide.md)
 - [window-drawn-decorations.md](window-drawn-decorations.md)
-- [windows-disable-csd-shadow-scheme.md](windows-disable-csd-shadow-scheme.md)
+- [windows-live-resize-scheme.md](windows-live-resize-scheme.md)

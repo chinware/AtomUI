@@ -527,35 +527,42 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
-    public void Windows_Window_Chrome_Reapplies_NonClient_Frame_After_Show_And_State_Changes()
+    public void Windows_Window_Uses_Avalonia_Csd_Without_The_Legacy_Chrome_Hook()
     {
         var managerSource = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"));
         var windowSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Window.cs"));
         var nativeSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Native/WindowExtensions.cs"));
+        var interopSource = File.ReadAllText(GetRepoFile("src/AtomUI.Native/Windows/WindowUtils.Interop.cs"));
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
+        XNamespace av = "https://github.com/avaloniaui";
 
-        managerSource.ShouldContain("WindowsWindowChromeManager.Attach(window)");
-        windowSource.ShouldNotContain("InitializeWinWindow");
-        nativeSource.ShouldNotContain("InitializeWinWindow");
-
-        var windowsSource =
-            File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowsWindowChromeManager.cs"));
-
-        windowsSource.ShouldContain("_wndProcHookRegistered");
-        windowsSource.ShouldContain("Win32Properties.AddWndProcHookCallback");
-        windowsSource.ShouldContain("AvaloniaWindow.IsVisibleProperty");
-        windowsSource.ShouldContain("AvaloniaWindow.WindowStateProperty");
-        windowsSource.ShouldContain("RequestFrameRefresh");
-        windowsSource.ShouldContain("ApplyWinDwmShadow");
-        windowsSource.ShouldContain("ForceWinNonClientFrameChanged");
-        windowsSource.ShouldNotContain("DispatcherTimer");
+        managerSource.ShouldNotContain("WindowsWindowChromeManager.Attach(window)");
+        File.Exists(Path.Combine(
+            Path.GetDirectoryName(GetRepoFile(
+                "src/AtomUI.Desktop.Controls/Window/WindowChromeManager.cs"))!,
+            "WindowsWindowChromeManager.cs")).ShouldBeFalse();
+        windowSource.ShouldContain("else if (OperatingSystem.IsWindows())");
+        windowSource.ShouldContain("IsCsdEnabled = true;");
+        nativeSource.ShouldNotContain("WinWndProcHook");
+        nativeSource.ShouldNotContain("ForceWinNonClientFrameChanged");
+        interopSource.ShouldNotContain("WM_NCCALCSIZE");
+        interopSource.ShouldContain("WM_NCHITTEST");
+        interopSource.ShouldContain("HTMAXBUTTON");
+        document.Descendants(av + "Setter").ShouldContain(setter =>
+            (string?)setter.Attribute("Property") == "ExtendClientAreaToDecorationsHint" &&
+            (string?)setter.Attribute("Value") == "True");
+        document.Descendants(av + "Setter").ShouldNotContain(setter =>
+            (string?)setter.Attribute("Property") == "ExtendClientAreaToDecorationsHint" &&
+            (string?)setter.Attribute("Value") == "False");
     }
 
     [Fact]
-    public void AtomUI_Defaults_Prefer_Windows_Composition_That_Supports_Transparent_Popup_Windows()
+    public void AtomUI_Defaults_Use_Redirection_Surface_For_Windows_10_Live_Resize()
     {
         var source = File.ReadAllText(GetRepoFile("src/AtomUI.Core/AppBuilderExtensions.cs"));
 
-        source.ShouldContain("WithWin32TransparentPopupCompositionOptions");
+        source.ShouldContain("WithWin32CompositionOptions");
         source.ShouldContain("if (OperatingSystem.IsWindows())");
         source.ShouldContain("[SupportedOSPlatform(\"windows\")]");
         source.ShouldContain("Avalonia.Win32PlatformOptions, Avalonia.Win32");
@@ -567,10 +574,9 @@ public class WindowResizeArtifactTests
         source.ShouldContain("DirectComposition");
         source.ShouldContain("RedirectionSurface");
         source.ShouldNotContain("LowLatencyDxgiSwapChain");
-        source.IndexOf("\"WinUIComposition\"", StringComparison.Ordinal)
-              .ShouldBeLessThan(source.IndexOf("\"DirectComposition\"", StringComparison.Ordinal));
-        source.IndexOf("\"DirectComposition\"", StringComparison.Ordinal)
-              .ShouldBeLessThan(source.IndexOf("\"RedirectionSurface\"", StringComparison.Ordinal));
+        source.ShouldContain("OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)");
+        source.ShouldContain("? [\"WinUIComposition\", \"DirectComposition\", \"RedirectionSurface\"]");
+        source.ShouldContain(": [\"RedirectionSurface\"]");
     }
 
     [Fact]

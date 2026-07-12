@@ -922,7 +922,7 @@ public partial class Window : AvaloniaWindow,
         }
         else if (OperatingSystem.IsWindows())
         {
-            IsCsdEnabled = false;
+            IsCsdEnabled = true;
         }
     }
 
