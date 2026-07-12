@@ -36,44 +36,48 @@
 
                         <Panel Background="Transparent" Margin="{TemplateBinding WindowDecorationMargin}" />
 
-                        <VisualLayerManager Name="PART_VisualLayerManager"
-                                            Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
-                            <Border Name="WindowContentClip"
-                                    CornerRadius="{TemplateBinding CornerRadius}"
-                                    ClipToBounds="True"
-                                    Margin="{TemplateBinding FrameShadowThickness}">
-                                <DockPanel LastChildFill="True">
-                                    <Panel Name="TitleBarPanel" IsVisible="{TemplateBinding IsTitleBarVisible}"
-                                           DockPanel.Dock="Top">
-                                        <ContentPresenter Name="TitleBarFrameLayer"
-                                                          Background="{TemplateBinding TitleBarFrameBackground}"
-                                                          Content="{TemplateBinding TitleBarFrameLayer}"
-                                                          ContentTemplate="{TemplateBinding TitleBarFrameLayerTemplate}"
-                                                          Opacity="{TemplateBinding TitleBarFrameLayerOpacity}"
-                                                          ClipToBounds="True" />
-                                        <ContentPresenter Padding="{TemplateBinding TitleBarOffsetMargin}"
-                                                          Content="{TemplateBinding TitleBar}" />
-                                    </Panel>
-                                    <Panel>
-                                        <ContentPresenter Name="ContentFrameLayer"
-                                                          Background="{TemplateBinding ContentFrameBackground}"
-                                                          ClipToBounds="True"
-                                                          Opacity="{TemplateBinding ContentFrameLayerOpacity}"
-                                                          Content="{TemplateBinding ContentFrameLayer}"
-                                                          ContentTemplate="{TemplateBinding ContentFrameLayerTemplate}" />
-                                        <Border Name="ContentFrame"
-                                                ClipToBounds="True"
-                                                Padding="{TemplateBinding Padding}">
-                                            <ContentPresenter Name="PART_ContentPresenter"
-                                                              ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                              Content="{TemplateBinding Content}"
-                                                              HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                              VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                        </Border>
-                                    </Panel>
-                                </DockPanel>
-                            </Border>
-                        </VisualLayerManager>
+                        <atom:WindowVisualLayerClip
+                            ShadowThickness="{TemplateBinding FrameShadowThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                            <VisualLayerManager Name="PART_VisualLayerManager"
+                                                Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                                <Border Name="WindowContentClip"
+                                        CornerRadius="{TemplateBinding CornerRadius}"
+                                        ClipToBounds="True"
+                                        Margin="{TemplateBinding FrameShadowThickness}">
+                                    <DockPanel LastChildFill="True">
+                                        <Panel Name="TitleBarPanel" IsVisible="{TemplateBinding IsTitleBarVisible}"
+                                               DockPanel.Dock="Top">
+                                            <ContentPresenter Name="TitleBarFrameLayer"
+                                                              Background="{TemplateBinding TitleBarFrameBackground}"
+                                                              Content="{TemplateBinding TitleBarFrameLayer}"
+                                                              ContentTemplate="{TemplateBinding TitleBarFrameLayerTemplate}"
+                                                              Opacity="{TemplateBinding TitleBarFrameLayerOpacity}"
+                                                              ClipToBounds="True" />
+                                            <ContentPresenter Padding="{TemplateBinding TitleBarOffsetMargin}"
+                                                              Content="{TemplateBinding TitleBar}" />
+                                        </Panel>
+                                        <Panel>
+                                            <ContentPresenter Name="ContentFrameLayer"
+                                                              Background="{TemplateBinding ContentFrameBackground}"
+                                                              ClipToBounds="True"
+                                                              Opacity="{TemplateBinding ContentFrameLayerOpacity}"
+                                                              Content="{TemplateBinding ContentFrameLayer}"
+                                                              ContentTemplate="{TemplateBinding ContentFrameLayerTemplate}" />
+                                            <Border Name="ContentFrame"
+                                                    ClipToBounds="True"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter Name="PART_ContentPresenter"
+                                                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                                  Content="{TemplateBinding Content}"
+                                                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                            </Border>
+                                        </Panel>
+                                    </DockPanel>
+                                </Border>
+                            </VisualLayerManager>
+                        </atom:WindowVisualLayerClip>
 
                         <atom:FullscreenPopoverLayer Name="PART_FullscreenPopoverLayer" />
 
@@ -227,28 +231,32 @@
                                 Background="{TemplateBinding Background}"
                                 IsHitTestVisible="False"
                                 IsVisible="False" />
-                        <VisualLayerManager Name="PART_VisualLayerManager"
-                                            Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
-                            <Panel Margin="{Binding $parent[Window].WindowDecorationMargin}">
-                                <ContentPresenter Name="ContentFrameLayer"
-                                                  Background="{TemplateBinding ContentFrameBackground}"
-                                                  CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource WindowContentBottomCornerRadiusFilter}}"
-                                                  ClipToBounds="True"
-                                                  Opacity="{TemplateBinding ContentFrameLayerOpacity}"
-                                                  Content="{TemplateBinding ContentFrameLayer}"
-                                                  ContentTemplate="{TemplateBinding ContentFrameLayerTemplate}" />
-                                <Border Name="ContentFrame"
-                                        CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource WindowContentBottomCornerRadiusFilter}}"
-                                        ClipToBounds="True"
-                                        Padding="{TemplateBinding Padding}">
-                                    <ContentPresenter Name="PART_ContentPresenter"
-                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                                      Content="{TemplateBinding Content}"
-                                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
-                                </Border>
-                            </Panel>
-                        </VisualLayerManager>
+                        <atom:WindowVisualLayerClip
+                            ShadowThickness="{TemplateBinding FrameShadowThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                            <VisualLayerManager Name="PART_VisualLayerManager"
+                                                Padding="{TemplateBinding OffScreenMargin, Mode=OneWay}">
+                                <Panel Margin="{Binding $parent[Window].WindowDecorationMargin}">
+                                    <ContentPresenter Name="ContentFrameLayer"
+                                                      Background="{TemplateBinding ContentFrameBackground}"
+                                                      CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource WindowContentBottomCornerRadiusFilter}}"
+                                                      ClipToBounds="True"
+                                                      Opacity="{TemplateBinding ContentFrameLayerOpacity}"
+                                                      Content="{TemplateBinding ContentFrameLayer}"
+                                                      ContentTemplate="{TemplateBinding ContentFrameLayerTemplate}" />
+                                    <Border Name="ContentFrame"
+                                            CornerRadius="{TemplateBinding CornerRadius, Converter={StaticResource WindowContentBottomCornerRadiusFilter}}"
+                                            ClipToBounds="True"
+                                            Padding="{TemplateBinding Padding}">
+                                        <ContentPresenter Name="PART_ContentPresenter"
+                                                          ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                          Content="{TemplateBinding Content}"
+                                                          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                    </Border>
+                                </Panel>
+                            </VisualLayerManager>
+                        </atom:WindowVisualLayerClip>
                         <atom:WindowResizer Name="PART_WindowResizer"
                                             IsVisible="{Binding $parent[atom:Window].IsCustomResizerVisible}" />
                     </Panel>
