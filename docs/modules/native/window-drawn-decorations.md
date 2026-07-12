@@ -757,9 +757,13 @@ Avalonia 自带的 `UsePlatformDetect()` 在 Linux 仍只选择 X11，不能代�
 5. 标题栏中的 Popup 补偿仍保留。绘制装饰内容位于 `TopLevelHost` 的独立视觉根，普通
    `TopLevel.GetTopLevel()` 和 light-dismiss root 仍不能覆盖所有标题栏 Popup 场景。
 6. Avalonia 的 `OverlayPopupHost.Screens` 使用 `PopupOverlayLayer.AvailableSize` 作为定位边界；AtomUI 的
-   `VisualLayerManager` 覆盖整个 CSD surface，所以该尺寸包含透明阴影缓冲区。Overlay popup 必须在定位时
-   从客户区排除 `FrameShadowThickness`，再按 `ManagedPopupPositioner` 的 Flip / Slide / Resize 顺序约束；
-   不能只给 overlay layer 设置全局 Margin，否则 Drawer、Adorner 和已有的 CSD frame 补偿会被重复 inset。
+   `VisualLayerManager` 覆盖整个 CSD surface，所以该尺寸包含透明阴影缓冲区。不能给 overlay layer 设置全局
+   Margin 或修改 popup offset，否则 Drawer、Adorner 和已有的 CSD frame 补偿会被重复 inset；应保留完整
+   surface 坐标系，并在窗口视觉层根节点统一裁剪阴影区域。
+7. `PopupOverlayLayer`、OverlayLayer、AdornerLayer 和 LightDismissOverlayLayer 都由窗口模板中的
+   `VisualLayerManager` 管理。Linux Window 模板使用 `WindowVisualLayerClip` 在该根节点外统一设置窗口 frame
+   Clip，按 `FrameShadowThickness` 排除透明阴影缓冲区，同时保持 VLM 的完整 surface 尺寸和 popup 坐标系。
+   裁剪区域包含标题栏，并由模板绑定随窗口尺寸、阴影厚度和圆角更新；Windows 和 macOS 模板不引入该层。
 
 ### 当前限制
 

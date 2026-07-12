@@ -16,6 +16,30 @@ namespace AtomUI.Desktop.Controls.Tests.Window;
 public class WindowResizeArtifactTests
 {
     [Fact]
+    public void Visual_Layers_Use_One_Window_Frame_Clip_Without_Changing_Their_Coordinate_System()
+    {
+        var clientSize = new Size(900, 650);
+        var shadow     = new Thickness(36, 27, 36, 45);
+        var document   = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
+        XNamespace av   = "https://github.com/avaloniaui";
+        XNamespace atom = "https://atomui.net";
+
+        WindowVisualLayerClip.CalculateClipBounds(clientSize, shadow)
+              .ShouldBe(new Rect(36, 27, 828, 578));
+        WindowVisualLayerClip.CalculateClipBounds(clientSize, default)
+                             .ShouldBe(new Rect(clientSize));
+
+        var layerManagers = document.Descendants(av + "VisualLayerManager")
+                                    .Where(element =>
+                                        (string?)element.Attribute("Name") == "PART_VisualLayerManager")
+                                    .ToList();
+        layerManagers.Count.ShouldBe(4);
+        layerManagers.Count(manager =>
+            manager.Parent?.Name == atom + "WindowVisualLayerClip").ShouldBe(2);
+    }
+
+    [Fact]
     public void Linux_Window_Preserves_Shadow_And_Scales_Only_The_Managed_Resize_Grip()
     {
         var tokenSource  = File.ReadAllText(GetRepoFile("src/AtomUI.Desktop.Controls/Window/WindowToken.cs"));
@@ -398,6 +422,7 @@ public class WindowResizeArtifactTests
     {
         var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
         XNamespace av = "https://github.com/avaloniaui";
+        XNamespace atom = "https://atomui.net";
 
         var linuxTemplateStyle = document.Descendants(av + "Style")
                                          .Single(element =>
@@ -412,6 +437,7 @@ public class WindowResizeArtifactTests
         contentClip.Attribute("CornerRadius").ShouldNotBeNull().Value.ShouldBe("{TemplateBinding CornerRadius}");
         contentClip.Attribute("ClipToBounds").ShouldNotBeNull().Value.ShouldBe("True");
         contentClip.Attribute("Margin").ShouldNotBeNull().Value.ShouldBe("{TemplateBinding FrameShadowThickness}");
+        contentClip.Ancestors(atom + "WindowVisualLayerClip").Count().ShouldBe(1);
 
         var dockPanel = contentClip.Elements(av + "DockPanel").Single();
         dockPanel.Attribute("LastChildFill").ShouldNotBeNull().Value.ShouldBe("True");
@@ -423,6 +449,7 @@ public class WindowResizeArtifactTests
     {
         var document = XDocument.Load(GetRepoFile("src/AtomUI.Desktop.Controls/Window/Themes/WindowTheme.axaml"));
         XNamespace av = "https://github.com/avaloniaui";
+        XNamespace atom = "https://atomui.net";
 
         document.Descendants()
                 .ShouldContain(element =>
@@ -441,11 +468,16 @@ public class WindowResizeArtifactTests
                         .ShouldNotContain(element =>
                             (string?)element.Attribute("Name") == "WindowContentClip");
 
-        var contentPanel = csdTemplateStyle.Descendants(av + "VisualLayerManager")
-                                           .Single(element =>
-                                               (string?)element.Attribute("Name") == "PART_VisualLayerManager")
-                                           .Elements(av + "Panel")
-                                           .Single();
+        var layerClip = csdTemplateStyle.Descendants(atom + "WindowVisualLayerClip").Single();
+        layerClip.Attribute("ShadowThickness").ShouldNotBeNull().Value.ShouldBe(
+            "{TemplateBinding FrameShadowThickness}");
+        layerClip.Attribute("CornerRadius").ShouldNotBeNull().Value.ShouldBe(
+            "{TemplateBinding CornerRadius}");
+
+        var visualLayerManager = layerClip.Elements(av + "VisualLayerManager")
+                                          .Single(element =>
+                                              (string?)element.Attribute("Name") == "PART_VisualLayerManager");
+        var contentPanel = visualLayerManager.Elements(av + "Panel").Single();
 
         contentPanel.Attribute("Margin").ShouldNotBeNull().Value.ShouldBe(
             "{Binding $parent[Window].WindowDecorationMargin}");
