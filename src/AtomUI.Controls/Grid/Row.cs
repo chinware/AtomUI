@@ -224,7 +224,7 @@ public class Row : Panel
             var estimatedWidth = offsetWidth + baseWidth;
 
             if (IsWrapped && !result.WidthInfinite && currentLine.Items.Count > 0 &&
-                lineWidth + estimatedWidth > result.LayoutWidth)
+                MathUtils.GreaterThan(lineWidth + estimatedWidth, result.LayoutWidth))
             {
                 FinalizeLine(currentLine, result, availableSize, measureChildren);
                 result.Lines.Add(currentLine);
