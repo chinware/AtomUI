@@ -289,7 +289,6 @@
 
         <Style Selector="^[OsType=Windows]">
             <Setter Property="TransparencyLevelHint" Value="None" />
-            <Setter Property="ExtendClientAreaToDecorationsHint" Value="False" />
         </Style>
 
         <Style Selector="^[WindowState=FullScreen]">

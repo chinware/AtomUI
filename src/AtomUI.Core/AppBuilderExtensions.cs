@@ -18,10 +18,9 @@ public static class AppBuilderExtensions
     /// <list type="bullet">
     ///   <item>
     ///     <description>
-    ///     <b>Windows</b>：<c>Win32PlatformOptions.CompositionMode</c> 保持
-    ///     WinUIComposition / DirectComposition 优先，确保 Tooltip、Popup 等透明 PopupRoot
-    ///     可以使用独立 Window 模式；普通 AtomUI 窗口由 Windows 专用模板完整绘制 opaque 背景，
-    ///     避免 resize 时露出未绘制区域。
+    ///     <b>Windows</b>：Windows 10 使用 RedirectionSurface，避免 WinUIComposition 在
+    ///     live resize 期间提交与 HWND 尺寸不同步的表面；Windows 11 保持 WinUIComposition /
+    ///     DirectComposition 优先，确保透明 PopupRoot 可以使用独立 Window 模式。
     ///     </description>
     ///   </item>
     ///   <item>
@@ -53,7 +52,7 @@ public static class AppBuilderExtensions
     {
         if (OperatingSystem.IsWindows())
         {
-            appBuilder = appBuilder.WithWin32TransparentPopupCompositionOptions();
+            appBuilder = appBuilder.WithWin32CompositionOptions();
         }
 
         return appBuilder
@@ -80,7 +79,7 @@ public static class AppBuilderExtensions
     }
 
     [SupportedOSPlatform("windows")]
-    private static AppBuilder WithWin32TransparentPopupCompositionOptions(this AppBuilder appBuilder)
+    private static AppBuilder WithWin32CompositionOptions(this AppBuilder appBuilder)
     {
         var win32OptionsType = Type.GetType("Avalonia.Win32PlatformOptions, Avalonia.Win32");
         var renderingModeType = Type.GetType("Avalonia.Win32RenderingMode, Avalonia.Win32");
@@ -98,12 +97,9 @@ public static class AppBuilderExtensions
 
         win32OptionsType.GetProperty("RenderingMode")?.SetValue(options,
             CreateEnumArray(renderingModeType, "AngleEgl", "Software"));
+
         win32OptionsType.GetProperty("CompositionMode")?.SetValue(options,
-            CreateEnumArray(
-                compositionModeType,
-                "WinUIComposition",
-                "DirectComposition",
-                "RedirectionSurface"));
+            CreateEnumArray(compositionModeType, GetWin32CompositionModeNames()));
 
         var withMethod = typeof(AppBuilder).GetMethods()
                                            .Single(method =>
@@ -120,6 +116,15 @@ public static class AppBuilderExtensions
                                            });
         withMethod.MakeGenericMethod(win32OptionsType).Invoke(appBuilder, [options]);
         return appBuilder;
+    }
+
+    [SupportedOSPlatform("windows")]
+    private static string[] GetWin32CompositionModeNames()
+    {
+        // Avalonia 12.1 WinUI commit callbacks can trail HWND live-resize messages on Windows 10.
+        return OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)
+            ? ["WinUIComposition", "DirectComposition", "RedirectionSurface"]
+            : ["RedirectionSurface"];
     }
 
     private static Array CreateEnumArray(Type enumType, params string[] names)

@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using AtomUI.Native.Windows;
 using Avalonia.Controls;
@@ -56,68 +55,4 @@ internal static class WindowUtilsWindows
         return margin.Top > 0 ? margin.Top : null;
     }
 
-    public static unsafe void ApplyDwmShadow(IntPtr hwnd)
-    {
-        var policy = WindowUtilsInterop.DWMNCRP_ENABLED;
-        WindowUtilsInterop.DwmSetWindowAttribute(hwnd,
-            WindowUtilsInterop.DWMWA_NCRENDERING_POLICY, &policy, sizeof(int));
-
-        var margins = new WindowUtilsInterop.MARGINS
-        {
-            cxLeftWidth = -1,
-            cxRightWidth = -1,
-            cyTopHeight = -1,
-            cyBottomHeight = -1
-        };
-        WindowUtilsInterop.DwmExtendFrameIntoClientArea(hwnd, ref margins);
-
-        if (Environment.OSVersion.Version.Build >= 22000)
-        {
-            var round = WindowUtilsInterop.DWMWCP_ROUND;
-            WindowUtilsInterop.DwmSetWindowAttribute(hwnd,
-                WindowUtilsInterop.DWMWA_WINDOW_CORNER_PREFERENCE, &round, sizeof(int));
-        }
-    }
-
-    public static void HandleNcCalcSize(IntPtr hWnd, IntPtr lParam)
-    {
-        var style = WindowUtilsInterop.GetWindowLongPtr(hWnd, WindowUtilsInterop.GWL_STYLE);
-        if ((style & WindowUtilsInterop.WS_MAXIMIZE) != 0)
-        {
-            var nccsp = Marshal.PtrToStructure<WindowUtilsInterop.NCCALCSIZE_PARAMS>(lParam);
-            var borderX = WindowUtilsInterop.GetSystemMetrics(WindowUtilsInterop.SM_CXSIZEFRAME)
-                        + WindowUtilsInterop.GetSystemMetrics(WindowUtilsInterop.SM_CXPADDEDBORDER);
-            var borderY = WindowUtilsInterop.GetSystemMetrics(WindowUtilsInterop.SM_CYSIZEFRAME)
-                        + WindowUtilsInterop.GetSystemMetrics(WindowUtilsInterop.SM_CXPADDEDBORDER);
-            nccsp.rgrc0.left += borderX;
-            nccsp.rgrc0.top += borderY;
-            nccsp.rgrc0.right -= borderX;
-            nccsp.rgrc0.bottom -= borderY;
-            Marshal.StructureToPtr(nccsp, lParam, false);
-        }
-    }
-
-    public static int HitTestBorder(IntPtr hWnd, IntPtr lParam, int borderWidth)
-    {
-        var screenX = WindowUtilsInterop.GetXLParam(lParam);
-        var screenY = WindowUtilsInterop.GetYLParam(lParam);
-
-        WindowUtilsInterop.GetWindowRect(hWnd, out var rc);
-
-        var left   = screenX - rc.left;
-        var right  = rc.right - screenX;
-        var top    = screenY - rc.top;
-        var bottom = rc.bottom - screenY;
-
-        if (top <= borderWidth && left <= borderWidth)    return WindowUtilsInterop.HTTOPLEFT;
-        if (top <= borderWidth && right <= borderWidth)   return WindowUtilsInterop.HTTOPRIGHT;
-        if (bottom <= borderWidth && left <= borderWidth) return WindowUtilsInterop.HTBOTTOMLEFT;
-        if (bottom <= borderWidth && right <= borderWidth)return WindowUtilsInterop.HTBOTTOMRIGHT;
-        if (top <= borderWidth)                           return WindowUtilsInterop.HTTOP;
-        if (bottom <= borderWidth)                        return WindowUtilsInterop.HTBOTTOM;
-        if (left <= borderWidth)                          return WindowUtilsInterop.HTLEFT;
-        if (right <= borderWidth)                         return WindowUtilsInterop.HTRIGHT;
-
-        return 0;
-    }
 }

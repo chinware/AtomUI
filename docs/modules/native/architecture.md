@@ -54,8 +54,9 @@ src/AtomUI.Native/
 ### Windows
 
 - `SetWindowIgnoreMouseEventsWindows()` 修改 `WS_EX_TRANSPARENT/WS_EX_LAYERED`。
-- `ApplyDwmShadow()` 和 `ForceWinNonClientFrameChanged()` 恢复 DWM non-client frame。
-- `WinWndProcHook()` 处理 `WM_NCCALCSIZE` 和 `WM_NCHITTEST`。
+- Windows 10 live resize 使用 `RedirectionSurface`，窗口装饰与 resize hit-test 由 Avalonia CSD 管理。
+- AtomUI 不处理 `WM_NCCALCSIZE`，也不手动修改 DWM non-client frame。
+- 标题栏最大化按钮仅通过 `WM_NCHITTEST/HTMAXBUTTON` 接入 Windows 11 Snap Layout。
 
 ### macOS
 
