@@ -128,13 +128,13 @@
             <Setter Property="HorizontalAlignment" Value="Stretch" />
             <Setter Property="VerticalAlignment" Value="Top" />
             <Setter Property="Height" Value="{atom:NavMenuTokenResource MenuHorizontalHeight}" />
-            <Style Selector="^ /template/ Border#PART_HorizontalLine">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HorizontalLine">
                 <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
             </Style>
             
             <Style Selector="^[IsDarkStyle=True]">
                 <Setter Property="Background" Value="{atom:NavMenuTokenResource DarkMenuBg}" />
-                <Style Selector="^ /template/ Border#PART_HorizontalLine">
+                <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HorizontalLine">
                     <Setter Property="IsVisible" Value="False" />
                 </Style>
             </Style>

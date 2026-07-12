@@ -408,15 +408,6 @@ public partial class Window : AvaloniaWindow,
         ClientSize = clientSize;
     }
 
-    internal void NotifyResizeStarted(WindowEdge edge)
-    {
-        if (OperatingSystem.IsLinux() &&
-            _platformChromeManager is WaylandWindowChromeManager waylandManager)
-        {
-            waylandManager.NotifyResizeStarted(edge);
-        }
-    }
-
     internal void ConfigureManagedResizeGrip(Thickness gripThickness)
     {
         if (_windowResizer is null)
@@ -849,16 +840,6 @@ public partial class Window : AvaloniaWindow,
         if (OperatingSystem.IsMacOS())
         {
             ConfigureMacOsWindow();
-        }
-    }
-
-    protected override void OnPointerReleased(PointerReleasedEventArgs e)
-    {
-        base.OnPointerReleased(e);
-        if (OperatingSystem.IsLinux() &&
-            _platformChromeManager is WaylandWindowChromeManager waylandManager)
-        {
-            waylandManager.NotifyResizeFinished();
         }
     }
 

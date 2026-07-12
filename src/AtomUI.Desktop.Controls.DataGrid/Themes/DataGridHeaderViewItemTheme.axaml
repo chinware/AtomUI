@@ -16,9 +16,9 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^ /template/ Border#PART_ContentPresenter">
-            <Setter Property="atom:DashedBorder.Background" Value="{atom:DataGridTokenResource TableHeaderBg}" />
-            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_ContentPresenter">
+            <Setter Property="Background" Value="{atom:DataGridTokenResource TableHeaderBg}" />
+            <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
         </Style>
 
         <Setter Property="ClipToBounds" Value="False" />

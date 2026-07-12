@@ -41,7 +41,7 @@
             </Style>
         </Style>
         
-        <Style Selector="^ /template/ Border#Separator">
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#Separator">
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}"/>
             <Setter Property="BorderThickness" Value="1,0,0,0"/>
         </Style>

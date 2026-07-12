@@ -2,6 +2,7 @@ using AtomUI;
 using AtomUI.Animations;
 using AtomUI.Desktop.Controls;
 using AtomUI.Controls;
+using AtomUI.Controls.Primitives;
 using AtomUI.Desktop.Controls.DesignTokens;
 using AtomUI.Theme.Styling;
 using Avalonia;
@@ -280,7 +281,7 @@ public class OtpLineEditBehaviorTests
             foreach (var cell in cells)
             {
                 var frame = cell.GetVisualDescendants()
-                                .OfType<Border>()
+                                .OfType<PixelAlignedBorder>()
                                 .Single(item => item.Name == "PART_Frame");
 
                 BrushShouldHaveSameColor(frame.Background, disabledBackground);
@@ -361,7 +362,7 @@ public class OtpLineEditBehaviorTests
                                           .OfType<OtpLineEditCell>()
                                           .Single(cell => cell.IsActive);
             var frame = activeCell.GetVisualDescendants()
-                                  .OfType<Border>()
+                                  .OfType<PixelAlignedBorder>()
                                   .Single(item => item.Name == "PART_Frame");
 
             activeCell.Classes.Contains(":cell-active").ShouldBeTrue();
@@ -387,7 +388,7 @@ public class OtpLineEditBehaviorTests
                                              .OfType<OtpLineEditCell>()
                                              .First();
             var frame = cell.GetVisualDescendants()
-                            .OfType<Border>()
+                            .OfType<PixelAlignedBorder>()
                             .Single(item => item.Name == "PART_Frame");
 
             SetPseudoClass(cell, StdPseudoClass.PointerOver, true);
@@ -433,7 +434,7 @@ public class OtpLineEditBehaviorTests
                                           .OfType<OtpLineEditCell>()
                                           .First();
             var frame = cell.GetVisualDescendants()
-                            .OfType<Border>()
+                            .OfType<PixelAlignedBorder>()
                             .Single(item => item.Name == "PART_Frame");
 
             BrushShouldHaveSameColor(frame.BorderBrush, normalBorder);
@@ -466,7 +467,7 @@ public class OtpLineEditBehaviorTests
                                          .OfType<OtpLineEditCell>()
                                          .First();
             var frame = cell.GetVisualDescendants()
-                            .OfType<Border>()
+                            .OfType<PixelAlignedBorder>()
                             .Single(item => item.Name == "PART_Frame");
 
             SetPseudoClass(cell, StdPseudoClass.PointerOver, true);
@@ -1032,7 +1033,7 @@ public class OtpLineEditBehaviorTests
                                   .OfType<OtpLineEditCell>()
                                   .First();
             var frame = cell.GetVisualDescendants()
-                            .OfType<Border>()
+                            .OfType<PixelAlignedBorder>()
                             .Single(item => item.Name == "PART_Frame");
 
             BrushShouldHaveSameColor(frame.Background, expectedBackground);

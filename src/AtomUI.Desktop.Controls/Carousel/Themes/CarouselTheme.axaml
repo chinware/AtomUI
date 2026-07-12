@@ -46,19 +46,6 @@
         <Setter Property="PageInEasing" Value="CubicEaseOut" />
         <Setter Property="PageOutEasing" Value="CubicEaseOut" />
 
-        <Style Selector="^ /template/ atom|CarouselNavButton">
-            <Setter Property="IconWidth" Value="{atom:CarouselTokenResource ArrowSize}" />
-            <Setter Property="IconHeight" Value="{atom:CarouselTokenResource ArrowSize}" />
-            <Setter Property="IconBrush" Value="{atom:SharedTokenResource ColorBgContainer}" />
-            <Setter Property="Opacity" Value="0.2" />
-        </Style>
-
-        <Style Selector="^ /template/ atom|CarouselNavButton">
-            <Style Selector="^:pointerover">
-                <Setter Property="Opacity" Value="1.0" />
-            </Style>
-        </Style>
-
         <Style Selector="^[PaginationPosition=Top]">
             <Style Selector="^ /template/ LayoutTransformControl#PaginationLayoutTransform">
                 <Setter Property="HorizontalAlignment" Value="Center" />

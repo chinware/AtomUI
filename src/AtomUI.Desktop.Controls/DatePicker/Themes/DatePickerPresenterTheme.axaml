@@ -52,7 +52,7 @@
 
     <Style Selector="^:is(atom|DatePickerPresenter)">
         <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
-        <Style Selector="^ /template/ Border#ButtonsFrame">
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#ButtonsFrame">
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
         </Style>
 

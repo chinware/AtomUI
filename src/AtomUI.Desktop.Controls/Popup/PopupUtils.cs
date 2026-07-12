@@ -399,8 +399,8 @@ internal static class PopupUtils
 
     /// <summary>
     /// 判断在给定的自定义放置参数下，<c>OverlayPopupHost</c>（Overlay 层弹窗）最终会在 X / Y 轴上发生翻转。
-    /// 实现与 Avalonia 的 <c>OverlayPopupHost + ManagedPopupPositioner.Calculate</c> 完全一致：
-    /// 使用 TopLevel 客户区逻辑坐标，并按 SafeAreaPadding 收缩可用区域。
+    /// 调整顺序与 Avalonia 的 <c>OverlayPopupHost + ManagedPopupPositioner.Calculate</c> 一致；
+    /// 可用区域还会排除 AtomUI CSD 阴影和 SafeAreaPadding。
     /// </summary>
     /// <param name="placement">自定义放置参数（来源于 <c>Popup.CustomPopupPlacementCallback</c>）。</param>
     /// <returns>X 轴是否翻转、Y 轴是否翻转。</returns>
@@ -418,12 +418,7 @@ internal static class PopupUtils
             return (false, false);
         }
 
-        var bounds = new Rect(default, topLevel.ClientSize);
-        var padding = topLevel.InsetsManager?.SafeAreaPadding ?? default;
-        if (padding != default)
-        {
-            bounds = bounds.Deflate(padding);
-        }
+        var bounds = GetOverlayPopupPositioningBounds(topLevel);
 
         return CalculateFlipInfoCore(
             placement,
@@ -440,10 +435,26 @@ internal static class PopupUtils
         Size popupSize,
         Point offset)
     {
-        var anchor               = placement.Anchor;
-        var gravity              = placement.Gravity;
-        var constraintAdjustment = placement.ConstraintAdjustment;
+        var (_, flipX, flipY) = CalculateConstrainedGeometry(
+            anchorRect,
+            popupSize,
+            placement.Anchor,
+            placement.Gravity,
+            placement.ConstraintAdjustment,
+            offset,
+            bounds);
+        return (flipX, flipY);
+    }
 
+    internal static (Rect geometry, bool flipX, bool flipY) CalculateConstrainedGeometry(
+        Rect anchorRect,
+        Size popupSize,
+        PopupAnchor anchor,
+        PopupGravity gravity,
+        PopupPositionerConstraintAdjustment constraintAdjustment,
+        Point offset,
+        Rect bounds)
+    {
         Rect GetUnconstrained(PopupAnchor a, PopupGravity g) =>
             new Rect(Gravitate(GetAnchorPoint(anchorRect, a), popupSize, g) + offset, popupSize);
 
@@ -460,6 +471,8 @@ internal static class PopupUtils
             return true;
         }
 
+        static bool IsValid(in Rect rect) => rect.Width > 0 && rect.Height > 0;
+
         var geo   = GetUnconstrained(anchor, gravity);
         var flipX = false;
         var flipY = false;
@@ -475,6 +488,34 @@ internal static class PopupUtils
             }
         }
 
+        if (constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.SlideX))
+        {
+            geo = geo.WithX(Math.Max(geo.X, bounds.X));
+            if (geo.Right > bounds.Right)
+            {
+                geo = geo.WithX(bounds.Right - geo.Width);
+            }
+        }
+
+        if (constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.ResizeX))
+        {
+            var resized = geo;
+            if (!FitsInBounds(resized, PopupAnchor.Left))
+            {
+                resized = resized.WithX(bounds.X);
+            }
+
+            if (!FitsInBounds(resized, PopupAnchor.Right))
+            {
+                resized = resized.WithWidth(bounds.Width - resized.X);
+            }
+
+            if (IsValid(resized))
+            {
+                geo = resized;
+            }
+        }
+
         if (!FitsInBounds(geo, PopupAnchor.VerticalMask)
             && constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.FlipY))
         {
@@ -482,10 +523,113 @@ internal static class PopupUtils
             if (FitsInBounds(flipped, PopupAnchor.VerticalMask))
             {
                 flipY = true;
+                geo   = geo.WithY(flipped.Y);
             }
         }
 
-        return (flipX, flipY);
+        if (constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.SlideY))
+        {
+            geo = geo.WithY(Math.Max(geo.Y, bounds.Y));
+            if (geo.Bottom > bounds.Bottom)
+            {
+                geo = geo.WithY(bounds.Bottom - geo.Height);
+            }
+        }
+
+        if (constraintAdjustment.HasAllFlags(PopupPositionerConstraintAdjustment.ResizeY))
+        {
+            var resized = geo;
+            if (!FitsInBounds(resized, PopupAnchor.Top))
+            {
+                resized = resized.WithY(bounds.Y);
+            }
+
+            if (!FitsInBounds(resized, PopupAnchor.Bottom))
+            {
+                resized = resized.WithHeight(bounds.Height - resized.Y);
+            }
+
+            if (IsValid(resized))
+            {
+                geo = resized;
+            }
+        }
+
+        return (geo, flipX, flipY);
+    }
+
+    private static Rect GetOverlayPopupPositioningBounds(TopLevel topLevel)
+    {
+        var bounds = new Rect(default, topLevel.ClientSize);
+        if (topLevel is Window
+            {
+                IsCsdEnabled: true,
+                WindowState: WindowState.Normal
+            } window && HasPositiveInset(window.FrameShadowThickness))
+        {
+            bounds = bounds.Deflate(window.FrameShadowThickness);
+        }
+
+        var padding = topLevel.InsetsManager?.SafeAreaPadding ?? default;
+        if (padding != default)
+        {
+            bounds = bounds.Deflate(padding);
+        }
+
+        return bounds;
+    }
+
+    private static bool TryConstrainOverlayPopupToVisibleFrame(
+        CustomPopupPlacement placement,
+        out bool flipX,
+        out bool flipY)
+    {
+        flipX = false;
+        flipY = false;
+
+        var topLevel = TopLevel.GetTopLevel(placement.Target);
+        if (topLevel is not Window
+            {
+                IsCsdEnabled: true,
+                WindowState: WindowState.Normal
+            } window || !HasPositiveInset(window.FrameShadowThickness))
+        {
+            return false;
+        }
+
+        var bounds = GetOverlayPopupPositioningBounds(topLevel);
+        if (bounds.Width <= 0 || bounds.Height <= 0)
+        {
+            return false;
+        }
+
+        var (geometry, horizontalFlipped, verticalFlipped) = CalculateConstrainedGeometry(
+            placement.AnchorRectangle,
+            placement.PopupSize,
+            placement.Anchor,
+            placement.Gravity,
+            placement.ConstraintAdjustment,
+            placement.Offset,
+            bounds);
+
+        // OverlayPopupHost positions against the full CSD surface. Convert the result into an
+        // unconstrained, RTL-invariant placement so Avalonia preserves the visible-frame geometry.
+        placement.AnchorRectangle      = new Rect(geometry.Position, placement.PopupSize);
+        placement.Anchor               = PopupAnchor.None;
+        placement.Gravity              = PopupGravity.None;
+        placement.ConstraintAdjustment = PopupPositionerConstraintAdjustment.None;
+        placement.Offset               = default;
+        flipX                           = horizontalFlipped;
+        flipY                           = verticalFlipped;
+        return true;
+    }
+
+    private static bool HasPositiveInset(Thickness thickness)
+    {
+        return thickness.Left > 0 ||
+               thickness.Top > 0 ||
+               thickness.Right > 0 ||
+               thickness.Bottom > 0;
     }
 
     internal static (PopupAnchor, PopupGravity) GetAnchorAndGravity(PlacementMode placement)
@@ -633,6 +777,7 @@ internal static class PopupUtils
     {
         placement.Anchor  = anchor;
         placement.Gravity = gravity;
+        placement.Offset  = new Point(hOffset, vOffset);
 
         var (flipX, flipY) = isUseOverlayHost
             ? CalculateOverlayPopupHostFlipInfo(placement)
@@ -692,6 +837,14 @@ internal static class PopupUtils
         }
         
         placement.Offset = new Point(hOffset, vOffset);
+        if (isUseOverlayHost && TryConstrainOverlayPopupToVisibleFrame(
+                placement,
+                out var constrainedFlipX,
+                out var constrainedFlipY))
+        {
+            flipX = constrainedFlipX;
+            flipY = constrainedFlipY;
+        }
         return (flipX, flipY);
     }
 

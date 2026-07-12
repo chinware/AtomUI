@@ -457,8 +457,9 @@ internal class OverlayDialogHost : ContentControl,
             return (RelativePoint.Center, BuildIdentityTransform());
         }
 
-        var (origin, translate) = CalculateCollapsedTransformState(host);
-        return (origin, BuildCollapsedTransform(translate));
+        return TryCalculateCollapsedTransformState(host, out var origin, out var translate)
+            ? (origin, BuildCollapsedTransform(translate))
+            : (RelativePoint.Center, BuildIdentityTransform());
     }
 
     private void AttachMaskToOverlayLayer()
@@ -506,47 +507,57 @@ internal class OverlayDialogHost : ContentControl,
         Canvas.SetTop(_dialogMask, _ownerBounds.Y);
     }
 
-    private (RelativePoint origin, Point translate) CalculateCollapsedTransformState(Visual host)
+    private bool TryCalculateCollapsedTransformState(
+        Visual host,
+        out RelativePoint origin,
+        out Point translate)
     {
+        origin    = RelativePoint.Center;
+        translate = default;
+
         var hostWidth  = host.Bounds.Width;
         var hostHeight = host.Bounds.Height;
         if (hostWidth <= 0 || hostHeight <= 0)
         {
-            return (RelativePoint.Center, default);
+            return false;
         }
 
-        if (_dialog.PlacementTarget is not { } target)
+        if (_dialog.PlacementTarget is not { } target ||
+            !host.IsAttachedToVisualTree() ||
+            !target.IsAttachedToVisualTree())
         {
-            return (RelativePoint.Center, default);
+            return false;
         }
 
-        var hostRoot   = host.GetVisualRoot();
-        var targetRoot = target.GetVisualRoot();
-        if (hostRoot is null || targetRoot is null)
+        var hostTopLevel   = TopLevel.GetTopLevel(host);
+        var targetTopLevel = TopLevel.GetTopLevel(target);
+        if (hostTopLevel is null || targetTopLevel is null)
         {
-            return (RelativePoint.Center, default);
+            return false;
         }
 
-        Point? rPoint = null;
+        Point rPoint;
 
-        // TODO(avalonia-csd): Linux CSD 下 Avalonia 把装饰阴影算进 ClientSize，OverlayLayer 被
-        // 整体内缩，PointToScreen 的口径和 target 不一致。这里优先走同根的 TranslatePoint 绕开
-        // 该问题，属于临时方案；上游把 OverlayLayer 坐标系与装饰阴影解耦后，恢复 PointToScreen
-        // 单路径即可。
-        // ShouldUseOverlayLayer 模式下 host（OverlayPopupHost）与 target 同在一个 Window 的
-        // visual tree，直接 TranslatePoint 得到 target 中心在 host 本地坐标下的 R。
-        if (ReferenceEquals(hostRoot, targetRoot))
+        // Overlay host 与 target 位于同一 TopLevel 时，visual-to-visual 转换是跨平台的坐标契约。
+        // 页面 detach 期间二者会暂时保留 PresentationSource，但已经没有共同 visual ancestor；
+        // 此时 TranslatePoint 返回 null，调用方应跳过依赖 anchor 坐标的缩放动画。
+        if (ReferenceEquals(hostTopLevel, targetTopLevel))
         {
             var targetCenterLocal = new Point(target.Bounds.Width / 2, target.Bounds.Height / 2);
-            rPoint = target.TranslatePoint(targetCenterLocal, host);
-        }
+            var translatedTargetCenter = target.TranslatePoint(targetCenterLocal, host);
+            if (translatedTargetCenter is null)
+            {
+                return false;
+            }
 
-        if (rPoint is null)
+            rPoint = translatedTargetCenter.Value;
+        }
+        else
         {
             // 跨 TopLevel fallback：屏幕像素 + RenderScaling 回到 DIP。
-            var scaling = (hostRoot as TopLevel)?.RenderScaling
-                          ?? (targetRoot as TopLevel)?.RenderScaling
-                          ?? 1.0;
+            var scaling = hostTopLevel.RenderScaling > 0
+                ? hostTopLevel.RenderScaling
+                : targetTopLevel.RenderScaling;
 
             var hostTopLeft  = host.PointToScreen(default);
             var targetCenter = target.PointToScreen(
@@ -557,8 +568,8 @@ internal class OverlayDialogHost : ContentControl,
                 (targetCenter.Y - hostTopLeft.Y) / scaling);
         }
 
-        var rx = rPoint.Value.X;
-        var ry = rPoint.Value.Y;
+        var rx = rPoint.X;
+        var ry = rPoint.Y;
 
         var cx = hostWidth  / 2;
         var cy = hostHeight / 2;
@@ -575,11 +586,12 @@ internal class OverlayDialogHost : ContentControl,
         // 变换综合是 s*(p - O) + O + t，令 host 中心 c 经变换后得 R：
         //   t = R - s*c - (1 - s)*O
         const double s = CollapsedScale;
-        var translate = new Point(
+        translate = new Point(
             rx - s * cx - (1 - s) * ox,
             ry - s * cy - (1 - s) * oy);
 
-        return (new RelativePoint(originRelX, originRelY, RelativeUnit.Relative), translate);
+        origin = new RelativePoint(originRelX, originRelY, RelativeUnit.Relative);
+        return true;
     }
 
     private void HandlePopupClosed(object? sender, EventArgs e)

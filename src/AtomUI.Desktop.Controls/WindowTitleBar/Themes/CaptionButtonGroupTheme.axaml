@@ -50,6 +50,9 @@
                     </StackPanel>
                 </ControlTemplate>
             </Setter>
+            <Style Selector="^ /template/ atom|CaptionButton">
+                <Setter Property="BackgroundInset" Value="2" />
+            </Style>
         </Style>
         
         <Style Selector="^[OsType=macOS]">

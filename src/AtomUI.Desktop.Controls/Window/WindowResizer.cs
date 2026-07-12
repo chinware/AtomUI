@@ -67,7 +67,6 @@ internal class WindowResizer : TemplatedControl
             _                              => throw new ArgumentOutOfRangeException()
         };
 
-        TargetWindow.NotifyResizeStarted(windowEdge);
         TargetWindow.BeginResizeDrag(windowEdge, e);
         e.Handled = true;
     }

@@ -167,7 +167,7 @@
                 <Setter Property="MinHeight" Value="{atom:SharedTokenResource ControlHeightSM}" />
             </Style>
             <Style Selector="^[SizeType=Large], ^[SizeType=Middle], ^[SizeType=Custom], ^[SizeType=Small]">
-                <Style Selector="^ /template/ Border#PART_ContentFrame">
+                <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                     <Setter Property="Padding"
                             Value="{Binding (atom:ButtonSpinnerDecoratedBox).EffectiveContentPadding, RelativeSource={RelativeSource TemplatedParent}}" />
                 </Style>

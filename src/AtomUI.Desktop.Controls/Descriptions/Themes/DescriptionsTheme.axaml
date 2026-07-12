@@ -26,11 +26,11 @@
         </Setter>
 
         <Style Selector="^[IsBordered=True]">
-            <Style Selector="^ /template/ Border#ContentFrame">
-                <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
-                <Setter Property="atom:DashedBorder.BorderThickness"
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#ContentFrame">
+                <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
+                <Setter Property="BorderThickness"
                         Value="{atom:SharedTokenResource BorderThickness}" />
-                <Setter Property="atom:DashedBorder.CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
+                <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadiusLG}" />
                 <Setter Property="ClipToBounds" Value="True" />
             </Style>
         </Style>

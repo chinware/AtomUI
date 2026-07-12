@@ -116,7 +116,7 @@
         <Setter Property="HeaderBorderThickness"
                 Value="{atom:SharedTokenResource BorderThickness}" />
 
-        <Style Selector="^ /template/ Border#PART_HeaderFrame">
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderFrame">
             <Setter Property="Margin" Value="{atom:DatePickerTokenResource HeaderMargin}" />
             <Setter Property="Padding" Value="{atom:DatePickerTokenResource HeaderPadding}" />
             <Setter Property="BorderBrush"

@@ -123,9 +123,9 @@
                 <Style Selector="^ /template/ ContentPresenter#Content">
                     <Setter Property="Foreground" Value="{atom:DescriptionsTokenResource ContentColor}"/>
                 </Style>
-                <Style Selector="^ /template/ Border#Separator">
-                    <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
-                    <Setter Property="atom:DashedBorder.BorderThickness" Value="0,1,0,0" />
+                <Style Selector="^ /template/ atom|PixelAlignedBorder#Separator">
+                    <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
+                    <Setter Property="BorderThickness" Value="0,1,0,0" />
                     <Setter Property="Height" Value="{atom:SharedTokenResource LineWidth}" />
                 </Style>
 

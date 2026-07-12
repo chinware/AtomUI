@@ -487,10 +487,12 @@ AtomUI 保留共享 `BoxShadowsSecondary` 的完整 offset、blur、spread 和 s
 保留元数据，这只解决 trimming/NativeAOT 的成员保留问题；它不会把 Avalonia 私有字段变成稳定 API，
 也不保证跨 Avalonia 小版本兼容。X11 仍通过 input region 把实际输入带限制在最多 10 DIP。
 
-Wayland 的横向/纵向 resize 由 AtomUI resizer 记录明确的 `WindowEdge`。在 Avalonia Wayland
-`IWindowImpl.Resized` 回调进入 `Window.HandleResized` 前，East/West 固定 resize 起点高度，
-North/South 固定 resize 起点宽度，避免 configure size、shadow extents 和布局回写形成正反馈；
-对角 resize 和非 Layout resize 保持原值。
+Avalonia 会按 `RenderScaling` 将绘制装饰的 shadow extents 对齐到物理像素，因此分数缩放下四边可能是
+fractional DIP；Wayland 的 `xdg_surface.set_window_geometry` 只能接收整数。Avalonia 12.1 的
+`WSurface.MaybeEmitWindowGeometry` 会对这些边使用不同方向的整数取整，而 `WindowImpl.ApplyConfigureBatch`
+又加回未取整的 extents，可能让每轮 configure 的 surface size 净增一个逻辑像素。AtomUI 在 Wayland
+平台边界将传给 `IWindowImpl.SetShadowExtents` 的四边归一到整数逻辑像素，使 compositor 排除量和
+configure 加回量闭合；绘制装饰仍使用 Avalonia 的原始 fractional thickness，不改变阴影视觉。
 
 ---
 
@@ -754,6 +756,10 @@ Avalonia 自带的 `UsePlatformDetect()` 在 Linux 仍只选择 X11，不能代�
    Wayland 后端，调用方无需自行处理协议 serial。
 5. 标题栏中的 Popup 补偿仍保留。绘制装饰内容位于 `TopLevelHost` 的独立视觉根，普通
    `TopLevel.GetTopLevel()` 和 light-dismiss root 仍不能覆盖所有标题栏 Popup 场景。
+6. Avalonia 的 `OverlayPopupHost.Screens` 使用 `PopupOverlayLayer.AvailableSize` 作为定位边界；AtomUI 的
+   `VisualLayerManager` 覆盖整个 CSD surface，所以该尺寸包含透明阴影缓冲区。Overlay popup 必须在定位时
+   从客户区排除 `FrameShadowThickness`，再按 `ManagedPopupPositioner` 的 Flip / Slide / Resize 顺序约束；
+   不能只给 overlay layer 设置全局 Margin，否则 Drawer、Adorner 和已有的 CSD frame 补偿会被重复 inset。
 
 ### 当前限制
 

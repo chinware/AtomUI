@@ -42,7 +42,7 @@
         </Setter>
         
         <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
-        <Style Selector="^ /template/ Border#PART_ButtonsFrame">
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_ButtonsFrame">
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorderSecondary}" />
         </Style>
         

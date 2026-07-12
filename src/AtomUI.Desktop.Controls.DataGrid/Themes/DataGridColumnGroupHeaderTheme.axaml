@@ -27,24 +27,24 @@
             <Setter Property="VerticalContentAlignment" Value="Center"/>
         </Style>
         
-        <Style Selector="^ /template/ Border#PART_Frame">
-            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}"/>
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_Frame">
+            <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}"/>
         </Style>
         
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_Frame">
                 <Setter Property="Padding" Value="{atom:DataGridTokenResource TablePadding}"/>
             </Style>
             <Setter Property="FontSize" Value="{atom:DataGridTokenResource TableFontSize}"/>
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_Frame">
                 <Setter Property="Padding" Value="{atom:DataGridTokenResource TablePaddingMiddle}"/>
             </Style>
             <Setter Property="FontSize" Value="{atom:DataGridTokenResource TableFontSizeMiddle}"/>
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ Border#PART_Frame">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_Frame">
                 <Setter Property="Padding" Value="{atom:DataGridTokenResource TablePaddingSmall}"/>
             </Style>
             <Setter Property="FontSize" Value="{atom:DataGridTokenResource TableFontSizeSmall}"/>

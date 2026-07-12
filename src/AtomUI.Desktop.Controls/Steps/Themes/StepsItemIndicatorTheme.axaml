@@ -86,7 +86,7 @@
                 </Style>
 
                 <Style Selector="^[IsCustom=False]">
-                    <Style Selector="^ /template/ Border#Frame">
+                    <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
                         <Setter Property="Width" Value="{atom:StepsTokenResource IconSize}" />
                         <Setter Property="Height" Value="{atom:StepsTokenResource IconSize}" />
                     </Style>
@@ -99,7 +99,7 @@
                     </Style>
 
                     <Style Selector="^[SizeType=Small]">
-                        <Style Selector="^ /template/ Border#Frame">
+                        <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
                             <Setter Property="Width" Value="{atom:StepsTokenResource IconSizeSM}" />
                             <Setter Property="Height"
                                     Value="{atom:StepsTokenResource IconSizeSM}" />

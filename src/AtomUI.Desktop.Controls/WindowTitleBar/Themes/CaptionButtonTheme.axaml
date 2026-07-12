@@ -6,20 +6,22 @@
     <ControlTheme x:Key="{x:Type atom:CaptionButton}" TargetType="atom:CaptionButton">
         <Setter Property="Template">
             <ControlTemplate>
-                <Border Name="PART_Frame"
-                        Background="{TemplateBinding Background}"
-                        Padding="{TemplateBinding Padding}"
-                        CornerRadius="{TemplateBinding EffectiveCornerRadius}"
-                        HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                        VerticalAlignment="{TemplateBinding VerticalAlignment}">
-                    <atom:IconPresenter
-                        Name="PART_IconPresenter"
-                        Icon="{TemplateBinding EffectiveIcon}"
-                        Width="{TemplateBinding IconWidth}"
-                        Height="{TemplateBinding IconHeight}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center" />
-                </Border>
+                <Panel HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                       VerticalAlignment="{TemplateBinding VerticalAlignment}">
+                    <Border Name="PART_Frame"
+                            Background="{TemplateBinding Background}"
+                            Margin="{TemplateBinding BackgroundInset}"
+                            CornerRadius="{TemplateBinding EffectiveCornerRadius}" />
+                    <Border Padding="{TemplateBinding Padding}">
+                        <atom:IconPresenter
+                            Name="PART_IconPresenter"
+                            Icon="{TemplateBinding EffectiveIcon}"
+                            Width="{TemplateBinding IconWidth}"
+                            Height="{TemplateBinding IconHeight}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center" />
+                    </Border>
+                </Panel>
             </ControlTemplate>
         </Setter>
 
