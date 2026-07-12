@@ -25,7 +25,7 @@
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimaryHover}" />
         </Style>
         
-        <Style Selector="^ /template/ Border#PART_Frame">
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_Frame">
             <Setter Property="Cursor" Value="Hand" />
         </Style>
 

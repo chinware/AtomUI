@@ -60,13 +60,13 @@
         </Setter>
 
         <Setter Property="MotionDuration" Value="{atom:SharedTokenResource MotionDurationSlow}" />
-        <Style Selector="^ /template/ Border#PART_HeaderDecorator">
-            <Setter Property="atom:DashedBorder.Background" Value="{atom:CollapseTokenResource HeaderBg}" />
-            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
+            <Setter Property="Background" Value="{atom:CollapseTokenResource HeaderBg}" />
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
 
-        <Style Selector="^ /template/ Border#PART_ContentFrame">
-            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_ContentFrame">
+            <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#PART_HeaderPresenter">
@@ -104,7 +104,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
                 <Setter Property="TextElement.FontSize"
                         Value="{atom:SharedTokenResource FontSizeLG}" />
                 <Setter Property="TextBlock.LineHeight"
@@ -112,7 +112,7 @@
             </Style>
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
                 <Setter Property="TextElement.FontSize"
                         Value="{atom:SharedTokenResource FontSize}" />
                 <Setter Property="TextBlock.LineHeight"
@@ -120,7 +120,7 @@
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
                 <Setter Property="TextElement.FontSize"
                         Value="{atom:SharedTokenResource FontSize}" />
                 <Setter Property="TextBlock.LineHeight"
@@ -129,7 +129,7 @@
         </Style>
 
         <Style Selector="^[TriggerType=Header]">
-            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
                 <Setter Property="Cursor" Value="Hand" />
             </Style>
         </Style>
@@ -191,20 +191,20 @@
         </Style>
 
         <Style Selector="^[IsBorderless=True]">
-            <Style Selector="^ /template/ Border#PART_ContentFrame">
-                <Setter Property="atom:DashedBorder.Background" Value="{atom:CollapseTokenResource HeaderBg}" />
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_ContentFrame">
+                <Setter Property="Background" Value="{atom:CollapseTokenResource HeaderBg}" />
             </Style>
         </Style>
 
         <Style Selector="^[IsGhostStyle=True]">
-            <Style Selector="^ /template/ Border#PART_HeaderDecorator">
-                <Setter Property="atom:DashedBorder.Background" Value="{atom:CollapseTokenResource ContentBg}" />
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator">
+                <Setter Property="Background" Value="{atom:CollapseTokenResource ContentBg}" />
             </Style>
         </Style>
 
         <Style Selector="^:disabled">
             <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorTextDisabled}" />
-            <Style Selector="^ /template/ Border#PART_HeaderDecorator ContentPresenter">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_HeaderDecorator ContentPresenter">
                 <Setter Property="Foreground"
                         Value="{atom:SharedTokenResource ColorTextDisabled}" />
             </Style>

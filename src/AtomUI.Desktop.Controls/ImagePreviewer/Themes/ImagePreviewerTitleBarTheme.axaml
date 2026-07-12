@@ -11,13 +11,13 @@
     <Style Selector="^[OsType=Linux]">
         <Setter Property="Template">
             <ControlTemplate TargetType="atom:ImagePreviewerTitleBar">
-                <DockPanel LastChildFill="True">
-                    <atom:CaptionButtonGroup DockPanel.Dock="Right"
-                                             Name="PART_CaptionButtonGroup"
-                                             IsWindowActive="{TemplateBinding IsWindowActive}"
-                                             IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
-                    <Border Name="Frame" Background="{TemplateBinding Background}"
-                            Padding="{TemplateBinding Padding}">
+                <Border Name="Frame" Background="{TemplateBinding Background}"
+                        Padding="{TemplateBinding Padding}">
+                    <DockPanel LastChildFill="True">
+                        <atom:CaptionButtonGroup DockPanel.Dock="Right"
+                                                 Name="PART_CaptionButtonGroup"
+                                                 IsWindowActive="{TemplateBinding IsWindowActive}"
+                                                 IsMotionEnabled="{TemplateBinding IsMotionEnabled}" />
                         <Panel>
                             <StackPanel Name="PART_TitleLayout"
                                         Orientation="Horizontal"
@@ -53,8 +53,8 @@
                                                   IsVisible="{TemplateBinding RightAddOn, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             </DockPanel>
                         </Panel>
-                    </Border>
-                </DockPanel>
+                    </DockPanel>
+                </Border>
             </ControlTemplate>
         </Setter>
     </Style>

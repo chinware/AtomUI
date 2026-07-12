@@ -32,35 +32,37 @@ internal class SearchEditPanel : Panel
     
     protected override Size ArrangeOverride(Size finalSize)
     {
-        var leftAddOnWidth  = 0.0d;
-        var rightAddOnWidth = 0.0d;
-        var height = finalSize.Height;
-        if (_leftAddOn != null)
-        {
-            leftAddOnWidth = _leftAddOn.DesiredSize.Width;
-            _leftAddOn.Arrange(new Rect(0, 0, leftAddOnWidth, height));
-        }
-        
+        var availableWidth  = Math.Max(0, finalSize.Width);
+        var rightAddOnWidth = Math.Min(_searchButton?.DesiredSize.Width ?? 0, availableWidth);
+        var remainingWidth  = availableWidth - rightAddOnWidth;
+        var leftAddOnWidth  = Math.Min(_leftAddOn?.DesiredSize.Width ?? 0, remainingWidth);
+        var height          = finalSize.Height;
+
         if (_searchButton != null)
         {
-            var buttonWidth  = _searchButton.DesiredSize.Width;
-            var offsetX      = finalSize.Width - buttonWidth;
-            _searchButton.Arrange(new Rect(offsetX, 0, buttonWidth, height));
-            rightAddOnWidth = buttonWidth;
+            var offsetX = availableWidth - rightAddOnWidth;
+            _searchButton.Arrange(new Rect(offsetX, 0, rightAddOnWidth, height));
+        }
+
+        if (_leftAddOn != null)
+        {
+            _leftAddOn.Arrange(new Rect(0, 0, leftAddOnWidth, height));
         }
 
         if (_contentFrame != null)
         {
-            var delta = 0.0d;
+            var sharedBorderOverlap = 0.0d;
             if (_searchButton != null)
             {
-                delta = BorderUtils.BuildRenderScaleAwareThickness(_searchButton, _searchButton.BorderThickness.Left);
+                sharedBorderOverlap = Math.Min(
+                    BorderUtils.BuildRenderScaleAwareThickness(_searchButton, _searchButton.BorderThickness.Left),
+                    rightAddOnWidth);
             }
-            var width   =  finalSize.Width - rightAddOnWidth - leftAddOnWidth + delta;
-            var offsetX = leftAddOnWidth;
-            _contentFrame.Arrange(new Rect(offsetX, 0, width, height));
+
+            var contentWidth = Math.Max(0, remainingWidth - leftAddOnWidth + sharedBorderOverlap);
+            _contentFrame.Arrange(new Rect(leftAddOnWidth, 0, contentWidth, height));
         }
-        
+
         return finalSize;
     }
 }

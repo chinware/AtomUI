@@ -32,12 +32,12 @@
         
         <Style Selector="^[IsEmptyColorMode=True]">
             <Setter Property="Cursor" Value="Hand" />
-            <Style Selector="^ /template/ Border#PART_EmptyColorFrame">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_EmptyColorFrame">
                 <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFillSecondary}" />
             </Style>
             
             <Style Selector="^:pointerover">
-                <Style Selector="^ /template/ Border#PART_EmptyColorFrame">
+                <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_EmptyColorFrame">
                     <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
                 </Style>
             </Style>

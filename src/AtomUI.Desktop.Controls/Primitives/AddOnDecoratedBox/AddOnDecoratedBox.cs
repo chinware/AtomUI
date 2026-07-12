@@ -975,8 +975,6 @@ internal class AddOnDecoratedBox : ContentControl,
 
 internal class AddOnDecoratedBoxContentFrame : PixelAlignedBorder
 {
-    protected override Type StyleKeyOverride => typeof(Border);
-
     protected override void OnPointerEntered(PointerEventArgs e)
     {
         base.OnPointerEntered(e);

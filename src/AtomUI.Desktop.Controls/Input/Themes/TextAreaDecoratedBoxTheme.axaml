@@ -71,7 +71,7 @@
                 <Setter Property="Margin" Value="{atom:AddOnDecoratedBoxTokenResource LeftInnerAddOnMargin}" />
             </Style>
             <Style Selector="^[SizeType=Large]">
-                <Style Selector="^ /template/ Border#PART_ContentFrame">
+                <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                     <Setter Property="Padding" Value="0" />
                 </Style>
                 <Setter Property="TextAreaFramePadding"
@@ -81,7 +81,7 @@
                 </Style>
             </Style>
             <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-                <Style Selector="^ /template/ Border#PART_ContentFrame">
+                <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                     <Setter Property="Padding" Value="0" />
                 </Style>
                 <Setter Property="TextAreaFramePadding"
@@ -91,7 +91,7 @@
                 </Style>
             </Style>
             <Style Selector="^[SizeType=Small]">
-                <Style Selector="^ /template/ Border#PART_ContentFrame">
+                <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                     <Setter Property="Padding" Value="0" />
                 </Style>
                 <Style Selector="^ /template/ ContentPresenter#PART_ContentRightAddOn">

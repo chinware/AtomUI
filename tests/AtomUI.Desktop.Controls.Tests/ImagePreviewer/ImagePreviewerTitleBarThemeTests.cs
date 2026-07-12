@@ -7,6 +7,30 @@ namespace AtomUI.Desktop.Controls.Tests.ImagePreviewer;
 public class ImagePreviewerTitleBarThemeTests
 {
     [Fact]
+    public void ImagePreviewer_Linux_TitleBar_Applies_Frame_Padding_To_Caption_Buttons()
+    {
+        var document = XDocument.Load(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/ImagePreviewer/Themes/ImagePreviewerTitleBarTheme.axaml"));
+
+        var linuxStyle = document.Descendants()
+                                 .Single(element =>
+                                     element.Name.LocalName == "Style" &&
+                                     (string?)element.Attribute("Selector") == "^[OsType=Linux]");
+        var template = linuxStyle.Descendants()
+                                 .Single(element => element.Name.LocalName == "ControlTemplate");
+        var frame = template.Elements().Single();
+        var captionButtonGroup = FindTemplatePart(template, "PART_CaptionButtonGroup");
+
+        frame.Name.LocalName.ShouldBe("Border");
+        frame.Attribute("Name")?.Value.ShouldBe("Frame");
+        frame.Attribute("Padding")?.Value.ShouldBe("{TemplateBinding Padding}");
+        captionButtonGroup.Ancestors().ShouldContain(frame);
+        captionButtonGroup.Parent.ShouldNotBeNull();
+        captionButtonGroup.Parent.Name.LocalName.ShouldBe("DockPanel");
+        captionButtonGroup.Parent.Parent.ShouldBe(frame);
+    }
+
+    [Fact]
     public void ImagePreviewer_TitleBar_Template_Centers_Title_Outside_LeftAddOn_Flow()
     {
         var document = XDocument.Load(GetRepoFile(

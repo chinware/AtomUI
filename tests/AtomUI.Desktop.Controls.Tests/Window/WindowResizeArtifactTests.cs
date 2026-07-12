@@ -40,62 +40,48 @@ public class WindowResizeArtifactTests
     }
 
     [Fact]
-    [SupportedOSPlatform("linux")]
-    public void Wayland_Horizontal_Resize_Does_Not_Change_The_Orthogonal_Axis()
+    public void Wayland_Resize_Uses_The_Platform_Reported_Size_Unmodified()
     {
-        var source = File.ReadAllText(GetRepoFile(
+        var waylandSource = File.ReadAllText(GetRepoFile(
             "src/AtomUI.Desktop.Controls/Window/WaylandWindowChromeManager.cs"));
+        var windowSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/Window.cs"));
+        var resizerSource = File.ReadAllText(GetRepoFile(
+            "src/AtomUI.Desktop.Controls/Window/WindowResizer.cs"));
 
-        source.ShouldContain("WindowEdge.East or WindowEdge.West");
-        source.ShouldContain("clientSize.WithHeight(resizeStartClientSize.Height)");
-        source.ShouldContain("WindowEdge.North or WindowEdge.South");
-        source.ShouldContain("clientSize.WithWidth(resizeStartClientSize.Width)");
-        source.ShouldContain("platformImpl.Resized = HandlePlatformResized;");
-        source.ShouldContain("_platformResized?.Invoke(clientSize, reason);");
+        waylandSource.ShouldNotContain("platformImpl.Resized =");
+        waylandSource.ShouldNotContain("CorrectPlatformResize");
+        windowSource.ShouldNotContain("NotifyResizeStarted");
+        windowSource.ShouldNotContain("NotifyResizeFinished");
+        resizerSource.ShouldNotContain("NotifyResizeStarted");
+        resizerSource.ShouldContain("TargetWindow.BeginResizeDrag(windowEdge, e);");
+    }
 
-        WaylandWindowChromeManager.CorrectPlatformResize(
-                new Avalonia.Size(960, 672),
-                Avalonia.Controls.WindowResizeReason.Layout,
-                Avalonia.Controls.WindowEdge.East,
-                new Avalonia.Size(900, 600),
-                Avalonia.Controls.WindowState.Normal)
-            .ShouldBe(new Avalonia.Size(960, 600));
+    [Theory]
+    [SupportedOSPlatform("linux")]
+    [InlineData(36, 26.666666666666668, 36, 45.333333333333336, 36, 27, 36, 45)]
+    [InlineData(35.5, 26.4, 36.49, 45.5, 36, 26, 36, 46)]
+    public void Wayland_Shadow_Extents_Are_Integral_At_The_Protocol_Boundary(
+        double left,
+        double top,
+        double right,
+        double bottom,
+        double expectedLeft,
+        double expectedTop,
+        double expectedRight,
+        double expectedBottom)
+    {
+        var normalized = WaylandWindowChromeManager.NormalizeWaylandShadowExtents(
+            new Thickness(left, top, right, bottom));
+        normalized.ShouldBe(new Thickness(expectedLeft, expectedTop, expectedRight, expectedBottom));
 
-        WaylandWindowChromeManager.CorrectPlatformResize(
-                new Avalonia.Size(972, 650),
-                Avalonia.Controls.WindowResizeReason.Layout,
-                Avalonia.Controls.WindowEdge.South,
-                new Avalonia.Size(900, 600),
-                Avalonia.Controls.WindowState.Normal)
-            .ShouldBe(new Avalonia.Size(900, 650));
+        const int surfaceWidth  = 1000;
+        const int surfaceHeight = 900;
+        var geometryWidth = (int)Math.Ceiling(surfaceWidth - normalized.Right) - (int)normalized.Left;
+        var geometryHeight = (int)Math.Ceiling(surfaceHeight - normalized.Bottom) - (int)normalized.Top;
 
-        WaylandWindowChromeManager.CorrectPlatformResize(
-                new Avalonia.Size(972, 650),
-                Avalonia.Controls.WindowResizeReason.Layout,
-                Avalonia.Controls.WindowEdge.SouthEast,
-                new Avalonia.Size(900, 600),
-                Avalonia.Controls.WindowState.Normal)
-            .ShouldBe(new Avalonia.Size(972, 650));
-
-        WaylandWindowChromeManager.CorrectPlatformResize(
-                new Avalonia.Size(960, 672),
-                Avalonia.Controls.WindowResizeReason.Application,
-                Avalonia.Controls.WindowEdge.East,
-                new Avalonia.Size(900, 600),
-                Avalonia.Controls.WindowState.Normal)
-            .ShouldBe(new Avalonia.Size(960, 672));
-
-        WaylandWindowChromeManager.CorrectPlatformResize(
-                new Avalonia.Size(1920, 1080),
-                Avalonia.Controls.WindowResizeReason.Layout,
-                Avalonia.Controls.WindowEdge.East,
-                new Avalonia.Size(900, 600),
-                Avalonia.Controls.WindowState.Maximized)
-            .ShouldBe(new Avalonia.Size(1920, 1080));
-
-        source.ShouldContain("if (windowState != WindowState.Normal)");
-        source.ShouldContain("NotifyResizeFinished();");
-        source.ShouldContain("windowState != WindowState.Normal");
+        (geometryWidth + normalized.Left + normalized.Right).ShouldBe(surfaceWidth);
+        (geometryHeight + normalized.Top + normalized.Bottom).ShouldBe(surfaceHeight);
     }
 
     [Fact]

@@ -9,9 +9,6 @@ internal sealed class WaylandWindowChromeManager : LinuxWindowChromeManager
 {
     private const double ManagedResizeGripScale = 1.0 / 3.0;
 
-    private Action<Size, WindowResizeReason>? _platformResized;
-    private WindowEdge? _activeResizeEdge;
-    private Size _resizeStartClientSize;
     private Thickness _managedResizeGripThickness;
     private bool _hasManagedResizeGrip;
 
@@ -22,18 +19,13 @@ internal sealed class WaylandWindowChromeManager : LinuxWindowChromeManager
 
     protected override void AttachPlatformHooks()
     {
-        if (Window.PlatformImpl is not { } platformImpl)
-        {
-            return;
-        }
-
-        _platformResized = platformImpl.Resized;
-        platformImpl.Resized = HandlePlatformResized;
         Window.PropertyChanged += HandleWindowPropertyChanged;
     }
 
     protected override void UpdatePlatformFrameGeometry()
     {
+        UpdateWaylandShadowExtents();
+
         _hasManagedResizeGrip = Window.TryTakeOverManagedResizeGrip(
             ManagedResizeGripScale,
             out _managedResizeGripThickness);
@@ -45,15 +37,12 @@ internal sealed class WaylandWindowChromeManager : LinuxWindowChromeManager
         UpdateWaylandInputRegion();
     }
 
-    public void NotifyResizeStarted(WindowEdge edge)
+    private void UpdateWaylandShadowExtents()
     {
-        _activeResizeEdge      = edge;
-        _resizeStartClientSize = Window.ClientSize;
-    }
-
-    public void NotifyResizeFinished()
-    {
-        _activeResizeEdge = null;
+        var shadowExtents = Window.IsCsdEnabled && Window.WindowState == WindowState.Normal
+            ? NormalizeWaylandShadowExtents(Window.FrameShadowThickness)
+            : default;
+        Window.PlatformImpl?.SetShadowExtents(shadowExtents);
     }
 
     private void HandleWindowPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
@@ -75,45 +64,6 @@ internal sealed class WaylandWindowChromeManager : LinuxWindowChromeManager
             Window.WindowState);
 
         Window.TrySetWaylandInputRectangle(region.X, region.Y, region.Width, region.Height);
-    }
-
-    private void HandlePlatformResized(Size clientSize, WindowResizeReason reason)
-    {
-        var windowState = Window.WindowState;
-        if (windowState != WindowState.Normal)
-        {
-            NotifyResizeFinished();
-        }
-
-        clientSize = CorrectPlatformResize(
-            clientSize,
-            reason,
-            _activeResizeEdge,
-            _resizeStartClientSize,
-            windowState);
-        _platformResized?.Invoke(clientSize, reason);
-    }
-
-    internal static Size CorrectPlatformResize(
-        Size clientSize,
-        WindowResizeReason reason,
-        WindowEdge? activeResizeEdge,
-        Size resizeStartClientSize,
-        WindowState windowState)
-    {
-        if (reason != WindowResizeReason.Layout || windowState != WindowState.Normal)
-        {
-            return clientSize;
-        }
-
-        return activeResizeEdge switch
-        {
-            WindowEdge.East or WindowEdge.West =>
-                clientSize.WithHeight(resizeStartClientSize.Height),
-            WindowEdge.North or WindowEdge.South =>
-                clientSize.WithWidth(resizeStartClientSize.Width),
-            _ => clientSize
-        };
     }
 
     internal static PixelRect CalculateInputRegion(
@@ -142,5 +92,19 @@ internal sealed class WaylandWindowChromeManager : LinuxWindowChromeManager
         var right  = Math.Clamp((int)Math.Floor(surfaceWidth - insetRight), left + 1, surfaceWidth);
         var bottom = Math.Clamp((int)Math.Floor(surfaceHeight - insetBottom), top + 1, surfaceHeight);
         return new PixelRect(left, top, right - left, bottom - top);
+    }
+
+    internal static Thickness NormalizeWaylandShadowExtents(Thickness shadowExtents)
+    {
+        return new Thickness(
+            NormalizeWaylandShadowExtent(shadowExtents.Left),
+            NormalizeWaylandShadowExtent(shadowExtents.Top),
+            NormalizeWaylandShadowExtent(shadowExtents.Right),
+            NormalizeWaylandShadowExtent(shadowExtents.Bottom));
+    }
+
+    private static double NormalizeWaylandShadowExtent(double value)
+    {
+        return Math.Max(0, Math.Round(value, MidpointRounding.AwayFromZero));
     }
 }

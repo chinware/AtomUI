@@ -103,7 +103,7 @@
         <Setter Property="ItemUintPlural"
                 Value="{atom:TransferLangResource Items}" />
 
-        <Style Selector="^/template/ Border#HeaderFrame">
+        <Style Selector="^/template/ atom|PixelAlignedBorder#HeaderFrame">
             <Setter Property="Height" Value="{atom:TransferTokenResource HeaderHeight}" />
             <Setter Property="Padding" Value="{atom:TransferTokenResource HeaderPadding}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
@@ -135,7 +135,7 @@
             <Setter Property="Margin" Value="{atom:SharedTokenResource MarginXS}" />
         </Style>
 
-        <Style Selector="^/template/ Border#FooterFrame">
+        <Style Selector="^/template/ atom|PixelAlignedBorder#FooterFrame">
             <Setter Property="Padding" Value="{atom:TransferTokenResource HeaderPadding}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorSplit}" />
         </Style>

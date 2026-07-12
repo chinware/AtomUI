@@ -102,13 +102,13 @@
             <Setter Property="FontSize" Value="{atom:DataGridTokenResource TableFontSizeSmall}" />
         </Style>
 
-        <Style Selector="^ /template/ Border#PART_VerticalSeparator">
-            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource HeaderSplitColor}" />
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_VerticalSeparator">
+            <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource HeaderSplitColor}" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Height" Value="{atom:SharedTokenResource FontHeight}" />
         </Style>
 
-        <Style Selector="^[IsSeparatorFullHeight=True] /template/ Border#PART_VerticalSeparator">
+        <Style Selector="^[IsSeparatorFullHeight=True] /template/ atom|PixelAlignedBorder#PART_VerticalSeparator">
             <Setter Property="VerticalAlignment" Value="Stretch" />
             <Setter Property="Height" Value="NaN" />
         </Style>

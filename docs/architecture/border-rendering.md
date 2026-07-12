@@ -77,6 +77,20 @@ DashStyle / BoxShadow
 
 AtomUI 自绘边框控件必须在调用 `BorderRenderHelper` 或构建几何之前，把 `BorderThickness` 转换为 `RenderThickness`。
 
+### 3.4 自绘边框的样式类型
+
+`PixelAlignedBorder` 和 `DashedBorder` 是 AtomUI 自绘控件，不是 Avalonia `Border`。模板样式必须按真实类型选择：
+
+```xml
+<Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
+    <Setter Property="BorderBrush" Value="..." />
+</Style>
+```
+
+禁止通过 `StyleKeyOverride => typeof(Border)` 让自绘控件伪装成 Avalonia `Border`。运行时 selector 匹配使用控件的 `StyleKey`，AXAML 编译器则根据 selector 的目标类型解析未限定的 Setter 属性；如果自绘控件拥有独立注册的 `Background`、`BorderBrush` 等属性，这种伪装会让 `Border#...` selector 匹配成功，但 Setter 写入 Avalonia `Border` 的属性槽，而渲染器读取 AtomUI 自绘边框的属性槽，最终出现样式已匹配但边框或背景没有生效的问题。
+
+派生自绘边框应使用自己的真实类型 selector。不得为了保留旧 `Border#...` selector 添加类型伪装；替换模板节点类型时，必须同时迁移对应 selector 和查找该节点的运行时测试。
+
 ## 4. Button 的绘制链路
 
 Button 是边框策略的基准控件。它必须保持用户无感知。

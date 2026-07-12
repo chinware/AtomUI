@@ -57,7 +57,7 @@
             </Setter>
         </Style>
 
-        <Style Selector="^[IsMotionEnabled=True] /template/ Border#PART_Frame">
+        <Style Selector="^[IsMotionEnabled=True] /template/ atom|PixelAlignedBorder#PART_Frame">
             <Setter Property="Transitions">
                 <Transitions>
                     <atom:BoxShadowsTransition Property="BoxShadow" Duration="{atom:SharedTokenResourceValue Kind=MotionDurationMid}" />
@@ -131,12 +131,12 @@
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
         </Style>
 
-        <Style Selector="^:pressed[StyleVariant=Outlined] /template/ Border#PART_Frame,
-                         ^:pressed[StyleVariant=Filled] /template/ Border#PART_Frame,
-                         ^:pressed[StyleVariant=Underlined] /template/ Border#PART_Frame,
-                         ^[IsActive=True][StyleVariant=Outlined] /template/ Border#PART_Frame,
-                         ^[IsActive=True][StyleVariant=Filled] /template/ Border#PART_Frame,
-                         ^[IsActive=True][StyleVariant=Underlined] /template/ Border#PART_Frame">
+        <Style Selector="^:pressed[StyleVariant=Outlined] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^:pressed[StyleVariant=Filled] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^:pressed[StyleVariant=Underlined] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^[IsActive=True][StyleVariant=Outlined] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^[IsActive=True][StyleVariant=Filled] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^[IsActive=True][StyleVariant=Underlined] /template/ atom|PixelAlignedBorder#PART_Frame">
             <Setter Property="BoxShadow" Value="{atom:AddOnDecoratedBoxTokenResource ActiveShadow}" />
         </Style>
 
@@ -178,12 +178,12 @@
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
         </Style>
 
-        <Style Selector="^:pressed[EffectiveStatus=Error][StyleVariant=Outlined] /template/ Border#PART_Frame,
-                         ^:pressed[EffectiveStatus=Error][StyleVariant=Filled] /template/ Border#PART_Frame,
-                         ^:pressed[EffectiveStatus=Error][StyleVariant=Underlined] /template/ Border#PART_Frame,
-                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Outlined] /template/ Border#PART_Frame,
-                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Filled] /template/ Border#PART_Frame,
-                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Underlined] /template/ Border#PART_Frame">
+        <Style Selector="^:pressed[EffectiveStatus=Error][StyleVariant=Outlined] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^:pressed[EffectiveStatus=Error][StyleVariant=Filled] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^:pressed[EffectiveStatus=Error][StyleVariant=Underlined] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Outlined] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Filled] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Error][StyleVariant=Underlined] /template/ atom|PixelAlignedBorder#PART_Frame">
             <Setter Property="BoxShadow" Value="{atom:AddOnDecoratedBoxTokenResource ErrorActiveShadow}" />
         </Style>
 
@@ -225,12 +225,12 @@
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
         </Style>
 
-        <Style Selector="^:pressed[EffectiveStatus=Warning][StyleVariant=Outlined] /template/ Border#PART_Frame,
-                         ^:pressed[EffectiveStatus=Warning][StyleVariant=Filled] /template/ Border#PART_Frame,
-                         ^:pressed[EffectiveStatus=Warning][StyleVariant=Underlined] /template/ Border#PART_Frame,
-                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Outlined] /template/ Border#PART_Frame,
-                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Filled] /template/ Border#PART_Frame,
-                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Underlined] /template/ Border#PART_Frame">
+        <Style Selector="^:pressed[EffectiveStatus=Warning][StyleVariant=Outlined] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^:pressed[EffectiveStatus=Warning][StyleVariant=Filled] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^:pressed[EffectiveStatus=Warning][StyleVariant=Underlined] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Outlined] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Filled] /template/ atom|PixelAlignedBorder#PART_Frame,
+                         ^[IsActive=True][EffectiveStatus=Warning][StyleVariant=Underlined] /template/ atom|PixelAlignedBorder#PART_Frame">
             <Setter Property="BoxShadow" Value="{atom:AddOnDecoratedBoxTokenResource WarningActiveShadow}" />
         </Style>
 

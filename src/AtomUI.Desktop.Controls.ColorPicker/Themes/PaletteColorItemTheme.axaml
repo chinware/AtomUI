@@ -27,7 +27,7 @@
             </ControlTemplate>
         </Setter>
 
-        <Style Selector="^ /template/ Border#Frame">
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
             <Setter Property="Width"
                     Value="{atom:ColorPickerTokenResource ColorPickerPresetColorSize}" />
             <Setter Property="Height"

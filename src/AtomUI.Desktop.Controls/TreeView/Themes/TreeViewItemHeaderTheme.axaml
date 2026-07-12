@@ -140,7 +140,7 @@
 
         <Style Selector="^[NodeHoverMode=WholeLine]">
             <Setter Property="Background" Value="Transparent" />
-            <Style Selector="^ /template/ Border#Frame">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
                 <Setter Property="Cursor" Value="Hand" />
             </Style>
             <Style Selector="^[IsHover=True]">
@@ -198,7 +198,7 @@
         </Style>
 
         <Style Selector="^[IsDragging=True]">
-            <Style Selector="^ /template/ Border#Frame">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
                 <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorPrimary}" />
             </Style>
         </Style>

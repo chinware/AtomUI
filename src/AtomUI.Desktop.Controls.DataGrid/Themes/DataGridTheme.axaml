@@ -176,20 +176,20 @@
             <Setter Property="Background" Value="{atom:DataGridTokenResource TableHeaderBg}" />
         </Style>
 
-        <Style Selector="^ /template/ Border#ColumnHeadersAndRowsSeparator">
-            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#ColumnHeadersAndRowsSeparator">
+            <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
         </Style>
 
-        <Style Selector="^ /template/ Border#Frame">
-            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#Frame">
+            <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
         </Style>
 
-        <Style Selector="^ /template/ Border#TitleFrame">
-            <Setter Property="atom:DashedBorder.BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#TitleFrame">
+            <Setter Property="BorderBrush" Value="{atom:DataGridTokenResource TableBorderColor}" />
         </Style>
 
-        <Style Selector="^[IsFrameBorderVisible=False] /template/ Border#TitleFrame">
-            <Setter Property="atom:DashedBorder.BorderThickness" Value="0" />
+        <Style Selector="^[IsFrameBorderVisible=False] /template/ atom|PixelAlignedBorder#TitleFrame">
+            <Setter Property="BorderThickness" Value="0" />
         </Style>
 
         <Style Selector="^ /template/ ContentPresenter#Footer">

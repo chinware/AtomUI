@@ -298,17 +298,17 @@
                             </ControlTemplate>
                         </Setter>
 
-                        <Style Selector="^ /template/ Border#TailSeparatorLine">
+                        <Style Selector="^ /template/ atom|PixelAlignedBorder#TailSeparatorLine">
                             <Setter Property="Height"
                                     Value="{atom:SharedTokenResource LineWidth}" />
                         </Style>
 
-                        <Style Selector="^ /template/ Border#BeginningSeparatorLine">
+                        <Style Selector="^ /template/ atom|PixelAlignedBorder#BeginningSeparatorLine">
                             <Setter Property="Height"
                                     Value="{atom:SharedTokenResource LineWidth}" />
                         </Style>
 
-                        <Style Selector="^ /template/ Border#EndingSeparatorLine">
+                        <Style Selector="^ /template/ atom|PixelAlignedBorder#EndingSeparatorLine">
                             <Setter Property="Height"
                                     Value="{atom:SharedTokenResource LineWidth}" />
                         </Style>
@@ -319,7 +319,7 @@
                         </Style>
 
                         <Style Selector="^[Status=Process]">
-                            <Style Selector="^ /template/ Border#BeginningSeparatorLine">
+                            <Style Selector="^ /template/ atom|PixelAlignedBorder#BeginningSeparatorLine">
                                 <Setter Property="BorderBrush"
                                         Value="{atom:StepsTokenResource FinishTailColor}" />
                             </Style>
@@ -412,17 +412,17 @@
                                 Value="{atom:StepsTokenResource DotCurrentSize}" />
                     </Style>
 
-                    <Style Selector="^ /template/ Border#TailSeparatorLine">
+                    <Style Selector="^ /template/ atom|PixelAlignedBorder#TailSeparatorLine">
                         <Setter Property="Height"
                                 Value="{atom:StepsTokenResource DotLineThickness}" />
                     </Style>
 
-                    <Style Selector="^ /template/ Border#BeginningSeparatorLine">
+                    <Style Selector="^ /template/ atom|PixelAlignedBorder#BeginningSeparatorLine">
                         <Setter Property="Height"
                                 Value="{atom:StepsTokenResource DotLineThickness}" />
                     </Style>
 
-                    <Style Selector="^ /template/ Border#EndingSeparatorLine">
+                    <Style Selector="^ /template/ atom|PixelAlignedBorder#EndingSeparatorLine">
                         <Setter Property="Height"
                                 Value="{atom:StepsTokenResource DotLineThickness}" />
                     </Style>
@@ -438,7 +438,7 @@
                     </Style>
 
                     <Style Selector="^[Status=Process]">
-                        <Style Selector="^ /template/ Border#BeginningSeparatorLine">
+                        <Style Selector="^ /template/ atom|PixelAlignedBorder#BeginningSeparatorLine">
                             <Setter Property="BorderBrush"
                                     Value="{atom:StepsTokenResource FinishTailColor}" />
                         </Style>
@@ -1246,14 +1246,14 @@
                         Value="{atom:StepsTokenResource InlineItemPadding}" />
             </Style>
 
-            <Style Selector="^ /template/ Border#InlineBeginningSeparatorLine">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#InlineBeginningSeparatorLine">
                 <Setter Property="Height"
                         Value="{atom:SharedTokenResource LineWidth}" />
                 <Setter Property="BorderBrush"
                         Value="{atom:StepsTokenResource InlineTailColor}" />
             </Style>
 
-            <Style Selector="^ /template/ Border#InlineEndingSeparatorLine">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#InlineEndingSeparatorLine">
                 <Setter Property="Height"
                         Value="{atom:SharedTokenResource LineWidth}" />
                 <Setter Property="BorderBrush"
@@ -1277,7 +1277,7 @@
             </Style>
 
             <Style Selector="^[Status=Process]">
-                <Style Selector="^ /template/ Border#InlineBeginningSeparatorLine">
+                <Style Selector="^ /template/ atom|PixelAlignedBorder#InlineBeginningSeparatorLine">
                     <Setter Property="BorderBrush"
                             Value="{atom:StepsTokenResource FinishTailColor}" />
                 </Style>

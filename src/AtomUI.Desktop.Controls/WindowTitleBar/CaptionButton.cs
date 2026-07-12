@@ -83,6 +83,9 @@ internal class CaptionButton : AvaloniaButton
     
     internal static readonly StyledProperty<bool> IsWindowActiveProperty = 
         WindowTitleBar.IsWindowActiveProperty.AddOwner<CaptionButton>();
+
+    internal static readonly StyledProperty<Thickness> BackgroundInsetProperty =
+        AvaloniaProperty.Register<CaptionButton, Thickness>(nameof(BackgroundInset));
     
     internal static readonly DirectProperty<CaptionButton, CornerRadius> EffectiveCornerRadiusProperty =
         AvaloniaProperty.RegisterDirect<CaptionButton, CornerRadius>(
@@ -100,6 +103,12 @@ internal class CaptionButton : AvaloniaButton
     {
         get => GetValue(IsWindowActiveProperty);
         set => SetValue(IsWindowActiveProperty, value);
+    }
+
+    internal Thickness BackgroundInset
+    {
+        get => GetValue(BackgroundInsetProperty);
+        set => SetValue(BackgroundInsetProperty, value);
     }
 
     private CornerRadius _effectiveCornerRadius;

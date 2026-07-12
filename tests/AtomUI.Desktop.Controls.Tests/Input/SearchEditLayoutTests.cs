@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using AtomUI.Controls;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Headless;
 using Avalonia.Threading;
@@ -119,6 +120,52 @@ public class SearchEditLayoutTests
 
             sharedBorderOverlap.ShouldBe(2d / 3d, 0.001);
         });
+    }
+
+    [Fact]
+    public void Narrow_Width_Constrains_All_Segments_To_Valid_Arrange_Rectangles()
+    {
+        var searchEdit = new AtomUISearchEdit
+        {
+            Width            = 360,
+            LeftAddOn        = "https://",
+            SearchButtonText = "Search"
+        };
+
+        ShowInWindow(searchEdit, () =>
+        {
+            var panel = searchEdit.GetVisualDescendants()
+                                  .OfType<global::AtomUI.Desktop.Controls.SearchEditPanel>()
+                                  .Single();
+            var leftAddOn = FindTemplatePart<Control>(searchEdit, "PART_LeftAddOn");
+            var contentFrame = FindTemplatePart<global::AtomUI.Desktop.Controls.AddOnDecoratedBoxContentFrame>(
+                searchEdit,
+                "PART_ContentFrame");
+            var searchButton = FindTemplatePart<global::AtomUI.Desktop.Controls.Button>(searchEdit, "PART_RightAddOn");
+
+            searchEdit.Width = 20;
+            Dispatcher.UIThread.RunJobs();
+
+            AssertValidBounds(panel.Bounds);
+            AssertValidBounds(leftAddOn.Bounds);
+            AssertValidBounds(contentFrame.Bounds);
+            AssertValidBounds(searchButton.Bounds);
+
+            searchButton.Bounds.X.ShouldBeGreaterThanOrEqualTo(0);
+            searchButton.Bounds.Right.ShouldBeLessThanOrEqualTo(panel.Bounds.Width);
+            leftAddOn.Bounds.Right.ShouldBeLessThanOrEqualTo(searchButton.Bounds.Left);
+            contentFrame.Bounds.Right.ShouldBeLessThanOrEqualTo(panel.Bounds.Width);
+        });
+    }
+
+    private static void AssertValidBounds(Rect bounds)
+    {
+        double.IsFinite(bounds.X).ShouldBeTrue();
+        double.IsFinite(bounds.Y).ShouldBeTrue();
+        double.IsFinite(bounds.Width).ShouldBeTrue();
+        double.IsFinite(bounds.Height).ShouldBeTrue();
+        bounds.Width.ShouldBeGreaterThanOrEqualTo(0);
+        bounds.Height.ShouldBeGreaterThanOrEqualTo(0);
     }
 
     private static T FindTemplatePart<T>(Control control, string name)

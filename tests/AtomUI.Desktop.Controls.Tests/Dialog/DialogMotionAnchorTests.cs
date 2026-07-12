@@ -219,6 +219,46 @@ public class DialogMotionAnchorTests
         }
     }
 
+    [Fact]
+    public void Modal_Dialog_With_Explicit_Anchor_Closes_When_Page_Is_Detached()
+    {
+        var anchor = new Border
+        {
+            Width  = 40,
+            Height = 40
+        };
+        var page = new Panel();
+        page.Children.Add(anchor);
+
+        var window = CreateWindow(page, out var overlayPanel);
+        var dialog = new AtomUI.Desktop.Controls.Dialog
+        {
+            Content         = new AtomUI.Desktop.Controls.TextBlock { Text = "Dialog" },
+            PlacementTarget = anchor,
+            IsModal         = true,
+            IsMotionEnabled = true,
+            HostWidth       = 160,
+            HostHeight      = 100
+        };
+        page.Children.Add(dialog);
+
+        try
+        {
+            var openTask = dialog.OpenAsync(TestContext.Current.CancellationToken);
+            openTask.IsCompleted.ShouldBeFalse();
+            Dispatcher.UIThread.RunJobs();
+
+            overlayPanel.Children.Remove(page);
+            Dispatcher.UIThread.RunJobs();
+
+            dialog.IsOpen.ShouldBeFalse();
+        }
+        finally
+        {
+            window.Close();
+        }
+    }
+
     private static AtomUI.Desktop.Controls.Dialog CreateStaticDialog(
         Control placementTarget,
         DialogOptions? options)

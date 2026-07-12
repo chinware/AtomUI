@@ -71,7 +71,7 @@
         <Setter Property="Background" Value="{atom:SharedTokenResource ColorBgContainer}" />
 
         <Style Selector="^:headerless">
-            <Style Selector="^ /template/ Border#HeaderFrame">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#HeaderFrame">
                 <Setter Property="IsVisible" Value="False" />
             </Style>
         </Style>
@@ -80,9 +80,9 @@
             <Setter Property="BoxShadow" Value="{atom:SharedTokenResource BoxShadowsTertiary}" />
         </Style>
 
-        <Style Selector="^ /template/ Border#HeaderFrame">
-            <Setter Property="atom:DashedBorder.Background" Value="{atom:CardTokenResource HeaderBg}" />
-            <Setter Property="atom:DashedBorder.BorderBrush"
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#HeaderFrame">
+            <Setter Property="Background" Value="{atom:CardTokenResource HeaderBg}" />
+            <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorBorderSecondary}" />
         </Style>
 
@@ -92,7 +92,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ Border#HeaderFrame">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#HeaderFrame">
                 <Setter Property="MinHeight" Value="{atom:CardTokenResource HeaderHeightLG}" />
                 <Setter Property="Padding" Value="{atom:CardTokenResource HeaderPaddingLG}" />
                 <Setter Property="TextElement.FontSize"
@@ -101,7 +101,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Middle]">
-            <Style Selector="^ /template/ Border#HeaderFrame">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#HeaderFrame">
                 <Setter Property="MinHeight" Value="{atom:CardTokenResource HeaderHeight}" />
                 <Setter Property="Padding" Value="{atom:CardTokenResource HeaderPadding}" />
                 <Setter Property="TextElement.FontSize"
@@ -110,7 +110,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ Border#HeaderFrame">
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#HeaderFrame">
                 <Setter Property="MinHeight" Value="{atom:CardTokenResource HeaderHeightSM}" />
                 <Setter Property="Padding" Value="{atom:CardTokenResource HeaderPaddingSM}" />
                 <Setter Property="TextElement.FontSize"
@@ -122,8 +122,8 @@
         </Style>
 
         <Style Selector="^[IsInnerMode=True]">
-            <Style Selector="^ /template/ Border#HeaderFrame">
-                <Setter Property="atom:DashedBorder.Background" Value="{atom:SharedTokenResource ColorFillAlter}" />
+            <Style Selector="^ /template/ atom|PixelAlignedBorder#HeaderFrame">
+                <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillAlter}" />
             </Style>
         </Style>
 

@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Linq;
+using AtomUI.Controls.Primitives;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
@@ -66,7 +67,7 @@ public class RateBindingTests
         ShowInWindow(rate, () =>
         {
             var frame = rate.GetVisualDescendants()
-                            .OfType<Border>()
+                            .OfType<PixelAlignedBorder>()
                             .Single(item => item.Name == "Frame");
 
             frame.BorderThickness.ShouldBe(new Thickness(2));

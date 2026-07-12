@@ -94,12 +94,12 @@
         <Setter Property="Foreground" Value="{atom:SharedTokenResource ColorText}" />
         <Setter Property="BorderThickness" Value="{atom:SharedTokenResource BorderThickness}" />
         
-        <Style Selector="^ /template/ Border#PART_LeftAddOn">
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_LeftAddOn">
             <Setter Property="Background" Value="{atom:AddOnDecoratedBoxTokenResource AddonBg}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
 
-        <Style Selector="^ /template/ Border#PART_RightAddOn">
+        <Style Selector="^ /template/ atom|PixelAlignedBorder#PART_RightAddOn">
             <Setter Property="Background" Value="{atom:AddOnDecoratedBoxTokenResource AddonBg}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
@@ -112,12 +112,12 @@
 
         <Style Selector="^[SizeType=Large]">
             <Style
-                Selector="^ /template/ Border#PART_LeftAddOn">
+                Selector="^ /template/ atom|PixelAlignedBorder#PART_LeftAddOn">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
             </Style>
             <Style
-                Selector="^ /template/ Border#PART_RightAddOn">
+                Selector="^ /template/ atom|PixelAlignedBorder#PART_RightAddOn">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
             </Style>
@@ -125,11 +125,11 @@
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
             <Style
-                Selector="^ /template/ Border#PART_LeftAddOn">
+                Selector="^ /template/ atom|PixelAlignedBorder#PART_LeftAddOn">
                 <Setter Property="Padding" Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
             </Style>
             <Style
-                Selector="^ /template/ Border#PART_RightAddOn">
+                Selector="^ /template/ atom|PixelAlignedBorder#PART_RightAddOn">
                 <Setter Property="Padding" Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
             </Style>
             <Setter Property="CornerRadius" Value="{atom:SharedTokenResource BorderRadius}" />
@@ -137,12 +137,12 @@
 
         <Style Selector="^[SizeType=Small]">
             <Style
-                Selector="^ /template/ Border#PART_LeftAddOn">
+                Selector="^ /template/ atom|PixelAlignedBorder#PART_LeftAddOn">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
             </Style>
             <Style
-                Selector="^ /template/ Border#PART_RightAddOn">
+                Selector="^ /template/ atom|PixelAlignedBorder#PART_RightAddOn">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
             </Style>
@@ -150,7 +150,7 @@
         </Style>
 
         <Style Selector="^[SizeType=Large]">
-            <Style Selector="^ /template/ Border#PART_ContentFrame">
+            <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingLG}" />
             </Style>
@@ -160,7 +160,7 @@
             </Style>
         </Style>
         <Style Selector="^[SizeType=Middle], ^[SizeType=Custom]">
-            <Style Selector="^ /template/ Border#PART_ContentFrame">
+            <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource Padding}" />
             </Style>
@@ -170,7 +170,7 @@
             </Style>
         </Style>
         <Style Selector="^[SizeType=Small]">
-            <Style Selector="^ /template/ Border#PART_ContentFrame">
+            <Style Selector="^ /template/ atom|AddOnDecoratedBoxContentFrame#PART_ContentFrame">
                 <Setter Property="Padding"
                         Value="{atom:AddOnDecoratedBoxTokenResource PaddingSM}" />
             </Style>
@@ -221,8 +221,8 @@
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
         </Style>
-        <Style Selector="^:outline[EffectiveStatus=Error] /template/ Border#PART_LeftAddOn,
-                         ^:outline[EffectiveStatus=Error] /template/ Border#PART_RightAddOn">
+        <Style Selector="^:outline[EffectiveStatus=Error] /template/ atom|PixelAlignedBorder#PART_LeftAddOn,
+                         ^:outline[EffectiveStatus=Error] /template/ atom|PixelAlignedBorder#PART_RightAddOn">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorError}" />
         </Style>
@@ -248,8 +248,8 @@
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
         </Style>
-        <Style Selector="^:outline[EffectiveStatus=Warning] /template/ Border#PART_LeftAddOn,
-                         ^:outline[EffectiveStatus=Warning] /template/ Border#PART_RightAddOn">
+        <Style Selector="^:outline[EffectiveStatus=Warning] /template/ atom|PixelAlignedBorder#PART_LeftAddOn,
+                         ^:outline[EffectiveStatus=Warning] /template/ atom|PixelAlignedBorder#PART_RightAddOn">
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorWarning}" />
         </Style>
@@ -275,8 +275,8 @@
             <Setter Property="Background" Value="{atom:SharedTokenResource ColorFillTertiary}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFillTertiary}" />
         </Style>
-        <Style Selector="^:filled /template/ Border#PART_LeftAddOn,
-                         ^:filled /template/ Border#PART_RightAddOn">
+        <Style Selector="^:filled /template/ atom|PixelAlignedBorder#PART_LeftAddOn,
+                         ^:filled /template/ atom|PixelAlignedBorder#PART_RightAddOn">
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorFillTertiary}" />
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorFillTertiary}" />
@@ -305,8 +305,8 @@
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorErrorBg}" />
         </Style>
-        <Style Selector="^:filled[EffectiveStatus=Error] /template/ Border#PART_LeftAddOn,
-                         ^:filled[EffectiveStatus=Error] /template/ Border#PART_RightAddOn">
+        <Style Selector="^:filled[EffectiveStatus=Error] /template/ atom|PixelAlignedBorder#PART_LeftAddOn,
+                         ^:filled[EffectiveStatus=Error] /template/ atom|PixelAlignedBorder#PART_RightAddOn">
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorErrorBg}" />
         </Style>
@@ -335,8 +335,8 @@
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorWarningBg}" />
         </Style>
-        <Style Selector="^:filled[EffectiveStatus=Warning] /template/ Border#PART_LeftAddOn,
-                         ^:filled[EffectiveStatus=Warning] /template/ Border#PART_RightAddOn">
+        <Style Selector="^:filled[EffectiveStatus=Warning] /template/ atom|PixelAlignedBorder#PART_LeftAddOn,
+                         ^:filled[EffectiveStatus=Warning] /template/ atom|PixelAlignedBorder#PART_RightAddOn">
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorWarningBg}" />
         </Style>
@@ -360,8 +360,8 @@
         </Style>
 
         <!-- Borderless -->
-        <Style Selector="^:borderless /template/ Border#PART_LeftAddOn,
-                         ^:borderless /template/ Border#PART_RightAddOn">
+        <Style Selector="^:borderless /template/ atom|PixelAlignedBorder#PART_LeftAddOn,
+                         ^:borderless /template/ atom|PixelAlignedBorder#PART_RightAddOn">
             <Setter Property="Background" Value="Transparent" />
         </Style>
 
@@ -369,8 +369,8 @@
         <Style Selector="^:underlined">
             <Setter Property="BorderBrush" Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
-        <Style Selector="^:underlined /template/ Border#PART_LeftAddOn,
-                         ^:underlined /template/ Border#PART_RightAddOn">
+        <Style Selector="^:underlined /template/ atom|PixelAlignedBorder#PART_LeftAddOn,
+                         ^:underlined /template/ atom|PixelAlignedBorder#PART_RightAddOn">
             <Setter Property="Background" Value="Transparent" />
         </Style>
         <Style Selector="^:underlined[IsInnerBoxHover=True]">
@@ -447,10 +447,10 @@
             <Setter Property="BorderBrush"
                     Value="{atom:SharedTokenResource ColorBorder}" />
         </Style>
-        <Style Selector="^:disabled:outline /template/ Border#PART_LeftAddOn,
-                         ^:disabled:outline /template/ Border#PART_RightAddOn,
-                         ^:disabled:filled /template/ Border#PART_LeftAddOn,
-                         ^:disabled:filled /template/ Border#PART_RightAddOn">
+        <Style Selector="^:disabled:outline /template/ atom|PixelAlignedBorder#PART_LeftAddOn,
+                         ^:disabled:outline /template/ atom|PixelAlignedBorder#PART_RightAddOn,
+                         ^:disabled:filled /template/ atom|PixelAlignedBorder#PART_LeftAddOn,
+                         ^:disabled:filled /template/ atom|PixelAlignedBorder#PART_RightAddOn">
             <Setter Property="Background"
                     Value="{atom:SharedTokenResource ColorBgContainerDisabled}" />
             <Setter Property="BorderBrush"
