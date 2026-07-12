@@ -1,4 +1,5 @@
 using AtomUI.Controls;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Threading;
@@ -57,6 +58,53 @@ public class GridResponsiveTests
         {
             window.Close();
         }
+    }
+
+    [Theory]
+    [InlineData(2, 12)]
+    [InlineData(3, 8)]
+    [InlineData(4, 6)]
+    public void Row_Does_Not_Wrap_Exact_Grid_Line_Due_To_Floating_Point_Error(int columnCount, int span)
+    {
+        const double rowWidth = 411.2;
+        var row = new Row
+        {
+            Gutter = GridGutter.Parse("16,16")
+        };
+
+        for (var i = 0; i < columnCount; i++)
+        {
+            row.Children.Add(new Col
+            {
+                Span   = span,
+                Height = 10
+            });
+        }
+
+        row.Measure(new Size(rowWidth, double.PositiveInfinity));
+        row.Arrange(new Rect(0, 0, rowWidth, row.DesiredSize.Height));
+
+        row.DesiredSize.Height.ShouldBe(10);
+        row.Children.ShouldAllBe(child => child.Bounds.Y == 0);
+    }
+
+    [Fact]
+    public void Row_Still_Wraps_When_Grid_Line_Exceeds_24_Columns()
+    {
+        const double rowWidth = 411.2;
+        var row = new Row
+        {
+            Gutter = GridGutter.Parse("16,16")
+        };
+        row.Children.Add(new Col { Span = 13, Height = 10 });
+        row.Children.Add(new Col { Span = 12, Height = 10 });
+
+        row.Measure(new Size(rowWidth, double.PositiveInfinity));
+        row.Arrange(new Rect(0, 0, rowWidth, row.DesiredSize.Height));
+
+        row.DesiredSize.Height.ShouldBe(36);
+        row.Children[0].Bounds.Y.ShouldBe(0);
+        row.Children[1].Bounds.Y.ShouldBe(26);
     }
 
     [Fact]
